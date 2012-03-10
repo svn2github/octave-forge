@@ -24,7 +24,7 @@
 ##
 ## Compute the Mean-Time to Absorption (MTTA) of the CTMC described by
 ## the infinitesimal generator matrix @var{Q}, starting from initial
-## occupancy probability @var{p}. If there are no absorbing states, this
+## occupancy probabilities @var{p}. If there are no absorbing states, this
 ## function fails with an error.
 ##
 ## @strong{INPUTS}
@@ -71,8 +71,8 @@ function t = ctmc_mtta( Q, p )
   
   N = rows(Q);
 
-  all( abs( sum(Q,2) ) < epsilon )  || \
-      usage( "Q is not an infinitesimal generator matrix" );
+  ( norm( sum(Q,2), "inf" ) < epsilon ) || \
+      usage( "Q must be an infinitesimal generator matrix" );
 
   ( isvector(p) && length(p) == N && all(p>=0) && abs(sum(p)-1.0)<epsilon ) || \
       usage( "p must be a probability vector" );
@@ -90,7 +90,7 @@ endfunction
 
 %!test
 %! Q = [0 1 0; 1 0 1; 0 0 0 ];
-%! fail( "ctmc_mtta(Q,[1 0 0])", "not an infinitesimal");
+%! fail( "ctmc_mtta(Q,[1 0 0])", "must be an infinitesimal");
 
 %!test
 %! Q = [ 0 0.1 0 0; \

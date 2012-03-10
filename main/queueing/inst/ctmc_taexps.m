@@ -17,15 +17,15 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {@var{M} =} ctmc_taexps (@var{Q}, @var{tt}, @var{p})
+## @deftypefn {Function File} {@var{M} =} ctmc_taexps (@var{Q}, @var{t}, @var{p})
 ##
 ## @cindex Markov chain, continuous time
 ## @cindex Time-alveraged sojourn time
 ##
-## Compute the @emph{time-averaged sojourn time} @code{@var{M}(t,j)},
-## defined as the fraction of the time interval @code{[0,@var{tt}(t))} spent in
-## state @math{j}, assuming that at time 0 the state occupancy
-## probability was @var{p}.
+## Compute the @emph{time-averaged sojourn time} @code{@var{M}(i)},
+## defined as the fraction of the time interval @math{[0,t]} spent in
+## state @math{i}, assuming that the state occupancy probabilities at
+## time 0 are @var{p}.
 ##
 ## @strong{INPUTS}
 ##
@@ -35,16 +35,10 @@
 ## Infinitesimal generator matrix. @code{@var{Q}(i,j)} is the transition
 ## rate from state @math{i} to state @math{j},
 ## @math{1 @leq{} i \neq j @leq{} N}. The
-## matrix @var{Q} must also satisfy the condition @code{sum(@var{Q},2) == 0}
+## matrix @var{Q} must also satisfy the condition @math{\sum_{j=1}^N Q_{ij} = 0}
 ##
-## @item tt
-## This parameter is a vector used for numerical integration of the
-## sujourn time. The first element @code{@var{tt}(1)} must be slightly
-## larger than 0, and the
-## last element @code{@var{tt}(end)} must be the upper limit of the
-## interval @math{[0,t)} of interest (@code{@var{tt}(end) == @math{t}}).
-## This vector is used by the ODE solver to compute the solution
-## @var{M}.
+## @item t
+## Time
 ##
 ## @item p
 ## @code{@var{p}(i)} is the probability that, at time 0, the system was in
@@ -57,10 +51,9 @@
 ## @table @var
 ##
 ## @item M
-## @code{@var{M}(t,j)} is the expected fraction of time spent in state
-## @math{j} during the interval @math{[0,tt(t))} assuming that the state
-## occupancy probability at time zero was @var{p}. @code{1 @leq{}
-## @var{t} @leq{} length(@var{tt})}
+## @code{@var{M}(i)} is the expected fraction of time spent in state
+## @math{i} during the interval @math{[0,t]} assuming that the state
+## occupancy probability at time zero is @var{p}.
 ##
 ## @end table
 ##
@@ -87,11 +80,19 @@ function M = ctmc_taexps( Q, t, p )
 
   ( isvector(p) && length(p) == N && all(p>=0) && abs(sum(p)-1.0)<epsilon ) || \
       usage( "p must be a probability vector" );
-  t = t(:)'; # make t a row vector
-  p = p(:)'; # make p a row vector
-  ff = @(x,t) (((x')*(Q-eye(N)/t).+p/t)');
-  fj = @(x,t) (Q-eye(N)/t);
-  M = lsode( {ff, fj}, zeros(size(p)), t );
+  if ( isscalar(t) )
+    (t >= 0) || \
+	usage( "t must be >= 0" );
+    F = @(x) (p*expm(Q*x));
+    M = quadv(F,0,t) / t;
+  else
+    ## FIXME: deprecate this?
+    t = t(:)'; # make t a row vector
+    p = p(:)'; # make p a row vector
+    ff = @(x,t) (((x')*(Q-eye(N)/t).+p/t)');
+    fj = @(x,t) (Q-eye(N)/t);
+    M = lsode( {ff, fj}, zeros(size(p)), t );
+  endif
 endfunction
 
 %!demo
@@ -101,9 +102,12 @@ endfunction
 %! death = zeros(1,N-1);
 %! Q = diag(birth,1)+diag(death,-1);
 %! Q -= diag(sum(Q,2));
-%! t = linspace(1e-3,50,500);
+%! t = linspace(1e-5,30,100);
 %! p = zeros(1,N); p(1)=1;
-%! M = ctmc_taexps(Q,t,p);
+%! M = zeros(length(t),N);
+%! for i=1:length(t)
+%!   M(i,:) = ctmc_taexps(Q,t(i),p);
+%! endfor
 %! plot(t, M(:,1), ";State 1;", "linewidth", 2, \
 %!      t, M(:,2), ";State 2;", "linewidth", 2, \
 %!      t, M(:,3), ";State 3;", "linewidth", 2, \

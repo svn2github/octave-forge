@@ -1100,15 +1100,15 @@ linear differential equation.
    <p><a name="doc_002dctmc_005fexps"></a>
 
 <div class="defun">
-&mdash; Function File: <var>L</var> = <b>ctmc_exps</b> (<var>Q, tt, p </var>)<var><a name="index-ctmc_005fexps-20"></a></var><br>
+&mdash; Function File: <var>L</var> = <b>ctmc_exps</b> (<var>Q, t, p </var>)<var><a name="index-ctmc_005fexps-20"></a></var><br>
 &mdash; Function File: <var>L</var> = <b>ctmc_exps</b> (<var>Q, p</var>)<var><a name="index-ctmc_005fexps-21"></a></var><br>
 <blockquote>
         <p><a name="index-Markov-chain_002c-continuous-time-22"></a><a name="index-Expected-sojourn-time-23"></a>
-With three arguments, compute the expected time <var>L</var><code>(t,j)</code>
-spent in each state j during the time interval
-<code>[0,</code><var>tt</var><code>(t))</code>, assuming that at time 0 the state occupancy
-probability was <var>p</var>. With two arguments, compute the expected
-time <var>L</var><code>(j)</code> spent in each state j until absorption.
+With three arguments, compute the expected times <var>L</var><code>(i)</code>
+spent in each state i during the time interval
+[0,t], assuming that the state occupancy probabilities
+at time 0 are <var>p</var>. With two arguments, compute the expected time
+<var>L</var><code>(i)</code> spent in each state i until absorption.
 
         <p><strong>INPUTS</strong>
 
@@ -1118,10 +1118,7 @@ is the transition rate from state i to state j, 1
 &le; i \neq j &le; N. The matrix <var>Q</var> must also satisfy the
 condition \sum_j=1^N Q_ij = 0.
 
-          <br><dt><var>tt</var><dd>This parameter is a vector used for numerical integration. The first
-element <var>tt</var><code>(1)</code> must be 0, and the last element
-<var>tt</var><code>(end)</code> must be the upper bound of the interval
-[0,t) of interest (<var>tt</var><code>(end) == t</code>).
+          <br><dt><var>t</var><dd>Time
 
           <br><dt><var>p</var><dd>Initial occupancy probability vector; <var>p</var><code>(i)</code> is the
 probability the system is in state i at time 0, i = 1,
@@ -1132,14 +1129,12 @@ probability the system is in state i at time 0, i = 1,
         <p><strong>OUTPUTS</strong>
 
           <dl>
-<dt><var>L</var><dd>If this function is called with three arguments, <var>L</var> is a matrix
-of size <code>[length(</code><var>tt</var><code>), N]</code> where <var>L</var><code>(t,j)</code> is the
-expected time spent in state j during the interval
-<code>[0,</code><var>tt</var><code>(t)]</code>. If this function is called with two
-arguments, <var>L</var> is a vector with N elements where
-<var>L</var><code>(j)</code> is the expected time spent in state j until
-absorption, if j is a transient state. If j
-is an absorbing state, <var>L</var><code>(j) = 0</code>.
+<dt><var>L</var><dd>If this function is called with three arguments, <var>L</var><code>(i)</code> is
+the expected time spent in state j during the interval
+[0,t]. If this function is called with two arguments
+<var>L</var><code>(i)</code> is the expected time spent in state i until
+absorption (if i is a transient state), or zero
+(if <var>i</var> is an absorbing state).
 
         </dl>
 
@@ -1185,13 +1180,13 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Continuous_002dTime-Markov-Chains">Con
 <p><a name="doc_002dctmc_005ftaexps"></a>
 
 <div class="defun">
-&mdash; Function File: <var>M</var> = <b>ctmc_taexps</b> (<var>Q, tt, p</var>)<var><a name="index-ctmc_005ftaexps-24"></a></var><br>
+&mdash; Function File: <var>M</var> = <b>ctmc_taexps</b> (<var>Q, t, p</var>)<var><a name="index-ctmc_005ftaexps-24"></a></var><br>
 <blockquote>
         <p><a name="index-Markov-chain_002c-continuous-time-25"></a><a name="index-Time_002dalveraged-sojourn-time-26"></a>
-Compute the <em>time-averaged sojourn time</em> <var>M</var><code>(t,j)</code>,
-defined as the fraction of the time interval <code>[0,</code><var>tt</var><code>(t))</code> spent in
-state j, assuming that at time 0 the state occupancy
-probability was <var>p</var>.
+Compute the <em>time-averaged sojourn time</em> <var>M</var><code>(i)</code>,
+defined as the fraction of the time interval [0,t] spent in
+state i, assuming that the state occupancy probabilities at
+time 0 are <var>p</var>.
 
         <p><strong>INPUTS</strong>
 
@@ -1199,15 +1194,9 @@ probability was <var>p</var>.
 <dt><var>Q</var><dd>Infinitesimal generator matrix. <var>Q</var><code>(i,j)</code> is the transition
 rate from state i to state j,
 1 &le; i \neq j &le; N. The
-matrix <var>Q</var> must also satisfy the condition <code>sum(</code><var>Q</var><code>,2) == 0</code>
+matrix <var>Q</var> must also satisfy the condition \sum_j=1^N Q_ij = 0
 
-          <br><dt><var>tt</var><dd>This parameter is a vector used for numerical integration of the
-sujourn time. The first element <var>tt</var><code>(1)</code> must be slightly
-larger than 0, and the
-last element <var>tt</var><code>(end)</code> must be the upper limit of the
-interval [0,t) of interest (<var>tt</var><code>(end) == t</code>). 
-This vector is used by the ODE solver to compute the solution
-<var>M</var>.
+          <br><dt><var>t</var><dd>Time
 
           <br><dt><var>p</var><dd><var>p</var><code>(i)</code> is the probability that, at time 0, the system was in
 state i, for all i = 1, <small class="dots">...</small>, N
@@ -1217,10 +1206,9 @@ state i, for all i = 1, <small class="dots">...</small>, N
         <p><strong>OUTPUTS</strong>
 
           <dl>
-<dt><var>M</var><dd><var>M</var><code>(t,j)</code> is the expected fraction of time spent in state
-j during the interval [0,tt(t)) assuming that the state
-occupancy probability at time zero was <var>p</var>. <code>1 &le;
-</code><var>t</var><code> &le; length(</code><var>tt</var><code>)</code>
+<dt><var>M</var><dd><var>M</var><code>(i)</code> is the expected fraction of time spent in state
+i during the interval [0,t] assuming that the state
+occupancy probability at time zero is <var>p</var>.
 
         </dl>
 
@@ -1279,7 +1267,7 @@ A.
         <p><a name="index-Markov-chain_002c-continuous-time-28"></a><a name="index-Mean-time-to-absorption-29"></a>
 Compute the Mean-Time to Absorption (MTTA) of the CTMC described by
 the infinitesimal generator matrix <var>Q</var>, starting from initial
-occupancy probability <var>p</var>. If there are no absorbing states, this
+occupancy probabilities <var>p</var>. If there are no absorbing states, this
 function fails with an error.
 
         <p><strong>INPUTS</strong>

@@ -6,6 +6,9 @@
 	* Fixed bug in ctmc_exps() (wrong initial value in call to lsode)
 	* Function ctmc_exps() can now also compute the expected sojourn time
 	  until absorption for absorbing CTMCs.
+	* Function ctmc_exps() and ctmc_taexps() accept a scalar as second
+	  argument; the old syntax is still supported, but may be deprecated
+	  in future releases.
 	* Miscellaneous fixes/improvements to the documentation
 
 2012-02-04 Moreno Marzolla <marzolla@cs.unibo.it>

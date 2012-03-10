@@ -17,17 +17,17 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {@var{L} =} ctmc_exps (@var{Q}, @var{tt}, @var{p} )
+## @deftypefn {Function File} {@var{L} =} ctmc_exps (@var{Q}, @var{t}, @var{p} )
 ## @deftypefnx {Function File} {@var{L} =} ctmc_exps (@var{Q}, @var{p})
 ##
 ## @cindex Markov chain, continuous time
 ## @cindex Expected sojourn time
 ##
-## With three arguments, compute the expected time @code{@var{L}(t,j)}
-## spent in each state @math{j} during the time interval
-## @code{[0,@var{tt}(t))}, assuming that at time 0 the state occupancy
-## probability was @var{p}. With two arguments, compute the expected
-## time @code{@var{L}(j)} spent in each state @math{j} until absorption.
+## With three arguments, compute the expected times @code{@var{L}(i)}
+## spent in each state @math{i} during the time interval
+## @math{[0,t]}, assuming that the state occupancy probabilities
+## at time 0 are @var{p}. With two arguments, compute the expected time
+## @code{@var{L}(i)} spent in each state @math{i} until absorption.
 ##
 ## @strong{INPUTS}
 ##
@@ -39,11 +39,8 @@
 ## @leq{} i \neq j @leq{} N}. The matrix @var{Q} must also satisfy the
 ## condition @math{\sum_{j=1}^N Q_{ij} = 0}.
 ##
-## @item tt
-## This parameter is a vector used for numerical integration. The first
-## element @code{@var{tt}(1)} must be 0, and the last element
-## @code{@var{tt}(end)} must be the upper bound of the interval
-## @math{[0,t)} of interest (@code{@var{tt}(end) == @math{t}}).
+## @item t
+## Time
 ##
 ## @item p
 ## Initial occupancy probability vector; @code{@var{p}(i)} is the
@@ -57,14 +54,12 @@
 ## @table @var
 ##
 ## @item L
-## If this function is called with three arguments, @var{L} is a matrix
-## of size @code{[length(@var{tt}), N]} where @code{@var{L}(t,j)} is the
-## expected time spent in state @math{j} during the interval
-## @code{[0,@var{tt}(t)]}. If this function is called with two
-## arguments, @var{L} is a vector with @math{N} elements where
-## @code{@var{L}(j)} is the expected time spent in state @math{j} until
-## absorption, if @math{j} is a transient state. If @math{j}
-## is an absorbing state, @code{@var{L}(j) = 0}.
+## If this function is called with three arguments, @code{@var{L}(i)} is
+## the expected time spent in state @math{j} during the interval
+## @math{[0,t]}. If this function is called with two arguments
+## @code{@var{L}(i)} is the expected time spent in state @math{i} until
+## absorption (if @math{i} is a transient state), or zero
+## (if @var{i} is an absorbing state).
 ##
 ## @end table
 ##
@@ -85,12 +80,12 @@ function L = ctmc_exps( Q, varargin )
       usage( "Q must be a square matrix" );
 
   ( norm( sum(Q,2), "inf" ) < epsilon ) || \
-      error( "Q is not an infinitesimal generator matrix" );
+      usage( "Q is not an infinitesimal generator matrix" );
 
   if ( nargin == 2 )
     p = varargin{1};
   else
-    tt = varargin{1};
+    t = varargin{1};
     p = varargin{2};
   endif
 
@@ -98,15 +93,27 @@ function L = ctmc_exps( Q, varargin )
       usage( "p must be a probability vector" );
 
   if ( nargin == 3 ) 
-    ( isvector(tt) && abs(tt(1)) < epsilon ) || \
-	usage( "tt must be a vector, and tt(1) must be 0.0" );
-    tt = tt(:)'; # make tt a row vector
-    p = p(:)'; # make p a row vector
-    ff = @(x,t) (x(:)'*Q+p);
-    fj = @(x,t) (Q);
-    L = lsode( {ff, fj}, zeros(size(p)), tt );
+    if ( isscalar(t) )
+      (t >= 0 ) || \
+	  usage( "t must be >= 0" );
+      ## F(x) are the transient state occupancy probabilities at time x.
+      ## It is known that F(x) = p*expm(Q*x) (see function ctmc()).
+      F = @(x) (p*expm(Q*x));
+      L = quadv(F,0,t);
+    else
+      ## FIXME: deprecate this?
+      ( isvector(t) && abs(t(1)) < epsilon ) || \
+	  usage( "t must be a vector, and t(1) must be 0.0" );
+      t = t(:)'; # make tt a row vector
+      p = p(:)'; # make p a row vector
+      ff = @(x,t) (x(:)'*Q+p);
+      fj = @(x,t) (Q);
+      L = lsode( {ff, fj}, zeros(size(p)), t );
+    endif
   else
 #{
+    ## This code is left for information only
+
     ## F(t) are the transient state occupancy probabilities at time t.
     ## It is known that F(t) = p*expm(Q*t) (see function ctmc()).
     ## The expected times spent in each state until absorption can
@@ -138,6 +145,10 @@ function L = ctmc_exps( Q, varargin )
     L(nzrows) = LN;
   endif
 endfunction
+%!test
+%! Q = [-1 1; 1 -1];
+%! L = ctmc_exps(Q,10,[1 0]);
+%! L = ctmc_exps(Q,linspace(0,10,100),[1 0]);
 
 %!demo
 %! lambda = 0.5;
@@ -146,18 +157,16 @@ endfunction
 %! death = zeros(1,N-1);
 %! Q = diag(birth,1)+diag(death,-1);
 %! Q -= diag(sum(Q,2));
-%! tt = linspace(0,10,100);
+%! t = linspace(0,10,100);
 %! p0 = zeros(1,N); p0(1)=1;
-%! L = ctmc_exps(Q,tt,p0);
-%! #L2 = 0*L;
-%! #for i=1:length(tt)
-%! #  L2(i,:) = quadv( @(t) (p0*expm(Q*t)) , 0, tt(i) );
-%! #endfor
-%! plot( tt, L(:,1), ";State 1;", "linewidth", 2, \
-%! #      tt, L2(:,1), "+;State 1 (quadv);", "markersize", 8, \
-%!       tt, L(:,2), ";State 2;", "linewidth", 2, \
-%!       tt, L(:,3), ";State 3;", "linewidth", 2, \
-%!       tt, L(:,4), ";State 4 (absorbing);", "linewidth", 2);
+%! L = zeros(length(t),N);
+%! for i=1:length(t)
+%!   L(i,:) = ctmc_exps(Q,t(i),p0);
+%! endfor
+%! plot( t, L(:,1), ";State 1;", "linewidth", 2, \
+%!       t, L(:,2), ";State 2;", "linewidth", 2, \
+%!       t, L(:,3), ";State 3;", "linewidth", 2, \
+%!       t, L(:,4), ";State 4;", "linewidth", 2 );
 %! legend("location","northwest");
 %! xlabel("Time");
 %! ylabel("Expected sojourn time");

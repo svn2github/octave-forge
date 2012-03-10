@@ -1,3 +1,13 @@
+2012-02-XX Moreno Marzolla <marzolla@cs.unibo.it>
+
+	* Version 1.0.X released
+	* Fixed bug in qnvisits() which made the function behave incorrectly
+	  under particular degenerate cases.
+	* Fixed bug in ctmc_exps() (wrong initial value in call to lsode)
+	* Function ctmc_exps() can now also compute the expected sojourn time
+	  until absorption for absorbing CTMCs.
+	* Miscellaneous fixes/improvements to the documentation
+
 2012-02-04 Moreno Marzolla <marzolla@cs.unibo.it>
 
 	* Version 1.0.0 released under the name "queueing" (initial

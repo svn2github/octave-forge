@@ -22,9 +22,10 @@
 ## @cindex Markov chain, continuous time
 ## @cindex Mean time to absorption
 ##
-## Compute the Mean-Time to Absorption (MTTA) starting from initial
-## occupancy probability @var{p} at time 0. If there are no absorbing
-## states, this function fails with an error.
+## Compute the Mean-Time to Absorption (MTTA) of the CTMC described by
+## the infinitesimal generator matrix @var{Q}, starting from initial
+## occupancy probability @var{p}. If there are no absorbing states, this
+## function fails with an error.
 ##
 ## @strong{INPUTS}
 ##
@@ -76,18 +77,7 @@ function t = ctmc_mtta( Q, p )
   ( isvector(p) && length(p) == N && all(p>=0) && abs(sum(p)-1.0)<epsilon ) || \
       usage( "p must be a probability vector" );
 
-  ## Find nonzero rows. Nonzero rows correspond to transient states,
-  ## while zero rows are absorbing states. If there are no zero rows,
-  ## then the Markov chain does not contain absorbing states and we
-  ## raise an error
-  nzrows = find( any( abs(Q) > epsilon, 2 ) );
-  if ( length( nzrows ) == N )
-    error( "There are no absorbing states" );
-  endif
-
-  QN = Q(nzrows,nzrows);
-  pN = p(nzrows);
-  L = -pN*inv(QN);
+  L = ctmc_exps(Q,p);
   t = sum(L);
 endfunction
 %!test
@@ -122,7 +112,7 @@ endfunction
 %! death = [ 3 4 5 ] * mu;
 %! Q = diag(death,-1);
 %! Q -= diag(sum(Q,2));
-%! t = ctmc_mtta(Q,[0 0 0 1])
+%! [t L] = ctmc_mtta(Q,[0 0 0 1])
 
 %!demo
 %! N = 100;

@@ -60,11 +60,7 @@ P( X_{n+1} = j\ |\ X_n = j )} for all @math{n=0, 1, 2, @dots{}}.
 
 The transition probability matrix @math{\bf P} must satisfy the
 following two properties: (1) @math{P_{i, j} @geq{} 0} for all
-@math{i, j}, and (2) @math{\sum_{j=1}^N P_{i,j} = 1}. We denote with
-@math{{\bf \pi}(n) = (\pi_1(n), \pi_2(n), @dots{}, \pi_N(n) )} the
-@emph{state occupancy probability vector} at step
-@math{n}. @math{\pi_i(n)} denotes the probability that the system is
-in state @math{i} at step @math{n}.
+@math{i, j}, and (2) @math{\sum_{j=1}^N P_{i,j} = 1}. 
 
 @c
 @DOCSTRING(dtmc_check_P)
@@ -73,6 +69,11 @@ in state @math{i} at step @math{n}.
 @c
 @c
 @subsection State occupancy probabilities
+
+We denote with @math{{\bf \pi}(n) = (\pi_1(n), \pi_2(n), @dots{},
+\pi_N(n) )} the @emph{state occupancy probability vector} at step
+@math{n}. @math{\pi_i(n)} denotes the probability that the system is
+in state @math{i} at step @math{n}.
 
 Given the transition probability matrix @math{\bf P} and the initial
 state occupancy probability vector @math{{\bf \pi}(0) = (\pi_1(0),
@@ -97,7 +98,8 @@ Under certain conditions, there exists a @emph{stationary state
 occupancy probability} @math{{\bf \pi} = \lim_{n \rightarrow +\infty}
 {\bf \pi}(n)}, which is independent from the initial state occupancy
 @math{{\bf \pi}(0)}. The stationary state occupancy probability vector
-@math{\bf \pi} satisfies @math{{\bf \pi} = {\bf \pi} {\bf P}}.
+@math{\bf \pi} satisfies @math{{\bf \pi} = {\bf \pi} {\bf P}}
+and @math{\sum_{i=1}^N \pi_i = 1}
 
 @c
 @DOCSTRING(dtmc)
@@ -148,6 +150,27 @@ M_ij = 1 + >   P_ij * M_kj
 @node Continuous-Time Markov Chains
 @section Continuous-Time Markov Chains
 
+A stochastic process @math{@{X(t), t @geq{} 0@}} is a continuous-time
+Markov chain if, for all integers @math{n}, and for any sequence
+@math{t_0, t_1 , \ldots , t_n, t_{n+1}} such that @math{t_0 < t_1 <
+\ldots < t_n < t_{n+1}}, we have
+
+@iftex
+@tex
+$$P(X_{t_{n+1}} = x_{n+1}\ |\ X(t_n) = x_n, X(t_{n-1}) = x_{n-1}, \ldots, X(t_0) = x_0) = P(X(t_{n+1}) = x_{n+1}\ |\ X(t_n) = x_n)$$
+@end tex
+@end iftex
+@ifnottex
+@math{P(X_{n+1} = x_{n+1} | X_n = x_n, X_{n-1} = x_{n-1}, ..., X_0 = x_0) = P(X_{n+1} = x_{n+1} | X_n = x_n)}
+@end ifnottex
+
+A continuous-time Markov chain is defined according to an
+@emph{infinitesimal generator matrix} @math{{\bf Q} = [Q_{i,j}]} such
+that for each @math{i \neq j}, @math{Q_{i, j}} is the transition rate
+from state @math{i} to state @math{j}. The elements @math{Q_{i, i}}
+must be defined in such a way that the infinitesimal generator matrix
+@math{\bf Q} satisfies the property @math{\sum_{j=1}^N Q_{i,j} = 0}.
+
 @DOCSTRING(ctmc_check_Q)
 
 @menu
@@ -161,6 +184,37 @@ M_ij = 1 + >   P_ij * M_kj
 
 @node State occupancy probabilities
 @subsection State occupancy probabilities
+
+Similarly to the discrete case, we denote with @math{{\bf \pi}(t) =
+(\pi_1(t), \pi_2(t), @dots{}, \pi_N(t) )} the @emph{state occupancy
+probability vector} at time @math{t}. @math{\pi_i(t)} denotes the
+probability that the system is in state @math{i} at time @math{t @geq{} 0}.
+
+Given the infinitesimal generator matrix @math{\bf Q} and the initial
+state occupancy probability vector @math{{\bf \pi}(0) = (\pi_1(0),
+\pi_2(0), @dots{}, \pi_N(0))}, the state occupancy probability vector
+@math{{\bf \pi}(t)} at time @math{t} can be computed as:
+
+@iftex
+@tex
+$${\bf \pi}(t) = {\bf \pi}(0) \exp( {\bf Q} t )$$
+@end tex
+@end iftex
+@ifnottex
+@example
+@group
+\pi(t) = \pi(0) exp(Qt)
+@end group
+@end example
+@end ifnottex
+
+@noindent where @math{\exp( {\bf Q} t )} is the matrix exponential
+of @math{{\bf Q} t}. Under certain conditions, there exists a
+@emph{stationary state occupancy probability} @math{{\bf \pi} =
+\lim_{t \rightarrow +\infty} {\bf \pi}(t)}, which is independent from
+the initial state occupancy @math{{\bf \pi}(0)}. The stationary state
+occupancy probability vector @math{\bf \pi} satisfies 
+@math{{\bf \pi} {\bf Q} = {\bf 0}} and @math{\sum_{i=1}^N \pi_i = 1}.
 
 @DOCSTRING(ctmc)
 
@@ -195,7 +249,7 @@ generator matrix @math{\bf Q}, we define the vector @math{{\bf L}(t) =
 (L_1(t), L_2(t), \ldots L_N(t))} such that @math{L_i(t)} is the
 expected sojourn time in state @math{i} during the interval
 @math{[0,t)}, assuming that the initial occupancy probability at time
-0 was @math{{\bf \pi}(0)}. Then, @math{{\bf L}(t)} is the solution of
+0 was @math{{\bf \pi}(0)}. @math{{\bf L}(t)} is the solution of
 the following differential equation:
 
 @iftex
@@ -213,9 +267,26 @@ $$ { d{\bf L}(t) \over dt} = {\bf L}(t){\bf Q} + {\bf \pi}(0), \qquad {\bf L}(0)
 @end example
 @end ifnottex
 
-The function @code{ctmc_exps} can be used to compute @math{{\bf
-L}(t)}, by using the @code{lsode} Octave function to solve the above
-linear differential equation.
+Alternatively, @math{{\bf L}(t)} can also be expressed in integral
+form as:
+
+@iftex
+@tex
+$$ {\bf L}(t) = \int_{u=0}^t {\bf \pi}(u) du$$
+@end tex
+@end iftex
+@ifnottex
+@example
+@group
+       / t
+L(t) = |      pi(u) du
+       / u=0
+@end group
+@end example
+@end ifnottex
+
+@noindent where @math{{\bf \pi}(t) = {\bf \pi}(0) \exp({\bf Q}t)} is
+the state occupancy probability at time @math{t}.
 
 @DOCSTRING(ctmc_exps)
 
@@ -225,7 +296,7 @@ Let us consider a pure-birth, 4-states CTMC such that the transition
 rate from state @math{i} to state @math{i+1} is @math{\lambda_i = i
 \lambda} (@math{i=1, 2, 3}), with @math{\lambda = 0.5}. The following
 code computes the expected sojourn time in state @math{i},
-given the initial occupancy probability @math{p_0=(1,0,0,0)}. 
+given the initial occupancy probability @math{{\bf \pi}_0=(1,0,0,0)}. 
 
 @example
 @group

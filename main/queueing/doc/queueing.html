@@ -811,11 +811,7 @@ P( X_n+1 = j\ |\ X_n = j ) for all n=0, 1, 2, <small class="dots">...</small>.
 
    <p>The transition probability matrix \bf P must satisfy the
 following two properties: (1) P_i, j &ge; 0 for all
-i, j, and (2) \sum_j=1^N P_i,j = 1. We denote with
-\bf \pi(n) = (\pi_1(n), \pi_2(n), <small class="dots">...</small>, \pi_N(n) ) the
-<em>state occupancy probability vector</em> at step
-n. \pi_i(n) denotes the probability that the system is
-in state i at step n.
+i, j, and (2) \sum_j=1^N P_i,j = 1.
 
    <p><a name="doc_002ddtmc_005fcheck_005fP"></a>
 
@@ -832,7 +828,12 @@ a transition probability matrix, set <var>result</var> to zero, and
 
 <h4 class="subsection">4.1.1 State occupancy probabilities</h4>
 
-<p>Given the transition probability matrix \bf P and the initial
+<p>We denote with \bf \pi(n) = (\pi_1(n), \pi_2(n), <small class="dots">...</small>,
+\pi_N(n) ) the <em>state occupancy probability vector</em> at step
+n. \pi_i(n) denotes the probability that the system is
+in state i at step n.
+
+   <p>Given the transition probability matrix \bf P and the initial
 state occupancy probability vector \bf \pi(0) = (\pi_1(0),
 \pi_2(0), <small class="dots">...</small>, \pi_N(0)) at step 0, the state occupancy
 probability vector \bf \pi(n) at step n can be
@@ -844,7 +845,8 @@ computed as:
 occupancy probability</em> \bf \pi = \lim_n \rightarrow +\infty
 \bf \pi(n), which is independent from the initial state occupancy
 \bf \pi(0). The stationary state occupancy probability vector
-\bf \pi satisfies \bf \pi = \bf \pi \bf P.
+\bf \pi satisfies \bf \pi = \bf \pi \bf P
+and \sum_i=1^N \pi_i = 1
 
    <p><a name="doc_002ddtmc"></a>
 
@@ -1009,7 +1011,21 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Markov-Chains">Markov Chains</a>
 
 <h3 class="section">4.2 Continuous-Time Markov Chains</h3>
 
-<p><a name="doc_002dctmc_005fcheck_005fQ"></a>
+<p>A stochastic process {X(t), t &ge; 0} is a continuous-time
+Markov chain if, for all integers n, and for any sequence
+t_0, t_1 , \ldots , t_n, t_n+1 such that t_0 &lt; t_1 &lt;
+\ldots &lt; t_n &lt; t_n+1, we have
+
+   <p>P(X_n+1 = x_n+1 | X_n = x_n, X_n-1 = x_n-1, ..., X_0 = x_0) = P(X_n+1 = x_n+1 | X_n = x_n)
+
+   <p>A continuous-time Markov chain is defined according to an
+<em>infinitesimal generator matrix</em> \bf Q = [Q_i,j] such
+that for each i \neq j, Q_i, j is the transition rate
+from state i to state j. The elements Q_i, i
+must be defined in such a way that the infinitesimal generator matrix
+\bf Q satisfies the property \sum_j=1^N Q_i,j = 0.
+
+   <p><a name="doc_002dctmc_005fcheck_005fQ"></a>
 
 <div class="defun">
 &mdash; Function File: [<var>result</var> <var>err</var>] = <b>ctmc_check_Q</b> (<var>Q</var>)<var><a name="index-ctmc_005fcheck_005fQ-16"></a></var><br>
@@ -1041,11 +1057,31 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Continuous_002dTime-Markov-Chains">Con
 
 <h4 class="subsection">4.2.1 State occupancy probabilities</h4>
 
-<p><a name="doc_002dctmc"></a>
+<p>Similarly to the discrete case, we denote with \bf \pi(t) =
+(\pi_1(t), \pi_2(t), <small class="dots">...</small>, \pi_N(t) ) the <em>state occupancy
+probability vector</em> at time t. \pi_i(t) denotes the
+probability that the system is in state i at time t &ge; 0.
+
+   <p>Given the infinitesimal generator matrix \bf Q and the initial
+state occupancy probability vector \bf \pi(0) = (\pi_1(0),
+\pi_2(0), <small class="dots">...</small>, \pi_N(0)), the state occupancy probability vector
+\bf \pi(t) at time t can be computed as:
+
+<pre class="example">     \pi(t) = \pi(0) exp(Qt)
+</pre>
+   <p class="noindent">where \exp( \bf Q t ) is the matrix exponential
+of \bf Q t. Under certain conditions, there exists a
+<em>stationary state occupancy probability</em> \bf \pi =
+\lim_t \rightarrow +\infty \bf \pi(t), which is independent from
+the initial state occupancy \bf \pi(0). The stationary state
+occupancy probability vector \bf \pi satisfies
+\bf \pi \bf Q = \bf 0 and \sum_i=1^N \pi_i = 1.
+
+   <p><a name="doc_002dctmc"></a>
 
 <div class="defun">
 &mdash; Function File: <var>p</var> = <b>ctmc</b> (<var>Q</var>)<var><a name="index-ctmc-18"></a></var><br>
-&mdash; Function File: <var>p</var> = <b>ctmc</b> (<var>Q, t. q0</var>)<var><a name="index-ctmc-19"></a></var><br>
+&mdash; Function File: <var>p</var> = <b>ctmc</b> (<var>Q, t. p0</var>)<var><a name="index-ctmc-19"></a></var><br>
 <blockquote>
         <p><a name="index-Markov-chain_002c-continuous-time-20"></a><a name="index-Continuous-time-Markov-chain-21"></a><a name="index-Markov-chain_002c-state-occupancy-probabilities-22"></a><a name="index-Stationary-probabilities-23"></a>
 With a single argument, compute the stationary state occupancy
@@ -1080,7 +1116,7 @@ in state i, i = 1, <small class="dots">...</small>, N. The vector <var>p</var>
 satisfies the equation p\bf Q = 0 and \sum_i=1^N p_i = 1. 
 If this function is invoked with three arguments, <var>p</var><code>(i)</code>
 is the probability that the system is in state i at time <var>t</var>,
-given the initial occupancy probabilities <var>q0</var>.
+given the initial occupancy probabilities <var>p0</var>.
 
         </dl>
 
@@ -1152,16 +1188,22 @@ generator matrix \bf Q, we define the vector \bf L(t) =
 (L_1(t), L_2(t), \ldots L_N(t)) such that L_i(t) is the
 expected sojourn time in state i during the interval
 [0,t), assuming that the initial occupancy probability at time
-0 was \bf \pi(0). Then, \bf L(t) is the solution of
+0 was \bf \pi(0). \bf L(t) is the solution of
 the following differential equation:
 
 <pre class="example">      dL
       --(t) = L(t) Q + pi(0),    L(0) = 0
       dt
 </pre>
-   <p>The function <code>ctmc_exps</code> can be used to compute \bf
-L(t), by using the <code>lsode</code> Octave function to solve the above
-linear differential equation.
+   <p>Alternatively, \bf L(t) can also be expressed in integral
+form as:
+
+<pre class="example">            / t
+     L(t) = |      pi(u) du
+            / u=0
+</pre>
+   <p class="noindent">where \bf \pi(t) = \bf \pi(0) \exp(\bf Qt) is
+the state occupancy probability at time t.
 
    <p><a name="doc_002dctmc_005fexps"></a>
 
@@ -1212,7 +1254,7 @@ absorption (if i is a transient state), or zero
 rate from state i to state i+1 is \lambda_i = i
 \lambda (i=1, 2, 3), with \lambda = 0.5. The following
 code computes the expected sojourn time in state i,
-given the initial occupancy probability p_0=(1,0,0,0).
+given the initial occupancy probability \bf \pi_0=(1,0,0,0).
 
 <pre class="example"><pre class="verbatim">      lambda = 0.5;
       N = 4;

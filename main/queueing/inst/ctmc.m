@@ -18,7 +18,7 @@
 ## -*- texinfo -*-
 ##
 ## @deftypefn {Function File} {@var{p} =} ctmc (@var{Q})
-## @deftypefnx {Function File} {@var{p} =} ctmc (@var{Q}, @var{t}. @var{q0})
+## @deftypefnx {Function File} {@var{p} =} ctmc (@var{Q}, @var{t}. @var{p0})
 ##
 ## @cindex Markov chain, continuous time
 ## @cindex Continuous time Markov chain
@@ -63,7 +63,7 @@
 ## satisfies the equation @math{p{\bf Q} = 0} and @math{\sum_{i=1}^N p_i = 1}.
 ## If this function is invoked with three arguments, @code{@var{p}(i)}
 ## is the probability that the system is in state @math{i} at time @var{t},
-## given the initial occupancy probabilities @var{q0}.
+## given the initial occupancy probabilities @var{p0}.
 ##
 ## @end table
 ##
@@ -72,7 +72,7 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function q = ctmc( Q, t, q0 )
+function q = ctmc( Q, t, p0 )
 
   persistent epsilon = 10*eps;
 
@@ -91,17 +91,17 @@ function q = ctmc( Q, t, q0 )
   endif
 
   if ( nargin > 2 )
-    ( isvector(q0) && length(q0) == N && all(q0>=0) && abs(sum(q0)-1.0)<epsilon ) || \
-        usage( "q0 must be a probability vector" );   
-    q0 = q0(:)'; # make q0 a row vector
+    ( isvector(p0) && length(p0) == N && all(p0>=0) && abs(sum(p0)-1.0)<epsilon ) || \
+        usage( "p0 must be a probability vector" );   
+    p0 = p0(:)'; # make p0 a row vector
   else
-    q0 = ones(1,N) / N;
+    p0 = ones(1,N) / N;
   endif
 
   if ( nargin == 1 )
     q = __ctmc_steady_state( Q );
   else
-    q = __ctmc_transient(Q, t, q0 );
+    q = __ctmc_transient(Q, t, p0 );
   endif
 
 endfunction
@@ -132,8 +132,8 @@ function q = __ctmc_steady_state( Q )
 endfunction
 
 ## Helper function, compute transient probability
-function q = __ctmc_transient( Q, t, q0 )
-  q = q0*expm(Q*t);
+function q = __ctmc_transient( Q, t, p0 )
+  q = p0*expm(Q*t);
 endfunction
 
 %!test

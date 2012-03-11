@@ -93,7 +93,7 @@ endfunction
 %! P = [-1 0; 0 0];
 %! fail( "qnvisits(P)", "not a transition probability" );
 %! P = [1 0; 0.5 0];
-%! fail( "qnvisits(P)", "not a stochastic" );
+%! fail( "qnvisits(P)", "not a transition probability" );
 %! P = [1 0; 0 1]; lambda=[0 -1];
 %! fail( "qnvisits(P,lambda)", "contains negative" );
 
@@ -477,21 +477,20 @@ endfunction
 ## Solve the visit equation for single class networks.
 function V = __qnvisitssingle( P, lambda )
 
+  persistent epsilon = 10*eps;
+
   issquare(P)  || \
       usage( "P must be a square matrix" );
 
   N = size(P,1);
   V = zeros(N,N);
 
-  all( all(P>=0) ) && all( sum(P,2)<=1+1e-5 ) || \
-      usage( "P is not a transition probability matrix" );
-
   if ( nargin < 2 )
     ##
     ## Closed network
     ##
-    all( abs( sum(P,2)-1 ) < 1e-5 ) || \
-        error( "P is not a stochastic matrix for closed networks" );
+    ( all( all(P>=0) ) && norm( sum(P,2) - 1, "inf" ) < epsilon ) || \
+        usage( "P is not a transition probability matrix for closed networks" );
 
     A = P-eye(N);
     b = zeros(1,N);
@@ -500,7 +499,12 @@ function V = __qnvisitssingle( P, lambda )
     b(i) = 1;
     V = b/A;
   else
+    ##
     ## Open network
+    ##
+    all( all(P>=0) ) && all( sum(P,2)<=1+1e-5 ) || \
+	usage( "P is not a transition probability matrix for open networks" );
+
     ( isvector(lambda) && length(lambda) == N ) || \
         usage( "lambda size mismatch" );
     all( lambda>= 0 ) || \

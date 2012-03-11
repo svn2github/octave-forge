@@ -1,4 +1,4 @@
-Summary of important user-visible changes for queueing-1.0.X
+Summary of important user-visible changes for queueing-1.X.0
 
 ** Function ctmc_exps() can now compute the expected sojourn time
    until absorption for absorming CTMC
@@ -6,6 +6,14 @@ Summary of important user-visible changes for queueing-1.0.X
 ** Functions ctmc_exps() and ctmc_taexps() now accept a scalar as
    the second argument (time). The old syntax is still supported,
    but may be deprecated in the future.
+
+** Function ctmc_bd() now returns the infinitesimal generator matrix Q
+   of the birth-death process with given rates, not the steady-state
+   solution.
+
+** New function dtmc_bd() added
+
+** Function ctmc_bd_solve() has been removed
 
 Summary of important user-visible changes for queueing-1.0.0
 ------------------------------------------------------------------------------

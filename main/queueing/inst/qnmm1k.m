@@ -141,7 +141,7 @@ endfunction
 %! [U1 R1 Q1 X1] = qnmm1k( lambda, mu, K );
 %! birth = lambda*ones(1,K);
 %! death = mu*ones(1,K);
-%! q = ctmc_bd( birth, death );
+%! q = ctmc(ctmc_bd( birth, death ));
 %! U2 = 1-q(1);
 %! Q2 = dot( [0:K], q );
 %! assert( U1, U2, 1e-4 );

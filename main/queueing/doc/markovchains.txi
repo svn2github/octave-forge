@@ -66,6 +66,9 @@ following two properties: (1) @math{P_{i, j} @geq{} 0} for all
 @math{n}. @math{\pi_i(n)} denotes the probability that the system is
 in state @math{i} at step @math{n}.
 
+@c
+@subsection State occupancy probabilities
+
 Given the transition probability matrix @math{\bf P} and the initial
 state occupancy probability vector @math{{\bf \pi}(0) = (\pi_1(0),
 \pi_2(0), @dots{}, \pi_N(0))} at step 0, the state occupancy
@@ -91,6 +94,7 @@ occupancy probability} @math{{\bf \pi} = \lim_{n \rightarrow +\infty}
 @math{{\bf \pi}(0)}. The stationary state occupancy probability vector
 @math{\bf \pi} satisfies @math{{\bf \pi} = {\bf \pi} {\bf P}}.
 
+@c
 @DOCSTRING(dtmc)
 
 @noindent @strong{EXAMPLE}
@@ -100,6 +104,13 @@ occupancy probability} @math{{\bf \pi} = \lim_{n \rightarrow +\infty}
 @verbatiminclude @value{top_srcdir}/examples/demo_1_dtmc.m
 @end group
 @end example
+
+@subsection Birth-Death process
+
+@c
+@DOCSTRING(dtmc_bd)
+
+@subsection First passage times
 
 The First Passage Time @math{M_{i j}} is defined as the average
 number of transitions needed to visit state @math{j} for the first
@@ -123,6 +134,7 @@ M_ij = 1 + >   P_ij * M_kj
 @end example
 @end ifnottex
 
+@c
 @DOCSTRING(dtmc_fpt)
 
 @c
@@ -132,16 +144,16 @@ M_ij = 1 + >   P_ij * M_kj
 @section Continuous-Time Markov Chains
 
 @menu
-* CTMC Stationary Probability::
+* State occupancy probabilities::
 * Birth-Death process::
 * Expected Sojourn Time::
 * Time-Averaged Expected Sojourn Time::
 * Expected Time to Absorption::
-* CTMC First Passage Times::
+* First Passage Times::
 @end menu
 
-@node CTMC Stationary Probability
-@subsection Stationary Probability
+@node State occupancy probabilities
+@subsection State occupancy probabilities
 
 @DOCSTRING(ctmc)
 
@@ -305,7 +317,7 @@ Performance Evaluation with Computer Science Applications}, Wiley,
 @c
 @c
 @c
-@node CTMC First Passage Times
+@node First Passage Times
 @subsection First Passage Times
 @DOCSTRING(ctmc_fpt)
 

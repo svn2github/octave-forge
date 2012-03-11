@@ -55,9 +55,9 @@
 ##
 ## @item L
 ## If this function is called with three arguments, @code{@var{L}(i)} is
-## the expected time spent in state @math{j} during the interval
+## the expected time spent in state @math{i} during the interval
 ## @math{[0,t]}. If this function is called with two arguments
-## @code{@var{L}(i)} is the expected time spent in state @math{i} until
+## @code{@var{L}(i)} is either the expected time spent in state @math{i} until
 ## absorption (if @math{i} is a transient state), or zero
 ## (if @var{i} is an absorbing state).
 ##
@@ -92,12 +92,14 @@ function L = ctmc_exps( Q, varargin )
   ( isvector(p) && length(p) == size(Q,1) && all(p>=0) && abs(sum(p)-1.0)<epsilon ) || \
       usage( "p must be a probability vector" );
 
-  if ( nargin == 3 ) 
+  p = p(:)'; # make p a row vector
+
+  if ( nargin == 3 ) # non-absorbing case
     if ( isscalar(t) )
       (t >= 0 ) || \
 	  usage( "t must be >= 0" );
-      ## F(x) are the transient state occupancy probabilities at time x.
-      ## It is known that F(x) = p*expm(Q*x) (see function ctmc()).
+      ## F(x) are the transient state occupancy probabilities at time x
+      ## F(x) = p*expm(Q*x) (see function ctmc()).
       F = @(x) (p*expm(Q*x));
       L = quadv(F,0,t);
     else
@@ -105,12 +107,11 @@ function L = ctmc_exps( Q, varargin )
       ( isvector(t) && abs(t(1)) < epsilon ) || \
 	  usage( "t must be a vector, and t(1) must be 0.0" );
       t = t(:)'; # make tt a row vector
-      p = p(:)'; # make p a row vector
       ff = @(x,t) (x(:)'*Q+p);
       fj = @(x,t) (Q);
       L = lsode( {ff, fj}, zeros(size(p)), t );
     endif
-  else
+  else # absorbing case
 #{
     ## This code is left for information only
 
@@ -150,6 +151,21 @@ endfunction
 %! L = ctmc_exps(Q,10,[1 0]);
 %! L = ctmc_exps(Q,linspace(0,10,100),[1 0]);
 
+%!test
+%! Q = ctmc_bd( [1 2 3], [3 2 1] );
+%! p0 = [1 0 0 0];
+%! t = linspace(0,10,10);
+%! L1 = L2 = zeros(length(t),4);
+%! # compute L using the differential equation formulation
+%! ff = @(x,t) (x(:)'*Q+p0);
+%! fj = @(x,t) (Q);
+%! L1 = lsode( {ff, fj}, zeros(size(p0)), t );
+%! # compute L using ctmc_exps (integral formulation)
+%! for i=1:length(t)
+%!   L2(i,:) = ctmc_exps(Q,t(i),p0);
+%! endfor
+%! assert( L1, L2, 1e-5);
+
 %!demo
 %! lambda = 0.5;
 %! N = 4;
@@ -179,4 +195,5 @@ endfunction
 %! Q = diag(birth,1)+diag(death,-1);
 %! Q -= diag(sum(Q,2));
 %! p0 = zeros(1,N); p0(1)=1;
-%! L = ctmc_exps(Q,p0)
+%! L = ctmc_exps(Q,p0);
+%! disp(L);

@@ -1,6 +1,6 @@
 2012-02-XX Moreno Marzolla <marzolla@cs.unibo.it>
 
-	* Version 1.0.X released
+	* Version 1.X.0 released
 	* Fixed bug in qnvisits() which made the function behave incorrectly
 	  under particular degenerate cases.
 	* Fixed bug in ctmc_exps() (wrong initial value in call to lsode)
@@ -9,6 +9,10 @@
 	* Function ctmc_exps() and ctmc_taexps() accept a scalar as second
 	  argument; the old syntax is still supported, but may be deprecated
 	  in future releases.
+	* Function ctmc_bd() now returns the infinitesimal generator matrix
+	  of the birth-death process, not the steady-state solution.
+	* Function ctmc_bd_solve() has been removed
+	* New function dtmc_bd()
 	* Miscellaneous fixes/improvements to the documentation
 
 2012-02-04 Moreno Marzolla <marzolla@cs.unibo.it>

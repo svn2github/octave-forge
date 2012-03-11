@@ -45,8 +45,7 @@ with load-independent service centers;
 @item Approximate MVA for closed, single-class networks with blocking
 (MVABLO algorithm by F. Akyildiz);
 
-@item Computation of Asymptotic Bounds, Balanced System Bounds
-and Geometric Bounds;
+@item Asymptotic Bounds, Balanced System Bounds and Geometric Bounds;
 
 @end itemize
 
@@ -66,16 +65,16 @@ queueing systems:
 @item @math{M/H_m/1} (Hyperexponential service time distribution)
 @end itemize
 
-Functions for Markov chain analysis are also provided (discrete and
-continuous time Markov chains are supported):
+Functions for Markov chain analysis are also provided, for discrete-time
+chains (DTMC) or continuous-time chains (CTMC):
 
 @itemize
 
-@item Birth-death process;
-@item Computation of transient and steady-state occupancy probabilities;
-@item Computation of mean time to absorption;
-@item Computation of time-averages sojourn time.
-@item Computation of mean passage times
+@item Birth-death process (DTMC and CTMC);
+@item Transient and steady-state occupancy probabilities (DTMC and CTMC);
+@item Mean time to absorption (CTMC);
+@item Time-averaged sojourn times (CTMC);
+@item First passage times (DTMC and CTMC).
 
 @end itemize
 

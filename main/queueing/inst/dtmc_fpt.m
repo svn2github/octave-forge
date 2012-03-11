@@ -54,9 +54,11 @@
 ## @table @var
 ##
 ## @item M
-## If this function is called with a single argument, the result
+## If this function is called with a single argument,
 ## @code{@var{M}(i,j)} is the average number of transitions before state
 ## @var{j} is reached for the first time, starting from state @var{i}.
+## @code{@var{M}(i,i)} is the @emph{mean recurrence time}, and
+## represents the average time needed to return to state @var{i}.
 ##
 ## @item m
 ## If this function is called with three arguments, the result @var{m}
@@ -77,13 +79,10 @@ function result = dtmc_fpt( P, i, j )
     print_usage();
   endif
 
-  issquare(P) || \
-      usage( "P must be a square matrix" );
+  [N err] = dtmc_check_P(P);
 
-  N = rows(P);
-  
-  ( all(P >= 0 ) && norm( sum(P,2) - 1, "inf" ) < epsilon ) || \
-      usage( "P is not a stochastic matrix" );
+  ( N>0 ) || \
+      error(err);
 
   if ( nargin == 1 )   
     M = zeros(N,N);
@@ -98,8 +97,10 @@ function result = dtmc_fpt( P, i, j )
     endfor
     result = M;
   else
-    (isscalar(i) && i>=1 && j<=N) || usage("i must be an integer in the range [1,%d]", N);
-    (isvector(j) && all(j>=1) && all(j<=N)) || usage("j must be an integer or vector with elements in 1..%d", N);
+    (isscalar(i) && i>=1 && j<=N) || \
+	usage("i must be an integer in the range [1,%d]", N);
+    (isvector(j) && all(j>=1) && all(j<=N)) || \
+	usage("j must be an integer or vector with elements in [1,%d]", N);
     j = j(:)'; # make j a row vector
     b = ones(N,1);
     A = -P;
@@ -109,6 +110,10 @@ function result = dtmc_fpt( P, i, j )
     result = res(i);
   endif
 endfunction
+%!test
+%! P = [1 1 1; 1 1 1];
+%! fail( "dtmc_fpt(P)" );
+
 %!demo
 %! P = [ 0.0 0.9 0.1; \
 %!       0.1 0.0 0.9; \

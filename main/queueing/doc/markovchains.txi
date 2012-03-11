@@ -67,6 +67,11 @@ following two properties: (1) @math{P_{i, j} @geq{} 0} for all
 in state @math{i} at step @math{n}.
 
 @c
+@DOCSTRING(dtmc_check_P)
+
+@c
+@c
+@c
 @subsection State occupancy probabilities
 
 Given the transition probability matrix @math{\bf P} and the initial
@@ -142,6 +147,8 @@ M_ij = 1 + >   P_ij * M_kj
 @c
 @node Continuous-Time Markov Chains
 @section Continuous-Time Markov Chains
+
+@DOCSTRING(ctmc_check_Q)
 
 @menu
 * State occupancy probabilities::
@@ -319,5 +326,6 @@ Performance Evaluation with Computer Science Applications}, Wiley,
 @c
 @node First Passage Times
 @subsection First Passage Times
+
 @DOCSTRING(ctmc_fpt)
 

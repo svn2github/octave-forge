@@ -80,7 +80,10 @@ function q = dtmc( P, n, p0 )
     print_usage();
   endif
 
-  N = dtmc_check_P(P);
+  [N err] = dtmc_check_P(P);
+  
+  ( N>0 ) || \
+      usage( err );
   
   if ( nargin > 1 )
     ( isscalar(n) && n>=0 ) || \

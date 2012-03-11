@@ -1,4 +1,4 @@
-## Copyright (C) 2011, 2012 Moreno Marzolla
+## Copyright (C)2012 Moreno Marzolla
 ##
 ## This file is part of the queueing toolbox.
 ##
@@ -17,13 +17,13 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{result} @var{err}] =} dtmc_check_P (@var{P})
+## @deftypefn {Function File} {[@var{result} @var{err}] =} ctmc_check_Q (@var{Q})
 ##
-## @cindex Markov chain, discrete time
+## @cindex Markov chain, continuous time
 ##
-## If @var{P} is a valid transition probability matrix, return
-## the size (number of rows or columns) of @var{P}. If @var{P} is not
-## a transition probability matrix, set @var{result} to zero, and
+## If @var{Q} is a valid infinitesimal generator matrix, return
+## the size (number of rows or columns) of @var{Q}. If @var{Q} is not
+## an infinitesimal generator matrix, set @var{result} to zero, and
 ## @var{err} to an appropriate error string.
 ##
 ## @end deftypefn
@@ -31,7 +31,7 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [result err] = dtmc_check_P( P )
+function [result err] = ctmc_check_Q( Q )
 
   persistent epsilon = 10*eps;
 
@@ -41,29 +41,16 @@ function [result err] = dtmc_check_P( P )
 
   result = 0;
 
-  if ( !issquare(P) )
+  if ( !issquare(Q) )
     err = "P is not a square matrix";
     return;
   endif
   
-  if (  any(any(P <0)) || norm( sum(P,2) - 1, "inf" ) > epsilon )
-    err = "P is not a stochastic matrix";
+  if ( norm( sum(Q,2), "inf" ) > epsilon )
+    err = "Q is not an infinitesimal generator matrix";
     return;
   endif
 
-  result = rows(P);
+  result = rows(Q);
   err = "";
 endfunction
-%!test
-%! [r err] = dtmc_check_P( [1 1 1; 1 1 1] );
-%! assert( r, 0 );
-%! assert( index(err, "square") > 0 );
-
-%!test
-%! [r err] = dtmc_check_P( [1 0 0; 0 0.5 0; 0 0 0] );
-%! assert( r, 0 );
-%! assert( index(err, "stochastic") > 0 );
-
-%!test
-%! P = [0 1; 1 0];
-%! assert( dtmc_check_P(P), 2 );

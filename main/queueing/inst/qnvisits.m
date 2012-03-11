@@ -489,7 +489,8 @@ function V = __qnvisitssingle( P, lambda )
     ##
     ## Closed network
     ##
-    ( all( all(P>=0) ) && norm( sum(P,2) - 1, "inf" ) < epsilon ) || \
+    [res err] = dtmc_check_P(P);
+    (res>0) || \
         usage( "P is not a transition probability matrix for closed networks" );
 
     A = P-eye(N);

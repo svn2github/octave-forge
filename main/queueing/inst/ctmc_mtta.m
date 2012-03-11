@@ -66,13 +66,10 @@ function t = ctmc_mtta( Q, p )
     print_usage();
   endif
 
-  issquare(Q) || \
-      usage( "Q must be a square matrix" );
-  
-  N = rows(Q);
+  [N err] = ctmc_check_Q(Q);
 
-  ( norm( sum(Q,2), "inf" ) < epsilon ) || \
-      usage( "Q must be an infinitesimal generator matrix" );
+  (N>0) || \
+      usage(err);
 
   ( isvector(p) && length(p) == N && all(p>=0) && abs(sum(p)-1.0)<epsilon ) || \
       usage( "p must be a probability vector" );
@@ -90,7 +87,7 @@ endfunction
 
 %!test
 %! Q = [0 1 0; 1 0 1; 0 0 0 ];
-%! fail( "ctmc_mtta(Q,[1 0 0])", "must be an infinitesimal");
+%! fail( "ctmc_mtta(Q,[1 0 0])", "infinitesimal");
 
 %!test
 %! Q = [ 0 0.1 0 0; \

@@ -80,13 +80,10 @@ function q = ctmc( Q, t, q0 )
     print_usage();
   endif
 
-  issquare(Q) || \
-      usage( "Q must be a square matrix" );
+  [N err] = ctmc_check_Q(Q);
 
-  N = rows(Q);
-  
-  ( norm( sum(Q,2), "inf" ) < epsilon ) || \
-      usage( "Q is not an infinitesimal generator matrix" );
+  ( N>0 ) || \
+      usage(err);
 
   if ( nargin > 1 ) 
     ( isscalar(t) && t>=0 ) || \

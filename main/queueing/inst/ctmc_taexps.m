@@ -70,13 +70,10 @@ function M = ctmc_taexps( Q, t, p )
     print_usage();
   endif
 
-  issquare(Q) || \
-      usage( "Q must be a square matrix" );
+  [N err] = ctmc_check_Q(Q);
 
-  N = rows(Q);
-
-  ( norm( sum(Q,2), "inf" ) < epsilon ) || \
-      usage( "Q is not an infinitesimal generator matrix" );
+  (N>0) || \
+      usage(err);
 
   ( isvector(p) && length(p) == N && all(p>=0) && abs(sum(p)-1.0)<epsilon ) || \
       usage( "p must be a probability vector" );

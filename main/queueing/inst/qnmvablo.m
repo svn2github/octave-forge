@@ -104,7 +104,11 @@ function [U R Q X] = qnmvablo( K, S, M, P )
 
   (K < sum(M)) || \
       error( "The population size K=%d exceeds the total system capacity %d", K, sum(M) );
-  dtmc_check_P(P);
+
+  [na err] = dtmc_check_P(P);
+  ( na>0 ) || \
+      error( err );
+
   rows(P) == N || \
       error("The number of rows of P must be equal to the length of S");
 

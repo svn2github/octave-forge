@@ -77,13 +77,10 @@ function result = ctmc_fpt( Q, i, j )
     print_usage();
   endif
 
-  issquare(Q) || \
-      usage( "Q must be a square matrix" );
-
-  N = rows(Q);
-
-  ( norm( sum(Q,2), "inf" ) < epsilon ) || \
-      usage( "Q is not an infinitesimal generator matrix" );
+  [N err] = ctmc_check_Q(Q);
+  
+  (N>0) || \
+      usage(err);
 
   if ( nargin == 1 ) 
     M = zeros(N,N);

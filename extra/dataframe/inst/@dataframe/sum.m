@@ -24,10 +24,10 @@ function resu = sum(df, varargin)
   %# $Id$
   %#
 
-  if !isa(df, 'dataframe'),
+  if (~isa (df, 'dataframe'))
     resu = []; return;
   endif
 
-  resu = df_mapper2(@sum, df, varargin{:});
+  resu = df_mapper2 (@sum, df, varargin{:});
 
 endfunction

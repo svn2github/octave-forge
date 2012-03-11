@@ -92,7 +92,7 @@ endif
 seeked = []; trigger =[]; unquot = true; sep = "\t,"; cmt_lines = [];
 locales = "C";
 
-if (length(varargin) > 0)
+if (length (varargin) > 0)
   indi = 1;
   %# loop over possible arguments
   while (indi <= size (varargin, 2))
@@ -155,7 +155,7 @@ if (length(varargin) > 0)
   endwhile
 endif
 
-if (!isempty (seeked) && !isempty (trigger))
+if (~isempty (seeked) && ~isempty (trigger))
   error ('seeked and trigger are mutuallly incompatible arguments');
 endif
 
@@ -175,10 +175,10 @@ while (indi <= size(varargin, 2))
         unwind_protect
           dummy = tilde_expand (x);
           fid = fopen (dummy);
-          if (fid != -1)
+          if (fid ~= -1)
             df._src{end+1, 1} = dummy;
             dummy = fgetl (fid);
-            if (!strcmp (dummy, UTF8_BOM))
+            if (~strcmp (dummy, UTF8_BOM))
               frewind (fid);
             endif
             %# slurp everything and convert doubles to char, avoiding
@@ -188,10 +188,10 @@ while (indi <= size(varargin, 2))
             in = [];
           endif
         unwind_protect_cleanup
-          if (fid != -1) fclose (fid); endif
+          if (fid ~= -1) fclose (fid); endif
         end_unwind_protect
 
-        if (!isempty (in))
+        if (~isempty (in))
           %# explicit list taken from 'man pcrepattern' -- we enclose all
           %# vertical separators in case the underlying regexp engine
           %# doesn't have them all.
@@ -212,7 +212,7 @@ while (indi <= size(varargin, 2))
           %# lines, 'UniformOutput', false); %# extract fields
           content = cellfun (@(x) strsplit (x, sep), lines, \
                              'UniformOutput', false); %# extract fields  
-          indl = 1; indj = 1; %# disp('line 151 '); keyboard
+          indl = 1; indj = 1;  %#disp('line 151 '); keyboard
           if (~isempty (seeked))
             while (indl <= length (lines))
               dummy = content{indl};
@@ -246,7 +246,7 @@ while (indi <= size(varargin, 2))
           endif
           x = cell (1+length (lines)-indl, size(dummy, 2)); 
           empty_lines = []; cmt_lines = [];
-          while (indl <= length(lines))
+          while (indl <= length (lines))
             dummy = content{indl};
             if (all (cellfun ('size', dummy, 2) == 0))
               empty_lines = [empty_lines indj];
@@ -273,7 +273,7 @@ while (indi <= size(varargin, 2))
                   catch
                     %# if the previous test fails, try a simpler one
                     in = regexp (dummy{indk}, '[^'' ]+', 'match');
-                    if (!isempty(in))
+                    if (~isempty (in))
                       x(indj, indk) = in{1};
                       %# else
                       %#    x(indj, indk) = [];
@@ -284,7 +284,7 @@ while (indi <= size(varargin, 2))
                   x(indj, indk) = regexp (dummy{indk}, '[^ ].*', 'match');
                 endif
               else
-                if (!isempty (regexp (dummy{indk}, '[/:]')))
+                if (~isempty (regexp (dummy{indk}, '[/:]')))
                   %# try to convert to a date
                   [timeval, nfields] = strptime( dummy{indk}, 
                                                 [char(37) 'd/' char(37) 'm/' char(37) 'Y ' char(37) 'T']);
@@ -293,7 +293,7 @@ while (indi <= size(varargin, 2))
                                          timeval);
                     %# try to extract the usec field, if any
                     idx = regexp (dummy{indk}, timestr, 'end');
-                    if (!isempty (idx))
+                    if (~isempty (idx))
                       idx = idx + 1;
                       if (ispunct (dummy{indk}(idx)))
                         idx = idx + 1;
@@ -310,12 +310,12 @@ while (indi <= size(varargin, 2))
             endfor
             indl = indl + 1; indj = indj + 1;
           endwhile
-          if (!isempty(empty_lines))
+          if (~isempty (empty_lines))
             x(empty_lines, :) = [];
           endif
           %# detect empty columns
           empty_lines = find (0 == sum (cellfun ('size', x, 2)));
-          if (!isempty(empty_lines))
+          if (~isempty (empty_lines))
             x(:, empty_lines) = [];
           endif
           clear UTF8_BOM fid in lines indl the_line content empty_lines
@@ -326,7 +326,7 @@ while (indi <= size(varargin, 2))
   
     %# fallback, avoiding a recursive call
     idx.type = '()';
-    if (!isa (x, 'char'))
+    if (~isa (x, 'char'))
       indj = df._cnt(2)+(1:size (x, 2));
     else
       %# at this point, reading some filename failed
@@ -337,7 +337,7 @@ while (indi <= size(varargin, 2))
       if (2 == length (x))
         %# use the intermediate value as destination column
         [indc, ncol] = df_name2idx (df._name{2}, x{1}, df._cnt(2), "column");
-        if (ncol != 1)
+        if (ncol ~= 1)
           error (["With two-elements cell, the first should resolve " ...
                   "to a single column"]);
         endif
@@ -362,7 +362,7 @@ while (indi <= size(varargin, 2))
       %# allow overwriting of column names
       df._over{2}(1, indj) = true;
     else
-      if (!isempty(indj))        
+      if (~isempty (indj))        
         if (1 == length (df._name{2}) && length (df._name{2}) < \
             length (indj))
           [df._name{2}(indj, 1),  df._over{2}(1, indj)] ...
@@ -374,15 +374,15 @@ while (indi <= size(varargin, 2))
         df._name{2} = genvarname (df._name{2});
       endif
     endif
-    if (!isempty (indj))
+    if (~isempty (indj))
       %# the exact row size will be determined latter
       idx.subs = {'', indj};
       %# use direct assignement
       if (ndims (x) > 2), idx.subs{3} = 1:size (x, 3); endif
       %#      df = subsasgn(df, idx, x);        <= call directly lower level
-      df = df_matassign (df, idx, indj, length(indj), x);
-      if (!isempty (cmt_lines))
-        df._cmt = vertcat(df._cmt, cellstr(cmt_lines));
+      df = df_matassign (df, idx, indj, length (indj), x);
+      if (~isempty (cmt_lines))
+        df._cmt = vertcat (df._cmt, cellstr (cmt_lines));
         cmt_lines = [];
       endif
     else

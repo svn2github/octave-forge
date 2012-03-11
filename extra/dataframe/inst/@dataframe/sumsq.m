@@ -24,7 +24,7 @@ function resu = sumsq(df, varargin)
   %# $Id$
   %#
 
-  if !isa(df, 'dataframe'),
+  if (~isa (df, 'dataframe'))
     resu = []; return;
   endif
 

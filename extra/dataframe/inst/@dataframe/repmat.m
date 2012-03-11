@@ -24,42 +24,42 @@ function resu = repmat(df, varargin)
   %# $Id$
   %#
 
-  resu = df; idx = horzcat(varargin{:});
+  resu = df; idx = horzcat (varargin{:});
   %# for the second dim, use either 1 either the 3rd one
   dummy = idx;
-  if (length(dummy) > 2), 
+  if (length (dummy) > 2) 
     dummy(2) = []; 
   else
     dummy(2) = 1;
   endif
   %# operate on first  dim 
-  if (idx(1) > 1),
-    resu = df_mapper(@repmat, df, [idx(1) 1]);
-    if (!isempty(df._name{1})),
-      resu._name{1} = feval(@repmat, df._name{1}, [idx(1) 1]);
-      resu._over{1} = feval(@repmat, df._over{1}, [idx(1) 1]);
+  if (idx(1) > 1)
+    resu = df_mapper (@repmat, df, [idx(1) 1]);
+    if (~isempty (df._name{1})),
+      resu._name{1} = feval (@repmat, df._name{1}, [idx(1) 1]);
+      resu._over{1} = feval (@repmat, df._over{1}, [idx(1) 1]);
     endif
     resu._cnt(1) = resu._cnt(1) * idx(1);
   endif
 
-  if (dummy(2) > 1),
-    for indi = 1:resu._cnt(2),
-      resu._rep{indi} = feval(@repmat, resu._rep{indi}, [1 dummy(2)]);
+  if (dummy(2) > 1)
+    for indi = (1:resu._cnt(2))
+      resu._rep{indi} = feval (@repmat, resu._rep{indi}, [1 dummy(2)]);
     endfor
   endif
 
   %# operate on ridx 
-  resu._ridx = feval(@repmat, resu._ridx, idx);
+  resu._ridx = feval (@repmat, resu._ridx, idx);
   
   %# operate on second dim
-  if (length(idx) > 1 && idx(2) > 1),
-    resu._data    = feval(@repmat, resu._data, [1 idx(2)]); 
-    resu._name{2} = feval(@repmat, df._name{2}, [idx(2) 1]);
-    resu._over{2} = feval(@repmat, df._over{2}, [1 idx(2)]);
-    resu._type    = feval(@repmat, df._type, [1 idx(2)]);
+  if (length (idx) > 1 && idx(2) > 1)
+    resu._data    = feval (@repmat, resu._data, [1 idx(2)]); 
+    resu._name{2} = feval (@repmat, df._name{2}, [idx(2) 1]);
+    resu._over{2} = feval (@repmat, df._over{2}, [1 idx(2)]);
+    resu._type    = feval (@repmat, df._type, [1 idx(2)]);
     resu._cnt(2)  = resu._cnt(2) * idx(2);
   endif
 
-  resu = df_thirddim(resu);
+  resu = df_thirddim (resu);
 
 endfunction

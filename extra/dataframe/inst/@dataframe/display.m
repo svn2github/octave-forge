@@ -29,7 +29,7 @@ function resu = display(df)
 
   %# generate header name
   dummy = inputname (1);
-  if (isempty(dummy))
+  if (isempty (dummy))
     dummy = "ans";
   endif
 
@@ -41,7 +41,7 @@ function resu = display(df)
                     dummy, df._cnt);
   endif
 
-  if (!isempty (df._src))
+  if (~isempty (df._src))
     for indi = (1:size (df._src, 1))
       head = strvcat\
           (head, [repmat("Src: ", size (df._src{indi, 1}, 1), 1)\
@@ -49,7 +49,7 @@ function resu = display(df)
     endfor
   endif
 
-  if (!isempty (df._cmt))
+  if (~isempty (df._cmt))
     for indi = (1:size(df._cmt, 1))
       head = strvcat\
           (head, [repmat("Comment: ", size (df._cmt{indi, 1}, 1), 1)\
@@ -58,7 +58,7 @@ function resu = display(df)
   endif
   
   if (all (df._cnt > 0))  %# stop for empty df
-    dummy=[]; vspace = repmat (' ', df._cnt(1), 1);
+    dummy = []; vspace = repmat (' ', df._cnt(1), 1);
     indi = 1; %# the real, unfolded index
     %# loop over columns where the corresponding _data really exists
     for indc = (1:min (df._cnt(2), size (df._data, 2))) 
@@ -85,7 +85,7 @@ function resu = display(df)
             tmp_str = df._data{indc}(:, indk); %#get the whole column
             indj = cellfun ('isprint', tmp_str, 'UniformOutput', false); 
             indj = ~cellfun ('all', indj);
-            for indr = (1:length(indj))
+            for indr = (1:length (indj))
               if (indj(indr)),
                 if (isna (tmp_str{indr})),
                   tmp_str{indr} = "NA";
@@ -125,10 +125,10 @@ function resu = display(df)
     vspace = [' '; ' '; vspace];
     %# second line content
     resu = []; 
-    if (!isempty (df._ridx))
+    if (~isempty (df._ridx))
       for (ind1 = 1:size (df._ridx, 2))
         if ((1 == size(df._ridx, 3)) && \
-              (any (!isna (df._ridx(1:df._cnt(1), ind1)))))
+              (any (~isna (df._ridx(1:df._cnt(1), ind1)))))
           dummy{2, 1} = [sprintf("_%d", ind1) ; "Nr"];
           dummy{3, 1} = disp (df._ridx(1:df._cnt(1), ind1)); 
           indi = regexp (dummy{3, 1}, '\b.*\b', 'match', 'dotexceptnewline');
@@ -140,7 +140,7 @@ function resu = display(df)
           endif
         else 
           for ind2 = (1:size (df._ridx, 3))
-            if (any (!isna (df._ridx(1:df._cnt(1), ind1, ind2)))),
+            if (any (~isna (df._ridx(1:df._cnt(1), ind1, ind2)))),
               dummy{2, 1} = [sprintf("_%d.%d", ind1, ind2) ; "Nr"];
               dummy{3, 1} = disp (df._ridx(1:df._cnt(1), ind1, ind2)); 
               indi = regexp (dummy{3, 1}, '\b.*\b', 'match', 'dotexceptnewline');
@@ -165,7 +165,7 @@ function resu = display(df)
     endif
     
     %# insert a vertical space
-    if (!isempty(dummy{3, 2}))
+    if (~isempty (dummy{3, 2}))
       indi = ~cellfun ('isempty', dummy{3, 2});
       if (any (indi))
         try

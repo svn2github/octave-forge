@@ -24,10 +24,10 @@ function resu = prod(df, varargin)
   %# $Id$
   %#
 
-  if !isa(df, 'dataframe'),
+  if (~isa (df, 'dataframe'))
     resu = []; return;
   endif
 
-  resu = df_mapper2(@prod, df, varargin{:});
+  resu = df_mapper2 (@prod, df, varargin{:});
 
 endfunction

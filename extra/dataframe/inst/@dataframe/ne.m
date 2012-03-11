@@ -1,7 +1,7 @@
 function resu = ne(A, B);
 
   %# function resu = ne(A, B)
-  %# Implements the '!=' operator when at least one argument is a dataframe.
+  %# Implements the '~=' operator when at least one argument is a dataframe.
 
   %% Copyright (C) 2009-2012 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
@@ -27,6 +27,6 @@ function resu = ne(A, B);
   %# $Id$
   %#
 
-  resu = df_func(@ne, A, B);
+  resu = df_func (@ne, A, B);
 
 endfunction

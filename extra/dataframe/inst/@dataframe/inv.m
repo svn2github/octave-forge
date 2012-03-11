@@ -29,24 +29,24 @@ function [resu, rcond] = inv(df);
   %# $Id$
   %#
 
-  if (length(df._cnt) > 2 || (df._cnt(1) != df._cnt(2))),
-    error("Dataframe is not square");
+  if (length (df._cnt) > 2 || (df._cnt(1) ~= df._cnt(2)))
+    error ("Dataframe is not square");
   endif
 
   %# quick and dirty conversion
-  [dummy, rcond] = inv(horzcat(df._data{:}));
+  [dummy, rcond] = inv (horzcat (df._data{:}));
 
   resu = df_allmeta(df);
   
-  [resu._name{2}, resu._name{1}] = deal(resu._name{1}, resu._name{2});
-  [resu._over{2}, resu._over{1}] = deal(resu._over{1}, resu._over{2});
-  if (isempty(resu._name{2})),
-    resu._name{2} = cellstr(repmat('_', resu._cnt(2), 1));
-    resu._over{2} = ones(1, resu._cnt(2));
+  [resu._name{2}, resu._name{1}] = deal (resu._name{1}, resu._name{2});
+  [resu._over{2}, resu._over{1}] = deal (resu._over{1}, resu._over{2});
+  if (isempty (resu._name{2})),
+    resu._name{2} = cellstr (repmat('_', resu._cnt(2), 1));
+    resu._over{2} = ones (1, resu._cnt(2));
   endif
-  for indi = resu._cnt(1):-1:1,
+  for indi = (resu._cnt(1):-1:1)
     resu._data{indi} = dummy(:, indi);
   endfor
-  resu._type(:) = class(dummy);
+  resu._type(:) = class (dummy);
   
 endfunction

@@ -28,33 +28,33 @@ function resu = df_allmeta(df, dim = [])
   %# $Id$
   %#
 
-  resu = dataframe([]);
+  resu = dataframe ([]);
 
-  if (isempty(dim)), 
+  if (isempty (dim)), 
     dim = df._cnt(1:2); 
   else
     dim = dim(1:2); %# ignore third dim, if any
   endif
 
-  resu._cnt(1:2) = min(dim, df._cnt(1:2));
-  if (!isempty(df._name{1})),
+  resu._cnt(1:2) = min (dim, df._cnt(1:2));
+  if (~isempty(df._name{1}))
     resu._name{1} = df._name{1}(1:resu._cnt(1));
     resu._over{1} = df._over{1}(1:resu._cnt(1));
   endif
-  if (!isempty(df._name{2})),
+  if (~isempty(df._name{2}))
     resu._name{2} = df._name{2}(1:resu._cnt(2));
     resu._over{2} = df._over{2}(1:resu._cnt(2));
   endif
-  if (!isempty(df._ridx)),
-    if (size(df._ridx, 2) >= resu._cnt(2)),
+  if (~isempty(df._ridx))
+    if (size (df._ridx, 2) >= resu._cnt(2)),
       resu._ridx = df._ridx(1:resu._cnt(1), :, :);
     else
       resu._ridx = df._ridx(1:resu._cnt(1), 1, :);
     endif
   endif
   %# init it with the right orientation
-  resu._data = cell(size(df._data));
-  resu._rep = cell(size(df._rep));
+  resu._data = cell (size (df._data));
+  resu._rep = cell (size (df._rep));
   resu._type = df._type(1:resu._cnt(2));
   resu._src  = df._src;
   resu._cmt  = df._cmt;

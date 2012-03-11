@@ -62,7 +62,7 @@ function [idx, nelem, subs, mask] = df_name2idx(names, subs, count, dimname, mis
   if (isa (subs, 'cell'))
     subs = subs(:); idx = []; mask = logical (zeros (size (subs, 1), 1));
     %# translate list of variables to list of indices
-    for indi = (1:size(subs, 1))
+    for indi = (1:size (subs, 1))
       %# regexp doesn't like empty patterns
       if (isempty (subs{indi})) continue; endif
       %# convert  from standard pattern to regexp pattern
@@ -82,7 +82,7 @@ function [idx, nelem, subs, mask] = df_name2idx(names, subs, count, dimname, mis
       else
         dummy = strsplit (subs{indi}, ':');
         ind_start = 1;
-        if (!isempty (dummy{1}))
+        if (~isempty (dummy{1}))
           ind_start = sscanf (dummy{1}, "%d");
           if (isempty (ind_start))
             ind_start = 1;

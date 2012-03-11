@@ -47,7 +47,7 @@ function resu = subsref(df, S)
       asked_output_type = "array";
       asked_output_format = S(2).subs; S = S(3:end);
     else
-      indi = strmatch(S(1).subs, 'array');
+      indi = strmatch (S(1).subs, 'array');
       if (~isempty (indi)) 
         asked_output_type = "array";    
         S = S(2:end);
@@ -65,20 +65,20 @@ function resu = subsref(df, S)
             resu = df; return; 
           endif
         else
-          indi = strmatch(S(1).subs, 'cell');
+          indi = strmatch (S(1).subs, 'cell');
           if (~isempty (indi))
             asked_output_type =  S(1).subs;
             S = S(2:end);
           else
             %# access as a pseudo-struct
-            resu = struct(df); %# avoid recursive calls  
-            if (1 == strfind(S(1).subs, '_')) %# its an internal field name
+            resu = struct (df); %# avoid recursive calls  
+            if (1 == strfind (S(1).subs, '_')) %# its an internal field name
               %# FIXME: this should only be called from class members and friends
               %# FIXME -- in case many columns are asked, horzcat them
               resu = horzcat (feval (@subsref, resu, S));
             else
               %# direct access through the exact column name
-              indi = strmatch(S(1).subs, resu._name{2}, "exact");
+              indi = strmatch (S(1).subs, resu._name{2}, "exact");
               if (~isempty (indi))
                 resu = df._data{indi}; %# extract colum;
                 if (strcmp (df._type{indi}, 'char') \
@@ -89,7 +89,7 @@ function resu = subsref(df, S)
                   dummy = S(2:end); S = S(1);
                   switch dummy(1).type
                     case '()'
-                      if (isa(dummy(1).subs{1}, "char"))
+                      if (isa (dummy(1).subs{1}, "char"))
                         [indr, nrow, dummy(1).subs{1}] = \
                             df_name2idx(df._name{1}, dummy(1).subs{1}, df._cnt(1), 'row');
                       endif
@@ -131,32 +131,32 @@ function resu = subsref(df, S)
                     if (isempty (dummy))
                       resu = dataframe([]);
                     else
-                      if (!strcmp (dummy(1).type, "()"))
+                      if (~strcmp (dummy(1).type, "()"))
                         error ("Bogus constructor call");
                       endif
-                      resu = dataframe(dummy(1).subs{:});
+                      resu = dataframe (dummy(1).subs{:});
                     endif
                     if (length (dummy) > 1)
-                      resu = subsref(resu, dummy(2:end));
+                      resu = subsref (resu, dummy(2:end));
                     endif
                     return;
                   otherwise
                     error ("Unknown column name: %s", S(1).subs);
                 endswitch
-                if (!isempty (dummy))
-                  if ~further_deref,
+                if (~isempty (dummy))
+                  if (~further_deref)
                     error ("Invalid sub-dereferencing");
                   endif
-                  if (isa(dummy(1).subs{1}, "char"))
+                  if (isa (dummy(1).subs{1}, "char"))
                     [indc, ncol, dummy(1).subs{1}] = \
-                        df_name2idx(df._name{2}, dummy(1).subs{1}, \
-                                    df._cnt(2), 'column');
+                        df_name2idx (df._name{2}, dummy(1).subs{1}, \
+                                     df._cnt(2), 'column');
                     if (isempty (indc)) 
                       %# should be already catched  inside df_name2idx
                       error ("Unknown column name: %s",  dummy(1).subs{1});
                     endif
                   endif
-                  if (!strcmp (dummy(1).type, '()'))
+                  if (~strcmp (dummy(1).type, '()'))
                     error ("Invalid internal field name sub-access, use () instead");
                   endif
                 endif
@@ -165,7 +165,7 @@ function resu = subsref(df, S)
                 S = [S dummy];
                 %# endif
                 resu = feval(@subsref, resu, S);
-                if (!isempty (postop))
+                if (~isempty (postop))
                   resu = postop(resu);
                 endif
               endif
@@ -180,22 +180,22 @@ function resu = subsref(df, S)
   %# disp('line 103 '); keyboard
 
   IsFirst = true;
-  while 1, %# avoid recursive calls on dataframe sub-accesses
+  while (1) %# avoid recursive calls on dataframe sub-accesses
   
     %# a priori, performs whole accesses
     nrow = df._cnt(1); indr = 1:nrow; 
     ncol = df._cnt(2); indc = 1:ncol; 
     %# linear indexes
-    [fullindr, fullindc, fullinds, onedimidx] = deal([]);
+    [fullindr, fullindc, fullinds, onedimidx] = deal ([]);
 
     %# iterate over S, sort out strange constructs as x()()(1:10, 1:4)
-    while length (S) > 0,
+    while (length (S) > 0)
       if (strcmp (S(1).type, '{}'))
-        if (!IsFirst || !isempty (asked_output_format))
+        if (~IsFirst || ~isempty (asked_output_format))
           error ("Illegal dataframe dereferencing");
         endif
-        [asked_output_type, asked_output_format] = deal('cell');
-      elseif (!strcmp (S(1).type, '()'))
+        [asked_output_type, asked_output_format] = deal ('cell');
+      elseif (~strcmp (S(1).type, '()'))
         %# disp(S); keyboard
         error ("Illegal dataframe dereferencing");
       endif
@@ -225,12 +225,12 @@ function resu = subsref(df, S)
           error ('subsref: second dimension empty ???');
         endif
         [indr, nrow, S(1).subs{1}] = \
-            df_name2idx(df._name{1}, S(1).subs{1}, df._cnt(1), 'row');      
-        if (!isa(indr, 'char') && max (indr) > df._cnt(1))
+            df_name2idx (df._name{1}, S(1).subs{1}, df._cnt(1), 'row');      
+        if (~isa(indr, 'char') && max (indr) > df._cnt(1))
           error ("Accessing dataframe past end of lines");
         endif
         [indc, ncol, S(1).subs{2}] = \
-            df_name2idx(df._name{2}, S(1).subs{2}, df._cnt(2), 'column');
+            df_name2idx (df._name{2}, S(1).subs{2}, df._cnt(2), 'column');
         if (max (indc) > df._cnt(2))
           %# is it a two index access of a 3D structure ?
           if (length (df._cnt) > 2)
@@ -266,7 +266,7 @@ function resu = subsref(df, S)
           return; 
         endif
 
-        if (!isempty (fullindr))
+        if (~isempty (fullindr))
           %# convert linear index to subscripts
           if (length (df._cnt) <= 2)
             [fullindr, fullindc] = ind2sub (df._cnt, S(1).subs{1});
@@ -280,15 +280,15 @@ function resu = subsref(df, S)
           indr = unique (fullindr); nrow = length (indr);
           %# determine on which columns we'll iterate
           indc = unique (fullindc)(:).'; ncol = length (indc);
-          if (!isempty (asked_output_type) && ncol > 1)
+          if (~isempty (asked_output_type) && ncol > 1)
             %# verify that the extracted values form a square matrix
-            dummy = zeros(indr(end), indc(end));
+            dummy = zeros (indr(end), indc(end));
             for indi = (1:ncol)
               indj = find (fullindc == indc(indi));
               dummy(fullindr(indj), indc(indi)) = 1;
             endfor
             dummy = dummy(indr(1):indr(end), indc(1):indc(end));
-            if (any (any (dummy!= 1)))
+            if (any (any (dummy~= 1)))
               error ("Vector-like selection is not rectangular for the asked output type");
             else
               fullindr = []; fullindc = [];
@@ -306,14 +306,14 @@ function resu = subsref(df, S)
     if (isempty (asked_output_type))
       output_type = class (df); %# force df output
     else
-      if (!strcmp (asked_output_type, "array") \
-          || !isempty (asked_output_format))
+      if (~strcmp (asked_output_type, "array") \
+          || ~isempty (asked_output_format))
         %# override the class of the return value
         output_type = asked_output_type;
       else
         %# can the data be merged ?
         output_type = df._data{indc(1)}(1);
-        dummy = isnumeric(df._data{indc(1)}); 
+        dummy = isnumeric (df._data{indc(1)}); 
         for indi = (2:ncol)
           dummy = dummy & isnumeric (df._data{indc(indi)});
           if (~strcmp (class (output_type), df._type{indc(indi)}))
@@ -334,37 +334,37 @@ function resu = subsref(df, S)
       endif
     endif
     
-    if (any(strcmp ({output_type, asked_output_type}, class (df))))
-      if (!isempty (S) && (1 == length (S(1).subs)))
+    if (any (strcmp ({output_type, asked_output_type}, class (df))))
+      if (~isempty (S) && (1 == length (S(1).subs)))
         %# is the selection index vector-like ?
-        if ((isnumeric(S(1).subs{1}) && isvector(S(1).subs{1}) &&
+        if ((isnumeric(S(1).subs{1}) && isvector (S(1).subs{1}) &&
              df._cnt(1) > 1) && isempty (asked_output_type))
           %# in the case of vector input, favor array output
-          [asked_output_type, output_type] = deal("array");
+          [asked_output_type, output_type] = deal ("array");
         endif
       endif
     endif
       
     indt = {}; %# in case we have to mix matrix of different width
-    if (!isempty (fullinds))
+    if (~isempty (fullinds))
       inds = unique (fullinds); nseq = length (inds);
       indt(1, 1:df._cnt(2)) = inds;
     else      
       inds = 1; indt(1, 1:df._cnt(2)) = inds; nseq = 1;
-      if (isempty (S) || all(cellfun('isclass', S(1).subs, 'char')))
+      if (isempty (S) || all (cellfun ('isclass', S(1).subs, 'char')))
         inds = ':'; indt(1, 1:df._cnt(2)) = inds;
-        nseq = max (cellfun(@length, df._rep(indc)));
+        nseq = max (cellfun (@length, df._rep(indc)));
       else
         if (length (S(1).subs) > 1) %# access-as-matrix
           if (length (S(1).subs) > 2)
             inds = S(1).subs{3};
             if (isa(inds, 'char'))
-              nseq = max (cellfun(@length, df._rep(indc)));
+              nseq = max (cellfun (@length, df._rep(indc)));
               indt(1, 1:df._cnt(2)) = inds;
             else
               %# generate a specific index for each column
               nseq = length (inds);
-              dummy = cellfun(@length, df._rep(indc));
+              dummy = cellfun (@length, df._rep(indc));
               indt(1, 1:df._cnt(2)) = inds;
               indt(1==dummy) = 1; 
             endif
@@ -387,7 +387,7 @@ function resu = subsref(df, S)
           resu._over{2}(1, indi) = df._over{2}(indc(indi));
           resu._type{indi} = df._type{indc(indi)};
         endfor
-        if (!isempty (df._ridx) && size (df._ridx, 2) >= inds)
+        if (~isempty (df._ridx) && size (df._ridx, 2) >= inds)
           resu._ridx = df._ridx(indr, inds);
         endif 
         if (length (df._name{1}) >= max (indr))
@@ -411,7 +411,7 @@ function resu = subsref(df, S)
           else
             resu._name{2}(indi)= ["X" num2str(indi)];
             resu._over{2}(indi)= true;
-            resu._data{indi} = squeeze(dummy(:, indi, :));
+            resu._data{indi} = squeeze (dummy(:, indi, :));
             resu._type{indi} = class (dummy(1, indi, 1));
             resu._rep{indi} = 1:size (resu._data{indi}, 2);  
           endif
@@ -421,7 +421,7 @@ function resu = subsref(df, S)
         else
           resu._ridx = df._ridx;
         endif
-        if (!isempty (resu._ridx))
+        if (~isempty (resu._ridx))
           if (size (resu._ridx, 2) > 1)
             resu._ridx = resu._ridx(indr, indc);
           else
@@ -432,7 +432,7 @@ function resu = subsref(df, S)
       %# to be verified :       keyboard
       resu._src = df._src;
       resu._cmt = df._cmt;
-      resu = df_thirddim(resu);
+      resu = df_thirddim (resu);
       if (length (S) > 1) %# perform further access, if required
         df = resu;
         S = S(2:end);   %# avoid recursive calls
@@ -478,14 +478,14 @@ function resu = subsref(df, S)
         if (~strcmp (S(2).type, '()'))
           error ("Illegal dataframe-as-cell sub-dereferencing");
         endif
-        if (!isempty (asked_output_format))
-          resu = feval(@subsref, resu, S(2:end));
+        if (~isempty (asked_output_format))
+          resu = feval (@subsref, resu, S(2:end));
         else    
-          if (length (S(2).subs) != 1)
+          if (length (S(2).subs) ~= 1)
             %# normal, two-dimensionnal access apply the selection on the
             %# zone containing the data
             dummy = S;
-            if (!isempty (dummy(2).subs))
+            if (~isempty (dummy(2).subs))
               dummy(2).subs{2} = ':';
             endif
             resuf = cat (2, \
@@ -500,7 +500,7 @@ function resu = subsref(df, S)
                          \
                          );
             dummy = S;
-            if (!isempty (dummy(2).subs))
+            if (~isempty (dummy(2).subs))
               dummy(2).subs{1} =  [1 2];
             endif
             resuf =  cat(1, \
@@ -514,8 +514,8 @@ function resu = subsref(df, S)
           else
             %# one dimensionnal access of the whole 2D cell array -- you
             %# asked it, you got it
-            resu = feval(@subsref, resu(:), S(2:end));
-            if (!isa(S(2).subs{1}, 'char') \
+            resu = feval (@subsref, resu(:), S(2:end));
+            if (~isa (S(2).subs{1}, 'char') \
                   && size (S(2).subs{1}, 2) > 1)
               resu = resu.';
             endif
@@ -523,7 +523,7 @@ function resu = subsref(df, S)
         endif
       elseif (1 == length (S(1).subs))
         resu = resu(:);
-        if (!isa(S(1).subs{1}, 'char') \
+        if (~isa(S(1).subs{1}, 'char') \
               && size (S(1).subs{1}, 2) > 1)
           resu = resu.';
         endif
@@ -540,12 +540,12 @@ function resu = subsref(df, S)
       %# disp('line 403 '); keyboard
       if (isempty (S) || isempty (S(1).subs) || \
           length (S(1).subs) > 1 || \
-          (isnumeric(S(1).subs{1}) && !isvector(S(1).subs{1}))) 
+          (isnumeric (S(1).subs{1}) && ~isvector(S(1).subs{1}))) 
         %# access-as-matrix
-        df = struct(df);        %# remove the magic, avoid recursive calls 
+        df = struct (df);        %# remove the magic, avoid recursive calls 
         if (isempty (fullindr)) %# two index access
           if (~isempty (asked_output_format)) %# force a conversion
-            if (strmatch(asked_output_format, 'cell'))
+            if (strmatch (asked_output_format, 'cell'))
               extractfunc = @(x) mat2cell\
                   (df._data{indc(x)}(indr, df._rep{indc(x)}(inds)), \
                    ones (nrow, 1));
@@ -596,8 +596,8 @@ function resu = subsref(df, S)
               resu = dummy;
             endif
           endif
-          if (!isempty (S) && 2 == length (S(1).subs) \
-              && all(cellfun('isclass', S(1).subs, 'char')))
+          if (~isempty (S) && 2 == length (S(1).subs) \
+              && all (cellfun ('isclass', S(1).subs, 'char')))
             resu = reshape (resu, nrow, ncol*nseq);
           endif
         else %# one index access
@@ -632,7 +632,7 @@ function resu = subsref(df, S)
         endif
       else %# access-as-vector
         %# disp('line 548 '); keyboard
-        if (!isempty (fullindr))
+        if (~isempty (fullindr))
           switch df._type{indc(1)}
             case {'char'}
               resu = df._data{indc(1)}(fullindr(1), \
@@ -659,7 +659,7 @@ function resu = subsref(df, S)
         else %# using the (:) operator
           resu = df_whole(df)(:);
         endif
-        if (!isa(S(1).subs{1}, 'char') \
+        if (~isa (S(1).subs{1}, 'char') \
               && size (S(1).subs{1}, 2) > 1)
           resu = resu.';
         endif

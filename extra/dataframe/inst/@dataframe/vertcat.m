@@ -25,10 +25,10 @@ function resu = vertcat(df, varargin)
   %#
 
   %# do the conversion now, in order not to loose inputnames
-  for indi = 1:length(varargin),
-    varargin{indi} = dataframe(varargin{indi}, 'colnames', inputname(1+indi));,
+  for indi = (1:length (varargin))
+    varargin{indi} = dataframe (varargin{indi}, 'colnames', inputname(1+indi));,
   endfor
 
-  resu = cat(1, df, varargin{:});
+  resu = cat (1, df, varargin{:});
 
 endfunction

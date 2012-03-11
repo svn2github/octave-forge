@@ -31,47 +31,47 @@ function resu = df_mapper2(func, df, varargin)
   dim = 1; resu = []; vout = varargin;
   
   %# take care of constructs as min(x, [], dim)  
-  if (!isempty(varargin)),
-    indk = 1; while indk <= length(varargin),
-      if (isnumeric(varargin{indk})),
-	if (isempty(varargin{indk})),
-	  indk = indk + 1; continue;
-	endif
-	dim = varargin{indk}; 
-	%# the "third" dim is the second on stored data
-	if 3 == dim, vout(indk) = 2; endif
+  if (~isempty(varargin))
+    indk = 1; while (indk <= length (varargin))
+      if (isnumeric (varargin{indk}))
+        if (isempty (varargin{indk}))
+          indk = indk + 1; continue;
+        endif
+        dim = varargin{indk}; 
+        %# the "third" dim is the second on stored data
+        if (3 == dim) vout(indk) = 2; endif
       endif
       break;
     endwhile
   endif
 
-  switch(dim)
-    case {1},
-      resu = df_colmeta(df);
-      for indi = 1:df._cnt(2),
-	resu._data{indi} = feval(func, df._data{indi}(:, df._rep{indi}), \
-				 vout{:});
-	resu._rep{indi} = 1:size(resu._data{indi}, 2);
+  switch (dim)
+    case {1}
+      resu = df_colmeta (df);
+      for indi = (1:df._cnt(2))
+        resu._data{indi} = feval (func, df._data{indi}(:, df._rep{indi}), \
+                                  vout{:});
+        resu._rep{indi} = 1:size (resu._data{indi}, 2);
       endfor
-      resu._cnt(1) = max(cellfun('size', resu._data, 1));
-      if (resu._cnt(1) == df._cnt(1)),
-	%# the func was not contracting
-	resu._ridx = df._ridx;
-	resu._name{1} = resu._name{1}; resu._over{1} = resu._over{1};
+      resu._cnt(1) = max (cellfun ('size', resu._data, 1));
+      if (resu._cnt(1) == df._cnt(1))
+        %# the func was not contracting
+        resu._ridx = df._ridx;
+        resu._name{1} = resu._name{1}; resu._over{1} = resu._over{1};
       endif
-    case {2},
-      error('Operation not implemented');
-    case {3},
+    case {2}
+      error ('Operation not implemented');
+    case {3}
       resu = df_allmeta(df); 
-      for indi = 1:df._cnt(2),
-	resu._data{indi} = feval(func, df._data{indi}(:, df._rep{indi}), \
-				 vout{:});
-	resu._rep{indi} = 1:size(resu._data{indi}, 2);
+      for indi = (1:df._cnt(2))
+        resu._data{indi} = feval (func, df._data{indi}(:, df._rep{indi}), \
+                                  vout{:});
+        resu._rep{indi} = 1:size (resu._data{indi}, 2);
       endfor
     otherwise
-      error("Invalid dimension %d", dim); 
+      error ("Invalid dimension %d", dim); 
   endswitch
 
-  resu = df_thirddim(resu);
+  resu = df_thirddim (resu);
 
 endfunction

@@ -26,11 +26,11 @@ function [a, b] = df_strjust(a, b)
   %# $Id$
   %#
 
-  indi = size(a, 2) - size(b, 2);
-  if indi < 0
-    a = horzcat(repmat(' ', size(a, 1), -indi), a);
+  indi = size (a, 2) - size (b, 2);
+  if (indi < 0)
+    a = horzcat (repmat (' ', size (a, 1), -indi), a);
   elseif indi > 0,
-    b = horzcat(repmat(' ', size(b, 1), indi), b);
+    b = horzcat (repmat (' ', size (b, 1), indi), b);
   endif
 
 endfunction

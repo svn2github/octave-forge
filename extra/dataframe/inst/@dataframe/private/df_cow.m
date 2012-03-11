@@ -29,50 +29,50 @@ function [df, S] = df_cow(df, S, col)
   %# $Id$
   %#
 
-  if length(col) > 1,
-    error("df_cow must work on a column-by-column basis");
+  if (length (col) > 1)
+    error ("df_cow must work on a column-by-column basis");
   endif
   
-  if (1 == length(S.subs)),
+  if (1 == length (S.subs)),
     inds = 1; 
   else
     inds = S.subs{2};
   endif
 
-  if (!isnumeric(inds)), 
-    if !strcmp(inds, ':'),
-      error("Unknown sheet selector %s", inds);
+  if (~isnumeric(inds)) 
+    if (~strcmp (inds, ':'))
+      error ("Unknown sheet selector %s", inds);
     endif
-    inds = 1:length(df._rep(col));
+    inds = 1:length (df._rep(col));
   endif
 
-  for indi = inds(:).',
+  for indi = (inds(:).')
     dummy = df._rep{col}; dummy(indi) = 0;
-    [t1, t2] = ismember(df._rep{col}(indi)(:), dummy);
-    for indj = t2(find(t2)), %# Copy-On-Write
+    [t1, t2] = ismember (df._rep{col}(indi)(:), dummy);
+    for indj = (t2(find (t2))) %# Copy-On-Write
       %# determines the index for the next column
-      t1 = 1+max(df._rep{col}); 
+      t1 = 1 + max (df._rep{col}); 
       %# duplicate the touched column
-      df._data{col} = horzcat(df._data{col}, \
-                              df._data{col}(:, df._rep{col}(indj)));  
-      if (indi > 1),
+      df._data{col} = horzcat (df._data{col}, \
+                               df._data{col}(:, df._rep{col}(indj)));  
+      if (indi > 1)
         %# a new column has been created
         df._rep{col}(indi) = t1;
       else
         %# update repetition index aliasing this one
-        df._rep{col}(find(dummy == indi)) = t1;
+        df._rep{col}(find (dummy == indi)) = t1;
       endif
     endfor
   endfor
 
   %# reorder S
-  if (length(S.subs) > 1),
-    if (S.subs{2} != 1 || length(S.subs{2}) > 1), 
+  if (length (S.subs) > 1)
+    if (S.subs{2} ~= 1 || length (S.subs{2}) > 1), 
       %# adapt sheet index according to df_rep
       S.subs{2} = df._rep{col}(S.subs{2});
     endif
   endif
 
-  df = df_thirddim(df);
+  df = df_thirddim (df);
 
 endfunction

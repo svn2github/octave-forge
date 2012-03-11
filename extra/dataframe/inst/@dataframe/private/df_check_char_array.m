@@ -26,27 +26,27 @@ function resu = df_check_char_array(x, nelem, required)
   %# $Id$
   %#
   
-  if 2 == nargin, required = [nelem 1]; endif
+  if (2 == nargin) required = [nelem 1]; endif
 
-  if nelem < required(1),
-    error("Too many elements to assign");
+  if (nelem < required(1))
+    error ("Too many elements to assign");
   endif
 
   %# a zero-length element is still considered as a space by char
-  if isempty(x), x = ' '; endif 
+  if (isempty (x)) x = ' '; endif 
 
-  if size(x, 1) < max(required(1), nelem)
+  if (size (x, 1) < max (required(1), nelem))
     %# pad vertically
-    dummy = repmat(' ', nelem-size(x, 1), 1);
-    resu = char(x, dummy);
+    dummy = repmat (' ', nelem-size (x, 1), 1);
+    resu = char (x, dummy);
   else
     resu = x;
   endif
       
-  if size(resu, 2) < required(2),
+  if (size (resu, 2) < required(2))
     %# pad horizontally
-    dummy = repmat(' ', nelem, required(2)-size(resu, 2));
-    resu = horzcat(resu, dummy);
+    dummy = repmat (' ', nelem, required(2)-size (resu, 2));
+    resu = horzcat (resu, dummy);
   endif
 
 endfunction

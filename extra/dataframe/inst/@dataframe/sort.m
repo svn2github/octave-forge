@@ -75,77 +75,77 @@ function [resu, idx] = sort(df, varargin)
   %# $Id$
   %#
 
-  if !isa(df, 'dataframe'),
+  if (~isa (df, 'dataframe'))
     resu = []; return;
   endif
 
   dim = []; mode = [];
   vout= varargin;
 
-  indi = 1; while indi <= length(varargin)
-    if isnumeric(varargin{indi}),
-      if !isempty(dim),
-	print_usage('@dataframe/sort');
-	resu = [];
-	return
+  indi = 1; while (indi <= length (varargin))
+    if (isnumeric (varargin{indi}))
+      if (~isempty (dim))
+        print_usage ('@dataframe/sort');
+        resu = [];
+        return
       else
-	dim = varargin{indi};
-	if 3 == dim, vout(indi) = 2; endif
+        dim = varargin{indi};
+        if (3 == dim) vout(indi) = 2; endif
       endif
     else
-      if !isempty(mode),
-	print_usage('@dataframe/sort');
-	resu = [];
-	return
+      if (~isempty (mode))
+        print_usage ('@dataframe/sort');
+        resu = [];
+        return
       else
-	sort = varargin{indi};
+        sort = varargin{indi};
       endif
     endif
     indi = indi + 1;
   endwhile;
 
-  if isempty(dim), dim = 1; endif;
+  if (isempty (dim)) dim = 1; endif;
 
   %# pre-assignation
-  resu = struct(df); 
+  resu = struct (df); 
   
   switch(dim)
-    case {1},
-      for indi = 1:resu._cnt(2),
-	[resu._data{indi}, idx(:, indi, :)] = sort\
-	    (resu._data{indi}(:, resu._rep{indi}), varargin{:});
-	resu._data{indi} = squeeze(resu._data{indi});
-	resu._rep{indi} = 1:size(resu._data{indi}, 2);
+    case {1}
+      for indi = (1:resu._cnt(2))
+        [resu._data{indi}, idx(:, indi, :)] = sort \
+            (resu._data{indi}(:, resu._rep{indi}), varargin{:});
+        resu._data{indi} = squeeze (resu._data{indi});
+        resu._rep{indi} = 1:size(resu._data{indi}, 2);
       endfor
-      if (all([1 == size(idx, 2) 1 == size(idx, 3)])),
-	if (size(resu._ridx, 1) == resu._cnt(1)),
-	  resu._ridx = resu._ridx(idx, :);
-	endif
-	if (!isempty(resu._name{1, 1})),
-	  resu._name{1, 1} = resu._name{1, 1}(idx);
-	  resu._over{1, 1} = resu._over{1, 1}(idx);
-	endif
+      if (all ([1 == size(idx, 2) 1 == size(idx, 3)]))
+        if (size (resu._ridx, 1) == resu._cnt(1))
+          resu._ridx = resu._ridx(idx, :);
+        endif
+        if (~isempty (resu._name{1, 1}))
+          resu._name{1, 1} = resu._name{1, 1}(idx);
+          resu._over{1, 1} = resu._over{1, 1}(idx);
+        endif
       else
-	%# data where mixed
-	resu._ridx = idx;
-	resu._name{1, 1} = []; resu._over{1, 1} = [];
+        %# data where mixed
+        resu._ridx = idx;
+        resu._name{1, 1} = []; resu._over{1, 1} = [];
       endif
 
-    case {2},
-      error('Operation not implemented');
-    case {3},
-      for indi = 1:resu._cnt(2),
-	[resu._data{1, indi}, idx(:, indi)] = sort(resu._data{1, indi}, vout(:));
+    case {2}
+      error ('Operation not implemented');
+    case {3}
+      for indi = (1:resu._cnt(2))
+        [resu._data{1, indi}, idx(:, indi)] = sort (resu._data{1, indi}, vout(:));
       endfor
      otherwise
-      error("Invalid dimension %d", dim); 
+      error ("Invalid dimension %d", dim); 
   endswitch
   
-  dummy = dbstack();
-  if (any(strmatch('quantile', {dummy.name}))),
-    resu = df_whole(resu);
+  dummy = dbstack ();
+  if (any (strmatch ('quantile', {dummy.name})))
+    resu = df_whole (resu);
   else
-    resu = dataframe(resu);
+    resu = dataframe (resu);
   endif
 
 endfunction

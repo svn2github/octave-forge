@@ -31,38 +31,38 @@ function resu = summary(df)
 
   dummy = df._type; resu = [];
   
-  for indi = 1:length(dummy),
+  for indi = (1:length (dummy))
     switch dummy{indi}
       case {'char' 'factor'}
-	[sval, sidxi, sidxj] = unique(df._data{:, indi});
-	%# compute their occurences
-	sidxj = hist(sidxj, min(sidxj):max(sidxj));
-	%# generate a column with unique values
-	resuR = strjust(char(regexp(disp(sval), '\S.*', 'match', ...
-	 			    'dotexceptnewline')), 'right');
-	resuR = horzcat(resuR, repmat(':', size(resuR, 1), 1),
-			strjust(char(regexp(disp(sidxj.'), '\b.*', 'match', ...
-					    'dotexceptnewline')), ...
-				'right'));
-	%# now put the name above all
-	resuR = strjust([deblank(df._name{1, 2}(indi, :)); resuR], 'right');
-	resuR = horzcat(resuR, repmat(' ', size(resuR, 1), 1));
-	resu = horzcat_pad(resu, resuR);
-	
+        [sval, sidxi, sidxj] = unique (df._data{:, indi});
+        %# compute their occurences
+        sidxj = hist (sidxj, min(sidxj):max(sidxj));
+        %# generate a column with unique values
+        resuR = strjust (char (regexp (disp (sval), '\S.*', 'match', ...
+                                       'dotexceptnewline')), 'right');
+        resuR = horzcat (resuR, repmat (':', size(resuR, 1), 1),
+                         strjust (char (regexp (disp (sidxj.'), '\b.*', 'match', ...
+                                                'dotexceptnewline')), ...
+                                  'right'));
+        %# now put the name above all
+        resuR = strjust ([deblank(df._name{1, 2}(indi, :)); resuR], 'right');
+        resuR = horzcat (resuR, repmat (' ', size (resuR, 1), 1));
+        resu = horzcat_pad (resu, resuR);
+        
       otherwise
-	s = statistics(df._data{:, indi});
-	s = s([1:3 6 4:5]);
-	%# generate a column with name and fields name
-	resuR = strjust([deblank(df._name{1, 2}{indi, :}); 
-			 "Min.   :"; "1st Qu.:";
-			 "Median :"; "Mean   :";
-			 "3rd Qu.:"; "Max.   :"], 'right');
-	%# generate a column with a blank line and the values
-	resuR = horzcat(resuR, repmat(' ', size(resuR, 1), 1),
-			strjust(char(' ', regexp(disp(s), '\S.*', 'match', ...
-						 'dotexceptnewline')), 'right'),...
-			repmat(' ', size(resuR, 1), 1));
-	resu = horzcat_pad(resu, resuR);
+        s = statistics (df._data{:, indi});
+        s = s([1:3 6 4:5]);
+        %# generate a column with name and fields name
+        resuR = strjust ([deblank(df._name{1, 2}{indi, :}); 
+                          "Min.   :"; "1st Qu.:";
+                          "Median :"; "Mean   :";
+                          "3rd Qu.:"; "Max.   :"], 'right');
+        %# generate a column with a blank line and the values
+        resuR = horzcat (resuR, repmat (' ', size(resuR, 1), 1),
+                        strjust (char (' ', regexp (disp(s), '\S.*', 'match', ...
+                                                    'dotexceptnewline')), 'right'),...
+                        repmat (' ', size(resuR, 1), 1));
+        resu = horzcat_pad (resu, resuR);
         
     endswitch
   endfor
@@ -72,15 +72,15 @@ endfunction
 
 function resu = horzcat_pad(A, B)
   %# small auxiliary function to cat horizontally tables of different height
-  dx = size(A, 1) - size(B, 1);
+  dx = size (A, 1) - size (B, 1);
   
-  if dx < 0,
+  if (dx < 0)
     %# pad A
-    A = strvcat(A, repmat(' ', -dx, size(A, 2)));
-  elseif dx > 0
-    B = strvcat(B, repmat(' ', dx, size(B, 2)));
+    A = strvcat (A, repmat (' ', -dx, size(A, 2)));
+  elseif (dx > 0)
+    B = strvcat (B, repmat (' ', dx, size(B, 2)));
   endif
 
-  resu =  horzcat(A, B);
+  resu =  horzcat (A, B);
 
 endfunction

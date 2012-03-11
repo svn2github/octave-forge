@@ -26,6 +26,6 @@ function resu = isscalar(df)
   %# $Id$
   %#
 
-  resu = ismatrix(df) & (length(find(df._cnt > 1)) < 1);  
+  resu = ismatrix (df) & (length (find (df._cnt > 1)) < 1);  
 
 endfunction

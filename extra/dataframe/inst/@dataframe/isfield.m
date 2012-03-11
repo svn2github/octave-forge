@@ -35,57 +35,57 @@ function [resu, idx] = isfield(df, name, strict)
   %# $Id$
   %#
 
-  if !isa(df, 'dataframe'),
+  if (~isa (df, 'dataframe'))
     resu = false; return;
   endif
 
-  if nargin <2 || nargin > 3,
-    print_usage();
+  if (nargin < 2 || nargin > 3)
+    print_usage ();
     resu = false; return;
   endif
 
-  if 2 == nargin, strict = false; endif
+  if (2 == nargin) strict = false; endif
 
-  if isa(name, 'char'),
-    if strict, %# use strmatch to get indexes
-      for indi = size(name, 1):-1:1,
-	dummy = strmatch(name(indi, :), df._name{2}, "exact");
-	resu(indi, 1) = !isempty(dummy);
-	for indj = 1:length(dummy),
-	  idx(indi, indj) = dummy(indj);
-	endfor
+  if (isa (name, 'char'))
+    if (strict) %# use strmatch to get indexes
+      for indi = (size (name, 1):-1:1)
+        dummy = strmatch (name(indi, :), df._name{2}, "exact");
+        resu(indi, 1) = ~isempty (dummy);
+        for indj = (1:length (dummy))
+          idx(indi, indj) = dummy(indj);
+        endfor
       endfor
     else
-      for indi = size(name, 1):-1:1,
-	try
-	  dummy = df_name2idx(df._name{2}, name(indi, :), \
-			      df._cnt(2), 'column');
-	  resu(indi, 1) = !isempty(dummy);
-	  for indj = 1:length(dummy),
-	    idx(indi, indj) = dummy(indj);
-	  endfor
-	catch
-	  resu(indi, 1) = false; idx(indi, 1) = 0;
-	end_try_catch
+      for indi = (size (name, 1):-1:1)
+        try
+          dummy = df_name2idx (df._name{2}, name(indi, :), \
+                               df._cnt(2), 'column');
+          resu(indi, 1) = ~isempty (dummy);
+          for indj = (1:length (dummy))
+            idx(indi, indj) = dummy(indj);
+          endfor
+        catch
+          resu(indi, 1) = false; idx(indi, 1) = 0;
+        end_try_catch
       endfor
     endif
-  elseif isa(name, 'cell'),
-    if strict, %# use strmatch to get indexes
-      for indi = size(name, 1):-1:1,
-	dummy = strmatch(name{indi}, df._name{2}, "exact");
-	resu{indi, 1} = !isempty(dummy);
-	idx{indi, 1} = dummy;
+  elseif (isa (name, 'cell'))
+    if (strict) %# use strmatch to get indexes
+      for indi = (size (name, 1):-1:1)
+        dummy = strmatch (name{indi}, df._name{2}, "exact");
+        resu{indi, 1} = ~isempty (dummy);
+        idx{indi, 1} = dummy;
       endfor
     else
-      for indi = length(name):-1:1,
-	try
-	  dummy = df_name2idx(df._name{2}, name{indi}, \
-			      df._cnt(2), 'column');
-	  keyboard
-	  resu{indi, 1} = !isempty(dummy); idx{indi, 1} = dummy;
-	catch
-	  resu{indi, 1} = false; cnt{indi, 1} = 0;
-	end_try_catch
+      for indi = (length (name):-1:1)
+        try
+          dummy = df_name2idx (df._name{2}, name{indi}, \
+                               df._cnt(2), 'column');
+          keyboard
+          resu{indi, 1} = ~isempty (dummy); idx{indi, 1} = dummy;
+        catch
+          resu{indi, 1} = false; cnt{indi, 1} = 0;
+        end_try_catch
       endfor
     endif
   endif

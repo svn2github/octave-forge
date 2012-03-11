@@ -29,10 +29,10 @@ function [df] = df_thirddim(df)
   %#
 
   %# sanity check
-  dummy = max(cellfun(@length, df._rep));
-  if (dummy != 1),
+  dummy = max (cellfun (@length, df._rep));
+  if (dummy ~= 1),
     df._cnt(3) = dummy;
-  elseif (length(df._cnt) > 2), 
+  elseif (length (df._cnt) > 2), 
     df._cnt = df._cnt(1:2);
   endif
 

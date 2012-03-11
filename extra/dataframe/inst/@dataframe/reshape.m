@@ -25,9 +25,9 @@ function resu = reshape(df, varargin)
   %# $Id$
   %#
 
-  dummy = horzcat(varargin{:});
-  if (any(dummy != df._cnt)),
-    error('Function not yet implemented on dataframe');
+  dummy = horzcat (varargin{:});
+  if (any (dummy ~= df._cnt)),
+    error ('Function not yet implemented on dataframe');
   else
     resu = df; %# blank operation
   endif

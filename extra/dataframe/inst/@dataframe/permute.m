@@ -24,21 +24,21 @@ function resu = permute(df, perm)
   %# $Id$
   %#
 
-  resu = dataframe([]);
+  resu = dataframe ([]);
 
-  if (length(df._cnt) >= length(perm)),
+  if (length (df._cnt) >= length (perm))
     resu._cnt = df._cnt(perm);
   else
     resu._cnt = [df._cnt 1](perm);
   endif
   
-  if (ndims(df._ridx) < 3),
-    resu._ridx = permute(df._ridx, [min(perm(1), 2) min(perm(2:end))]);
+  if (ndims (df._ridx) < 3)
+    resu._ridx = permute (df._ridx, [min(perm(1), 2) min(perm(2:end))]);
   else
-    resu._ridx = permute(df._ridx, perm);
+    resu._ridx = permute (df._ridx, perm);
   endif
 
-  if (size(resu._ridx, 1) < resu._cnt(1)),
+  if (size (resu._ridx, 1) < resu._cnt(1))
     %# adjust index size, if required
     resu._ridx(end+1:resu._cnt(1), :, :) = NA;
   endif
@@ -46,13 +46,13 @@ function resu = permute(df, perm)
   if (2 == perm(1)),
     resu._name{1} = df._name{2};
     resu._over{1} = df._over{2};
-    indc = length(resu._name{1});
+    indc = length (resu._name{1});
     indi = resu._cnt(1) - indc;
-    if (indi > 0),
+    if (indi > 0)
       %# generate a name for the new row(s)
-      dummy = cstrcat(repmat('_', indi, 1), ...
-		      strjust(num2str(indc + (1:indi).'), 'left'));
-      resu._name{1}(indc + (1:indi)) = cellstr(dummy);
+      dummy = cstrcat (repmat ('_', indi, 1), ...
+                       strjust (num2str (indc + (1:indi).'), 'left'));
+      resu._name{1}(indc + (1:indi)) = cellstr (dummy);
       resu._over{1}(1, indc + (1:indi)) = true;
     endif 
   else
@@ -61,7 +61,7 @@ function resu = permute(df, perm)
   endif
 
   
-  if (2 == perm(2)),
+  if (2 == perm(2))
     resu._name{2} = df._name{2};
     resu._over{2} = df._over{2};
   else
@@ -69,41 +69,41 @@ function resu = permute(df, perm)
     resu._over{2} = df._over{1};
   endif
   
-  if (isempty(resu._name{2})),
+  if (isempty (resu._name{2})),
     indc = 0;
   else
-    indc = length(resu._name{2});
+    indc = length (resu._name{2});
   endif
   indi = resu._cnt(2) - indc;
-  if (indi > 0),
+  if (indi > 0)
     %# generate a name for the new column(s)
-    dummy = cstrcat(repmat('_', indi, 1), ...
-		    strjust(num2str(indc + (1:indi).'), 'left'));
-    resu._name{2}(indc + (1:indi)) = cellstr(dummy);
+    dummy = cstrcat (repmat ('_', indi, 1), ...
+                     strjust (num2str (indc + (1:indi).'), 'left'));
+    resu._name{2}(indc + (1:indi)) = cellstr (dummy);
     resu._over{2}(1, indc + (1:indi)) = true;    
   endif 
   
-  if (2 != perm(2)),
+  if (2 ~= perm(2)),
     %# recompute the new type
-    dummy = zeros(0, class(sum(cellfun(@(x) zeros(1, class(x(1))),\
-				       df._data))));
-    resu._type(1:resu._cnt(2)) = class(dummy);
-    dummy = permute(df_whole(df), perm);
-    for indi = 1:resu._cnt(2),
-      resu._data{indi} = squeeze(dummy(:, indi, :));
-      resu._rep{indi} = 1:size(resu._data{indi}, 2);
+    dummy = zeros (0, class (sum (cellfun (@(x) zeros (1, class(x(1))),\
+                                           df._data))));
+    resu._type(1:resu._cnt(2)) = class (dummy);
+    dummy = permute (df_whole(df), perm);
+    for indi = (1:resu._cnt(2))
+      resu._data{indi} = squeeze (dummy(:, indi, :));
+      resu._rep{indi} = 1:size (resu._data{indi}, 2);
     endfor 
   else %# 2 == perm(2)
-    if (1 == perm(1)), %# blank operation
+    if (1 == perm(1)) %# blank operation
       resu._type = df._type;
       resu._data = df._data;
       resu._rep = df._rep;
     else
-      for indi = 1:resu._cnt(2),
-	unfolded = df._data{indi}(:, df._rep{indi});
-	resu._data{indi} = permute(unfolded, [2 1]);
-	resu._rep{indi} = 1:size(resu._data{indi}, 2);
-	resu._type{indi} = df._type{indi};
+      for indi = (1:resu._cnt(2))
+        unfolded = df._data{indi}(:, df._rep{indi});
+        resu._data{indi} = permute (unfolded, [2 1]);
+        resu._rep{indi} = 1:size (resu._data{indi}, 2);
+        resu._type{indi} = df._type{indi};
       endfor    
     endif
   endif

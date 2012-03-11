@@ -47,7 +47,7 @@ function df = subasgn(df, S, RHS)
           return
 
         case "rowidx"
-          if (1 == length(S))
+          if (1 == length (S))
             df._ridx = RHS;
           else
             df._ridx = feval (@subsasgn, df._ridx, S(2:end), RHS);
@@ -88,7 +88,7 @@ function df = subasgn(df, S, RHS)
           return
           
         case "source"
-          if (length(S) > 1)
+          if (length (S) > 1)
             df._src = feval (@subsasgn, df._src, S(2:end), RHS);
           else
             df._src = RHS;
@@ -96,7 +96,7 @@ function df = subasgn(df, S, RHS)
           return
 
         case "comment"
-          if (length(S) > 1)
+          if (length (S) > 1)
             df._cmt = feval (@subsasgn, df._cmt, S(2:end), RHS);
           else
             df._cmt = RHS;
@@ -110,7 +110,7 @@ function df = subasgn(df, S, RHS)
           %# translate the name to column
           [indc, ncol] = df_name2idx (df._name{2}, S(1).subs, \
                                       df._cnt(2), 'column', true);
-          if (isempty(indc))
+          if (isempty (indc))
             %# dynamic allocation
             df = df_pad (df, 2, 1, class (RHS));
             indc = df._cnt(2); ncol = 1;
@@ -119,7 +119,7 @@ function df = subasgn(df, S, RHS)
             df._over{2}(end) = false;
           endif
           
-          if (length(S) > 1)
+          if (length (S) > 1)
             if (1 == length (S(2).subs)), %# add column reference
               S(2).subs{2} = indc;
             else

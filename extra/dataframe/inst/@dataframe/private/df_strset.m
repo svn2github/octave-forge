@@ -29,52 +29,52 @@ function [x, over] = df_strset(x, over, S, RHS, pad = ' ')
   %#
 
   %# adjust x size, if required
-  if isnull(RHS),
+  if (isnull (RHS))
     %# clearing
-    if isempty(S),
-      x = cell(0, 1); over = zeros(1, 0);
+    if (isempty (S))
+      x = cell (0, 1); over = zeros (1, 0);
       return
     endif
     dummy = S; dummy(1).subs(2:end) = [];
-    over = builtin('subsasgn', over, dummy, true);
+    over = builtin ('subsasgn', over, dummy, true);
   else
-    if isempty(S), %# complete overwrite
-      if ischar(RHS), RHS = cellstr(RHS); endif
-      nrow = length(RHS);
-      if any(~over(nrow)),
-	warning('going to overwrite names');
+    if (isempty (S)) %# complete overwrite
+      if (ischar (RHS)) RHS = cellstr (RHS); endif
+      nrow = length (RHS);
+      if (any(~over(nrow)))
+        warning ('going to overwrite names');
       endif
       x(1:nrow) = RHS;
       over(1:nrow) = false;
-      if nrow < length(x),
-	x(nrow+1:end) = {pad};
+      if (nrow < length (x))
+        x(nrow+1:end) = {pad};
       endif
       return
     else
       dummy = S(1); dummy.subs(2:end) = []; % keep first dim only
-      if any(~(builtin('subsref', over, dummy)));
-	warning('going to overwrite names');
+      if (any (~builtin ('subsref', over, dummy)))
+        warning ('going to overwrite names');
       endif
-      over = builtin('subsasgn', over, dummy, false);
+      over = builtin ('subsasgn', over, dummy, false);
     endif
   endif
 
   %# common part
-  if ischar(RHS) && length(S(1).subs) > 1, 
+  if (ischar (RHS) && length (S(1).subs) > 1) 
     %# partial accesses to a char array
-    dummy = char(x);
-    dummy = builtin('subsasgn', dummy, S, RHS);
-    if isempty(dummy),
-      x = cell(0, 1); over = zeros(1, 0);
+    dummy = char (x);
+    dummy = builtin ('subsasgn', dummy, S, RHS);
+    if (isempty(dummy))
+      x = cell (0, 1); over = zeros (1, 0);
       return
     endif
-    if size(dummy, 1) == length(x),
-      x = cellstr(dummy);
+    if (size (dummy, 1) == length (x))
+      x = cellstr (dummy);
       return
     endif
     %# partial clearing gone wrong ? retry
     RHS = { RHS }; 
   endif
-  x = builtin('subsasgn', x, S, RHS);
+  x = builtin ('subsasgn', x, S, RHS);
     
 endfunction

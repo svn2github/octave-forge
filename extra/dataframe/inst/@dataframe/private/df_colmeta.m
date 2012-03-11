@@ -28,15 +28,15 @@ function resu = df_colmeta(df)
   %# $Id: df_func.m 7943 2010-11-24 15:33:54Z cdemills $
   %#
 
-  resu = dataframe([]);
+  resu = dataframe ([]);
 
   resu._cnt(2) = df._cnt(2);
   resu._name{2} = df._name{2};
   resu._over{2} = df._over{2};
   resu._type = df._type;
   %# init it with the right orientation
-  resu._data = cell(size(df._data));
-  resu._rep = cell(size(df._rep));
+  resu._data = cell (size (df._data));
+  resu._rep = cell (size (df._rep));
   resu._src  = df._src;
   resu._cmt  = df._cmt;
 

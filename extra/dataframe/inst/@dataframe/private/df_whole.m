@@ -27,25 +27,25 @@ function resu = df_whole(df);
   %# $Id$
   %#
 
-  inds = max(cellfun(@length, df._rep));
+  inds = max (cellfun (@length, df._rep));
 
   resu = df._data{1}(:, df._rep{1});
-  if (inds > 1),
-    resu = reshape(resu, df._cnt(1), 1, []);
-    if (1 == size(resu, 3)),
-      resu = repmat(resu, [1 1 inds]);
+  if (inds > 1)
+    resu = reshape (resu, df._cnt(1), 1, []);
+    if (1 == size (resu, 3))
+      resu = repmat (resu, [1 1 inds]);
     endif
   endif
 
-  if df._cnt(2) > 1,
-    resu = repmat(resu, [1 df._cnt(2)]);
-    for indi = 2:df._cnt(2),
+  if (df._cnt(2) > 1)
+    resu = repmat (resu, [1 df._cnt(2)]);
+    for indi = (2:df._cnt(2))
       dummy = df._data{indi}(:, df._rep{indi});
-      if (inds > 1),
-	dummy = reshape(dummy, df._cnt(1), 1, []);
-	if (1 == size(dummy, 3)),
-	  dummy = repmat(dummy, [1 1 inds]);
-	endif
+      if (inds > 1)
+        dummy = reshape (dummy, df._cnt(1), 1, []);
+        if (1 == size (dummy, 3)),
+          dummy = repmat (dummy, [1 1 inds]);
+        endif
       endif
       resu(:, indi, :) = dummy;
     endfor

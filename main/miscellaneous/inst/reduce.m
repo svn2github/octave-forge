@@ -32,7 +32,6 @@
 ##      reduce(@@(x,y)(x*y),[1:7]) 
 ##  @result{} 5040  (actually, 7!)
 ## @end example
-## @seealso{map}
 ## @end deftypefn
 
 ## Parts of documentation copied from the "Python Library Reference, v2.5"

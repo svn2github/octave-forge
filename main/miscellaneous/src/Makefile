@@ -49,18 +49,6 @@ xmlread.o: xmlread.cc xmltree_read.h xmltree.h
 xmlread.oct: xmlread.o xmltree_read.o xmltree.o
 	$(MKOCTFILE) $^
 
-csvexplode.oct: csvexplode.cc
-	$(MKOCTFILE) $(MISCDEFS) $<
-
-csv2cell.oct: csv2cell.cc
-	$(MKOCTFILE) $(MISCDEFS) $<
-
-csvconcat.oct: csvconcat.cc
-	$(MKOCTFILE) $(MISCDEFS) $<
-
-cell2csv.oct: cell2csv.cc
-	$(MKOCTFILE) $(MISCDEFS) $<
-
 cell2cell.oct: cell2cell.cc
 	$(MKOCTFILE) $(MISCDEFS) $<
 

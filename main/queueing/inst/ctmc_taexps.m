@@ -103,9 +103,8 @@ function M = ctmc_taexps( Q, varargin )
       M = lsode( {ff, fj}, zeros(size(p)), t );
     endif
   else 
-    t = ctmc_mtta(Q,p);
     L = ctmc_exps(Q,p);
-    M = L ./ t;
+    M = L ./ sum(L);
   endif
 endfunction
 %!test

@@ -159,6 +159,12 @@ Return a column cell array with subarrays of the @var{a}. Start and end indices 
 Does not work with structure arrays at the moment.\n\
 @end deftypefn")
 {
+  static bool warned = false;
+  if (!warned){
+    warning_with_id ("Octave:deprecated-function",
+                     "partarray has been deprecated, and will be removed in the future. Use `mat2cell' instead.");
+    warned = true;
+  }
   std::string fname ("partarray");
 
   if (args.length () == 0)

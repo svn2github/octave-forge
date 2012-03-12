@@ -101,3 +101,72 @@ endfunction
 %! assert( B([2 3 4],[1 5]), [3/4 1/4; 1/2 1/2; 1/4 3/4], 10*eps );
 %! assert( B(1,1), 1 );
 %! assert( B(5,5), 1 );
+
+## Compute the probability of completing the "snakes and ladders"
+## game in n steps, for various values of n. Also, computes the expected
+## number of steps which are necessary to complete the game.
+## Source: 
+## http://mapleta.emich.edu/aross15/coursepack3419/419/ch-04/chutes-and-ladders.pdf
+%!demo
+%! n = 6;
+%! P = zeros(101,101);
+%! ## setup transitions through the spinner
+%! for j=0:(100-n)
+%!   for i=1:n
+%!     P(1+j,1+j+i) = 1/n;
+%!   endfor
+%! endfor  
+%! for j=(101-n):100 
+%!   P(1+j,1+j) = (n-100+j)/n;
+%! endfor
+%! for j=(101-n):100
+%!   for i=1:(100-j)
+%!     P(1+j,1+j+i) = 1/n;
+%!   endfor
+%! endfor
+%! Pstar = P;
+%! ## setup snakes and ladders
+%! SL = [1 38; \
+%!       4 14; \
+%!       9 31; \
+%!       16 6; \
+%!       21 42; \
+%!       28 84; \
+%!       36 44; \
+%!       47 26; \
+%!       49 11; \
+%!       51 67; \
+%!       56 53; \
+%!       62 19; \
+%!       64 60; \
+%!       71 91; \
+%!       80 100; \
+%!       87 24; \
+%!       93 73; \
+%!       95 75; \
+%!       98 78 ];
+%! for ii=SL;
+%!   i = ii(1);
+%!   j = ii(2);
+%!   Pstar(1+i,:) = 0;
+%!   for k=0:100
+%!     if ( k != j )
+%!       Pstar(1+k,1+j) = P(1+k,1+j) + P(1+k,1+i);
+%!     endif
+%!   endfor
+%!   Pstar(:,1+i) = 0;
+%! endfor
+%! Pstar += diag( 1-sum(Pstar,2) );
+%!
+%! nsteps = 50; # number of steps
+%! Pfinish = zeros(1,nsteps); # Pfinish(i) = probability of finishing after step i
+%! start = zeros(1,101); start(1) = 1;
+%! for i=1:nsteps
+%!   pn = dtmc(Pstar,i,start);
+%!   Pfinish(i) = pn(101); # state 101 is the ending (absorbing) state
+%! endfor
+%! f = dtmc_mtta(Pstar);
+%! ## f(1) is the mean time to absorption starting from state 1
+%! printf("Average number of steps to complete the game: %f\n", f(1) );
+%! plot(Pfinish, ";Probability of finishing the game;");
+%! xlabel("Step number");

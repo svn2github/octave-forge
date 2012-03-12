@@ -50,7 +50,7 @@ in a smart terminal, the width is automatically detected, and @var{msg} is\n\
 displayed in the waitbar (and truncated if it is too long). Otherwise,\n\
 @var{msg} is not displayed and the width is initialized to a default of 50\n\
 characters, or it can be set to @var{n} characters with\n\
-@code{text_waitbar (0, @var{n}). If no terminal is detected (such as when\n\
+@code{text_waitbar (0, @var{n})}. If no terminal is detected (such as when\n\
 Octave is run in batch mode and output is redirected), no output is\n\
 generated.\n\
 \n\

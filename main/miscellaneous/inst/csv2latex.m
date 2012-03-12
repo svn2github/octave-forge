@@ -47,7 +47,7 @@
 ##  csv2latex('example.csv', '\t', 'example.tex', {'|l|', 'l|'}, true, 
 ##            {'Column 1', 'Column 2', 'Column 3'}, {'Row 1', 'Row 2'});
 
-function csv2latex(csv_file, csv_sep, latex_file, tabular_alignments, has_hline, column_titles, row_titles)
+function csv2latex (csv_file, csv_sep, latex_file, tabular_alignments, has_hline, column_titles, row_titles)
 
   ## set up the default values
   if nargin < 7
@@ -64,7 +64,7 @@ function csv2latex(csv_file, csv_sep, latex_file, tabular_alignments, has_hline,
   end
 
   ## load the csv file and create the csv cell
-  [fid, msg] = fopen (csv_file, 'r') # open the csv file to read
+  [fid, msg] = fopen (csv_file, 'r'); # open the csv file to read
   csv = cell();
   if fid != -1
     [val, count] = fread(fid); # read all data from the file
@@ -77,7 +77,7 @@ function csv2latex(csv_file, csv_sep, latex_file, tabular_alignments, has_hline,
         csv(line_index, value_index) = csv_value;
         value_index++;
         csv_value = '';
-      else if val(index) == '\n';
+      elseif (val(index) == '\n' || (val(index) == '\r' && val(index+1) == '\r'))
         csv(line_index, value_index) = csv_value;
         value_index++;
         csv_value = '';
@@ -123,7 +123,7 @@ function csv2latex(csv_file, csv_sep, latex_file, tabular_alignments, has_hline,
   end
 
   ## print latex file
-  [fid, msg] = fopen (latex_file, 'w') # open the latex file for writing
+  [fid, msg] = fopen (latex_file, 'w'); # open the latex file for writing
   if fid != -1
     fprintf (fid, '\\begin{tabular}{%s}\n', alignment_preamble); # print the begin of the tabular
     if column_title_size != 0
@@ -145,9 +145,9 @@ function csv2latex(csv_file, csv_sep, latex_file, tabular_alignments, has_hline,
               fprintf (fid, '  & '); # print an empty row title
             end
           end
-          fprintf (fid, '  %s ', csv(row_index, col_index));
+          fprintf (fid, '  %s ', csv{row_index, col_index});
         else
-         fprintf (fid, '& %s ', csv(row_index, col_index));
+         fprintf (fid, '& %s ', csv{row_index, col_index});
         end
       end
       fprintf (fid, '\\\\\n');

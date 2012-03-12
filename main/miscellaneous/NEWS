@@ -19,8 +19,8 @@ Summary of important user-visible changes for miscellaneous 1.1.0:
 
  ** The function clip was imported from the audio package.
 
- ** The function `apply' has been deprecated. `cellfun' and `arrayfun' from
-    octave core should be used instead.
+ ** The functions `apply' and `map' have been deprecated. `cellfun' and
+    `arrayfun' from octave core should be used instead.
 
  ** The function `partarray' has been removed. `mat2cell' from octave core
     should be used instead.

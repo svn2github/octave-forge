@@ -62,6 +62,13 @@
 
 function return_type = map (fun_handle, data_struct, varargin)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "map has been deprecated, and will be removed in the future. Use `arrayfun' or `cellfun' instead.");
+  endif
+
   if (nargin < 2)
     print_usage;
   elseif (!(isnumeric (data_struct) || iscell (data_struct)))

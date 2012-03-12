@@ -59,9 +59,7 @@ function rval=apply(fun_handle,cell_array)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-             "apply.m has been deprecated, and will be removed in the future.")
-    warning ("Octave:deprecated-function",
-             "Use `arrayfun' or `cellfun' instead.");
+             "apply has been deprecated, and will be removed in the future. Use `arrayfun' or `cellfun' instead.");
   endif
 
   if (nargin == 0)
@@ -70,7 +68,7 @@ function rval=apply(fun_handle,cell_array)
   elseif( nargin < 2)
     if iscell(fun_handle)
       for idx=1:length(fun_handle)
-	rval(idx)=feval(@feval,fun_handle{idx});
+        rval(idx)=feval(@feval,fun_handle{idx});
       end
     else
       rval=feval(@feval,fun_handle);

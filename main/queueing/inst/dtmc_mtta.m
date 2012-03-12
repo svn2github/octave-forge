@@ -142,17 +142,15 @@ endfunction
 %! P = zeros(101,101);
 %! ## setup transitions through the spinner
 %! for j=0:(100-n)
-%!   for i=1:n
-%!     P(1+j,1+j+i) = 1/n;
-%!   endfor
+%!   i=1:n
+%!   P(1+j,1+j+i) = 1/n;
 %! endfor  
 %! for j=(101-n):100 
 %!   P(1+j,1+j) = (n-100+j)/n;
 %! endfor
 %! for j=(101-n):100
-%!   for i=1:(100-j)
-%!     P(1+j,1+j+i) = 1/n;
-%!   endfor
+%!   i=1:(100-j)
+%!   P(1+j,1+j+i) = 1/n;
 %! endfor
 %! Pstar = P;
 %! ## setup snakes and ladders
@@ -175,28 +173,28 @@ endfunction
 %!       93 73; \
 %!       95 75; \
 %!       98 78 ];
-%! for ii=SL;
-%!   i = ii(1);
-%!   j = ii(2);
+%! for ii=1:rows(SL);
+%!   i = SL(ii,1);
+%!   j = SL(ii,2);
 %!   Pstar(1+i,:) = 0;
 %!   for k=0:100
-%!     if ( k != j )
+%!     if ( k != i )
 %!       Pstar(1+k,1+j) = P(1+k,1+j) + P(1+k,1+i);
 %!     endif
 %!   endfor
 %!   Pstar(:,1+i) = 0;
 %! endfor
 %! Pstar += diag( 1-sum(Pstar,2) );
-%!
-%! nsteps = 50; # number of steps
+%! ## spy(Pstar);
+%! nsteps = 250; # number of steps
 %! Pfinish = zeros(1,nsteps); # Pfinish(i) = probability of finishing after step i
 %! start = zeros(1,101); start(1) = 1;
 %! for i=1:nsteps
 %!   pn = dtmc(Pstar,i,start);
 %!   Pfinish(i) = pn(101); # state 101 is the ending (absorbing) state
 %! endfor
-%! f = dtmc_mtta(Pstar);
-%! ## f(1) is the mean time to absorption starting from state 1
-%! printf("Average number of steps to complete the game: %f\n", f(1) );
-%! plot(Pfinish, ";Probability of finishing the game;");
-%! xlabel("Step number");
+%! f = dtmc_mtta(Pstar, start);
+%! printf("Average number of steps to complete the game: %f\n", f );
+%! plot(Pfinish);
+%! xlabel("Step number (n)");
+%! title("Probability of finishing the game before step n");

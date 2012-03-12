@@ -299,7 +299,7 @@ function script_result = exec_script (ifile)
   eval (ifile(1:end-2))
   diary off
   fid = fopen ("publish_tmp_script.txt", 'r');
-  scriptResult = fread (fid, '*char')';
+  script_result = fread (fid, '*char')';
   fclose(fid);
   delete ("publish_tmp_script.txt");
 endfunction

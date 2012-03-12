@@ -67,3 +67,7 @@ endfunction
 %!test
 %! P = [0 1; 1 0];
 %! assert( dtmc_check_P(P), 2 );
+
+%!test
+%! P = dtmc_bd( linspace(0.1,0.4,10), linspace(0.4,0.1,10) );
+%! assert( dtmc_check_P(P), rows(P) );

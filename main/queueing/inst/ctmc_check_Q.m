@@ -46,7 +46,8 @@ function [result err] = ctmc_check_Q( Q )
     return;
   endif
   
-  if ( norm( sum(Q,2), "inf" ) > epsilon )
+  if (any(Q(~logical(eye(size(Q))))<0) || \ # there is any negavite non-diagonal element
+      norm( sum(Q,2), "inf" ) > epsilon )
     err = "Q is not an infinitesimal generator matrix";
     return;
   endif
@@ -54,3 +55,37 @@ function [result err] = ctmc_check_Q( Q )
   result = rows(Q);
   err = "";
 endfunction
+%!test
+%! Q = [0];
+%! [result err] = ctmc_check_Q(Q);
+%! assert( result, 1 );
+%! assert( err, "" );
+
+%!test
+%! N = 10;
+%! Q = ctmc_bd(rand(1,N-1),rand(1,N-1));
+%! [result err] = ctmc_check_Q(Q);
+%! assert( result, N );
+%! assert( err, "" );
+
+%!test
+%! Q = [1 2 3; 4 5 6];
+%! [result err] = ctmc_check_Q(Q);
+%! assert( result, 0 );
+%! assert( index(err, "square") > 0 );
+
+%!test
+%! N = 10;
+%! Q = ctmc_bd(rand(1,N-1),rand(1,N-1));
+%! Q(2,1) = -1;
+%! [result err] = ctmc_check_Q(Q);
+%! assert( result, 0 );
+%! assert( index(err, "infinitesimal") > 0 );
+
+%!test
+%! N = 10;
+%! Q = ctmc_bd(rand(1,N-1),rand(1,N-1));
+%! Q(1,1) += 7;
+%! [result err] = ctmc_check_Q(Q);
+%! assert( result, 0 );
+%! assert( index(err, "infinitesimal") > 0 );

@@ -3,22 +3,39 @@ miscellaneous
  apply
  asci
  cell2cell
- sample
- csv2latex
+ cell2csv
+ csv2cell
+ csvconcat
+ csvexplode
  chebyshevpoly
+ clip
+ colorboard
+ csv2latex
+ gameoflife
  hermitepoly
+ hilbert_curve
  infoskeleton
  laguerrepoly
  legendrepoly
+ map
  match
+ normc
+ normr
  nze
- reduce
- slurp_file
- units
- zagzig
- zigzag
- csvconcat
- csvexplode
- server
+ partarray
+ peano_curve
  publish
- clip
+ read_options
+ reduce
+ rolldices
+ sample
+ slurp_file
+ solvesudoku
+ temp_name
+ text_waitbar
+ units
+ xmlread
+ xmlwrite
+ zagzig
+ z_curve
+ zigzag

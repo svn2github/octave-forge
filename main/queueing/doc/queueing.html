@@ -218,11 +218,11 @@ queueing systems:
 chains (DTMC) or continuous-time chains (CTMC):
 
      <ul>
-<li>Birth-death process (DTMC and CTMC);
-<li>Transient and steady-state occupancy probabilities (DTMC and CTMC);
-<li>Mean time to absorption (CTMC);
-<li>Time-averaged sojourn times (CTMC);
-<li>First passage times (DTMC and CTMC).
+<li>Birth-death process;
+<li>Transient and steady-state occupancy probabilities;
+<li>Mean times to absorption;
+<li>Expected sojourn times and time-averaged sojourn times (CTMC only);
+<li>Mean first passage times;
 
    </ul>
 
@@ -1007,28 +1007,39 @@ for the first time, starting from state <var>i</var>.
 
 <div class="defun">
 &mdash; Function File: [<var>t</var> <var>B</var>] = <b>dtmc_mtta</b> (<var>P</var>)<var><a name="index-dtmc_005fmtta-16"></a></var><br>
+&mdash; Function File: [<var>t</var> <var>B</var>] = <b>dtmc_mtta</b> (<var>P, p0</var>)<var><a name="index-dtmc_005fmtta-17"></a></var><br>
 <blockquote>
-        <p><a name="index-Markov-chain_002c-disctete-time-17"></a><a name="index-Mean-time-to-absorption-18"></a>
-Compute the expected number of steps before absorption for the DTMC
-described by the transition probability matrix <var>P</var>,
+        <p><a name="index-Markov-chain_002c-disctete-time-18"></a><a name="index-Mean-time-to-absorption-19"></a>
+Compute the expected number of steps before absorption for the
+DTMC with N \times N transition probability matrix <var>P</var>.
 
         <p><strong>INPUTS</strong>
 
           <dl>
-<dt><var>P</var><dd>Transition probability matrix .
+<dt><var>P</var><dd>Transition probability matrix.
+
+          <br><dt><var>p0</var><dd>Initial state occupancy probabilities.
 
         </dl>
 
         <p><strong>OUTPUTS</strong>
 
           <dl>
-<dt><var>t</var><dd><var>t</var><code>(i)</code> is the expected number of steps before being absorbed,
-starting from state i.
+<dt><var>t</var><dd>When called with a single argument, <var>t</var> is a vector such that
+<var>t</var><code>(i)</code> is the expected number of steps before being
+absorbed, starting from state i. When called with two
+arguments, <var>t</var> is a scalar and represents the average number of
+steps before absorption, given initial state occupancy probabilities
+<var>p0</var>.
 
-          <br><dt><var>B</var><dd><var>B</var><code>(i,j)</code> is the probability of being absorbed in state
-j, starting from state i. If j is not absorbing,
-<var>B</var><code>(i,j) = 0</code>; if i is absorbing, then
-<var>B</var><code>(i,i) = 1</code>..
+          <br><dt><var>B</var><dd>When called with a single argument, <var>B</var> is a N \times N
+matrix where <var>B</var><code>(i,j)</code> is the probability of being absorbed
+in state j, starting from state i; if j is not
+absorbing, <var>B</var><code>(i,j) = 0</code>; if i is absorbing, then
+<var>B</var><code>(i,i) = 1</code>. When called with two arguments, <var>B</var> is a
+vector with N elements where <var>B</var><code>(j)</code> is the
+probability of being absorbed in state <var>j</var>, given initial state
+occupancy probabilities <var>p0</var>.
 
         </dl>
 
@@ -1062,9 +1073,9 @@ must be defined in such a way that the infinitesimal generator matrix
    <p><a name="doc_002dctmc_005fcheck_005fQ"></a>
 
 <div class="defun">
-&mdash; Function File: [<var>result</var> <var>err</var>] = <b>ctmc_check_Q</b> (<var>Q</var>)<var><a name="index-ctmc_005fcheck_005fQ-19"></a></var><br>
+&mdash; Function File: [<var>result</var> <var>err</var>] = <b>ctmc_check_Q</b> (<var>Q</var>)<var><a name="index-ctmc_005fcheck_005fQ-20"></a></var><br>
 <blockquote>
-        <p><a name="index-Markov-chain_002c-continuous-time-20"></a>
+        <p><a name="index-Markov-chain_002c-continuous-time-21"></a>
 If <var>Q</var> is a valid infinitesimal generator matrix, return
 the size (number of rows or columns) of <var>Q</var>. If <var>Q</var> is not
 an infinitesimal generator matrix, set <var>result</var> to zero, and
@@ -1114,10 +1125,10 @@ occupancy probability vector \bf \pi satisfies
    <p><a name="doc_002dctmc"></a>
 
 <div class="defun">
-&mdash; Function File: <var>p</var> = <b>ctmc</b> (<var>Q</var>)<var><a name="index-ctmc-21"></a></var><br>
-&mdash; Function File: <var>p</var> = <b>ctmc</b> (<var>Q, t. p0</var>)<var><a name="index-ctmc-22"></a></var><br>
+&mdash; Function File: <var>p</var> = <b>ctmc</b> (<var>Q</var>)<var><a name="index-ctmc-22"></a></var><br>
+&mdash; Function File: <var>p</var> = <b>ctmc</b> (<var>Q, t. p0</var>)<var><a name="index-ctmc-23"></a></var><br>
 <blockquote>
-        <p><a name="index-Markov-chain_002c-continuous-time-23"></a><a name="index-Continuous-time-Markov-chain-24"></a><a name="index-Markov-chain_002c-state-occupancy-probabilities-25"></a><a name="index-Stationary-probabilities-26"></a>
+        <p><a name="index-Markov-chain_002c-continuous-time-24"></a><a name="index-Continuous-time-Markov-chain-25"></a><a name="index-Markov-chain_002c-state-occupancy-probabilities-26"></a><a name="index-Stationary-probabilities-27"></a>
 With a single argument, compute the stationary state occupancy
 probability vector <var>p</var>(1), <small class="dots">...</small>, <var>p</var>(N) for a
 Continuous-Time Markov Chain with infinitesimal generator matrix
@@ -1180,9 +1191,9 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Continuous_002dTime-Markov-Chains">Con
 <p><a name="doc_002dctmc_005fbd"></a>
 
 <div class="defun">
-&mdash; Function File: <var>Q</var> = <b>ctmc_bd</b> (<var>birth, death</var>)<var><a name="index-ctmc_005fbd-27"></a></var><br>
+&mdash; Function File: <var>Q</var> = <b>ctmc_bd</b> (<var>birth, death</var>)<var><a name="index-ctmc_005fbd-28"></a></var><br>
 <blockquote>
-        <p><a name="index-Markov-chain_002c-continuous-time-28"></a><a name="index-Birth_002ddeath-process-29"></a>
+        <p><a name="index-Markov-chain_002c-continuous-time-29"></a><a name="index-Birth_002ddeath-process-30"></a>
 Returns the N \times N infinitesimal generator matrix Q
 for a birth-death process with given rates.
 
@@ -1242,10 +1253,10 @@ the state occupancy probability at time t.
    <p><a name="doc_002dctmc_005fexps"></a>
 
 <div class="defun">
-&mdash; Function File: <var>L</var> = <b>ctmc_exps</b> (<var>Q, t, p </var>)<var><a name="index-ctmc_005fexps-30"></a></var><br>
-&mdash; Function File: <var>L</var> = <b>ctmc_exps</b> (<var>Q, p</var>)<var><a name="index-ctmc_005fexps-31"></a></var><br>
+&mdash; Function File: <var>L</var> = <b>ctmc_exps</b> (<var>Q, t, p </var>)<var><a name="index-ctmc_005fexps-31"></a></var><br>
+&mdash; Function File: <var>L</var> = <b>ctmc_exps</b> (<var>Q, p</var>)<var><a name="index-ctmc_005fexps-32"></a></var><br>
 <blockquote>
-        <p><a name="index-Markov-chain_002c-continuous-time-32"></a><a name="index-Expected-sojourn-time-33"></a>
+        <p><a name="index-Markov-chain_002c-continuous-time-33"></a><a name="index-Expected-sojourn-time-34"></a>
 With three arguments, compute the expected times <var>L</var><code>(i)</code>
 spent in each state i during the time interval
 [0,t], assuming that the state occupancy probabilities
@@ -1325,9 +1336,9 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Continuous_002dTime-Markov-Chains">Con
 <p><a name="doc_002dctmc_005ftaexps"></a>
 
 <div class="defun">
-&mdash; Function File: <var>M</var> = <b>ctmc_taexps</b> (<var>Q, t, p</var>)<var><a name="index-ctmc_005ftaexps-34"></a></var><br>
+&mdash; Function File: <var>M</var> = <b>ctmc_taexps</b> (<var>Q, t, p</var>)<var><a name="index-ctmc_005ftaexps-35"></a></var><br>
 <blockquote>
-        <p><a name="index-Markov-chain_002c-continuous-time-35"></a><a name="index-Time_002dalveraged-sojourn-time-36"></a>
+        <p><a name="index-Markov-chain_002c-continuous-time-36"></a><a name="index-Time_002dalveraged-sojourn-time-37"></a>
 Compute the <em>time-averaged sojourn time</em> <var>M</var><code>(i)</code>,
 defined as the fraction of the time interval [0,t] spent in
 state i, assuming that the state occupancy probabilities at
@@ -1410,9 +1421,9 @@ A.
    <p><a name="doc_002dctmc_005fmtta"></a>
 
 <div class="defun">
-&mdash; Function File: <var>t</var> = <b>ctmc_mtta</b> (<var>Q, p</var>)<var><a name="index-ctmc_005fmtta-37"></a></var><br>
+&mdash; Function File: <var>t</var> = <b>ctmc_mtta</b> (<var>Q, p</var>)<var><a name="index-ctmc_005fmtta-38"></a></var><br>
 <blockquote>
-        <p><a name="index-Markov-chain_002c-continuous-time-38"></a><a name="index-Mean-time-to-absorption-39"></a>
+        <p><a name="index-Markov-chain_002c-continuous-time-39"></a><a name="index-Mean-time-to-absorption-40"></a>
 Compute the Mean-Time to Absorption (MTTA) of the CTMC described by
 the infinitesimal generator matrix <var>Q</var>, starting from initial
 occupancy probabilities <var>p</var>. If there are no absorbing states, this
@@ -1473,7 +1484,7 @@ K. Trivedi, <cite>Queueing Networks and Markov Chains: Modeling and
 Performance Evaluation with Computer Science Applications</cite>, Wiley,
 1998.
 
-   <p><a name="index-Bolch_002c-G_002e-40"></a><a name="index-Greiner_002c-S_002e-41"></a><a name="index-de-Meer_002c-H_002e-42"></a><a name="index-Trivedi_002c-K_002e-43"></a>
+   <p><a name="index-Bolch_002c-G_002e-41"></a><a name="index-Greiner_002c-S_002e-42"></a><a name="index-de-Meer_002c-H_002e-43"></a><a name="index-Trivedi_002c-K_002e-44"></a>
 <div class="node">
 <a name="First-Passage-Times"></a>
 <p><hr>
@@ -1487,10 +1498,10 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Continuous_002dTime-Markov-Chains">Con
 <p><a name="doc_002dctmc_005ffpt"></a>
 
 <div class="defun">
-&mdash; Function File: <var>M</var> = <b>ctmc_fpt</b> (<var>Q</var>)<var><a name="index-ctmc_005ffpt-44"></a></var><br>
-&mdash; Function File: <var>m</var> = <b>ctmc_fpt</b> (<var>Q, i, j</var>)<var><a name="index-ctmc_005ffpt-45"></a></var><br>
+&mdash; Function File: <var>M</var> = <b>ctmc_fpt</b> (<var>Q</var>)<var><a name="index-ctmc_005ffpt-45"></a></var><br>
+&mdash; Function File: <var>m</var> = <b>ctmc_fpt</b> (<var>Q, i, j</var>)<var><a name="index-ctmc_005ffpt-46"></a></var><br>
 <blockquote>
-        <p><a name="index-Markov-chain_002c-continuous-time-46"></a><a name="index-First-passage-times-47"></a>
+        <p><a name="index-Markov-chain_002c-continuous-time-47"></a><a name="index-First-passage-times-48"></a>
 If called with a single argument, computes the mean first passage
 times <var>M</var><code>(i,j)</code>, the average times before state <var>j</var> is
 reached, starting from state <var>i</var>, for all 1 \leq i, j \leq
@@ -1596,9 +1607,9 @@ with average service rate \mu. The system is stable if
    <p><a name="doc_002dqnmm1"></a>
 
 <div class="defun">
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>, <var>p0</var>] = <b>qnmm1</b> (<var>lambda, mu</var>)<var><a name="index-qnmm1-48"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>, <var>p0</var>] = <b>qnmm1</b> (<var>lambda, mu</var>)<var><a name="index-qnmm1-49"></a></var><br>
 <blockquote>
-        <p><a name="index-g_t_0040math_007bM_002fM_002f1_007d-system-49"></a>
+        <p><a name="index-g_t_0040math_007bM_002fM_002f1_007d-system-50"></a>
 Compute utilization, response time, average number of requests
 and throughput for a M/M/1 queue.
 
@@ -1643,7 +1654,7 @@ case, the results will be vectors as well.
 and Markov Chains: Modeling and Performance Evaluation with Computer
 Science Applications</cite>, Wiley, 1998, Section 6.3.
 
-   <p><a name="index-Bolch_002c-G_002e-50"></a><a name="index-Greiner_002c-S_002e-51"></a><a name="index-de-Meer_002c-H_002e-52"></a><a name="index-Trivedi_002c-K_002e-53"></a>
+   <p><a name="index-Bolch_002c-G_002e-51"></a><a name="index-Greiner_002c-S_002e-52"></a><a name="index-de-Meer_002c-H_002e-53"></a><a name="index-Trivedi_002c-K_002e-54"></a>
 <!-- M/M/m -->
 <div class="node">
 <a name="The-M%2fM%2fm-System"></a>
@@ -1669,10 +1680,10 @@ number n of nodes in the center:
    <p><a name="doc_002dqnmmm"></a>
 
 <div class="defun">
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>, <var>p0</var>, <var>pm</var>] = <b>qnmmm</b> (<var>lambda, mu</var>)<var><a name="index-qnmmm-54"></a></var><br>
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>, <var>p0</var>, <var>pm</var>] = <b>qnmmm</b> (<var>lambda, mu, m</var>)<var><a name="index-qnmmm-55"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>, <var>p0</var>, <var>pm</var>] = <b>qnmmm</b> (<var>lambda, mu</var>)<var><a name="index-qnmmm-55"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>, <var>p0</var>, <var>pm</var>] = <b>qnmmm</b> (<var>lambda, mu, m</var>)<var><a name="index-qnmmm-56"></a></var><br>
 <blockquote>
-        <p><a name="index-g_t_0040math_007bM_002fM_002fm_007d-system-56"></a>
+        <p><a name="index-g_t_0040math_007bM_002fM_002fm_007d-system-57"></a>
 Compute utilization, response time, average number of requests in
 service and throughput for a M/M/m queue, a queueing
 system with m identical service centers connected to a single queue.
@@ -1724,7 +1735,7 @@ case, the results will be vectors as well.
 and Markov Chains: Modeling and Performance Evaluation with Computer
 Science Applications</cite>, Wiley, 1998, Section 6.5.
 
-   <p><a name="index-Bolch_002c-G_002e-57"></a><a name="index-Greiner_002c-S_002e-58"></a><a name="index-de-Meer_002c-H_002e-59"></a><a name="index-Trivedi_002c-K_002e-60"></a>
+   <p><a name="index-Bolch_002c-G_002e-58"></a><a name="index-Greiner_002c-S_002e-59"></a><a name="index-de-Meer_002c-H_002e-60"></a><a name="index-Trivedi_002c-K_002e-61"></a>
 <!-- M/M/inf -->
 <div class="node">
 <a name="The-M%2fM%2finf-System"></a>
@@ -1747,7 +1758,7 @@ stable.
    <p><a name="doc_002dqnmminf"></a>
 
 <div class="defun">
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>, <var>p0</var>] = <b>qnmminf</b> (<var>lambda, mu</var>)<var><a name="index-qnmminf-61"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>, <var>p0</var>] = <b>qnmminf</b> (<var>lambda, mu</var>)<var><a name="index-qnmminf-62"></a></var><br>
 <blockquote>
         <p>Compute utilization, response time, average number of requests and
 throughput for a M/M/\infty queue. This is a system with an
@@ -1755,7 +1766,7 @@ infinite number of identical servers. Note that a M/M/\infty
 system is always stable, regardless the values of the arrival and
 service rates.
 
-        <p><a name="index-g_t_0040math_007bM_002fM_002f_007dinf-system-62"></a>
+        <p><a name="index-g_t_0040math_007bM_002fM_002f_007dinf-system-63"></a>
 
         <p><strong>INPUTS</strong>
 
@@ -1773,7 +1784,7 @@ service rates.
 different from the utilization, which in the case of M/M/\infty
 centers is always zero.
 
-          <p><a name="index-traffic-intensity-63"></a>
+          <p><a name="index-traffic-intensity-64"></a>
 <br><dt><var>R</var><dd>Service center response time.
 
           <br><dt><var>Q</var><dd>Average number of requests in the system (which is equal to the
@@ -1801,7 +1812,7 @@ case, the results will be vectors as well.
 and Markov Chains: Modeling and Performance Evaluation with Computer
 Science Applications</cite>, Wiley, 1998, Section 6.4.
 
-   <p><a name="index-Bolch_002c-G_002e-64"></a><a name="index-Greiner_002c-S_002e-65"></a><a name="index-de-Meer_002c-H_002e-66"></a><a name="index-Trivedi_002c-K_002e-67"></a>
+   <p><a name="index-Bolch_002c-G_002e-65"></a><a name="index-Greiner_002c-S_002e-66"></a><a name="index-de-Meer_002c-H_002e-67"></a><a name="index-Trivedi_002c-K_002e-68"></a>
 <!-- M/M/1/k -->
 <div class="node">
 <a name="The-M%2fM%2f1%2fK-System"></a>
@@ -1825,9 +1836,9 @@ always stable, regardless of the arrival and service rates
    <p><a name="doc_002dqnmm1k"></a>
 
 <div class="defun">
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>, <var>p0</var>, <var>pK</var>] = <b>qnmm1k</b> (<var>lambda, mu, K</var>)<var><a name="index-qnmm1k-68"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>, <var>p0</var>, <var>pK</var>] = <b>qnmm1k</b> (<var>lambda, mu, K</var>)<var><a name="index-qnmm1k-69"></a></var><br>
 <blockquote>
-        <p><a name="index-g_t_0040math_007bM_002fM_002f1_002fK_007d-system-69"></a>
+        <p><a name="index-g_t_0040math_007bM_002fM_002f1_002fK_007d-system-70"></a>
 Compute utilization, response time, average number of requests and
 throughput for a M/M/1/K finite capacity system. In a
 M/M/1/K queue there is a single server; the maximum number of
@@ -1894,9 +1905,9 @@ slots. The M/M/m/K system is always stable.
    <p><a name="doc_002dqnmmmk"></a>
 
 <div class="defun">
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>, <var>p0</var>, <var>pK</var>] = <b>qnmmmk</b> (<var>lambda, mu, m, K</var>)<var><a name="index-qnmmmk-70"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>, <var>p0</var>, <var>pK</var>] = <b>qnmmmk</b> (<var>lambda, mu, m, K</var>)<var><a name="index-qnmmmk-71"></a></var><br>
 <blockquote>
-        <p><a name="index-g_t_0040math_007bM_002fM_002fm_002fK_007d-system-71"></a>
+        <p><a name="index-g_t_0040math_007bM_002fM_002fm_002fK_007d-system-72"></a>
 Compute utilization, response time, average number of requests and
 throughput for a M/M/m/K finite capacity system. In a
 M/M/m/K system there are m \geq 1 identical service
@@ -1954,7 +1965,7 @@ as well.
 and Markov Chains: Modeling and Performance Evaluation with Computer
 Science Applications</cite>, Wiley, 1998, Section 6.6.
 
-   <p><a name="index-Bolch_002c-G_002e-72"></a><a name="index-Greiner_002c-S_002e-73"></a><a name="index-de-Meer_002c-H_002e-74"></a><a name="index-Trivedi_002c-K_002e-75"></a>
+   <p><a name="index-Bolch_002c-G_002e-73"></a><a name="index-Greiner_002c-S_002e-74"></a><a name="index-de-Meer_002c-H_002e-75"></a><a name="index-Trivedi_002c-K_002e-76"></a>
 
 <!-- Approximate M/M/m -->
 <div class="node">
@@ -1976,9 +1987,9 @@ asymmetric M/M/m each server may have a different service time.
    <p><a name="doc_002dqnammm"></a>
 
 <div class="defun">
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnammm</b> (<var>lambda, mu</var>)<var><a name="index-qnammm-76"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnammm</b> (<var>lambda, mu</var>)<var><a name="index-qnammm-77"></a></var><br>
 <blockquote>
-        <p><a name="index-Asymmetric-_0040math_007bM_002fM_002fm_007d-system-77"></a>
+        <p><a name="index-Asymmetric-_0040math_007bM_002fM_002fm_007d-system-78"></a>
 Compute <em>approximate</em> utilization, response time, average number
 of requests in service and throughput for an asymmetric  M/M/m
 queue. In this system there are m different service centers
@@ -2025,7 +2036,7 @@ we will always have <var>X</var><code> = </code><var>lambda</var>
 and Markov Chains: Modeling and Performance Evaluation with Computer
 Science Applications</cite>, Wiley, 1998
 
-   <p><a name="index-Bolch_002c-G_002e-78"></a><a name="index-Greiner_002c-S_002e-79"></a><a name="index-de-Meer_002c-H_002e-80"></a><a name="index-Trivedi_002c-K_002e-81"></a>
+   <p><a name="index-Bolch_002c-G_002e-79"></a><a name="index-Greiner_002c-S_002e-80"></a><a name="index-de-Meer_002c-H_002e-81"></a><a name="index-Trivedi_002c-K_002e-82"></a>
 <div class="node">
 <a name="The-M%2fG%2f1-System"></a>
 <a name="The-M_002fG_002f1-System"></a>
@@ -2041,9 +2052,9 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Single-Station-Queueing-Systems">Singl
 <p><a name="doc_002dqnmg1"></a>
 
 <div class="defun">
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>, <var>p0</var>] = <b>qnmg1</b> (<var>lambda, xavg, x2nd</var>)<var><a name="index-qnmg1-82"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>, <var>p0</var>] = <b>qnmg1</b> (<var>lambda, xavg, x2nd</var>)<var><a name="index-qnmg1-83"></a></var><br>
 <blockquote>
-        <p><a name="index-g_t_0040math_007bM_002fG_002f1_007d-system-83"></a>
+        <p><a name="index-g_t_0040math_007bM_002fG_002f1_007d-system-84"></a>
 Compute utilization, response time, average number of requests and
 throughput for a M/G/1 system. The service time distribution
 is described by its mean <var>xavg</var>, and by its second moment
@@ -2100,9 +2111,9 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Single-Station-Queueing-Systems">Singl
 <p><a name="doc_002dqnmh1"></a>
 
 <div class="defun">
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>, <var>p0</var>] = <b>qnmh1</b> (<var>lambda, mu, alpha</var>)<var><a name="index-qnmh1-84"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>, <var>p0</var>] = <b>qnmh1</b> (<var>lambda, mu, alpha</var>)<var><a name="index-qnmh1-85"></a></var><br>
 <blockquote>
-        <p><a name="index-g_t_0040math_007bM_002fH_005fm_002f1_007d-system-85"></a>
+        <p><a name="index-g_t_0040math_007bM_002fH_005fm_002f1_007d-system-86"></a>
 Compute utilization, response time, average number of requests and
 throughput for a M/H_m/1 system. In this system, the customer
 service times have hyper-exponential distribution:
@@ -2184,7 +2195,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 <li><a accesskey="6" href="#Utility-functions">Utility functions</a>:                    Utility functions to compute miscellaneous quantities
 </ul>
 
-<p><a name="index-queueing-networks-86"></a>
+<p><a name="index-queueing-networks-87"></a>
 <!-- INTRODUCTION -->
 <div class="node">
 <a name="Introduction-to-QNs"></a>
@@ -2445,13 +2456,13 @@ models).
    <p><a name="doc_002dqnmknode"></a>
 
 <div class="defun">
-&mdash; Function File: <var>Q</var> = <b>qnmknode</b> (<var>"m/m/m-fcfs", S</var>)<var><a name="index-qnmknode-87"></a></var><br>
-&mdash; Function File: <var>Q</var> = <b>qnmknode</b> (<var>"m/m/m-fcfs", S, m</var>)<var><a name="index-qnmknode-88"></a></var><br>
-&mdash; Function File: <var>Q</var> = <b>qnmknode</b> (<var>"m/m/1-lcfs-pr", S</var>)<var><a name="index-qnmknode-89"></a></var><br>
-&mdash; Function File: <var>Q</var> = <b>qnmknode</b> (<var>"-/g/1-ps", S</var>)<var><a name="index-qnmknode-90"></a></var><br>
-&mdash; Function File: <var>Q</var> = <b>qnmknode</b> (<var>"-/g/1-ps", S, s2</var>)<var><a name="index-qnmknode-91"></a></var><br>
-&mdash; Function File: <var>Q</var> = <b>qnmknode</b> (<var>"-/g/inf", S</var>)<var><a name="index-qnmknode-92"></a></var><br>
-&mdash; Function File: <var>Q</var> = <b>qnmknode</b> (<var>"-/g/inf", S, s2</var>)<var><a name="index-qnmknode-93"></a></var><br>
+&mdash; Function File: <var>Q</var> = <b>qnmknode</b> (<var>"m/m/m-fcfs", S</var>)<var><a name="index-qnmknode-88"></a></var><br>
+&mdash; Function File: <var>Q</var> = <b>qnmknode</b> (<var>"m/m/m-fcfs", S, m</var>)<var><a name="index-qnmknode-89"></a></var><br>
+&mdash; Function File: <var>Q</var> = <b>qnmknode</b> (<var>"m/m/1-lcfs-pr", S</var>)<var><a name="index-qnmknode-90"></a></var><br>
+&mdash; Function File: <var>Q</var> = <b>qnmknode</b> (<var>"-/g/1-ps", S</var>)<var><a name="index-qnmknode-91"></a></var><br>
+&mdash; Function File: <var>Q</var> = <b>qnmknode</b> (<var>"-/g/1-ps", S, s2</var>)<var><a name="index-qnmknode-92"></a></var><br>
+&mdash; Function File: <var>Q</var> = <b>qnmknode</b> (<var>"-/g/inf", S</var>)<var><a name="index-qnmknode-93"></a></var><br>
+&mdash; Function File: <var>Q</var> = <b>qnmknode</b> (<var>"-/g/inf", S, s2</var>)<var><a name="index-qnmknode-94"></a></var><br>
 <blockquote>
         <p>Creates a node; this function can be used together with
 <code>qnsolve</code>. It is possible to create either single-class nodes
@@ -2520,10 +2531,10 @@ generally easier to use.
    <p><a name="doc_002dqnsolve"></a>
 
 <div class="defun">
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnsolve</b> (<var>"closed", N, QQ, V</var>)<var><a name="index-qnsolve-94"></a></var><br>
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnsolve</b> (<var>"closed", N, QQ, V, Z</var>)<var><a name="index-qnsolve-95"></a></var><br>
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnsolve</b> (<var>"open", lambda, QQ, V</var>)<var><a name="index-qnsolve-96"></a></var><br>
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnsolve</b> (<var>"mixed", lambda, N, QQ, V</var>)<var><a name="index-qnsolve-97"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnsolve</b> (<var>"closed", N, QQ, V</var>)<var><a name="index-qnsolve-95"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnsolve</b> (<var>"closed", N, QQ, V, Z</var>)<var><a name="index-qnsolve-96"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnsolve</b> (<var>"open", lambda, QQ, V</var>)<var><a name="index-qnsolve-97"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnsolve</b> (<var>"mixed", lambda, N, QQ, V</var>)<var><a name="index-qnsolve-98"></a></var><br>
 <blockquote>
         <p>General evaluator of QN models. Networks can be open,
 closed or mixed; single as well as multiclass networks are supported.
@@ -2701,11 +2712,11 @@ that there are k_i requests at service center i.
    <p><a name="doc_002dqnjackson"></a>
 
 <div class="defun">
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnjackson</b> (<var>lambda, S, P </var>)<var><a name="index-qnjackson-98"></a></var><br>
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnjackson</b> (<var>lambda, S, P, m </var>)<var><a name="index-qnjackson-99"></a></var><br>
-&mdash; Function File: <var>pr</var> = <b>qnjackson</b> (<var>lambda, S, P, m, k</var>)<var><a name="index-qnjackson-100"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnjackson</b> (<var>lambda, S, P </var>)<var><a name="index-qnjackson-99"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnjackson</b> (<var>lambda, S, P, m </var>)<var><a name="index-qnjackson-100"></a></var><br>
+&mdash; Function File: <var>pr</var> = <b>qnjackson</b> (<var>lambda, S, P, m, k</var>)<var><a name="index-qnjackson-101"></a></var><br>
 <blockquote>
-        <p><a name="index-open-network_002c-single-class-101"></a><a name="index-Jackson-network-102"></a>
+        <p><a name="index-open-network_002c-single-class-102"></a><a name="index-Jackson-network-103"></a>
 With three or four input parameters, this function computes the
 steady-state occupancy probabilities for a Jackson network. With five
 input parameters, this function computes the steady-state probability
@@ -2787,7 +2798,7 @@ K. Trivedi, <cite>Queueing Networks and Markov Chains: Modeling and
 Performance Evaluation with Computer Science Applications</cite>, Wiley,
 1998, pp. 284&ndash;287.
 
-   <p><a name="index-Bolch_002c-G_002e-103"></a><a name="index-Greiner_002c-S_002e-104"></a><a name="index-de-Meer_002c-H_002e-105"></a><a name="index-Trivedi_002c-K_002e-106"></a>
+   <p><a name="index-Bolch_002c-G_002e-104"></a><a name="index-Greiner_002c-S_002e-105"></a><a name="index-de-Meer_002c-H_002e-106"></a><a name="index-Trivedi_002c-K_002e-107"></a>
 
 <h4 class="subsection">6.3.2 The Convolution Algorithm</h4>
 
@@ -2821,10 +2832,10 @@ centers.
    <p><a name="doc_002dqnconvolution"></a>
 
 <div class="defun">
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>, <var>G</var>] = <b>qnconvolution</b> (<var>N, S, V</var>)<var><a name="index-qnconvolution-107"></a></var><br>
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>, <var>G</var>] = <b>qnconvolution</b> (<var>N, S, V, m</var>)<var><a name="index-qnconvolution-108"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>, <var>G</var>] = <b>qnconvolution</b> (<var>N, S, V</var>)<var><a name="index-qnconvolution-108"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>, <var>G</var>] = <b>qnconvolution</b> (<var>N, S, V, m</var>)<var><a name="index-qnconvolution-109"></a></var><br>
 <blockquote>
-        <p><a name="index-closed-network-109"></a><a name="index-normalization-constant-110"></a><a name="index-convolution-algorithm-111"></a>
+        <p><a name="index-closed-network-110"></a><a name="index-normalization-constant-111"></a><a name="index-convolution-algorithm-112"></a>
 This function implements the <em>convolution algorithm</em> for
 computing steady-state performance measures of product-form,
 single-class closed queueing networks. Load-independent service
@@ -2915,20 +2926,20 @@ Networks with Exponential Servers</cite>, Communications of the ACM, volume
 16, number 9, september 1973,
 pp. 527&ndash;531. <a href="http://doi.acm.org/10.1145/362342.362345">http://doi.acm.org/10.1145/362342.362345</a>
 
-   <p><a name="index-Buzen_002c-J_002e-P_002e-112"></a>
+   <p><a name="index-Buzen_002c-J_002e-P_002e-113"></a>
 This implementation is based on G. Bolch, S. Greiner, H. de Meer and
 K. Trivedi, <cite>Queueing Networks and Markov Chains: Modeling and
 Performance Evaluation with Computer Science Applications</cite>, Wiley,
 1998, pp. 313&ndash;317.
 
-   <p><a name="index-Bolch_002c-G_002e-113"></a><a name="index-Greiner_002c-S_002e-114"></a><a name="index-de-Meer_002c-H_002e-115"></a><a name="index-Trivedi_002c-K_002e-116"></a>
+   <p><a name="index-Bolch_002c-G_002e-114"></a><a name="index-Greiner_002c-S_002e-115"></a><a name="index-de-Meer_002c-H_002e-116"></a><a name="index-Trivedi_002c-K_002e-117"></a>
 <!-- Convolution for load-dependent service centers -->
 <a name="doc_002dqnconvolutionld"></a>
 
 <div class="defun">
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>, <var>G</var>] = <b>qnconvolutionld</b> (<var>N, S, V</var>)<var><a name="index-qnconvolutionld-117"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>, <var>G</var>] = <b>qnconvolutionld</b> (<var>N, S, V</var>)<var><a name="index-qnconvolutionld-118"></a></var><br>
 <blockquote>
-        <p><a name="index-closed-network-118"></a><a name="index-normalization-constant-119"></a><a name="index-convolution-algorithm-120"></a><a name="index-load_002ddependent-service-center-121"></a>
+        <p><a name="index-closed-network-119"></a><a name="index-normalization-constant-120"></a><a name="index-convolution-algorithm-121"></a><a name="index-load_002ddependent-service-center-122"></a>
 This function implements the <em>convolution algorithm</em> for
 product-form, single-class closed queueing networks with general
 load-dependent service centers.
@@ -2988,7 +2999,7 @@ Models</cite>, Technical Report CSD-TR-354, Department of Computer Sciences,
 Purdue University, feb, 1981 (revised). 
 <a href="http://www.cs.purdue.edu/research/technical_reports/1980/TR%2080-354.pdf">http://www.cs.purdue.edu/research/technical_reports/1980/TR%2080-354.pdf</a>
 
-   <p><a name="index-Schwetman_002c-H_002e-122"></a>
+   <p><a name="index-Schwetman_002c-H_002e-123"></a>
 M. Reiser, H. Kobayashi, <cite>On The Convolution Algorithm for
 Separable Queueing Networks</cite>, In Proceedings of the 1976 ACM
 SIGMETRICS Conference on Computer Performance Modeling Measurement and
@@ -2996,7 +3007,7 @@ Evaluation (Cambridge, Massachusetts, United States, March 29&ndash;31,
 1976). SIGMETRICS '76. ACM, New York, NY,
 pp. 109&ndash;117. <a href="http://doi.acm.org/10.1145/800200.806187">http://doi.acm.org/10.1145/800200.806187</a>
 
-   <p><a name="index-Reiser_002c-M_002e-123"></a><a name="index-Kobayashi_002c-H_002e-124"></a>
+   <p><a name="index-Reiser_002c-M_002e-124"></a><a name="index-Kobayashi_002c-H_002e-125"></a>
 This implementation is based on G. Bolch, S. Greiner, H. de Meer and
 K. Trivedi, <cite>Queueing Networks and Markov Chains: Modeling and
 Performance Evaluation with Computer Science Applications</cite>, Wiley,
@@ -3008,7 +3019,7 @@ does not). The modification is in the definition of function
 function f_i defined in Schwetman, <code>Some Computational
 Aspects of Queueing Network Models</code>.
 
-   <p><a name="index-Bolch_002c-G_002e-125"></a><a name="index-Greiner_002c-S_002e-126"></a><a name="index-de-Meer_002c-H_002e-127"></a><a name="index-Trivedi_002c-K_002e-128"></a>
+   <p><a name="index-Bolch_002c-G_002e-126"></a><a name="index-Greiner_002c-S_002e-127"></a><a name="index-de-Meer_002c-H_002e-128"></a><a name="index-Trivedi_002c-K_002e-129"></a>
 
 <h4 class="subsection">6.3.3 Open networks</h4>
 
@@ -3016,10 +3027,10 @@ Aspects of Queueing Network Models</code>.
 <p><a name="doc_002dqnopensingle"></a>
 
 <div class="defun">
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnopensingle</b> (<var>lambda, S, V</var>)<var><a name="index-qnopensingle-129"></a></var><br>
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnopensingle</b> (<var>lambda, S, V, m</var>)<var><a name="index-qnopensingle-130"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnopensingle</b> (<var>lambda, S, V</var>)<var><a name="index-qnopensingle-130"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnopensingle</b> (<var>lambda, S, V, m</var>)<var><a name="index-qnopensingle-131"></a></var><br>
 <blockquote>
-        <p><a name="index-open-network_002c-single-class-131"></a><a name="index-BCMP-network-132"></a>
+        <p><a name="index-open-network_002c-single-class-132"></a><a name="index-BCMP-network-133"></a>
 Analyze open, single class BCMP queueing networks.
 
         <p>This function works for a subset of BCMP single-class open networks
@@ -3112,16 +3123,16 @@ in the system can be computed as:
 Networks and Markov Chains: Modeling and Performance Evaluation with
 Computer Science Applications</cite>, Wiley, 1998.
 
-   <p><a name="index-Bolch_002c-G_002e-133"></a><a name="index-Greiner_002c-S_002e-134"></a><a name="index-de-Meer_002c-H_002e-135"></a><a name="index-Trivedi_002c-K_002e-136"></a>
+   <p><a name="index-Bolch_002c-G_002e-134"></a><a name="index-Greiner_002c-S_002e-135"></a><a name="index-de-Meer_002c-H_002e-136"></a><a name="index-Trivedi_002c-K_002e-137"></a>
 
 <!-- Open network with multiple classes -->
    <p><a name="doc_002dqnopenmulti"></a>
 
 <div class="defun">
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnopenmulti</b> (<var>lambda, S, V</var>)<var><a name="index-qnopenmulti-137"></a></var><br>
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnopenmulti</b> (<var>lambda, S, V, m</var>)<var><a name="index-qnopenmulti-138"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnopenmulti</b> (<var>lambda, S, V</var>)<var><a name="index-qnopenmulti-138"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnopenmulti</b> (<var>lambda, S, V, m</var>)<var><a name="index-qnopenmulti-139"></a></var><br>
 <blockquote>
-        <p><a name="index-open-network_002c-multiple-classes-139"></a>
+        <p><a name="index-open-network_002c-multiple-classes-140"></a>
 Exact analysis of open, multiple-class BCMP networks. The network can
 be made of <em>single-server</em> queueing centers (FCFS, LCFS-PR or
 PS) or delay centers (IS). This function assumes a network with
@@ -3186,7 +3197,7 @@ Analysis Using Queueing Network Models</cite>, Prentice Hall,
 1984. <a href="http://www.cs.washington.edu/homes/lazowska/qsp/">http://www.cs.washington.edu/homes/lazowska/qsp/</a>. In
 particular, see section 7.4.1 ("Open Model Solution Techniques").
 
-   <p><a name="index-Lazowska_002c-E_002e-D_002e-140"></a><a name="index-Zahorjan_002c-J_002e-141"></a><a name="index-Graham_002c-G_002e-S_002e-142"></a><a name="index-Sevcik_002c-K_002e-C_002e-143"></a>
+   <p><a name="index-Lazowska_002c-E_002e-D_002e-141"></a><a name="index-Zahorjan_002c-J_002e-142"></a><a name="index-Graham_002c-G_002e-S_002e-143"></a><a name="index-Sevcik_002c-K_002e-C_002e-144"></a>
 
 <h4 class="subsection">6.3.4 Closed Networks</h4>
 
@@ -3194,11 +3205,11 @@ particular, see section 7.4.1 ("Open Model Solution Techniques").
 <p><a name="doc_002dqnclosedsinglemva"></a>
 
 <div class="defun">
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>, <var>G</var>] = <b>qnclosedsinglemva</b> (<var>N, S, V</var>)<var><a name="index-qnclosedsinglemva-144"></a></var><br>
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>, <var>G</var>] = <b>qnclosedsinglemva</b> (<var>N, S, V, m</var>)<var><a name="index-qnclosedsinglemva-145"></a></var><br>
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>, <var>G</var>] = <b>qnclosedsinglemva</b> (<var>N, S, V, m, Z</var>)<var><a name="index-qnclosedsinglemva-146"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>, <var>G</var>] = <b>qnclosedsinglemva</b> (<var>N, S, V</var>)<var><a name="index-qnclosedsinglemva-145"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>, <var>G</var>] = <b>qnclosedsinglemva</b> (<var>N, S, V, m</var>)<var><a name="index-qnclosedsinglemva-146"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>, <var>G</var>] = <b>qnclosedsinglemva</b> (<var>N, S, V, m, Z</var>)<var><a name="index-qnclosedsinglemva-147"></a></var><br>
 <blockquote>
-        <p><a name="index-Mean-Value-Analysys-_0028MVA_0029-147"></a><a name="index-closed-network_002c-single-class-148"></a><a name="index-normalization-constant-149"></a>
+        <p><a name="index-Mean-Value-Analysys-_0028MVA_0029-148"></a><a name="index-closed-network_002c-single-class-149"></a><a name="index-normalization-constant-150"></a>
 Analyze closed, single class queueing networks using the exact Mean
 Value Analysis (MVA) algorithm. The following queueing disciplines
 are supported: FCFS, LCFS-PR, PS and IS (Infinite Server). This
@@ -3299,7 +3310,7 @@ other quantities of interest as follows:
 Multichain Queuing Networks</cite>, Journal of the ACM, vol. 27, n. 2, April
 1980, pp. 313&ndash;322. <a href="http://doi.acm.org/10.1145/322186.322195">http://doi.acm.org/10.1145/322186.322195</a>
 
-   <p><a name="index-Reiser_002c-M_002e-150"></a><a name="index-Lavenberg_002c-S_002e-S_002e-151"></a>
+   <p><a name="index-Reiser_002c-M_002e-151"></a><a name="index-Lavenberg_002c-S_002e-S_002e-152"></a>
 This implementation is described in R. Jain , <cite>The Art of Computer
 Systems Performance Analysis</cite>, Wiley, 1991, p. 577.  Multi-server nodes
 <!-- and the computation of @math{G(N)}, -->
@@ -3308,15 +3319,15 @@ K. Trivedi, <cite>Queueing Networks and Markov Chains: Modeling and
 Performance Evaluation with Computer Science Applications</cite>, Wiley,
 1998, Section 8.2.1, "Single Class Queueing Networks".
 
-   <p><a name="index-Jain_002c-R_002e-152"></a><a name="index-Bolch_002c-G_002e-153"></a><a name="index-Greiner_002c-S_002e-154"></a><a name="index-de-Meer_002c-H_002e-155"></a><a name="index-Trivedi_002c-K_002e-156"></a>
+   <p><a name="index-Jain_002c-R_002e-153"></a><a name="index-Bolch_002c-G_002e-154"></a><a name="index-Greiner_002c-S_002e-155"></a><a name="index-de-Meer_002c-H_002e-156"></a><a name="index-Trivedi_002c-K_002e-157"></a>
 <!-- MVA for single class, closed networks with load dependent servers -->
 <a name="doc_002dqnclosedsinglemvald"></a>
 
 <div class="defun">
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedsinglemvald</b> (<var>N, S, V</var>)<var><a name="index-qnclosedsinglemvald-157"></a></var><br>
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedsinglemvald</b> (<var>N, S, V, Z</var>)<var><a name="index-qnclosedsinglemvald-158"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedsinglemvald</b> (<var>N, S, V</var>)<var><a name="index-qnclosedsinglemvald-158"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedsinglemvald</b> (<var>N, S, V, Z</var>)<var><a name="index-qnclosedsinglemvald-159"></a></var><br>
 <blockquote>
-        <p><a name="index-Mean-Value-Analysys-_0028MVA_0029-159"></a><a name="index-closed-network_002c-single-class-160"></a><a name="index-load_002ddependent-service-center-161"></a>
+        <p><a name="index-Mean-Value-Analysys-_0028MVA_0029-160"></a><a name="index-closed-network_002c-single-class-161"></a><a name="index-load_002ddependent-service-center-162"></a>
 Exact MVA algorithm for closed, single class queueing networks
 with load-dependent service centers. This function supports
 FCFS, LCFS-PR, PS and IS nodes. For networks with only fixed-rate
@@ -3374,15 +3385,15 @@ and Performance Evaluation with Computer Science Applications</cite>, Wiley,
 1998, Section 8.2.4.1, &ldquo;Networks with Load-Deèpendent Service: Closed
 Networks&rdquo;.
 
-   <p><a name="index-Bolch_002c-G_002e-162"></a><a name="index-Greiner_002c-S_002e-163"></a><a name="index-de-Meer_002c-H_002e-164"></a><a name="index-Trivedi_002c-K_002e-165"></a>
+   <p><a name="index-Bolch_002c-G_002e-163"></a><a name="index-Greiner_002c-S_002e-164"></a><a name="index-de-Meer_002c-H_002e-165"></a><a name="index-Trivedi_002c-K_002e-166"></a>
 <!-- CMVA for single class, closed networks with a single load dependent servers -->
 <a name="doc_002dqncmva"></a>
 
 <div class="defun">
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qncmva</b> (<var>N, S, Sld, V</var>)<var><a name="index-qncmva-166"></a></var><br>
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qncmva</b> (<var>N, S, Sld, V, Z</var>)<var><a name="index-qncmva-167"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qncmva</b> (<var>N, S, Sld, V</var>)<var><a name="index-qncmva-167"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qncmva</b> (<var>N, S, Sld, V, Z</var>)<var><a name="index-qncmva-168"></a></var><br>
 <blockquote>
-        <p><a name="index-Mean-Value-Analysys-_0028MVA_0029-168"></a><a name="index-CMVA-169"></a>
+        <p><a name="index-Mean-Value-Analysys-_0028MVA_0029-169"></a><a name="index-CMVA-170"></a>
 Implementation of the Conditional MVA (CMVA) algorithm, a numerically
 stable variant of MVA for load-dependent servers. CMVA is described
 in G. Casale, <cite>A Note on Stable Flow-Equivalent Aggregation in
@@ -3436,19 +3447,19 @@ k=1, <small class="dots">...</small>, M.
 closed networks</cite>. Queueing Syst. Theory Appl., 60:193–202, December
 2008.
 
-   <p><a name="index-Casale_002c-G_002e-170"></a>
+   <p><a name="index-Casale_002c-G_002e-171"></a>
 <!-- Approximate MVA for single class, closed networks -->
 
    <p><a name="doc_002dqnclosedsinglemvaapprox"></a>
 
 <div class="defun">
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedsinglemvaapprox</b> (<var>N, S, V</var>)<var><a name="index-qnclosedsinglemvaapprox-171"></a></var><br>
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedsinglemvaapprox</b> (<var>N, S, V, m</var>)<var><a name="index-qnclosedsinglemvaapprox-172"></a></var><br>
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedsinglemvaapprox</b> (<var>N, S, V, m, Z</var>)<var><a name="index-qnclosedsinglemvaapprox-173"></a></var><br>
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedsinglemvaapprox</b> (<var>N, S, V, m, Z, tol</var>)<var><a name="index-qnclosedsinglemvaapprox-174"></a></var><br>
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedsinglemvaapprox</b> (<var>N, S, V, m, Z, tol, iter_max</var>)<var><a name="index-qnclosedsinglemvaapprox-175"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedsinglemvaapprox</b> (<var>N, S, V</var>)<var><a name="index-qnclosedsinglemvaapprox-172"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedsinglemvaapprox</b> (<var>N, S, V, m</var>)<var><a name="index-qnclosedsinglemvaapprox-173"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedsinglemvaapprox</b> (<var>N, S, V, m, Z</var>)<var><a name="index-qnclosedsinglemvaapprox-174"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedsinglemvaapprox</b> (<var>N, S, V, m, Z, tol</var>)<var><a name="index-qnclosedsinglemvaapprox-175"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedsinglemvaapprox</b> (<var>N, S, V, m, Z, tol, iter_max</var>)<var><a name="index-qnclosedsinglemvaapprox-176"></a></var><br>
 <blockquote>
-        <p><a name="index-Mean-Value-Analysys-_0028MVA_0029_002c-approximate-176"></a><a name="index-Approximate-MVA-177"></a><a name="index-Closed-network_002c-single-class-178"></a><a name="index-Closed-network_002c-approximate-analysis-179"></a>
+        <p><a name="index-Mean-Value-Analysys-_0028MVA_0029_002c-approximate-177"></a><a name="index-Approximate-MVA-178"></a><a name="index-Closed-network_002c-single-class-179"></a><a name="index-Closed-network_002c-approximate-analysis-180"></a>
 Analyze closed, single class queueing networks using the Approximate
 Mean Value Analysis (MVA) algorithm. This function is based on
 approximating the number of customers seen at center k when a
@@ -3527,20 +3538,20 @@ Prentice Hall,
 1984. <a href="http://www.cs.washington.edu/homes/lazowska/qsp/">http://www.cs.washington.edu/homes/lazowska/qsp/</a>. In
 particular, see section 6.4.2.2 ("Approximate Solution Techniques").
 
-   <p><a name="index-Lazowska_002c-E_002e-D_002e-180"></a><a name="index-Zahorjan_002c-J_002e-181"></a><a name="index-Graham_002c-G_002e-S_002e-182"></a><a name="index-Sevcik_002c-K_002e-C_002e-183"></a>
+   <p><a name="index-Lazowska_002c-E_002e-D_002e-181"></a><a name="index-Zahorjan_002c-J_002e-182"></a><a name="index-Graham_002c-G_002e-S_002e-183"></a><a name="index-Sevcik_002c-K_002e-C_002e-184"></a>
 
 <!-- MVA for multiple class, closed networks -->
    <p><a name="doc_002dqnclosedmultimva"></a>
 
 <div class="defun">
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedmultimva</b> (<var>N, S </var>)<var><a name="index-qnclosedmultimva-184"></a></var><br>
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedmultimva</b> (<var>N, S, V</var>)<var><a name="index-qnclosedmultimva-185"></a></var><br>
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedmultimva</b> (<var>N, S, V, m</var>)<var><a name="index-qnclosedmultimva-186"></a></var><br>
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedmultimva</b> (<var>N, S, V, m, Z</var>)<var><a name="index-qnclosedmultimva-187"></a></var><br>
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedmultimva</b> (<var>N, S, P</var>)<var><a name="index-qnclosedmultimva-188"></a></var><br>
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedmultimva</b> (<var>N, S, P, m</var>)<var><a name="index-qnclosedmultimva-189"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedmultimva</b> (<var>N, S </var>)<var><a name="index-qnclosedmultimva-185"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedmultimva</b> (<var>N, S, V</var>)<var><a name="index-qnclosedmultimva-186"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedmultimva</b> (<var>N, S, V, m</var>)<var><a name="index-qnclosedmultimva-187"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedmultimva</b> (<var>N, S, V, m, Z</var>)<var><a name="index-qnclosedmultimva-188"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedmultimva</b> (<var>N, S, P</var>)<var><a name="index-qnclosedmultimva-189"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedmultimva</b> (<var>N, S, P, m</var>)<var><a name="index-qnclosedmultimva-190"></a></var><br>
 <blockquote>
-        <p><a name="index-Mean-Value-Analysys-_0028MVA_0029-190"></a><a name="index-closed-network_002c-multiple-classes-191"></a>
+        <p><a name="index-Mean-Value-Analysys-_0028MVA_0029-191"></a><a name="index-closed-network_002c-multiple-classes-192"></a>
 Analyze closed, multiclass queueing networks with K service
 centers and C independent customer classes (chains) using the
 Mean Value Analysys (MVA) algorithm.
@@ -3670,7 +3681,7 @@ implements the approximate MVA algorithm. Note however that
 Multichain Queuing Networks</cite>, Journal of the ACM, vol. 27, n. 2, April
 1980, pp. 313&ndash;322. <a href="http://doi.acm.org/10.1145/322186.322195">http://doi.acm.org/10.1145/322186.322195</a>
 
-   <p><a name="index-Reiser_002c-M_002e-192"></a><a name="index-Lavenberg_002c-S_002e-S_002e-193"></a>
+   <p><a name="index-Reiser_002c-M_002e-193"></a><a name="index-Lavenberg_002c-S_002e-S_002e-194"></a>
 This implementation is based on G. Bolch, S. Greiner, H. de Meer and
 K. Trivedi, <cite>Queueing Networks and Markov Chains: Modeling and
 Performance Evaluation with Computer Science Applications</cite>, Wiley,
@@ -3680,18 +3691,18 @@ System Analysis Using Queueing Network Models</cite>, Prentice Hall,
 1984. <a href="http://www.cs.washington.edu/homes/lazowska/qsp/">http://www.cs.washington.edu/homes/lazowska/qsp/</a>. In
 particular, see section 7.4.2.1 ("Exact Solution Techniques").
 
-   <p><a name="index-Bolch_002c-G_002e-194"></a><a name="index-Greiner_002c-S_002e-195"></a><a name="index-de-Meer_002c-H_002e-196"></a><a name="index-Trivedi_002c-K_002e-197"></a><a name="index-Lazowska_002c-E_002e-D_002e-198"></a><a name="index-Zahorjan_002c-J_002e-199"></a><a name="index-Graham_002c-G_002e-S_002e-200"></a><a name="index-Sevcik_002c-K_002e-C_002e-201"></a>
+   <p><a name="index-Bolch_002c-G_002e-195"></a><a name="index-Greiner_002c-S_002e-196"></a><a name="index-de-Meer_002c-H_002e-197"></a><a name="index-Trivedi_002c-K_002e-198"></a><a name="index-Lazowska_002c-E_002e-D_002e-199"></a><a name="index-Zahorjan_002c-J_002e-200"></a><a name="index-Graham_002c-G_002e-S_002e-201"></a><a name="index-Sevcik_002c-K_002e-C_002e-202"></a>
 <!-- Approximate MVA, with Bard-Schweitzer approximation -->
 <a name="doc_002dqnclosedmultimvaapprox"></a>
 
 <div class="defun">
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedmultimvaapprox</b> (<var>N, S, V</var>)<var><a name="index-qnclosedmultimvaapprox-202"></a></var><br>
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedmultimvaapprox</b> (<var>N, S, V, m</var>)<var><a name="index-qnclosedmultimvaapprox-203"></a></var><br>
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedmultimvaapprox</b> (<var>N, S, V, m, Z</var>)<var><a name="index-qnclosedmultimvaapprox-204"></a></var><br>
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedmultimvaapprox</b> (<var>N, S, V, m, Z, tol</var>)<var><a name="index-qnclosedmultimvaapprox-205"></a></var><br>
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedmultimvaapprox</b> (<var>N, S, V, m, Z, tol, iter_max</var>)<var><a name="index-qnclosedmultimvaapprox-206"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedmultimvaapprox</b> (<var>N, S, V</var>)<var><a name="index-qnclosedmultimvaapprox-203"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedmultimvaapprox</b> (<var>N, S, V, m</var>)<var><a name="index-qnclosedmultimvaapprox-204"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedmultimvaapprox</b> (<var>N, S, V, m, Z</var>)<var><a name="index-qnclosedmultimvaapprox-205"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedmultimvaapprox</b> (<var>N, S, V, m, Z, tol</var>)<var><a name="index-qnclosedmultimvaapprox-206"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosedmultimvaapprox</b> (<var>N, S, V, m, Z, tol, iter_max</var>)<var><a name="index-qnclosedmultimvaapprox-207"></a></var><br>
 <blockquote>
-        <p><a name="index-Mean-Value-Analysys-_0028MVA_0029_002c-approximate-207"></a><a name="index-Approximate-MVA-208"></a><a name="index-Closed-network_002c-multiple-classes-209"></a><a name="index-Closed-network_002c-approximate-analysis-210"></a>
+        <p><a name="index-Mean-Value-Analysys-_0028MVA_0029_002c-approximate-208"></a><a name="index-Approximate-MVA-209"></a><a name="index-Closed-network_002c-multiple-classes-210"></a><a name="index-Closed-network_002c-approximate-analysis-211"></a>
 Analyze closed, multiclass queueing networks with K service
 centers and C customer classes using the approximate Mean
 Value Analysys (MVA) algorithm.
@@ -3776,12 +3787,12 @@ throughput at service center k.
 proc. 4th Int. Symp. on Modelling and Performance Evaluation of
 Computer Systems, feb. 1979, pp. 51&ndash;62.
 
-   <p><a name="index-Bard_002c-Y_002e-211"></a>
+   <p><a name="index-Bard_002c-Y_002e-212"></a>
 P. Schweitzer, <cite>Approximate Analysis of Multiclass Closed
 Networks of Queues</cite>, Proc. Int. Conf. on Stochastic Control and
 Optimization, jun 1979, pp. 25&ndash;29.
 
-   <p><a name="index-Schweitzer_002c-P_002e-212"></a>
+   <p><a name="index-Schweitzer_002c-P_002e-213"></a>
 This implementation is based on Edward D. Lazowska, John Zahorjan, G. 
 Scott Graham, and Kenneth C. Sevcik, <cite>Quantitative System
 Performance: Computer System Analysis Using Queueing Network Models</cite>,
@@ -3792,7 +3803,7 @@ Techniques"). This implementation is slightly different from the one
 described above, as it computes the average response times R
 instead of the residence times.
 
-   <p><a name="index-Lazowska_002c-E_002e-D_002e-213"></a><a name="index-Zahorjan_002c-J_002e-214"></a><a name="index-Graham_002c-G_002e-S_002e-215"></a><a name="index-Sevcik_002c-K_002e-C_002e-216"></a>
+   <p><a name="index-Lazowska_002c-E_002e-D_002e-214"></a><a name="index-Zahorjan_002c-J_002e-215"></a><a name="index-Graham_002c-G_002e-S_002e-216"></a><a name="index-Sevcik_002c-K_002e-C_002e-217"></a>
 
 <h4 class="subsection">6.3.5 Mixed Networks</h4>
 
@@ -3800,9 +3811,9 @@ instead of the residence times.
 <p><a name="doc_002dqnmix"></a>
 
 <div class="defun">
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnmix</b> (<var>lambda, N, S, V, m</var>)<var><a name="index-qnmix-217"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnmix</b> (<var>lambda, N, S, V, m</var>)<var><a name="index-qnmix-218"></a></var><br>
 <blockquote>
-        <p><a name="index-Mean-Value-Analysys-_0028MVA_0029-218"></a><a name="index-mixed-network-219"></a>
+        <p><a name="index-Mean-Value-Analysys-_0028MVA_0029-219"></a><a name="index-mixed-network-220"></a>
 Solution of mixed queueing networks through MVA. The network consists
 of K service centers (single-server or delay centers) and
 C independent customer chains. Both open and closed chains
@@ -3893,14 +3904,14 @@ particular, see section 7.4.3 ("Mixed Model Solution Techniques").
 Note that in this function we compute the mean response time R
 instead of the mean residence time as in the reference.
 
-   <p><a name="index-Lazowska_002c-E_002e-D_002e-220"></a><a name="index-Zahorjan_002c-J_002e-221"></a><a name="index-Graham_002c-G_002e-S_002e-222"></a><a name="index-Sevcik_002c-K_002e-C_002e-223"></a>
+   <p><a name="index-Lazowska_002c-E_002e-D_002e-221"></a><a name="index-Zahorjan_002c-J_002e-222"></a><a name="index-Graham_002c-G_002e-S_002e-223"></a><a name="index-Sevcik_002c-K_002e-C_002e-224"></a>
 Herb Schwetman, <cite>Implementing the Mean Value Algorithm for the
 Solution of Queueing Network Models</cite>, Technical Report CSD-TR-355,
 Department of Computer Sciences, Purdue University, feb 15, 1982,
 available at
 <a href="http://www.cs.purdue.edu/research/technical_reports/1980/TR%2080-355.pdf">http://www.cs.purdue.edu/research/technical_reports/1980/TR%2080-355.pdf</a>
 
-   <p><a name="index-Schwetman_002c-H_002e-224"></a>
+   <p><a name="index-Schwetman_002c-H_002e-225"></a>
 
 <div class="node">
 <a name="Algorithms-for-non-Product-form-QNs"></a>
@@ -3919,9 +3930,9 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Queueing-Networks">Queueing Networks</
 <p><a name="doc_002dqnmvablo"></a>
 
 <div class="defun">
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnmvablo</b> (<var>N, S, M, P</var>)<var><a name="index-qnmvablo-225"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnmvablo</b> (<var>N, S, M, P</var>)<var><a name="index-qnmvablo-226"></a></var><br>
 <blockquote>
-        <p><a name="index-queueing-network-with-blocking-226"></a><a name="index-blocking-queueing-network-227"></a><a name="index-closed-network_002c-finite-capacity-228"></a>
+        <p><a name="index-queueing-network-with-blocking-227"></a><a name="index-blocking-queueing-network-228"></a><a name="index-closed-network_002c-finite-capacity-229"></a>
 MVA algorithm for closed queueing networks with blocking. <samp><span class="command">qnmvablo</span></samp>
 computes approximate utilization, response time and mean queue length
 for closed, single class queueing networks with blocking.
@@ -3976,16 +3987,16 @@ service center i.
 Networks</cite>, IEEE Transactions on Software Engineering, vol. 14, n. 2,
 april 1988, pp. 418&ndash;428.  <a href="http://dx.doi.org/10.1109/32.4663">http://dx.doi.org/10.1109/32.4663</a>
 
-   <p><a name="index-Akyildiz_002c-I_002e-F_002e-229"></a>
+   <p><a name="index-Akyildiz_002c-I_002e-F_002e-230"></a>
 <a name="doc_002dqnmarkov"></a>
 
 <div class="defun">
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnmarkov</b> (<var>lambda, S, C, P</var>)<var><a name="index-qnmarkov-230"></a></var><br>
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnmarkov</b> (<var>lambda, S, C, P, m</var>)<var><a name="index-qnmarkov-231"></a></var><br>
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnmarkov</b> (<var>N, S, C, P</var>)<var><a name="index-qnmarkov-232"></a></var><br>
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnmarkov</b> (<var>N, S, C, P, m</var>)<var><a name="index-qnmarkov-233"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnmarkov</b> (<var>lambda, S, C, P</var>)<var><a name="index-qnmarkov-231"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnmarkov</b> (<var>lambda, S, C, P, m</var>)<var><a name="index-qnmarkov-232"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnmarkov</b> (<var>N, S, C, P</var>)<var><a name="index-qnmarkov-233"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnmarkov</b> (<var>N, S, C, P, m</var>)<var><a name="index-qnmarkov-234"></a></var><br>
 <blockquote>
-        <p><a name="index-closed-network_002c-multiple-classes-234"></a><a name="index-closed-network_002c-finite-capacity-235"></a><a name="index-blocking-queueing-network-236"></a><a name="index-RS-blocking-237"></a>
+        <p><a name="index-closed-network_002c-multiple-classes-235"></a><a name="index-closed-network_002c-finite-capacity-236"></a><a name="index-blocking-queueing-network-237"></a><a name="index-RS-blocking-238"></a>
 Compute utilization, response time, average queue length and
 throughput for open or closed queueing networks with finite capacity. 
 Blocking type is Repetitive-Service (RS). This function explicitly
@@ -4095,9 +4106,9 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Queueing-Networks">Queueing Networks</
 <p><a name="doc_002dqnopenab"></a>
 
 <div class="defun">
-&mdash; Function File: [<var>Xu</var>, <var>Rl</var>] = <b>qnopenab</b> (<var>lambda, D</var>)<var><a name="index-qnopenab-238"></a></var><br>
+&mdash; Function File: [<var>Xu</var>, <var>Rl</var>] = <b>qnopenab</b> (<var>lambda, D</var>)<var><a name="index-qnopenab-239"></a></var><br>
 <blockquote>
-        <p><a name="index-bounds_002c-asymptotic-239"></a><a name="index-open-network-240"></a>
+        <p><a name="index-bounds_002c-asymptotic-240"></a><a name="index-open-network-241"></a>
 Compute Asymptotic Bounds for single-class, open Queueing Networks
 with K service centers.
 
@@ -4137,14 +4148,14 @@ Analysis Using Queueing Network Models</cite>, Prentice Hall,
 1984. <a href="http://www.cs.washington.edu/homes/lazowska/qsp/">http://www.cs.washington.edu/homes/lazowska/qsp/</a>. In
 particular, see section 5.2 ("Asymptotic Bounds").
 
-   <p><a name="index-Lazowska_002c-E_002e-D_002e-241"></a><a name="index-Zahorjan_002c-J_002e-242"></a><a name="index-Graham_002c-G_002e-S_002e-243"></a><a name="index-Sevcik_002c-K_002e-C_002e-244"></a>
+   <p><a name="index-Lazowska_002c-E_002e-D_002e-242"></a><a name="index-Zahorjan_002c-J_002e-243"></a><a name="index-Graham_002c-G_002e-S_002e-244"></a><a name="index-Sevcik_002c-K_002e-C_002e-245"></a>
 <a name="doc_002dqnclosedab"></a>
 
 <div class="defun">
-&mdash; Function File: [<var>Xl</var>, <var>Xu</var>, <var>Rl</var>, <var>Ru</var>] = <b>qnclosedab</b> (<var>N, D</var>)<var><a name="index-qnclosedab-245"></a></var><br>
-&mdash; Function File: [<var>Xl</var>, <var>Xu</var>, <var>Rl</var>, <var>Ru</var>] = <b>qnclosedab</b> (<var>N, D, Z</var>)<var><a name="index-qnclosedab-246"></a></var><br>
+&mdash; Function File: [<var>Xl</var>, <var>Xu</var>, <var>Rl</var>, <var>Ru</var>] = <b>qnclosedab</b> (<var>N, D</var>)<var><a name="index-qnclosedab-246"></a></var><br>
+&mdash; Function File: [<var>Xl</var>, <var>Xu</var>, <var>Rl</var>, <var>Ru</var>] = <b>qnclosedab</b> (<var>N, D, Z</var>)<var><a name="index-qnclosedab-247"></a></var><br>
 <blockquote>
-        <p><a name="index-bounds_002c-asymptotic-247"></a><a name="index-closed-network-248"></a>
+        <p><a name="index-bounds_002c-asymptotic-248"></a><a name="index-closed-network-249"></a>
 Compute Asymptotic Bounds for single-class, closed Queueing Networks
 with K service centers.
 
@@ -4185,14 +4196,14 @@ Analysis Using Queueing Network Models</cite>, Prentice Hall,
 1984. <a href="http://www.cs.washington.edu/homes/lazowska/qsp/">http://www.cs.washington.edu/homes/lazowska/qsp/</a>. In
 particular, see section 5.2 ("Asymptotic Bounds").
 
-   <p><a name="index-Lazowska_002c-E_002e-D_002e-249"></a><a name="index-Zahorjan_002c-J_002e-250"></a><a name="index-Graham_002c-G_002e-S_002e-251"></a><a name="index-Sevcik_002c-K_002e-C_002e-252"></a>
+   <p><a name="index-Lazowska_002c-E_002e-D_002e-250"></a><a name="index-Zahorjan_002c-J_002e-251"></a><a name="index-Graham_002c-G_002e-S_002e-252"></a><a name="index-Sevcik_002c-K_002e-C_002e-253"></a>
 
    <p><a name="doc_002dqnopenbsb"></a>
 
 <div class="defun">
-&mdash; Function File: [<var>Xu</var>, <var>Rl</var>, <var>Ru</var>] = <b>qnopenbsb</b> (<var>lambda, D</var>)<var><a name="index-qnopenbsb-253"></a></var><br>
+&mdash; Function File: [<var>Xu</var>, <var>Rl</var>, <var>Ru</var>] = <b>qnopenbsb</b> (<var>lambda, D</var>)<var><a name="index-qnopenbsb-254"></a></var><br>
 <blockquote>
-        <p><a name="index-bounds_002c-balanced-system-254"></a><a name="index-open-network-255"></a>
+        <p><a name="index-bounds_002c-balanced-system-255"></a><a name="index-open-network-256"></a>
 Compute Balanced System Bounds for single-class, open Queueing Networks
 with K service centers.
 
@@ -4232,14 +4243,14 @@ Analysis Using Queueing Network Models</cite>, Prentice Hall,
 1984. <a href="http://www.cs.washington.edu/homes/lazowska/qsp/">http://www.cs.washington.edu/homes/lazowska/qsp/</a>. In
 particular, see section 5.4 ("Balanced Systems Bounds").
 
-   <p><a name="index-Lazowska_002c-E_002e-D_002e-256"></a><a name="index-Zahorjan_002c-J_002e-257"></a><a name="index-Graham_002c-G_002e-S_002e-258"></a><a name="index-Sevcik_002c-K_002e-C_002e-259"></a>
+   <p><a name="index-Lazowska_002c-E_002e-D_002e-257"></a><a name="index-Zahorjan_002c-J_002e-258"></a><a name="index-Graham_002c-G_002e-S_002e-259"></a><a name="index-Sevcik_002c-K_002e-C_002e-260"></a>
 <a name="doc_002dqnclosedbsb"></a>
 
 <div class="defun">
-&mdash; Function File: [<var>Xl</var>, <var>Xu</var>, <var>Rl</var>, <var>Ru</var>] = <b>qnclosedbsb</b> (<var>N, D</var>)<var><a name="index-qnclosedbsb-260"></a></var><br>
-&mdash; Function File: [<var>Xl</var>, <var>Xu</var>, <var>Rl</var>, <var>Ru</var>] = <b>qnclosedbsb</b> (<var>N, D, Z</var>)<var><a name="index-qnclosedbsb-261"></a></var><br>
+&mdash; Function File: [<var>Xl</var>, <var>Xu</var>, <var>Rl</var>, <var>Ru</var>] = <b>qnclosedbsb</b> (<var>N, D</var>)<var><a name="index-qnclosedbsb-261"></a></var><br>
+&mdash; Function File: [<var>Xl</var>, <var>Xu</var>, <var>Rl</var>, <var>Ru</var>] = <b>qnclosedbsb</b> (<var>N, D, Z</var>)<var><a name="index-qnclosedbsb-262"></a></var><br>
 <blockquote>
-        <p><a name="index-bounds_002c-balanced-system-262"></a><a name="index-closed-network-263"></a>
+        <p><a name="index-bounds_002c-balanced-system-263"></a><a name="index-closed-network-264"></a>
 Compute Balanced System Bounds for single-class, closed Queueing Networks
 with K service centers.
 
@@ -4275,7 +4286,7 @@ omitted, it is assumed to be zero.
    <p><a name="doc_002dqnclosedpb"></a>
 
 <div class="defun">
-&mdash; Function File: [<var>Xl</var>, <var>Xu</var>] = <b>qnclosedpb</b> (<var>N, D </var>)<var><a name="index-qnclosedpb-264"></a></var><br>
+&mdash; Function File: [<var>Xl</var>, <var>Xu</var>] = <b>qnclosedpb</b> (<var>N, D </var>)<var><a name="index-qnclosedpb-265"></a></var><br>
 <blockquote>
         <p>Compute PB Bounds (C. H. Hsieh and S. Lam, 1987)
 for single-class, closed Queueing Networks
@@ -4319,13 +4330,13 @@ Casale, R. R. Muntz, G. Serazzi, <cite>Geometric Bounds: a
 Non-Iterative Analysis Technique for Closed Queueing Networks</cite>, IEEE
 Transactions on Computers, 57(6):780-794, June 2008.
 
-   <p><a name="index-Hsieh_002c-C_002e-H-265"></a><a name="index-Lam_002c-S_002e-266"></a><a name="index-Casale_002c-G_002e-267"></a><a name="index-Muntz_002c-R_002e-R_002e-268"></a><a name="index-Serazzi_002c-G_002e-269"></a>
+   <p><a name="index-Hsieh_002c-C_002e-H-266"></a><a name="index-Lam_002c-S_002e-267"></a><a name="index-Casale_002c-G_002e-268"></a><a name="index-Muntz_002c-R_002e-R_002e-269"></a><a name="index-Serazzi_002c-G_002e-270"></a>
 <a name="doc_002dqnclosedgb"></a>
 
 <div class="defun">
-&mdash; Function File: [<var>Xl</var>, <var>Xu</var>, <var>Ql</var>, <var>Qu</var>] = <b>qnclosedgb</b> (<var>N, D, Z</var>)<var><a name="index-qnclosedgb-270"></a></var><br>
+&mdash; Function File: [<var>Xl</var>, <var>Xu</var>, <var>Ql</var>, <var>Qu</var>] = <b>qnclosedgb</b> (<var>N, D, Z</var>)<var><a name="index-qnclosedgb-271"></a></var><br>
 <blockquote>
-        <p><a name="index-bounds_002c-geometric-271"></a><a name="index-closed-network-272"></a>
+        <p><a name="index-bounds_002c-geometric-272"></a><a name="index-closed-network-273"></a>
 Compute Geometric Bounds (GB) for single-class, closed Queueing Networks.
 
         <p><strong>INPUTS</strong>
@@ -4366,7 +4377,7 @@ bounds respectively of the queue length for service center i.
 Queueing Networks</cite>, IEEE Transactions on Computers, 57(6):780-794,
 June 2008. <a href="http://doi.ieeecomputersociety.org/10.1109/TC.2008.37">http://doi.ieeecomputersociety.org/10.1109/TC.2008.37</a>
 
-   <p><a name="index-Casale_002c-G_002e-273"></a><a name="index-Muntz_002c-R_002e-R_002e-274"></a><a name="index-Serazzi_002c-G_002e-275"></a>
+   <p><a name="index-Casale_002c-G_002e-274"></a><a name="index-Muntz_002c-R_002e-R_002e-275"></a><a name="index-Serazzi_002c-G_002e-276"></a>
 In this implementation we set X^+ and X^- as the upper
 and lower Asymptotic Bounds as computed by the <code>qnclosedab</code>
 function, respectively.
@@ -4386,9 +4397,9 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Queueing-Networks">Queueing Networks</
 <p><a name="doc_002dqnclosed"></a>
 
 <div class="defun">
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosed</b> (<var>N, S, V, <small class="dots">...</small></var>)<var><a name="index-qnclosed-276"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnclosed</b> (<var>N, S, V, <small class="dots">...</small></var>)<var><a name="index-qnclosed-277"></a></var><br>
 <blockquote>
-        <p><a name="index-closed-network-277"></a>
+        <p><a name="index-closed-network-278"></a>
 This function computes steady-state performance measures of closed
 queueing networks using the Mean Value Analysis (MVA) algorithm. The
 qneneing network is allowed to contain fixed-capacity centers, delay
@@ -4455,9 +4466,9 @@ MVA algorithm as implemented in the <code>qnclosedmultimva</code> function.
    <p><a name="doc_002dqnopen"></a>
 
 <div class="defun">
-&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnopen</b> (<var>lambda, S, V, <small class="dots">...</small></var>)<var><a name="index-qnopen-278"></a></var><br>
+&mdash; Function File: [<var>U</var>, <var>R</var>, <var>Q</var>, <var>X</var>] = <b>qnopen</b> (<var>lambda, S, V, <small class="dots">...</small></var>)<var><a name="index-qnopen-279"></a></var><br>
 <blockquote>
-        <p><a name="index-open-network-279"></a>
+        <p><a name="index-open-network-280"></a>
 Compute utilization, response time, average number of requests in the
 system, and throughput for open queueing networks. If <var>lambda</var> is
 a scalar, the network is considered a single-class QN and is solved
@@ -4510,8 +4521,8 @@ then P_0sj = \lambda_sj / \lambda.
    <p><a name="doc_002dqnvisits"></a>
 
 <div class="defun">
-&mdash; Function File: [<var>V</var> <var>ch</var>] = <b>qnvisits</b> (<var>P</var>)<var><a name="index-qnvisits-280"></a></var><br>
-&mdash; Function File: <var>V</var> = <b>qnvisits</b> (<var>P, lambda</var>)<var><a name="index-qnvisits-281"></a></var><br>
+&mdash; Function File: [<var>V</var> <var>ch</var>] = <b>qnvisits</b> (<var>P</var>)<var><a name="index-qnvisits-281"></a></var><br>
+&mdash; Function File: <var>V</var> = <b>qnvisits</b> (<var>P, lambda</var>)<var><a name="index-qnvisits-282"></a></var><br>
 <blockquote>
         <p>Compute the average number of visits to the service centers of a
 single class, open or closed Queueing Network with N service
@@ -4573,9 +4584,9 @@ The total number of chains is <code>max(</code><var>ch</var><code>)</code>.
 <p><a name="doc_002dpopulation_005fmix"></a>
 
 <div class="defun">
-&mdash; Function File: pop_mix = <b>population_mix</b> (<var>k, N</var>)<var><a name="index-population_005fmix-282"></a></var><br>
+&mdash; Function File: pop_mix = <b>population_mix</b> (<var>k, N</var>)<var><a name="index-population_005fmix-283"></a></var><br>
 <blockquote>
-        <p><a name="index-population-mix-283"></a><a name="index-closed-network_002c-multiple-classes-284"></a>
+        <p><a name="index-population-mix-284"></a><a name="index-closed-network_002c-multiple-classes-285"></a>
 Return the set of valid population mixes with exactly <var>k</var>
 customers, for a closed multiclass Queueing Network with population
 vector <var>N</var>. More specifically, given a multiclass Queueing
@@ -4637,13 +4648,13 @@ k_i are nonnegative integers, for some fixed integer k
 Indices for a Complex Summation</cite>, unpublished report, available at
 <a href="http://arantxa.ii.uam.es/~ssantini/writing/notes/s668_summation.pdf">http://arantxa.ii.uam.es/~ssantini/writing/notes/s668_summation.pdf</a>
 
-   <p><a name="index-Schwetman_002c-H_002e-285"></a><a name="index-Santini_002c-S_002e-286"></a>
+   <p><a name="index-Schwetman_002c-H_002e-286"></a><a name="index-Santini_002c-S_002e-287"></a>
 <a name="doc_002dqnmvapop"></a>
 
 <div class="defun">
-&mdash; Function File: <var>H</var> = <b>qnmvapop</b> (<var>N</var>)<var><a name="index-qnmvapop-287"></a></var><br>
+&mdash; Function File: <var>H</var> = <b>qnmvapop</b> (<var>N</var>)<var><a name="index-qnmvapop-288"></a></var><br>
 <blockquote>
-        <p><a name="index-population-mix-288"></a><a name="index-closed-network_002c-multiple-classes-289"></a>
+        <p><a name="index-population-mix-289"></a><a name="index-closed-network_002c-multiple-classes-290"></a>
 Given a network with C customer classes, this function
 computes the number of valid population mixes <var>H</var><code>(r,n)</code> that can
 be constructed by the multiclass MVA algorithm by allocating n
@@ -4680,7 +4691,7 @@ network models using mean value analysis</cite>. SIGMETRICS
 Perform. Eval. Rev. 10, 3 (Sep. 1981), 80-85. DOI
 <a href="http://doi.acm.org/10.1145/1010629.805477">http://doi.acm.org/10.1145/1010629.805477</a>
 
-   <p><a name="index-Zahorjan_002c-J_002e-290"></a><a name="index-Wong_002c-E_002e-291"></a>
+   <p><a name="index-Zahorjan_002c-J_002e-291"></a><a name="index-Wong_002c-E_002e-292"></a>
 
 <!-- Appendix starts here -->
 <!-- DO NOT EDIT!  Generated automatically by munge-texi. -->
@@ -4791,7 +4802,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 
 <h2 class="appendix">Appendix C GNU GENERAL PUBLIC LICENSE</h2>
 
-<p><a name="index-warranty-292"></a><a name="index-copyright-293"></a>
+<p><a name="index-warranty-293"></a><a name="index-copyright-294"></a>
 <div align="center">Version 3, 29 June 2007</div>
 
 <pre class="display">     Copyright &copy; 2007 Free Software Foundation, Inc. <a href="http://fsf.org/">http://fsf.org/</a>
@@ -5498,73 +5509,73 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 <h2 class="unnumbered">Concept Index</h2>
 
 <ul class="index-cp" compact>
-<li><a href="#index-Approximate-MVA-177">Approximate MVA</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-Asymmetric-_0040math_007bM_002fM_002fm_007d-system-77">Asymmetric M/M/m system</a>: <a href="#The-Asymmetric-M_002fM_002fm-System">The Asymmetric M/M/m System</a></li>
-<li><a href="#index-BCMP-network-132">BCMP network</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-Birth_002ddeath-process-29">Birth-death process</a>: <a href="#Birth_002dDeath-process">Birth-Death process</a></li>
+<li><a href="#index-Approximate-MVA-178">Approximate MVA</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-Asymmetric-_0040math_007bM_002fM_002fm_007d-system-78">Asymmetric M/M/m system</a>: <a href="#The-Asymmetric-M_002fM_002fm-System">The Asymmetric M/M/m System</a></li>
+<li><a href="#index-BCMP-network-133">BCMP network</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-Birth_002ddeath-process-30">Birth-death process</a>: <a href="#Birth_002dDeath-process">Birth-Death process</a></li>
 <li><a href="#index-Birth_002ddeath-process-11">Birth-death process</a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
-<li><a href="#index-blocking-queueing-network-227">blocking queueing network</a>: <a href="#Algorithms-for-non-Product_002dform-QNs">Algorithms for non Product-form QNs</a></li>
-<li><a href="#index-bounds_002c-asymptotic-239">bounds, asymptotic</a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
-<li><a href="#index-bounds_002c-balanced-system-254">bounds, balanced system</a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
-<li><a href="#index-bounds_002c-geometric-271">bounds, geometric</a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
-<li><a href="#index-closed-network-277">closed network</a>: <a href="#Utility-functions">Utility functions</a></li>
-<li><a href="#index-closed-network-248">closed network</a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
-<li><a href="#index-closed-network-109">closed network</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-Closed-network_002c-approximate-analysis-179">Closed network, approximate analysis</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-closed-network_002c-finite-capacity-228">closed network, finite capacity</a>: <a href="#Algorithms-for-non-Product_002dform-QNs">Algorithms for non Product-form QNs</a></li>
-<li><a href="#index-closed-network_002c-multiple-classes-284">closed network, multiple classes</a>: <a href="#Utility-functions">Utility functions</a></li>
-<li><a href="#index-closed-network_002c-multiple-classes-234">closed network, multiple classes</a>: <a href="#Algorithms-for-non-Product_002dform-QNs">Algorithms for non Product-form QNs</a></li>
-<li><a href="#index-Closed-network_002c-multiple-classes-209">Closed network, multiple classes</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-closed-network_002c-multiple-classes-191">closed network, multiple classes</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-Closed-network_002c-single-class-178">Closed network, single class</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-closed-network_002c-single-class-148">closed network, single class</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-CMVA-169">CMVA</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-Continuous-time-Markov-chain-24">Continuous time Markov chain</a>: <a href="#State-occupancy-probabilities">State occupancy probabilities</a></li>
-<li><a href="#index-convolution-algorithm-111">convolution algorithm</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-copyright-293">copyright</a>: <a href="#Copying">Copying</a></li>
+<li><a href="#index-blocking-queueing-network-228">blocking queueing network</a>: <a href="#Algorithms-for-non-Product_002dform-QNs">Algorithms for non Product-form QNs</a></li>
+<li><a href="#index-bounds_002c-asymptotic-240">bounds, asymptotic</a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
+<li><a href="#index-bounds_002c-balanced-system-255">bounds, balanced system</a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
+<li><a href="#index-bounds_002c-geometric-272">bounds, geometric</a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
+<li><a href="#index-closed-network-278">closed network</a>: <a href="#Utility-functions">Utility functions</a></li>
+<li><a href="#index-closed-network-249">closed network</a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
+<li><a href="#index-closed-network-110">closed network</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-Closed-network_002c-approximate-analysis-180">Closed network, approximate analysis</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-closed-network_002c-finite-capacity-229">closed network, finite capacity</a>: <a href="#Algorithms-for-non-Product_002dform-QNs">Algorithms for non Product-form QNs</a></li>
+<li><a href="#index-closed-network_002c-multiple-classes-285">closed network, multiple classes</a>: <a href="#Utility-functions">Utility functions</a></li>
+<li><a href="#index-closed-network_002c-multiple-classes-235">closed network, multiple classes</a>: <a href="#Algorithms-for-non-Product_002dform-QNs">Algorithms for non Product-form QNs</a></li>
+<li><a href="#index-Closed-network_002c-multiple-classes-210">Closed network, multiple classes</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-closed-network_002c-multiple-classes-192">closed network, multiple classes</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-Closed-network_002c-single-class-179">Closed network, single class</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-closed-network_002c-single-class-149">closed network, single class</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-CMVA-170">CMVA</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-Continuous-time-Markov-chain-25">Continuous time Markov chain</a>: <a href="#State-occupancy-probabilities">State occupancy probabilities</a></li>
+<li><a href="#index-convolution-algorithm-112">convolution algorithm</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-copyright-294">copyright</a>: <a href="#Copying">Copying</a></li>
 <li><a href="#index-Discrete-time-Markov-chain-6">Discrete time Markov chain</a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
-<li><a href="#index-Expected-sojourn-time-33">Expected sojourn time</a>: <a href="#Expected-Sojourn-Time">Expected Sojourn Time</a></li>
-<li><a href="#index-First-passage-times-47">First passage times</a>: <a href="#First-Passage-Times">First Passage Times</a></li>
+<li><a href="#index-Expected-sojourn-time-34">Expected sojourn time</a>: <a href="#Expected-Sojourn-Time">Expected Sojourn Time</a></li>
+<li><a href="#index-First-passage-times-48">First passage times</a>: <a href="#First-Passage-Times">First Passage Times</a></li>
 <li><a href="#index-First-passage-times-15">First passage times</a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
-<li><a href="#index-Jackson-network-102">Jackson network</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-load_002ddependent-service-center-121">load-dependent service center</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-g_t_0040math_007bM_002fG_002f1_007d-system-83">M/G/1 system</a>: <a href="#The-M_002fG_002f1-System">The M/G/1 System</a></li>
-<li><a href="#index-g_t_0040math_007bM_002fH_005fm_002f1_007d-system-85">M/H_m/1 system</a>: <a href="#The-M_002fHm_002f1-System">The M/Hm/1 System</a></li>
-<li><a href="#index-g_t_0040math_007bM_002fM_002f1_007d-system-49">M/M/1 system</a>: <a href="#The-M_002fM_002f1-System">The M/M/1 System</a></li>
-<li><a href="#index-g_t_0040math_007bM_002fM_002f1_002fK_007d-system-69">M/M/1/K system</a>: <a href="#The-M_002fM_002f1_002fK-System">The M/M/1/K System</a></li>
-<li><a href="#index-g_t_0040math_007bM_002fM_002f_007dinf-system-62">M/M/inf system</a>: <a href="#The-M_002fM_002finf-System">The M/M/inf System</a></li>
-<li><a href="#index-g_t_0040math_007bM_002fM_002fm_007d-system-56">M/M/m system</a>: <a href="#The-M_002fM_002fm-System">The M/M/m System</a></li>
-<li><a href="#index-g_t_0040math_007bM_002fM_002fm_002fK_007d-system-71">M/M/m/K system</a>: <a href="#The-M_002fM_002fm_002fK-System">The M/M/m/K System</a></li>
-<li><a href="#index-Markov-chain_002c-continuous-time-46">Markov chain, continuous time</a>: <a href="#First-Passage-Times">First Passage Times</a></li>
-<li><a href="#index-Markov-chain_002c-continuous-time-38">Markov chain, continuous time</a>: <a href="#Mean-Time-to-Absorption">Mean Time to Absorption</a></li>
-<li><a href="#index-Markov-chain_002c-continuous-time-35">Markov chain, continuous time</a>: <a href="#Time_002dAveraged-Expected-Sojourn-Time">Time-Averaged Expected Sojourn Time</a></li>
-<li><a href="#index-Markov-chain_002c-continuous-time-32">Markov chain, continuous time</a>: <a href="#Expected-Sojourn-Time">Expected Sojourn Time</a></li>
-<li><a href="#index-Markov-chain_002c-continuous-time-28">Markov chain, continuous time</a>: <a href="#Birth_002dDeath-process">Birth-Death process</a></li>
-<li><a href="#index-Markov-chain_002c-continuous-time-23">Markov chain, continuous time</a>: <a href="#State-occupancy-probabilities">State occupancy probabilities</a></li>
-<li><a href="#index-Markov-chain_002c-continuous-time-20">Markov chain, continuous time</a>: <a href="#Continuous_002dTime-Markov-Chains">Continuous-Time Markov Chains</a></li>
+<li><a href="#index-Jackson-network-103">Jackson network</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-load_002ddependent-service-center-122">load-dependent service center</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-g_t_0040math_007bM_002fG_002f1_007d-system-84">M/G/1 system</a>: <a href="#The-M_002fG_002f1-System">The M/G/1 System</a></li>
+<li><a href="#index-g_t_0040math_007bM_002fH_005fm_002f1_007d-system-86">M/H_m/1 system</a>: <a href="#The-M_002fHm_002f1-System">The M/Hm/1 System</a></li>
+<li><a href="#index-g_t_0040math_007bM_002fM_002f1_007d-system-50">M/M/1 system</a>: <a href="#The-M_002fM_002f1-System">The M/M/1 System</a></li>
+<li><a href="#index-g_t_0040math_007bM_002fM_002f1_002fK_007d-system-70">M/M/1/K system</a>: <a href="#The-M_002fM_002f1_002fK-System">The M/M/1/K System</a></li>
+<li><a href="#index-g_t_0040math_007bM_002fM_002f_007dinf-system-63">M/M/inf system</a>: <a href="#The-M_002fM_002finf-System">The M/M/inf System</a></li>
+<li><a href="#index-g_t_0040math_007bM_002fM_002fm_007d-system-57">M/M/m system</a>: <a href="#The-M_002fM_002fm-System">The M/M/m System</a></li>
+<li><a href="#index-g_t_0040math_007bM_002fM_002fm_002fK_007d-system-72">M/M/m/K system</a>: <a href="#The-M_002fM_002fm_002fK-System">The M/M/m/K System</a></li>
+<li><a href="#index-Markov-chain_002c-continuous-time-47">Markov chain, continuous time</a>: <a href="#First-Passage-Times">First Passage Times</a></li>
+<li><a href="#index-Markov-chain_002c-continuous-time-39">Markov chain, continuous time</a>: <a href="#Mean-Time-to-Absorption">Mean Time to Absorption</a></li>
+<li><a href="#index-Markov-chain_002c-continuous-time-36">Markov chain, continuous time</a>: <a href="#Time_002dAveraged-Expected-Sojourn-Time">Time-Averaged Expected Sojourn Time</a></li>
+<li><a href="#index-Markov-chain_002c-continuous-time-33">Markov chain, continuous time</a>: <a href="#Expected-Sojourn-Time">Expected Sojourn Time</a></li>
+<li><a href="#index-Markov-chain_002c-continuous-time-29">Markov chain, continuous time</a>: <a href="#Birth_002dDeath-process">Birth-Death process</a></li>
+<li><a href="#index-Markov-chain_002c-continuous-time-24">Markov chain, continuous time</a>: <a href="#State-occupancy-probabilities">State occupancy probabilities</a></li>
+<li><a href="#index-Markov-chain_002c-continuous-time-21">Markov chain, continuous time</a>: <a href="#Continuous_002dTime-Markov-Chains">Continuous-Time Markov Chains</a></li>
 <li><a href="#index-Markov-chain_002c-discrete-time-2">Markov chain, discrete time</a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
-<li><a href="#index-Markov-chain_002c-disctete-time-17">Markov chain, disctete time</a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
-<li><a href="#index-Markov-chain_002c-state-occupancy-probabilities-25">Markov chain, state occupancy probabilities</a>: <a href="#State-occupancy-probabilities">State occupancy probabilities</a></li>
+<li><a href="#index-Markov-chain_002c-disctete-time-18">Markov chain, disctete time</a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
+<li><a href="#index-Markov-chain_002c-state-occupancy-probabilities-26">Markov chain, state occupancy probabilities</a>: <a href="#State-occupancy-probabilities">State occupancy probabilities</a></li>
 <li><a href="#index-Markov-chain_002c-stationary-probabilities-7">Markov chain, stationary probabilities</a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
-<li><a href="#index-Mean-time-to-absorption-39">Mean time to absorption</a>: <a href="#Mean-Time-to-Absorption">Mean Time to Absorption</a></li>
-<li><a href="#index-Mean-time-to-absorption-18">Mean time to absorption</a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
-<li><a href="#index-Mean-Value-Analysys-_0028MVA_0029-147">Mean Value Analysys (MVA)</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-Mean-Value-Analysys-_0028MVA_0029_002c-approximate-176">Mean Value Analysys (MVA), approximate</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-mixed-network-219">mixed network</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-normalization-constant-110">normalization constant</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-open-network-279">open network</a>: <a href="#Utility-functions">Utility functions</a></li>
-<li><a href="#index-open-network-240">open network</a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
-<li><a href="#index-open-network_002c-multiple-classes-139">open network, multiple classes</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-open-network_002c-single-class-101">open network, single class</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-population-mix-283">population mix</a>: <a href="#Utility-functions">Utility functions</a></li>
-<li><a href="#index-queueing-network-with-blocking-226">queueing network with blocking</a>: <a href="#Algorithms-for-non-Product_002dform-QNs">Algorithms for non Product-form QNs</a></li>
-<li><a href="#index-queueing-networks-86">queueing networks</a>: <a href="#Queueing-Networks">Queueing Networks</a></li>
-<li><a href="#index-RS-blocking-237">RS blocking</a>: <a href="#Algorithms-for-non-Product_002dform-QNs">Algorithms for non Product-form QNs</a></li>
-<li><a href="#index-Stationary-probabilities-26">Stationary probabilities</a>: <a href="#State-occupancy-probabilities">State occupancy probabilities</a></li>
+<li><a href="#index-Mean-time-to-absorption-40">Mean time to absorption</a>: <a href="#Mean-Time-to-Absorption">Mean Time to Absorption</a></li>
+<li><a href="#index-Mean-time-to-absorption-19">Mean time to absorption</a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
+<li><a href="#index-Mean-Value-Analysys-_0028MVA_0029-148">Mean Value Analysys (MVA)</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-Mean-Value-Analysys-_0028MVA_0029_002c-approximate-177">Mean Value Analysys (MVA), approximate</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-mixed-network-220">mixed network</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-normalization-constant-111">normalization constant</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-open-network-280">open network</a>: <a href="#Utility-functions">Utility functions</a></li>
+<li><a href="#index-open-network-241">open network</a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
+<li><a href="#index-open-network_002c-multiple-classes-140">open network, multiple classes</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-open-network_002c-single-class-102">open network, single class</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-population-mix-284">population mix</a>: <a href="#Utility-functions">Utility functions</a></li>
+<li><a href="#index-queueing-network-with-blocking-227">queueing network with blocking</a>: <a href="#Algorithms-for-non-Product_002dform-QNs">Algorithms for non Product-form QNs</a></li>
+<li><a href="#index-queueing-networks-87">queueing networks</a>: <a href="#Queueing-Networks">Queueing Networks</a></li>
+<li><a href="#index-RS-blocking-238">RS blocking</a>: <a href="#Algorithms-for-non-Product_002dform-QNs">Algorithms for non Product-form QNs</a></li>
+<li><a href="#index-Stationary-probabilities-27">Stationary probabilities</a>: <a href="#State-occupancy-probabilities">State occupancy probabilities</a></li>
 <li><a href="#index-Stationary-probabilities-8">Stationary probabilities</a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
-<li><a href="#index-Time_002dalveraged-sojourn-time-36">Time-alveraged sojourn time</a>: <a href="#Time_002dAveraged-Expected-Sojourn-Time">Time-Averaged Expected Sojourn Time</a></li>
-<li><a href="#index-traffic-intensity-63">traffic intensity</a>: <a href="#The-M_002fM_002finf-System">The M/M/inf System</a></li>
-<li><a href="#index-warranty-292">warranty</a>: <a href="#Copying">Copying</a></li>
+<li><a href="#index-Time_002dalveraged-sojourn-time-37">Time-alveraged sojourn time</a>: <a href="#Time_002dAveraged-Expected-Sojourn-Time">Time-Averaged Expected Sojourn Time</a></li>
+<li><a href="#index-traffic-intensity-64">traffic intensity</a>: <a href="#The-M_002fM_002finf-System">The M/M/inf System</a></li>
+<li><a href="#index-warranty-293">warranty</a>: <a href="#Copying">Copying</a></li>
    </ul><div class="node">
 <a name="Function-Index"></a>
 <p><hr>
@@ -5579,53 +5590,53 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 
 
 <ul class="index-fn" compact>
-<li><a href="#index-ctmc-21"><code>ctmc</code></a>: <a href="#State-occupancy-probabilities">State occupancy probabilities</a></li>
-<li><a href="#index-ctmc_005fbd-27"><code>ctmc_bd</code></a>: <a href="#Birth_002dDeath-process">Birth-Death process</a></li>
-<li><a href="#index-ctmc_005fcheck_005fQ-19"><code>ctmc_check_Q</code></a>: <a href="#Continuous_002dTime-Markov-Chains">Continuous-Time Markov Chains</a></li>
-<li><a href="#index-ctmc_005fexps-30"><code>ctmc_exps</code></a>: <a href="#Expected-Sojourn-Time">Expected Sojourn Time</a></li>
-<li><a href="#index-ctmc_005ffpt-44"><code>ctmc_fpt</code></a>: <a href="#First-Passage-Times">First Passage Times</a></li>
-<li><a href="#index-ctmc_005fmtta-37"><code>ctmc_mtta</code></a>: <a href="#Mean-Time-to-Absorption">Mean Time to Absorption</a></li>
-<li><a href="#index-ctmc_005ftaexps-34"><code>ctmc_taexps</code></a>: <a href="#Time_002dAveraged-Expected-Sojourn-Time">Time-Averaged Expected Sojourn Time</a></li>
+<li><a href="#index-ctmc-22"><code>ctmc</code></a>: <a href="#State-occupancy-probabilities">State occupancy probabilities</a></li>
+<li><a href="#index-ctmc_005fbd-28"><code>ctmc_bd</code></a>: <a href="#Birth_002dDeath-process">Birth-Death process</a></li>
+<li><a href="#index-ctmc_005fcheck_005fQ-20"><code>ctmc_check_Q</code></a>: <a href="#Continuous_002dTime-Markov-Chains">Continuous-Time Markov Chains</a></li>
+<li><a href="#index-ctmc_005fexps-31"><code>ctmc_exps</code></a>: <a href="#Expected-Sojourn-Time">Expected Sojourn Time</a></li>
+<li><a href="#index-ctmc_005ffpt-45"><code>ctmc_fpt</code></a>: <a href="#First-Passage-Times">First Passage Times</a></li>
+<li><a href="#index-ctmc_005fmtta-38"><code>ctmc_mtta</code></a>: <a href="#Mean-Time-to-Absorption">Mean Time to Absorption</a></li>
+<li><a href="#index-ctmc_005ftaexps-35"><code>ctmc_taexps</code></a>: <a href="#Time_002dAveraged-Expected-Sojourn-Time">Time-Averaged Expected Sojourn Time</a></li>
 <li><a href="#index-dtmc-3"><code>dtmc</code></a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
 <li><a href="#index-dtmc_005fbd-9"><code>dtmc_bd</code></a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
 <li><a href="#index-dtmc_005fcheck_005fP-1"><code>dtmc_check_P</code></a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
 <li><a href="#index-dtmc_005ffpt-12"><code>dtmc_fpt</code></a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
 <li><a href="#index-dtmc_005fmtta-16"><code>dtmc_mtta</code></a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
-<li><a href="#index-population_005fmix-282"><code>population_mix</code></a>: <a href="#Utility-functions">Utility functions</a></li>
-<li><a href="#index-qnammm-76"><code>qnammm</code></a>: <a href="#The-Asymmetric-M_002fM_002fm-System">The Asymmetric M/M/m System</a></li>
-<li><a href="#index-qnclosed-276"><code>qnclosed</code></a>: <a href="#Utility-functions">Utility functions</a></li>
-<li><a href="#index-qnclosedab-245"><code>qnclosedab</code></a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
-<li><a href="#index-qnclosedbsb-260"><code>qnclosedbsb</code></a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
-<li><a href="#index-qnclosedgb-270"><code>qnclosedgb</code></a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
-<li><a href="#index-qnclosedmultimva-184"><code>qnclosedmultimva</code></a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-qnclosedmultimvaapprox-202"><code>qnclosedmultimvaapprox</code></a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-qnclosedpb-264"><code>qnclosedpb</code></a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
-<li><a href="#index-qnclosedsinglemva-144"><code>qnclosedsinglemva</code></a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-qnclosedsinglemvaapprox-171"><code>qnclosedsinglemvaapprox</code></a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-qnclosedsinglemvald-157"><code>qnclosedsinglemvald</code></a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-qncmva-166"><code>qncmva</code></a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-qnconvolution-107"><code>qnconvolution</code></a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-qnconvolutionld-117"><code>qnconvolutionld</code></a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-qnjackson-98"><code>qnjackson</code></a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-qnmarkov-230"><code>qnmarkov</code></a>: <a href="#Algorithms-for-non-Product_002dform-QNs">Algorithms for non Product-form QNs</a></li>
-<li><a href="#index-qnmg1-82"><code>qnmg1</code></a>: <a href="#The-M_002fG_002f1-System">The M/G/1 System</a></li>
-<li><a href="#index-qnmh1-84"><code>qnmh1</code></a>: <a href="#The-M_002fHm_002f1-System">The M/Hm/1 System</a></li>
-<li><a href="#index-qnmix-217"><code>qnmix</code></a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-qnmknode-87"><code>qnmknode</code></a>: <a href="#Generic-Algorithms">Generic Algorithms</a></li>
-<li><a href="#index-qnmm1-48"><code>qnmm1</code></a>: <a href="#The-M_002fM_002f1-System">The M/M/1 System</a></li>
-<li><a href="#index-qnmm1k-68"><code>qnmm1k</code></a>: <a href="#The-M_002fM_002f1_002fK-System">The M/M/1/K System</a></li>
-<li><a href="#index-qnmminf-61"><code>qnmminf</code></a>: <a href="#The-M_002fM_002finf-System">The M/M/inf System</a></li>
-<li><a href="#index-qnmmm-54"><code>qnmmm</code></a>: <a href="#The-M_002fM_002fm-System">The M/M/m System</a></li>
-<li><a href="#index-qnmmmk-70"><code>qnmmmk</code></a>: <a href="#The-M_002fM_002fm_002fK-System">The M/M/m/K System</a></li>
-<li><a href="#index-qnmvablo-225"><code>qnmvablo</code></a>: <a href="#Algorithms-for-non-Product_002dform-QNs">Algorithms for non Product-form QNs</a></li>
-<li><a href="#index-qnmvapop-287"><code>qnmvapop</code></a>: <a href="#Utility-functions">Utility functions</a></li>
-<li><a href="#index-qnopen-278"><code>qnopen</code></a>: <a href="#Utility-functions">Utility functions</a></li>
-<li><a href="#index-qnopenab-238"><code>qnopenab</code></a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
-<li><a href="#index-qnopenbsb-253"><code>qnopenbsb</code></a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
-<li><a href="#index-qnopenmulti-137"><code>qnopenmulti</code></a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-qnopensingle-129"><code>qnopensingle</code></a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-qnsolve-94"><code>qnsolve</code></a>: <a href="#Generic-Algorithms">Generic Algorithms</a></li>
-<li><a href="#index-qnvisits-280"><code>qnvisits</code></a>: <a href="#Utility-functions">Utility functions</a></li>
+<li><a href="#index-population_005fmix-283"><code>population_mix</code></a>: <a href="#Utility-functions">Utility functions</a></li>
+<li><a href="#index-qnammm-77"><code>qnammm</code></a>: <a href="#The-Asymmetric-M_002fM_002fm-System">The Asymmetric M/M/m System</a></li>
+<li><a href="#index-qnclosed-277"><code>qnclosed</code></a>: <a href="#Utility-functions">Utility functions</a></li>
+<li><a href="#index-qnclosedab-246"><code>qnclosedab</code></a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
+<li><a href="#index-qnclosedbsb-261"><code>qnclosedbsb</code></a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
+<li><a href="#index-qnclosedgb-271"><code>qnclosedgb</code></a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
+<li><a href="#index-qnclosedmultimva-185"><code>qnclosedmultimva</code></a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-qnclosedmultimvaapprox-203"><code>qnclosedmultimvaapprox</code></a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-qnclosedpb-265"><code>qnclosedpb</code></a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
+<li><a href="#index-qnclosedsinglemva-145"><code>qnclosedsinglemva</code></a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-qnclosedsinglemvaapprox-172"><code>qnclosedsinglemvaapprox</code></a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-qnclosedsinglemvald-158"><code>qnclosedsinglemvald</code></a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-qncmva-167"><code>qncmva</code></a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-qnconvolution-108"><code>qnconvolution</code></a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-qnconvolutionld-118"><code>qnconvolutionld</code></a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-qnjackson-99"><code>qnjackson</code></a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-qnmarkov-231"><code>qnmarkov</code></a>: <a href="#Algorithms-for-non-Product_002dform-QNs">Algorithms for non Product-form QNs</a></li>
+<li><a href="#index-qnmg1-83"><code>qnmg1</code></a>: <a href="#The-M_002fG_002f1-System">The M/G/1 System</a></li>
+<li><a href="#index-qnmh1-85"><code>qnmh1</code></a>: <a href="#The-M_002fHm_002f1-System">The M/Hm/1 System</a></li>
+<li><a href="#index-qnmix-218"><code>qnmix</code></a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-qnmknode-88"><code>qnmknode</code></a>: <a href="#Generic-Algorithms">Generic Algorithms</a></li>
+<li><a href="#index-qnmm1-49"><code>qnmm1</code></a>: <a href="#The-M_002fM_002f1-System">The M/M/1 System</a></li>
+<li><a href="#index-qnmm1k-69"><code>qnmm1k</code></a>: <a href="#The-M_002fM_002f1_002fK-System">The M/M/1/K System</a></li>
+<li><a href="#index-qnmminf-62"><code>qnmminf</code></a>: <a href="#The-M_002fM_002finf-System">The M/M/inf System</a></li>
+<li><a href="#index-qnmmm-55"><code>qnmmm</code></a>: <a href="#The-M_002fM_002fm-System">The M/M/m System</a></li>
+<li><a href="#index-qnmmmk-71"><code>qnmmmk</code></a>: <a href="#The-M_002fM_002fm_002fK-System">The M/M/m/K System</a></li>
+<li><a href="#index-qnmvablo-226"><code>qnmvablo</code></a>: <a href="#Algorithms-for-non-Product_002dform-QNs">Algorithms for non Product-form QNs</a></li>
+<li><a href="#index-qnmvapop-288"><code>qnmvapop</code></a>: <a href="#Utility-functions">Utility functions</a></li>
+<li><a href="#index-qnopen-279"><code>qnopen</code></a>: <a href="#Utility-functions">Utility functions</a></li>
+<li><a href="#index-qnopenab-239"><code>qnopenab</code></a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
+<li><a href="#index-qnopenbsb-254"><code>qnopenbsb</code></a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
+<li><a href="#index-qnopenmulti-138"><code>qnopenmulti</code></a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-qnopensingle-130"><code>qnopensingle</code></a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-qnsolve-95"><code>qnsolve</code></a>: <a href="#Generic-Algorithms">Generic Algorithms</a></li>
+<li><a href="#index-qnvisits-281"><code>qnvisits</code></a>: <a href="#Utility-functions">Utility functions</a></li>
    </ul><div class="node">
 <a name="Author-Index"></a>
 <p><hr>
@@ -5639,60 +5650,60 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 
 
 <ul class="index-au" compact>
-<li><a href="#index-Akyildiz_002c-I_002e-F_002e-229">Akyildiz, I. F.</a>: <a href="#Algorithms-for-non-Product_002dform-QNs">Algorithms for non Product-form QNs</a></li>
-<li><a href="#index-Bard_002c-Y_002e-211">Bard, Y.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-Bolch_002c-G_002e-103">Bolch, G.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-Bolch_002c-G_002e-78">Bolch, G.</a>: <a href="#The-Asymmetric-M_002fM_002fm-System">The Asymmetric M/M/m System</a></li>
-<li><a href="#index-Bolch_002c-G_002e-72">Bolch, G.</a>: <a href="#The-M_002fM_002fm_002fK-System">The M/M/m/K System</a></li>
-<li><a href="#index-Bolch_002c-G_002e-64">Bolch, G.</a>: <a href="#The-M_002fM_002finf-System">The M/M/inf System</a></li>
-<li><a href="#index-Bolch_002c-G_002e-57">Bolch, G.</a>: <a href="#The-M_002fM_002fm-System">The M/M/m System</a></li>
-<li><a href="#index-Bolch_002c-G_002e-50">Bolch, G.</a>: <a href="#The-M_002fM_002f1-System">The M/M/1 System</a></li>
-<li><a href="#index-Bolch_002c-G_002e-40">Bolch, G.</a>: <a href="#Mean-Time-to-Absorption">Mean Time to Absorption</a></li>
-<li><a href="#index-Buzen_002c-J_002e-P_002e-112">Buzen, J. P.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-Casale_002c-G_002e-267">Casale, G.</a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
-<li><a href="#index-Casale_002c-G_002e-170">Casale, G.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-de-Meer_002c-H_002e-105">de Meer, H.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-de-Meer_002c-H_002e-80">de Meer, H.</a>: <a href="#The-Asymmetric-M_002fM_002fm-System">The Asymmetric M/M/m System</a></li>
-<li><a href="#index-de-Meer_002c-H_002e-74">de Meer, H.</a>: <a href="#The-M_002fM_002fm_002fK-System">The M/M/m/K System</a></li>
-<li><a href="#index-de-Meer_002c-H_002e-66">de Meer, H.</a>: <a href="#The-M_002fM_002finf-System">The M/M/inf System</a></li>
-<li><a href="#index-de-Meer_002c-H_002e-59">de Meer, H.</a>: <a href="#The-M_002fM_002fm-System">The M/M/m System</a></li>
-<li><a href="#index-de-Meer_002c-H_002e-52">de Meer, H.</a>: <a href="#The-M_002fM_002f1-System">The M/M/1 System</a></li>
-<li><a href="#index-de-Meer_002c-H_002e-42">de Meer, H.</a>: <a href="#Mean-Time-to-Absorption">Mean Time to Absorption</a></li>
-<li><a href="#index-Graham_002c-G_002e-S_002e-243">Graham, G. S.</a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
-<li><a href="#index-Graham_002c-G_002e-S_002e-142">Graham, G. S.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-Greiner_002c-S_002e-104">Greiner, S.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-Greiner_002c-S_002e-79">Greiner, S.</a>: <a href="#The-Asymmetric-M_002fM_002fm-System">The Asymmetric M/M/m System</a></li>
-<li><a href="#index-Greiner_002c-S_002e-73">Greiner, S.</a>: <a href="#The-M_002fM_002fm_002fK-System">The M/M/m/K System</a></li>
-<li><a href="#index-Greiner_002c-S_002e-65">Greiner, S.</a>: <a href="#The-M_002fM_002finf-System">The M/M/inf System</a></li>
-<li><a href="#index-Greiner_002c-S_002e-58">Greiner, S.</a>: <a href="#The-M_002fM_002fm-System">The M/M/m System</a></li>
-<li><a href="#index-Greiner_002c-S_002e-51">Greiner, S.</a>: <a href="#The-M_002fM_002f1-System">The M/M/1 System</a></li>
-<li><a href="#index-Greiner_002c-S_002e-41">Greiner, S.</a>: <a href="#Mean-Time-to-Absorption">Mean Time to Absorption</a></li>
-<li><a href="#index-Hsieh_002c-C_002e-H-265">Hsieh, C. H</a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
-<li><a href="#index-Jain_002c-R_002e-152">Jain, R.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-Kobayashi_002c-H_002e-124">Kobayashi, H.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-Lam_002c-S_002e-266">Lam, S.</a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
-<li><a href="#index-Lavenberg_002c-S_002e-S_002e-151">Lavenberg, S. S.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-Lazowska_002c-E_002e-D_002e-241">Lazowska, E. D.</a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
-<li><a href="#index-Lazowska_002c-E_002e-D_002e-140">Lazowska, E. D.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-Muntz_002c-R_002e-R_002e-268">Muntz, R. R.</a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
-<li><a href="#index-Reiser_002c-M_002e-123">Reiser, M.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-Santini_002c-S_002e-286">Santini, S.</a>: <a href="#Utility-functions">Utility functions</a></li>
-<li><a href="#index-Schweitzer_002c-P_002e-212">Schweitzer, P.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-Schwetman_002c-H_002e-285">Schwetman, H.</a>: <a href="#Utility-functions">Utility functions</a></li>
-<li><a href="#index-Schwetman_002c-H_002e-122">Schwetman, H.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-Serazzi_002c-G_002e-269">Serazzi, G.</a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
-<li><a href="#index-Sevcik_002c-K_002e-C_002e-244">Sevcik, K. C.</a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
-<li><a href="#index-Sevcik_002c-K_002e-C_002e-143">Sevcik, K. C.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-Trivedi_002c-K_002e-106">Trivedi, K.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-Trivedi_002c-K_002e-81">Trivedi, K.</a>: <a href="#The-Asymmetric-M_002fM_002fm-System">The Asymmetric M/M/m System</a></li>
-<li><a href="#index-Trivedi_002c-K_002e-75">Trivedi, K.</a>: <a href="#The-M_002fM_002fm_002fK-System">The M/M/m/K System</a></li>
-<li><a href="#index-Trivedi_002c-K_002e-67">Trivedi, K.</a>: <a href="#The-M_002fM_002finf-System">The M/M/inf System</a></li>
-<li><a href="#index-Trivedi_002c-K_002e-60">Trivedi, K.</a>: <a href="#The-M_002fM_002fm-System">The M/M/m System</a></li>
-<li><a href="#index-Trivedi_002c-K_002e-53">Trivedi, K.</a>: <a href="#The-M_002fM_002f1-System">The M/M/1 System</a></li>
-<li><a href="#index-Trivedi_002c-K_002e-43">Trivedi, K.</a>: <a href="#Mean-Time-to-Absorption">Mean Time to Absorption</a></li>
-<li><a href="#index-Wong_002c-E_002e-291">Wong, E.</a>: <a href="#Utility-functions">Utility functions</a></li>
-<li><a href="#index-Zahorjan_002c-J_002e-290">Zahorjan, J.</a>: <a href="#Utility-functions">Utility functions</a></li>
-<li><a href="#index-Zahorjan_002c-J_002e-242">Zahorjan, J.</a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
-<li><a href="#index-Zahorjan_002c-J_002e-141">Zahorjan, J.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-Akyildiz_002c-I_002e-F_002e-230">Akyildiz, I. F.</a>: <a href="#Algorithms-for-non-Product_002dform-QNs">Algorithms for non Product-form QNs</a></li>
+<li><a href="#index-Bard_002c-Y_002e-212">Bard, Y.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-Bolch_002c-G_002e-104">Bolch, G.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-Bolch_002c-G_002e-79">Bolch, G.</a>: <a href="#The-Asymmetric-M_002fM_002fm-System">The Asymmetric M/M/m System</a></li>
+<li><a href="#index-Bolch_002c-G_002e-73">Bolch, G.</a>: <a href="#The-M_002fM_002fm_002fK-System">The M/M/m/K System</a></li>
+<li><a href="#index-Bolch_002c-G_002e-65">Bolch, G.</a>: <a href="#The-M_002fM_002finf-System">The M/M/inf System</a></li>
+<li><a href="#index-Bolch_002c-G_002e-58">Bolch, G.</a>: <a href="#The-M_002fM_002fm-System">The M/M/m System</a></li>
+<li><a href="#index-Bolch_002c-G_002e-51">Bolch, G.</a>: <a href="#The-M_002fM_002f1-System">The M/M/1 System</a></li>
+<li><a href="#index-Bolch_002c-G_002e-41">Bolch, G.</a>: <a href="#Mean-Time-to-Absorption">Mean Time to Absorption</a></li>
+<li><a href="#index-Buzen_002c-J_002e-P_002e-113">Buzen, J. P.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-Casale_002c-G_002e-268">Casale, G.</a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
+<li><a href="#index-Casale_002c-G_002e-171">Casale, G.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-de-Meer_002c-H_002e-106">de Meer, H.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-de-Meer_002c-H_002e-81">de Meer, H.</a>: <a href="#The-Asymmetric-M_002fM_002fm-System">The Asymmetric M/M/m System</a></li>
+<li><a href="#index-de-Meer_002c-H_002e-75">de Meer, H.</a>: <a href="#The-M_002fM_002fm_002fK-System">The M/M/m/K System</a></li>
+<li><a href="#index-de-Meer_002c-H_002e-67">de Meer, H.</a>: <a href="#The-M_002fM_002finf-System">The M/M/inf System</a></li>
+<li><a href="#index-de-Meer_002c-H_002e-60">de Meer, H.</a>: <a href="#The-M_002fM_002fm-System">The M/M/m System</a></li>
+<li><a href="#index-de-Meer_002c-H_002e-53">de Meer, H.</a>: <a href="#The-M_002fM_002f1-System">The M/M/1 System</a></li>
+<li><a href="#index-de-Meer_002c-H_002e-43">de Meer, H.</a>: <a href="#Mean-Time-to-Absorption">Mean Time to Absorption</a></li>
+<li><a href="#index-Graham_002c-G_002e-S_002e-244">Graham, G. S.</a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
+<li><a href="#index-Graham_002c-G_002e-S_002e-143">Graham, G. S.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-Greiner_002c-S_002e-105">Greiner, S.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-Greiner_002c-S_002e-80">Greiner, S.</a>: <a href="#The-Asymmetric-M_002fM_002fm-System">The Asymmetric M/M/m System</a></li>
+<li><a href="#index-Greiner_002c-S_002e-74">Greiner, S.</a>: <a href="#The-M_002fM_002fm_002fK-System">The M/M/m/K System</a></li>
+<li><a href="#index-Greiner_002c-S_002e-66">Greiner, S.</a>: <a href="#The-M_002fM_002finf-System">The M/M/inf System</a></li>
+<li><a href="#index-Greiner_002c-S_002e-59">Greiner, S.</a>: <a href="#The-M_002fM_002fm-System">The M/M/m System</a></li>
+<li><a href="#index-Greiner_002c-S_002e-52">Greiner, S.</a>: <a href="#The-M_002fM_002f1-System">The M/M/1 System</a></li>
+<li><a href="#index-Greiner_002c-S_002e-42">Greiner, S.</a>: <a href="#Mean-Time-to-Absorption">Mean Time to Absorption</a></li>
+<li><a href="#index-Hsieh_002c-C_002e-H-266">Hsieh, C. H</a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
+<li><a href="#index-Jain_002c-R_002e-153">Jain, R.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-Kobayashi_002c-H_002e-125">Kobayashi, H.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-Lam_002c-S_002e-267">Lam, S.</a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
+<li><a href="#index-Lavenberg_002c-S_002e-S_002e-152">Lavenberg, S. S.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-Lazowska_002c-E_002e-D_002e-242">Lazowska, E. D.</a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
+<li><a href="#index-Lazowska_002c-E_002e-D_002e-141">Lazowska, E. D.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-Muntz_002c-R_002e-R_002e-269">Muntz, R. R.</a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
+<li><a href="#index-Reiser_002c-M_002e-124">Reiser, M.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-Santini_002c-S_002e-287">Santini, S.</a>: <a href="#Utility-functions">Utility functions</a></li>
+<li><a href="#index-Schweitzer_002c-P_002e-213">Schweitzer, P.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-Schwetman_002c-H_002e-286">Schwetman, H.</a>: <a href="#Utility-functions">Utility functions</a></li>
+<li><a href="#index-Schwetman_002c-H_002e-123">Schwetman, H.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-Serazzi_002c-G_002e-270">Serazzi, G.</a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
+<li><a href="#index-Sevcik_002c-K_002e-C_002e-245">Sevcik, K. C.</a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
+<li><a href="#index-Sevcik_002c-K_002e-C_002e-144">Sevcik, K. C.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-Trivedi_002c-K_002e-107">Trivedi, K.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
+<li><a href="#index-Trivedi_002c-K_002e-82">Trivedi, K.</a>: <a href="#The-Asymmetric-M_002fM_002fm-System">The Asymmetric M/M/m System</a></li>
+<li><a href="#index-Trivedi_002c-K_002e-76">Trivedi, K.</a>: <a href="#The-M_002fM_002fm_002fK-System">The M/M/m/K System</a></li>
+<li><a href="#index-Trivedi_002c-K_002e-68">Trivedi, K.</a>: <a href="#The-M_002fM_002finf-System">The M/M/inf System</a></li>
+<li><a href="#index-Trivedi_002c-K_002e-61">Trivedi, K.</a>: <a href="#The-M_002fM_002fm-System">The M/M/m System</a></li>
+<li><a href="#index-Trivedi_002c-K_002e-54">Trivedi, K.</a>: <a href="#The-M_002fM_002f1-System">The M/M/1 System</a></li>
+<li><a href="#index-Trivedi_002c-K_002e-44">Trivedi, K.</a>: <a href="#Mean-Time-to-Absorption">Mean Time to Absorption</a></li>
+<li><a href="#index-Wong_002c-E_002e-292">Wong, E.</a>: <a href="#Utility-functions">Utility functions</a></li>
+<li><a href="#index-Zahorjan_002c-J_002e-291">Zahorjan, J.</a>: <a href="#Utility-functions">Utility functions</a></li>
+<li><a href="#index-Zahorjan_002c-J_002e-243">Zahorjan, J.</a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
+<li><a href="#index-Zahorjan_002c-J_002e-142">Zahorjan, J.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
    </ul></body></html>
 

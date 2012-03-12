@@ -70,11 +70,11 @@ chains (DTMC) or continuous-time chains (CTMC):
 
 @itemize
 
-@item Birth-death process (DTMC and CTMC);
-@item Transient and steady-state occupancy probabilities (DTMC and CTMC);
-@item Mean time to absorption (CTMC);
-@item Time-averaged sojourn times (CTMC);
-@item First passage times (DTMC and CTMC).
+@item Birth-death process;
+@item Transient and steady-state occupancy probabilities;
+@item Mean times to absorption;
+@item Expected sojourn times and time-averaged sojourn times (CTMC only);
+@item Mean first passage times;
 
 @end itemize
 

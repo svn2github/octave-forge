@@ -18,19 +18,23 @@
 ## -*- texinfo -*-
 ##
 ## @deftypefn {Function File} {[@var{t} @var{B}] =} dtmc_mtta (@var{P})
+## @deftypefnx {Function File} {[@var{t} @var{B}] =} dtmc_mtta (@var{P}, @var{p0})
 ##
 ## @cindex Markov chain, disctete time
 ## @cindex Mean time to absorption
 ##
-## Compute the expected number of steps before absorption for the DTMC
-## described by the transition probability matrix @var{P},
+## Compute the expected number of steps before absorption for the 
+## DTMC with @math{N \times N} transition probability matrix @var{P}.
 ##
 ## @strong{INPUTS}
 ##
 ## @table @var
 ##
 ## @item P
-## Transition probability matrix .
+## Transition probability matrix.
+##
+## @item p0
+## Initial state occupancy probabilities.
 ##
 ## @end table
 ##
@@ -39,14 +43,22 @@
 ## @table @var
 ##
 ## @item t
-## @code{@var{t}(i)} is the expected number of steps before being absorbed,
-## starting from state @math{i}.
+## When called with a single argument, @var{t} is a vector such that
+## @code{@var{t}(i)} is the expected number of steps before being
+## absorbed, starting from state @math{i}. When called with two
+## arguments, @var{t} is a scalar and represents the average number of
+## steps before absorption, given initial state occupancy probabilities
+## @var{p0}.
 ##
 ## @item B
-## @code{@var{B}(i,j)} is the probability of being absorbed in state
-## @math{j}, starting from state @math{i}. If @math{j} is not absorbing,
-## @code{@var{B}(i,j) = 0}; if @math{i} is absorbing, then
-## @code{@var{B}(i,i) = 1}..
+## When called with a single argument, @var{B} is a @math{N \times N}
+## matrix where @code{@var{B}(i,j)} is the probability of being absorbed
+## in state @math{j}, starting from state @math{i}; if @math{j} is not
+## absorbing, @code{@var{B}(i,j) = 0}; if @math{i} is absorbing, then
+## @code{@var{B}(i,i) = 1}. When called with two arguments, @var{B} is a
+## vector with @math{N} elements where @code{@var{B}(j)} is the
+## probability of being absorbed in state @var{j}, given initial state
+## occupancy probabilities @var{p0}.
 ##
 ## @end table
 ##
@@ -55,11 +67,11 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [res B] = dtmc_mtta( P )
+function [t B] = dtmc_mtta( P, p0 )
 
   persistent epsilon = 10*eps;
 
-  if ( nargin != 1 )
+  if ( nargin < 1 || nargin > 2 )
     print_usage();
   endif
 
@@ -67,6 +79,12 @@ function [res B] = dtmc_mtta( P )
 
   (K>0) || \
       usage(err);
+  
+  if ( nargin == 2 )
+    ( isvector(p0) && length(p0) == K && all(p0>=0) && abs(sum(p0)-1.0)<epsilon ) || \
+	usage( "p0 must be a probability vector" );
+  endif
+
 
   ## identify transient states
   tr = find(diag(P) < 1);
@@ -85,14 +103,19 @@ function [res B] = dtmc_mtta( P )
   N = (eye(k) - P(tr,tr));
   R = P(tr,ab);
 
-  t = N \ ones(k,1);
-  res = zeros(1,rows(P));
-  res(tr) = t;
+  res = N \ ones(k,1);
+  t = zeros(1,rows(P));
+  t(tr) = res;
 
   tmp = N \ R;
   B = zeros(size(P));
   B(tr,ab) = tmp;
   B(ab,ab) = 1;
+
+  if ( nargin == 2 )
+    t = dot(t,p0);
+    B = p0*B;
+  endif
 endfunction
 %!test
 %! P = dtmc_bd([0 .5 .5 .5], [.5 .5 .5 0]);
@@ -101,6 +124,13 @@ endfunction
 %! assert( B([2 3 4],[1 5]), [3/4 1/4; 1/2 1/2; 1/4 3/4], 10*eps );
 %! assert( B(1,1), 1 );
 %! assert( B(5,5), 1 );
+
+%!test
+%! P = dtmc_bd([0 .5 .5 .5], [.5 .5 .5 0]);
+%! [t B] = dtmc_mtta(P, [0 0 1 0 0]);
+%! assert( t, 4, 10*eps );
+%! assert( B(1), 0.5, 10*eps );
+%! assert( B(5), 0.5, 10*eps );
 
 ## Compute the probability of completing the "snakes and ladders"
 ## game in n steps, for various values of n. Also, computes the expected

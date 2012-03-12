@@ -6,7 +6,7 @@ endif
 
 TARGETS=text_waitbar.oct $(LISTEN) xmlread.oct  \
 	csvexplode.oct csv2cell.oct csvconcat.oct cell2csv.oct \
-	cell2cell.oct sample.oct
+	cell2cell.oct sample.oct partarray.oct
 
 all:	$(TARGETS)
 
@@ -62,6 +62,9 @@ cell2csv.oct: cell2csv.cc
 	$(MKOCTFILE) $(MISCDEFS) $<
 
 cell2cell.oct: cell2cell.cc
+	$(MKOCTFILE) $(MISCDEFS) $<
+
+partarray.oct: partarray.cc
 	$(MKOCTFILE) $(MISCDEFS) $<
 
 sample.oct: sample.cc

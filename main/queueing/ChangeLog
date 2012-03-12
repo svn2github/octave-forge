@@ -11,9 +11,12 @@
 	  in future releases.
 	* ctmc_bd() now returns the infinitesimal generator matrix
 	  of the birth-death process, not the steady-state solution.
-	* ctmc_bd_solve() has been removed
-	* dtmc_bd() has been added
-	* ctmc_check_Q() has been added
+	* ctmc_bd_solve() (which was deprecated) has been removed
+	* ctmc_solve() (which was deprecated) has been removed
+	* dtmc_solve() (which was deprecated) has been removed
+	* dtmc_bd() added
+	* ctmc_check_Q() added
+	* dtmc_mtta() added
 	* Miscellaneous fixes/improvements to the documentation
 
 2012-02-04 Moreno Marzolla <marzolla@cs.unibo.it>

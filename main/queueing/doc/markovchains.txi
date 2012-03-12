@@ -145,6 +145,11 @@ M_ij = 1 + >   P_ij * M_kj
 @DOCSTRING(dtmc_fpt)
 
 @c
+@subsection Mean Time to Absorption
+
+@DOCSTRING(dtmc_mtta)
+
+@c
 @c
 @c
 @node Continuous-Time Markov Chains
@@ -178,7 +183,7 @@ must be defined in such a way that the infinitesimal generator matrix
 * Birth-Death process::
 * Expected Sojourn Time::
 * Time-Averaged Expected Sojourn Time::
-* Expected Time to Absorption::
+* Mean Time to Absorption::
 * First Passage Times::
 @end menu
 
@@ -323,8 +328,8 @@ given the initial occupancy probability @math{{\bf \pi}_0=(1,0,0,0)}.
 @c
 @c
 @c
-@node Expected Time to Absorption
-@subsection Expected Time to Absorption
+@node Mean Time to Absorption
+@subsection Mean Time to Absorption
 
 If we consider a Markov Chain with absorbing states, it is possible to
 define the @emph{expected time to absorption} as the expected time

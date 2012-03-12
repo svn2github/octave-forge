@@ -11,11 +11,12 @@ Summary of important user-visible changes for queueing-1.X.0
    of the birth-death process with given rates, not the steady-state
    solution.
 
-** New function dtmc_bd() added
+** The following new functions have been added: dtmc_bd(), dtmc_mtta(), 
+   ctmc_check_Q()
 
-** Function ctmc_bd_solve() has been removed
+** The following deprecated functions have been removed: ctmc_bd_solve(),
+   ctmc_solve(), dtmc_solve()
 
-** New function ctmc_check_Q() added
 
 Summary of important user-visible changes for queueing-1.0.0
 ------------------------------------------------------------------------------

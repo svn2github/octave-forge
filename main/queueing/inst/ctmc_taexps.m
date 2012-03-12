@@ -18,14 +18,15 @@
 ## -*- texinfo -*-
 ##
 ## @deftypefn {Function File} {@var{M} =} ctmc_taexps (@var{Q}, @var{t}, @var{p})
+## @deftypefnx {Function File} {@var{M} =} ctmc_taexps (@var{Q}, @var{p})
 ##
 ## @cindex Markov chain, continuous time
 ## @cindex Time-alveraged sojourn time
 ##
 ## Compute the @emph{time-averaged sojourn time} @code{@var{M}(i)},
-## defined as the fraction of the time interval @math{[0,t]} spent in
-## state @math{i}, assuming that the state occupancy probabilities at
-## time 0 are @var{p}.
+## defined as the fraction of the time interval @math{[0,t]} (or until
+## absorption) spent in state @math{i}, assuming that the state
+## occupancy probabilities at time 0 are @var{p}.
 ##
 ## @strong{INPUTS}
 ##
@@ -38,7 +39,7 @@
 ## matrix @var{Q} must also satisfy the condition @math{\sum_{j=1}^N Q_{ij} = 0}
 ##
 ## @item t
-## Time
+## Time. If omitted, the results are computed until absorption.
 ##
 ## @item p
 ## @code{@var{p}(i)} is the probability that, at time 0, the system was in
@@ -51,9 +52,12 @@
 ## @table @var
 ##
 ## @item M
-## @code{@var{M}(i)} is the expected fraction of time spent in state
-## @math{i} during the interval @math{[0,t]} assuming that the state
-## occupancy probability at time zero is @var{p}.
+## If this function is called with three parameters, @code{@var{M}(i)}
+## is the expected fraction of the interval @math{0,t]} spent in state
+## @math{i} assuming that the state occupancy probability at time zero
+## is @var{p}. If this function is called with two parameters,
+## @code{@var{M}(i)} is the expected fraction of time until absorption
+## spent in state @math{i}.
 ##
 ## @end table
 ##
@@ -62,11 +66,11 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function M = ctmc_taexps( Q, t, p )
+function M = ctmc_taexps( Q, varargin )
 
   persistent epsilon = 10*eps;
 
-  if ( nargin != 3 )
+  if ( nargin < 2 || nargin > 3 )
     print_usage();
   endif
 
@@ -75,22 +79,43 @@ function M = ctmc_taexps( Q, t, p )
   (N>0) || \
       usage(err);
 
+  if ( nargin == 2 )
+    p = varargin{1};
+  else
+    t = varargin{1};
+    p = varargin{2};
+  endif
+
   ( isvector(p) && length(p) == N && all(p>=0) && abs(sum(p)-1.0)<epsilon ) || \
       usage( "p must be a probability vector" );
-  if ( isscalar(t) )
-    (t >= 0) || \
-	usage( "t must be >= 0" );
-    F = @(x) (p*expm(Q*x));
-    M = quadv(F,0,t) / t;
-  else
-    ## FIXME: deprecate this?
-    t = t(:)'; # make t a row vector
-    p = p(:)'; # make p a row vector
-    ff = @(x,t) (((x')*(Q-eye(N)/t).+p/t)');
-    fj = @(x,t) (Q-eye(N)/t);
-    M = lsode( {ff, fj}, zeros(size(p)), t );
+  if ( nargin == 3 ) 
+    if ( isscalar(t) )
+      (t >= 0) || \
+	  usage( "t must be >= 0" );
+      F = @(x) (p*expm(Q*x));
+      M = quadv(F,0,t) / t;
+    else
+      ## FIXME: deprecate this?
+      t = t(:)'; # make t a row vector
+      p = p(:)'; # make p a row vector
+      ff = @(x,t) (((x')*(Q-eye(N)/t).+p/t)');
+      fj = @(x,t) (Q-eye(N)/t);
+      M = lsode( {ff, fj}, zeros(size(p)), t );
+    endif
+  else 
+    t = ctmc_mtta(Q,p);
+    L = ctmc_exps(Q,p);
+    M = L ./ t;
   endif
 endfunction
+%!test
+%! Q = [ 0 0.1 0 0; \
+%!       0.9 0 0.1 0; \
+%!       0 0.9 0 0.1; \
+%!       0 0 0 0 ];
+%! Q -= diag( sum(Q,2) );
+%! M = ctmc_taexps(Q, [1 0 0 0]);
+%! assert( sum(M), 1, 10*eps );
 
 %!demo
 %! lambda = 0.5;

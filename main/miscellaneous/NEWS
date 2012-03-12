@@ -25,6 +25,9 @@ Summary of important user-visible changes for miscellaneous 1.1.0:
  ** The function `partarray' has been deprecated. `mat2cell' from octave core
     should be used instead.
 
+ ** The function `temp_name' has been deprecated. `tmpnam' from octave core
+    should be used instead.
+
  ** Multiple bug fixes and increased input check on many functions.
 
  ** The function `csv2cell' now returns an empty cell in the case of empty file

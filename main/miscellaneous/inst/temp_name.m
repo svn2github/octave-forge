@@ -33,6 +33,13 @@
 
 function n = temp_name (rootname, quick)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "temp_name has been deprecated, and will be removed in the future. Use `tmpnam' instead.");
+  endif
+
   ### Keep track of previously asked names
   persistent cnt = struct ("dummy",0);
 

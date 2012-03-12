@@ -311,7 +311,7 @@ function [section3_title, disp_fig] = exec_print (ifile, options)
   if (!isempty (figures))
     for nfig = 1:length (figures)
       figure (figures(nfig));
-      print (sprintf ("%s%d.%s", iFile(1:end-2), nfig, options.imageFormat), 
+      print (sprintf ("%s%d.%s", ifile(1:end-2), nfig, options.imageFormat),
              sprintf ("-d%s", options.imageFormat), "-color");
       if (strcmpi (options.format, "html"));
         section3_title = "<h2>Generated graphics</h2>\n";
@@ -320,10 +320,10 @@ function [section3_title, disp_fig] = exec_print (ifile, options)
       elseif (strcmpi (options.format, "latex"))
         section3_title = "\\section*{Generated graphics}\n";
         disp_fig = strcat (disp_fig, "\\includegraphics[scale=0.6]{", ifile(1:end-2), 
-                           sprintf("%d",nFig), "}\n");
+                           sprintf("%d",nfig), "}\n");
       endif
-    endfor  
-  endif      
+    endfor
+  endif
 endfunction
 
 % TO DO

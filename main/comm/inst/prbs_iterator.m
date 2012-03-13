@@ -1,6 +1,18 @@
-## 
-## (C) 2006 Muthiah Annamalai <muthuspost@gmail.com>
-## 
+## Copyright (C) 2006 Muthiah Annamalai <muthuspost@gmail.com>
+##
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free Software
+## Foundation; either version 3 of the License, or (at your option) any later
+## version.
+##
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+## details.
+##
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, see <http://www.gnu.org/licenses/>.
+
 ## This function generates the output bits from the PRBS
 ## state, for the number of iterations specified.
 ##
@@ -34,7 +46,7 @@
 ## 
 ## See Also: This function is to be used along with functions 
 ## prbs_iterator, prbs_generator and prbs_sequence.
-## 
+
 function [outputseq,prbs]=prbs_iterator(prbs,iterations)
   if ( nargin < 2 )
     iterations=2^(prbs.reglen)-1;
@@ -68,7 +80,6 @@ function [outputseq,prbs]=prbs_iterator(prbs,iterations)
     end
     
   end
-  return;
 end
 
 ##

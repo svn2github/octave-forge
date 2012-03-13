@@ -1,6 +1,18 @@
-## 
-## (C) 2006 Muthiah Annamalai <muthuspost@gmail.com>
+## Copyright (C) 2006 Muthiah Annamalai <muthuspost@gmail.com>
 ##
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free Software
+## Foundation; either version 3 of the License, or (at your option) any later
+## version.
+##
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+## details.
+##
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, see <http://www.gnu.org/licenses/>.
+
 ## Implement book keeping for a Pseudo-Random Binary Sequence ( PRBS )
 ## also called as a Linear Feedback Shift Register.
 ## 
@@ -39,12 +51,11 @@
 ## 
 ## See Also: This function is to be used along with functions 
 ## prbs_iterator, and prbs_sequence.
-## 
+
 function prbs=prbs_generator(polynomial,connections,initstate)
   prbs.reglen=max(polynomial);
   prbs.polynomial=polynomial;
   prbs.sregs=initstate;
   prbs.connections=connections;
   prbs.conlen=length(connections);
-  return
 end

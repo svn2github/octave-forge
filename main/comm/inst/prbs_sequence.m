@@ -1,6 +1,18 @@
-## 
-## (C) 2006 Muthiah Annamalai <muthuspost@gmail.com>
-## 
+## Copyright (C) 2006 Muthiah Annamalai <muthuspost@gmail.com>
+##
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free Software
+## Foundation; either version 3 of the License, or (at your option) any later
+## version.
+##
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+## details.
+##
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, see <http://www.gnu.org/licenses/>.
+
 ## Implement book keeping for a Pseudo-Random Binary Sequence ( PRBS )
 ## also called as a Linear Feedback Shift Register.
 ## 
@@ -25,10 +37,10 @@
 ## prbs=prbs_generator([1 3 4],{[1 3 4]},[1 0 1 1]);
 ## x = prbs_sequence(prbs) #gives 15
 ## 
-
+##
 ## See Also: This function is to be used along with functions 
 ## prbs_generator.
-## 
+
 function [itrs,seq]=prbs_sequence(prbs)
   if nargin < 1
     error("usage: prbs_sequence(prbs struct ); \
@@ -69,6 +81,4 @@ function [itrs,seq]=prbs_sequence(prbs)
       break;
     end
   end
-
-  return;
 end

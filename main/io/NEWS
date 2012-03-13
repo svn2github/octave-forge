@@ -7,10 +7,15 @@ io-1.0.18   Release Date: TBA   Release Manager: Philip Nienhuis
 ** Bug fixes:
 --- odsfinfo: fixed "wrong type argument `cell'" bug when run interactively.
 --- xlsopen, odsopen: fixed messed up screen output due to UNO usage warning.
+--- csv2cell: checks if file is empty annd return an empty cell if so.
 
 ** Adapted to internal LibreOffice-3.5-final changes.
 
 ** Tried OpenXLS-6.0.7.jar. Reads OK, still unusable for writing .xls files.
+
+** The following functions have been imported from the miscellaneous package:
+      cell2csv    csvconcat
+      csv2cell    csvexplode
 
 ===============================================================================
 io-1.0.17   Release Date: 2012-02-27   Release Manager: Philip Nienhuis

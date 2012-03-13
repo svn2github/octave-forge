@@ -17,7 +17,12 @@ Summary of important user-visible changes for miscellaneous 1.1.0:
       clip      normr     text_waitbar
       normc     sample
 
- ** The function clip was imported from the audio package.
+ ** The following functions have been moved to the IO package:
+
+      cell2csv    csvconcat
+      csv2cell    csvexplode
+
+ ** The function `clip' was imported from the audio package.
 
  ** The functions `apply' and `map' have been deprecated. `cellfun' and
     `arrayfun' from octave core should be used instead.
@@ -29,8 +34,6 @@ Summary of important user-visible changes for miscellaneous 1.1.0:
     should be used instead.
 
  ** Multiple bug fixes and increased input check on many functions.
-
- ** The function `csv2cell' now returns an empty cell in the case of empty file
 
  ** Package is no longer automatically loaded.
 

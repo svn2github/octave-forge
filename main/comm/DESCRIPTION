@@ -6,6 +6,6 @@ Maintainer: David Bateman <adb014@gmail.com>
 Title: Communications.
 Description: Digital Communications, Error Correcting Codes (Channel Code), Source Code functions, Modulation and Galois Fields
 Depends: octave (>= 3.4), signal (>= 1.0.0), image
-Autoload: yes
+Autoload: no
 License: GPL version 2 or later
 Url: http://octave.sf.net

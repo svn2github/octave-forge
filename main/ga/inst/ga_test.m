@@ -45,5 +45,5 @@ test gaoptimset
 test ga
 ## TODO: split performance tests
 
-## TODO: review all unit tests
-## TODO: write missing unit tests, or write pre-function TODOs
+## TODO: review all unit tests (DONE: rastriginsfcn)
+## TODO: write missing unit tests, or write per-function TODOs

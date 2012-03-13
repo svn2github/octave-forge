@@ -14,15 +14,16 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {} rastriginsfcn (@var{x})
+## @deftypefn{Function File} {@var{y} =} rastriginsfcn (@var{x})
 ## Rastrigin's function.
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 1.4
+## Version: 2.0
 
 function retval = rastriginsfcn (x)
-  if (nargout != 1)
+  if ((nargin != 1) || (nargout != 1) ||
+      (columns (x) != 2))
     print_usage ();
   else
     x1 = x(:, 1);
@@ -33,8 +34,15 @@ function retval = rastriginsfcn (x)
 endfunction
 
 
-%!error rastriginsfcn ()
-%!error rastriginsfcn ([0, 0], "other argument")
+## number of arguments
+%!error y = rastriginsfcn ()
+%!error y = rastriginsfcn ([0, 0], "other argument")
+%!error [y1, y2] = rastriginsfcn ([0, 0])
+
+## type of arguments
+%!error y = rastriginsfcn ([0; 0])
+%!error y = rastriginsfcn (zeros (2, 3)) # TODO: document size of x
 
 %!assert (rastriginsfcn ([0, 0]), 0)
 %!assert (rastriginsfcn ([0, 0; 0, 0]), [0; 0])
+%!assert (rastriginsfcn (zeros (3, 2)), [0; 0; 0])

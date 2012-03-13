@@ -19,7 +19,7 @@ Summary of important user-visible changes for miscellaneous 1.1.0:
 
  ** The following functions have been moved to the IO package:
 
-      cell2csv    csvconcat
+      cell2csv    csvconcat     xmlread
       csv2cell    csvexplode    xmlwrite
 
  ** The function `clip' was imported from the audio package.

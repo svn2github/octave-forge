@@ -37,8 +37,8 @@ use LWP::Simple qw(get);        # get web pages easily
 ################################################################################
 ## Configuration variables
 ################################################################################
-my $repo_path   = '~/development/octave-forge/main/';  # path for the repository
-my $date_limit  = '2011-01-01';                   # give date in format YYYY-MM-DD
+my $repo_path   = '~/development/octave-forge/';  # path for the repository
+my $date_limit  = '2010-08-07';                   # give date in format YYYY-MM-DD
 my $sf_dev_list = 'http://sourceforge.net/project/memberlist.php?group_id=2888';  # URL for sourceforge project member list
 
 ################################################################################

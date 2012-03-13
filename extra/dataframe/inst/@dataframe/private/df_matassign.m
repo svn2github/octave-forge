@@ -320,7 +320,8 @@ function df = df_matassign(df, S, indc, ncol, RHS)
           if (size (RHS, 1) <= 1)
             switch df._type{indc(indi)}
               case {'char' } %# use a cell array to hold strings
-                dummy = RHS(:, indj);
+                dummy = cellfun (@num2str, RHS(:, indj), \
+                                 'UniformOutput', false);
               case {'double' }
                 dummy = fillfunc (indj);
               otherwise
@@ -333,7 +334,8 @@ function df = df_matassign(df, S, indc, ncol, RHS)
             dummy = [];
             switch (df._type{indc(indi)})
               case {'char' } %# use a cell array to hold strings
-                dummy = RHS(:, indj);
+                dummy = cellfun (@num2str, RHS(:, indj), \
+                                 'UniformOutput', false);
               case {'double' }
                 dummy(idxOK, :) = fillfunc (indj); dummy(~idxOK, :) = NA;
               otherwise
@@ -379,7 +381,8 @@ function df = df_matassign(df, S, indc, ncol, RHS)
         try     
           switch (df._type{indc(indi)})
             case {'char' } %# use a cell array to hold strings
-              dummy(indr, 1) = RHS(:, indj);
+              dummy(indr, 1) = cellfun(@num2str, RHS(:, indj), \
+                                       'UniformOutput', false);
             case {'double' }
               dummy(indr, :) = fillfunc (indj);
             otherwise

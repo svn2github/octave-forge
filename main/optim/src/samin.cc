@@ -13,7 +13,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-// simann.cc (c) 2004 Michael Creel <michael.creel@uab.es>
+//
 // References:
 //
 // The code follows the article
@@ -313,50 +313,53 @@ Example: see samin_example\n\
 				// generate new point by taking last and adding a random value
 				// to each of elements, in turn
 				for(h = 0;h < n;h++) {
-					xp = x;
-					rand_draw = octave_rand::scalar();
-					xp(h) = x(h) + (2.0 * rand_draw - 1.0) * bounds(h);
-					if((xp(h) < lb(h)) || (xp(h) > ub(h))) {
-						rand_draw = octave_rand::scalar(); // change 07-Nov-2007: avoid correlation with hitting bounds
-						xp(h) = lb(h) + (ub(h) - lb(h)) * rand_draw;
-						lnobds = lnobds + 1;
-					}
-					// Evaluate function at new point
-					f_args(minarg - 1) = xp;
-					f_return = feval(obj_fn, f_args);
-					fp = f_return(0).double_value();
-					func_evals = func_evals + 1;
-					//  Accept the new point if the function value decreases
-					if(fp <= f) {
-						x = xp;
-						f = fp;
-						nacc = nacc + 1; // total number of acceptances
-						nacp(h) = nacp(h) + 1; // acceptances for this parameter
-						nup = nup + 1;
-						//  If lower than any other point, record as new optimum
-						if(fp < fopt) {
-							xopt = xp;
-							fopt = fp;
-							nnew = nnew + 1;
-							info(0) = func_evals;
-							info(1) = t;
-							info(2) = fp;
-							details = details.stack(info);
-						}
-	 				}
-					// If the point is higher, use the Metropolis criteria to decide on
-					// acceptance or rejection.
-					else {
-						p = exp(-(fp - f) / t);
+					// new Sept 2011, if bounds are same, skip the search for that vbl. Allows restrictions without complicated programming
+					if (lb(h) != ub(h)) {
+						xp = x;
 						rand_draw = octave_rand::scalar();
-						if(rand_draw < p) {
+						xp(h) = x(h) + (2.0 * rand_draw - 1.0) * bounds(h);
+						if((xp(h) < lb(h)) || (xp(h) > ub(h))) {
+							rand_draw = octave_rand::scalar(); // change 07-Nov-2007: avoid correlation with hitting bounds
+							xp(h) = lb(h) + (ub(h) - lb(h)) * rand_draw;
+							lnobds = lnobds + 1;
+						}
+						// Evaluate function at new point
+						f_args(minarg - 1) = xp;
+						f_return = feval(obj_fn, f_args);
+						fp = f_return(0).double_value();
+						func_evals = func_evals + 1;
+						//  Accept the new point if the function value decreases
+						if(fp <= f) {
 							x = xp;
 							f = fp;
-							nacc = nacc + 1;
-							nacp(h) = nacp(h) + 1;
-							ndown = ndown + 1;
+							nacc = nacc + 1; // total number of acceptances
+							nacp(h) = nacp(h) + 1; // acceptances for this parameter
+							nup = nup + 1;
+							//  If lower than any other point, record as new optimum
+							if(fp < fopt) {
+								xopt = xp;
+								fopt = fp;
+								nnew = nnew + 1;
+								info(0) = func_evals;
+								info(1) = t;
+								info(2) = fp;
+								details = details.stack(info);
+							}
 						}
-						else nrej = nrej + 1;
+						// If the point is higher, use the Metropolis criteria to decide on
+						// acceptance or rejection.
+						else {
+							p = exp(-(fp - f) / t);
+							rand_draw = octave_rand::scalar();
+							if(rand_draw < p) {
+								x = xp;
+								f = fp;
+								nacc = nacc + 1;
+								nacp(h) = nacp(h) + 1;
+								ndown = ndown + 1;
+							}
+							else nrej = nrej + 1;
+						}
 					}
 					// If maxevals exceeded, terminate the algorithm
 					if(func_evals >= maxevals) {
@@ -381,14 +384,17 @@ Example: see samin_example\n\
 			//  Adjust bounds so that approximately half of all evaluations are accepted
 			test = 0;
 			for(i = 0;i < n;i++) {
-				ratio = nacp(i) / ns;
-				if(ratio > 0.6) bounds(i) = bounds(i) * (1.0 + 2.0 * (ratio - 0.6) / 0.4);
-        	    		else if(ratio < .4) bounds(i) = bounds(i) / (1.0 + 2.0 * ((0.4 - ratio) / 0.4));
-				// keep within initial bounds
-				if(bounds(i) > (ub(i) - lb(i))) {
-					bounds(i) = ub(i) - lb(i);
-					test = test + 1;
+				if (lb(i) != ub(i)) {
+					ratio = nacp(i) / ns;
+					if(ratio > 0.6) bounds(i) = bounds(i) * (1.0 + 2.0 * (ratio - 0.6) / 0.4);
+							else if(ratio < .4) bounds(i) = bounds(i) / (1.0 + 2.0 * ((0.4 - ratio) / 0.4));
+					// keep within initial bounds
+					if(bounds(i) >= (ub(i) - lb(i))) {
+						bounds(i) = ub(i) - lb(i);
+						test = test + 1;
+					}
 				}
+				else test = test + 1; // make sure coverage check passes for the fixed parameters
 			}
 			nacp.fill(0.0);
 			// check if we cover parameter space. if we have yet to do so

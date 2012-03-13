@@ -1,5 +1,7 @@
 all: csvexplode.oct csv2cell.oct csvconcat.oct cell2csv.oct xmlread.oct
 
+MKOCTFILE = mkoctfile -Wall
+
 ifdef FLEXML
 # flexml is a dead project.  It requires flex 2.5.4a-6  (flex-old on Debian).
 # Further, we have modified the resulting xmltree_read.c by hand, changing
@@ -13,19 +15,19 @@ xmltree_read.c: xmltree_read.l
 endif
 
 xmltree.o: xmltree.c xmltree.h
-	mkoctfile -Wall -c $<
+	$(MKOCTFILE) -c $<
 
 xmltree_read.o: xmltree_read.c xmltree_read.h
-	mkoctfile -Wall -c $<
+	$(MKOCTFILE) -c $<
 
 xmlread.o: xmlread.cc xmltree_read.h xmltree.h
-	mkoctfile -Wall -c $<
+	$(MKOCTFILE) -c $<
 
 xmlread.oct: xmlread.o xmltree_read.o xmltree.o
-	mkoctfile -Wall $^
+	$(MKOCTFILE) $^
 
 %.oct: %.cc
-	mkoctfile -Wall $<
+	$(MKOCTFILE) $<
 
 clean:
 	rm -f *.o octave-core core *.oct *~

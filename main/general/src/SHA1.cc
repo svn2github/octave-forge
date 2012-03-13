@@ -1,27 +1,9 @@
-/*
- * SHA1: calculate the SHA1 hash
- *
- * Copyright (C) 1999 Andy Adler
- * This code has no warrany whatsoever.
- * Do what you like with this code as long as you
- *     leave this copyright in place.
- *
- * $Id$
- *
- * $Log$
- * Revision 1.1  2006/08/20 12:25:20  hauberg
- * Changed directory structure to match the new package system
- *
- * Revision 1.3  2002/11/02 11:05:07  pkienzle
- * Seperate lines of multiline strings with \n\ to keep gcc 3.2 happy.
- *
- * Revision 1.2  2002/03/17 18:23:57  aadler
- * bug with function prototypes
- *
- * Revision 1.1  2002/03/17 02:39:44  aadler
- * SHA1 secure hash function
- *
- */
+// Copyright (C) 1999 Andy Adler
+// This code has no warrany whatsoever.
+// Do what you like with this code as long as you leave this copyright in place.
+
+// Note that part of the code below is on the public domain. That part will
+// marked as such.
 
 #include <octave/oct.h>
 
@@ -288,5 +270,3 @@ unsigned char finalcount[8];
     SHA1Transform(context->state, context->buffer);
 #endif
 }
-
-

@@ -7,5 +7,5 @@ Title: Communications.
 Description: Digital Communications, Error Correcting Codes (Channel Code), Source Code functions, Modulation and Galois Fields
 Depends: octave (>= 3.4), signal (>= 1.0.0), image
 Autoload: no
-License: GPL version 2 or later
+License: GPL version 3 or later
 Url: http://octave.sf.net

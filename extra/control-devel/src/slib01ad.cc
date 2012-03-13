@@ -59,88 +59,116 @@ For internal use only.")
     int nargin = args.length ();
     octave_value_list retval;
     
-    if (nargin != 13)
+    if (nargin != 11)
     {
         print_usage ();
     }
     else
     {
         // arguments in
-        char dico;
+        char meth;
+        char alg;
         char jobd;
-        char jobmr;
-        char jobcf;
-        char ordsel;
+        char batch;
+        char conct;
+        char ctrl;
         
-        Matrix a = args(0).matrix_value ();
-        Matrix b = args(1).matrix_value ();
-        Matrix c = args(2).matrix_value ();
-        Matrix d = args(3).matrix_value ();
+        Matrix y = args(0).matrix_value ();
+        Matrix u = args(1).matrix_value ();
+        int nobr = args(2).int_value ();
         
-        const int idico = args(4).int_value ();
-        int ncr = args(5).int_value ();
-        const int iordsel = args(6).int_value ();
-        const int ijobd = args(7).int_value ();
-        const int ijobmr = args(8).int_value ();
-                       
-        Matrix f = args(9).matrix_value ();
-        Matrix g = args(10).matrix_value ();
+        const int imeth = args(3).int_value ();
+        const int ialg = args(4).int_value ();
+        const int ijobd = args(5).int_value ();
+        const int ibatch = args(6).int_value ();
+        const int iconct = args(7).int_value ();
+        const int ictrl = args(8).int_value ();
+        
+        double rcond = args(9).double_value ();
+        double tol = args(10).double_value ();
+        
 
-        const int ijobcf = args(11).int_value ();
-        double tol = args(12).double_value ();
-
-        if (idico == 0)
-            dico = 'C';
+        if (imeth == 0)
+            meth = 'M';
         else
-            dico = 'D';
+            meth = 'N';
 
-        if (iordsel == 0)
-            ordsel = 'F';
-        else
-            ordsel = 'A';
-
-        if (ijobd == 0)
-            jobd = 'Z';
-        else
-            jobd = 'D';
-
-        if (ijobcf == 0)
-            jobcf = 'L';
-        else
-            jobcf = 'R';
-
-        switch (ijobmr)
+        switch (ialg)
         {
             case 0:
-                jobmr = 'B';
+                alg = 'C';
                 break;
             case 1:
-                jobmr = 'F';
+                alg = 'F';
+                break;
+            case 2:
+                alg = 'Q';
                 break;
             default:
-                error ("slib01ad: argument jobmr invalid");
+                error ("slib01ad: argument 'alg' invalid");
+        }
+        
+        if (ijobd == 0)
+            jobd = 'M';
+        else
+            jobd = 'N';
+        
+        switch (ibatch)
+        {
+            case 0:
+                batch = 'F';
+                break;
+            case 1:
+                batch = 'I';
+                break;
+            case 2:
+                batch = 'L';
+                break;
+            case 3:
+                batch = 'O';
+                break;
+            default:
+                error ("slib01ad: argument 'batch' invalid");
         }
 
-
-        int n = a.rows ();      // n: number of states
-        int m = b.columns ();   // m: number of inputs
-        int p = c.rows ();      // p: number of outputs
-
-        int lda = max (1, n);
-        int ldb = max (1, n);
-        int ldc = max (1, p);
-        int ldd;
-        
-        if (jobd == 'Z')
-            ldd = 1;
+        if (iconct == 0)
+            conct = 'C';
         else
-            ldd = max (1, p);
+            conct = 'N';
 
-        int ldf = max (1, m);
-        int ldg = max (1, n);
+        if (ictrl == 0)
+            ctrl = 'C';
+        else
+            ctrl = 'N';
+
+
+        int m = u.columns ();   // m: number of inputs
+        int l = y.columns ();   // l: number of outputs
+        int nsmp = y.rows ();   // nsmp: number of samples
+        // y.rows == u.rows  is checked by iddata class
+        // TODO: check minimal nsmp size
+        
+        int ldu;
+        
+        if (m == 0)
+            ldu = 1;
+        else                    // m > 0
+            ldu = nsmp;
+
+        int ldy = nsmp;
 
         // arguments out
-        ColumnVector hsv (n);
+        int ldr;
+        
+        if (meth == 'M' && jobd == 'M')
+            ldr = max (2*(m+l)*nobr, 3*m*nobr);
+        else if (meth == 'N' || (meth == 'M' && jobd == 'N'))
+            ldr = 2*(m+l)*nobr;
+        else
+            error ("slib01ad: could not handle 'ldr' case");
+        
+        Matrix r (ldr, 2*(m+l)*nobr);
+        ColumnVector sv (l*nobr);
 
         // workspace
         int liwork;
@@ -220,7 +248,7 @@ For internal use only.")
                 "coefficient matrix"};
 
 
-        error_msg ("ident", info, 6, err_msg);
+        error_msg ("ident", info, 2, err_msg);
         warning_msg ("ident", iwarn, 5, warn_msg);
 
 

@@ -1,5 +1,6 @@
 % IB01AD EXAMPLE PROGRAM DATA
 %  15     0     1     1  1000    0.0   -1.0     M     C     N     O     N     N
+%  nobr,  n,    m,    l, nsmp,   rcond, tol,    meth, alg,  jobd, batch,conct,ctrl
 
 U = [
    6.41

@@ -132,6 +132,15 @@ endfunction
 %! assert( B(1), 0.5, 10*eps );
 %! assert( B(5), 0.5, 10*eps );
 
+## Example on p. 422 of
+## http://www.cs.virginia.edu/~gfx/Courses/2006/DataDriven/bib/texsyn/Chapter11.pdf
+%!test
+%! P = dtmc_bd([0 .5 .5 .5 .5], [.5 .5 .5 .5 0]);
+%! [t B] = dtmc_mtta(P);
+%! assert( t, [0 4 6 6 4 0], 10*eps );
+%! assert( B(2:5,1), [.8 .6 .4 .2]', 10*eps );
+%! assert( B(2:5,6), [.2 .4 .6 .8]', 10*eps );
+
 ## Compute the probability of completing the "snakes and ladders"
 ## game in n steps, for various values of n. Also, computes the expected
 ## number of steps which are necessary to complete the game.
@@ -140,16 +149,15 @@ endfunction
 %!demo
 %! n = 6;
 %! P = zeros(101,101);
-%! ## setup transitions through the spinner
 %! for j=0:(100-n)
-%!   i=1:n
+%!   i=1:n;
 %!   P(1+j,1+j+i) = 1/n;
 %! endfor  
 %! for j=(101-n):100 
 %!   P(1+j,1+j) = (n-100+j)/n;
 %! endfor
 %! for j=(101-n):100
-%!   i=1:(100-j)
+%!   i=1:(100-j);
 %!   P(1+j,1+j+i) = 1/n;
 %! endfor
 %! Pstar = P;
@@ -185,7 +193,7 @@ endfunction
 %!   Pstar(:,1+i) = 0;
 %! endfor
 %! Pstar += diag( 1-sum(Pstar,2) );
-%! ## spy(Pstar);
+%! # spy(Pstar); pause
 %! nsteps = 250; # number of steps
 %! Pfinish = zeros(1,nsteps); # Pfinish(i) = probability of finishing after step i
 %! start = zeros(1,101); start(1) = 1;
@@ -195,6 +203,6 @@ endfunction
 %! endfor
 %! f = dtmc_mtta(Pstar, start);
 %! printf("Average number of steps to complete the game: %f\n", f );
-%! plot(Pfinish);
+%! plot(Pfinish,"linewidth",2);
 %! xlabel("Step number (n)");
 %! title("Probability of finishing the game before step n");

@@ -29,8 +29,6 @@ function val = get (d, key, defv = [])
     print_usage ();
   endif
 
-  lookup = __lookup_compat__; # FIXME: remove when 3.3.x is required.
-
   if (ischar (key))
     i = lookup (d.keys, key, "m");
     if (i)

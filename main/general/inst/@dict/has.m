@@ -28,8 +28,6 @@ function b = has (d, key)
     print_usage ();
   endif
 
-  lookup = __lookup_compat__; # FIXME: remove when 3.3.x is required.
-
   if (ischar (key) || iscellstr (key))
     b = lookup (d.keys, key, "b");
   else

@@ -47,10 +47,11 @@
 ## See Also: This function is to be used along with functions 
 ## prbs_iterator, prbs_generator and prbs_sequence.
 
-function [outputseq,prbs]=prbs_iterator(prbs,iterations)
-  if ( nargin < 2 )
-    iterations=2^(prbs.reglen)-1;
-  end
+function [outputseq, prbs] = prbs_iterator (prbs, iterations = 2^(prbs.reglen)-1)
+
+  if ( nargin < 1 || nargin > 2 )
+    print_usage;
+  endif
   outputseq=zeros(1,iterations);
   nstate=zeros(1,prbs.reglen);
   
@@ -65,10 +66,10 @@ function [outputseq,prbs]=prbs_iterator(prbs,iterations)
       val=0;
       L=length(prbs.connections{itr2});
       for itr3=2:L
-	val=bitxor(val,prbs.sregs(prbs.connections{itr2}(itr3)));
-      end
+        val=bitxor(val,prbs.sregs(prbs.connections{itr2}(itr3)));
+      endfor
       nstate(prbs.connections{itr2}(1))=val;
-    end
+    endfor
     
     ## rotate the output discarding the last output.
     prbs.sregs=[0 prbs.sregs(1:prbs.reglen-1)];
@@ -77,10 +78,10 @@ function [outputseq,prbs]=prbs_iterator(prbs,iterations)
     for itr2=1:prbs.conlen
       prbs.sregs(itr2)=nstate(itr2);
       nstate(itr2)=0; # reset.
-    end
+    endfor
     
-  end
-end
+  endfor
+endfunction
 
 ##
 ##  TEST CASES FOR PRBS.

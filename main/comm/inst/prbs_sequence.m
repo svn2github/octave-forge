@@ -42,13 +42,10 @@
 ## prbs_generator.
 
 function [itrs,seq]=prbs_sequence(prbs)
-  if nargin < 1
-    error("usage: prbs_sequence(prbs struct ); \
-	create the prbs sequence using prbs_generator() function. \
-	This function generates the ML length sequence of 1 period\
-	and returns to the user.")
-  end
-  nstate=zeros(1,prbs.reglen); 
+  if nargin != 1
+    print_usage;
+  endif
+  nstate=zeros(1,prbs.reglen);
   itrs=0; seq = [];
   inits = prbs.sregs;
   
@@ -62,10 +59,10 @@ function [itrs,seq]=prbs_sequence(prbs)
       val=0;
       L=length(prbs.connections{itr2});
       for itr3=2:L
-	val=bitxor(val,prbs.sregs(prbs.connections{itr2}(itr3)));
-      end
+        val=bitxor(val,prbs.sregs(prbs.connections{itr2}(itr3)));
+      endfor
       nstate(prbs.connections{itr2}(1))=val;
-    end
+    endfor
     
     ## rotate the output discarding the last output.
     seq = [seq, prbs.sregs(end)];
@@ -75,10 +72,10 @@ function [itrs,seq]=prbs_sequence(prbs)
     for itr2=1:prbs.conlen
       prbs.sregs(itr2)=nstate(itr2);
       nstate(itr2)=0; # reset.
-    end
+    endfor
     
     if(isequal(prbs.sregs,inits))
-      break;
-    end
-  end
+      break
+    endif
+  endwhile
 end

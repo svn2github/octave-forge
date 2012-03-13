@@ -34,18 +34,22 @@ Version: 0.1
 extern "C"
 { 
     int F77_FUNC (ib01bd, IB01BD)
-                 (char& METH, char& ALG, char& JOBD,
-                  char& BATCH, char& CONCT, char& CTRL,
-                  int& NOBR, int& M, int& L,
-                  int& NSMP,
-                  double* U, int& LDU,
-                  double* Y, int& LDY,
-                  int& N,
+                 (char& METH, char& JOB, char& JOBCK,
+                  int& NOBR, int& N, int& M, int& L,
+                  int& NSMPL,
                   double* R, int& LDR,
-                  double* SV,
-                  double& RCOND, double& TOL,
+                  double* A, int& LDA,
+                  double* C, int& LDC,
+                  double* B, int& LDB,
+                  double* D, int& LDD,
+                  double* Q, int& LDQ,
+                  double* RY, int& LDRY,
+                  double* S, int& LDS,
+                  double* K, int& LDK,
+                  double& TOL,
                   int* IWORK,
                   double* DWORK, int& LDWORK,
+                  bool* BWORK,
                   int& IWARN, int& INFO);
 }
 
@@ -238,18 +242,22 @@ C             For good performance,  LDWORK  should be larger.
 
         // SLICOT routine IB01BD
         F77_XFCN (ib01bd, IB01BD,
-                 (meth, alg, jobd,
-                  batch, conct, ctrl,
-                  nobr, m, l,
-                  nsmp,
-                  u.fortran_vec (), ldu,
-                  y.fortran_vec (), ldy,
-                  n,
+                 (meth, job, jobck,
+                  nobr, n, m, l,
+                  nsmpl,
                   r.fortran_vec (), ldr,
-                  sv.fortran_vec (),
-                  rcond, tol,
+                  a.fortran_vec (), lda,
+                  c.fortran_vec (), ldc,
+                  b.fortran_vec (), ldb,
+                  d.fortran_vec (), ldd,
+                  q.fortran_vec (), ldq,
+                  ry.fortran_vec (), ldry,
+                  s.fortran_vec (), lds,
+                  k.fortran_vec (), ldk,
+                  tol,
                   iwork,
                   dwork, ldwork,
+                  bwork,
                   iwarn, info));
 
 

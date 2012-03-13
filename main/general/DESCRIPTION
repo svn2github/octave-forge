@@ -7,6 +7,6 @@ Title: General
 Description: General tools for octave. String dictionary, parallel computing.
 Categories: General
 Depends: octave (>= 3.2.4)
-Autoload: yes
+Autoload: no
 License: GPL version 3 or later
 Url: http://octave.sf.net

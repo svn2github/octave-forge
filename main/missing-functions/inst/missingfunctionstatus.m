@@ -23,7 +23,7 @@
 
 function missingfunctionstatus (outdir = ".")
 
-  urlbase = "http://www.mathworks.com/access/helpdesk/help/";
+  urlbase = "http://www.mathworks.com/help/";
 
   toolboxes = {"Matlab" "techdoc/ref/f16-6011.html";
                "Aerospace" "toolbox/aerotbx/ug/bqj21qj.html";

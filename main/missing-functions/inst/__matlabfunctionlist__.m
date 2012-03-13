@@ -24,7 +24,7 @@
 ## may not be sorted or unique.
 ## @end deftypefn
 
-function [funlist, funloc, catlist, catloc, catlvl] = __matlabfunctionlist__ (url = "http://www.mathworks.com/access/helpdesk/help/techdoc/ref/f16-6011.html")
+function [funlist, funloc, catlist, catloc, catlvl] = __matlabfunctionlist__ (url = "http://www.mathworks.com/help/techdoc/ref/f16-6011.html")
 
   [raw, success, message] = urlread(url);
   if (! success)
@@ -71,7 +71,7 @@ function [funlist, funloc, catlist, catloc, catlvl] = __matlabfunctionlist__ (ur
     ## convert all whitespace to actual spaces
     tmpfunname(isspace (tmpfunname)) = " ";
     if (numel (tmpfunname) > 2)
-      tmpfunname = split (tmpfunname, ", ");
+      tmpfunname = strsplit (tmpfunname, ", ");
     endif
     for j = 1:rows (tmpfunname)
       idx++;

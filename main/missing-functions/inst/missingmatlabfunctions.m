@@ -22,7 +22,7 @@
 ## @seealso{missingfunctionstatus}
 ## @end deftypefn
 
-function missingmatlabfunctions (outfile = "", outformat = "", url = "http://www.mathworks.com/access/helpdesk/help/techdoc/ref/f16-6011.html")
+function missingmatlabfunctions (outfile = "", outformat = "", url = "http://www.mathworks.com/help/techdoc/ref/f16-6011.html")
 
   [funlist, funloc, catlist, catloc, catlvl] = __matlabfunctionlist__ (url);
   funstat = __functionstatus__ (funlist);

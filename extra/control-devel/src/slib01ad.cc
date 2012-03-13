@@ -158,6 +158,7 @@ For internal use only.")
         int ldy = nsmp;
 
         // arguments out
+        int n;
         int ldr;
         
         if (meth == 'M' && jobd == 'M')
@@ -173,21 +174,18 @@ For internal use only.")
         // workspace
         int liwork;
 
-        if (jobmr == 'B')
+        if (meth == 'N')            // if METH = 'N'
+            liwork = (m+l)*nobr;
+        else if (alg == 'F')        // if METH = 'M' and ALG = 'F'
+            liwork = m+l;
+        else                        // if METH = 'M' and ALG = 'C' or 'Q'
             liwork = 0;
-        else                // if JOBMR = 'F'
-            liwork = n;
+
+        // TODO: Handle 'k' for DWORK
 
         int ldwork;
-        int mp;
 
-        if (jobcf == 'L')
-            mp = m;
-        else                // if JOBCF = 'R'
-            mp = p;
-
-        ldwork = 2*n*n + max (1, 2*n*n + 5*n, n*max(m,p),
-                              n*(n + max(n,mp) + min(n,mp) + 6));
+        ldwork = 0;
 
 
         OCTAVE_LOCAL_BUFFER (int, iwork, liwork);
@@ -253,17 +251,14 @@ For internal use only.")
 
 
         // resize
-        a.resize (ncr, ncr);    // Ac
-        g.resize (ncr, p);      // Bc
-        f.resize (m, ncr);      // Cc
-        // Dc = 0
+        int rs = 2*(m+l)*nobr;
+        r.resize (rs, rs);
+
         
         // return values
-        retval(0) = a;
-        retval(1) = g;
-        retval(2) = f;
-        retval(3) = octave_value (ncr);
-        retval(4) = hsv;
+        retval(0) = octave_value (n);
+        retval(1) = r;
+        retval(2) = sv;
     }
     
     return retval;

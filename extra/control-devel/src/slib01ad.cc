@@ -187,6 +187,46 @@ For internal use only.")
 
         ldwork = 0;
 
+        if (alg == 'C' && (batch == 'F' || batch == 'I') && conct = 'C')
+            ldwork = (4*nobr-2)*(m+l);
+        else if (alg == 'C' && (batch == 'F' || batch == 'I') && conct = 'N')
+            ldwork = 1;
+        else if (meth == 'M' && alg == 'C' && batch == 'L' && conct == 'C')
+            ldwork = max ((4*nobr-2)*(m+l), 5*l*nobr);
+        else if ((meth == 'M' && jobd = 'M' && alg == 'C' && batch == 'O') || (batch == 'L' && conct == 'N'))
+            ldwork = max ((2*m-1)*nobr, (m+l)*nobr, 5*l*nobr);
+        else if ((meth == 'M' && jobd == 'N' && alg == 'C' && batch == 'O') || (batch == 'L' && conct == 'N'))
+            ldwork = 5*l*nobr;
+
+        // FIXME : two times  || (batch == 'L' && conct == 'N') doesn't make sense
+
+C             LDWORK >= 5*(M+L)*NOBR+1, if METH = 'N', ALG = 'C', and
+C                             BATCH = 'L' or 'O';
+C             LDWORK >= (M+L)*2*NOBR*(M+L+3), if ALG = 'F',
+C                             BATCH <> 'O' and CONCT = 'C';
+C             LDWORK >= (M+L)*2*NOBR*(M+L+1), if ALG = 'F',
+C                             BATCH = 'F', 'I' and CONCT = 'N';
+C             LDWORK >= (M+L)*4*NOBR*(M+L+1)+(M+L)*2*NOBR, if ALG = 'F',
+C                             BATCH = 'L' and CONCT = 'N', or
+C                             BATCH = 'O';
+C             LDWORK >= 4*(M+L)*NOBR, if ALG = 'Q', BATCH = 'F', and
+C                             LDR >= NS = NSMP - 2*NOBR + 1;
+C             LDWORK >= max(4*(M+L)*NOBR, 5*L*NOBR), if METH = 'M',
+C                             ALG = 'Q', BATCH = 'O', and LDR >= NS;
+C             LDWORK >= 5*(M+L)*NOBR+1, if METH = 'N', ALG = 'Q',
+C                             BATCH = 'O', and LDR >= NS;
+C             LDWORK >= 6*(M+L)*NOBR, if ALG = 'Q', (BATCH = 'F' or 'O',
+C                             and LDR < NS), or (BATCH = 'I' or
+C                             'L' and CONCT = 'N');
+C             LDWORK >= 4*(NOBR+1)*(M+L)*NOBR, if ALG = 'Q', BATCH = 'I'
+C                             or 'L' and CONCT = 'C'.
+C             The workspace used for ALG = 'Q' is
+C                       LDRWRK*2*(M+L)*NOBR + 4*(M+L)*NOBR,
+C             where LDRWRK = LDWORK/(2*(M+L)*NOBR) - 2; recommended
+C             value LDRWRK = NS, assuming a large enough cache size.
+C             For good performance,  LDWORK  should be larger.
+
+
 
         OCTAVE_LOCAL_BUFFER (int, iwork, liwork);
         OCTAVE_LOCAL_BUFFER (double, dwork, ldwork);

@@ -84,6 +84,10 @@ function result = dtmc_fpt( P, i, j )
   ( N>0 ) || \
       error(err);
 
+  if ( any(diag(P) == 1) ) 
+    error("dtmc_fpt() does not currently support absorbing chains");
+  endif
+
   if ( nargin == 1 )   
     M = zeros(N,N);
     ## M(i,j) = 1 + sum_{k \neq j} P(i,k) M(k,j)
@@ -120,27 +124,28 @@ endfunction
 %!       0.9 0.1 0.0 ];
 %! M = dtmc_fpt(P);
 
-%!test
+%!shared P
 %! P = [ 0.0 0.9 0.1; \
 %!       0.1 0.0 0.9; \
 %!       0.9 0.1 0.0 ];
+
+%!test
 %! p = dtmc(P);
 %! M = dtmc_fpt(P);
 %! assert( diag(M)', 1./p, 1e-8 );
 
 %!test
-%! P = [ 0.0 0.9 0.1; \
-%!       0.1 0.0 0.9; \
-%!       0.9 0.1 0.0 ];
 %! p = dtmc(P);
 %! m = dtmc_fpt(P, 1, 1);
 %! assert( m, 1/p(1), 1e-8 );
 
 %!test
-%! P = [ 0.0 0.9 0.1; \
-%!       0.1 0.0 0.9; \
-%!       0.9 0.1 0.0 ];
 %! m = dtmc_fpt(P, 1, [2 3]);
+
+## FIXME: add support for absorbing chains
+%!xtest
+%! P = dtmc_bd([1 1 1], [ 0 0 0] );
+%! dtmc_fpt(Q,1,2);
 
 %!test
 %! P = unifrnd(0.1,0.9,10,10);

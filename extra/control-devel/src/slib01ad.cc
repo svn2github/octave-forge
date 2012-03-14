@@ -216,6 +216,7 @@ For internal use only.")
 For the second LDWORK case, code and documentation don't match:
 doc line 276: BATCH = 'F', 'I'
 code line 586: BATCH = 'F', 'I', 'O'
+The third case with BATCH = 'O' is never reached.
 
 
 IB01AD.f Lines 273-279:

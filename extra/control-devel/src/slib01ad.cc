@@ -207,29 +207,13 @@ For internal use only.")
             }
             else    // meth == 'N' && (batch == 'L' || batch == 'O')
             {
-            
+                ldwork = 5*(m+l)*nobr + 1;
             }
         }
         else if (alg == 'F')
         {
-        
-        }
-        else    // (alg == 'Q')
-        {
-        
-        }
-
-
-
-        else if ((meth == 'M' && jobd = 'M' && alg == 'C' && batch == 'O') || (batch == 'L' && conct == 'N'))
-            ldwork = max ((2*m-1)*nobr, (m+l)*nobr, 5*l*nobr);
-        else if ((meth == 'M' && jobd == 'N' && alg == 'C' && batch == 'O') || (batch == 'L' && conct == 'N'))
-            ldwork = 5*l*nobr;
-
-        // FIXME : two times  || (batch == 'L' && conct == 'N') doesn't make sense
-
-C             LDWORK >= 5*(M+L)*NOBR+1, if METH = 'N', ALG = 'C', and
-C                             BATCH = 'L' or 'O';
+/*
+IB01AD.f Lines 273-279:
 C             LDWORK >= (M+L)*2*NOBR*(M+L+3), if ALG = 'F',
 C                             BATCH <> 'O' and CONCT = 'C';
 C             LDWORK >= (M+L)*2*NOBR*(M+L+1), if ALG = 'F',
@@ -237,22 +221,47 @@ C                             BATCH = 'F', 'I' and CONCT = 'N';
 C             LDWORK >= (M+L)*4*NOBR*(M+L+1)+(M+L)*2*NOBR, if ALG = 'F',
 C                             BATCH = 'L' and CONCT = 'N', or
 C                             BATCH = 'O';
-C             LDWORK >= 4*(M+L)*NOBR, if ALG = 'Q', BATCH = 'F', and
-C                             LDR >= NS = NSMP - 2*NOBR + 1;
-C             LDWORK >= max(4*(M+L)*NOBR, 5*L*NOBR), if METH = 'M',
-C                             ALG = 'Q', BATCH = 'O', and LDR >= NS;
-C             LDWORK >= 5*(M+L)*NOBR+1, if METH = 'N', ALG = 'Q',
-C                             BATCH = 'O', and LDR >= NS;
-C             LDWORK >= 6*(M+L)*NOBR, if ALG = 'Q', (BATCH = 'F' or 'O',
-C                             and LDR < NS), or (BATCH = 'I' or
-C                             'L' and CONCT = 'N');
-C             LDWORK >= 4*(NOBR+1)*(M+L)*NOBR, if ALG = 'Q', BATCH = 'I'
-C                             or 'L' and CONCT = 'C'.
-C             The workspace used for ALG = 'Q' is
-C                       LDRWRK*2*(M+L)*NOBR + 4*(M+L)*NOBR,
-C             where LDRWRK = LDWORK/(2*(M+L)*NOBR) - 2; recommended
-C             value LDRWRK = NS, assuming a large enough cache size.
-C             For good performance,  LDWORK  should be larger.
+
+IB01AD.f Lines 583-591:
+            ELSE IF ( FQRALG ) THEN
+               IF ( .NOT.ONEBCH .AND. CONNEC ) THEN
+                  MINWRK = NR*( M + L + 3 )
+               ELSE IF ( FIRST .OR. INTERM ) THEN       // (batch = F || O) || batch = I
+                  MINWRK = NR*( M + L + 1 )
+               ELSE
+                  MINWRK = 2*NR*( M + L + 1 ) + NR
+               END IF
+            ELSE
+*/
+            if (batch != 'O' && conct == 'C')
+                ldwork = (m+l)*2*nobr*(m+l+3);
+            else if (batch == 'F' || batch == 'O' || batch == 'I')  // && conct == 'N'
+                ldwork = (m+l)*2*nobr*(m+l+1);
+            else    // (batch == 'L' && conct == 'N')
+                ldwork = (m+l)*4*nobr*(m+l+1)+(m+l)*2*nobr;
+        }
+        else    // (alg == 'Q')
+        {
+        
+        }
+
+
+c             ldwork >= 4*(m+l)*nobr, if alg = 'q', batch = 'f', and
+c                             ldr >= ns = nsmp - 2*nobr + 1;
+c             ldwork >= max(4*(m+l)*nobr, 5*l*nobr), if meth = 'm',
+c                             alg = 'q', batch = 'o', and ldr >= ns;
+c             ldwork >= 5*(m+l)*nobr+1, if meth = 'n', alg = 'q',
+c                             batch = 'o', and ldr >= ns;
+c             ldwork >= 6*(m+l)*nobr, if alg = 'q', (batch = 'f' or 'o',
+c                             and ldr < ns), or (batch = 'i' or
+c                             'l' and conct = 'n');
+c             ldwork >= 4*(nobr+1)*(m+l)*nobr, if alg = 'q', batch = 'i'
+c                             or 'l' and conct = 'c'.
+c             the workspace used for alg = 'q' is
+c                       ldrwrk*2*(m+l)*nobr + 4*(m+l)*nobr,
+c             where ldrwrk = ldwork/(2*(m+l)*nobr) - 2; recommended
+c             value ldrwrk = ns, assuming a large enough cache size.
+c             for good performance,  ldwork  should be larger.
 
 
 

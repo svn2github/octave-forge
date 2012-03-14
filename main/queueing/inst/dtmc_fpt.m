@@ -84,10 +84,6 @@ function result = dtmc_fpt( P, i, j )
   ( N>0 ) || \
       error(err);
 
-  if ( any(diag(P) == 1) ) 
-    error("dtmc_fpt() does not currently support absorbing chains");
-  endif
-
   if ( nargin == 1 )   
     M = zeros(N,N);
     ## M(i,j) = 1 + sum_{k \neq j} P(i,k) M(k,j)
@@ -142,10 +138,25 @@ endfunction
 %!test
 %! m = dtmc_fpt(P, 1, [2 3]);
 
-## FIXME: add support for absorbing chains
+## FIXME: check this (matrix not ergodic???)
 %!xtest
 %! P = dtmc_bd([1 1 1], [ 0 0 0] );
-%! dtmc_fpt(Q,1,2);
+%! dtmc_fpt(P);
+
+## Example on p. 461 of
+## http://www.cs.virginia.edu/~gfx/Courses/2006/DataDriven/bib/texsyn/Chapter11.pdf
+%!test
+%! P = [ 0 1 0 0 0; \
+%!      .25 .0 .75 0 0; \
+%!      0 .5 0 .5 0; \
+%!      0 0 .75 0 .25; \
+%!      0 0 0 1 0 ];
+%! M = dtmc_fpt(P);
+%! assert( M, [16 1 2.6667 6.3333 21.3333; \
+%!             15 4 1.6667 5.3333 20.3333; \
+%!             18.6667 3.6667 2.6667 3.6667 18.6667; \
+%!             20.3333 5.3333 1.6667 4 15; \
+%!             21.3333 6.3333 2.6667 1 16 ], 1e-4 );
 
 %!test
 %! P = unifrnd(0.1,0.9,10,10);

@@ -222,14 +222,20 @@ C             LDWORK >= (M+L)*4*NOBR*(M+L+1)+(M+L)*2*NOBR, if ALG = 'F',
 C                             BATCH = 'L' and CONCT = 'N', or
 C                             BATCH = 'O';
 
+
+IB01AD.f Lines 499-500:
+      ONEBCH = LSAME( BATCH, 'O' )
+      FIRST  = LSAME( BATCH, 'F' ) .OR. ONEBCH
+
+
 IB01AD.f Lines 583-591:
             ELSE IF ( FQRALG ) THEN
                IF ( .NOT.ONEBCH .AND. CONNEC ) THEN
                   MINWRK = NR*( M + L + 3 )
                ELSE IF ( FIRST .OR. INTERM ) THEN       // (batch = F || O) || batch = I
-                  MINWRK = NR*( M + L + 1 )
-               ELSE
-                  MINWRK = 2*NR*( M + L + 1 ) + NR
+                  MINWRK = NR*( M + L + 1 )                              ^
+               ELSE                                                      |
+                  MINWRK = 2*NR*( M + L + 1 ) + NR                      ??? 
                END IF
             ELSE
 */
@@ -242,27 +248,40 @@ IB01AD.f Lines 583-591:
         }
         else    // (alg == 'Q')
         {
-        
+            int ns = nsmp - 2*nobr + 1;
+            
+            if (ldr >= ns && batch == 'F')
+            {
+                ldwork = 4*(m+l)*nobr;
+            }
+            else if (ldr >= ns && batch == 'O')
+            {
+                if (meth == 'M')
+                    ldwork = max (4*(m+l)*nobr, 5*l*nobr);
+                else    // (meth == 'N')
+                    ldwork = 5*(m+l)*nobr + 1;
+            }
+            else if (conct == 'C' && (batch == 'I' || batch == 'L'))
+            {
+                ldwork = 4*(nobr+1)*(m+l)*nobr;
+            }
+            else    // if ALG = 'Q', (BATCH = 'F' or 'O', and LDR < NS), or (BATCH = 'I' or 'L' and CONCT = 'N')
+            {
+                ldwork = 6*(m+l)*nobr;
+            }
         }
 
-
-c             ldwork >= 4*(m+l)*nobr, if alg = 'q', batch = 'f', and
-c                             ldr >= ns = nsmp - 2*nobr + 1;
-c             ldwork >= max(4*(m+l)*nobr, 5*l*nobr), if meth = 'm',
-c                             alg = 'q', batch = 'o', and ldr >= ns;
-c             ldwork >= 5*(m+l)*nobr+1, if meth = 'n', alg = 'q',
-c                             batch = 'o', and ldr >= ns;
-c             ldwork >= 6*(m+l)*nobr, if alg = 'q', (batch = 'f' or 'o',
-c                             and ldr < ns), or (batch = 'i' or
-c                             'l' and conct = 'n');
-c             ldwork >= 4*(nobr+1)*(m+l)*nobr, if alg = 'q', batch = 'i'
-c                             or 'l' and conct = 'c'.
+/*
+IB01AD.f Lines 291-195:
 c             the workspace used for alg = 'q' is
 c                       ldrwrk*2*(m+l)*nobr + 4*(m+l)*nobr,
 c             where ldrwrk = ldwork/(2*(m+l)*nobr) - 2; recommended
 c             value ldrwrk = ns, assuming a large enough cache size.
 c             for good performance,  ldwork  should be larger.
 
+somehow ldrwrk and ldwork must have been mixed up here
+
+*/
 
 
         OCTAVE_LOCAL_BUFFER (int, iwork, liwork);

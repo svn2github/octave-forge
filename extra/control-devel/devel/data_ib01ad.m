@@ -2,6 +2,7 @@
 %  15     0     1     1  1000    0.0   -1.0     M     C     N     O     N     N
 %  nobr,  n,    m,    l, nsmp,   rcond, tol,    meth, alg,  jobd, batch,conct,ctrl
 
+
 U = [
    6.41
    3.41
@@ -2009,3 +2010,31 @@ Y = [
 ];
 
 dat = iddata (Y, U)
+
+% IB01AD EXAMPLE PROGRAM DATA
+%  15     0     1     1  1000    0.0   -1.0     M     C     N     O     N     N
+%  nobr,  n,    m,    l, nsmp,   rcond, tol,    meth, alg,  jobd, batch,conct,ctrl
+
+nobr = 15;
+meth = 0;
+alg = 0;
+jobd = 1;
+batch = 3;
+conct = 1;
+ctrl = 1;
+rcond = 0.0;
+tol = -1.0;
+
+[n, r, sv] = slib01ad (Y, U, nobr, meth, alg, jobd, batch, conct, ctrl, rcond, tol);
+
+n
+sv
+
+%{
+ IB01AD EXAMPLE PROGRAM RESULTS
+
+ The order of the system is     4
+ The singular values are 
+  69.8841  14.9963   3.6675   1.9677   0.3000   0.2078   0.1651   0.1373
+   0.1133   0.1059   0.0856   0.0784   0.0733   0.0678   0.0571
+%}

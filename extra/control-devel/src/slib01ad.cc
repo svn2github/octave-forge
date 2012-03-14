@@ -213,6 +213,11 @@ For internal use only.")
         else if (alg == 'F')
         {
 /*
+For the second LDWORK case, code and documentation don't match:
+doc line 276: BATCH = 'F', 'I'
+code line 586: BATCH = 'F', 'I', 'O'
+
+
 IB01AD.f Lines 273-279:
 C             LDWORK >= (M+L)*2*NOBR*(M+L+3), if ALG = 'F',
 C                             BATCH <> 'O' and CONCT = 'C';

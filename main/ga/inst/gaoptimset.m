@@ -89,8 +89,8 @@ endfunction
 %!error gaoptimset ("Generations", 123)
 %!error [a, b] = gaoptimset ("Generations", 123)
 
-%!error gaoptimset ("odd number of arguments")
-%!error gaoptimset ("Generations", 123, "odd number of arguments")
+%!error options = gaoptimset ("odd number of arguments")
+%!error options = gaoptimset ("Generations", 123, "odd number of arguments")
 
 
 %!#error options = gaoptimset ("Vectorized", "bad value") # TODO: fix

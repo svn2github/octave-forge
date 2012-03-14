@@ -93,6 +93,10 @@ endfunction
 %!error gaoptimset ("Generations", 123, "odd number of arguments")
 
 
+%!#error options = gaoptimset ("Vectorized", "bad value") # TODO: fix
+%!#error options = gaoptimset ("UseParallel", "bad value") # TODO: fix
+
+
 %!assert (getfield (gaoptimset ("Generations", 123), "Generations"), 123)
 
 %!test

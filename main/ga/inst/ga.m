@@ -162,10 +162,6 @@ endfunction
 
 ## Vectorized and UseParallel options
 
-%!error ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("Vectorized", "bad value")));
-
-%!error ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("UseParallel", "bad value")));
-
 %!test ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("Generations", 10, "Vectorized", "on")));
 
 %!xtest ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("Generations", 10, "UseParallel", "always")));

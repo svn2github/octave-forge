@@ -186,13 +186,41 @@ For internal use only.")
         int ldwork;
 
         ldwork = 0;
+        
+        if (alg == 'C')
+        {
+            if (batch == 'F' || batch == 'I')
+            {
+                if (conct == 'C')
+                    ldwork = (4*nobr-2)*(m+l);
+                else    // (conct == 'N')
+                    ldwork = 1;
+            }
+            else if (meth == 'M')   // && (batch == 'L' || batch == 'O')
+            {
+                if (conct == 'C' && batch == 'L')
+                    ldwork = max ((4*nobr-2)*(m+l), 5*l*nobr);
+                else if (jobd == 'M')
+                    ldwork = max ((2*m-1)*nobr, (m+l)*nobr, 5*l*nobr);
+                else    // (jobd == 'N')
+                    ldwork = 5*l*nobr;
+            }
+            else    // meth == 'N' && (batch == 'L' || batch == 'O')
+            {
+            
+            }
+        }
+        else if (alg == 'F')
+        {
+        
+        }
+        else    // (alg == 'Q')
+        {
+        
+        }
 
-        if (alg == 'C' && (batch == 'F' || batch == 'I') && conct = 'C')
-            ldwork = (4*nobr-2)*(m+l);
-        else if (alg == 'C' && (batch == 'F' || batch == 'I') && conct = 'N')
-            ldwork = 1;
-        else if (meth == 'M' && alg == 'C' && batch == 'L' && conct == 'C')
-            ldwork = max ((4*nobr-2)*(m+l), 5*l*nobr);
+
+
         else if ((meth == 'M' && jobd = 'M' && alg == 'C' && batch == 'O') || (batch == 'L' && conct == 'N'))
             ldwork = max ((2*m-1)*nobr, (m+l)*nobr, 5*l*nobr);
         else if ((meth == 'M' && jobd == 'N' && alg == 'C' && batch == 'O') || (batch == 'L' && conct == 'N'))

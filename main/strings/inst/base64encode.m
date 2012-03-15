@@ -1,3 +1,6 @@
+## Author: Paul Kienzle <pkienzle@users.sf.net>
+## This program is granted to the public domain.
+
 ## -*- texinfo -*-
 ## @deftypefn @var{Y} = {Function File} {} base64encode(@var{X})
 ## @deftypefnx @var{Y} = {Function File} {} base64encode(@var{X}, @var{do_reshape})
@@ -14,11 +17,7 @@
 ## @end example
 ## @end deftypefn
 ## @seealso{base64decode}
-##
 
-## This program is in the public domain
-## Author: Paul Kienzle <pkienzle@users.sf.net>
-##
 function Y = base64encode(X,do_reshape)
 
   if (nargin < 1)

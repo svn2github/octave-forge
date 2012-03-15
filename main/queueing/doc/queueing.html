@@ -56,19 +56,19 @@ modified versions.
 <ul>
 <li><a href="#Discrete_002dTime-Markov-Chains">4.1 Discrete-Time Markov Chains</a>
 <ul>
-<li><a href="#Discrete_002dTime-Markov-Chains">4.1.1 State occupancy probabilities</a>
-<li><a href="#Discrete_002dTime-Markov-Chains">4.1.2 Birth-Death process</a>
-<li><a href="#Discrete_002dTime-Markov-Chains">4.1.3 First passage times</a>
-<li><a href="#Discrete_002dTime-Markov-Chains">4.1.4 Mean Time to Absorption</a>
+<li><a href="#State-occupancy-probabilities-_0028DTMC_0029">4.1.1 State occupancy probabilities</a>
+<li><a href="#Birth_002ddeath-process-_0028DTMC_0029">4.1.2 Birth-death process</a>
+<li><a href="#First-passage-times-_0028DTMC_0029">4.1.3 First Passage Times</a>
+<li><a href="#Mean-time-to-absorption-_0028DTMC_0029">4.1.4 Mean Time to Absorption</a>
 </li></ul>
 <li><a href="#Continuous_002dTime-Markov-Chains">4.2 Continuous-Time Markov Chains</a>
 <ul>
-<li><a href="#State-occupancy-probabilities">4.2.1 State occupancy probabilities</a>
-<li><a href="#Birth_002dDeath-process">4.2.2 Birth-Death process</a>
-<li><a href="#Expected-Sojourn-Time">4.2.3 Expected Sojourn Time</a>
-<li><a href="#Time_002dAveraged-Expected-Sojourn-Time">4.2.4 Time-Averaged Expected Sojourn Time</a>
-<li><a href="#Mean-Time-to-Absorption">4.2.5 Mean Time to Absorption</a>
-<li><a href="#First-Passage-Times">4.2.6 First Passage Times</a>
+<li><a href="#State-occupancy-probabilities-_0028CTMC_0029">4.2.1 State occupancy probabilities</a>
+<li><a href="#Birth_002ddeath-process-_0028CTMC_0029">4.2.2 Birth-Death Process</a>
+<li><a href="#Expected-sojourn-times-_0028CTMC_0029">4.2.3 Expected Sojourn Times</a>
+<li><a href="#Time_002daveraged-expected-sojourn-times-_0028CTMC_0029">4.2.4 Time-Averaged Expected Sojourn Times</a>
+<li><a href="#Mean-time-to-absorption-_0028CTMC_0029">4.2.5 Mean Time to Absorption</a>
+<li><a href="#First-passage-times-_0028CTMC_0029">4.2.6 First Passage Times</a>
 </li></ul>
 </li></ul>
 <li><a name="toc_Single-Station-Queueing-Systems" href="#Single-Station-Queueing-Systems">5 Single Station Queueing Systems</a>
@@ -805,10 +805,10 @@ system was at time n.
    <p>The evolution of a Markov chain with finite state space {1, 2,
 <small class="dots">...</small>, N} can be fully described by a stochastic matrix \bf
 P(n) = P_i,j(n) such that P_i, j(n) = P( X_n+1 = j\ |\
-X_n = j ).  If the Markov chain is homogeneous (that is, the
+X_n = i ).  If the Markov chain is homogeneous (that is, the
 transition probability matrix \bf P(n) is time-independent),
 we can simply write \bf P = P_i, j, where P_i, j =
-P( X_n+1 = j\ |\ X_n = j ) for all n=0, 1, 2, <small class="dots">...</small>.
+P( X_n+1 = j\ |\ X_n = i ) for all n=0, 1, 2, <small class="dots">...</small>.
 
    <p>The transition probability matrix \bf P must satisfy the
 following two properties: (1) P_i, j &ge; 0 for all
@@ -826,6 +826,22 @@ a transition probability matrix, set <var>result</var> to zero, and
 <var>err</var> to an appropriate error string.
 
         </blockquote></div>
+
+<ul class="menu">
+<li><a accesskey="1" href="#State-occupancy-probabilities-_0028DTMC_0029">State occupancy probabilities (DTMC)</a>
+<li><a accesskey="2" href="#Birth_002ddeath-process-_0028DTMC_0029">Birth-death process (DTMC)</a>
+<li><a accesskey="3" href="#First-passage-times-_0028DTMC_0029">First passage times (DTMC)</a>
+<li><a accesskey="4" href="#Mean-time-to-absorption-_0028DTMC_0029">Mean time to absorption (DTMC)</a>
+</ul>
+
+<div class="node">
+<a name="State-occupancy-probabilities-(DTMC)"></a>
+<a name="State-occupancy-probabilities-_0028DTMC_0029"></a>
+<p><hr>
+Next:&nbsp;<a rel="next" accesskey="n" href="#Birth_002ddeath-process-_0028DTMC_0029">Birth-death process (DTMC)</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a>
+
+</div>
 
 <h4 class="subsection">4.1.1 State occupancy probabilities</h4>
 
@@ -911,7 +927,17 @@ i.
             T, ss(2)*ones(size(T)), "r;Steady State;" );
       xlabel("Time Step");</pre>
 </pre>
-   <h4 class="subsection">4.1.2 Birth-Death process</h4>
+   <div class="node">
+<a name="Birth-death-process-(DTMC)"></a>
+<a name="Birth_002ddeath-process-_0028DTMC_0029"></a>
+<p><hr>
+Next:&nbsp;<a rel="next" accesskey="n" href="#First-passage-times-_0028DTMC_0029">First passage times (DTMC)</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#State-occupancy-probabilities-_0028DTMC_0029">State occupancy probabilities (DTMC)</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a>
+
+</div>
+
+<h4 class="subsection">4.1.2 Birth-death process</h4>
 
 <p><a name="doc_002ddtmc_005fbd"></a>
 
@@ -942,7 +968,17 @@ transition probability from state i+1 to state i.
 
         </blockquote></div>
 
-<h4 class="subsection">4.1.3 First passage times</h4>
+<div class="node">
+<a name="First-passage-times-(DTMC)"></a>
+<a name="First-passage-times-_0028DTMC_0029"></a>
+<p><hr>
+Next:&nbsp;<a rel="next" accesskey="n" href="#Mean-time-to-absorption-_0028DTMC_0029">Mean time to absorption (DTMC)</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#Birth_002ddeath-process-_0028DTMC_0029">Birth-death process (DTMC)</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a>
+
+</div>
+
+<h4 class="subsection">4.1.3 First Passage Times</h4>
 
 <p>The First Passage Time M_i j is defined as the average
 number of transitions needed to visit state j for the first
@@ -1000,6 +1036,15 @@ for the first time, starting from state <var>i</var>.
         </dl>
 
         </blockquote></div>
+
+<div class="node">
+<a name="Mean-time-to-absorption-(DTMC)"></a>
+<a name="Mean-time-to-absorption-_0028DTMC_0029"></a>
+<p><hr>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#First-passage-times-_0028DTMC_0029">First passage times (DTMC)</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a>
+
+</div>
 
 <h4 class="subsection">4.1.4 Mean Time to Absorption</h4>
 
@@ -1084,18 +1129,19 @@ an infinitesimal generator matrix, set <var>result</var> to zero, and
         </blockquote></div>
 
 <ul class="menu">
-<li><a accesskey="1" href="#State-occupancy-probabilities">State occupancy probabilities</a>
-<li><a accesskey="2" href="#Birth_002dDeath-process">Birth-Death process</a>
-<li><a accesskey="3" href="#Expected-Sojourn-Time">Expected Sojourn Time</a>
-<li><a accesskey="4" href="#Time_002dAveraged-Expected-Sojourn-Time">Time-Averaged Expected Sojourn Time</a>
-<li><a accesskey="5" href="#Mean-Time-to-Absorption">Mean Time to Absorption</a>
-<li><a accesskey="6" href="#First-Passage-Times">First Passage Times</a>
+<li><a accesskey="1" href="#State-occupancy-probabilities-_0028CTMC_0029">State occupancy probabilities (CTMC)</a>
+<li><a accesskey="2" href="#Birth_002ddeath-process-_0028CTMC_0029">Birth-death process (CTMC)</a>
+<li><a accesskey="3" href="#Expected-sojourn-times-_0028CTMC_0029">Expected sojourn times (CTMC)</a>
+<li><a accesskey="4" href="#Time_002daveraged-expected-sojourn-times-_0028CTMC_0029">Time-averaged expected sojourn times (CTMC)</a>
+<li><a accesskey="5" href="#Mean-time-to-absorption-_0028CTMC_0029">Mean time to absorption (CTMC)</a>
+<li><a accesskey="6" href="#First-passage-times-_0028CTMC_0029">First passage times (CTMC)</a>
 </ul>
 
 <div class="node">
-<a name="State-occupancy-probabilities"></a>
+<a name="State-occupancy-probabilities-(CTMC)"></a>
+<a name="State-occupancy-probabilities-_0028CTMC_0029"></a>
 <p><hr>
-Next:&nbsp;<a rel="next" accesskey="n" href="#Birth_002dDeath-process">Birth-Death process</a>,
+Next:&nbsp;<a rel="next" accesskey="n" href="#Birth_002ddeath-process-_0028CTMC_0029">Birth-death process (CTMC)</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="#Continuous_002dTime-Markov-Chains">Continuous-Time Markov Chains</a>
 
 </div>
@@ -1177,16 +1223,16 @@ are equal to 1. This can be solved as follows:
       q = ctmc(Q)</pre>    &rArr; q = 0.50000   0.50000
 </pre>
    <div class="node">
-<a name="Birth-Death-process"></a>
-<a name="Birth_002dDeath-process"></a>
+<a name="Birth-death-process-(CTMC)"></a>
+<a name="Birth_002ddeath-process-_0028CTMC_0029"></a>
 <p><hr>
-Next:&nbsp;<a rel="next" accesskey="n" href="#Expected-Sojourn-Time">Expected Sojourn Time</a>,
-Previous:&nbsp;<a rel="previous" accesskey="p" href="#State-occupancy-probabilities">State occupancy probabilities</a>,
+Next:&nbsp;<a rel="next" accesskey="n" href="#Expected-sojourn-times-_0028CTMC_0029">Expected sojourn times (CTMC)</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#State-occupancy-probabilities-_0028CTMC_0029">State occupancy probabilities (CTMC)</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="#Continuous_002dTime-Markov-Chains">Continuous-Time Markov Chains</a>
 
 </div>
 
-<h4 class="subsection">4.2.2 Birth-Death process</h4>
+<h4 class="subsection">4.2.2 Birth-Death Process</h4>
 
 <p><a name="doc_002dctmc_005fbd"></a>
 
@@ -1218,15 +1264,16 @@ transition rate from state i+1 to state i.
         </blockquote></div>
 
 <div class="node">
-<a name="Expected-Sojourn-Time"></a>
+<a name="Expected-sojourn-times-(CTMC)"></a>
+<a name="Expected-sojourn-times-_0028CTMC_0029"></a>
 <p><hr>
-Next:&nbsp;<a rel="next" accesskey="n" href="#Time_002dAveraged-Expected-Sojourn-Time">Time-Averaged Expected Sojourn Time</a>,
-Previous:&nbsp;<a rel="previous" accesskey="p" href="#Birth_002dDeath-process">Birth-Death process</a>,
+Next:&nbsp;<a rel="next" accesskey="n" href="#Time_002daveraged-expected-sojourn-times-_0028CTMC_0029">Time-averaged expected sojourn times (CTMC)</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#Birth_002ddeath-process-_0028CTMC_0029">Birth-death process (CTMC)</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="#Continuous_002dTime-Markov-Chains">Continuous-Time Markov Chains</a>
 
 </div>
 
-<h4 class="subsection">4.2.3 Expected Sojourn Time</h4>
+<h4 class="subsection">4.2.3 Expected Sojourn Times</h4>
 
 <p>Given a N state continuous-time Markov Chain with infinitesimal
 generator matrix \bf Q, we define the vector \bf L(t) =
@@ -1322,16 +1369,16 @@ given the initial occupancy probability \bf \pi_0=(1,0,0,0).
       ylabel("Expected sojourn time");</pre>
 </pre>
    <div class="node">
-<a name="Time-Averaged-Expected-Sojourn-Time"></a>
-<a name="Time_002dAveraged-Expected-Sojourn-Time"></a>
+<a name="Time-averaged-expected-sojourn-times-(CTMC)"></a>
+<a name="Time_002daveraged-expected-sojourn-times-_0028CTMC_0029"></a>
 <p><hr>
-Next:&nbsp;<a rel="next" accesskey="n" href="#Mean-Time-to-Absorption">Mean Time to Absorption</a>,
-Previous:&nbsp;<a rel="previous" accesskey="p" href="#Expected-Sojourn-Time">Expected Sojourn Time</a>,
+Next:&nbsp;<a rel="next" accesskey="n" href="#Mean-time-to-absorption-_0028CTMC_0029">Mean time to absorption (CTMC)</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#Expected-sojourn-times-_0028CTMC_0029">Expected sojourn times (CTMC)</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="#Continuous_002dTime-Markov-Chains">Continuous-Time Markov Chains</a>
 
 </div>
 
-<h4 class="subsection">4.2.4 Time-Averaged Expected Sojourn Time</h4>
+<h4 class="subsection">4.2.4 Time-Averaged Expected Sojourn Times</h4>
 
 <p><a name="doc_002dctmc_005ftaexps"></a>
 
@@ -1364,7 +1411,7 @@ state i, for all i = 1, <small class="dots">...</small>, N
 
           <dl>
 <dt><var>M</var><dd>If this function is called with three parameters, <var>M</var><code>(i)</code>
-is the expected fraction of the interval 0,t] spent in state
+is the expected fraction of the interval [0,t] spent in state
 i assuming that the state occupancy probability at time zero
 is <var>p</var>. If this function is called with two parameters,
 <var>M</var><code>(i)</code> is the expected fraction of time until absorption
@@ -1397,10 +1444,11 @@ spent in state i.
       ylabel("Time-averaged Expected sojourn time");</pre>
 </pre>
    <div class="node">
-<a name="Mean-Time-to-Absorption"></a>
+<a name="Mean-time-to-absorption-(CTMC)"></a>
+<a name="Mean-time-to-absorption-_0028CTMC_0029"></a>
 <p><hr>
-Next:&nbsp;<a rel="next" accesskey="n" href="#First-Passage-Times">First Passage Times</a>,
-Previous:&nbsp;<a rel="previous" accesskey="p" href="#Time_002dAveraged-Expected-Sojourn-Time">Time-Averaged Expected Sojourn Time</a>,
+Next:&nbsp;<a rel="next" accesskey="n" href="#First-passage-times-_0028CTMC_0029">First passage times (CTMC)</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#Time_002daveraged-expected-sojourn-times-_0028CTMC_0029">Time-averaged expected sojourn times (CTMC)</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="#Continuous_002dTime-Markov-Chains">Continuous-Time Markov Chains</a>
 
 </div>
@@ -1490,9 +1538,10 @@ Performance Evaluation with Computer Science Applications</cite>, Wiley,
 
    <p><a name="index-Bolch_002c-G_002e-42"></a><a name="index-Greiner_002c-S_002e-43"></a><a name="index-de-Meer_002c-H_002e-44"></a><a name="index-Trivedi_002c-K_002e-45"></a>
 <div class="node">
-<a name="First-Passage-Times"></a>
+<a name="First-passage-times-(CTMC)"></a>
+<a name="First-passage-times-_0028CTMC_0029"></a>
 <p><hr>
-Previous:&nbsp;<a rel="previous" accesskey="p" href="#Mean-Time-to-Absorption">Mean Time to Absorption</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#Mean-time-to-absorption-_0028CTMC_0029">Mean time to absorption (CTMC)</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="#Continuous_002dTime-Markov-Chains">Continuous-Time Markov Chains</a>
 
 </div>
@@ -5516,8 +5565,8 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 <li><a href="#index-Approximate-MVA-179">Approximate MVA</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
 <li><a href="#index-Asymmetric-_0040math_007bM_002fM_002fm_007d-system-79">Asymmetric M/M/m system</a>: <a href="#The-Asymmetric-M_002fM_002fm-System">The Asymmetric M/M/m System</a></li>
 <li><a href="#index-BCMP-network-134">BCMP network</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-Birth_002ddeath-process-30">Birth-death process</a>: <a href="#Birth_002dDeath-process">Birth-Death process</a></li>
-<li><a href="#index-Birth_002ddeath-process-11">Birth-death process</a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
+<li><a href="#index-Birth_002ddeath-process-30">Birth-death process</a>: <a href="#Birth_002ddeath-process-_0028CTMC_0029">Birth-death process (CTMC)</a></li>
+<li><a href="#index-Birth_002ddeath-process-11">Birth-death process</a>: <a href="#Birth_002ddeath-process-_0028DTMC_0029">Birth-death process (DTMC)</a></li>
 <li><a href="#index-blocking-queueing-network-229">blocking queueing network</a>: <a href="#Algorithms-for-non-Product_002dform-QNs">Algorithms for non Product-form QNs</a></li>
 <li><a href="#index-bounds_002c-asymptotic-241">bounds, asymptotic</a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
 <li><a href="#index-bounds_002c-balanced-system-256">bounds, balanced system</a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
@@ -5534,13 +5583,13 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 <li><a href="#index-Closed-network_002c-single-class-180">Closed network, single class</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
 <li><a href="#index-closed-network_002c-single-class-150">closed network, single class</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
 <li><a href="#index-CMVA-171">CMVA</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
-<li><a href="#index-Continuous-time-Markov-chain-25">Continuous time Markov chain</a>: <a href="#State-occupancy-probabilities">State occupancy probabilities</a></li>
+<li><a href="#index-Continuous-time-Markov-chain-25">Continuous time Markov chain</a>: <a href="#State-occupancy-probabilities-_0028CTMC_0029">State occupancy probabilities (CTMC)</a></li>
 <li><a href="#index-convolution-algorithm-113">convolution algorithm</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
 <li><a href="#index-copyright-295">copyright</a>: <a href="#Copying">Copying</a></li>
-<li><a href="#index-Discrete-time-Markov-chain-6">Discrete time Markov chain</a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
-<li><a href="#index-Expected-sojourn-time-34">Expected sojourn time</a>: <a href="#Expected-Sojourn-Time">Expected Sojourn Time</a></li>
-<li><a href="#index-First-passage-times-49">First passage times</a>: <a href="#First-Passage-Times">First Passage Times</a></li>
-<li><a href="#index-First-passage-times-15">First passage times</a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
+<li><a href="#index-Discrete-time-Markov-chain-6">Discrete time Markov chain</a>: <a href="#State-occupancy-probabilities-_0028DTMC_0029">State occupancy probabilities (DTMC)</a></li>
+<li><a href="#index-Expected-sojourn-time-34">Expected sojourn time</a>: <a href="#Expected-sojourn-times-_0028CTMC_0029">Expected sojourn times (CTMC)</a></li>
+<li><a href="#index-First-passage-times-49">First passage times</a>: <a href="#First-passage-times-_0028CTMC_0029">First passage times (CTMC)</a></li>
+<li><a href="#index-First-passage-times-15">First passage times</a>: <a href="#First-passage-times-_0028DTMC_0029">First passage times (DTMC)</a></li>
 <li><a href="#index-Jackson-network-104">Jackson network</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
 <li><a href="#index-load_002ddependent-service-center-123">load-dependent service center</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
 <li><a href="#index-g_t_0040math_007bM_002fG_002f1_007d-system-85">M/G/1 system</a>: <a href="#The-M_002fG_002f1-System">The M/G/1 System</a></li>
@@ -5550,19 +5599,22 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 <li><a href="#index-g_t_0040math_007bM_002fM_002f_007dinf-system-64">M/M/inf system</a>: <a href="#The-M_002fM_002finf-System">The M/M/inf System</a></li>
 <li><a href="#index-g_t_0040math_007bM_002fM_002fm_007d-system-58">M/M/m system</a>: <a href="#The-M_002fM_002fm-System">The M/M/m System</a></li>
 <li><a href="#index-g_t_0040math_007bM_002fM_002fm_002fK_007d-system-73">M/M/m/K system</a>: <a href="#The-M_002fM_002fm_002fK-System">The M/M/m/K System</a></li>
-<li><a href="#index-Markov-chain_002c-continuous-time-48">Markov chain, continuous time</a>: <a href="#First-Passage-Times">First Passage Times</a></li>
-<li><a href="#index-Markov-chain_002c-continuous-time-40">Markov chain, continuous time</a>: <a href="#Mean-Time-to-Absorption">Mean Time to Absorption</a></li>
-<li><a href="#index-Markov-chain_002c-continuous-time-37">Markov chain, continuous time</a>: <a href="#Time_002dAveraged-Expected-Sojourn-Time">Time-Averaged Expected Sojourn Time</a></li>
-<li><a href="#index-Markov-chain_002c-continuous-time-33">Markov chain, continuous time</a>: <a href="#Expected-Sojourn-Time">Expected Sojourn Time</a></li>
-<li><a href="#index-Markov-chain_002c-continuous-time-29">Markov chain, continuous time</a>: <a href="#Birth_002dDeath-process">Birth-Death process</a></li>
-<li><a href="#index-Markov-chain_002c-continuous-time-24">Markov chain, continuous time</a>: <a href="#State-occupancy-probabilities">State occupancy probabilities</a></li>
+<li><a href="#index-Markov-chain_002c-continuous-time-48">Markov chain, continuous time</a>: <a href="#First-passage-times-_0028CTMC_0029">First passage times (CTMC)</a></li>
+<li><a href="#index-Markov-chain_002c-continuous-time-40">Markov chain, continuous time</a>: <a href="#Mean-time-to-absorption-_0028CTMC_0029">Mean time to absorption (CTMC)</a></li>
+<li><a href="#index-Markov-chain_002c-continuous-time-37">Markov chain, continuous time</a>: <a href="#Time_002daveraged-expected-sojourn-times-_0028CTMC_0029">Time-averaged expected sojourn times (CTMC)</a></li>
+<li><a href="#index-Markov-chain_002c-continuous-time-33">Markov chain, continuous time</a>: <a href="#Expected-sojourn-times-_0028CTMC_0029">Expected sojourn times (CTMC)</a></li>
+<li><a href="#index-Markov-chain_002c-continuous-time-29">Markov chain, continuous time</a>: <a href="#Birth_002ddeath-process-_0028CTMC_0029">Birth-death process (CTMC)</a></li>
+<li><a href="#index-Markov-chain_002c-continuous-time-24">Markov chain, continuous time</a>: <a href="#State-occupancy-probabilities-_0028CTMC_0029">State occupancy probabilities (CTMC)</a></li>
 <li><a href="#index-Markov-chain_002c-continuous-time-21">Markov chain, continuous time</a>: <a href="#Continuous_002dTime-Markov-Chains">Continuous-Time Markov Chains</a></li>
+<li><a href="#index-Markov-chain_002c-discrete-time-14">Markov chain, discrete time</a>: <a href="#First-passage-times-_0028DTMC_0029">First passage times (DTMC)</a></li>
+<li><a href="#index-Markov-chain_002c-discrete-time-10">Markov chain, discrete time</a>: <a href="#Birth_002ddeath-process-_0028DTMC_0029">Birth-death process (DTMC)</a></li>
+<li><a href="#index-Markov-chain_002c-discrete-time-5">Markov chain, discrete time</a>: <a href="#State-occupancy-probabilities-_0028DTMC_0029">State occupancy probabilities (DTMC)</a></li>
 <li><a href="#index-Markov-chain_002c-discrete-time-2">Markov chain, discrete time</a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
-<li><a href="#index-Markov-chain_002c-disctete-time-18">Markov chain, disctete time</a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
-<li><a href="#index-Markov-chain_002c-state-occupancy-probabilities-26">Markov chain, state occupancy probabilities</a>: <a href="#State-occupancy-probabilities">State occupancy probabilities</a></li>
-<li><a href="#index-Markov-chain_002c-stationary-probabilities-7">Markov chain, stationary probabilities</a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
-<li><a href="#index-Mean-time-to-absorption-41">Mean time to absorption</a>: <a href="#Mean-Time-to-Absorption">Mean Time to Absorption</a></li>
-<li><a href="#index-Mean-time-to-absorption-19">Mean time to absorption</a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
+<li><a href="#index-Markov-chain_002c-disctete-time-18">Markov chain, disctete time</a>: <a href="#Mean-time-to-absorption-_0028DTMC_0029">Mean time to absorption (DTMC)</a></li>
+<li><a href="#index-Markov-chain_002c-state-occupancy-probabilities-26">Markov chain, state occupancy probabilities</a>: <a href="#State-occupancy-probabilities-_0028CTMC_0029">State occupancy probabilities (CTMC)</a></li>
+<li><a href="#index-Markov-chain_002c-stationary-probabilities-7">Markov chain, stationary probabilities</a>: <a href="#State-occupancy-probabilities-_0028DTMC_0029">State occupancy probabilities (DTMC)</a></li>
+<li><a href="#index-Mean-time-to-absorption-41">Mean time to absorption</a>: <a href="#Mean-time-to-absorption-_0028CTMC_0029">Mean time to absorption (CTMC)</a></li>
+<li><a href="#index-Mean-time-to-absorption-19">Mean time to absorption</a>: <a href="#Mean-time-to-absorption-_0028DTMC_0029">Mean time to absorption (DTMC)</a></li>
 <li><a href="#index-Mean-Value-Analysys-_0028MVA_0029-149">Mean Value Analysys (MVA)</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
 <li><a href="#index-Mean-Value-Analysys-_0028MVA_0029_002c-approximate-178">Mean Value Analysys (MVA), approximate</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
 <li><a href="#index-mixed-network-221">mixed network</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
@@ -5575,9 +5627,9 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 <li><a href="#index-queueing-network-with-blocking-228">queueing network with blocking</a>: <a href="#Algorithms-for-non-Product_002dform-QNs">Algorithms for non Product-form QNs</a></li>
 <li><a href="#index-queueing-networks-88">queueing networks</a>: <a href="#Queueing-Networks">Queueing Networks</a></li>
 <li><a href="#index-RS-blocking-239">RS blocking</a>: <a href="#Algorithms-for-non-Product_002dform-QNs">Algorithms for non Product-form QNs</a></li>
-<li><a href="#index-Stationary-probabilities-27">Stationary probabilities</a>: <a href="#State-occupancy-probabilities">State occupancy probabilities</a></li>
-<li><a href="#index-Stationary-probabilities-8">Stationary probabilities</a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
-<li><a href="#index-Time_002dalveraged-sojourn-time-38">Time-alveraged sojourn time</a>: <a href="#Time_002dAveraged-Expected-Sojourn-Time">Time-Averaged Expected Sojourn Time</a></li>
+<li><a href="#index-Stationary-probabilities-27">Stationary probabilities</a>: <a href="#State-occupancy-probabilities-_0028CTMC_0029">State occupancy probabilities (CTMC)</a></li>
+<li><a href="#index-Stationary-probabilities-8">Stationary probabilities</a>: <a href="#State-occupancy-probabilities-_0028DTMC_0029">State occupancy probabilities (DTMC)</a></li>
+<li><a href="#index-Time_002dalveraged-sojourn-time-38">Time-alveraged sojourn time</a>: <a href="#Time_002daveraged-expected-sojourn-times-_0028CTMC_0029">Time-averaged expected sojourn times (CTMC)</a></li>
 <li><a href="#index-traffic-intensity-65">traffic intensity</a>: <a href="#The-M_002fM_002finf-System">The M/M/inf System</a></li>
 <li><a href="#index-warranty-294">warranty</a>: <a href="#Copying">Copying</a></li>
    </ul><div class="node">
@@ -5594,18 +5646,18 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 
 
 <ul class="index-fn" compact>
-<li><a href="#index-ctmc-22"><code>ctmc</code></a>: <a href="#State-occupancy-probabilities">State occupancy probabilities</a></li>
-<li><a href="#index-ctmc_005fbd-28"><code>ctmc_bd</code></a>: <a href="#Birth_002dDeath-process">Birth-Death process</a></li>
+<li><a href="#index-ctmc-22"><code>ctmc</code></a>: <a href="#State-occupancy-probabilities-_0028CTMC_0029">State occupancy probabilities (CTMC)</a></li>
+<li><a href="#index-ctmc_005fbd-28"><code>ctmc_bd</code></a>: <a href="#Birth_002ddeath-process-_0028CTMC_0029">Birth-death process (CTMC)</a></li>
 <li><a href="#index-ctmc_005fcheck_005fQ-20"><code>ctmc_check_Q</code></a>: <a href="#Continuous_002dTime-Markov-Chains">Continuous-Time Markov Chains</a></li>
-<li><a href="#index-ctmc_005fexps-31"><code>ctmc_exps</code></a>: <a href="#Expected-Sojourn-Time">Expected Sojourn Time</a></li>
-<li><a href="#index-ctmc_005ffpt-46"><code>ctmc_fpt</code></a>: <a href="#First-Passage-Times">First Passage Times</a></li>
-<li><a href="#index-ctmc_005fmtta-39"><code>ctmc_mtta</code></a>: <a href="#Mean-Time-to-Absorption">Mean Time to Absorption</a></li>
-<li><a href="#index-ctmc_005ftaexps-35"><code>ctmc_taexps</code></a>: <a href="#Time_002dAveraged-Expected-Sojourn-Time">Time-Averaged Expected Sojourn Time</a></li>
-<li><a href="#index-dtmc-3"><code>dtmc</code></a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
-<li><a href="#index-dtmc_005fbd-9"><code>dtmc_bd</code></a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
+<li><a href="#index-ctmc_005fexps-31"><code>ctmc_exps</code></a>: <a href="#Expected-sojourn-times-_0028CTMC_0029">Expected sojourn times (CTMC)</a></li>
+<li><a href="#index-ctmc_005ffpt-46"><code>ctmc_fpt</code></a>: <a href="#First-passage-times-_0028CTMC_0029">First passage times (CTMC)</a></li>
+<li><a href="#index-ctmc_005fmtta-39"><code>ctmc_mtta</code></a>: <a href="#Mean-time-to-absorption-_0028CTMC_0029">Mean time to absorption (CTMC)</a></li>
+<li><a href="#index-ctmc_005ftaexps-35"><code>ctmc_taexps</code></a>: <a href="#Time_002daveraged-expected-sojourn-times-_0028CTMC_0029">Time-averaged expected sojourn times (CTMC)</a></li>
+<li><a href="#index-dtmc-3"><code>dtmc</code></a>: <a href="#State-occupancy-probabilities-_0028DTMC_0029">State occupancy probabilities (DTMC)</a></li>
+<li><a href="#index-dtmc_005fbd-9"><code>dtmc_bd</code></a>: <a href="#Birth_002ddeath-process-_0028DTMC_0029">Birth-death process (DTMC)</a></li>
 <li><a href="#index-dtmc_005fcheck_005fP-1"><code>dtmc_check_P</code></a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
-<li><a href="#index-dtmc_005ffpt-12"><code>dtmc_fpt</code></a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
-<li><a href="#index-dtmc_005fmtta-16"><code>dtmc_mtta</code></a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
+<li><a href="#index-dtmc_005ffpt-12"><code>dtmc_fpt</code></a>: <a href="#First-passage-times-_0028DTMC_0029">First passage times (DTMC)</a></li>
+<li><a href="#index-dtmc_005fmtta-16"><code>dtmc_mtta</code></a>: <a href="#Mean-time-to-absorption-_0028DTMC_0029">Mean time to absorption (DTMC)</a></li>
 <li><a href="#index-population_005fmix-284"><code>population_mix</code></a>: <a href="#Utility-functions">Utility functions</a></li>
 <li><a href="#index-qnammm-78"><code>qnammm</code></a>: <a href="#The-Asymmetric-M_002fM_002fm-System">The Asymmetric M/M/m System</a></li>
 <li><a href="#index-qnclosed-278"><code>qnclosed</code></a>: <a href="#Utility-functions">Utility functions</a></li>
@@ -5662,7 +5714,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 <li><a href="#index-Bolch_002c-G_002e-66">Bolch, G.</a>: <a href="#The-M_002fM_002finf-System">The M/M/inf System</a></li>
 <li><a href="#index-Bolch_002c-G_002e-59">Bolch, G.</a>: <a href="#The-M_002fM_002fm-System">The M/M/m System</a></li>
 <li><a href="#index-Bolch_002c-G_002e-52">Bolch, G.</a>: <a href="#The-M_002fM_002f1-System">The M/M/1 System</a></li>
-<li><a href="#index-Bolch_002c-G_002e-42">Bolch, G.</a>: <a href="#Mean-Time-to-Absorption">Mean Time to Absorption</a></li>
+<li><a href="#index-Bolch_002c-G_002e-42">Bolch, G.</a>: <a href="#Mean-time-to-absorption-_0028CTMC_0029">Mean time to absorption (CTMC)</a></li>
 <li><a href="#index-Buzen_002c-J_002e-P_002e-114">Buzen, J. P.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
 <li><a href="#index-Casale_002c-G_002e-269">Casale, G.</a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
 <li><a href="#index-Casale_002c-G_002e-172">Casale, G.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
@@ -5672,7 +5724,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 <li><a href="#index-de-Meer_002c-H_002e-68">de Meer, H.</a>: <a href="#The-M_002fM_002finf-System">The M/M/inf System</a></li>
 <li><a href="#index-de-Meer_002c-H_002e-61">de Meer, H.</a>: <a href="#The-M_002fM_002fm-System">The M/M/m System</a></li>
 <li><a href="#index-de-Meer_002c-H_002e-54">de Meer, H.</a>: <a href="#The-M_002fM_002f1-System">The M/M/1 System</a></li>
-<li><a href="#index-de-Meer_002c-H_002e-44">de Meer, H.</a>: <a href="#Mean-Time-to-Absorption">Mean Time to Absorption</a></li>
+<li><a href="#index-de-Meer_002c-H_002e-44">de Meer, H.</a>: <a href="#Mean-time-to-absorption-_0028CTMC_0029">Mean time to absorption (CTMC)</a></li>
 <li><a href="#index-Graham_002c-G_002e-S_002e-245">Graham, G. S.</a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
 <li><a href="#index-Graham_002c-G_002e-S_002e-144">Graham, G. S.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
 <li><a href="#index-Greiner_002c-S_002e-106">Greiner, S.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
@@ -5681,7 +5733,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 <li><a href="#index-Greiner_002c-S_002e-67">Greiner, S.</a>: <a href="#The-M_002fM_002finf-System">The M/M/inf System</a></li>
 <li><a href="#index-Greiner_002c-S_002e-60">Greiner, S.</a>: <a href="#The-M_002fM_002fm-System">The M/M/m System</a></li>
 <li><a href="#index-Greiner_002c-S_002e-53">Greiner, S.</a>: <a href="#The-M_002fM_002f1-System">The M/M/1 System</a></li>
-<li><a href="#index-Greiner_002c-S_002e-43">Greiner, S.</a>: <a href="#Mean-Time-to-Absorption">Mean Time to Absorption</a></li>
+<li><a href="#index-Greiner_002c-S_002e-43">Greiner, S.</a>: <a href="#Mean-time-to-absorption-_0028CTMC_0029">Mean time to absorption (CTMC)</a></li>
 <li><a href="#index-Hsieh_002c-C_002e-H-267">Hsieh, C. H</a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>
 <li><a href="#index-Jain_002c-R_002e-154">Jain, R.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
 <li><a href="#index-Kobayashi_002c-H_002e-126">Kobayashi, H.</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
@@ -5704,7 +5756,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 <li><a href="#index-Trivedi_002c-K_002e-69">Trivedi, K.</a>: <a href="#The-M_002fM_002finf-System">The M/M/inf System</a></li>
 <li><a href="#index-Trivedi_002c-K_002e-62">Trivedi, K.</a>: <a href="#The-M_002fM_002fm-System">The M/M/m System</a></li>
 <li><a href="#index-Trivedi_002c-K_002e-55">Trivedi, K.</a>: <a href="#The-M_002fM_002f1-System">The M/M/1 System</a></li>
-<li><a href="#index-Trivedi_002c-K_002e-45">Trivedi, K.</a>: <a href="#Mean-Time-to-Absorption">Mean Time to Absorption</a></li>
+<li><a href="#index-Trivedi_002c-K_002e-45">Trivedi, K.</a>: <a href="#Mean-time-to-absorption-_0028CTMC_0029">Mean time to absorption (CTMC)</a></li>
 <li><a href="#index-Wong_002c-E_002e-293">Wong, E.</a>: <a href="#Utility-functions">Utility functions</a></li>
 <li><a href="#index-Zahorjan_002c-J_002e-292">Zahorjan, J.</a>: <a href="#Utility-functions">Utility functions</a></li>
 <li><a href="#index-Zahorjan_002c-J_002e-244">Zahorjan, J.</a>: <a href="#Bounds-on-performance">Bounds on performance</a></li>

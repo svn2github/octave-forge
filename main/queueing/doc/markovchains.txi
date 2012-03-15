@@ -53,10 +53,10 @@ system was at time @math{n}.
 The evolution of a Markov chain with finite state space @math{@{1, 2,
 @dots{}, N@}} can be fully described by a stochastic matrix @math{{\bf
 P}(n) = P_{i,j}(n)} such that @math{P_{i, j}(n) = P( X_{n+1} = j\ |\
-X_n = j )}.  If the Markov chain is homogeneous (that is, the
+X_n = i )}.  If the Markov chain is homogeneous (that is, the
 transition probability matrix @math{{\bf P}(n)} is time-independent),
 we can simply write @math{{\bf P} = P_{i, j}}, where @math{P_{i, j} =
-P( X_{n+1} = j\ |\ X_n = j )} for all @math{n=0, 1, 2, @dots{}}.
+P( X_{n+1} = j\ |\ X_n = i )} for all @math{n=0, 1, 2, @dots{}}.
 
 The transition probability matrix @math{\bf P} must satisfy the
 following two properties: (1) @math{P_{i, j} @geq{} 0} for all
@@ -65,9 +65,17 @@ following two properties: (1) @math{P_{i, j} @geq{} 0} for all
 @c
 @DOCSTRING(dtmc_check_P)
 
+@menu
+* State occupancy probabilities (DTMC)::
+* Birth-death process (DTMC)::
+* First passage times (DTMC)::
+* Mean time to absorption (DTMC)::
+@end menu
+
 @c
 @c
 @c
+@node State occupancy probabilities (DTMC)
 @subsection State occupancy probabilities
 
 We denote with @math{{\bf \pi}(n) = (\pi_1(n), \pi_2(n), @dots{},
@@ -112,12 +120,15 @@ and @math{\sum_{i=1}^N \pi_i = 1}
 @end group
 @end example
 
-@subsection Birth-Death process
+@c
+@node Birth-death process (DTMC)
+@subsection Birth-death process
 
 @c
 @DOCSTRING(dtmc_bd)
 
-@subsection First passage times
+@node First passage times (DTMC)
+@subsection First Passage Times
 
 The First Passage Time @math{M_{i j}} is defined as the average
 number of transitions needed to visit state @math{j} for the first
@@ -145,6 +156,7 @@ M_ij = 1 + >   P_ij * M_kj
 @DOCSTRING(dtmc_fpt)
 
 @c
+@node Mean time to absorption (DTMC)
 @subsection Mean Time to Absorption
 
 @DOCSTRING(dtmc_mtta)
@@ -179,15 +191,15 @@ must be defined in such a way that the infinitesimal generator matrix
 @DOCSTRING(ctmc_check_Q)
 
 @menu
-* State occupancy probabilities::
-* Birth-Death process::
-* Expected Sojourn Time::
-* Time-Averaged Expected Sojourn Time::
-* Mean Time to Absorption::
-* First Passage Times::
+* State occupancy probabilities (CTMC)::
+* Birth-death process (CTMC)::
+* Expected sojourn times (CTMC)::
+* Time-averaged expected sojourn times (CTMC)::
+* Mean time to absorption (CTMC)::
+* First passage times (CTMC)::
 @end menu
 
-@node State occupancy probabilities
+@node State occupancy probabilities (CTMC)
 @subsection State occupancy probabilities
 
 Similarly to the discrete case, we denote with @math{{\bf \pi}(t) =
@@ -238,16 +250,16 @@ are equal to 1. This can be solved as follows:
 @c
 @c
 @c
-@node Birth-Death process
-@subsection Birth-Death process
+@node Birth-death process (CTMC)
+@subsection Birth-Death Process
 
 @DOCSTRING(ctmc_bd)
 
 @c
 @c
 @c
-@node Expected Sojourn Time
-@subsection Expected Sojourn Time
+@node Expected sojourn times (CTMC)
+@subsection Expected Sojourn Times
 
 Given a @math{N} state continuous-time Markov Chain with infinitesimal
 generator matrix @math{\bf Q}, we define the vector @math{{\bf L}(t) =
@@ -277,7 +289,7 @@ form as:
 
 @iftex
 @tex
-$$ {\bf L}(t) = \int_{u=0}^t {\bf \pi}(u) du$$
+$$ {\bf L}(t) = \int_0^t {\bf \pi}(u) du$$
 @end tex
 @end iftex
 @ifnottex
@@ -312,8 +324,8 @@ given the initial occupancy probability @math{{\bf \pi}_0=(1,0,0,0)}.
 @c
 @c
 @c
-@node Time-Averaged Expected Sojourn Time
-@subsection Time-Averaged Expected Sojourn Time
+@node Time-averaged expected sojourn times (CTMC)
+@subsection Time-Averaged Expected Sojourn Times
 
 @DOCSTRING(ctmc_taexps)
 
@@ -328,7 +340,7 @@ given the initial occupancy probability @math{{\bf \pi}_0=(1,0,0,0)}.
 @c
 @c
 @c
-@node Mean Time to Absorption
+@node Mean time to absorption (CTMC)
 @subsection Mean Time to Absorption
 
 If we consider a Markov Chain with absorbing states, it is possible to
@@ -400,7 +412,7 @@ Performance Evaluation with Computer Science Applications}, Wiley,
 @c
 @c
 @c
-@node First Passage Times
+@node First passage times (CTMC)
 @subsection First Passage Times
 
 @DOCSTRING(ctmc_fpt)

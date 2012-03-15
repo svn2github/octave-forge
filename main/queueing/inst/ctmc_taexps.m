@@ -53,7 +53,7 @@
 ##
 ## @item M
 ## If this function is called with three parameters, @code{@var{M}(i)}
-## is the expected fraction of the interval @math{0,t]} spent in state
+## is the expected fraction of the interval @math{[0,t]} spent in state
 ## @math{i} assuming that the state occupancy probability at time zero
 ## is @var{p}. If this function is called with two parameters,
 ## @code{@var{M}(i)} is the expected fraction of time until absorption

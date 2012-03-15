@@ -14,14 +14,14 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Script File} {} ga_demo
+## @deftypefn{Script File} {} demo_ga
 ## Run a demo of the genetic algorithm package.  The current
 ## implementation is only a placeholder.
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
 ## Created: March 2012
-## Version: 0.0.2
+## Version: 0.0.3
 
 demo ga_demo
 

@@ -32,30 +32,30 @@ demo ga_demo
 
 ## This code is a simple example of the usage of ga
                                 # TODO: convert to demo
-%!xtest assert (ga (@rastriginsfcn, 2), [0, 0], 1e-3)
+# %!xtest assert (ga (@rastriginsfcn, 2), [0, 0], 1e-3)
 
 
 ## This code shows that ga optimizes also functions whose minimum is not
 ## in zero
                                 # TODO: convert to demo
-%!xtest
-%! min = [-1, 2];
-%! assert (ga (struct ("fitnessfcn", @(x) rastriginsfcn (x - min), "nvars", 2, "options", gaoptimset ("FitnessLimit", 1e-7, "Generations", 1000, "PopInitRange", [-5; 5], "PopulationSize", 200))), min, 1e-5)
+# %!xtest
+# %! min = [-1, 2];
+# %! assert (ga (struct ("fitnessfcn", @(x) rastriginsfcn (x - min), "nvars", 2, "options", gaoptimset ("FitnessLimit", 1e-7, "Generations", 1000, "PopInitRange", [-5; 5], "PopulationSize", 200))), min, 1e-5)
 
 
 ## This code shows that the "Vectorize" option usually speeds up execution
                                 # TODO: convert to demo
-%!test
-%!
-%! tic ();
-%! ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("Generations", 10, "PopulationSize", 200)));
-%! elapsed_time = toc ();
-%!
-%! tic ();
-%! ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("Generations", 10, "PopulationSize", 200, "Vectorized", "on")));
-%! elapsed_time_with_vectorized = toc ();
-%!
-%! assert (elapsed_time > elapsed_time_with_vectorized);
+# %!test
+# %!
+# %! tic ();
+# %! ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("Generations", 10, "PopulationSize", 200)));
+# %! elapsed_time = toc ();
+# %!
+# %! tic ();
+# %! ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("Generations", 10, "PopulationSize", 200, "Vectorized", "on")));
+# %! elapsed_time_with_vectorized = toc ();
+# %!
+# %! assert (elapsed_time > elapsed_time_with_vectorized);
 
 ## The "UseParallel" option should speed up execution
                                 # TODO: write demo (after implementing

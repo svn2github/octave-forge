@@ -6,7 +6,7 @@ Maintainer: The Octave Community
 Title: String Handling.
 Description: Additional manipulation functions
 Depends: octave (>= 3.6.0), control
-Autoload: yes
+Autoload: no
 BuildRequires: pcre-devel
 License: See individual files
 Url: http://octave.sf.net

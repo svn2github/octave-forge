@@ -48,7 +48,7 @@ function rval=cstrcmp(s1,s2)
   end
 
   if(v2)
-    [s1,s2]=swap(s1,s2);
+    [s1, s2] = deal (s1, s2);
   end
 
   L=length(s1);

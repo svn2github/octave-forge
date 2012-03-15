@@ -14,13 +14,13 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {} ga_test
+## @deftypefn{Script File} {} ga_test
 ## Execute all available tests at once.
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
 ## Created: March 2012
-## Version: 0.1
+## Version: 0.1.1
 
 ## Creation
 test gacreationuniform

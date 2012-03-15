@@ -1,4 +1,4 @@
-## Copyright (C) 2008, 2009, 2010 Luca Favatella <slackydeb@gmail.com>
+## Copyright (C) 2008, 2009, 2010, 2012 Luca Favatella <slackydeb@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -22,8 +22,8 @@
 ## Version: 2.0
 
 function retval = rastriginsfcn (x)
-  if ((nargin != 1) || (nargout != 1) ||
-      (columns (x) != 2))
+  if ((nargout != 1) ||
+      (nargin != 1) || (columns (x) != 2))
     print_usage ();
   else
     x1 = x(:, 1);

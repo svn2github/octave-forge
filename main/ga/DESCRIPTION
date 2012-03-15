@@ -1,9 +1,9 @@
 Name: ga
 Version: 0.9.9
-Date: 2012-03-13
+Date: 2012-03-15
 Author: Luca Favatella <slackydeb@gmail.com>
 Maintainer: Luca Favatella <slackydeb@gmail.com>
-Title: Genetic Algorithm and Direct Search
+Title: Genetic Algorithm
 Description: Genetic optimization code
 Categories: Optimization
 Depends: octave (>= 3.4.0)

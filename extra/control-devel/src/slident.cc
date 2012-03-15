@@ -79,7 +79,7 @@ For internal use only.")
     int nargin = args.length ();
     octave_value_list retval;
     
-    if (nargin != 11)
+    if (nargin != 12)
     {
         print_usage ();
     }
@@ -106,6 +106,7 @@ For internal use only.")
         
         double rcond = args(9).double_value ();
         double tol = args(10).double_value ();
+        double tolb = args(11).double_value ();
         
 
         if (imeth == 0)
@@ -389,6 +390,34 @@ somehow ldrwrk and ldwork must have been mixed up here
         int nsmpl = nsmp;
         
         // arguments out
+        lda = max (1, n);
+        ldc = max (1, l);
+        ldb = max (1, n);
+        ldd = max (1, l);
+        ldq = n;            // if JOBCK = 'C' or 'K'
+        ldry = l;           // if JOBCK = 'C' or 'K'
+        lds = n;            // if JOBCK = 'C' or 'K'
+        ldk = n;            // if JOBCK = 'K'
+        
+        Matrix a (lda, n);
+        Matrix c (ldc, n);
+        Matrix b (ldb, m);
+        Matrix d (ldd, m);
+        
+        Matrix q (ldq, n);
+        Matrix ry (ldry, l);
+        Matrix s (lds, l);
+        Matrix k (ldk, l);
+        
+        // workspace
+        int liwork;
+
+        int ldwork;
+
+
+        OCTAVE_LOCAL_BUFFER (int, iwork, liwork);
+        OCTAVE_LOCAL_BUFFER (double, dwork, ldwork);
+
 
         // error indicators
         int iwarn = 0;
@@ -409,7 +438,7 @@ somehow ldrwrk and ldwork must have been mixed up here
                   ry.fortran_vec (), ldry,
                   s.fortran_vec (), lds,
                   k.fortran_vec (), ldk,
-                  tol,
+                  tolb,
                   iwork,
                   dwork, ldwork,
                   bwork,
@@ -455,8 +484,27 @@ somehow ldrwrk and ldwork must have been mixed up here
         error_msg ("ident", info, 10, err_msg_b);
         warning_msg ("ident", iwarn, 5, warn_msg_b);
 
+        // resize
+        a.resize (n, n);
+        c.resize (l, n);
+        b.resize (n, m);
+        d.resize (l, m);
+        
+        q.resize (n, n);
+        ry.resize (l, l);
+        s.resize (n, l);
+        k.resize (n, l);
         
         // return values
+        retval(0) = a;
+        retval(1) = b;
+        retval(2) = c;
+        retval(3) = d;
+        
+        retval(4) = q;
+        retval(5) = ry;
+        retval(6) = s;
+        retval(7) = k;
         //retval(0) = octave_value (n);
         //retval(1) = r;
         //retval(2) = sv;

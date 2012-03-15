@@ -14,7 +14,7 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 5.5
+## Version: 5.5.1
 
 function Scores = __ga_scores__ (problem, Population)
   if (strcmp (problem.options.Vectorized, "on")) ## using vectorized evaluation
@@ -28,8 +28,7 @@ function Scores = __ga_scores__ (problem, Population)
       error ("'Vectorized' option must be 'on' or 'off'");
     endif
     if (strcmp (problem.options.UseParallel, "always")) ## using parallel evaluation
-      error ("TODO: implement parallel evaluation of objective \
-          function"); ## TODO
+      error ("TODO: implement parallel evaluation of objective function");
     else ## using serial evaluation (i.e. loop)
       if (! strcmp (problem.options.UseParallel, "never"))
         error ("'UseParallel' option must be 'always' or 'never'");

@@ -63,7 +63,7 @@ For internal use only.")
     int nargin = args.length ();
     octave_value_list retval;
     
-    if (nargin != 11)
+    if (nargin != 5)
     {
         print_usage ();
     }
@@ -71,81 +71,37 @@ For internal use only.")
     {
         // arguments in
         char meth;
-        char alg;
-        char jobd;
-        char batch;
-        char conct;
-        char ctrl;
+        char job = 'A';
+        char jobck = 'K';
         
-        Matrix y = args(0).matrix_value ();
-        Matrix u = args(1).matrix_value ();
-        int nobr = args(2).int_value ();
-        
+        Matrix r = args(0).matrix_value ();
+        int nsmpl = args(1).int_value ();  
+        int n = args(2).int_value ();  
         const int imeth = args(3).int_value ();
-        const int ialg = args(4).int_value ();
-        const int ijobd = args(5).int_value ();
-        const int ibatch = args(6).int_value ();
-        const int iconct = args(7).int_value ();
-        const int ictrl = args(8).int_value ();
-        
-        double rcond = args(9).double_value ();
-        double tol = args(10).double_value ();
-        
+        double tol = args(4).double_value ();
 
-        if (imeth == 0)
-            meth = 'M';
-        else
-            meth = 'N';
 
-        switch (ialg)
+        switch (imeth)
         {
             case 0:
-                alg = 'C';
+                meth = 'M';
                 break;
             case 1:
-                alg = 'F';
+                meth = 'N';
                 break;
             case 2:
-                alg = 'Q';
+                meth = 'C';
                 break;
             default:
-                error ("slib01bd: argument 'alg' invalid");
-        }
-        
-        if (ijobd == 0)
-            jobd = 'M';
-        else
-            jobd = 'N';
-        
-        switch (ibatch)
-        {
-            case 0:
-                batch = 'F';
-                break;
-            case 1:
-                batch = 'I';
-                break;
-            case 2:
-                batch = 'L';
-                break;
-            case 3:
-                batch = 'O';
-                break;
-            default:
-                error ("slib01bd: argument 'batch' invalid");
+                error ("slib01bd: argument 'meth' invalid");
         }
 
-        if (iconct == 0)
-            conct = 'C';
-        else
-            conct = 'N';
-
-        if (ictrl == 0)
-            ctrl = 'C';
-        else
-            ctrl = 'N';
-
-
+        // TODO: if meth == 'C', which meth should be taken for IB01AD.f, 'M' or 'N'?
+        
+        int m = 
+        int nobr = r.rows () / (2*(m+l));
+        
+        
         int m = u.columns ();   // m: number of inputs
         int l = y.columns ();   // l: number of outputs
         int nsmp = y.rows ();   // nsmp: number of samples
@@ -178,57 +134,10 @@ For internal use only.")
         // workspace
         int liwork;
 
-        if (meth == 'N')            // if METH = 'N'
-            liwork = (m+l)*nobr;
-        else if (alg == 'F')        // if METH = 'M' and ALG = 'F'
-            liwork = m+l;
-        else                        // if METH = 'M' and ALG = 'C' or 'Q'
-            liwork = 0;
 
-        // TODO: Handle 'k' for DWORK
 
         int ldwork;
 
-        ldwork = 0;
-
-        if (alg == 'C' && (batch == 'F' || batch == 'I') && conct = 'C')
-            ldwork = (4*nobr-2)*(m+l);
-        else if (alg == 'C' && (batch == 'F' || batch == 'I') && conct = 'N')
-            ldwork = 1;
-        else if (meth == 'M' && alg == 'C' && batch == 'L' && conct == 'C')
-            ldwork = max ((4*nobr-2)*(m+l), 5*l*nobr);
-        else if ((meth == 'M' && jobd = 'M' && alg == 'C' && batch == 'O') || (batch == 'L' && conct == 'N'))
-            ldwork = max ((2*m-1)*nobr, (m+l)*nobr, 5*l*nobr);
-        else if ((meth == 'M' && jobd == 'N' && alg == 'C' && batch == 'O') || (batch == 'L' && conct == 'N'))
-            ldwork = 5*l*nobr;
-
-        // FIXME : two times  || (batch == 'L' && conct == 'N') doesn't make sense
-
-C             LDWORK >= 5*(M+L)*NOBR+1, if METH = 'N', ALG = 'C', and
-C                             BATCH = 'L' or 'O';
-C             LDWORK >= (M+L)*2*NOBR*(M+L+3), if ALG = 'F',
-C                             BATCH <> 'O' and CONCT = 'C';
-C             LDWORK >= (M+L)*2*NOBR*(M+L+1), if ALG = 'F',
-C                             BATCH = 'F', 'I' and CONCT = 'N';
-C             LDWORK >= (M+L)*4*NOBR*(M+L+1)+(M+L)*2*NOBR, if ALG = 'F',
-C                             BATCH = 'L' and CONCT = 'N', or
-C                             BATCH = 'O';
-C             LDWORK >= 4*(M+L)*NOBR, if ALG = 'Q', BATCH = 'F', and
-C                             LDR >= NS = NSMP - 2*NOBR + 1;
-C             LDWORK >= max(4*(M+L)*NOBR, 5*L*NOBR), if METH = 'M',
-C                             ALG = 'Q', BATCH = 'O', and LDR >= NS;
-C             LDWORK >= 5*(M+L)*NOBR+1, if METH = 'N', ALG = 'Q',
-C                             BATCH = 'O', and LDR >= NS;
-C             LDWORK >= 6*(M+L)*NOBR, if ALG = 'Q', (BATCH = 'F' or 'O',
-C                             and LDR < NS), or (BATCH = 'I' or
-C                             'L' and CONCT = 'N');
-C             LDWORK >= 4*(NOBR+1)*(M+L)*NOBR, if ALG = 'Q', BATCH = 'I'
-C                             or 'L' and CONCT = 'C'.
-C             The workspace used for ALG = 'Q' is
-C                       LDRWRK*2*(M+L)*NOBR + 4*(M+L)*NOBR,
-C             where LDRWRK = LDWORK/(2*(M+L)*NOBR) - 2; recommended
-C             value LDRWRK = NS, assuming a large enough cache size.
-C             For good performance,  LDWORK  should be larger.
 
 
 

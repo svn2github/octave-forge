@@ -117,6 +117,8 @@ endfunction
 
 ## nvars == 2    and    min != zeros (1, nvars)
 
+## TODO: Move this code into a future demo, as it shows that ga
+## optimizes also functions whose minimum is not in zero
 %!# TODO: get this test working with tol = 1e-6
 %!xtest
 %! min = [-1, 2];
@@ -132,17 +134,23 @@ endfunction
 
 ## nvars == 2    and    min == zeros (1, nvars)
 
+## TODO: Move this code into a future demo, as it shows that ga
+## optimizes also functions with nvars > 0
 %!xtest assert (ga (@rastriginsfcn, 2), [0, 0], 1e-3)
 
+## TODO: Convert this test into a test on type of arguments
 %!# TODO: get this test working with tol = 1e-6
 %!xtest assert (ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("FitnessLimit", 1e-7, "Generations", 1000))), zeros (1, 2), 1e-4)
 
+## TODO: This test is like the previous one ("PopulationSize" vs.
+## "Generations"): remove it?
 %!# TODO: get this test working with tol = 1e-6
 %!xtest assert (ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("FitnessLimit", 1e-7, "PopulationSize", 200))), zeros (1, 2), 1e-4)
 
 
 ## nvars == 4    and    min == zeros (1, nvars)
 
+## TODO: Convert this test into a test on type of arguments
 %!# TODO: get this test working with tol = 1e-3
 %!xtest assert (ga (struct ("fitnessfcn", @(x) rastriginsfcn (x(1:2)) + ((x(3) ** 2) - (cos (2 * pi * x(3))) + 1) + (x(4) ** 2), "nvars", 4, "options", gaoptimset ("EliteCount", 5, "FitnessLimit", 1e-7, "PopInitRange", [-2; 2], "PopulationSize", 200))), zeros (1, 4), 1e-2)
 
@@ -166,6 +174,7 @@ endfunction
 
 %!xtest ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("Generations", 10, "UseParallel", "always")));
 
+## TODO: move to demo as this is really a xtest
 %!test ## Vectorized option speeds up execution
 %!
 %! tic ();

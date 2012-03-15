@@ -390,14 +390,14 @@ somehow ldrwrk and ldwork must have been mixed up here
         int nsmpl = nsmp;
         
         // arguments out
-        lda = max (1, n);
-        ldc = max (1, l);
-        ldb = max (1, n);
-        ldd = max (1, l);
-        ldq = n;            // if JOBCK = 'C' or 'K'
-        ldry = l;           // if JOBCK = 'C' or 'K'
-        lds = n;            // if JOBCK = 'C' or 'K'
-        ldk = n;            // if JOBCK = 'K'
+        int lda = max (1, n);
+        int ldc = max (1, l);
+        int ldb = max (1, n);
+        int ldd = max (1, l);
+        int ldq = n;            // if JOBCK = 'C' or 'K'
+        int ldry = l;           // if JOBCK = 'C' or 'K'
+        int lds = n;            // if JOBCK = 'C' or 'K'
+        int ldk = n;            // if JOBCK = 'K'
         
         Matrix a (lda, n);
         Matrix c (ldc, n);
@@ -410,18 +410,74 @@ somehow ldrwrk and ldwork must have been mixed up here
         Matrix k (ldk, l);
         
         // workspace
-        int liwork;
+        int liwork_b;
+        int liw1;
+        int liw2;
+        
+        liw1 = max (n, m*nobr+n, l*nobr, m*(n+l));
+        liw2 = n*n;     // if JOBCK =  'K'
+        liwork_b = max (liw1, liw2);
 
-        int ldwork;
+        int ldwork_b;
+        int ldw1;
+        int ldw2;
+        int ldw3;
+        
+        if (meth == 'M')
+        {
+            int ldw1a = max (2*(l*nobr-l)*n+2*n, (l*nobr-l)*n+n*n+7*n);
+            int ldw1b = max (2*(l*nobr-l)*n+n*n+7*n,
+                             (l*nobr-l)*n+n+6*m*nobr,
+                             (l*nobr-l)*n+n+max (l+m*nobr, l*nobr + max (3*l*nobr+1, m)));
+            ldw1 = max (ldw1a, ldw1b);
+            
+            int aw;
+            
+            if (m == 0 || job == 'C')
+                aw = n + n*n;
+            else
+                aw = 0;
+            
+            ldw2 = l*nobr*n + max ((l*nobr-l)*n+aw+2*n+max(5*n,(2*m+l)*nobr+l), 4*(m*nobr+n)+1, m*nobr+2*n+l );
+        }
+        else if (meth == 'N')
+        {
+            ldw1 = l*nobr*n + max ((l*nobr-l)*n+2*n+(2*m+l)*nobr+l,
+                                   2*(l*nobr-l)*n+n*n+8*n,
+                                   n+4*(m*nobr+n)+1,
+                                   m*nobr+3*n+l);
+                                   
+            if (m == 0 || job == 'C')
+                ldw2 = 0;
+            else
+                ldw2 = l*nobr*n+m*nobr*(n+l)*(m*(n+l)+1)+ max ((n+l)*(n+l), 4*m*(n+l)+1);
 
+        }
+        else    // (meth == 'C')
+        {
+            int ldw1a = max (2*(l*nobr-l)*n+2*n, (l*nobr-l)*n+n*n+7*n);
+            int ldw1b = l*nobr*n + max ((l*nobr-l)*n+2*n+(2*m+l)*nobr+l,
+                                        2*(l*nobr-l)*n+n*n+8*n,
+                                        n+4*(m*nobr+n)+1,
+                                        m*nobr+3*n+l);
+                                        
+            ldw1 = max (ldw1a, ldw1b);
+                                        
+            ldw2 = l*nobr*n+m*nobr*(n+l)*(m*(n+l)+1)+ max ((n+l)*(n+l), 4*m*(n+l)+1);
 
-        OCTAVE_LOCAL_BUFFER (int, iwork, liwork);
-        OCTAVE_LOCAL_BUFFER (double, dwork, ldwork);
+        }
+            
+        ldw3 = max(4*n*n + 2*n*l + l*l + max (3*l, n*l), 14*n*n + 12*n + 5);
+        ldwork_b = max (ldw1, ldw2, ldw3);
+
+        OCTAVE_LOCAL_BUFFER (int, iwork_b, liwork_b);
+        OCTAVE_LOCAL_BUFFER (double, dwork_b, ldwork_b);
+        OCTAVE_LOCAL_BUFFER (bool, bwork, 2*n);
 
 
         // error indicators
-        int iwarn = 0;
-        int info = 0;
+        int iwarn_b = 0;
+        int info_b = 0;
 
 
         // SLICOT routine IB01BD
@@ -439,10 +495,10 @@ somehow ldrwrk and ldwork must have been mixed up here
                   s.fortran_vec (), lds,
                   k.fortran_vec (), ldk,
                   tolb,
-                  iwork,
-                  dwork, ldwork,
+                  iwork_b,
+                  dwork_b, ldwork_b,
                   bwork,
-                  iwarn, info));
+                  iwarn_b, info_b));
 
 
         if (f77_exception_encountered)
@@ -481,8 +537,8 @@ somehow ldrwrk and ldwork must have been mixed up here
                 "gain matrix is set to zero"};
 
 
-        error_msg ("ident", info, 10, err_msg_b);
-        warning_msg ("ident", iwarn, 5, warn_msg_b);
+        error_msg ("ident", info_b, 10, err_msg_b);
+        warning_msg ("ident", iwarn_b, 5, warn_msg_b);
 
         // resize
         a.resize (n, n);

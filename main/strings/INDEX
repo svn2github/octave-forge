@@ -3,7 +3,6 @@ Search and replace
  pcregexp
 Operations
  strsort
- strtrim
  editdistance
  cstrcmp
  strjoin

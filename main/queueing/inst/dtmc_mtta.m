@@ -22,6 +22,7 @@
 ##
 ## @cindex Markov chain, disctete time
 ## @cindex Mean time to absorption
+## @cindex Absorption probabilities
 ##
 ## Compute the expected number of steps before absorption for the 
 ## DTMC with @math{N \times N} transition probability matrix @var{P}.
@@ -53,9 +54,10 @@
 ## @item B
 ## When called with a single argument, @var{B} is a @math{N \times N}
 ## matrix where @code{@var{B}(i,j)} is the probability of being absorbed
-## in state @math{j}, starting from state @math{i}; if @math{j} is not
-## absorbing, @code{@var{B}(i,j) = 0}; if @math{i} is absorbing, then
-## @code{@var{B}(i,i) = 1}. When called with two arguments, @var{B} is a
+## in state @math{j}, starting from transient state @math{i}; if
+## @math{j} is not absorbing, @code{@var{B}(i,j) = 0}; if @math{i} is
+## absorbing, then @code{@var{B}(i,i) = 1}.
+## When called with two arguments, @var{B} is a
 ## vector with @math{N} elements where @code{@var{B}(j)} is the
 ## probability of being absorbed in state @var{j}, given initial state
 ## occupancy probabilities @var{p0}.
@@ -82,7 +84,7 @@ function [t B] = dtmc_mtta( P, p0 )
   
   if ( nargin == 2 )
     ( isvector(p0) && length(p0) == K && all(p0>=0) && abs(sum(p0)-1.0)<epsilon ) || \
-	usage( "p0 must be a probability vector" );
+	usage( "p0 must be a state occupancy probability vector" );
   endif
 
 

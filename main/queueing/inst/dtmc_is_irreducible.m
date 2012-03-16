@@ -21,10 +21,11 @@
 ##
 ## @cindex Markov chain, discrete time
 ## @cindex Discrete time Markov chain
+## @cindex Irreducible Markov chain
 ##
-## Check if @var{P} is irreducible, and identify strongly connected
-## components in the transition graph of the discrete-time Markov chain
-## with transition probability matrix @var{P}.
+## Check if @var{P} is irreducible, and identify Strongly Connected
+## Components (SCC) in the transition graph of the DTMC with transition
+## probability matrix @var{P}.
 ##
 ## @strong{INPUTS}
 ##
@@ -45,10 +46,10 @@
 ## 1 if @var{P} irreducible, 0 otherwise.
 ##
 ## @item s
-## @code{@var{s}(i)} is the strongly connected component that state @math{i}
-## belongs to. Strongly connected components are numbered as 1, 2,
-## @dots{}. If the graph is strongly connected, then there is a single
-## SCC and the predicate @code{all(s == 1)} evaluates to true.
+## @code{@var{s}(i)} is the SCC that state @math{i} belongs to. SCCs are
+## numbered as 1, 2, @dots{}. If the graph is strongly connected, then
+## there is a single SCC and the predicate @code{all(s == 1)} evaluates
+## to true.
 ##
 ## @end table
 ##
@@ -59,18 +60,22 @@
 
 function [r s] = dtmc_is_irreducible( P )
 
-  persistent epsilon = 10*eps;
-
   if ( nargin != 1 )
     print_usage();
   endif
 
-  # dtmc_check_P(P);
-
+  [N err] = dtmc_check_P(P);
+  if ( N == 0 ) 
+    error(err);
+  endif
   s = __scc(P);
   r = (max(s) == 1);
 
 endfunction
+%!test
+%! P = [0 .5 0; 0 0 0];
+%! fail( "dtmc_is_irresudible(P)" );
+
 %!test
 %! P = [0 1 0; 0 .5 .5; 0 1 0];
 %! [r s] = dtmc_is_irreducible(P);

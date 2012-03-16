@@ -24,14 +24,16 @@
 ## @cindex Discrete time Markov chain
 ## @cindex Markov chain, stationary probabilities
 ## @cindex Stationary probabilities
+## @cindex Markov chain, transient probabilities
+## @cindex Transient probabilities
 ##
-## With a single argument, compute the steady-state probability vector
-## @code{@var{p}(1), @dots{}, @var{p}(N)} for a
-## Discrete-Time Markov Chain given the @math{N \times N} transition
-## probability matrix @var{P}. With three arguments, compute the
-## probability vector @code{@var{p}(1), @dots{}, @var{p}(N)}
-## after @var{n} steps, given initial probability vector @var{p0} at
-## time 0.
+## Compute steady-state or transient state occupancy probabilities for a
+## Discrete-Time Markov Chain. With a single argument, compute the
+## steady-state occupancy probability vector @code{@var{p}(1), @dots{},
+## @var{p}(N)} given the @math{N \times N} transition probability matrix
+## @var{P}. With three arguments, compute the state occupancy
+## probabilities @code{@var{p}(1), @dots{}, @var{p}(N)} after @var{n}
+## steps, given initial occupancy probability vector @var{p0}.
 ##
 ## @strong{INPUTS}
 ##
@@ -144,6 +146,15 @@ endfunction
 %! plim = dtmc(P);
 %! p = dtmc(P, 100, [1 0]);
 %! assert( plim, p, 1e-5 );
+
+%!test
+%! P = [0 1 0 0 0; \
+%!      .25 0 .75 0 0; \
+%!      0 .5 0 .5 0; \
+%!      0 0 .75 0 .25; \
+%!      0 0 0 1 0 ];
+%! p = dtmc(P);
+%! assert( p, [.0625 .25 .375 .25 .0625], 10*eps );
 
 %!demo
 %! a = 0.2;

@@ -84,6 +84,10 @@ function result = dtmc_fpt( P, i, j )
   ( N>0 ) || \
       error(err);
 
+  if ( any(diag(P) == 1) ) 
+    error("Cannot compute first passage times for absorbing chains");
+  endif
+
   if ( nargin == 1 )   
     M = zeros(N,N);
     ## M(i,j) = 1 + sum_{k \neq j} P(i,k) M(k,j)
@@ -119,6 +123,13 @@ endfunction
 %!       0.1 0.0 0.9; \
 %!       0.9 0.1 0.0 ];
 %! M = dtmc_fpt(P);
+%! w = dtmc(P);
+%! N = rows(P);
+%! W = repmat(w,N,1);
+%! Z = inv(eye(N)-P+W);
+%! M1 = (repmat(diag(Z)',1,N) - Z) ./ repmat(w',1,N);
+%! assert(M, M1);
+
 
 %!shared P
 %! P = [ 0.0 0.9 0.1; \
@@ -138,10 +149,9 @@ endfunction
 %!test
 %! m = dtmc_fpt(P, 1, [2 3]);
 
-## FIXME: check this (matrix not ergodic???)
-%!xtest
+%!test
 %! P = dtmc_bd([1 1 1], [ 0 0 0] );
-%! dtmc_fpt(P);
+%! fail( "dtmc_fpt(P)", "absorbing" );
 
 ## Example on p. 461 of
 ## http://www.cs.virginia.edu/~gfx/Courses/2006/DataDriven/bib/texsyn/Chapter11.pdf

@@ -17,14 +17,14 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{result} @var{err}] =} dtmc_check_P (@var{P})
+## @deftypefn {Function File} {[@var{r} @var{err}] =} dtmc_check_P (@var{P})
 ##
 ## @cindex Markov chain, discrete time
 ##
-## If @var{P} is a valid transition probability matrix, return
-## the size (number of rows or columns) of @var{P}. If @var{P} is not
-## a transition probability matrix, set @var{result} to zero, and
-## @var{err} to an appropriate error string.
+## Check if @var{P} is a valid transition probability matrix. If @var{P}
+## is valid, @var{r} is the size (number of rows or columns) of @var{P}.
+## If @var{P} is not a transition probability matrix, @var{r} is set to
+## zero, and @var{err} to an appropriate error string.
 ##
 ## @end deftypefn
 
@@ -40,19 +40,19 @@ function [result err] = dtmc_check_P( P )
   endif
 
   result = 0;
+  err = "";
 
   if ( !issquare(P) )
     err = "P is not a square matrix";
     return;
   endif
   
-  if (  any(any(P <0)) || norm( sum(P,2) - 1, "inf" ) > epsilon )
+  if (  any(any(P<-epsilon)) || norm( sum(P,2) - 1, "inf" ) > epsilon )
     err = "P is not a stochastic matrix";
     return;
   endif
 
   result = rows(P);
-  err = "";
 endfunction
 %!test
 %! [r err] = dtmc_check_P( [1 1 1; 1 1 1] );

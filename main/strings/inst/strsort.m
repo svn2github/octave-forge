@@ -2,7 +2,7 @@
 ## This program is granted to the public domain.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@ldots{}] =} strsort (@ldots{})
+## @deftypefn {Function File} {[@dots{}] =} strsort (@dots{})
 ## Overloads the sort function to operate on strings.
 ##
 ## @seealso {sort}

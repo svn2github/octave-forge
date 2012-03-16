@@ -26,24 +26,31 @@
 #include <iostream>
 #include <vector>
 
+//FIXME This function needs some documentation
 DEFUN_DLD(pcregexp, args, nargout, "\
+-*- texinfo -*-\n\
+@deftypefn {Function File} {[@ldots{}] =} pcregexp (@ldots{})\n\
 Perl-compatible regular expression matching.\n\
 \n\
-See also \"help regexp\" and the manpage for 'pcre'.\n\
-" ) {
+Check your system's @code{pcre} man page.\n\
+\n\
+@seealso{regexp}\n\
+@end deftypefn\n\
+")
+{
 
     octave_value_list retval = octave_value_list();
 
     if (args.length() != 2) {
-	print_usage ();
-	return retval;
+        print_usage ();
+        return retval;
     }
 
     std::string pattern = args(0).string_value();
     std::string input = args(1).string_value();
     if (error_state) {
-	gripe_wrong_type_arg("pcregexp", args(0));
-	return retval;
+        gripe_wrong_type_arg("pcregexp", args(0));
+        return retval;
     }
 
     // Compile expression
@@ -53,8 +60,8 @@ See also \"help regexp\" and the manpage for 'pcre'.\n\
     re = pcre_compile(pattern.c_str(), 0, &err, &erroffset, NULL);
     
     if (re == NULL) {
-	error("pcregexp: %s at position %d of expression", err, erroffset);
-	return retval;
+        error("pcregexp: %s at position %d of expression", err, erroffset);
+        return retval;
     }
 
     // Get nr of subpatterns
@@ -66,37 +73,37 @@ See also \"help regexp\" and the manpage for 'pcre'.\n\
     int matches = pcre_exec(re, NULL, input.c_str(), input.length(), 0, 0, ovector, (subpatterns+1)*3);
 
     if (matches == PCRE_ERROR_NOMATCH) {
-	for (int i=nargout-1; i>=0; i--) retval(i) = "";
-	retval(0) = Matrix();
-	pcre_free(re);
-    	return retval;
+        for (int i=nargout-1; i>=0; i--) retval(i) = "";
+        retval(0) = Matrix();
+        pcre_free(re);
+        return retval;
     } else if (matches < -1) {
-	error("pcregexp: internal error calling pcre_exec");
-	return retval;
+        error("pcregexp: internal error calling pcre_exec");
+        return retval;
     }
 
     const char **listptr;
     status = pcre_get_substring_list(input.c_str(), ovector, matches, &listptr);
 
     if (status == PCRE_ERROR_NOMEMORY) {
-	error("pcregexp: cannot allocate memory in pcre_get_substring_list");
-	pcre_free(re);
-	return retval;
+        error("pcregexp: cannot allocate memory in pcre_get_substring_list");
+        pcre_free(re);
+        return retval;
     }
 
     // Pack indeces
     Matrix indeces = Matrix(matches, 2);
     for (int i = 0; i < matches; i++) {
-	indeces(i, 0) = ovector[2*i]+1;
-	indeces(i, 1) = ovector[2*i+1];
-	if (indeces(i, 0) == 0) indeces(i, 1) = 0;
+        indeces(i, 0) = ovector[2*i]+1;
+        indeces(i, 1) = ovector[2*i+1];
+        if (indeces(i, 0) == 0) indeces(i, 1) = 0;
     }
     retval(0) = indeces;
 
     // Pack substrings
     retval.resize(nargout + 1);
     for (int i = 0; i < matches; i++) {
-	retval(i+1) = *(listptr+i+1);
+        retval(i+1) = *(listptr+i+1);
     }
 
     // Free memory
@@ -104,8 +111,8 @@ See also \"help regexp\" and the manpage for 'pcre'.\n\
     pcre_free(re);
 
     if (nargout > matches) {
-	error("pcregexp: too many return values requested");
-	return octave_value_list();
+        error("pcregexp: too many return values requested");
+        return octave_value_list();
     }
 
     return retval;

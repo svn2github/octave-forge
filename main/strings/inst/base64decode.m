@@ -14,9 +14,9 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} @var{rval}= {} base64decode(@var{code})
-## @deftypefnx {Function File} @var{rval}= {} base64decode(@var{code},@var{as_string})
-## convert a base64 @var{code}  (a string of printable characters according to RFC 2045) 
+## @deftypefn {Function File} {@var{rval} =} base64decode (@var{code})
+## @deftypefnx {Function File} {@var{rval} =} base64decode (@var{code}, @var{as_string})
+## Convert a base64 @var{code}  (a string of printable characters according to RFC 2045) 
 ## into the original ASCII data set of range 0-255. If option @var{as_string} is 
 ## passed, the return value is converted into a string.
 ##
@@ -27,21 +27,15 @@
 ##           ##returns 'Hakuna Matata'
 ## @end group
 ## @end example
-## @end deftypefn
-## @seealso {base64encode}
-##
-
-##
-## Y = base64decode(X)
-##
-## Convert X into string of printable characters according to RFC 2045.
-## The input may be a string or a matrix of integers in the range 0..255.
 ##
 ## See: http://www.ietf.org/rfc/rfc2045.txt
 ##
-function z = base64decode(X,as_string)
+## @seealso {base64encode}
+## @end deftypefn
+
+function z = base64decode (X, as_string)
   if (nargin < 1 )
-    usage("Y = base64decode(X); X need to be a 4-row N-col matrix");
+    print_usage;
   elseif nargin == 1
     as_string=false;
   endif
@@ -50,32 +44,28 @@ function z = base64decode(X,as_string)
     error("base64decode is expecting integers in the range 0 .. 255");
   endif
 
-  ##
   ## decompose strings into the 4xN matrices 
   ## formatting issues.
-  ##
   if( rows(X) == 1 )
-	Y=[];
-	L=length(X);
-	for z=4:4:L
-		Y=[Y X(z-3:z)']; #keep adding columns
-	end
-	if min(size(Y))==1
-		Y=reshape(Y,[L, 1]);
-	else
-	 	Y=reshape(Y,[4,L/4]);
-	end
-	X=Y;
-	Y=[];
+    Y=[];
+    L=length(X);
+    for z=4:4:L
+        Y=[Y X(z-3:z)']; #keep adding columns
+    end
+    if min(size(Y))==1
+        Y=reshape(Y,[L, 1]);
+    else
+        Y=reshape(Y,[4,L/4]);
+    end
+    X=Y;
+    Y=[];
   end
 
   X = toascii(X);
   Xa= X;
 
-  ##
   ## Work backwards. Starting at step in table,
   ## lookup the index of the element in the table.
-  ##
 
   ## 6-bit encoding table, plus 1 for padding
   ## 26*2 + 10 + 2 + 1  = 64 + 1, '=' is EOF stop mark.
@@ -96,18 +86,18 @@ function z = base64decode(X,as_string)
   iaz = (Xa >= 'a').*(Xa <= 'z') > 0;
   Va(iaz)=Xa(iaz)-'a'+26;
 
-  i09 = (Xa >= '0').*(Xa <= '9') > 0; 
+  i09 = (Xa >= '0').*(Xa <= '9') > 0;
   Va(i09)=Xa(i09)-'0'+52;
 
   is = (Xa == '/') ;  Va(is) = 63;
   ip = (Xa == '+') ;  Va(ip) = 62;
   ieq = (Xa == '=') ;  Va(ieq) = 0;
-  clear is; clear ieq; clear ip; clear i09; 
+  clear is; clear ieq; clear ip; clear i09;
   clear iaz; clear iAZ;  clear Xa; clear X;
 
   Y=Va; clear Va;
   Y1=Y(1,:);
-  if (SRows > 1) 
+  if (SRows > 1)
      Y2=Y(2,:);
   else 
      Y2=zeros(1,SCols);
@@ -119,7 +109,7 @@ function z = base64decode(X,as_string)
      Y3=zeros(1,SCols);
   end;
 
-  if (SRows > 3) 
+  if (SRows > 3)
      Y4=Y(4,:);
   else 
      Y4=zeros(1,SCols);
@@ -147,10 +137,8 @@ function z = base64decode(X,as_string)
      z(3:3:end)=[];
   end
 
-  ##
   ## FIXME
   ## is this expected behaviour?
-  ##
   if ( as_string )
     L=length(z);
     while ( ( L > 0) && ( z(L)==0 ) )
@@ -159,14 +147,11 @@ function z = base64decode(X,as_string)
     z=char(z(1:L));
   end
 
-  return
-
 endfunction
-%!
+
 %!assert(base64decode(base64encode('Hakuna Matata'),true),'Hakuna Matata')
 %!assert(base64decode(base64encode([1:255])),[1:255])
 %!assert(base64decode(base64encode('taken'),true),'taken')
 %!assert(base64decode(base64encode('sax'),true),'sax')
 %!assert(base64decode(base64encode('H'),true),'H')
 %!assert(base64decode(base64encode('Ta'),true),'Ta')
-%!

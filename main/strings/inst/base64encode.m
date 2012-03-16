@@ -2,8 +2,8 @@
 ## This program is granted to the public domain.
 
 ## -*- texinfo -*-
-## @deftypefn @var{Y} = {Function File} {} base64encode(@var{X})
-## @deftypefnx @var{Y} = {Function File} {} base64encode(@var{X}, @var{do_reshape})
+## @deftypefn {Function File} {@var{Y} =} base64encode (@var{X})
+## @deftypefnx {Function File} {@var{Y} =} base64encode (@var{X}, @var{do_reshape})
 ## Convert X into string of printable characters according to RFC 2045.
 ## The input may be a string or a matrix of integers in the range 0..255.
 ## If want the output in the 1-row of strings format, pass the 
@@ -11,17 +11,19 @@
 ## 
 ## Example:
 ## @example
+## @group
 ## base64encode('Hakuna Matata',true) 
 ## ##returns 'SGFrdW5hIE1hdGF0YQ=='
 ##
+## @end group
 ## @end example
-## @end deftypefn
 ## @seealso{base64decode}
+## @end deftypefn
 
-function Y = base64encode(X,do_reshape)
+function Y = base64encode (X, do_reshape)
 
   if (nargin < 1)
-    usage("Y = base64encode(X,[do_reshape])");
+    print_usage;
   elseif nargin != 2
     do_reshape=false;
   endif
@@ -71,6 +73,5 @@ function Y = base64encode(X,do_reshape)
      Y = reshape(Y,[1, prod(size(Y))]);
   end
 endfunction
-%!
+
 %!assert(base64encode('Hakuna Matata',true),'SGFrdW5hIE1hdGF0YQ==')
-%!

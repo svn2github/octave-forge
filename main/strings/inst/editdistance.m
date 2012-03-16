@@ -14,9 +14,10 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} [@var{dist},@var{L}] = {} editdistance(@var{string1},@var{string2},@var{weights})
-## computes the Levenshtein edit distance between the two strings.
-## @var{string1} and @var{string2}. This operation is symmetrical.
+## @deftypefn {Function File} {[@var{dist},@var{L}] =} editdistance (@var{string1}, @var{string2}, @var{weights})
+## Compute the Levenshtein edit distance between the strings @var{string1} and
+## @var{string2}. This operation is symmetrical.
+##
 ## The optional argument @var{weights} specifies weights for the
 ## deletion, matched, and insertion operations; by default it is set to
 ## +1, 0, +1 respectively, so that a least editdistance means a 
@@ -29,53 +30,50 @@
 ## the other return value  @var{L} is the distance matrix.
 ##
 ## @example
-## @group  
+## @group
 ##          editdistance('marry','marie') 
 ##          ##returns value +2 for the distance.
 ## @end group
 ## @end example
 ##
 ## @end deftypefn
-##
 
-function [dist,L]=editdistance(str1,str2,weights)
-    if(nargin < 2 || (nargin == 3 && length(weights)  < 3) )
-      print_usage();
-    end
-    
-    L1=length(str1)+1;
-    L2=length(str2)+1;
-    L=zeros(L1,L2);
-    
-    if(nargin < 3)
-      g=+1;%insertion
-      m=+0;%match
-      d=+1;%deletion
-    else
-      g=weights(1);
-      m=weights(2);
-      d=weights(3);
-    end
-    
+function [dist, L] = editdistance (str1, str2, weights)
+  if(nargin < 2 || (nargin == 3 && length(weights)  < 3) )
+    print_usage();
+  end
+  
+  L1=length(str1)+1;
+  L2=length(str2)+1;
+  L=zeros(L1,L2);
+  
+  if(nargin < 3)
+    g=+1;%insertion
+    m=+0;%match
+    d=+1;%deletion
+  else
+    g=weights(1);
+    m=weights(2);
+    d=weights(3);
+  end
 
-    L(:,1)=[0:L1-1]'*g;
-    L(1,:)=[0:L2-1]*g;
-    
-    m4=0;
-    for idx=2:L1;
-        for idy=2:L2
-            if(str1(idx-1)==str2(idy-1))
-                score=m;
-            else
-                score=d;
-            end            
-            m1=L(idx-1,idy-1) + score;
-            m2=L(idx-1,idy) + g;
-            m3=L(idx,idy-1) + g;
-            L(idx,idy)=min(m1,min(m2,m3));
-        end
+  L(:,1)=[0:L1-1]'*g;
+  L(1,:)=[0:L2-1]*g;
+  
+  m4=0;
+  for idx=2:L1;
+    for idy=2:L2
+      if(str1(idx-1)==str2(idy-1))
+        score=m;
+      else
+        score=d;
+      end
+      m1=L(idx-1,idy-1) + score;
+      m2=L(idx-1,idy) + g;
+      m3=L(idx,idy-1) + g;
+      L(idx,idy)=min(m1,min(m2,m3));
     end
-    
-    dist=L(L1,L2);
-    return
-end
+  end
+  
+  dist=L(L1,L2);
+endfunction

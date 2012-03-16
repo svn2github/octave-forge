@@ -1,13 +1,17 @@
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
 ## This program is granted to the public domain.
 
-# ... = strsort(...)
-# Overloads the sort function to operate on strings.
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@ldots{}] =} strsort (@ldots{})
+## Overloads the sort function to operate on strings.
+##
+## @seealso {sort}
+## @end deftypefn
 
 # PKG_ADD dispatch ("sort", "strsort", "string")
 function [sorted,idx] = strsort(string,varargin)
   if nargout == 2
-     [s,idx] = sort(toascii(string),varargin{:});
+    [s,idx] = sort(toascii(string),varargin{:});
   else
     s = sort(toascii(string),varargin{:});
   endif

@@ -118,13 +118,12 @@ endfunction
 %!test
 %!
 %! ## Test tolerance of the qnvisits() function. 
-%! ## This test builds random transition probability matrices and tries
+%! ## This test builds transition probability matrices and tries
 %! ## to compute the visit counts on them. 
 %!
 %! for k=[5, 10, 20, 50]
-%!   P = rand(k,k);
-%!   nor = sum(P,2);
-%!   P = diag(1./nor)*P;
+%!   P = reshape(1:k^2, k, k);
+%!   P = P ./ repmat(sum(P,2),1,k);
 %!   V = qnvisits(P);
 %!   assert( V*P, V, 1e-5 );
 %! endfor

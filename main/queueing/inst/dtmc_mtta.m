@@ -206,5 +206,7 @@ endfunction
 %! f = dtmc_mtta(Pstar, start);
 %! printf("Average number of steps to complete the game: %f\n", f );
 %! plot(Pfinish,"linewidth",2);
+%! line([f,f],[0,1]);
+%! text(f*1.1,0.2,"Mean Time to Absorption");
 %! xlabel("Step number (n)");
 %! title("Probability of finishing the game before step n");

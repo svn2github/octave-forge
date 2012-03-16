@@ -18,16 +18,15 @@
 ## -*- texinfo -*-
 ##
 ## @deftypefn {Function File} {@var{M} =} dtmc_fpt (@var{P})
-## @deftypefnx {Function File} {@var{m} =} dtmc_fpt (@var{P}, @var{i}, @var{j})
 ##
-## @cindex Markov chain, discrete time
 ## @cindex First passage times
+## @cindex Mean recurrence times
 ##
-## If called with a single argument, computes the mean first passage
-## times @code{@var{M}(i,j)}, that are the average number of transitions before
-## state @var{j} is reached, starting from state @var{i}, for all
-## @math{1 \leq i, j \leq N}. If called with three arguments, returns
-## the single value @code{@var{m} = @var{M}(i,j)}.
+## Compute the mean first passage times matrix @math{\bf M}, such that
+## @code{@var{M}(i,j)} is the average number of transitions before state
+## @var{j} is reached, starting from state @var{i}, for all @math{1 \leq
+## i, j \leq N}. Diagonal elements of @var{M} are the mean recurrence
+## times.
 ##
 ## @strong{INPUTS}
 ##
@@ -40,13 +39,6 @@
 ## P_{i j} = 1}), and the rank of @var{P} must be equal to its
 ## dimension.
 ##
-## @item i
-## Initial state.
-##
-## @item j
-## Destination state. If @var{j} is a vector, returns the mean first passage
-## time to any state in @var{j}.
-##
 ## @end table
 ##
 ## @strong{OUTPUTS}
@@ -54,16 +46,11 @@
 ## @table @var
 ##
 ## @item M
-## If this function is called with a single argument,
 ## @code{@var{M}(i,j)} is the average number of transitions before state
 ## @var{j} is reached for the first time, starting from state @var{i}.
-## @code{@var{M}(i,i)} is the @emph{mean recurrence time}, and
-## represents the average time needed to return to state @var{i}.
-##
-## @item m
-## If this function is called with three arguments, the result @var{m}
-## is the average number of transitions before state @var{j} is visited
-## for the first time, starting from state @var{i}.
+## @code{@var{M}(i,i)} is the @emph{mean recurrence time} of state
+## @math{i}, and represents the average time needed to return to state
+## @var{i}.
 ##
 ## @end table
 ##
@@ -72,10 +59,9 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function result = dtmc_fpt( P, i, j )
-  persistent epsilon = 10*eps;
+function result = dtmc_fpt( P )
 
-  if ( nargin != 1 && nargin != 3)
+  if ( nargin != 1 )
     print_usage();
   endif
 
@@ -88,6 +74,12 @@ function result = dtmc_fpt( P, i, j )
     error("Cannot compute first passage times for absorbing chains");
   endif
 
+  w = dtmc(P);
+  W = repmat(w,N,1);
+  Z = inv(eye(N)-P+W);
+  result = (repmat(diag(Z)',N,1) - Z) ./ repmat(w,N,1) + diag(1./w);
+
+#{
   if ( nargin == 1 )   
     M = zeros(N,N);
     ## M(i,j) = 1 + sum_{k \neq j} P(i,k) M(k,j)
@@ -113,45 +105,24 @@ function result = dtmc_fpt( P, i, j )
     res = A \ b;
     result = res(i);
   endif
+#}
+
 endfunction
 %!test
 %! P = [1 1 1; 1 1 1];
 %! fail( "dtmc_fpt(P)" );
 
-%!demo
-%! P = [ 0.0 0.9 0.1; \
-%!       0.1 0.0 0.9; \
-%!       0.9 0.1 0.0 ];
-%! M = dtmc_fpt(P);
-%! w = dtmc(P);
-%! N = rows(P);
-%! W = repmat(w,N,1);
-%! Z = inv(eye(N)-P+W);
-%! M1 = (repmat(diag(Z)',1,N) - Z) ./ repmat(w',1,N);
-%! assert(M, M1);
-
-
-%!shared P
-%! P = [ 0.0 0.9 0.1; \
-%!       0.1 0.0 0.9; \
-%!       0.9 0.1 0.0 ];
+%!test
+%! P = dtmc_bd([1 1 1], [0 0 0] );
+%! fail( "dtmc_fpt(P)", "absorbing" );
 
 %!test
+%! P = [ 0.0 0.9 0.1; \
+%!       0.1 0.0 0.9; \
+%!       0.9 0.1 0.0 ];
 %! p = dtmc(P);
 %! M = dtmc_fpt(P);
 %! assert( diag(M)', 1./p, 1e-8 );
-
-%!test
-%! p = dtmc(P);
-%! m = dtmc_fpt(P, 1, 1);
-%! assert( m, 1/p(1), 1e-8 );
-
-%!test
-%! m = dtmc_fpt(P, 1, [2 3]);
-
-%!test
-%! P = dtmc_bd([1 1 1], [ 0 0 0] );
-%! fail( "dtmc_fpt(P)", "absorbing" );
 
 ## Example on p. 461 of
 ## http://www.cs.virginia.edu/~gfx/Courses/2006/DataDriven/bib/texsyn/Chapter11.pdf
@@ -169,13 +140,26 @@ endfunction
 %!             21.3333 6.3333 2.6667 1 16 ], 1e-4 );
 
 %!test
-%! P = unifrnd(0.1,0.9,10,10);
+%! sz = 10;
+%! P = reshape( 1:sz^2, sz, sz );
 %! normP = repmat(sum(P,2),1,columns(P));
 %! P = P./normP;
 %! M = dtmc_fpt(P);
 %! for i=1:rows(P)
 %!   for j=1:columns(P)
 %!     assert( M(i,j), 1 + dot(P(i,:), M(:,j)) - P(i,j)*M(j,j), 1e-8);
-%!     assert( M(i,j), dtmc_fpt(P, i, j), 1e-8 );
 %!   endfor
 %! endfor
+
+%!demo
+%! P = [ 0.0 0.9 0.1; \
+%!       0.1 0.0 0.9; \
+%!       0.9 0.1 0.0 ];
+%! M = dtmc_fpt(P);
+%! w = dtmc(P);
+%! N = rows(P);
+%! W = repmat(w,N,1);
+%! Z = inv(eye(N)-P+W);
+%! M1 = (repmat(diag(Z),1,N) - Z) ./ repmat(w',1,N);
+%! assert(M, M1);
+

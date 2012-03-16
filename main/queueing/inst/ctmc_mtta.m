@@ -107,9 +107,9 @@ endfunction
 %!demo
 %! mu = 0.01;
 %! death = [ 3 4 5 ] * mu;
-%! Q = diag(death,-1);
-%! Q -= diag(sum(Q,2));
-%! [t L] = ctmc_mtta(Q,[0 0 0 1])
+%! birth = 0*death;
+%! Q = ctmc_bd(birth,death);
+%! t = ctmc_mtta(Q,[0 0 0 1])
 
 %!demo
 %! N = 100;

@@ -33,8 +33,6 @@
 
 function [result err] = dtmc_check_P( P )
 
-  persistent epsilon = 10*eps;
-
   if ( nargin != 1 )
     print_usage();
   endif
@@ -47,7 +45,7 @@ function [result err] = dtmc_check_P( P )
     return;
   endif
   
-  if (  any(any(P<-epsilon)) || norm( sum(P,2) - 1, "inf" ) > epsilon )
+  if (  any(any(P<-eps)) || norm( sum(P,2) - 1, "inf" ) > columns(P)*eps )
     err = "P is not a stochastic matrix";
     return;
   endif
@@ -71,3 +69,10 @@ endfunction
 %!test
 %! P = dtmc_bd( linspace(0.1,0.4,10), linspace(0.4,0.1,10) );
 %! assert( dtmc_check_P(P), rows(P) );
+
+%!test
+%! N = 1000;
+%! P = reshape( 1:N^2, N, N );
+%! P(1:N+1:end) = 0;
+%! P = P ./ repmat(sum(P,2),1,N);
+%! assert( dtmc_check_P(P), N );

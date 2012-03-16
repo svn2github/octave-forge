@@ -1,6 +1,6 @@
 Name: strings
-Version: 1.0.7
-Date: 2009-05-03
+Version: 1.1.0
+Date: 2012-03-16
 Author: various authors
 Maintainer: Octave-Forge community <octave-dev@lists.sourceforge.net>
 Title: String Handling.

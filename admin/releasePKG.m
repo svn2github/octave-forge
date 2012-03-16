@@ -104,14 +104,16 @@ function [pkgtar htmltar] = releasePKG (pkgname, varargin)
   printf("Tared to %s\n", pkgtar);
   fflush(stdout);
 
-  % Install package
-  printf("Installing...\n");
-  fflush(stdout);
-  pkg ('install', pkgtar);
   do_doc = input("\nCreate documentation for Octave-Forge? [y|Yes|Y] / [n|No|N] ","s");
   do_doc = strcmpi(do_doc(1),'y');
 
   if do_doc
+    % Install package
+    printf("Installing...\n");
+    fflush(stdout);
+    pkg ('install', pkgtar);
+
+
     % Load package and generate_html
     printf("Generating html...\n");
     fflush(stdout);

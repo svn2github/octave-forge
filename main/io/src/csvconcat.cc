@@ -18,9 +18,9 @@
 
 DEFUN_DLD (csvconcat, args, nargout,
            "-*- texinfo -*-\n"
-           "@deftypefn {Function File} {@var{str} = } csvconcat (@var{c})\n"
-	   "@deftypefnx {Function File} {@var{str} = } csvconcat (@var{c}, @var{sep})\n"
-	   "@deftypefnx {Function File} {@var{str} = } csvconcat (@var{c}, @var{sep}, @var{prot})\n"
+           "@deftypefn {Loadable Function} {@var{str} = } csvconcat (@var{c})\n"
+	   "@deftypefnx {Loadable Function} {@var{str} = } csvconcat (@var{c}, @var{sep})\n"
+	   "@deftypefnx {Loadable Function} {@var{str} = } csvconcat (@var{c}, @var{sep}, @var{prot})\n"
 	   "\n"
 	   "Concatenate a cell into a CSV string or array of strings. "
 	   "@var{sep} changes the character used to separate two fields. By "

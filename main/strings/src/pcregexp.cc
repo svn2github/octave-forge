@@ -29,7 +29,7 @@
 //FIXME This function needs some documentation
 DEFUN_DLD(pcregexp, args, nargout, "\
 -*- texinfo -*-\n\
-@deftypefn {Function File} {[@ldots{}] =} pcregexp (@ldots{})\n\
+@deftypefn {Loadable Function} {[@ldots{}] =} pcregexp (@ldots{})\n\
 Perl-compatible regular expression matching.\n\
 \n\
 Check your system's @code{pcre} man page.\n\

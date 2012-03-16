@@ -18,9 +18,9 @@
 
 DEFUN_DLD (csvexplode, args, nargout,
            "-*- texinfo -*-\n"
-           "@deftypefn {Function File} {@var{c} = } csvexplode (@var{str})\n"
-	   "@deftypefnx {Function File} {@var{c} = } csvexplode (@var{str}, @var{sep})\n"
-	   "@deftypefnx {Function File} {@var{c} = } csvexplode (@var{str}, @var{sep}, @var{prot})\n"
+           "@deftypefn {Loadable Function} {@var{c} = } csvexplode (@var{str})\n"
+	   "@deftypefnx {Loadable Function} {@var{c} = } csvexplode (@var{str}, @var{sep})\n"
+	   "@deftypefnx {Loadable Function} {@var{c} = } csvexplode (@var{str}, @var{sep}, @var{prot})\n"
 	   "\n"
 	   "Explode a CSV string into a cell. "
 	   "@var{sep} changes the character used to separate two fields. By "

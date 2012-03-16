@@ -22,9 +22,9 @@
 
 DEFUN_DLD (csv2cell, args, nargout, 
        "-*- texinfo -*-\n"
-       "@deftypefn {Function File} {@var{c} = } csv2cell (@var{file})\n"
-       "@deftypefnx {Function File} {@var{c} = } csv2cell (@var{file}, @var{sep})\n"
-       "@deftypefnx {Function File} {@var{c} = } csv2cell (@var{file}, @var{sep}, @var{prot})\n"
+       "@deftypefn {Loadable Function} {@var{c} = } csv2cell (@var{file})\n"
+       "@deftypefnx {Loadable Function} {@var{c} = } csv2cell (@var{file}, @var{sep})\n"
+       "@deftypefnx {Loadable Function} {@var{c} = } csv2cell (@var{file}, @var{sep}, @var{prot})\n"
        "\n"
        "Read a CSV (Comma Separated Values) file and convert it into a "
        "cell. "

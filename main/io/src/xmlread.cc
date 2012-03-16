@@ -127,7 +127,7 @@ octave_value get_element (element *root) {
 
 DEFUN_DLD (xmlread, args, nargout,
 	   "-*- texinfo -*-\n"
-           "@deftypefn {Function File} {@var{value}} xmlread(@var{filename})\n"
+           "@deftypefn {Loadable Function} {@var{value}} xmlread(@var{filename})\n"
 	   "\n"
 	   "Read a @var{value} from @var{filename} as an XML file\n"
 	   "@end deftypefn") {

@@ -20,9 +20,9 @@
 
 DEFUN_DLD (cell2csv, args, nargout,
            "-*- texinfo -*-\n"
-           "@deftypefn {Function File} {} cell2csv (@var{file}, @var{c})\n"
-	   "@deftypefnx {Function File} {} cell2csv (@var{file}, @var{c}, @var{sep})\n"
-	   "@deftypefnx {Function File} {} cell2csv (@var{file}, @var{c}, @var{sep}, @var{prot})\n"
+           "@deftypefn {Loadable Function} {} cell2csv (@var{file}, @var{c})\n"
+	   "@deftypefnx {Loadable Function} {} cell2csv (@var{file}, @var{c}, @var{sep})\n"
+	   "@deftypefnx {Loadable Function} {} cell2csv (@var{file}, @var{c}, @var{sep}, @var{prot})\n"
 	   "\n"
 	   "Create a CSV file from a cell. "
 	   "@var{sep} changes the character used to separate two fields. By "

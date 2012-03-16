@@ -36,9 +36,9 @@ static bool no_terminal=false;
 
 DEFUN_DLD(text_waitbar, args, nargout,
 "  -*- texinfo -*-\n\
-@deftypefn {Function File}  {} text_waitbar (@var{frac})\n\
-@deftypefnx {Function File} {} text_waitbar (@var{frac}, @var{msg})\n\
-@deftypefnx {Function File} {} text_waitbar (0, @var{n})\n\
+@deftypefn {Loadable Function}  {} text_waitbar (@var{frac})\n\
+@deftypefnx {Loadable Function} {} text_waitbar (@var{frac}, @var{msg})\n\
+@deftypefnx {Loadable Function} {} text_waitbar (0, @var{n})\n\
 Display text-based waitbar/progress bar.\n\
 \n\
 This function is similar to the @code{waitbar} function but is a text, rather\n\

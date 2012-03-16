@@ -79,7 +79,7 @@ For internal use only.")
     int nargin = args.length ();
     octave_value_list retval;
     
-    if (nargin != 12)
+    if (nargin != 11)
     {
         print_usage ();
     }
@@ -92,6 +92,8 @@ For internal use only.")
         char batch;
         char conct;
         char ctrl;
+        char metha;
+        char jobda;
         
         Matrix y = args(0).matrix_value ();
         Matrix u = args(1).matrix_value ();
@@ -106,13 +108,23 @@ For internal use only.")
         
         double rcond = args(9).double_value ();
         double tol = args(10).double_value ();
-        double tolb = args(11).double_value ();
-        
+        double tolb = args(9).double_value ();      // tolb = rcond
 
-        if (imeth == 0)
-            meth = 'M';
-        else
-            meth = 'N';
+            
+        switch (imeth)
+        {
+            case 0:
+                meth = 'M';
+                metha = 'M';
+            case 1:
+                meth = 'N';
+                metha = 'N';
+            case 3:
+                meth = 'C';
+                metha = 'N';    // no typo here
+            default:
+                error ("slib01ad: argument 'meth' invalid");
+        }
 
         switch (ialg)
         {
@@ -129,7 +141,9 @@ For internal use only.")
                 error ("slib01ad: argument 'alg' invalid");
         }
         
-        if (ijobd == 0)
+        if (meth == 'C')
+            jobd = 'N';
+        else if (ijobd == 0)
             jobd = 'M';
         else
             jobd = 'N';
@@ -182,9 +196,9 @@ For internal use only.")
         int n;
         int ldr;
         
-        if (meth == 'M' && jobd == 'M')
+        if (metha == 'M' && jobd == 'M')
             ldr = max (2*(m+l)*nobr, 3*m*nobr);
-        else if (meth == 'N' || (meth == 'M' && jobd == 'N'))
+        else if (metha == 'N' || (metha == 'M' && jobd == 'N'))
             ldr = 2*(m+l)*nobr;
         else
             error ("slib01ad: could not handle 'ldr' case");
@@ -195,7 +209,7 @@ For internal use only.")
         // workspace
         int liwork;
 
-        if (meth == 'N')            // if METH = 'N'
+        if (metha == 'N')            // if METH = 'N'
             liwork = (m+l)*nobr;
         else if (alg == 'F')        // if METH = 'M' and ALG = 'F'
             liwork = m+l;
@@ -205,8 +219,6 @@ For internal use only.")
         // TODO: Handle 'k' for DWORK
 
         int ldwork;
-
-        ldwork = 0;
         
         if (alg == 'C')
         {
@@ -217,7 +229,7 @@ For internal use only.")
                 else    // (conct == 'N')
                     ldwork = 1;
             }
-            else if (meth == 'M')   // && (batch == 'L' || batch == 'O')
+            else if (metha == 'M')   // && (batch == 'L' || batch == 'O')
             {
                 if (conct == 'C' && batch == 'L')
                     ldwork = max ((4*nobr-2)*(m+l), 5*l*nobr);
@@ -233,44 +245,11 @@ For internal use only.")
         }
         else if (alg == 'F')
         {
-/*
-For the second LDWORK case, code and documentation don't match:
-doc line 276: BATCH = 'F', 'I'
-code line 586: BATCH = 'F', 'I', 'O'
-The third case with BATCH = 'O' is never reached.
-
-
-IB01AD.f Lines 273-279:
-C             LDWORK >= (M+L)*2*NOBR*(M+L+3), if ALG = 'F',
-C                             BATCH <> 'O' and CONCT = 'C';
-C             LDWORK >= (M+L)*2*NOBR*(M+L+1), if ALG = 'F',
-C                             BATCH = 'F', 'I' and CONCT = 'N';
-C             LDWORK >= (M+L)*4*NOBR*(M+L+1)+(M+L)*2*NOBR, if ALG = 'F',
-C                             BATCH = 'L' and CONCT = 'N', or
-C                             BATCH = 'O';
-
-
-IB01AD.f Lines 499-500:
-      ONEBCH = LSAME( BATCH, 'O' )
-      FIRST  = LSAME( BATCH, 'F' ) .OR. ONEBCH
-
-
-IB01AD.f Lines 583-591:
-            ELSE IF ( FQRALG ) THEN
-               IF ( .NOT.ONEBCH .AND. CONNEC ) THEN
-                  MINWRK = NR*( M + L + 3 )
-               ELSE IF ( FIRST .OR. INTERM ) THEN       // (batch = F || O) || batch = I
-                  MINWRK = NR*( M + L + 1 )                              ^
-               ELSE                                                      |
-                  MINWRK = 2*NR*( M + L + 1 ) + NR                      ??? 
-               END IF
-            ELSE
-*/
             if (batch != 'O' && conct == 'C')
                 ldwork = (m+l)*2*nobr*(m+l+3);
-            else if (batch == 'F' || batch == 'O' || batch == 'I')  // && conct == 'N'
+            else if (batch == 'F' || batch == 'I')  // && conct == 'N'
                 ldwork = (m+l)*2*nobr*(m+l+1);
-            else    // (batch == 'L' && conct == 'N')
+            else    // (batch == 'L' || '0' && conct == 'N')
                 ldwork = (m+l)*4*nobr*(m+l+1)+(m+l)*2*nobr;
         }
         else    // (alg == 'Q')
@@ -283,7 +262,7 @@ IB01AD.f Lines 583-591:
             }
             else if (ldr >= ns && batch == 'O')
             {
-                if (meth == 'M')
+                if (metha == 'M')
                     ldwork = max (4*(m+l)*nobr, 5*l*nobr);
                 else    // (meth == 'N')
                     ldwork = 5*(m+l)*nobr + 1;
@@ -321,7 +300,7 @@ somehow ldrwrk and ldwork must have been mixed up here
 
         // SLICOT routine IB01AD
         F77_XFCN (ib01ad, IB01AD,
-                 (meth, alg, jobd,
+                 (metha, alg, jobd,
                   batch, conct, ctrl,
                   nobr, m, l,
                   nsmp,

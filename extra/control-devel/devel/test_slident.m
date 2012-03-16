@@ -2031,10 +2031,10 @@ ctrl = 1;
 rcond = 0.0;
 tol = -1.0;
 
-[a, b, c, d, q, ry, s, k] = slident (Y, U, nobr, meth, alg, jobd, batch, conct, ctrl, rcond, tol);
+[a, b, c, d, q, ry, s, k] = slident (Y, U, nobr, meth, alg, jobd, batch, conct, ctrl, rcond, tol)
 
-n
-sv
+%n
+%sv
 
 %{
  IB01AD EXAMPLE PROGRAM RESULTS

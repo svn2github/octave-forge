@@ -116,12 +116,15 @@ For internal use only.")
             case 0:
                 meth = 'M';
                 metha = 'M';
+                break;
             case 1:
                 meth = 'N';
                 metha = 'N';
-            case 3:
+                break;
+            case 2:
                 meth = 'C';
                 metha = 'N';    // no typo here
+                break;
             default:
                 error ("slib01ad: argument 'meth' invalid");
         }

@@ -1,6 +1,12 @@
 %1
 dirlist = {"geom2d","io","polygons2d","shape2d","octclip","graphs"};
 dirname = fileparts (canonicalize_file_name (mfilename ("fullpath")));
+pp = strsplit (dirname,filesep (), true);
+
+%% Check if prefix was used
+[pkg_folder dep_folder] = pkg ("prefix");
+pkg_folder = [pkg_folder filesep() strcat(filesep(),{pp{end-1:end}}){:} ];
+dep_folder = [dep_folder filesep() strcat(filesep(),{pp{end-1:end}}){:} ];
 
 %% If we are not in Architecture dependent folder
 arch = cstrcat (octave_config_info ("canonical_host_type"),
@@ -8,13 +14,15 @@ arch = cstrcat (octave_config_info ("canonical_host_type"),
 pp = strsplit (dirname,filesep (), true);
 if strcmp(arch , pp{end})
   dirname = [strcat(filesep(),{pp{1:end-1}}){:}];
+  pkg_folder = strsplit (pkg_folder,filesep (), true);
+  pkg_folder = [strcat(filesep(),{pkg_folder{1:end-1}}){:}];
 end
 
 if (! exist (fullfile (dirname, "inst"), "dir"))
+## Run this if the package is installed
   for ii=1:length (dirlist)
-      ## Run this if the package is installed
-      rmpath ( [ dirname filesep dirlist{ii}])
-  end
+    rmpath ( [ pkg_folder filesep() dirlist{ii}])
+  endfor
 else
   warning("geometry:Devel","Removing path for testing.");
   for ii=1:length(dirlist)

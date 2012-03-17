@@ -32,7 +32,7 @@
 %% policies, either expressed or implied, of copyright holder.
 
 %% -*- texinfo -*-
-%% @deftypefn {Function File} Contents ()
+%% @deftypefn {Function File} geometry_Contents ()
 %% Geometry 2D Toolbox
 %% Version 1.2.0 21-Oct-2011 .
 %%
@@ -192,7 +192,7 @@
 %%
 %% @end deftypefn
 
-function Contents ()
+function geometry_Contents ()
 
   help('Contents');
 

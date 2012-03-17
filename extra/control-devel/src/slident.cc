@@ -556,6 +556,74 @@ somehow ldrwrk and ldwork must have been mixed up here
 ////////////////////////////////////////////////////////////////////////////////////
 //      SLICOT IB01CD - estimating the initial state                              //
 ////////////////////////////////////////////////////////////////////////////////////
+/*
+        // arguments in
+        char jobx0 = 'X';
+        char comuse = 'U';
+        char jobbd = 'D';
+        
+        // arguments out
+        int ldv = max (1, n);
+        
+        ColumnVector x0 (n);
+        Matrix (ldv, n);
+        
+        // workspace
+        int liwork_c = n;     // if  JOBX0 = 'X'  and  COMUSE <> 'C'
+        int ldwork_c;
+        
+        ldwork_c = ldw1 + n*( n + m + l ) + max (5*n, ldw1, min (ldw2, ldw3))
+        
+        
+        // I can't find a definition for parameter 't' 
+        
+C             The length of the array DWORK.
+C             LDWORK >= 2,  if  JOBX0 = 'N'  and  COMUSE <> 'C',  or
+C                           if  max( N, M ) = 0.
+C             Otherwise,
+C             LDWORK >= LDW1 + N*( N + M + L ) +
+C                              max( 5*N, LDW1, min( LDW2, LDW3 ) ),
+C             where, if  COMUSE = 'C',  then
+C             LDW1 = 2,          if  M = 0  or   JOB = 'B',
+C             LDW1 = 3,          if  M > 0  and  JOB = 'D',
+C             LDWa = t*L*(r + 1) + max( N + max( d, f ), 6*r ),
+C             LDW2 = LDWa,       if  M = 0  or  JOB = 'B',
+C             LDW2 = max( LDWa, t*L*(r + 1) + 2*M*M + 6*M ),
+C                                if  M > 0  and JOB = 'D',
+C             LDWb = (b + r)*(r + 1) +
+C                     max( q*(r + 1) + N*N*M + c + max( d, f ), 6*r ),
+C             LDW3 = LDWb,       if  M = 0  or  JOB = 'B',
+C             LDW3 = max( LDWb, (b + r)*(r + 1) + 2*M*M + 6*M ),
+C                                if  M > 0  and JOB = 'D',
+C                r = N*M + a,
+C                a = 0,                  if  JOBX0 = 'N',
+C                a = N,                  if  JOBX0 = 'X';
+C                b = 0,                  if  JOB   = 'B',
+C                b = L*M,                if  JOB   = 'D';
+C                c = 0,                  if  JOBX0 = 'N',
+C                c = L*N,                if  JOBX0 = 'X';
+C                d = 0,                  if  JOBX0 = 'N',
+C                d = 2*N*N + N,          if  JOBX0 = 'X';
+C                f = 2*r,                if  JOB   = 'B'   or  M = 0,
+C                f = M + max( 2*r, M ),  if  JOB   = 'D'  and  M > 0;
+C                q = b + r*L;
+C             and, if  JOBX0 = 'X'  and  COMUSE <> 'C',  then
+C             LDW1 = 2,
+C             LDW2 = t*L*(N + 1) + 2*N + max( 2*N*N, 4*N ),
+C             LDW3 = N*(N + 1) + 2*N + max( q*(N + 1) + 2*N*N + L*N,
+C                                           4*N ),
+C                q = N*L.
+C             For good performance,  LDWORK  should be larger.
+
+        
+        
+        OCTAVE_LOCAL_BUFFER (int, iwork_c, liwork_c);
+        OCTAVE_LOCAL_BUFFER (double, dwork_c, ldwork_c);
+
+        // error indicators
+        int iwarn_c = 0;
+        int info_c = 0;
+        
 
         // SLICOT routine IB01CD
         F77_XFCN (ib01cd, IB01CD,
@@ -603,6 +671,7 @@ somehow ldrwrk and ldwork must have been mixed up here
 
         error_msg ("ident", info_c, 2, err_msg_c);
         warning_msg ("ident", iwarn_c, 6, warn_msg_c);
+*/        
         
         // return values
         retval(0) = a;
@@ -614,6 +683,8 @@ somehow ldrwrk and ldwork must have been mixed up here
         retval(5) = ry;
         retval(6) = s;
         retval(7) = k;
+        
+        //retval(8) = x0;
         //retval(0) = octave_value (n);
         //retval(1) = r;
         //retval(2) = sv;

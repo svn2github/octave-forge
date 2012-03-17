@@ -556,6 +556,11 @@ somehow ldrwrk and ldwork must have been mixed up here
 ////////////////////////////////////////////////////////////////////////////////////
 //      SLICOT IB01CD - estimating the initial state                              //
 ////////////////////////////////////////////////////////////////////////////////////
+
+// TODO: use only one iwork and dwork for all three slicot routines
+//       ldwork = max (ldwork_a, ldwork_b, ldwork_c)
+
+
 /*
         // arguments in
         char jobx0 = 'X';

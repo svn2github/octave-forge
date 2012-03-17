@@ -67,6 +67,22 @@ extern "C"
                   bool* BWORK,
                   int& IWARN, int& INFO);
 
+    int F77_FUNC (ib01cd, IB01CD)
+                 (char& JOBX0, char& COMUSE, char& JOB,
+                  int& N, int& M, int& L,
+                  int& NSMP,
+                  double* A, int& LDA,
+                  double* B, int& LDB,
+                  double* C, int& LDC,
+                  double* D, int& LDD,
+                  double* U, int& LDU,
+                  double* Y, int& LDY,
+                  double* X0,
+                  double* V, int& LDV,
+                  double& TOL,
+                  int* IWORK,
+                  double* DWORK, int& LDWORK,
+                  int& IWARN, int& INFO);
 }
 
 // PKG_ADD: autoload ("slident", "devel_slicot_functions.oct");
@@ -85,6 +101,10 @@ For internal use only.")
     }
     else
     {
+////////////////////////////////////////////////////////////////////////////////////
+//      SLICOT IB01AD - preprocess the input-output data                          //
+////////////////////////////////////////////////////////////////////////////////////
+
         // arguments in
         char meth;
         char alg;
@@ -359,9 +379,9 @@ somehow ldrwrk and ldwork must have been mixed up here
         int rs = 2*(m+l)*nobr;
         r.resize (rs, rs);
         
-//////////////////////////////////////////////////////////
-//      SLICOT IB01BD - A, B, C, D                      //
-//////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+//      SLICOT IB01BD - estimating system matrices, Kalman gain, and covariances  //
+////////////////////////////////////////////////////////////////////////////////////
 
         // arguments in
         char job = 'A';
@@ -532,6 +552,57 @@ somehow ldrwrk and ldwork must have been mixed up here
         ry.resize (l, l);
         s.resize (n, l);
         k.resize (n, l);
+
+////////////////////////////////////////////////////////////////////////////////////
+//      SLICOT IB01CD - estimating the initial state                              //
+////////////////////////////////////////////////////////////////////////////////////
+
+        // SLICOT routine IB01CD
+        F77_XFCN (ib01cd, IB01CD,
+                 (jobx0, comuse, job***,
+                  n, m, l,
+                  nsmp,
+                  a.fortran_vec (), lda,
+                  b.fortran_vec (), ldb,
+                  c.fortran_vec (), ldc,
+                  d.fortran_vec (), ldd,
+                  u.fortran_vec (), ldu,
+                  y.fortran_vec (), ldy,
+                  x0.fortran_vec (),
+                  v.fortran_vec (), ldv,
+                  tolb,
+                  iwork_c,
+                  dwork_c, ldwork_c,
+                  iwarn_c, info_c));
+
+
+        if (f77_exception_encountered)
+            error ("ident: exception in SLICOT subroutine IB01CD");
+
+        static const char* err_msg_c[] = {
+            "0: OK",
+            "1: the QR algorithm failed to compute all the "
+                "eigenvalues of the matrix A (see LAPACK Library "
+                "routine DGEES); the locations  DWORK(i),  for "
+                "i = g+1:g+N*N,  contain the partially converged "
+                "Schur form",
+            "2: the singular value decomposition (SVD) algorithm did "
+                "not converge"};
+
+        static const char* warn_msg_c[] = {
+            "0: OK",
+            "1: warning message not specified",
+            "2: warning message not specified",
+            "3: warning message not specified",
+            "4: the least squares problem to be solved has a "
+                "rank-deficient coefficient matrix",
+            "5: warning message not specified",
+            "6: the matrix  A  is unstable;  the estimated  x(0) "
+                "and/or  B and D  could be inaccurate"};
+
+
+        error_msg ("ident", info_c, 2, err_msg_c);
+        warning_msg ("ident", iwarn_c, 6, warn_msg_c);
         
         // return values
         retval(0) = a;

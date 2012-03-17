@@ -2075,6 +2075,25 @@ assert (ry, rye, 1e-4);
 assert (s, se, 1e-4);
 
 
+
+
+figure (1)
+plot (Y)
+
+P = ss (a, b, c, d, 1);
+
+figure (2)
+lsim (P, U)
+%lsim (P, U, [], x0)  % initial values dependent on realization, IB01BD != IB01CD
+
+
+[y, t] = lsim (P, U);
+
+figure (3)
+plot (t, Y, 'b', t, y, 'r')
+legend ('y measured', 'y simulated', 'location', 'southeast')
+axis tight
+
 %n
 %sv
 

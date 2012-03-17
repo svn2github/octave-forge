@@ -58,18 +58,42 @@
 ## 2012 - Modified and adapted to Octave 3.6.1 by
 ## Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 
-function [W, H] = nmf_pg (V, Winit=[], Hinit=[], tol=1e-6, timelimit=1, maxiter=100)
+function [W, H] = nmf_pg (V, varargin)
+
 # JuanPi Fri 16 Mar 2012 10:49:11 AM CET
 # TODO:
 # - finish docstring
-# - verbose optional
 # - avoid multiple transpositions
-# - vectorize loops
+
+  # --- Parse arguments --- #
+  parser = inputParser ();
+  parser.FunctionName = "nmf_pg";
+  parser = addParamValue (parser,'Winit', [], @ismatrix);
+  parser = addParamValue (parser,'Hinit', [], @ismatrix);
+  parser = addParamValue (parser,'Tol', 1e-6, @(x)x>0);
+  parser = addParamValue (parser,'TimeLimit', 10, @(x)x>0);
+  parser = addParamValue (parser,'MaxIter', 100, @(x)x>0);
+  parser = addParamValue (parser,'MaxSubIter', 1e3, @(x)x>0);
+  parser = addParamValue (parser,'Verbose', true);
+  parser = parse(parser,varargin{:});
+
+  Winit      = parser.Results.Winit;
+  Hinit      = parser.Results.Hinit;
+  tol        = parser.Results.Tol;
+  timelimit  = parser.Results.TimeLimit;
+  maxiter    = parser.Results.MaxIter;
+  maxsubiter = parser.Results.MaxSubIter;
+  verbose    = parser.Results.Verbose;
+
+  clear parser
+  # ------ #
+
+  # --- Initialize matrices --- #
   [r c] = size (V);
-  Hgiven = !isempty (Hinit)
-  Wgiven = !isempty (Winit)
+  Hgiven = !isempty (Hinit);
+  Wgiven = !isempty (Winit);
   if Wgiven && !Hgiven
-  
+
     W = Winit;
     H = ones (size (W,2),c);
 
@@ -94,55 +118,82 @@ function [W, H] = nmf_pg (V, Winit=[], Hinit=[], tol=1e-6, timelimit=1, maxiter=
     H = Hinit;
 
   end
+  [Hr,Hc] = size(H);
+  [Wr,Wc] = size(W);
 
+  # start tracking time
   initt = cputime ();
 
   gradW = W*(H*H') - V*H';
   gradH = (W'*W)*H - W'*V;
-  
+
   initgrad = norm([gradW; gradH'],'fro');
-  
-  fprintf('Init gradient norm %f\n', initgrad);
-  
+
+  # Tolerances for matrices
   tolW = max(0.001,tol)*initgrad;
   tolH = tolW;
 
-  for iter=1:maxiter,
+  # ------ #
 
-    % stopping condition
+  # --- Main Loop --- #
+  if verbose
+    fprintf ('--- Factorizing %d-by-%d matrix into %d-by-%d times %d-by-%d\n',...
+         r,c,Wr,Wc,Hr,Hc);
+    fprintf ('Initial gradient norm = %f', initgrad);
+    fflush (stdout);
+    text_waitbar(0,'Please wait ...');
+  end
+
+  for iter = 1:maxiter
+
+    # stopping condition
     projnorm = norm ( [ gradW(gradW<0 | W>0); gradH(gradH<0 | H>0) ] );
-    if projnorm < tol*initgrad || cputime-initt > timelimit,
-      break;
+    stop_cond = [projnorm < tol*initgrad , cputime-initt > timelimit];
+    if any (stop_cond)
+      if stop_cond(2)
+        warning('mnf_pg:MaxIter',["Time limit exceeded.\n" ...
+                                  "Could be solved increasing TimeLimit.\n"]);
+      end
+      break
     end
-    
-    [W, gradW, iterW] = nlssubprob(V', H', W', tolW, 1000);
+
+
+    # FIXME: avoid multiple transpositions
+    [W, gradW, iterW] = nlssubprob(V', H', W', tolW, maxsubiter, verbose);
     W = W';
     gradW = gradW';
-    
+
     if iterW == 1,
       tolW = 0.1 * tolW;
     end
 
-    [H, gradH, iterH] = nlssubprob(V, W, H, tolH, 1000);
+    [H, gradH, iterH] = nlssubprob(V, W, H, tolH, maxsubiter, verbose);
     if iterH == 1,
-      tolH = 0.1 * tolH; 
+      tolH = 0.1 * tolH;
     end
 
     if (iterW == 1 && iterH == 1 && tolH + tolW < tol*initgrad),
-      fprintf('Failed to move\n'); break;
-    end
-    
-    if rem(iter,10)==0
-      fprintf('.');
+      warning ('nmf_pg:InvalidArgument','Failed to move');
+      break
     end
 
+     if verbose
+      text_waitbar (iter/maxiter);
+     end
   end
-  
-  fprintf('\nIter = %d Final proj-grad norm %f\n', iter, projnorm);
 
+  if iter == maxiter
+    warning('mnf_pg:MaxIter',["Reached maximum iterations in main loop.\n" ...
+                              "Could be solved increasing MaxIter.\n"]);
+  end
+
+  if verbose
+    fprintf ('\nIterations = %d\nFinal proj-grad norm = %f\n', iter, projnorm);
+    fflush (stdout);
+  end
 endfunction
 
-function [H, grad,iter] = nlssubprob(V,W,Hinit,tol,maxiter)
+function [H, grad,iter] = nlssubprob(V,W,Hinit,tol,maxiter,verbose)
 % H, grad: output solution and gradient
 % iter: #iterations used
 % V, W: constant matrices
@@ -150,28 +201,28 @@ function [H, grad,iter] = nlssubprob(V,W,Hinit,tol,maxiter)
 % tol: stopping tolerance
 % maxiter: limit of iterations
 
-  H = Hinit; 
+  H = Hinit;
   WtV = W'*V;
-  WtW = W'*W; 
+  WtW = W'*W;
 
   alpha = 1;
   beta = 0.1;
-  
+
   for iter=1:maxiter
     grad = WtW*H - WtV;
     projgrad = norm ( grad(grad < 0 | H >0) );
-    
+
     if projgrad < tol,
       break
     end
 
-    % search step size 
+    % search step size
     Hn = max(H - alpha*grad, 0);
     d = Hn-H;
     gradd = sum ( sum (grad.*d) );
     dQd = sum ( sum ((WtW*d).*d) );
-    
-    if gradd + 0.5*dQd > 0.01*gradd, 
+
+    if gradd + 0.5*dQd > 0.01*gradd,
       % decrease alpha
       while 1,
         alpha *= beta;
@@ -179,37 +230,38 @@ function [H, grad,iter] = nlssubprob(V,W,Hinit,tol,maxiter)
         d = Hn-H;
         gradd = sum (sum (grad.*d) );
         dQd = sum (sum ((WtW*d).*d));
-        
+
         if gradd + 0.5*dQd <= 0.01*gradd || alpha < 1e-20
           H = Hn;
           break
         end
-        
+
       endwhile
-      
-    else 
+
+    else
       % increase alpha
       while 1,
         Hp = Hn;
         alpha /= beta;
-        Hn = max(H - alpha*grad, 0);
+        Hn = max (H - alpha*grad, 0);
         d = Hn-H;
         gradd = sum ( sum (grad.*d) );
         dQd = sum (sum ( (WtW*d).*d ) );
-        
+
         if gradd + 0.5*dQd > 0.01*gradd || Hn == Hp || alpha > 1e10
           H = Hp;
           alpha *= beta;
           break
         end
-        
-      endwhile 
+
+      endwhile
     end
-    
+
   endfor
 
   if iter == maxiter
-    fprintf('Max iter in nlssubprob\n');
+    warning('mnf_pg:MaxIter',["Reached maximum iterations in nlssubprob\n" ...
+                              "Could be solved increasing MaxSubIter.\n"]);
   end
 
 endfunction
@@ -217,31 +269,27 @@ endfunction
 %!demo
 %! t = linspace (0,1,100)';
 %!
-%! % Build hump functions of different frequency
+%! ## --- Build hump functions of different frequency
 %! W_true = arrayfun ( @(f)sin(2*pi*f*t).^2, linspace (0.5,2,4), ...
 %!                                                     'uniformoutput', false );
 %! W_true = cell2mat (W_true);
-%!
-%! % Build combinator vectors
-%! c = (1:4)';
+%! ## --- Build combinator vectors
+%! c      = (1:4)';
 %! H_true = arrayfun ( @(f)circshift(c,f), linspace (0,3,4), ...
 %!                                                     'uniformoutput', false );
 %! H_true = cell2mat (H_true);
-%!
-%! % Mix them
+%! ## --- Mix them
 %! V = W_true*H_true;
-%!
-%! % give good inital guesses
+%! ## --- Give good inital guesses
 %! Winit = W_true + 0.4*randn(size(W_true));
 %! Hinit = H_true + 0.2*randn(size(H_true));
-%!
-%! Factorize
-%! [W H] = nmf_pg(V,Winit,Hinit,1e-6,1,1e3);
+%! ## --- Factorize
+%! [W H] = nmf_pg(V,'Winit',Winit,'Hinit',Hinit,'Tol',1e-6,'MaxIter',1e3);
 %! disp('True mixer')
 %! disp(H_true)
 %! disp('Rounded factorized mixer')
 %! disp(round(H))
-%!
+%! ## --- Plot results
 %! plot(t,W,'o;factorized;')
 %! hold on
 %! plot(t,W_true,'-;True;')

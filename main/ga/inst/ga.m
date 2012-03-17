@@ -1,4 +1,4 @@
-## Copyright (C) 2008, 2010 Luca Favatella <slackydeb@gmail.com>
+## Copyright (C) 2008, 2010, 2012 Luca Favatella <slackydeb@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -71,7 +71,7 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 6.0.0
+## Version: 6.0.1
 
 function [x fval exitflag output population scores] = \
       ga (fitnessfcn_or_problem,
@@ -116,8 +116,38 @@ endfunction
 
 
 ## number of arguments
+%!shared f, nvars
+%! f = @rastriginsfcn;
+%! nvars = 2;
+%!error x = ga ()
+%!error x = ga (f)
+%!error x = ga (f, nvars, [])
+%!error x = ga (f, nvars, [], [], [])
+%!error x = ga (f, nvars, [], [], [], [], [])
+%!error x = ga (f, nvars, [], [], [], [], [], [], @(x) [[], []], gaoptimset (), [])
 
 ## type of arguments
+# TODO
+
+%!shared f, nvars
+%! f = @rastriginsfcn;
+%! nvars = 2;
+#%!function [C, Ceq] = nonlcon (x)
+#%!  C = [];
+#%!  Ceq = [];
+#%!endfunction
+%!test x = ga (f, nvars);
+%!test x = ga (f, nvars, [], []);
+%!test x = ga (f, nvars, ones (3, nvars), ones (3, 1));
+%!test x = ga (f, nvars, [], [], [], []);
+%!test x = ga (f, nvars, [], [], ones (4, nvars), ones (4, 1));
+%!test x = ga (f, nvars, [], [], [], [], [], []);
+%!test x = ga (f, nvars, [], [], [], [], - Inf (1, nvars), Inf (1, nvars));
+%!test x = ga (f, nvars, [], [], [], [], - ones (1, nvars), ones (1, nvars));
+%!test x = ga (f, nvars, [], [], [], [], [], [], @(x) [[], []]);
+#%!test x = ga (f, nvars, [], [], [], [], [], [], @nonlcon);
+%!test x = ga (f, nvars, [], [], [], [], [], [], @(x) [[], []], gaoptimset ());
+
 
 %!test x = ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("FitnessLimit", 1e-7, "Generations", 1000)));
 

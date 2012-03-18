@@ -110,12 +110,13 @@ instant in which a request is extracted from the queue and starts being
 service, and the instant at which service finishes and the request moves
 to another queue (or exits the system).
 
-@item P_{ij}
-Routing probability matrix. @math{{\bf P} = P_{ij}} is a @math{K \times
-K} matrix such that @math{P_{ij}} is the probability that a request
-completing service at server @math{i} will move directly to server
-@math{j}, The probability that a request leaves the system after service
-at service center @math{i} is @math{1-\sum_{j=1}^K P_{ij}}.
+@item P_{i, j}
+Routing probability matrix. @math{{\bf P} = P_{i, j}} is a @math{K
+\times K} matrix such that @math{P_{i, j}} is the probability that a
+request completing service at server @math{i} will move directly to
+server @math{j}, The probability that a request leaves the system
+after service at service center @math{i} is @math{1-\sum_{j=1}^K P_{i,
+j}}.
 
 @item V_i
 Average number of visits. @math{V_i} is the average number of visits to
@@ -172,30 +173,48 @@ visits satisfy the following equation:
 
 @iftex
 @tex
-$V_j = P_{0 j} + \sum_{i=1}^K V_i P_{i j}$
+$$ V_j = P_{0, j} + \sum_{i=1}^K V_i P_{i, j} $$
 @end tex
 @end iftex
 @ifnottex
 @example
-V == P0 + V*P;
+@group
+                  K
+                 ___
+                \
+V_j = P_(0, j) + >   V_i P_(i, j)
+                /___
+                 i=1
+@end group
 @end example
 @end ifnottex
 
-@noindent where @math{P_{0 j}} is the probability that an external 
+@noindent where @math{P_{0, j}} is the probability that an external 
 arrival goes to service center @math{j}. If @math{\lambda_j} is the
 external arrival rate to service center @math{j}, and @math{\lambda =
 \sum_j \lambda_j} is the overall external arrival rate, then
-@math{P_{0 j} = \lambda_j / \lambda}.
+@math{P_{0, j} = \lambda_j / \lambda}.
 
 For closed models, the visit ratios satisfy the following equation:
 
 @iftex
 @tex
-$V_j = \sum_{i=1}^K V_i P_{i j}$
+$$\eqalign{V_1 & = 1 \cr
+           V_j & = \sum_{i=1}^K V_i P_{i, j}} $$
 @end tex
 @end iftex
 @ifnottex
 @example
+
+V_1 = 1
+
+        K
+       ___
+      \
+V_j =  >   V_i P_(i, j)
+      /___
+       i=1
+
 V(1) == 1 && V == V*P;
 @end example
 @end ifnottex
@@ -204,46 +223,46 @@ V(1) == 1 && V == V*P;
 
 In multiple class QN models, we assume that there exist @math{C}
 different classes of requests. Each request from class @math{c} spends
-on average time @math{S_{ck}} in service at service center @math{k}. For
-open models, we denote with @math{{\bf \lambda} = \lambda_{ck}} the
-arrival rates, where @math{\lambda_{ck}} is the external arrival rate of
-class @math{c} customers at service center @math{k}. For closed models,
-we denote with @math{{\bf N} = (N_1, N_2, \ldots N_C)} the population
-vector, where @math{N_c} is the number of class @math{c} requests in the
-system.
+on average time @math{S_{c, k}} in service at service center
+@math{k}. For open models, we denote with @math{{\bf \lambda} =
+\lambda_{ck}} the arrival rates, where @math{\lambda_{c, k}} is the
+external arrival rate of class @math{c} customers at service center
+@math{k}. For closed models, we denote with @math{{\bf N} = (N_1, N_2,
+\ldots, N_C)} the population vector, where @math{N_c} is the number of
+class @math{c} requests in the system.
 
 The transition probability matrix for these kind of networks will be a
-@math{C \times K \times C \times K} matrix @math{{\bf P} =
-P_{risj}} such that @math{P_{risj}} is the probability that a
-class @math{r} request which completes service at center @math{i} will
-join server @math{j} as a class @math{s} request.
+@math{C \times K \times C \times K} matrix @math{{\bf P} = P_{r, i, s, j}}
+such that @math{P_{r, i, s, j}} is the probability that a class
+@math{r} request which completes service at center @math{i} will join
+server @math{j} as a class @math{s} request.
 
-Model input and outputs can be adjusted by adding additional
-indexes for the customer classes.
+Model input and outputs can be adjusted by adding additional indexes
+for the customer classes.
 
 @noindent @strong{Model Inputs}
 
 @table @math
 
-@item \lambda_{ci}
+@item \lambda_{c, i}
 External arrival rate of class-@math{c} requests to service center @math{i}
 
 @item \lambda
-Overall external arrival rate to the whole system: @math{\lambda = \sum_c \sum_i \lambda_{ci}}
+Overall external arrival rate to the whole system: @math{\lambda = \sum_c \sum_i \lambda_{c, i}}
 
-@item S_{ci}
-Average service time. @math{S_{ci}} is the average service time on service
-center @math{i} for class @math{c} requests.
+@item S_{c, i}
+Average service time. @math{S_{c, i}} is the average service time on
+service center @math{i} for class @math{c} requests.
 
-@item P_{risj}
-Routing probability matrix. @math{{\bf P} = P_{risj}} is a @math{C
-\times K \times C \times K} matrix such that @math{P_{risj}} is the
-probability that a class @math{r} request which completes service at
-server @math{i} will move to server @math{j} as a class @math{s}
+@item P_{r, i, s, j}
+Routing probability matrix. @math{{\bf P} = P_{r, i, s, j}} is a @math{C
+\times K \times C \times K} matrix such that @math{P_{r, i, s, j}} is
+the probability that a class @math{r} request which completes service
+at server @math{i} will move to server @math{j} as a class @math{s}
 request.
 
-@item V_{ci}
-Average number of visits. @math{V_{ci}} is the average number of visits
+@item V_{c, i}
+Average number of visits. @math{V_{c, i}} is the average number of visits
 of class @math{c} requests to the service center @math{i}.
 
 @end table
@@ -252,23 +271,23 @@ of class @math{c} requests to the service center @math{i}.
 
 @table @math
 
-@item U_{ci}
+@item U_{c, i}
 Utilization of service center @math{i} by class @math{c} requests. The
 utilization is defined as the fraction of time in which the resource is
 busy (i.e., the server is processing requests).
 
-@item R_{ci}
+@item R_{c, i}
 Average response time experienced by class @math{c} requests on service
 center @math{i}. The average response time is defined as the average
 time between the arrival of a customer in the queue, and the completion
 of service.
 
-@item Q_{ci}
+@item Q_{c, i}
 Average number of class @math{c} requests on service center
 @math{i}. This includes both the requests in the queue, and the request
 being served.
 
-@item X_{ci}
+@item X_{c, i}
 Throughput of service center @math{i} for class @math{c} requests.  The
 throughput is defined as the rate of completion of class @math{c}
 requests.
@@ -283,7 +302,7 @@ requests.
 Utilization of service center @math{i}:
 @iftex
 @tex
-$U_i = \sum_{c=1}^C U_{ci}$
+$U_i = \sum_{c=1}^C U_{c, i}$
 @end tex
 @end iftex
 @ifnottex
@@ -294,7 +313,7 @@ $U_i = \sum_{c=1}^C U_{ci}$
 System response time for class @math{c} requests:
 @iftex
 @tex
-$R_c = \sum_{i=1}^K R_{ci} V_{ci}$
+$R_c = \sum_{i=1}^K R_{c, i} V_{c, i}$
 @end tex
 @end iftex
 @ifnottex
@@ -305,7 +324,7 @@ $R_c = \sum_{i=1}^K R_{ci} V_{ci}$
 Average number of class @math{c} requests in the system:
 @iftex
 @tex
-$Q_c = \sum_{i=1}^K Q_{ci}$
+$Q_c = \sum_{i=1}^K Q_{c, i}$
 @end tex
 @end iftex
 @ifnottex
@@ -316,7 +335,7 @@ $Q_c = \sum_{i=1}^K Q_{ci}$
 Class @math{c} throughput:
 @iftex
 @tex
-$X_c = X_{c1} / V_{c1}$
+$X_c = X_{c, 1} / V_{c, 1}$
 @end tex
 @end iftex
 @ifnottex
@@ -325,12 +344,13 @@ $X_c = X_{c1} / V_{c1}$
 
 @end table
 
-We can define the visit ratios @math{V_{sj}} for class @math{s}
+We can define the visit ratios @math{V_{s, j}} for class @math{s}
 customers at service center @math{j} as follows:
 
 @iftex
 @tex
-$V_{sj} = \sum_{r=1}^C \sum_{i=1}^K V_{ri} P_{risj},\ V_{s1} = 1$
+$$ \eqalign{ V_{s, j} & = \sum_{r=1}^C \sum_{i=1}^K V_{r, i} P_{r, i, s, j} \cr
+             V_{s, 1} & = 1} $$
 @end tex
 @end iftex
 @ifnottex
@@ -343,7 +363,7 @@ V_sj = sum_r sum_i V_ri P_risj, for all s,j
 
 @iftex
 @tex
-$V_{sj} = P_{0sj} + \sum_{r=1}^C \sum_{i=1}^K V_{ri} P_{risj}$
+$$V_{s, j} = P_{0, s, j} + \sum_{r=1}^C \sum_{i=1}^K V_{r, i} P_{r, i, s, j}$$
 @end tex
 @end iftex
 @ifnottex
@@ -352,12 +372,12 @@ V_sj = P_0sj + sum_r sum_i V_ri P_risj, for all s,j
 @end group
 @end ifnottex
 
-@noindent where @math{P_{0sj}} is the probability that an external 
+@noindent where @math{P_{0, s, j}} is the probability that an external 
 arrival goes to service center @math{j} as a class-@math{s} request.
-If @math{\lambda_{sj}} is the external arrival rate of class @math{s}
-requests to service center @math{j}, and @math{\lambda = \sum_s \sum_j
-\lambda_{sj}} is the overall external arrival rate to the whole system,
-then @math{P_{0sj} = \lambda_{sj} / \lambda}.
+If @math{\lambda_{s, j}} is the external arrival rate of class
+@math{s} requests to service center @math{j}, and @math{\lambda =
+\sum_s \sum_j \lambda_{s, j}} is the overall external arrival rate to
+the whole system, then @math{P_{0, s, j} = \lambda_{s, j} / \lambda}.
 
 @c
 @c
@@ -405,11 +425,11 @@ matrix @code{[0.2 0.1 0.1; 0.2 0.1 0.1]}. Thus, @code{@var{S}(1,2) =
 requests in 0.2. Note that service times are class-independent;
 
 @item Node 2 is a @math{-/G/1}--PS node, with service times 
-@math{S_{12} = 0.4} for class 1, and @math{S_{22} = 0.6} for class 2
+@math{S_{1, 2} = 0.4} for class 1, and @math{S_{2, 2} = 0.6} for class 2
 requests;
 
 @item Node 3 is a @math{-/G/\infty} node (delay center), with service
-times @math{S_{13}=1} and @math{S_{23}=2} for class 1 and 2
+times @math{S_{1, 3}=1} and @math{S_{2, 3}=2} for class 1 and 2
 respectively.
 
 @end itemize
@@ -491,14 +511,14 @@ Service discipline at each node is FCFS
 @end itemize
 
 We define the @emph{joint probability vector} @math{\pi(k_1, k_2,
-\ldots k_N)} as the steady-state probability that there are @math{k_i}
-requests at service center @math{i}, for all @math{i=1,2, \ldots N}.
+\ldots, k_N)} as the steady-state probability that there are @math{k_i}
+requests at service center @math{i}, for all @math{i=1, 2, \ldots, N}.
 Jackson networks have the property that the joint probability is the
 product of the marginal probabilities @math{\pi_i}:
 
 @iftex
 @tex
-$$ \pi(k_1, k_2, \ldots k_N) = \prod_{i=1}^N \pi_i(k_i) $$
+$$ \pi(k_1, k_2, \ldots, k_N) = \prod_{i=1}^N \pi_i(k_i) $$
 @end tex
 @end iftex
 @ifnottex
@@ -532,7 +552,7 @@ can be expressed as:
 
 @iftex
 @tex
-$$ \pi(k_1, k_2, \ldots k_K) = {1 \over G(N)} \prod_{i=1}^N F_i(k_i) $$
+$$ \pi(k_1, k_2, \ldots, k_K) = {1 \over G(N)} \prod_{i=1}^N F_i(k_i) $$
 @end tex
 @end iftex
 @ifnottex
@@ -544,14 +564,14 @@ p = 1/G(N+1) \prod F(i,k);
 @end example
 @end ifnottex
 
-Here @math{\pi(k_1, k_2, \ldots k_K)} is the joint probability of
-having @math{k_i} requests at node @math{i}, for all @math{i=1,2,
-\ldots K}.
+Here @math{\pi(k_1, k_2, \ldots, k_K)} is the joint probability of
+having @math{k_i} requests at node @math{i}, for all @math{i=1, 2,
+\ldots, K}.
 
 The @emph{convolution algorithms} computes the normalization constants
-@math{G = (G(0), G(1), \ldots G(N))} for single-class, closed networks
+@math{{\bf G} = \left(G(0), G(1), \ldots, G(N)\right)} for single-class, closed networks
 with @math{N} requests.  The normalization constants are returned as
-vector @code{@var{G}=[@var{G}(1), @var{G}(2), ... @var{G}(N+1)]} where
+vector @code{@var{G}=[@var{G}(1), @var{G}(2), @dots{} @var{G}(N+1)]} where
 @code{@var{G}(i+1)} is the value of @math{G(i)} (remember that Octave
 uses 1-base vectors). The normalization constant can be used to
 compute all performance measures of interest (utilization, average
@@ -574,14 +594,14 @@ centers.
 The normalization constant @math{G} can be used to compute the
 steady-state probabilities for a closed single class product-form
 Queueing Network with @math{K} nodes. Let @code{@var{k}=[@math{k_1,
-k_2, @dots{} k_K}]} be a valid population vector. Then, the
+k_2, @dots{}, k_K}]} be a valid population vector. Then, the
 steady-state probability @code{@var{p}(i)} to have @code{@var{k}(i)}
 requests at service center @math{i} can be computed as:
 
 @iftex
 @tex
 $$
-p_i(k_i) = {(V_i S_i)^{k_i} \over G(K)} \left(G(K-k_i) - V_i S_i G(K-k_i-1)\right), \quad i=1,2, \ldots K
+p_i(k_i) = {(V_i S_i)^{k_i} \over G(K)} \left(G(K-k_i) - V_i S_i G(K-k_i-1)\right), \quad i=1, 2, \ldots, K
 $$
 @end tex
 @end iftex
@@ -841,7 +861,7 @@ particular, see section 6.4.2.2 ("Approximate Solution Techniques").
 @noindent @strong{NOTE}
 
 Given a network with @math{K} service centers, @math{C} job classes and
-population vector @math{{\bf N}=(N_1, N_2, \ldots N_C)}, the MVA
+population vector @math{{\bf N}=(N_1, N_2, \ldots, N_C)}, the MVA
 algorithm requires space @math{O(C \prod_i (N_i + 1))}. The time
 complexity is @math{O(CK\prod_i (N_i + 1))}. This implementation is
 slightly more space-efficient (see details in the code). While the space
@@ -1085,7 +1105,7 @@ following equation:
 
 @iftex
 @tex
-$V_j = P_{0 j} + \sum_{i=1}^K V_i P_{i j}$
+$$V_j = P_{0, j} + \sum_{i=1}^K V_i P_{i, j}$$
 @end tex
 @end iftex
 @ifnottex
@@ -1094,17 +1114,18 @@ V == P0 + V*P;
 @end example
 @end ifnottex
 
-@noindent where @math{P_{0 j}} is the probability that an external 
+@noindent where @math{P_{0, j}} is the probability that an external 
 arrival goes to service center @math{j}. If @math{\lambda_j} is the
 external arrival rate to service center @math{j}, and @math{\lambda =
 \sum_j \lambda_j} is the overall external arrival rate, then
-@math{P_{0 j} = \lambda_j / \lambda}. 
+@math{P_{0, j} = \lambda_j / \lambda}. 
 
 For closed networks, the visit ratios satisfy the following equation:
 
 @iftex
 @tex
-$V_j = \sum_{i=1}^K V_i P_{i j},\ V_1 = 1$
+$$\eqalign{ V_j & = \sum_{i=1}^K V_i P_{i, j} \cr
+            V_1 & = 1 }$$
 @end tex
 @end iftex
 @ifnottex
@@ -1114,12 +1135,13 @@ V(1) == 1 && V == V*P;
 @end ifnottex
 
 The definitions above can be extended to multiple class networks as
-follows. We define the visit ratios @math{V_{sj}} for class @math{s}
+follows. We define the visit ratios @math{V_{s, j}} for class @math{s}
 customers at service center @math{j} as follows:
 
 @iftex
 @tex
-$V_{sj} = \sum_{r=1}^C \sum_{i=1}^K V_{ri} P_{risj},\ V_{s1} = 1$
+$$\eqalign{ V_{s, j} & = \sum_{r=1}^C \sum_{i=1}^K V_{r, i} P_{r, i, s, j} \cr
+            V_{s, 1} & = 1 }$$
 @end tex
 @end iftex
 @ifnottex
@@ -1133,7 +1155,7 @@ V_s1 = 1, for all s
 
 @iftex
 @tex
-$V_{sj} = P_{0sj} + \sum_{r=1}^C \sum_{i=1}^K V_{ri} P_{risj}$
+$$V_{s, j} = P_{0, s, j} + \sum_{r=1}^C \sum_{i=1}^K V_{r, i} P_{r, i, s, j}$$
 @end tex
 @end iftex
 @ifnottex
@@ -1142,12 +1164,12 @@ V_sj = P_0sj + sum_r sum_i V_ri P_risj, for all s,j
 @end group
 @end ifnottex
 
-@noindent where @math{P_{0sj}} is the probability that an external 
+@noindent where @math{P_{0, s, j}} is the probability that an external 
 arrival goes to service center @math{j} as a class-@math{s} request.
-If @math{\lambda_{sj}} is the external arrival rate of class @math{s}
+If @math{\lambda_{s, j}} is the external arrival rate of class @math{s}
 requests to service center @math{j}, and @math{\lambda = \sum_s \sum_j
-\lambda_{sj}} is the overall external arrival rate to the whole system,
-then @math{P_{0sj} = \lambda_{sj} / \lambda}.
+\lambda_{s, j}} is the overall external arrival rate to the whole system,
+then @math{P_{0, s, j} = \lambda_{s, j} / \lambda}.
 
 @DOCSTRING(qnvisits)
 
@@ -1172,7 +1194,7 @@ available at
 80-355.pdf}
 
 Note that the slightly different problem of generating all tuples
-@math{k_1, k_2, \ldots k_N} such that @math{\sum_i k_i = k} and
+@math{k_1, k_2, \ldots, k_N} such that @math{\sum_i k_i = k} and
 @math{k_i} are nonnegative integers, for some fixed integer @math{k
 @geq{} 0} has been described in S. Santini, @cite{Computing the
 Indices for a Complex Summation}, unpublished report, available at

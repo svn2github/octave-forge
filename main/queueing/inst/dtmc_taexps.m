@@ -35,7 +35,7 @@
 ## Infinitesimal generator matrix. @code{@var{Q}(i,j)} is the transition
 ## rate from state @math{i} to state @math{j},
 ## @math{1 @leq{} i \neq j @leq{} N}. The
-## matrix @var{Q} must also satisfy the condition @math{\sum_{j=1}^N Q_{ij} = 0}
+## matrix @var{Q} must also satisfy the condition @math{\sum_{j=1}^N Q_{i, j} = 0}
 ##
 ## @item t
 ## Time. If omitted, the results are computed until absorption.

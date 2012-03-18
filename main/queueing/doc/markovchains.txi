@@ -39,7 +39,7 @@ n=0, 1, 2, @dots{}@}} which satisfies the following Markov property:
 
 @iftex
 @tex
-$$P(X_{n+1} = x_{n+1}\ |\ X_n = x_n, X_{n-1} = x_{n-1}, \ldots, X_0 = x_0) = P(X_{n+1} = x_{n+1}\ |\ X_n = x_n)$$
+$$P\left(X_{n+1} = x_{n+1}\ |\ X_n = x_n, X_{n-1} = x_{n-1}, \ldots, X_0 = x_0 \right) = P\left(X_{n+1} = x_{n+1}\ |\ X_n = x_n\right)$$
 @end tex
 @end iftex
 @ifnottex
@@ -56,7 +56,7 @@ P}(n) = P_{i,j}(n)} such that @math{P_{i, j}(n) = P( X_{n+1} = j\ |\
 X_n = i )}.  If the Markov chain is homogeneous (that is, the
 transition probability matrix @math{{\bf P}(n)} is time-independent),
 we can simply write @math{{\bf P} = P_{i, j}}, where @math{P_{i, j} =
-P( X_{n+1} = j\ |\ X_n = i )} for all @math{n=0, 1, 2, @dots{}}.
+P( X_{n+1} = j\ |\ X_n = i )} for all @math{n=0, 1, @dots{}}.
 
 The transition probability matrix @math{\bf P} must satisfy the
 following two properties: (1) @math{P_{i, j} @geq{} 0} for all
@@ -80,14 +80,14 @@ following two properties: (1) @math{P_{i, j} @geq{} 0} for all
 @node State occupancy probabilities (DTMC)
 @subsection State occupancy probabilities
 
-We denote with @math{{\bf \pi}(n) = (\pi_1(n), \pi_2(n), @dots{},
-\pi_N(n) )} the @emph{state occupancy probability vector} at step
+We denote with @math{{\bf \pi}(n) = \left(\pi_1(n), \pi_2(n), @dots{},
+\pi_N(n) \right)} the @emph{state occupancy probability vector} at step
 @math{n}. @math{\pi_i(n)} denotes the probability that the system is
 in state @math{i} at step @math{n}.
 
 Given the transition probability matrix @math{\bf P} and the initial
-state occupancy probability vector @math{{\bf \pi}(0) = (\pi_1(0),
-\pi_2(0), @dots{}, \pi_N(0))} at step 0, the state occupancy
+state occupancy probability vector @math{{\bf \pi}(0) = \left(\pi_1(0),
+\pi_2(0), @dots{}, \pi_N(0)\right)} at step 0, the state occupancy
 probability vector @math{{\bf \pi}(n)} at step @math{n} can be
 computed as:
 
@@ -136,7 +136,7 @@ Given a @math{N} state discrete-time Markov chain with transition
 matrix @math{\bf P} and an integer @math{n @geq{} 0}, we let
 @math{L_i(n)} be the the expected number of visits to state @math{i}
 during the first @math{n} transitions. The vector @math{{\bf L}(n) =
-(L_1(n), L_2(n), @dots{}, L_N(n))} is defined as:
+( L_1(n), L_2(n), @dots{}, L_N(n) )} is defined as:
 
 @iftex
 @tex
@@ -239,7 +239,7 @@ M_ij = 1 + >   P_ij * M_kj
 
 A stochastic process @math{@{X(t), t @geq{} 0@}} is a continuous-time
 Markov chain if, for all integers @math{n}, and for any sequence
-@math{t_0, t_1 , \ldots , t_n, t_{n+1}} such that @math{t_0 < t_1 <
+@math{t_0, t_1 , \ldots, t_n, t_{n+1}} such that @math{t_0 < t_1 <
 \ldots < t_n < t_{n+1}}, we have
 
 @iftex
@@ -333,7 +333,7 @@ are equal to 1. This can be solved as follows:
 
 Given a @math{N} state continuous-time Markov Chain with infinitesimal
 generator matrix @math{\bf Q}, we define the vector @math{{\bf L}(t) =
-(L_1(t), L_2(t), \ldots L_N(t))} such that @math{L_i(t)} is the
+(L_1(t), L_2(t), \ldots, L_N(t))} such that @math{L_i(t)} is the
 expected sojourn time in state @math{i} during the interval
 @math{[0,t)}, assuming that the initial occupancy probability at time
 0 was @math{{\bf \pi}(0)}. @math{{\bf L}(t)} can be expressed as the

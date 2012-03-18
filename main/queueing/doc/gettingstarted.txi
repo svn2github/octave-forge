@@ -51,7 +51,7 @@ centers. Each center is of type @math{M/M/1}--FCFS. We denote with
 routing of jobs within the network is described with a @emph{routing
 probability matrix} @math{P}. Specifically, a request completing
 service at center @math{i} is enqueued at center @math{j} with
-probability @math{P_{ij}}.  Let us assume the following routing
+probability @math{P_{i, j}}.  Let us assume the following routing
 probability matrix:
 
 @iftex
@@ -106,7 +106,7 @@ the following equations:
 @iftex
 @tex
 $$
-V_j = \sum_{i=1}^K V_i P_{ij}
+V_j = \sum_{i=1}^K V_i P_{i, j}
 $$
 @end tex
 @end iftex
@@ -117,7 +117,7 @@ V_j = sum_i V_i P_ij
 @end ifnottex
 
 We can compute @math{V_k} from the routing probability matrix
-@math{P_{ij}} using the @command{qnvisits} function:
+@math{P_{i, j}} using the @command{qnvisits} function:
 
 @example
 @group
@@ -250,7 +250,7 @@ open networks satisfy the following equation:
 @iftex
 @tex
 $$
-V_j = P_{0j} + \sum_{i=1}^K V_i P_{ij}
+V_j = P_{0, j} + \sum_{i=1}^K V_i P_{i, j}
 $$
 @end tex
 @end iftex
@@ -260,12 +260,12 @@ V_j = sum_i V_i P_ij
 @end example
 @end ifnottex
 
-where @math{P_{0j}} is the probability of an external arrival to
+where @math{P_{0, j}} is the probability of an external arrival to
 center @math{j}. This can be computed as:
 
 @tex
 $$
-P_{0j} = {\lambda_j  \over \sum_{i=1}^K \lambda_i }
+P_{0, j} = {\lambda_j  \over \sum_{i=1}^K \lambda_i }
 $$
 @end tex
 

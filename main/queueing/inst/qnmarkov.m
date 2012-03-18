@@ -54,14 +54,14 @@
 ##
 ## @item Average service times are load-independent.
 ##
-## @item @math{P_{ij}} is the probability that requests completing
+## @item @math{P_{i, j}} is the probability that requests completing
 ## execution at center @math{i} are transferred to
 ## center @math{j}, @math{i \neq j}. For open networks, a request may leave the system
-## from any node @math{i} with probability @math{1-\sum_j P_{ij}}.
+## from any node @math{i} with probability @math{1-\sum_j P_{i, j}}.
 ##
 ## @item Blocking type is Repetitive-Service (RS). Service
 ## center @math{j} is @emph{saturated} if the number of requests is equal
-## to its capacity @code{C_j}. Under the RS blocking discipline,
+## to its capacity @math{C_j}. Under the RS blocking discipline,
 ## a request completing service at center @math{i} which is being
 ## transferred to a saturated server @math{j} is put back at the end of
 ## the queue of @math{i} and will receive service again. Center @math{i}

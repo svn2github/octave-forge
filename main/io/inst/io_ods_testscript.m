@@ -14,7 +14,7 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## Check proper operation of ODS spreadsheet scripts
+## (Internal function) Check proper operation of ODS spreadsheet scripts.
 ## Before running, a character variable 'intf' should be initialized with
 ## a value of 'otk', 'jod', or 'uno'.
 

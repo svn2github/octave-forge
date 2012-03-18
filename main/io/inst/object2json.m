@@ -23,8 +23,8 @@
 function json = object2json (object)
 
   % function json = object2json (object)
-  % This function returns a valid json string that will describe object
-  % The string will be in a compact form (i.e. no spaces or line breaks)
+  % Returns a valid json string that will describe object; the string will
+  % be in a compact form (no spaces or line breaks).
   %
   % It will map simple octave values this way:
   %   function handles: string with the name of the function

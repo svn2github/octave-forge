@@ -139,7 +139,7 @@ function [W, H] = nmf_pg (V, varargin)
   if verbose
     fprintf ('--- Factorizing %d-by-%d matrix into %d-by-%d times %d-by-%d\n',...
          r,c,Wr,Wc,Hr,Hc);
-    fprintf ('Initial gradient norm = %f', initgrad);
+    fprintf ("Initial gradient norm = %f\n", initgrad);
     fflush (stdout);
     text_waitbar(0,'Please wait ...');
   end

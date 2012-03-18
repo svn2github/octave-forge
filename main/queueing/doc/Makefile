@@ -1,5 +1,5 @@
 DOC=queueing
-CHAPTERS=summary.texi installation.texi markovchains.texi singlestation.texi queueingnetworks.texi conf.texi ack.texi contributing.texi gpl.texi gettingstarted.texi
+CHAPTERS=summary.texi installation.texi markovchains.texi singlestation.texi queueingnetworks.texi conf.texi ack.texi contributing.texi gpl.texi gettingstarted.texi references.texi
 DISTFILES=README INSTALL $(DOC).pdf $(DOC).html $(DOC).texi
 
 .PHONY: clean

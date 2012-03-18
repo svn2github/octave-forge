@@ -17,6 +17,8 @@
 	* dtmc_bd() added
 	* ctmc_check_Q() added
 	* dtmc_mtta() added
+	* dtmc_exps() added
+	* dtmc_taexps() added
 	* Miscellaneous fixes/improvements to the documentation
 
 2012-02-04 Moreno Marzolla <marzolla@cs.unibo.it>

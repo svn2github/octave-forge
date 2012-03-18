@@ -20,14 +20,10 @@
 ## @deftypefn {Function File} {@var{M} =} ctmc_fpt (@var{Q})
 ## @deftypefnx {Function File} {@var{m} =} ctmc_fpt (@var{Q}, @var{i}, @var{j})
 ##
-## @cindex Markov chain, continuous time
 ## @cindex First passage times
 ##
-## If called with a single argument, computes the mean first passage
-## times @code{@var{M}(i,j)}, the average times before state @var{j} is
-## reached, starting from state @var{i}, for all @math{1 \leq i, j \leq
-## N}. If called with three arguments, returns the single value
-## @code{@var{m} = @var{M}(i,j)}.
+## Compute mean first passage times for an irreducible continuous-time
+## Markov chain.
 ##
 ## @strong{INPUTS}
 ##
@@ -43,8 +39,7 @@
 ## Initial state.
 ##
 ## @item j
-## Destination state. If @var{j} is a vector, returns the mean first passage
-## time to any state in @var{j}.
+## Destination state.
 ##
 ## @end table
 ##
@@ -53,16 +48,17 @@
 ## @table @var
 ##
 ## @item M
-## If this function is called with a single argument, the result
 ## @code{@var{M}(i,j)} is the average time before state
 ## @var{j} is visited for the first time, starting from state @var{i}.
+## We set @code{@var{M}(i,i) = 0}.
 ##
 ## @item m
-## If this function is called with three arguments, the result
 ## @var{m} is the average time before state @var{j} is visited for the first 
 ## time, starting from state @var{i}.
 ##
 ## @end table
+##
+## @seealso{dtmc_fpt}
 ##
 ## @end deftypefn
 
@@ -80,7 +76,7 @@ function result = ctmc_fpt( Q, i, j )
   [N err] = ctmc_check_Q(Q);
   
   (N>0) || \
-      usage(err);
+      error(err);
 
   if ( nargin == 1 ) 
     M = zeros(N,N);
@@ -109,10 +105,13 @@ endfunction
 %! M = ctmc_fpt(Q)
 %! m = ctmc_fpt(Q,1,3)
 
-%!xtest
-%! Q = unifrnd(0.1,0.9,10,10);
+%!test
+%! N = 10;
+%! Q = reshape(1:N^2,N,N);
+%! Q(1:N+1:end) = 0;
 %! Q -= diag(sum(Q,2));
 %! M = ctmc_fpt(Q);
+%! assert( all(diag(M) < 10*eps) );
 
 %!xtest
 %! Q = unifrnd(0.1,0.9,10,10);

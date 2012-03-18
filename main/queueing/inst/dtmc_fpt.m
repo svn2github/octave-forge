@@ -22,11 +22,8 @@
 ## @cindex First passage times
 ## @cindex Mean recurrence times
 ##
-## Compute the mean first passage times matrix @math{\bf M}, such that
-## @code{@var{M}(i,j)} is the average number of transitions before state
-## @var{j} is reached, starting from state @var{i}, for all @math{1 \leq
-## i, j \leq N}. Diagonal elements of @var{M} are the mean recurrence
-## times.
+## Compute mean first passage times and mean recurrence times
+## for an irreducible discrete-time Markov chain.
 ##
 ## @strong{INPUTS}
 ##
@@ -46,13 +43,15 @@
 ## @table @var
 ##
 ## @item M
-## @code{@var{M}(i,j)} is the average number of transitions before state
-## @var{j} is reached for the first time, starting from state @var{i}.
-## @code{@var{M}(i,i)} is the @emph{mean recurrence time} of state
-## @math{i}, and represents the average time needed to return to state
-## @var{i}.
+## For all @math{i \neq j}, @code{@var{M}(i,j)} is the average number of
+## transitions before state @var{j} is reached for the first time,
+## starting from state @var{i}. @code{@var{M}(i,i)} is the @emph{mean
+## recurrence time} of state @math{i}, and represents the average time
+## needed to return to state @var{i}.
 ##
 ## @end table
+##
+## @seealso{ctmc_fpt}
 ##
 ## @end deftypefn
 
@@ -74,38 +73,15 @@ function result = dtmc_fpt( P )
     error("Cannot compute first passage times for absorbing chains");
   endif
 
-  w = dtmc(P);
+  ## Source:
+  ## http://www.cs.virginia.edu/~gfx/Courses/2006/DataDriven/bib/texsyn/Chapter11.pdf
+  w = dtmc(P); # steady state probability vector
   W = repmat(w,N,1);
+  ## Z = (I - P + W)^-1 where W is the matrix where each row is the
+  ## steady-state probability vector for P
   Z = inv(eye(N)-P+W);
+  ## m_ij = (z_jj - z_ij) / w_j
   result = (repmat(diag(Z)',N,1) - Z) ./ repmat(w,N,1) + diag(1./w);
-
-#{
-  if ( nargin == 1 )   
-    M = zeros(N,N);
-    ## M(i,j) = 1 + sum_{k \neq j} P(i,k) M(k,j)
-    b = ones(N,1);
-    for j=1:N
-      A = -P;
-      A(:,j) = 0;
-      A += eye(N,N);
-      res = A \ b;
-      M(:,j) = res';
-    endfor
-    result = M;
-  else
-    (isscalar(i) && i>=1 && j<=N) || \
-	usage("i must be an integer in the range [1,%d]", N);
-    (isvector(j) && all(j>=1) && all(j<=N)) || \
-	usage("j must be an integer or vector with elements in [1,%d]", N);
-    j = j(:)'; # make j a row vector
-    b = ones(N,1);
-    A = -P;
-    A(:,j) = 0;
-    A += eye(N,N);
-    res = A \ b;
-    result = res(i);
-  endif
-#}
 
 endfunction
 %!test

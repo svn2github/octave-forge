@@ -68,6 +68,8 @@ following two properties: (1) @math{P_{i, j} @geq{} 0} for all
 @menu
 * State occupancy probabilities (DTMC)::
 * Birth-death process (DTMC)::
+* Expected number of visits (DTMC)::
+* Time-averaged expected sojourn times (DTMC)::
 * First passage times (DTMC)::
 * Mean time to absorption (DTMC)::
 @end menu
@@ -124,9 +126,78 @@ and @math{\sum_{i=1}^N \pi_i = 1}
 @node Birth-death process (DTMC)
 @subsection Birth-death process
 
-@c
 @DOCSTRING(dtmc_bd)
 
+@c
+@node Expected number of visits (DTMC)
+@subsection Expected Number of Visits
+
+Given a @math{N} state discrete-time Markov chain with transition
+matrix @math{\bf P} and an integer @math{n @geq{} 0}, we let
+@math{L-I(n)} be the the expected number of visits to state @math{i}
+during the first @math{n} transitions. The vector @math{{\bf L}(n) =
+(L_1(n), L_2(n), @dots{}, L_N(n))} is defined as:
+
+@iftex
+@tex
+$$ {\bf L}(n) = \sum_{i=0}^n {\bf \pi}(i) = \sum_{i=0}^n {\bf \pi}(0) {\bf P}^i $$
+@end tex
+@end iftex
+@ifnottex
+@example
+@group
+         n            n
+        ___          ___
+       \            \           i
+L(n) =  >   pi(i) =  >   pi(0) P
+       /___         /___
+        i=0          i=0
+@end group
+@end example
+@end ifnottex
+
+@noindent where @math{{\bf \pi}(i) = {\bf \pi}(0){\bf P}^i} is the state occupancy probability
+after @math{i} transitions.
+
+If @math{\bf P} is absorbing, we can rearrange the states to rewrite
+@math{\bf P} as:
+
+@iftex
+@tex
+$$ {\bf P} = \pmatrix{ {\bf Q} & {\bf R} \cr
+                       {\bf 0} & {\bf I} }$$
+@end tex
+@end iftex
+@ifnottex
+@example
+@group
+    / Q | R \
+P = |---+---|
+    \ 0 | I /
+@end group
+@end example
+@end ifnottex
+
+@noindent where we suppose that the first @math{t} states are transient
+and the last @math{r} states are absorbing.
+
+The matrix @math{{\bf N} = ({\bf I} - {\bf Q})^{-1}} is called the
+@emph{fundamental matrix}; @math{N(i,j)} represents the expected
+number of times that the process is in the @math{j}-th transient state
+if it is started in the @math{i}-th transient state. If we reshape
+@math{\bf N} to the size of @math{\bf P} (filling missing entries with
+zeros), we have that, for abrosbing chains @math{{\bf L} = {\bf
+\pi}(0){\bf N}}.
+
+@DOCSTRING(dtmc_exps)
+
+@c
+@node Time-averaged expected sojourn times (DTMC)
+@subsection Time-averaged expected sojourn times
+
+@DOCSTRING(dtmc_taexps)
+
+@c
 @node First passage times (DTMC)
 @subsection First Passage Times
 

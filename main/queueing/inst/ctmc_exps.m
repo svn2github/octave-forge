@@ -111,38 +111,22 @@ function L = ctmc_exps( Q, varargin )
       L = lsode( {ff, fj}, zeros(size(p)), t );
     endif
   else # absorbing case
-#{
-    ## This code is left for information only
 
-    ## F(t) are the transient state occupancy probabilities at time t.
-    ## It is known that F(t) = p*expm(Q*t) (see function ctmc()).
-    ## The expected times spent in each state until absorption can
-    ## be computed as the integral of F(t) from t=0 to t=inf
-    F = @(t) (p*expm(Q*t)); ## FIXME: this must be restricted to transient states ONLY!!!!
+    ## Identify transient states. If all states are transient, then
+    ## raise an error since we can't deal with non-absorbing chains
+    ## here.
 
-    ## Since function quadv does not support infinite integration
-    ## limits, we define a new function G(u) = F(tan(pi/2*u)) such that
-    ## the integral of G(u) on [0,1] is the integral of F(t) on [0,
-    ## +inf].
-    G = @(u) (F(tan(pi/2*u))*pi/2*(1+tan(pi/2*u)**2));
-
-    L = quadv(G,0,1);
-#}
-    ## Find nonzero rows. Nonzero rows correspond to transient states,
-    ## while zero rows are absorbing states. If there are no zero rows,
-    ## then the Markov chain does not contain absorbing states and we
-    ## raise an error
     N = rows(Q);
-    nzrows = find( any( abs(Q) > epsilon, 2 ) );
-    if ( length( nzrows ) == N )
+    tr = find( any( abs(Q) > epsilon, 2 ) );
+    if ( length( tr ) == N )
       error( "There are no absorbing states" );
     endif
     
-    QN = Q(nzrows,nzrows);
-    pN = p(nzrows);
+    QN = Q(tr,tr);
+    pN = p(tr);
     LN = -pN*inv(QN);
     L = zeros(1,N);
-    L(nzrows) = LN;
+    L(tr) = LN;
   endif
 endfunction
 %!test

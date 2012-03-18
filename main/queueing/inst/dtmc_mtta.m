@@ -17,59 +17,70 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{t} @var{B}] =} dtmc_mtta (@var{P})
-## @deftypefnx {Function File} {[@var{t} @var{B}] =} dtmc_mtta (@var{P}, @var{p0})
+## @deftypefn {Function File} {[@var{t} @var{N} @var{B}] =} dtmc_mtta (@var{P})
+## @deftypefnx {Function File} {[@var{t} @var{N} @var{B}] =} dtmc_mtta (@var{P}, @var{p0})
 ##
-## @cindex Markov chain, disctete time
 ## @cindex Mean time to absorption
 ## @cindex Absorption probabilities
+## @cindex Fundamental matrix
 ##
-## Compute the expected number of steps before absorption for the 
-## DTMC with @math{N \times N} transition probability matrix @var{P}.
+## Compute the expected number of steps before absorption for a
+## DTMC with @math{N \times N} transition probability matrix @var{P};
+## compute also the fundamental matrix @var{N} for @var{P}.
 ##
 ## @strong{INPUTS}
 ##
 ## @table @var
 ##
 ## @item P
-## Transition probability matrix.
-##
-## @item p0
-## Initial state occupancy probabilities.
+## @math{N \times N} transition probability matrix.
 ##
 ## @end table
 ##
-## @strong{OUTPUTS}
+## @strong{OUTPUTS} 
 ##
 ## @table @var
 ##
 ## @item t
-## When called with a single argument, @var{t} is a vector such that
-## @code{@var{t}(i)} is the expected number of steps before being
-## absorbed, starting from state @math{i}. When called with two
-## arguments, @var{t} is a scalar and represents the average number of
-## steps before absorption, given initial state occupancy probabilities
-## @var{p0}.
+## When called with a single argument, @var{t} is a vector of size
+## @math{N} such that @code{@var{t}(i)} is the expected number of steps
+## before being absorbed in any absorbing state, starting from state
+## @math{i}; if @math{i} is absorbing, @code{@var{t}(i) = 0}. When
+## called with two arguments, @var{t} is a scalar, and represents the
+## expected number of steps before absorption, starting from the initial
+## state occupancy probability @var{p0}.
+##
+## @item N
+## When called with a single argument, @var{N} is the @math{N \times N}
+## fundamental matrix for @var{P}. @code{@var{N}(i,j)} is the expected
+## number of visits to transient state @var{j} before absorption, if it
+## is started in transient state @var{i}. The initial state is counted
+## if @math{i = j}. When called with two arguments, @var{N} is a vector
+## of size @math{N} such that @code{@var{N}(j)} is the expected number
+## of visits to transient state @var{j} before absorption, given initial
+## state occupancy probability @var{P0}.
 ##
 ## @item B
 ## When called with a single argument, @var{B} is a @math{N \times N}
 ## matrix where @code{@var{B}(i,j)} is the probability of being absorbed
 ## in state @math{j}, starting from transient state @math{i}; if
-## @math{j} is not absorbing, @code{@var{B}(i,j) = 0}; if @math{i} is
-## absorbing, then @code{@var{B}(i,i) = 1}.
-## When called with two arguments, @var{B} is a
-## vector with @math{N} elements where @code{@var{B}(j)} is the
-## probability of being absorbed in state @var{j}, given initial state
-## occupancy probabilities @var{p0}.
+## @math{j} is not absorbing, @code{@var{B}(i,j) = 0}; if @math{i}
+## is absorbing, @code{@var{B}(i,i) = 1} and
+## @code{@var{B}(i,j) = 0} for all @math{j \neq j}. When called with
+## two arguments, @var{B} is a vector of size @math{N} where
+## @code{@var{B}(j)} is the probability of being absorbed in state
+## @var{j}, given initial state occupancy probabilities @var{p0}.
 ##
 ## @end table
+##
+## @seealso{ctmc_mtta}
 ##
 ## @end deftypefn
 
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [t B] = dtmc_mtta( P, p0 )
+function [t N B] = dtmc_mtta( P, p0 )
 
   persistent epsilon = 10*eps;
 
@@ -87,7 +98,6 @@ function [t B] = dtmc_mtta( P, p0 )
 	usage( "p0 must be a state occupancy probability vector" );
   endif
 
-
   ## identify transient states
   tr = find(diag(P) < 1);
   ab = find(diag(P) == 1);
@@ -96,32 +106,42 @@ function [t B] = dtmc_mtta( P, p0 )
     error("There are no absorbing states");
   endif
 
+  N = B = zeros(size(P));
+  t = zeros(1,rows(P));
+
   ## Source: Grinstead, Charles M.; Snell, J. Laurie (July 1997). "Ch.
   ## 11: Markov Chains". Introduction to Probability. American
   ## Mathematical Society. ISBN 978-0821807491.
 
   ## http://www.cs.virginia.edu/~gfx/Courses/2006/DataDriven/bib/texsyn/Chapter11.pdf
-
-  N = (eye(k) - P(tr,tr));
+  tmpN = inv(eye(k) - P(tr,tr)); # matrix N = (I-Q)^-1
+  N(tr,tr) = tmpN;
   R = P(tr,ab);
 
-  res = N \ ones(k,1);
-  t = zeros(1,rows(P));
+  res = tmpN * ones(k,1);
   t(tr) = res;
 
-  tmp = N \ R;
-  B = zeros(size(P));
+  tmp = tmpN*R;
   B(tr,ab) = tmp;
-  B(ab,ab) = 1;
+  ## set B(i,i) = 1 for all absorbing states i
+  dd = diag(B);
+  dd(ab) = 1;
+  B(1:K+1:end) = dd;
 
   if ( nargin == 2 )
-    t = dot(t,p0);
+    t = dot(p0,t);
+    N = p0*N;
     B = p0*B;
   endif
+
 endfunction
 %!test
+%! fail( "dtmc_mtta(1,2,3)" );
+%! fail( "dtmc_mtta()" );
+
+%!test
 %! P = dtmc_bd([0 .5 .5 .5], [.5 .5 .5 0]);
-%! [t B] = dtmc_mtta(P);
+%! [t N B] = dtmc_mtta(P);
 %! assert( t, [0 3 4 3 0], 10*eps );
 %! assert( B([2 3 4],[1 5]), [3/4 1/4; 1/2 1/2; 1/4 3/4], 10*eps );
 %! assert( B(1,1), 1 );
@@ -129,17 +149,17 @@ endfunction
 
 %!test
 %! P = dtmc_bd([0 .5 .5 .5], [.5 .5 .5 0]);
-%! [t B] = dtmc_mtta(P, [0 0 1 0 0]);
-%! assert( t, 4, 10*eps );
-%! assert( B(1), 0.5, 10*eps );
-%! assert( B(5), 0.5, 10*eps );
+%! [t N B] = dtmc_mtta(P);
+%! assert( t(3), 4, 10*eps );
+%! assert( B(3,1), 0.5, 10*eps );
+%! assert( B(3,5), 0.5, 10*eps );
 
 ## Example on p. 422 of
 ## http://www.cs.virginia.edu/~gfx/Courses/2006/DataDriven/bib/texsyn/Chapter11.pdf
 %!test
 %! P = dtmc_bd([0 .5 .5 .5 .5], [.5 .5 .5 .5 0]);
-%! [t B] = dtmc_mtta(P);
-%! assert( t, [0 4 6 6 4 0], 10*eps );
+%! [t N B] = dtmc_mtta(P);
+%! assert( t(2:5), [4 6 6 4], 10*eps );
 %! assert( B(2:5,1), [.8 .6 .4 .2]', 10*eps );
 %! assert( B(2:5,6), [.2 .4 .6 .8]', 10*eps );
 
@@ -198,15 +218,15 @@ endfunction
 %! # spy(Pstar); pause
 %! nsteps = 250; # number of steps
 %! Pfinish = zeros(1,nsteps); # Pfinish(i) = probability of finishing after step i
-%! start = zeros(1,101); start(1) = 1;
+%! pstart = zeros(1,101); pstart(1) = 1; pn = pstart;
 %! for i=1:nsteps
-%!   pn = dtmc(Pstar,i,start);
+%!   pn = pn*Pstar;
 %!   Pfinish(i) = pn(101); # state 101 is the ending (absorbing) state
 %! endfor
-%! f = dtmc_mtta(Pstar, start);
+%! f = dtmc_mtta(Pstar,pstart);
 %! printf("Average number of steps to complete the game: %f\n", f );
 %! plot(Pfinish,"linewidth",2);
 %! line([f,f],[0,1]);
-%! text(f*1.1,0.2,"Mean Time to Absorption");
+%! text(f*1.1,0.2,["Mean Time to Absorption (" num2str(f) ")"]);
 %! xlabel("Step number (n)");
 %! title("Probability of finishing the game before step n");

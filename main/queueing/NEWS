@@ -12,7 +12,7 @@ Summary of important user-visible changes for queueing-1.X.0
    solution.
 
 ** The following new functions have been added: dtmc_bd(), dtmc_mtta(), 
-   ctmc_check_Q()
+   ctmc_check_Q(), dtmc_exps(), dtmc_taexps()
 
 ** The following deprecated functions have been removed: ctmc_bd_solve(),
    ctmc_solve(), dtmc_solve()

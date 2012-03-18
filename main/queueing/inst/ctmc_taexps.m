@@ -74,38 +74,20 @@ function M = ctmc_taexps( Q, varargin )
     print_usage();
   endif
 
-  [N err] = ctmc_check_Q(Q);
+  L = ctmc_exps(Q,varargin{:});
+  M = L ./ sum(L);
 
-  (N>0) || \
-      usage(err);
-
-  if ( nargin == 2 )
-    p = varargin{1};
-  else
-    t = varargin{1};
-    p = varargin{2};
-  endif
-
-  ( isvector(p) && length(p) == N && all(p>=0) && abs(sum(p)-1.0)<epsilon ) || \
-      usage( "p must be a probability vector" );
+#{
   if ( nargin == 3 ) 
-    if ( isscalar(t) )
-      (t >= 0) || \
-	  usage( "t must be >= 0" );
-      F = @(x) (p*expm(Q*x));
-      M = quadv(F,0,t) / t;
-    else
-      ## FIXME: deprecate this?
-      t = t(:)'; # make t a row vector
-      p = p(:)'; # make p a row vector
-      ff = @(x,t) (((x')*(Q-eye(N)/t).+p/t)');
-      fj = @(x,t) (Q-eye(N)/t);
-      M = lsode( {ff, fj}, zeros(size(p)), t );
-    endif
+    (t >= 0) || \
+	usage( "t must be >= 0" );
+    F = @(x) (p*expm(Q*x));
+    M = quadv(F,0,t) / t;
   else 
     L = ctmc_exps(Q,p);
     M = L ./ sum(L);
   endif
+#}
 endfunction
 %!test
 %! Q = [ 0 0.1 0 0; \

@@ -53,6 +53,8 @@
 ##
 ## @end table
 ##
+## @seealso{dtmc_mtta}
+##
 ## @end deftypefn
 
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>

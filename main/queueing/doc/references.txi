@@ -1,0 +1,107 @@
+@c -*- texinfo -*-
+
+@c Copyright (C) 2012 Moreno Marzolla
+@c
+@c This file is part of the queueing toolbox, a Queueing Networks
+@c analysis package for GNU Octave.
+@c
+@c The queueing toolbox is free software; you can redistribute it
+@c and/or modify it under the terms of the GNU General Public License
+@c as published by the Free Software Foundation; either version 3 of
+@c the License, or (at your option) any later version.
+@c
+@c The queueing toolbox is distributed in the hope that it will be
+@c useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+@c of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with the queueing toolbox; see the file COPYING.  If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@node References
+@chapter References
+
+@table @asis
+
+@item [Aky88]
+Ian F. Akyildiz, @cite{Mean Value Analysis for Blocking Queueing
+Networks}, IEEE Transactions on Software Engineering, vol. 14, n. 2,
+april 1988, pp. 418--428.  @url{http://dx.doi.org/10.1109/32.4663}
+
+@item [Bar79]
+Y. Bard, @cite{Some Extensions to Multiclass Queueing Network Analysis},
+proc. 4th Int. Symp. on Modelling and Performance Evaluation of
+Computer Systems, feb. 1979, pp. 51--62.
+
+@item [RGMT98]
+G. Bolch, S. Greiner, H. de Meer and
+K. Trivedi, @cite{Queueing Networks and Markov Chains: Modeling and
+Performance Evaluation with Computer Science Applications}, Wiley,
+1998.
+
+@item [Buz73]
+Jeffrey P. Buzen, @cite{Computational Algorithms for Closed Queueing
+Networks with Exponential Servers}, Communications of the ACM, volume
+16, number 9, september 1973,
+pp. 527--531. @url{http://doi.acm.org/10.1145/362342.362345}
+
+@item [CMS08]
+G. Casale, R. R. Muntz, G. Serazzi,
+@cite{Geometric Bounds: a Non-Iterative Analysis Technique for Closed
+Queueing Networks}, IEEE Transactions on Computers, 57(6):780-794,
+June 2008. @url{http://doi.ieeecomputersociety.org/10.1109/TC.2008.37}
+
+@item [GrSn97]
+Charles M. Grinstead, J. Laurie Snell, (July 1997). Introduction to
+Probability. American Mathematical Society. ISBN 978-0821807491
+
+@item [Jai91]
+R. Jain , @cite{The Art of Computer Systems Performance Analysis},
+Wiley, 1991, p. 577.
+
+@item [HsLa87]
+C. H. Hsieh and S. Lam,
+@cite{Two classes of performance bounds for closed queueing networks},
+PEVA, vol. 7, n. 1, pp. 3--30, 1987
+
+@item [LZGS84]
+Edward D. Lazowska, John Zahorjan, G. Scott Graham, and Kenneth C.
+Sevcik, @cite{Quantitative System Performance: Computer System
+Analysis Using Queueing Network Models}, Prentice Hall,
+1984. @url{http://www.cs.washington.edu/homes/lazowska/qsp/}.
+
+@item [ReKo76]
+M. Reiser, H. Kobayashi, @cite{On The Convolution Algorithm for
+Separable Queueing Networks}, In Proceedings of the 1976 ACM
+SIGMETRICS Conference on Computer Performance Modeling Measurement and
+Evaluation (Cambridge, Massachusetts, United States, March 29--31,
+1976). SIGMETRICS '76. ACM, New York, NY,
+pp. 109--117. @url{http://doi.acm.org/10.1145/800200.806187}
+
+@item [ReLa80]
+M. Reiser and S. S. Lavenberg, @cite{Mean-Value Analysis of Closed
+Multichain Queuing Networks}, Journal of the ACM, vol. 27, n. 2, April
+1980, pp. 313--322. @url{http://doi.acm.org/10.1145/322186.322195}
+
+@item [Sch81]
+Herb Schwetman, @cite{Some Computational
+Aspects of Queueing Network Models}, Technical Report CSD-TR-354,
+Department of Computer Sciences, Purdue University, feb, 1981
+(revised).
+@url{http://www.cs.purdue.edu/research/technical_reports/1980/TR%2080-354.pdf}
+
+@item [Sch82]
+Herb Schwetman, @cite{Implementing the Mean Value Algorithm for the
+Solution of Queueing Network Models}, Technical Report CSD-TR-355,
+Department of Computer Sciences, Purdue University, feb 15, 1982,
+available at
+@url{http://www.cs.purdue.edu/research/technical_reports/1980/TR%2080-355.pdf}
+
+@item [ZaWo81]
+Zahorjan, J. and Wong, E. @cite{The solution of separable queueing
+network models using mean value analysis}. SIGMETRICS
+Perform. Eval. Rev. 10, 3 (Sep. 1981), 80-85. DOI
+@url{http://doi.acm.org/10.1145/1010629.805477}
+
+@end table

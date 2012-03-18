@@ -22,7 +22,6 @@
 
 function json = object2json (object)
 
-  % function json = object2json (object)
   % Returns a valid json string that will describe object; the string will
   % be in a compact form (no spaces or line breaks).
   %

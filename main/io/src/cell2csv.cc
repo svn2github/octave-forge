@@ -19,17 +19,17 @@
 #include <octave/Cell.h>
 
 DEFUN_DLD (cell2csv, args, nargout,
-           "-*- texinfo -*-\n"
-           "@deftypefn {Loadable Function} {} cell2csv (@var{file}, @var{c})\n"
-	   "@deftypefnx {Loadable Function} {} cell2csv (@var{file}, @var{c}, @var{sep})\n"
-	   "@deftypefnx {Loadable Function} {} cell2csv (@var{file}, @var{c}, @var{sep}, @var{prot})\n"
-	   "\n"
-	   "Create a CSV file from a cell array. "
-	   "@var{sep} (character value) changes the character used to separate two fields. "
-	   "The default value is a comma "
-	   "(@code{,}). @var{prot} (character value) changes the character used to protect a string. "
-	   "Default value is a double quote (@code{\"}).\n"
-           "@end deftypefn") {
+          "-*- texinfo -*-\n"
+          "@deftypefn {Loadable Function} {} cell2csv (@var{file}, @var{c})\n"
+       "@deftypefnx {Loadable Function} {} cell2csv (@var{file}, @var{c}, @var{sep})\n"
+       "@deftypefnx {Loadable Function} {} cell2csv (@var{file}, @var{c}, @var{sep}, @var{prot})\n"
+       "\n"
+       "Create a CSV file from a cell array. "
+       "@var{sep} (character value) changes the character used to separate two fields. "
+       "The default value is a comma "
+       "(@code{,}). @var{prot} (character value) changes the character used to protect a string. "
+       "Default value is a double quote (@code{\"}).\n"
+       "@end deftypefn") {
 
   /* Check argument */
   if ((args.length() < 2) || (args.length() > 4)) {

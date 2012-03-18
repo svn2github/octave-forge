@@ -21,13 +21,12 @@
 #define MAXSTRINGLENGTH 4096
 
 DEFUN_DLD (csv2cell, args, nargout, 
-       "-*- texinfo -*-\n"
-       "@deftypefn {Loadable Function} {@var{c} = } csv2cell (@var{file})\n"
+          "-*- texinfo -*-\n"
+          "@deftypefn {Loadable Function} {@var{c} = } csv2cell (@var{file})\n"
        "@deftypefnx {Loadable Function} {@var{c} = } csv2cell (@var{file}, @var{sep})\n"
        "@deftypefnx {Loadable Function} {@var{c} = } csv2cell (@var{file}, @var{sep}, @var{prot})\n"
        "\n"
-       "Read a CSV (Comma Separated Values) file and convert it into a "
-       "cell. "
+       "Read a CSV (Comma Separated Values) file and convert it into a cell array. "
        "@var{sep} (a character value) changes the character used to separate two fields. "
        "The default value is a comma "
        "(@code{,}). @var{prot} (character value) changes the character used to protect a string. "

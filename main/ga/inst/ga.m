@@ -132,10 +132,9 @@ endfunction
 %!shared f, nvars
 %! f = @rastriginsfcn;
 %! nvars = 2;
-#%!function [C, Ceq] = nonlcon (x)
-#%!  C = [];
-#%!  Ceq = [];
-#%!endfunction
+%!function [C, Ceq] = nonlcon (x)
+%!  C = [];
+%!  Ceq = [];
 %!test x = ga (f, nvars);
 %!test x = ga (f, nvars, [], []);
 %!test x = ga (f, nvars, ones (3, nvars), ones (3, 1));
@@ -145,7 +144,7 @@ endfunction
 %!test x = ga (f, nvars, [], [], [], [], - Inf (1, nvars), Inf (1, nvars));
 %!test x = ga (f, nvars, [], [], [], [], - ones (1, nvars), ones (1, nvars));
 %!test x = ga (f, nvars, [], [], [], [], [], [], @(x) [[], []]);
-#%!test x = ga (f, nvars, [], [], [], [], [], [], @nonlcon);
+%!test x = ga (f, nvars, [], [], [], [], [], [], @nonlcon);
 %!test x = ga (f, nvars, [], [], [], [], [], [], @(x) [[], []], gaoptimset ());
 
 

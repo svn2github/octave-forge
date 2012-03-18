@@ -17,7 +17,7 @@
 ## @deftypefn {Function File} {@var{nb} =} xmlwrite (@var{filename}, @var{value})
 ## @deftypefnx {Function File} {@var{nb} =} xmlwrite (@var{fd}, @var{value}, [@var{name}])
 ##
-## Write a @var{value} into @var{filename} (@var{fd}) as a XML file.
+## Write a @var{value} into @var{filename} (@var{fd}) as an XML file.
 ##
 ##The number of elements (@var{nb}) or 0 is returned.
 ## @end deftypefn
@@ -45,7 +45,7 @@ function nb = xmlwrite (filename, value, name)
     ## Open file
     fd = fopen (filename, "w");
     if fd <= 0
-      error("error opening file \"%s\"\n", filename);
+      error("xmlwrite: error opening file \"%s\"\n", filename);
     endif
 
     ## XML header
@@ -189,7 +189,7 @@ function nb = xmlwrite (filename, value, name)
     
   else
     ## Unknown type
-    error("unknown type\n");
+    error("xmlwrite: unknown type\n");
   endif
   nb++;
   

@@ -41,7 +41,7 @@
 ## Infinitesimal generator matrix. @var{Q} is a @math{N \times N} square
 ## matrix where @code{@var{Q}(i,j)} is the transition rate from state
 ## @math{i} to state @math{j}, for @math{1 @leq{} i \neq j @leq{} N}.
-## Transition rates must be nonnegative, and @math{\sum_{j=1}^N Q_{i j} = 0}
+## Transition rates must be nonnegative, and @math{\sum_{j=1}^N Q_{i, j} = 0}
 ##
 ## @item t
 ## Time at which to compute the transient probability

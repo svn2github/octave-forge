@@ -42,7 +42,7 @@
 ## @item P
 ## @code{@var{P}(i,j)} is the transition probability from state @math{i}
 ## to state @math{j}. @var{P} must be an irreducible stochastic matrix,
-## which means that the sum of each row must be 1 (@math{\sum_{j=1}^N P_{i j} = 1}), and the rank of
+## which means that the sum of each row must be 1 (@math{\sum_{j=1}^N P_{i, j} = 1}), and the rank of
 ## @var{P} must be equal to its dimension.
 ##
 ## @item n

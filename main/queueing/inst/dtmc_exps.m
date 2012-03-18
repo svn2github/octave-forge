@@ -34,12 +34,12 @@
 ##
 ## @item n
 ## Number of steps during which the expected number of visits are
-## computed (@math{@var{n} @geq{} 0}). If @code{@var{n}=0}, simply
-## returns @var{p0}. If @code{@var{n} > 0}, returns the expected number
-## of visits after exactly @var{n} transitions.
+## computed (@math{@var{n} @geq{} 0}). If @code{@var{n}=0}, returns
+## @var{p0}. If @code{@var{n} > 0}, returns the expected number of
+## visits after exactly @var{n} transitions.
 ##
 ## @item p0
-## Initial state occupancy probability
+## Initial state occupancy probability.
 ##
 ## @end table
 ##
@@ -51,7 +51,8 @@
 ## When called with two arguments, @code{@var{L}(i)} is the expected
 ## number of visits to transient state @math{i} before absorption. When
 ## called with three arguments, @code{@var{L}(i)} is the expected number
-## of visits to state @math{i} during the first @var{n} transitions.
+## of visits to state @math{i} during the first @var{n} transitions,
+## given initial occupancy probability @var{p0}.
 ##
 ## @end table
 ##

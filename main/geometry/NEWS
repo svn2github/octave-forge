@@ -1,11 +1,16 @@
 Summary of important user-visible changes for releases of the geometry package
 
 ===============================================================================
-geometry-1.4.X   Release Date: XX   Release Manager: Juan Pablo Carbajal
+geometry-1.4.1   Release Date: 2012-03-18  Release Manager: Juan Pablo Carbajal
 ===============================================================================
+
+* Renamed functions
+ - Contents.m renamed to geom2d_Contents to avoid clashes.
 
 * Bug fixes
  - @svg/path2polygon.m
+ - Fix addpath/rmpath installation warnings
+ - Fix octclip/src/Makefile
 
 * Known issues
  - simplifypolygon.m returns empty polygons when points are repeated, i.e when

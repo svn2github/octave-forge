@@ -10,8 +10,8 @@
 %%
 %% 1. Redistributions of source code must retain the above copyright notice, this
 %%    list of conditions and the following disclaimer.
-%%     
-%% 2. Redistributions in binary form must reproduce the above copyright notice, 
+%%
+%% 2. Redistributions in binary form must reproduce the above copyright notice,
 %%    this list of conditions and the following disclaimer in the documentation
 %%    and/or other materials provided with the distribution.
 %%
@@ -19,9 +19,9 @@
 %% AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 %% IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
 %% ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
-%% LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+%% LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
 %% CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-%% SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
+%% SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 %% INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
 %% CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 %% ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
@@ -32,7 +32,7 @@
 %% policies, either expressed or implied, of copyright holder.
 
 %% -*- texinfo -*-
-%% @deftypefn {Function File} geometry_Contents ()
+%% @deftypefn {Function File} geom2d_Contents ()
 %% Geometry 2D Toolbox
 %% Version 1.2.0 21-Oct-2011 .
 %%
@@ -41,7 +41,7 @@
 %%
 %%   The goal is to provide a low-level library for manipulating geometrical
 %%   primitives, making easier the development of more complex geometric
-%%   algorithms. 
+%%   algorithms.
 %%
 %%   Most functions works for planar shapes, but some ones have been
 %%   extended to 3D or to any dimension.
@@ -192,9 +192,9 @@
 %%
 %% @end deftypefn
 
-function geometry_Contents ()
+function geom2d_Contents ()
 
-  help('Contents');
+  help('geom2d_Contents');
 
   %%   Deprecated functions
 
@@ -221,4 +221,3 @@ function geometry_Contents ()
   %   drawRect2            - Draw centered rectangle on the current axis
 
 endfunction
-

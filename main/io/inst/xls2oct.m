@@ -20,7 +20,7 @@
 ## @deftypefnx {Function File} [ @var{rawarr}, @var{xls}, @var{rstatus} ] = xls2oct (@var{xls}, @var{wsh}, @var{range})
 ## @deftypefnx {Function File} [ @var{rawarr}, @var{xls}, @var{rstatus} ] = xls2oct (@var{xls}, @var{wsh}, @var{range}, @var{options})
 ##
-## Read data contained within range @var{range} from worksheet @var{wsh}
+## Read data contained within cell range @var{range} from worksheet @var{wsh}
 ## in an Excel spreadsheet file pointed to in struct @var{xls}.
 ##
 ## @var{xls} is supposed to have been created earlier by xlsopen in the

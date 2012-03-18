@@ -20,7 +20,7 @@
 ## @deftypefnx {Function File} [ @var{xls}, @var{rstatus} ] = oct2xls (@var{arr}, @var{xls}, @var{wsh}, @var{range})
 ## @deftypefnx {Function File} [ @var{xls}, @var{rstatus} ] = oct2xls (@var{arr}, @var{xls}, @var{wsh}, @var{range}, @var{options})
 ##
-## Add data in 1D/2D CELL array @var{arr} into a range specified in
+## Add data in 1D/2D CELL array @var{arr} into a cell range specified in
 ## @var{range} in worksheet @var{wsh} in an Excel spreadsheet file
 ## pointed to in structure @var{xls}.
 ## Return argument @var{xls} equals supplied argument @var{xls} and is

@@ -20,7 +20,7 @@
 ## @deftypefnx {Function File} @var{rstatus} = xlswrite (@var{filename}, @var{arr}, @var{wsh}, @var{range})
 ## @deftypefnx {Function File} @var{rstatus} = xlswrite (@var{filename}, @var{arr}, @var{wsh}, @var{range}, @var{reqintf})
 ## Add data in 1D/2D array @var{arr} to worksheet @var{wsh} in Excel
-## spreadsheet file @var{filename} in range @var{range}.
+## spreadsheet file @var{filename} in cell range @var{range}.
 ##
 ## @var{rstatus} returns 1 if write succeeded, 0 otherwise.
 ##

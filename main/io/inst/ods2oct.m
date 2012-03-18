@@ -20,7 +20,7 @@
 ## @deftypefnx {Function File} [ @var{rawarr}, @var{ods}, @var{rstatus} ] = ods2oct (@var{ods}, @var{wsh}, @var{range})
 ## @deftypefnx {Function File} [ @var{rawarr}, @var{ods}, @var{rstatus} ] = ods2oct (@var{ods}, @var{wsh}, @var{range}, @var{options})
 ##
-## Read data contained within range @var{range} from worksheet @var{wsh}
+## Read data contained within cell range @var{range} from worksheet @var{wsh}
 ## in an OpenOffice_org Calc spreadsheet file pointed to in struct @var{ods}.
 ##
 ## @var{ods} is supposed to have been created earlier by odsopen in the

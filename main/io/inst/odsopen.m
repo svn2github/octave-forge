@@ -19,7 +19,7 @@
 ## @deftypefnx {Function File} @var{ods} = odsopen (@var{filename}, @var{readwrite})
 ## @deftypefnx {Function File} @var{ods} = odsopen (@var{filename}, @var{readwrite}, @var{reqintf})
 ## Get a pointer to an OpenOffice_org spreadsheet in the form of return
-## argument @var{ods}.
+## argument (struct) @var{ods}.
 ##
 ## Calling odsopen without specifying a return argument is fairly useless!
 ##

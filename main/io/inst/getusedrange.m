@@ -18,7 +18,7 @@
 ## @deftypefn {Function File} [ @var{toprow#}, @var{bottomrow#}, @var{leftcol#}, @var{rightcol#} ] = getusedrange (@var{spptr}, @var{shindex#})
 ## Find occupied data range in worksheet @var{shindex#} in a spreadsheet
 ## pointed to in struct @var{spptr} (either MS-Excel or
-## OpenOffice Calc).
+## OpenOffice_org Calc).
 ##
 ## @var{shindex#} must be numeric and is 1-based. @var{spptr} can either
 ## refer to an MS-Excel spreadsheet (spptr returned by xlsopen) or an

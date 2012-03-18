@@ -24,11 +24,11 @@ DEFUN_DLD (cell2csv, args, nargout,
 	   "@deftypefnx {Loadable Function} {} cell2csv (@var{file}, @var{c}, @var{sep})\n"
 	   "@deftypefnx {Loadable Function} {} cell2csv (@var{file}, @var{c}, @var{sep}, @var{prot})\n"
 	   "\n"
-	   "Create a CSV file from a cell. "
-	   "@var{sep} changes the character used to separate two fields. By "
-	   "default, two fields are expected to be separated by a coma "
-	   "(@code{,}). @var{prot} changes the character used to protect a string. "
-	   "By default it's a double quote (@code{\"}).\n"
+	   "Create a CSV file from a cell array. "
+	   "@var{sep} (character value) changes the character used to separate two fields. "
+	   "The default value is a comma "
+	   "(@code{,}). @var{prot} (character value) changes the character used to protect a string. "
+	   "Default value is a double quote (@code{\"}).\n"
            "@end deftypefn") {
 
   /* Check argument */
@@ -44,20 +44,20 @@ DEFUN_DLD (cell2csv, args, nargout,
 
   std::string sep = (args.length() > 2) ? args(2).string_value() : ",";
   if (sep.length() != 1) {
-    error("Only on charactere need as separator\n");
+    error("cell2csv: separator can only be one character\n");
     return octave_value();
   }
 
   std::string prot = (args.length() > 3) ? args(3).string_value() : "\"";
   if (prot.length() != 1) {
-    error("Only on charactere need as protector\n");
+    error("cell2csv: protector can only be one character\n");
     return octave_value();
   }
 
   /* Open file */
   std::ofstream fd(file.c_str());
   if (!fd.is_open()) {
-    error("cannot write %s\n", file.c_str());
+    error("cell2csv: cannot open file %s for writing\n", file.c_str());
     return octave_value();
   }
 
@@ -98,7 +98,7 @@ DEFUN_DLD (cell2csv, args, nargout,
 
       else if (!c(i, j).is_empty()) {
 	/* Output NaN value */
-	warning ("not a real or a string\n");
+	warning ("cell2csv: empty cell or not a real or a string value - converted to 'NaN'\n");
 	word += "NaN";
       }
 

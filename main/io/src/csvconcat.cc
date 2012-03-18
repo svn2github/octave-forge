@@ -23,10 +23,10 @@ DEFUN_DLD (csvconcat, args, nargout,
 	   "@deftypefnx {Loadable Function} {@var{str} = } csvconcat (@var{c}, @var{sep}, @var{prot})\n"
 	   "\n"
 	   "Concatenate a cell into a CSV string or array of strings. "
-	   "@var{sep} changes the character used to separate two fields. By "
-	   "default, two fields are expected to be separated by a coma "
-	   "(@code{,}). @var{prot} changes the character used to protect a string. "
-	   "By default it's a double quote (@code{\"}).\n"
+	   "@var{sep} (character value) changes the character used to separate two fields. "
+	   "The default value is a comma "
+	   "(@code{,}). @var{prot} (character value) changes the character used to protect a string. "
+	   "The default is a double quote (@code{\"}).\n"
            "@end deftypefn") {
 
   /* Check argument */
@@ -40,13 +40,13 @@ DEFUN_DLD (csvconcat, args, nargout,
 
   std::string sep = (args.length() > 1) ? args(1).string_value() : ",";
   if (sep.length() != 1) {
-    error("Only on charactere need as separator\n");
+    error("csvconcat: separator can only be one character\n");
     return octave_value();
   }
 
   std::string prot = (args.length() > 2) ? args(2).string_value() : "\"";
   if (prot.length() != 1) {
-    error("Only on charactere need as protector\n");
+    error("csvconcat: protector can only be one character\n");
     return octave_value();
   }
   
@@ -87,7 +87,7 @@ DEFUN_DLD (csvconcat, args, nargout,
 
       else {
 	/* Output NaN value */
-	warning ("not a real or a string\n");
+	warning ("csvconcat: empty cell or not a real or string value - converted to 'NaN'\n");
 	word += "NaN";
       }
     }

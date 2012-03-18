@@ -28,10 +28,11 @@ DEFUN_DLD (csv2cell, args, nargout,
        "\n"
        "Read a CSV (Comma Separated Values) file and convert it into a "
        "cell. "
-       "@var{sep} changes the character used to separate two fields. By "
-       "default, two fields are expected to be separated by a coma "
-       "(@code{,}). @var{prot} changes the character used to protect a string. "
-       "By default it's a double quote (@code{\"}).\n"
+       "@var{sep} (a character value) changes the character used to separate two fields. "
+       "The default value is a comma "
+       "(@code{,}). @var{prot} (character value) changes the character used to protect a string. "
+       "The default is a double quote (@code{\"}).\n"
+       "The maximum line width of the csv file is 4092 characters.\n"
        "@end deftypefn") {
 
   /* Get arguments */
@@ -48,7 +49,7 @@ DEFUN_DLD (csv2cell, args, nargout,
   const std::string _sep = (nargin > 1) ? args (1).string_value () : ",";
   if (_sep.length() != 1)
     {
-      error ("csv2cell: only on charactere need as separator");
+      error ("csv2cell: separator value can only be one character\n");
       return retval;
     }
   char sep = _sep[0];
@@ -56,7 +57,7 @@ DEFUN_DLD (csv2cell, args, nargout,
   const std::string _prot = (nargin > 2) ? args (2).string_value () : "\"";
   if (_prot.length() != 1)
     {
-      error ("csv2cell: only on charactere need as protector");
+      error ("csv2cell: protector value can be only one character\n");
       return retval;
     }
   char prot = _prot[0];
@@ -65,7 +66,7 @@ DEFUN_DLD (csv2cell, args, nargout,
   std::ifstream fd (file.c_str ());
   if (!fd.is_open ())
     {
-      error ("csv2cell: cannot read %s", file.c_str());
+      error ("csv2cell: cannot open file %s for reading\n", file.c_str());
       return retval;
     }
   fd.seekg (0, std::ios::end);
@@ -118,7 +119,7 @@ DEFUN_DLD (csv2cell, args, nargout,
   fd.seekg (0, std::ios::beg);
   if (!fd.good ())
     {
-      error ("csv2cell: cannot reread %s", file.c_str ());
+      error ("csv2cell: cannot reread %s\n", file.c_str ());
       return retval;
     }
 
@@ -149,7 +150,7 @@ DEFUN_DLD (csv2cell, args, nargout,
               if (j == nbcolumns)
                 {
                   fd.close ();
-                  error ("csv2cell: incorrect CSV file, line %d too long", i+1);
+                  error ("csv2cell: incorrect CSV file, line %d too long\n", i+1);
                   return retval;
                 }
 
@@ -180,7 +181,7 @@ DEFUN_DLD (csv2cell, args, nargout,
       if (j != nbcolumns)
         {
           fd.close ();
-          error ("csv2cell: incorrect CSV file, line %d too short", i+1);
+          error ("csv2cell: incorrect CSV file, line %d too short\n", i+1);
           return retval;
         }
     }

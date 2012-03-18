@@ -23,7 +23,7 @@ element *new_element () {
   element *new;
   new = (element *) malloc (sizeof(element));
   if (!new)
-    perror("xml: no enough memory for new_element()\n");
+    perror("xmltree: not enough memory for new_element()\n");
 
   new->next = new->child = NULL;
 
@@ -152,7 +152,7 @@ list *new_list(list *father) {
   list *new;
   new = (list *) malloc (sizeof(list));
   if (!new)
-    perror("xml: no enough memory for new_list()\n");
+    perror("xmltree: not enough memory for new_list()\n");
 
   new->prev = father;
 

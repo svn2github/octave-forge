@@ -23,10 +23,9 @@ DEFUN_DLD (csvexplode, args, nargout,
 	   "@deftypefnx {Loadable Function} {@var{c} = } csvexplode (@var{str}, @var{sep}, @var{prot})\n"
 	   "\n"
 	   "Explode a CSV string into a cell. "
-	   "@var{sep} changes the character used to separate two fields. By "
-	   "default, two fields are expected to be separated by a coma "
-	   "(@code{,}). @var{prot} changes the character used to protect a string. "
-	   "By default it's a double quote (@code{\"}).\n"
+	   "@var{sep} (character value) changes the character used to separate two fields. "
+	   "The default value is a comma (@code{,}). @var{prot} (character value) changes "
+     "the character used to protect a string. The default is a double quote (@code{\"}).\n"
            "@end deftypefn") {
 
   /* Check argument */
@@ -46,14 +45,14 @@ DEFUN_DLD (csvexplode, args, nargout,
 
   std::string _sep = (args.length() > 1) ? args(1).string_value() : ",";
   if (_sep.length() != 1) {
-    error("Only on charactere need as separator\n");
+    error("csvexplode: separator can only be one character\n");
     return octave_value();
   }
   char sep = _sep[0];
 
   std::string _prot = (args.length() > 2) ? args(2).string_value() : "\"";
   if (_prot.length() != 1) {
-    error("Only on charactere need as protector\n");
+    error("csvexplode: protector can only be one character\n");
     return octave_value();
   }
   char prot = _prot[0];

@@ -5,6 +5,13 @@ File I/O
 Miscellaneous conversion functions
   object2json
   pch2mat
+CSV file functions
+  csv2cell
+  csvconcat
+  csvexplode
+XML I/O
+  xmlread
+  xmlwrite
 Spreadsheet I/O user functions for MS-Excel
   oct2xls
   xls2oct

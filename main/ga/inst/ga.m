@@ -115,7 +115,7 @@ function [x fval exitflag output population scores] = \
 endfunction
 
 
-## number of arguments
+## number of input arguments
 %!shared f, nvars
 %! f = @rastriginsfcn;
 %! nvars = 2;
@@ -125,7 +125,9 @@ endfunction
 %!error x = ga (f, nvars, [], [], [])
 %!error x = ga (f, nvars, [], [], [], [], [])
 %!error x = ga (f, nvars, [], [], [], [], [], [], @(x) [[], []], gaoptimset (), [])
-# TODO: test number of output arguments
+
+## number of output arguments
+# TODO
 
 ## type of arguments
 # TODO

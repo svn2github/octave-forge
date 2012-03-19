@@ -34,9 +34,11 @@ function retval = rastriginsfcn (x)
 endfunction
 
 
-## number of arguments
+## number of input arguments
 %!error y = rastriginsfcn ()
 %!error y = rastriginsfcn ([0, 0], "other argument")
+
+## number of output arguments
 %!error [y1, y2] = rastriginsfcn ([0, 0])
 
 ## type of arguments

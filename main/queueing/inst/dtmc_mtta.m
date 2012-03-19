@@ -112,8 +112,8 @@ function [t N B] = dtmc_mtta( P, p0 )
   ## Source: Grinstead, Charles M.; Snell, J. Laurie (July 1997). "Ch.
   ## 11: Markov Chains". Introduction to Probability. American
   ## Mathematical Society. ISBN 978-0821807491.
-
   ## http://www.cs.virginia.edu/~gfx/Courses/2006/DataDriven/bib/texsyn/Chapter11.pdf
+
   tmpN = inv(eye(k) - P(tr,tr)); # matrix N = (I-Q)^-1
   N(tr,tr) = tmpN;
   R = P(tr,ab);
@@ -154,8 +154,7 @@ endfunction
 %! assert( B(3,1), 0.5, 10*eps );
 %! assert( B(3,5), 0.5, 10*eps );
 
-## Example on p. 422 of
-## http://www.cs.virginia.edu/~gfx/Courses/2006/DataDriven/bib/texsyn/Chapter11.pdf
+## Example on p. 422 of [GrSn97]
 %!test
 %! P = dtmc_bd([0 .5 .5 .5 .5], [.5 .5 .5 .5 0]);
 %! [t N B] = dtmc_mtta(P);
@@ -230,3 +229,19 @@ endfunction
 %! text(f*1.1,0.2,["Mean Time to Absorption (" num2str(f) ")"]);
 %! xlabel("Step number (n)");
 %! title("Probability of finishing the game before step n");
+
+## "Rat maze" problem (p. 453 of [GrSn97]);
+%!test
+%! P = zeros(9,9);
+%! P(1,[2 4]) = .5;
+%! P(2,[1 5 3]) = 1/3;
+%! P(3,[2 6]) = .5;
+%! P(4,[1 5 7]) = 1/3;
+%! P(5,:) = 0; P(5,5) = 1;
+%! P(6,[3 5 9]) = 1/3;
+%! P(7,[4 8]) = .5;
+%! P(8,[7 5 9]) = 1/3;
+%! P(9,[6 8]) = .5;
+%! t = dtmc_mtta(P);
+%! assert( t, [6 5 6 5 0 5 6 5 6], 10*eps );
+

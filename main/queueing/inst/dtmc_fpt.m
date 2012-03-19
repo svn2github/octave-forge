@@ -73,8 +73,7 @@ function result = dtmc_fpt( P )
     error("Cannot compute first passage times for absorbing chains");
   endif
 
-  ## Source:
-  ## http://www.cs.virginia.edu/~gfx/Courses/2006/DataDriven/bib/texsyn/Chapter11.pdf
+  ## Source [GrSn97]
   w = dtmc(P); # steady state probability vector
   W = repmat(w,N,1);
   ## Z = (I - P + W)^-1 where W is the matrix where each row is the
@@ -100,8 +99,7 @@ endfunction
 %! M = dtmc_fpt(P);
 %! assert( diag(M)', 1./p, 1e-8 );
 
-## Example on p. 461 of
-## http://www.cs.virginia.edu/~gfx/Courses/2006/DataDriven/bib/texsyn/Chapter11.pdf
+## Example on p. 461 of [GrSn97]
 %!test
 %! P = [ 0 1 0 0 0; \
 %!      .25 .0 .75 0 0; \
@@ -126,6 +124,21 @@ endfunction
 %!     assert( M(i,j), 1 + dot(P(i,:), M(:,j)) - P(i,j)*M(j,j), 1e-8);
 %!   endfor
 %! endfor
+
+## "Rat maze" problem (p. 453 of [GrSn97]);
+%!test
+%! P = zeros(9,9);
+%! P(1,[2 4]) = .5;
+%! P(2,[1 5 3]) = 1/3;
+%! P(3,[2 6]) = .5;
+%! P(4,[1 5 7]) = 1/3;
+%! P(5,[2 4 6 8]) = 1/4;
+%! P(6,[3 5 9]) = 1/3;
+%! P(7,[4 8]) = .5;
+%! P(8,[7 5 9]) = 1/3;
+%! P(9,[6 8]) = .5;
+%! M = dtmc_fpt(P);
+%! assert( M(1:9 != 5,5)', [6 5 6 5 5 6 5 6], 10*eps );
 
 %!demo
 %! P = [ 0.0 0.9 0.1; \

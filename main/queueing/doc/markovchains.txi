@@ -140,10 +140,77 @@ the transpose operator.
 
 @noindent @strong{EXAMPLE}
 
+This example is from [GrSn97]. Let us consider a maze with nine rooms,
+as shown in the following figure
+
 @example
 @group
-@verbatiminclude @value{top_srcdir}/examples/demo_1_dtmc.m
++-----+-----+-----+
+|     |     |     |
+|  1     2     3  |
+|     |     |     |
++-   -+-   -+-   -+
+|     |     |     |
+|  4     5     6  |
+|     |     |     |
++-   -+-   -+-   -+
+|     |     |     |
+|  7     8     9  |
+|     |     |     |
++-----+-----+-----+
 @end group
+@end example
+
+A mouse is placed in one of the rooms and can wander around. At each
+step, the mouse moves to one of the neighboring rooms with equal
+probability: if it is in room 1, it van move to room 2 and 4 with
+probability 1/2. If the mouse is in room 8, it can move to either 7, 5
+or 9 with probability 1/3.
+
+The transition probability @math{\bf P} from room @math{i} to room
+@math{j} is the following:
+
+@iftex
+@tex
+$$ {\bf P} = 
+\pmatrix{ 0   & 1/2 & 0   & 1/2 & 0   & 0   & 0   & 0   & 0   \cr
+          1/3 & 0   & 1/3 & 0   & 1/3 & 0   & 0   & 0   & 0   \cr
+          0   & 1/2 & 0   & 0   & 0   & 1/2 & 0   & 0   & 0   \cr
+          1/3 & 0   & 0   & 0   & 1/3 & 0   & 1/3 & 0   & 0   \cr
+          0   & 1/4 & 0   & 1/4 & 0   & 1/4 & 0   & 1/4 & 0   \cr
+          0   & 0   & 1/3 & 0   & 1/3 & 0   & 0   & 0   & 1/3 \cr
+          0   & 0   & 0   & 1/2 & 0   & 0   & 0   & 1/2 & 0   \cr
+          0   & 0   & 0   & 0   & 1/3 & 0   & 1/3 & 0   & 1/3 \cr
+          0   & 0   & 0   & 0   & 0   & 1/2 & 0   & 1/2 & 0   }
+$$
+@end tex
+@end iftex
+@ifnottex
+@example
+@group
+        / 0     1/2   0     1/2   0     0     0     0     0   \
+        | 1/3   0     1/3   0     1/3   0     0     0     0   |
+        | 0     1/2   0     0     0     1/2   0     0     0   |
+        | 1/3   0     0     0     1/3   0     1/3   0     0   |
+    P = | 0     1/4   0     1/4   0     1/4   0     1/4   0   |
+        | 0     0     1/3   0     1/3   0     0     0     1/3 |
+        | 0     0     0     1/2   0     0     0     1/2   0   |
+        | 0     0     0     0     1/3   0     1/3   0     1/3 |
+        \ 0     0     0     0     0     1/2   0     1/2   0   /
+@end group
+@end example
+@end ifnottex
+
+The stationary state occupancy probability vector can be computed
+using the following code:
+
+@example
+@c @group
+@verbatiminclude @value{top_srcdir}/examples/demo_1_dtmc.m
+@c @end group
+    @result{} 0.083333   0.125000   0.083333   0.125000   
+       0.166667   0.125000   0.083333   0.125000   
+       0.083333
 @end example
 
 @c
@@ -324,6 +391,30 @@ M_ij = -----------
 @end group
 @end example
 @end ifnottex
+
+According to the definition above, @math{M_{i,i} = 0}. We arbitrarily
+redefine @math{M_{i,i}} to be the @emph{mean recurrence time}
+@math{r_i} for state @math{i}, that is the average number of
+transitions needed to return to state @math{i} starting from
+it. @math{r_i} is defined as:
+
+@iftex
+@tex
+$$ r_i = {1 \over \pi_i} $$
+@end tex
+@end iftex
+@ifnottex
+@example
+@group
+        1
+r_i = -----
+      \pi_i
+@end group
+@end example
+@end ifnottex
+
+@noindent where @math{\pi_i} is the stationary probability of visiting state
+@math{i}.
 
 @DOCSTRING(dtmc_fpt)
 

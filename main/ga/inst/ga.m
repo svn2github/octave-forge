@@ -129,6 +129,7 @@ endfunction
 
 ## type of arguments
 # TODO
+# TODO: test that each field in the user-specified "problem" structure is checked
 
 ## flawless execution with right arguments
 %!shared f, nvars
@@ -148,7 +149,11 @@ endfunction
 %!test x = ga (f, nvars, [], [], [], [], [], [], @(x) [[], []]);
 %!test x = ga (f, nvars, [], [], [], [], [], [], @nonlcon);
 %!test x = ga (f, nvars, [], [], [], [], [], [], @(x) [[], []], gaoptimset ());
-# TODO: %!test x = ga (problem);
+%!test # TODO: convert to error after implementing private ga-specific createOptimProblem. All fields in the user-specified structure should be checked
+%! problem = struct ("fitnessfcn", @rastriginsfcn,
+%!                   "nvars", 2,
+%!                   "options", gaoptimset ());
+%! x = ga (problem);
 
 
 %!test x = ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("FitnessLimit", 1e-7, "Generations", 1000)));

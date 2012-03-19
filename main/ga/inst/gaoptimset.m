@@ -21,7 +21,8 @@
 ## @strong{Inputs}
 ## @table @var
 ## @item param
-## Parameter to set. Unspecified parameters are set to their default values; specifying no parameters is allowed.
+## Parameter to set. Unspecified parameters are set to their default
+## values; specifying no parameters is allowed.
 ## @item value
 ## Value of @var{param}.
 ## @end table
@@ -60,7 +61,7 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 4.4.6
+## Version: 4.4.7
 
 function options = gaoptimset (varargin)
   if ((nargout != 1) ||
@@ -86,21 +87,35 @@ function options = gaoptimset (varargin)
 endfunction
 
 
-%!error gaoptimset ("Generations", 123)
-%!error [a, b] = gaoptimset ("Generations", 123)
-
+## number of input arguments
 %!error options = gaoptimset ("odd number of arguments")
 %!error options = gaoptimset ("Generations", 123, "odd number of arguments")
 
+## number of output arguments
+%!error gaoptimset ("Generations", 123)
+%!error [a, b] = gaoptimset ("Generations", 123)
 
+## type of arguments
+# TODO
 %!#error options = gaoptimset ("Vectorized", "bad value") # TODO: fix
 %!#error options = gaoptimset ("UseParallel", "bad value") # TODO: fix
 
+# TODO: structure/add tests below
 
 %!assert (getfield (gaoptimset ("Generations", 123), "Generations"), 123)
 
 %!test
-%! options = gaoptimset ("EliteCount", 1, "FitnessLimit", 1e-7, "Generations", 1000, "PopInitRange", [-5; 5], "PopulationSize", 200);
+%! options = gaoptimset ("EliteCount", 1,
+%!                       "FitnessLimit", 1e-7,
+%!                       "Generations", 1000,
+%!                       "PopInitRange", [-5; 5],
+%!                       "PopulationSize", 200);
 %!
 %! ## "CrossoverFraction" is not specified, so gaoptimset should put the default value: testing this too
-%! assert ([(getfield (options, "CrossoverFraction")); (getfield (options, "EliteCount")); (getfield (options, "FitnessLimit")); (getfield (options, "Generations")); (getfield (options, "PopInitRange")); (getfield (options, "PopulationSize"))], [0.8; 1; 1e-7; 1000; [-5; 5]; 200])
+%! assert ([(getfield (options, "CrossoverFraction"));
+%!          (getfield (options, "EliteCount"));
+%!          (getfield (options, "FitnessLimit"));
+%!          (getfield (options, "Generations"));
+%!          (getfield (options, "PopInitRange"));
+%!          (getfield (options, "PopulationSize"))],
+%!         [0.8; 1; 1e-7; 1000; [-5; 5]; 200])

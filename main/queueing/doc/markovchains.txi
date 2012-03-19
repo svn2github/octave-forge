@@ -84,13 +84,13 @@ following two properties: (1) @math{P_{i, j} @geq{} 0} for all
 We denote with @math{{\bf \pi}(n) = \left(\pi_1(n), \pi_2(n), @dots{},
 \pi_N(n) \right)} the @emph{state occupancy probability vector} at step
 @math{n}. @math{\pi_i(n)} denotes the probability that the system is
-in state @math{i} at step @math{n}.
+in state @math{i} after @math{n} transitions.
 
 Given the transition probability matrix @math{\bf P} and the initial
-state occupancy probability vector @math{{\bf \pi}(0) = \left(\pi_1(0),
-\pi_2(0), @dots{}, \pi_N(0)\right)} at step 0, the state occupancy
-probability vector @math{{\bf \pi}(n)} at step @math{n} can be
-computed as:
+state occupancy probability vector @math{{\bf \pi}(0) =
+\left(\pi_1(0), \pi_2(0), @dots{}, \pi_N(0)\right)}, the state
+occupancy probabilities @math{{\bf \pi}(n)} after @math{n} transitions
+can easily be computed as:
 
 @iftex
 @tex
@@ -107,10 +107,33 @@ $${\bf \pi}(n) = {\bf \pi}(0) {\bf P}^n$$
 
 Under certain conditions, there exists a @emph{stationary state
 occupancy probability} @math{{\bf \pi} = \lim_{n \rightarrow +\infty}
-{\bf \pi}(n)}, which is independent from the initial state occupancy
-@math{{\bf \pi}(0)}. The stationary state occupancy probability vector
-@math{\bf \pi} satisfies @math{{\bf \pi} = {\bf \pi} {\bf P}}
-and @math{\sum_{i=1}^N \pi_i = 1}
+{\bf \pi}(n)}, which is independent from the initial occupancy
+@math{{\bf \pi}(0)}. The stationary vector @math{\bf \pi} can be
+computed as the solution of the following linear system:
+
+@iftex
+@tex
+$$
+\left\{ \eqalign{
+{\bf \pi P} & = {\bf \pi} \cr
+{\bf \pi 1}^T & = 1
+} \right.
+$$
+@end tex
+@end iftex
+@ifnottex
+@example
+@group
+/
+| \pi P   = \pi
+| \pi 1^T = 1
+\
+@end group
+@end example
+@end ifnottex
+
+@noindent where @math{\bf 1} is the row vector of ones, and @math{( \cdot )^T}
+the transpose operator.
 
 @c
 @DOCSTRING(dtmc)
@@ -137,7 +160,7 @@ Given a @math{N} state discrete-time Markov chain with transition
 matrix @math{\bf P} and an integer @math{n @geq{} 0}, we let
 @math{L_i(n)} be the the expected number of visits to state @math{i}
 during the first @math{n} transitions. The vector @math{{\bf L}(n) =
-( L_1(n), L_2(n), @dots{}, L_N(n) )} is defined as:
+( L_1(n), L_2(n), @dots{}, L_N(n) )} is defined as
 
 @iftex
 @tex
@@ -179,16 +202,14 @@ P = |---+---|
 @end example
 @end ifnottex
 
-@noindent where we suppose that the first @math{t} states are transient
-and the last @math{r} states are absorbing.
-
-The matrix @math{{\bf N} = ({\bf I} - {\bf Q})^{-1}} is called the
-@emph{fundamental matrix}; @math{N(i,j)} represents the expected
-number of times that the process is in the @math{j}-th transient state
-if it is started in the @math{i}-th transient state. If we reshape
-@math{\bf N} to the size of @math{\bf P} (filling missing entries with
-zeros), we have that, for absorbing chains @math{{\bf L} = {\bf
-\pi}(0){\bf N}}.
+@noindent where the first @math{t} states are transient
+and the last @math{r} states are absorbing. The matrix @math{{\bf N} =
+({\bf I} - {\bf Q})^{-1}} is called the @emph{fundamental matrix};
+@math{N(i,j)} represents the expected number of times that the process
+is in the @math{j}-th transient state if it is started in the
+@math{i}-th transient state. If we reshape @math{\bf N} to the size of
+@math{\bf P} (filling missing entries with zeros), we have that, for
+absorbing chains @math{{\bf L} = {\bf \pi}(0){\bf N}}.
 
 @DOCSTRING(dtmc_exps)
 
@@ -201,6 +222,43 @@ zeros), we have that, for absorbing chains @math{{\bf L} = {\bf
 @c
 @node Mean time to absorption (DTMC)
 @subsection Mean Time to Absorption
+
+The @emph{mean time to absorption} is defined as the average number of
+transitions which are required to reach an absorbing state, starting
+from a transient state (or given an initial state occupancy
+probability vector @math{{\bf \pi}(0)} ). 
+
+Let @math{{\bf t}_i} be the expected number of steps before being
+absorbed in any absorbing state, starting from state @math{i}.  Vector
+@math{\bf t} can be easiliy computed from the fundamental matrix
+@math{\bf N} (@pxref{Expected number of visits (DTMC)}) as
+
+@iftex
+@tex
+$$ {\bf t} = {\bf 1 N} $$
+@end tex
+@end iftex
+@ifnottex
+@example
+t = 1 N
+@end example
+@end ifnottex
+
+We can define a matrix @math{{\bf B} = [ B_{i, j} ]} such that
+@math{B_{i, j}} is the probability of being absorbed in state
+@math{j}, starting from transient state @math{i}. Again, using
+the fundamental matrix @math{\bf N} and @math{\bf R}, we have
+
+@iftex
+@tex
+$$ {\bf B} = {\bf N R} $$
+@end tex
+@end iftex
+@ifnottex
+@example
+B = N R
+@end example
+@end ifnottex
 
 @DOCSTRING(dtmc_mtta)
 
@@ -226,6 +284,43 @@ $$ M_{i, j} = 1 + \sum_{k \neq j} P_{i, k} M_{k, j}$$
 M_ij = 1 + >   P_ij * M_kj
           /___
           k!=j
+@end group
+@end example
+@end ifnottex
+
+To compute @math{{\bf M} = [ M_{i, j}]} a different formulation is
+used.  Let @math{\bf W} be the @math{N \times N} matrix having each
+row equal to the steady-state probability vector @math{\bf \pi} for
+@math{\bf P}; let @math{\bf I} be the @math{N \times N} identity
+matrix. Define matrix @math{\bf Z} as follows:
+
+@iftex
+@tex
+$$ {\bf Z} = \left( {\bf I} - {\bf P} + {\bf W} \right)^{-1} $$
+@end tex
+@end iftex
+@ifnottex
+@example
+@group
+               -1
+Z = (I - P + W)
+@end group
+@end example
+@end ifnottex
+
+@noindent Then, we have that
+
+@iftex
+@tex
+$$ M_{i, j} = {Z_{j, j} - Z_{i, j} \over \pi_j} $$
+@end tex
+@end iftex
+@ifnottex
+@example
+@group
+       Z_jj - Z_ij
+M_ij = -----------
+          \pi_j
 @end group
 @end example
 @end ifnottex
@@ -303,8 +398,29 @@ of @math{{\bf Q} t}. Under certain conditions, there exists a
 @emph{stationary state occupancy probability} @math{{\bf \pi} =
 \lim_{t \rightarrow +\infty} {\bf \pi}(t)}, which is independent from
 the initial state occupancy @math{{\bf \pi}(0)}. The stationary state
-occupancy probability vector @math{\bf \pi} satisfies
-@math{{\bf \pi} {\bf Q} = {\bf 0}} and @math{\sum_{i=1}^N \pi_i = 1}.
+occupancy probability vector @math{\bf \pi} can be computed as the
+solution of the following linear system:
+
+@iftex
+@tex
+$$
+\left\{ \eqalign{
+{\bf \pi Q} & = {\bf 0} \cr
+{\bf \pi 1}^T & = 1
+} \right.
+$$
+@end tex
+@end iftex
+@ifnottex
+@example
+@group
+/
+| \pi Q   = 0
+| \pi 1^T = 1
+\
+@end group
+@end example
+@end ifnottex
 
 @DOCSTRING(ctmc)
 

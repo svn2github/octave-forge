@@ -173,7 +173,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 		end %if
 		if (dbug), fprintf ('Java support OK\n'); end %if
     catch
-		error ('No Java support found.');
+		error ('No Java support found: %s.' lasterr);
 	end %try_catch
 
 	if (dbug), fprintf ('\nChecking javaclasspath for .jar class libraries needed for spreadsheet I/O...:\n'); end %if

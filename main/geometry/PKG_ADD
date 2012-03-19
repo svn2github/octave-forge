@@ -12,7 +12,7 @@ dep_folder = [dep_folder filesep() strcat(filesep(),{pp{end-1:end}}){:} ];
 arch = cstrcat (octave_config_info ("canonical_host_type"),
                               "-", octave_config_info ("api_version"));
 if strcmp (arch , pp{end})
-  dirname = [strcat(filesep(),{pp{1:end-1}}){:}]
+  dirname = [strcat(filesep(),{pp{1:end-1}}){:}];
   pkg_folder = strsplit (pkg_folder,filesep (), true);
   pkg_folder = [strcat(filesep(),{pkg_folder{1:end-1}}){:}];
 end

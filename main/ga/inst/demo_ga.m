@@ -21,9 +21,9 @@
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
 ## Created: March 2012
-## Version: 0.0.3
+## Version: 0.0.4
 
-demo ga_demo
+demo demo_ga
 
 
 %!demo

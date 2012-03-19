@@ -130,6 +130,7 @@ endfunction
 ## type of arguments
 # TODO
 
+## flawless execution with right arguments
 %!shared f, nvars
 %! f = @rastriginsfcn;
 %! nvars = 2;
@@ -147,6 +148,7 @@ endfunction
 %!test x = ga (f, nvars, [], [], [], [], [], [], @(x) [[], []]);
 %!test x = ga (f, nvars, [], [], [], [], [], [], @nonlcon);
 %!test x = ga (f, nvars, [], [], [], [], [], [], @(x) [[], []], gaoptimset ());
+# TODO: %!test x = ga (problem);
 
 
 %!test x = ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("FitnessLimit", 1e-7, "Generations", 1000)));

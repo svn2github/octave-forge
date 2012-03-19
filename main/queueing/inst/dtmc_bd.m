@@ -17,68 +17,83 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {@var{P} =} dtmc_bd (@var{birth}, @var{death})
+## @deftypefn {Function File} {@var{P} =} dtmc_bd (@var{b}, @var{d})
 ##
 ## @cindex Markov chain, discrete time
 ## @cindex Birth-death process
 ##
-## Returns the @math{N \times N} transition probability matrix @math{P}
-## for a birth-death process with given rates.
+## Returns the transition probability matrix @math{P} for a discrete
+## birth-death process over state space @math{1, 2, @dots{}, N}.
+## @code{@var{b}(i)} is the transition probability from state
+## @math{i} to @math{i+1}, and @code{@var{d}(i)} is the transition
+## probability from state @math{i+1} to state @math{i}, @math{i=1, 2,
+## @dots{}, N-1}.
 ##
-## @strong{INPUTS}
+## Matrix @math{\bf P} is therefore defined as:
 ##
-## @table @var
-##
-## @item birth
-## Vector with @math{N-1} elements, where @code{@var{birth}(i)} is the
-## transition probability from state @math{i} to state @math{i+1}.
-##
-## @item death
-## Vector with @math{N-1} elements, where @code{@var{death}(i)} is the
-## transition probability from state @math{i+1} to state @math{i}.
-##
-## @end table
-##
-## @strong{OUTPUTS}
-##
-## @table @var
-##
-## @item P
-## Transition probability matrix for the birth-death process.
-##
-## @end table
+## @iftex
+## @tex
+## $$ \pmatrix{ (1-\lambda_1) & \lambda_1 & & & & \cr
+##              \mu_1 & (1 - \mu_1 - \lambda_2) & \lambda_2 & & \cr
+##              & \mu_2 & (1 - \mu_2 - \lambda_3) & \lambda_3 & & \cr
+##              \cr
+##              & & \ddots & \ddots & \ddots & & \cr
+##              \cr
+##              & & & \mu_{N-2} & (1 - \mu_{N-2}-\lambda_{N-1}) & \lambda_{N-1} \cr
+##              & & & & \mu_{N-1} & (1-\mu_{N-1}) }
+## $$
+## @end tex
+## @noindent where @math{\lambda_i} and @math{\mu_i} are the birth and
+## death probabilities, respectively.
+## @end iftex
+## @ifnottex
+## @example
+## @group
+## /                                                             \
+## | 1-b(1)     b(1)                                             |
+## |  d(1)  (1-d(1)-b(2))     b(2)                               |
+## |            d(2)      (1-d(2)-b(3))     b(3)                 |
+## |                                                             |
+## |                 ...           ...          ...              |
+## |                                                             |
+## |                         d(N-2)   (1-d(N-2)-b(N-1))  b(N-1)  |
+## |                                        d(N-1)      1-d(N-1) |
+## \                                                             /
+## @end group
+## @end example
+## @end ifnottex
 ##
 ## @end deftypefn
 
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function P = dtmc_bd( birth, death )
+function P = dtmc_bd( b, d )
 
   if ( nargin != 2 ) 
     print_usage();
   endif
 
-  ( isvector( birth ) && isvector( death ) ) || \
+  ( isvector( b ) && isvector( d ) ) || \
       usage( "birth and death must be vectors" );
-  birth = birth(:); # make birth a column vector
-  death = death(:); # make death a column vector
-  size_equal( birth, death ) || \
+  b = b(:); # make b a column vector
+  d = d(:); # make d a column vector
+  size_equal( b, d ) || \
       usage( "birth and death vectors must have the same length" );
-  all( birth >= 0 ) || \
+  all( b >= 0 ) || \
       usage( "birth probabilities must be >= 0" );
-  all( death >= 0 ) || \
+  all( d >= 0 ) || \
       usage( "death probabilities must be >= 0" );
-  all( ([birth; 0] + [0; death]) <= 1 ) || \
-      usage( "Inconsistent birth/death probabilities");
-  ## builds the infinitesimal generator matrix
-  P = diag( birth, 1 ) + diag( death, -1 );
+  all( ([b; 0] + [0; d]) <= 1 ) || \
+      usage( "d(i)+b(i+1) must be <= 1");
+
+  P = diag( b, 1 ) + diag( d, -1 );
   P += diag( 1-sum(P,2) );
 endfunction
 %!test
 %! birth = [.5 .5 .3];
 %! death = [.6 .2 .3];
-%! fail("dtmc_bd(birth,death)","Inconsistent");
+%! fail("dtmc_bd(birth,death)","must be");
 
 %!demo
 %! birth = [ .2 .3 .4 ];

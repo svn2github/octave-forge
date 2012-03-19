@@ -39,7 +39,8 @@ n=0, 1, 2, @dots{}@}} which satisfies the following Markov property:
 
 @iftex
 @tex
-$$P\left(X_{n+1} = x_{n+1}\ |\ X_n = x_n, X_{n-1} = x_{n-1}, \ldots, X_0 = x_0 \right) = P\left(X_{n+1} = x_{n+1}\ |\ X_n = x_n\right)$$
+$$\eqalign{P\left(X_{n+1} = x_{n+1}\ |\ X_n = x_n, X_{n-1} = x_{n-1}, \ldots, X_0 = x_0 \right) \cr
+& = P\left(X_{n+1} = x_{n+1}\ |\ X_n = x_n\right)}$$
 @end tex
 @end iftex
 @ifnottex
@@ -52,10 +53,10 @@ system was at time @math{n}.
 
 The evolution of a Markov chain with finite state space @math{@{1, 2,
 @dots{}, N@}} can be fully described by a stochastic matrix @math{{\bf
-P}(n) = P_{i,j}(n)} such that @math{P_{i, j}(n) = P( X_{n+1} = j\ |\
+P}(n) = [ P_{i,j}(n) ]} such that @math{P_{i, j}(n) = P( X_{n+1} = j\ |\
 X_n = i )}.  If the Markov chain is homogeneous (that is, the
 transition probability matrix @math{{\bf P}(n)} is time-independent),
-we can simply write @math{{\bf P} = P_{i, j}}, where @math{P_{i, j} =
+we can simply write @math{{\bf P} = [P_{i, j}]}, where @math{P_{i, j} =
 P( X_{n+1} = j\ |\ X_n = i )} for all @math{n=0, 1, @dots{}}.
 
 The transition probability matrix @math{\bf P} must satisfy the
@@ -244,7 +245,8 @@ Markov chain if, for all integers @math{n}, and for any sequence
 
 @iftex
 @tex
-$$P(X_{t_{n+1}} = x_{n+1}\ |\ X(t_n) = x_n, X(t_{n-1}) = x_{n-1}, \ldots, X(t_0) = x_0) = P(X(t_{n+1}) = x_{n+1}\ |\ X(t_n) = x_n)$$
+$$\eqalign{P(X(t_{n+1}) = x_{n+1}\ |\ X(t_n) = x_n, X(t_{n-1}) = x_{n-1}, \ldots, X(t_0) = x_0) \cr
+&= P(X(t_{n+1}) = x_{n+1}\ |\ X(t_n) = x_n)}$$
 @end tex
 @end iftex
 @ifnottex
@@ -255,8 +257,9 @@ A continuous-time Markov chain is defined according to an
 @emph{infinitesimal generator matrix} @math{{\bf Q} = [Q_{i,j}]} such
 that for each @math{i \neq j}, @math{Q_{i, j}} is the transition rate
 from state @math{i} to state @math{j}. The elements @math{Q_{i, i}}
-must be defined in such a way that the infinitesimal generator matrix
-@math{\bf Q} satisfies the property @math{\sum_{j=1}^N Q_{i, j} = 0}.
+qre defined as @math{Q_{i, i} = - \sum_{j \neq i} Q_{i, j}}, such that
+matrix @math{\bf Q} satisfies the property that, for all @math{i},
+@math{\sum_{j=1}^N Q_{i, j} = 0}.
 
 @DOCSTRING(ctmc_check_Q)
 
@@ -373,8 +376,8 @@ L(t) = |   pi(u) du
 @end ifnottex
 
 @noindent where @math{{\bf \pi}(t) = {\bf \pi}(0) \exp({\bf Q}t)} is
-the state occupancy probability at time @math{t}; @math{\exp({\bf A})}
-is the matrix exponential of @math{\bf A}.
+the state occupancy probability at time @math{t}; @math{\exp({\bf Q}t)}
+is the matrix exponential of @math{{\bf Q}t}.
 
 @DOCSTRING(ctmc_exps)
 

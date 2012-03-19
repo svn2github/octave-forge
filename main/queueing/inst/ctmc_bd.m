@@ -17,36 +17,50 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {@var{Q} =} ctmc_bd (@var{birth}, @var{death})
+## @deftypefn {Function File} {@var{Q} =} ctmc_bd (@var{b}, @var{d})
 ##
 ## @cindex Markov chain, continuous time
 ## @cindex Birth-death process
 ##
-## Returns the @math{N \times N} infinitesimal generator matrix @math{Q}
-## for a birth-death process with given rates.
+## Returns the infinitesimal generator matrix @math{Q} for a continuous
+## birth-death process over state space @math{1, 2, @dots{}, N}.
+## @code{@var{b}(i)} is the transition rate from state @math{i} to
+## @math{i+1}, and @code{@var{d}(i)} is the transition rate from state
+## @math{i+1} to state @math{i}, @math{i=1, 2, @dots{}, N-1}.
 ##
-## @strong{INPUTS}
+## Matrix @math{\bf Q} is therefore defined as:
 ##
-## @table @var
-##
-## @item birth
-## Vector with @math{N-1} elements, where @code{@var{birth}(i)} is the
-## transition rate from state @math{i} to state @math{i+1}.
-##
-## @item death
-## Vector with @math{N-1} elements, where @code{@var{death}(i)} is the
-## transition rate from state @math{i+1} to state @math{i}.
-##
-## @end table
-##
-## @strong{OUTPUTS}
-##
-## @table @var
-##
-## @item Q
-## Infinitesimal generator matrix for the birth-death process.
-##
-## @end table
+## @iftex
+## @tex
+## $$ \pmatrix{ -\lambda_1 & \lambda_1 & & & & \cr
+##              \mu_1 & -(\mu_1 + \lambda_2) & \lambda_2 & & \cr
+##              & \mu_2 & -(\mu_2 + \lambda_3) & \lambda_3 & & \cr
+##              \cr
+##              & & \ddots & \ddots & \ddots & & \cr
+##              \cr
+##              & & & \mu_{N-2} & -(\mu_{N-2}+\lambda_{N-1}) & \lambda_{N-1} \cr
+##              & & & & \mu_{N-1} & -\mu_{N-1} }
+## $$
+## @end tex
+## @noindent where @math{\lambda_i} and @math{\mu_i} are the birth and
+## death rates, respectively.
+## @end iftex
+## @ifnottex
+## @example
+## @group
+## /                                                          \
+## | -b(1)     b(1)                                           |
+## |  d(1) -(d(1)+b(2))     b(2)                              |
+## |           d(2)     -(d(2)+b(3))        b(3)              |
+## |                                                          |
+## |                ...           ...          ...            |
+## |                                                          |
+## |                       d(N-2)    -(d(N-2)+b(N-1))  b(N-1) |
+## |                                       d(N-1)     -d(N-1) |
+## \                                                          /
+## @end group
+## @end example
+## @end ifnottex
 ##
 ## @end deftypefn
 

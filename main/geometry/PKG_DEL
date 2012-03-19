@@ -13,7 +13,6 @@ arch = cstrcat (octave_config_info ("canonical_host_type"),
                               "-", octave_config_info ("api_version"));
 pp = strsplit (dirname,filesep (), true);
 if strcmp(arch , pp{end})
-  %dirname = [strcat(filesep(),{pp{1:end-1}}){:}]
   dirname = [pkg("prefix") filesep() pp{end-1}];
   pkg_folder = strsplit (pkg_folder,filesep (), true);
   pkg_folder = [strcat(filesep(),{pkg_folder{1:end-1}}){:}];

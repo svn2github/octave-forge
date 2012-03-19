@@ -157,6 +157,7 @@ endfunction
 %!                   "options", gaoptimset ());
 %! x = ga (problem);
 
+# TODO: structure/add tests below
 
 %!test x = ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("FitnessLimit", 1e-7, "Generations", 1000)));
 
@@ -187,4 +188,4 @@ endfunction
 
 %!test ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("Generations", 10, "Vectorized", "on")));
 
-%!xtest ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("Generations", 10, "UseParallel", "always")));
+%!#xtest ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("Generations", 10, "UseParallel", "always"))); TODO

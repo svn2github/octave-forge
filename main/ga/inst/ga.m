@@ -125,6 +125,7 @@ endfunction
 %!error x = ga (f, nvars, [], [], [])
 %!error x = ga (f, nvars, [], [], [], [], [])
 %!error x = ga (f, nvars, [], [], [], [], [], [], @(x) [[], []], gaoptimset (), [])
+# TODO: test number of output arguments
 
 ## type of arguments
 # TODO

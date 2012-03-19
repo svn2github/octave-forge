@@ -152,10 +152,9 @@ endfunction
 %!demo
 %! lambda = 0.5;
 %! N = 4;
-%! birth = lambda*linspace(1,N-1,N-1);
-%! death = zeros(1,N-1);
-%! Q = diag(birth,1)+diag(death,-1);
-%! Q -= diag(sum(Q,2));
+%! b = lambda*[1:N-1];
+%! d = zeros(size(b));
+%! Q = ctmc_bd(b,d);
 %! t = linspace(0,10,100);
 %! p0 = zeros(1,N); p0(1)=1;
 %! L = zeros(length(t),N);
@@ -173,10 +172,9 @@ endfunction
 %!demo
 %! lambda = 0.5;
 %! N = 4;
-%! birth = lambda*linspace(1,N-1,N-1);
-%! death = 0*birth;
-%! Q = diag(birth,1)+diag(death,-1);
-%! Q -= diag(sum(Q,2));
+%! b = lambda*[1:N-1];
+%! d = zeros(size(b));
+%! Q = ctmc_bd(b,d);
 %! p0 = zeros(1,N); p0(1)=1;
 %! L = ctmc_exps(Q,p0);
 %! disp(L);

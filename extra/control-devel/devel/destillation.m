@@ -65,10 +65,11 @@ Y_dest_n30=Y(:,10:12);
 
 dat = iddata (Y_dest, U_dest)
 
-[sys, x0] = ident (dat, 5)  % nobr? 5, 90, ?
+[sys, x0] = ident (dat) %, 5)  % nobr? 5, 90, ?
 
 
 [y, t] = lsim (sys, U_dest, [], x0);
+%[y, t] = lsim (sys, U_dest);
 
 figure (1)
 plot (t, Y_dest, 'b')

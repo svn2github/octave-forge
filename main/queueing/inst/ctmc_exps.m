@@ -40,7 +40,7 @@
 ## condition @math{\sum_{j=1}^N Q_{ij} = 0}.
 ##
 ## @item t
-## Time
+## If given, compute the expected sojourn times in @math{[0,t]}
 ##
 ## @item p
 ## Initial occupancy probability vector; @code{@var{p}(i)} is the
@@ -57,9 +57,9 @@
 ## If this function is called with three arguments, @code{@var{L}(i)} is
 ## the expected time spent in state @math{i} during the interval
 ## @math{[0,t]}. If this function is called with two arguments
-## @code{@var{L}(i)} is either the expected time spent in state @math{i} until
-## absorption (if @math{i} is a transient state), or zero
-## (if @var{i} is an absorbing state).
+## @code{@var{L}(i)} is either the expected time spent in state @math{i}
+## until absorption (if @math{i} is a transient state), or zero (if
+## @var{i} is an absorbing state).
 ##
 ## @end table
 ##

@@ -216,6 +216,10 @@ endfunction
 %! assert( q(9), 0.000504, 1e-6 );
 %! q = ctmc(Q,2,q0);
 %! assert( q, [3.83e-7 1.938e-4 0.0654032 0.2216998 0.4016008 0.3079701 0.0030271 0.0000998 5e-6], 1e-5 );
+%! # Compute probability that no shuttle needs to leave during 10 years
+%! Q(7,:) = Q(8,:) = 0; # make states 7 and 8 absorbing
+%! q = ctmc(Q,10,q0);
+%! assert( 1-sum(q(7:9)), 0.3901, 1e-4 );
 
 %!demo
 %! Q = [ -1  1; \

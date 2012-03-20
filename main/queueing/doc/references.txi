@@ -108,7 +108,7 @@ Herb Schwetman, @cite{Implementing the Mean Value Algorithm for the
 Solution of Queueing Network Models}, @uref{http://www.cs.purdue.edu/research/technical_reports/1980/TR%2080-355.pdf, Technical Report CSD-TR-355},
 Department of Computer Sciences, Purdue University, feb 15, 1982.
 
-@items [Tij03]
+@item [Tij03]
 H. C. Tijms, @cite{A first course in stochastic models},
 John Wiley and Sons, 2003, ISBN 0471498807, ISBN 9780471498803,
 DOI @uref{http://dx.doi.org/10.1002/047001363X, 10.1002/047001363X}

@@ -48,7 +48,7 @@
 ##
 ## @item p0
 ## @code{@var{p0}(i)} is the probability that the system
-## is in state @math{i} at time 0 .
+## is in state @math{i} at time 0.
 ##
 ## @end table
 ##
@@ -74,9 +74,7 @@
 
 function q = ctmc( Q, t, p0 )
 
-  persistent epsilon = 10*eps;
-
-  if ( nargin < 1 || nargin > 3 )
+  if ( nargin != 1 && nargin != 3 )
     print_usage();
   endif
 
@@ -85,22 +83,17 @@ function q = ctmc( Q, t, p0 )
   ( N>0 ) || \
       usage(err);
 
-  if ( nargin > 1 ) 
-    ( isscalar(t) && t>=0 ) || \
-        usage("t must be nonnegative");
-  endif
-
-  if ( nargin > 2 )
-    ( isvector(p0) && length(p0) == N && all(p0>=0) && abs(sum(p0)-1.0)<epsilon ) || \
-        usage( "p0 must be a probability vector" );   
-    p0 = p0(:)'; # make p0 a row vector
-  else
-    p0 = ones(1,N) / N;
-  endif
-
   if ( nargin == 1 )
     q = __ctmc_steady_state( Q );
   else
+    ( isscalar(t) && t>=0 ) || \
+        usage("t must be nonnegative");
+
+    ( isvector(p0) && length(p0) == N && all(p0>=0) && abs(sum(p0)-1.0)<N*eps ) || \
+        usage( "p0 must be a probability vector" );   
+
+    p0 = p0(:)'; # make p0 a row vector
+
     q = __ctmc_transient(Q, t, p0 );
   endif
 
@@ -197,6 +190,32 @@ endfunction
 %! qlim = ctmc(Q);
 %! q = ctmc(Q, 100, [1 0]);
 %! assert( qlim, q, 1e-5 );
+
+## Example on p. 172 of [Tij03]
+%!test
+%! ll = 0.1;
+%! mu = 100;
+%! eta = 5;
+%! Q = zeros(9,9);
+%! ## 6--1, 7=sleep2 8=sleep1 9=crash
+%! Q(6,5) = 6*ll;
+%! Q(5,4) = 5*ll;
+%! Q(4,3) = 4*ll;
+%! Q(3,2) = 3*ll;
+%! Q(2,1) = 2*ll;
+%! Q(2,7) = mu;
+%! Q(1,9) = ll;
+%! Q(1,8) = mu;
+%! Q(8,9) = ll;
+%! Q(7,8) = 2*ll;
+%! Q(7,6) = eta;
+%! Q(8,6) = eta;
+%! Q -= diag(sum(Q,2));
+%! q0 = zeros(1,9); q0(6) = 1;
+%! q = ctmc(Q,10,q0);
+%! assert( q(9), 0.000504, 1e-6 );
+%! q = ctmc(Q,2,q0);
+%! assert( q, [3.83e-7 1.938e-4 0.0654032 0.2216998 0.4016008 0.3079701 0.0030271 0.0000998 5e-6], 1e-5 );
 
 %!demo
 %! Q = [ -1  1; \

@@ -46,7 +46,8 @@
 ## @var{P} must be equal to its dimension.
 ##
 ## @item n
-## Step at which to compute the transient probability
+## Number of transitions after which compute the state occupancy probabilities
+## (@math{n=0, 1, @enddots{}})
 ##
 ## @item p0
 ## @code{@var{p0}(i)} is the probability that at step 0 the system
@@ -63,7 +64,7 @@
 ## @code{@var{p}(i)} is the steady-state probability that the system is
 ## in state @math{i}. @var{p} satisfies the equations @math{p = p{\bf P}} and @math{\sum_{i=1}^N p_i = 1}. If this function is invoked
 ## with three arguments, @code{@var{p}(i)} is the marginal probability
-## that the system is in state @math{i} at step @var{n},
+## that the system is in state @math{i} after @var{n} transitions,
 ## given the initial probabilities @code{@var{p0}(i)} that the initial state is
 ## @math{i}.
 ##
@@ -74,11 +75,9 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function q = dtmc( P, n, p0 )
+function p = dtmc( P, n, p0 )
 
-  persistent epsilon = 10*eps;
-
-  if ( nargin < 1 || nargin > 3 )
+  if ( nargin != 1 && nargin != 3 )
     print_usage();
   endif
 
@@ -86,29 +85,24 @@ function q = dtmc( P, n, p0 )
   
   ( N>0 ) || \
       usage( err );
-  
-  if ( nargin > 1 )
-    ( isscalar(n) && n>=0 ) || \
-	usage( "n must be >=0" );
-  endif
-
-  if ( nargin > 2 )
-    ( isvector(p0) && length(p0) == N && all(p0>=0) && abs(sum(p0)-1.0)<epsilon ) || \
-        usage( "p0 must be a probability vector" );   
-    p0 = p0(:)'; # make q0 a row vector
-  else
-    p0 = ones(1,N) / N;
-  endif
 
   if ( nargin == 1 )
-    q = __dtmc_steady_state( P );
+    p = __dtmc_steady_state( P );  
   else
-    q = __dtmc_transient(P, n, p0);
+    ( isscalar(n) && n>=0 ) || \
+	usage( "n must be >=0" );
+
+    ( isvector(p0) && length(p0) == N && all(p0>=0) && abs(sum(p0)-1.0)<N*eps ) || \
+        usage( "p0 must be a probability vector" );   
+
+    p0 = p0(:)'; # make p0 a row vector
+
+    p = __dtmc_transient(P, n, p0);
   endif
 endfunction
 
 ## Helper function, compute steady-state probability
-function q = __dtmc_steady_state( P )
+function p = __dtmc_steady_state( P )
   N = rows(P);
   A = P-eye(N);
   A(:,N) = 1; # add normalization condition
@@ -116,25 +110,25 @@ function q = __dtmc_steady_state( P )
       warning( "dtmc(): P is reducible" );
 
   b = [ zeros(1,N-1) 1 ];
-  q = b/A;
+  p = b/A;
 endfunction
 
 ## Helper function, compute transient probability
-function q = __dtmc_transient( P, n, p0 )
-  q = p0*P^n;
+function p = __dtmc_transient( P, n, p0 )
+  p = p0*P^n;
 endfunction
 
 %!test
 %! P = [0.75 0.25; 0.5 0.5];
-%! q = dtmc(P);
-%! assert( q*P, q, 1e-5 );
-%! assert( q, [0.6666 0.3333], 1e-4 );
+%! p = dtmc(P);
+%! assert( p*P, p, 1e-5 );
+%! assert( p, [0.6666 0.3333], 1e-4 );
 
 %!test
 %! #Example 2.11 p. 44 Bolch et al.
 %! P = [0.5 0.5; 0.5 0.5];
-%! q = dtmc(P);
-%! assert( q, [0.5 0.5], 1e-3 );
+%! p = dtmc(P);
+%! assert( p, [0.5 0.5], 1e-3 );
 
 %!test
 %! fail("dtmc( [1 1 1; 1 1 1] )", "square");

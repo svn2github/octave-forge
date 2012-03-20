@@ -79,16 +79,15 @@ function result = ctmc_fpt( Q, i, j )
       error(err);
 
   if ( nargin == 1 ) 
-    M = zeros(N,N);
+    result = zeros(N,N);
     for j=1:N
       QQ = Q;
       QQ(j,:) = 0; # make state j absorbing
       for i=1:N
 	p0 = zeros(1,N); p0(i) = 1;
-	M(i,j) = ctmc_mtta(QQ,p0);
+	result(i,j) = ctmc_mtta(QQ,p0);
       endfor
     endfor
-    result = M;
   else
     (isscalar(i) && i>=1 && j<=N) || usage("i must be an integer in the range 1..%d", N);
     (isvector(j) && all(j>=1) && all(j<=N)) || usage("j must be an integer or vector with elements in 1..%d", N);
@@ -112,13 +111,3 @@ endfunction
 %! Q -= diag(sum(Q,2));
 %! M = ctmc_fpt(Q);
 %! assert( all(diag(M) < 10*eps) );
-
-%!xtest
-%! Q = unifrnd(0.1,0.9,10,10);
-%! Q -= diag(sum(Q,2));
-%! m = ctmc_fpt(Q,1,3);
-
-%!xtest
-%! Q = unifrnd(0.1,0.9,10,10);
-%! Q -= diag(sum(Q,2));
-%! m = ctmc_fpt(Q,1,[3 5 6]);

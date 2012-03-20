@@ -33,7 +33,7 @@
 
 function [result err] = ctmc_check_Q( Q )
 
-  persistent epsilon = 10*eps;
+  persistent epsilon = 100*eps;
 
   if ( nargin != 1 )
     print_usage();
@@ -46,7 +46,7 @@ function [result err] = ctmc_check_Q( Q )
     return;
   endif
   
-  if (any(Q(~logical(eye(size(Q))))<0) || \ # there is any negavite non-diagonal element
+  if (any(Q(~logical(eye(size(Q))))<0) || \ # there is any negative non-diagonal element
       norm( sum(Q,2), "inf" ) > epsilon )
     err = "Q is not an infinitesimal generator matrix";
     return;

@@ -71,6 +71,8 @@ dat = iddata (Y_dest, U_dest)
 [y, t] = lsim (sys, U_dest, [], x0);
 %[y, t] = lsim (sys, U_dest);
 
+err = norm (Y_dest - y, 1) / norm (Y_dest, 1)
+
 figure (1)
 plot (t, Y_dest, 'b')
 %plot (t, Y_dest, 'b', t, y, 'r')

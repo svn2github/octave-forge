@@ -206,6 +206,17 @@ For internal use only.")
         // y.rows == u.rows  is checked by iddata class
         // TODO: check minimal nsmp size
         
+        if (batch == 'O')
+        {
+            if (nsmp < 2*(m+l+1)*nobr - 1)
+                error ("slident: require NSMP >= 2*(M+L+1)*NOBR - 1");
+        }
+        else
+        {
+            if (nsmp < 2*nobr)
+                error ("slident: require NSMP >= 2*NOBR");
+        }
+        
         int ldu;
         
         if (m == 0)
@@ -299,6 +310,11 @@ For internal use only.")
                 ldwork = 6*(m+l)*nobr;
             }
         }
+////////////////////////////////////////////////////////////////////
+// TO BE REMOVED !!!
+////////////////////////////////////////////////////////////////////        
+ldwork = 100000;
+////////////////////////////////////////////////////////////////////
 
 /*
 IB01AD.f Lines 291-195:

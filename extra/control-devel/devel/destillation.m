@@ -63,7 +63,16 @@ Y_dest_n20=Y(:,7:9);
 Y_dest_n30=Y(:,10:12);
 
 
-dat = iddata (Y_dest, Y_dest)
+dat = iddata (Y_dest, U_dest)
 
-[sys, x0] = ident (dat, 15)  % nobr? 5, 90, ?
+[sys, x0] = ident (dat, 5)  % nobr? 5, 90, ?
+
+
+[y, t] = lsim (sys, U_dest, [], x0);
+
+figure (1)
+plot (t, Y_dest, 'b')
+%plot (t, Y_dest, 'b', t, y, 'r')
+legend ('y measured', 'y simulated', 'location', 'southeast')
+
 

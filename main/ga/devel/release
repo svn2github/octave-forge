@@ -1,0 +1,117 @@
+#! /bin/sh
+
+## Functions
+
+usage() {
+    echo "Usage: $(basename $0)"
+    echo "Create Octave-Forge package and function reference"
+    echo ""
+    echo "Code is taken from the current dir."
+    echo "Release files are created in a sandbox dir whose details are printed at the end of the script execution."
+}
+
+mktempd() {
+    TemplateCore=$1
+    Template="/tmp/${TemplateCore}.XXXXXX"
+    mktemp -d $Template
+}
+
+## John W. Eaton, David Bateman, Søren Hauberg, "GNU Octave - Free
+## Your Numbers", Edition 3 for Octave version 3.6.1, February 2011
+##
+## 37.4.1 The DESCRIPTION File
+##
+## The ‘DESCRIPTION’ file contains various information about the
+## package, such as its name, author, and version. This file has a
+## very simple format
+## • Lines starting with ‘#’ are comments.
+## • Lines starting with a blank character are continuations from the
+## • previous line.
+## • Everything else is of the form NameOfOption: ValueOfOption.
+## The following is a simple example of a ‘DESCRIPTION’ file
+##   Name: The name of my package
+##   Version: 1.0.0
+## [...]
+## The package manager currently recognizes the following keywords
+##   Name	Name of the package.
+##   Version	Version of the package. A package version must be 3
+##          	numbers separated by a dot.
+value_of_option() {
+    DescriptionFile=$1
+    NameOfOption=$2
+    grep -v "^[# ]" $DescriptionFile | grep "^${NameOfOption}" | cut -d " " -f 2
+}
+
+vcs_export() {
+    Path=$1
+    #svn export . $Path ## svn ## svn is untested TODO: test
+    git archive master | tar -x -C $Path ## git-svn
+}
+
+targz_md5_uue() {
+    ArchiveFile=$1
+    File=$2 ## Could also be a dir
+
+    tar czf $ArchiveFile $File
+    md5 $ArchiveFile > ${ArchiveFile}.md5
+    uuencode $ArchiveFile < $ArchiveFile > ${ArchiveFile}.uue
+}
+
+
+## Main
+
+## References:
+## http://octave.sourceforge.net/developers.html
+
+## Assumption: this script is run in the root directory of the
+## Octave-Forge to be released
+DescriptionFile=$(pwd)/DESCRIPTION
+if [ ! -r $DescriptionFile ]; then
+    usage
+    exit
+fi
+
+## Infer package name
+Pkg=$(value_of_option $DescriptionFile "Name")
+
+## Create temporary sandbox dir
+TmpDir=$(mktempd $Pkg)
+## Create an unversioned copy of the package in the sandbox dir
+mkdir ${TmpDir}/${Pkg}
+vcs_export ${TmpDir}/${Pkg}
+## TODO: consider deleting the devel/ folder
+
+## Move to sandbox dir
+cd $TmpDir
+
+## You have already manually bumped the `Version' number (and
+## optionally the `SVNRelease') in the package DESCRIPTION file
+##
+## Infer package version
+Version=$(value_of_option $DescriptionFile "Version")
+
+## produce a tar.gz of the package, take note of its md5 checksum and
+## encode it with uuencode
+PkgTarGz="${Pkg}-${Version}.tar.gz"
+targz_md5_uue $PkgTarGz $Pkg
+
+## generate the function reference HTML files with the command
+## generate_package_html from the package `generate_html'
+##
+## Assumption: package generate_html is already installed
+octave -q --eval \
+    "pkg install ${PkgTarGz}"
+Doc="${Pkg}-html"
+octave -q --eval \
+    "pkg load generate_html; generate_package_html ('${Pkg}', '${Doc}', 'octave-forge')"
+octave -q --eval \
+    "pkg uninstall ${Pkg}"
+
+## produce a tarball, take note of its checksum and encode it with
+## uuencode
+DocTarGz="${Doc}.tar.gz"
+targz_md5_uue $DocTarGz $Doc
+
+## List produced files in sandbox dir
+echo $TmpDir
+ls -l $TmpDir

@@ -53,7 +53,7 @@ octave_value get_element (element *root) {
   case value_complex:
     retval = 
       octave_value(Complex(get_element(root->child).double_value(),
-			   get_element(root->child->next).double_value()));
+                           get_element(root->child->next).double_value()));
     break;
 
   case value_string:
@@ -76,7 +76,7 @@ octave_value get_element (element *root) {
     tmp_matrix = ComplexMatrix(rows, columns);
     for (int k=0; (k<rows) && (root); k++)
       for (int l=0; (l<columns) && (root); l++, root = root->next)
-	tmp_matrix(k, l) = get_element(root).complex_value();
+        tmp_matrix(k, l) = get_element(root).complex_value();
     if (tmp_matrix.all_elements_are_real())
       retval = octave_value(real(tmp_matrix));
     else
@@ -87,13 +87,13 @@ octave_value get_element (element *root) {
     root = root->child;
     for (int k=0; root; root = root->next)
       if (root->name)
-	tmp_structure.assign(root->name, get_element(root));
+        tmp_structure.assign(root->name, get_element(root));
       else {
-	char *name = new char[7];
-	sprintf (name, "__%04d", k++);
-	warning ("no field name in structure.");
-	tmp_structure.assign(name, get_element(root));
-	delete[] name;
+        char *name = new char[7];
+        sprintf (name, "__%04d", k++);
+        warning ("no field name in structure.");
+        tmp_structure.assign(name, get_element(root));
+        delete[] name;
       }
     retval = octave_value(tmp_structure);
     break;
@@ -114,7 +114,7 @@ octave_value get_element (element *root) {
     tmp_cell = Cell(rows, columns);
     for (int k=0; (k<rows) && (root); k++)
       for (int l=0; (l<columns) && (root); l++, root = root->next)
-	tmp_cell(k, l) = get_element(root);
+        tmp_cell(k, l) = get_element(root);
     retval = octave_value(tmp_cell);
     break;
 
@@ -126,11 +126,10 @@ octave_value get_element (element *root) {
 }
 
 DEFUN_DLD (xmlread, args, nargout,
-	   "-*- texinfo -*-\n"
-           "@deftypefn {Loadable Function} {@var{value}} xmlread(@var{filename})\n"
-	   "\n"
-	   "Read a @var{value} from @var{filename} as an XML file\n"
-	   "@end deftypefn") {
+           "-*- texinfo -*-\n"
+           "@deftypefn {Loadable Function} {@var{value} =} xmlread(@var{filename})\n"
+           "Read a @var{value} from @var{filename} as an XML file\n"
+           "@end deftypefn") {
 
   /* Check argument */
   if (args.length() != 1) {

@@ -169,5 +169,3 @@ list *pop_list(list *child) {
 
   return father;
 }
-
-

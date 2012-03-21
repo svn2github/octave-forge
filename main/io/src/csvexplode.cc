@@ -18,14 +18,14 @@
 
 DEFUN_DLD (csvexplode, args, nargout,
            "-*- texinfo -*-\n"
-           "@deftypefn {Loadable Function} {@var{c} = } csvexplode (@var{str})\n"
-	   "@deftypefnx {Loadable Function} {@var{c} = } csvexplode (@var{str}, @var{sep})\n"
-	   "@deftypefnx {Loadable Function} {@var{c} = } csvexplode (@var{str}, @var{sep}, @var{prot})\n"
-	   "\n"
-	   "Explode a CSV string into a cell. "
-	   "@var{sep} (character value) changes the character used to separate two fields. "
-	   "The default value is a comma (@code{,}). @var{prot} (character value) changes "
-     "the character used to protect a string. The default is a double quote (@code{\"}).\n"
+           "@deftypefn {Loadable Function} {@var{c} =} csvexplode (@var{str})\n"
+           "@deftypefnx {Loadable Function} {@var{c} =} csvexplode (@var{str}, @var{sep})\n"
+           "@deftypefnx {Loadable Function} {@var{c} =} csvexplode (@var{str}, @var{sep}, @var{prot})\n"
+           "\n"
+           "Explode a CSV string into a cell. "
+           "@var{sep} (character value) changes the character used to separate two fields. "
+           "The default value is a comma (@code{,}). @var{prot} (character value) changes "
+           "the character used to protect a string. The default is a double quote (@code{\"}).\n"
            "@end deftypefn") {
 
   /* Check argument */
@@ -74,8 +74,8 @@ DEFUN_DLD (csvexplode, args, nargout,
 
       /* Store into the cell */
       retval(0, retval.columns()-1) =
-	((word == "") || (err != word_str+word.length())) ?
-	octave_value(word) : octave_value(val);
+        ((word == "") || (err != word_str+word.length())) ?
+        octave_value(word) : octave_value(val);
 
       word = "";
     }

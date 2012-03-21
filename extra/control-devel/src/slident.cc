@@ -95,7 +95,7 @@ For internal use only.")
     int nargin = args.length ();
     octave_value_list retval;
     
-    if (nargin != 11)
+    if (nargin != 12)
     {
         print_usage ();
     }
@@ -118,17 +118,18 @@ For internal use only.")
         Matrix y = args(0).matrix_value ();
         Matrix u = args(1).matrix_value ();
         int nobr = args(2).int_value ();
+        int nuser = args(3).int_value ();
         
-        const int imeth = args(3).int_value ();
-        const int ialg = args(4).int_value ();
-        const int ijobd = args(5).int_value ();
-        const int ibatch = args(6).int_value ();
-        const int iconct = args(7).int_value ();
-        const int ictrl = args(8).int_value ();
+        const int imeth = args(4).int_value ();
+        const int ialg = args(5).int_value ();
+        const int ijobd = args(6).int_value ();
+        const int ibatch = args(7).int_value ();
+        const int iconct = args(8).int_value ();
+        const int ictrl = args(9).int_value ();
         
-        double rcond = args(9).double_value ();
-        double tol = args(10).double_value ();
-        double tolb = args(9).double_value ();      // tolb = rcond
+        double rcond = args(10).double_value ();
+        double tol = args(11).double_value ();
+        double tolb = args(10).double_value ();      // tolb = rcond
 
             
         switch (imeth)
@@ -394,6 +395,14 @@ somehow ldrwrk and ldwork must have been mixed up here
         // resize
         int rs = 2*(m+l)*nobr;
         r.resize (rs, rs);
+        
+        if (nuser > 0)
+        {
+            if (nuser < nobr)
+                n = nuser;
+            else
+                error ("ident: 'nuser' invalid");
+        }
         
 ////////////////////////////////////////////////////////////////////////////////////
 //      SLICOT IB01BD - estimating system matrices, Kalman gain, and covariances  //

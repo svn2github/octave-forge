@@ -2030,8 +2030,9 @@ conct = 1;
 ctrl = 1;
 rcond = 0.0;
 tol = -1.0;
+n = 0;
 
-[a, b, c, d, q, ry, s, k, x0] = slident (Y, U, nobr, meth, alg, jobd, batch, conct, ctrl, rcond, tol)
+[a, b, c, d, q, ry, s, k, x0] = slident (Y, U, nobr, n, meth, alg, jobd, batch, conct, ctrl, rcond, tol)
 
 
 ae = [  0.8924   0.3887   0.1285   0.1716
@@ -2090,6 +2091,7 @@ P = ss (a, b, c, d, 1);
 % [y, t] = lsim (P, U);
 [y, t] = lsim (P, U, [], x0);
 
+err = norm (Y - y, 1) / norm (Y, 1)
 
 figure (3)
 plot (t, Y, 'b', t, y, 'r')

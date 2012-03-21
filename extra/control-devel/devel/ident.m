@@ -1,4 +1,6 @@
-function [sys, x0] = ident (dat, nobr)
+function [sys, x0] = ident (dat, s = [], n = [])
+
+
 
   %nobr = 15;
   meth = 2;
@@ -8,12 +10,38 @@ function [sys, x0] = ident (dat, nobr)
   conct = 1;
   ctrl = 0; %1;
   rcond = 0.0;
-  tol = -1.0;
+  tol = -1.0; % 0;
   
-  [n, l, m, e] = size (dat);
+  [ns, l, m, e] = size (dat);
   
-  nsmp = n(1)
-  nobr = fix ((nsmp+1)/(2*(m+l+1)))
+  if (isempty (s) && isempty (n))
+    nsmp = ns(1);
+    nobr = fix ((nsmp+1)/(2*(m+l+1)));
+    ctrl = 0;  # confirm system order estimate
+    % nsmp >= 2*(m+l+1)*nobr - 1
+    % nobr <= (nsmp+1)/(2*(m+l+1))
+  elseif (isempty (s))
+    s = min (2*n, n+10);
+    nsmp = ns(1);
+    nobr = fix ((nsmp+1)/(2*(m+l+1)));
+    nobr = min (nobr, s);
+    %% ctrl = 1;  # no confirmation
+    ctrl = 0; % setting of n not yet possible
+  elseif (isempty (n))
+    nobr = s;
+    ctrl = 0;  # confirm system order estimate
+  else         # s & n non-empty
+    nsmp = ns(1);
+    nobr = fix ((nsmp+1)/(2*(m+l+1)));
+    if (s > nobr)
+      error ("ident: s > nobr");
+    endif
+    nobr = s;
+    ## TODO: specify n for IB01BD
+  endif
+  
+  %nsmp = ns(1)
+  %nobr = fix ((nsmp+1)/(2*(m+l+1)))
   % nsmp >= 2*(m+l+1)*nobr - 1
   % nobr <= (nsmp+1)/(2*(m+l+1))
 %nobr = 10

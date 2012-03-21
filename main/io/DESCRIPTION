@@ -9,7 +9,7 @@ Categories: IO
 Problems: Default initial java memory probably too small, increase with
  java.opts (see documentation). No OXS write support. UNO support experimental.
 Depends: octave (>= 3.4.0)
-Suggested: java-1.2.8+ f Windows, windows-1.0.10+ f Windows, java-1.2.8 f linux
+Suggested: java (>= 1.2.8), windows (>= 1.0.10)
 Autoload: yes
 License: GPLv3+, simplified BSD
 Url: http://octave.sf.net

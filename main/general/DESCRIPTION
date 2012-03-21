@@ -1,12 +1,11 @@
-Name: General
+Name: general
 Version: 1.2.2
 Date: 2010-03-12
-Author: Various Authors
-Maintainer: The Octave Community
+Author: various authors
+Maintainer: Octave-Forge community <octave-dev@lists.sourceforge.net>
 Title: General
-Description: General tools for octave. String dictionary, parallel computing.
-Categories: General
+Description: General tools for Octave, string dictionary, parallel computing.
 Depends: octave (>= 3.4.3)
 Autoload: no
-License: GPL version 3 or later, public domain and modified BSD (see individual files)
+License: GPLv3+, modified BSD, public domain
 Url: http://octave.sf.net

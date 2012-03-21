@@ -1,20 +1,20 @@
-## Copyright (C) 2003   Tomer Altman   <taltman@lbl.gov>
+## Copyright (C) 2003 Tomer Altman <taltman@lbl.gov>
 ##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
-## (at your option) any later version.
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free Software
+## Foundation; either version 3 of the License, or (at your option) any later
+## version.
 ##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+## details.
 ##
-## You should have received a copy of the GNU General Public License
-## along with this program; If not, see <http://www.gnu.org/licenses/>.
-##
-## append_save M-file function
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, see <http://www.gnu.org/licenses/>.
 
+## append_save M-file function
+##
 ## Objective: be able to add variables to existing save files. Works for
 ## all the types of save files that "save" supports.
 ## 
@@ -163,4 +163,3 @@ function [ return_value ] = append_save ( filename,
 	   filename, " ", var_str; ] );
 
 endfunction
-	   

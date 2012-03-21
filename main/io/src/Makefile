@@ -1,6 +1,18 @@
 all: csvexplode.oct csv2cell.oct csvconcat.oct cell2csv.oct xmlread.oct
 
-MKOCTFILE = mkoctfile -Wall
+## Compiling these function does produces warnings but seems there is no one
+## to fix them so we do not enable Wall. Just for reference, here they are
+## xmltree_read.l: In function ‘xml_lex’:
+## xmltree_read.l:407: warning: operation on ‘pcdata’ may be undefined
+## xmltree_read.l:492: warning: operation on ‘pcdata’ may be undefined
+## xmltree_read.l:627: warning: operation on ‘pcdata’ may be undefined
+## xmltree_read.l:673: warning: operation on ‘pcdata’ may be undefined
+## xmltree_read.l:726: warning: operation on ‘pcdata’ may be undefined
+## xmltree_read.act: At top level:
+## xmltree_read.l:150: warning: ‘bufferliteral’ defined but not used
+## xmltree_read.l:1221: warning: ‘input’ defined but not used
+#MKOCTFILE = mkoctfile -Wall
+MKOCTFILE = mkoctfile
 
 ifdef FLEXML
 # flexml is a dead project.  It requires flex 2.5.4a-6  (flex-old on Debian).

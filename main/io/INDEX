@@ -9,6 +9,7 @@ CSV file functions
   csv2cell
   csvconcat
   csvexplode
+  cell2csv
 XML I/O
   xmlread
   xmlwrite

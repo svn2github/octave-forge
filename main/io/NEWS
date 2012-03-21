@@ -1,7 +1,7 @@
 Summary of important user-visible changes for releases of the io package
 
 ===============================================================================
-io-1.0.18   Release Date: 2012-03-18   Release Manager: Philip Nienhuis
+io-1.0.18   Release Date: 2012-03-22   Release Manager: Philip Nienhuis
 ===============================================================================
 
 ** The following functions have been imported from the miscellaneous package:
@@ -13,6 +13,7 @@ io-1.0.18   Release Date: 2012-03-18   Release Manager: Philip Nienhuis
 --- odsfinfo: fixed "wrong type argument `cell'" bug when run interactively.
 --- xlsopen, odsopen: fixed messed up screen output due to UNO usage warning.
 --- csv2cell: checks if file is empty and if so, return an empty cell.
+--- xlsopen: better Java detection logic, more informative error messages
 
 ** Adapted to internal LibreOffice-3.5-final changes. 
    Some bugs (flashing LO screens) still have to be fixed upstream - see here:
@@ -94,7 +95,7 @@ io-1.0.15 is primarily a bug fix release and a snapshot / wrap-up of current
       filed a bug report for this 
       (https://bugs.freedesktop.org/show_bug.cgi?id=40991) but I haven't seen
       it being picked up yet. Another example: while LO 3.3.1's row capacity
-      was already > 106, it took until LO 3.4 before this capacity was
+      was already > 10^6, it took until LO 3.4 before this capacity was
       implemented in the Java UNO classes.
   Like with OXS, I'm a bit stuck here - all this has to be fixed upstream.
 

@@ -1,17 +1,18 @@
 ## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <prnienhuis at users.sf.net>
-##
-## This program is free software; you can redistribute it and/or modify it under
-## the terms of the GNU General Public License as published by the Free Software
-## Foundation; either version 3 of the License, or (at your option) any later
-## version.
-##
-## This program is distributed in the hope that it will be useful, but WITHOUT
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-## FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
-## details.
-##
-## You should have received a copy of the GNU General Public License along with
-## this program; if not, see <http://www.gnu.org/licenses/>.
+## 
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+## 
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+## 
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} @var{xls} = xlsopen (@var{filename})
@@ -105,7 +106,7 @@
 ## 2011-09-08 Minor code cleanup
 ## 2012-01-26 Fixed "seealso" help string
 ##
-## Latest subfunction update: 2012-03-07
+## Latest subfunction update: 2012-03-21
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
@@ -366,6 +367,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
 	if (~xlssupport)
 		if (isempty (reqinterface))
+      printf ("None.\n");
 			warning ("No support for Excel .xls I/O"); 
 		else
 			warning ("File type not supported by %s %s %s %s %s", reqinterface{:});
@@ -394,19 +396,20 @@ endfunction
 
 
 ## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <prnienhuis at users.sf.net>
-##
-## This program is free software; you can redistribute it and/or modify it under
-## the terms of the GNU General Public License as published by the Free Software
-## Foundation; either version 3 of the License, or (at your option) any later
-## version.
-##
-## This program is distributed in the hope that it will be useful, but WITHOUT
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-## FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
-## details.
-##
-## You should have received a copy of the GNU General Public License along with
-## this program; if not, see <http://www.gnu.org/licenses/>.
+## 
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+## 
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+## 
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} @var{xlsinterfaces} = getxlsinterfaces (@var{xlsinterfaces})
@@ -450,6 +453,9 @@ endfunction
 ## 2011-09-18 Added temporary warning about UNO interface
 ## 2012-03-01 Changed UNO warning so that it is suppressed when UNO is not yet chosen
 ## 2012-03-07 Only check for COM if run on Windows
+## 2012-03-21 Print newline if COM found but no Java support
+##     ''     Improved logic for finding out what interfaces to check
+##     ''     Fixed bugs with Java interface checking (tmp1 initialization)
 
 function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 
@@ -457,11 +463,18 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 	persistent tmp1 = []; persistent jcp;	# Java class path
   persistent uno_1st_time = 0;
 
-	if (isempty (xlsinterfaces.COM) && isempty (xlsinterfaces.POI) && isempty (xlsinterfaces.JXL) && isempty (xlsinterfaces.OXS))
+	if (isempty (xlsinterfaces.COM) && isempty (xlsinterfaces.POI) && isempty (xlsinterfaces.JXL)
+   && isempty (xlsinterfaces.OXS) && isempty (xlsinterfaces.UNO))
+    # Looks like first call to xlsopen. Check Java support
 		printf ("Detected interfaces: ");
     tmp1 = [];
-	elseif (isempty (xlsinterfaces.COM) || isempty (xlsinterfaces.POI) || isempty (xlsinterfaces.JXL) || isempty (xlsinterfaces.OXS))
-		tmp1 = [];
+	elseif (isempty (xlsinterfaces.POI) || isempty (xlsinterfaces.JXL)
+       || isempty (xlsinterfaces.OXS) || isempty (xlsinterfaces.UNO))
+    # Can't be first call. Here one of the Java interfaces is requested
+    if (~tmp1)
+      # Check Java support again
+      tmp1 = [];
+    endif
 	endif
 	deflt = 0;
 
@@ -481,8 +494,10 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
         printf ("COM");
         if (deflt), printf ("; "); else, printf ("*; "); deflt = 1; endif
       catch
-        # COM non-existent
-        printf ("not working.\n");
+        # COM non-existent. Only print message if COM is explicitly requested (tmp1==[])
+        if (~isempty (tmp1))
+          printf ("ActiveX not working; no Excel installed?\n"); 
+        endif
       end_try_catch
     endif
 	endif
@@ -505,23 +520,25 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 			tmp1 = 1;
 		catch
 			# No Java support found
+			tmp1 = 0;
 			if ~(isempty (xlsinterfaces.POI) && isempty (xlsinterfaces.JXL)...
 			  && isempty (xlsinterfaces.OXS) && isempty (xlsinterfaces.UNO))
-				# Some Java-based interface requested but Java support is absent
-				error (' No Java support found.');
-			else
-				# No specific Java-based interface requested
+				# Some Java-based interface explicitly requested but Java support is absent
         xlsinterfaces.POI = 0;
         xlsinterfaces.JXL = 0;
         xlsinterfaces.OXS = 0;
         xlsinterfaces.UNO = 0;
+				warning (' No Java support found (no Java JRE? no Java pkg installed AND loaded?');
+			else
+        # No specific Java-based interface requested (first call?)
+        xlsinterfaces.POI = 0;
+        xlsinterfaces.JXL = 0;
+        xlsinterfaces.OXS = 0;
+        xlsinterfaces.UNO = 0;
+        printf ("\n");
 				return;
 			endif
-			tmp1 = 0;
 		end_try_catch
-	elseif (~tmp1)
-		% Earlier on no Java support detected
-		error (" No Java support found.");
 	endif
 
 	# Try Java & Apache POI

@@ -10,3 +10,4 @@ if ~isempty (javapkgind)
     spr_status = chk_spreadsheet_support ([libdir "/java"]);
   endif
 endif
+clear javapkgind javapkg libdir spr_status pkglist ;

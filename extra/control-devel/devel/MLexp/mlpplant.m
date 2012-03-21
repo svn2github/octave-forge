@@ -47,33 +47,25 @@ U=powerplant(:,1:5);
 Y=powerplant(:,6:8);
 Yr=powerplant(:,9:11);
 
-inname = {'gas flow',
-          'turbine valves opening',
-          'super heater spray flow',
-          'gas dampers',
-          'air flow'};
-
-outname = {'steam pressure',
-           'main steam temperature',
-           'reheat steam temperature'};
-           
-tsam = 1228.8;
-
-dat = iddata (Y, U, tsam, 'outname', outname, 'inname', inname)
+%{
+dat = iddata (Y, U)
 
 [sys, x0] = ident (dat, 10, 8)     % s=10, n=8
+%}
+load pplant
 
+sys = ss (a, b, c, d, 1);
 
-[y, t] = lsim (sys, U, [], x0);
+[y, t] = lsim (sys, U, 1:size(U,1), x0);
 
 err = norm (Y - y, 1) / norm (Y, 1)
 
 figure (1)
-p = columns (Y);
+p = size (Y, 2);
 for k = 1 : p
   subplot (3, 1, k)
   plot (t, Y(:,k), 'b', t, y(:,k), 'r')
-endfor
+end
 %title ('DaISy: Power Plant')
 %legend ('y measured', 'y simulated', 'location', 'southeast')
 

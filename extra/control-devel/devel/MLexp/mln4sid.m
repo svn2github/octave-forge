@@ -59,21 +59,31 @@ outname = {'steam pressure',
            
 tsam = 1228.8;
 
-dat = iddata (Y, U, tsam, 'outname', outname, 'inname', inname)
+dat = iddata (Y, U, tsam, 'outputname', outname, 'inputname', inname)
 
-[sys, x0] = ident (dat, 10, 8)     % s=10, n=8
 
+
+[sys, x0] = n4sid (dat, 8);     % s=10, n=8
+
+
+%sys = ss (a, b, c, d, 1);
+
+x0 = sys.x0
+sys = ss (sys);
+sys = sys(:, 'Measured')
 
 [y, t] = lsim (sys, U, [], x0);
+%[y, t] = lsim (sys, U, 1:size(U,1));
+
 
 err = norm (Y - y, 1) / norm (Y, 1)
 
 figure (1)
-p = columns (Y);
+p = size (Y, 2);
 for k = 1 : p
   subplot (3, 1, k)
   plot (t, Y(:,k), 'b', t, y(:,k), 'r')
-endfor
+end
 %title ('DaISy: Power Plant')
 %legend ('y measured', 'y simulated', 'location', 'southeast')
 

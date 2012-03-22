@@ -144,9 +144,6 @@ Geometric graphs visualization
  drawGraph.m
 Geometric graphs manipulation
 Input
- svgload
- svgnormalize
- svgpath2polygon
  @svg/svg
  @svg/plot
  @svg/getpath

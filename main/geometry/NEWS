@@ -1,11 +1,14 @@
 Summary of important user-visible changes for releases of the geometry package
 
 ===============================================================================
-geometry-1.4.1   Release Date: 2012-03-18  Release Manager: Juan Pablo Carbajal
+geometry-1.4.1   Release Date: 2012-03-22  Release Manager: Juan Pablo Carbajal
 ===============================================================================
 
 * Renamed functions
  - Contents.m renamed to geom2d_Contents to avoid clashes.
+
+* Deprecated functions
+ - svgload, svgnormalize, svgpath2polygon: Use the methods in class svg.
 
 * Bug fixes
  - @svg/path2polygon.m

@@ -15,21 +15,30 @@
 
 %% -*- texinfo -*-
 %% @deftypefn {Function File} { @var{cm} =} shapecentroid (@var{pp})
-%%  Centroid of a plane shape defined with piecewise smooth polynomials.
+%%  Centroid of a simple plane shape defined with piecewise smooth polynomials.
 %%
 %% The shape is defined with piecewise smooth polynomials. @var{pp} is a
 %% cell where each elements is a 2-by-(poly_degree+1) matrix containing a pair
 %% of polynomials.
 %% @code{px(i,:) = pp@{i@}(1,:)} and @code{py(i,:) = pp@{i@}(2,:)}.
 %%
+%% The edges of the shape should not self-intersect. This function does not check for the
+%% sanity of the shape.
+%%
 %% @seealso{shapearea, shape2polygon}
 %% @end deftypefn
 
 function cm = shapecentroid (shape)
 
-  cm = sum( cell2mat ( cellfun (@CMint, shape, 'UniformOutput', false)));
+  cm = sum( cell2mat ( cellfun (@CMint, shape, 'UniformOutput', false)), 1);
   A = shapearea(shape);
   cm = cm / A;
+
+  [~,id] = lastwarn ('','');
+  if strcmp (id ,'geom2d:shapearea:InvalidResult')
+    lastwarn('Inverting centriod','geom2d:shapecentriod:InvalidResult');
+    cm = -cm;
+  end
 
 endfunction
 
@@ -37,8 +46,8 @@ function dcm = CMint (x)
 
     px = x(1,:);
     py = x(2,:);
-    Px = polyint (conv(conv (px , px)/2 , polyder (py)));
-    Py = polyint (conv(-conv (py , py)/2 , polyder (px)));
+    Px = polyint (conv(conv (-px , py) , polyder (px)));
+    Py = polyint (conv(conv (px , py) , polyder (py)));
 
     dcm = zeros (1,2);
     dcm(1) = diff(polyval(Px,[0 1]));
@@ -47,17 +56,22 @@ function dcm = CMint (x)
 endfunction
 
 %!demo % non-convex bezier shape
-%! weirdhearth ={[34.81947,-63.60585 41.35964,1.61093; ...
-%!                73.22086,4.95439 7.1796,-34.7948]; ...
-%!                 [30.26599,-50.0316 77.6279,8.52058; ...
-%!                  -18.66371,58.02699 -168.20415,52.74819]};
-%! CoM = shapecentroid (weirdhearth)
-%! Gcentriod = centroid(shape2polygon(weirdhearth))
+%! boomerang = {[ 0 -2 1; ...
+%!               -4  4 0]; ...
+%!              [0.25 -1; ...
+%!               0     0]; ...
+%!              [ 0 1.5 -0.75; ...
+%!               -3 3    0];
+%!              [0.25 0.75; ...
+%!               0 0]};
+%! CoM = shapecentroid (boomerang)
+%! Gcentriod = centroid(shape2polygon(boomerang))
 %!
-%! shapeplot(weirdhearth);
+%! figure(1); clf;
+%! shapeplot(boomerang,10,'-o');
 %! hold on
-%! drawPoint(CoM,'ok');
-%! drawPoint(Gcentriod,'or');
+%! drawPoint(CoM,'xk;shape centriod;');
+%! drawPoint(Gcentriod,'xr;point centriod;');
 %! hold off
 %! axis equal
 
@@ -71,10 +85,10 @@ endfunction
 %! CoM = shapecentroid (Lshape)
 %! Gcentriod = centroid (shape2polygon (Lshape))
 %!
-%! shapeplot(Lshape);
+%! shapeplot(Lshape,10,'-o');
 %! hold on
-%! drawPoint(CoM,'ok');
-%! drawPoint(Gcentriod,'or');
+%! drawPoint(CoM,'xk;shape centriod;');
+%! drawPoint(Gcentriod,'xr;point centriod;');
 %! hold off
 %! axis equal
 
@@ -82,10 +96,12 @@ endfunction
 %! square = {[1 -0.5; 0 -0.5]; [0 0.5; 1 -0.5]; [-1 0.5; 0 0.5]; [0 -0.5; -1 0.5]};
 %! CoM = shapecentroid (square);
 %! assert (CoM, [0 0], sqrt(eps));
+
+%!test
+%! square = {[1 -0.5; 0 -0.5]; [0 0.5; 1 -0.5]; [-1 0.5; 0 0.5]; [0 -0.5; -1 0.5]};
 %! square_t = shapetransform (square,[1;1]);
-%! CoM_t = shapecentroid (square_t);
-%! assert (CoM, [0 0], sqrt(eps));
-%! assert (CoM_t, [1 1], sqrt(eps));
+%! CoM = shapecentroid (square_t);
+%! assert (CoM, [1 1], sqrt(eps));
 
 %!test
 %! circle = {[1.715729  -6.715729    0   5; ...
@@ -98,3 +114,37 @@ endfunction
 %!            -1.715729   6.715729    0  -5]};
 %! CoM = shapecentroid (circle);
 %! assert (CoM , [0 0], 5e-3);
+
+%!shared shape
+%! shape = {[-93.172   606.368  -476.054   291.429; ...
+%!          -431.196   637.253    11.085   163.791]; ...
+%!         [-75.3626  -253.2337   457.1678   328.5714; ...
+%!           438.7659  -653.6278    -7.9953   380.9336]; ...
+%!         [-89.5841   344.9716  -275.3876   457.1429; ...
+%!          -170.3613   237.8858     1.0469   158.0765];...
+%!         [32.900  -298.704   145.804   437.143; ...
+%!         -243.903   369.597   -34.265   226.648]; ...
+%!         [-99.081   409.127  -352.903   317.143; ...
+%!           55.289  -114.223   -26.781   318.076]; ...
+%!         [-342.231   191.266   168.108   274.286; ...
+%!           58.870   -38.083   -89.358   232.362]};
+
+%!test % x-Reflection
+%! v = shapecentroid (shape)(:);
+%! T = createLineReflection([0 0 1 0]);
+%! nshape = shapetransform (shape, T);
+%! vn = shapecentroid (nshape)(:);
+%! assert(vn,T(1:2,1:2)*v);
+
+%!test % Rotation
+%! v = shapecentroid (shape)(:);
+%! T = createRotation(v.',pi/2);
+%! nshape = shapetransform (shape, T);
+%! vn = shapecentroid (nshape)(:);
+%! assert(vn,v,1e-2);
+
+%!test % Translation
+%! v = shapecentroid (shape)(:);
+%! nshape = shapetransform (shape, -v);
+%! vn = shapecentroid (nshape)(:);
+%! assert(vn,[0; 0],1e-2);

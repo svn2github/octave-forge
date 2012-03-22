@@ -109,36 +109,3 @@ endfunction
 %! axis square
 
 
-%!shared shape
-%! shape = {[-93.172   606.368  -476.054   291.429; ...
-%!          -431.196   637.253    11.085   163.791]; ...
-%!         [-75.3626  -253.2337   457.1678   328.5714; ...
-%!           438.7659  -653.6278    -7.9953   380.9336]; ...
-%!         [-89.5841   344.9716  -275.3876   457.1429; ...
-%!          -170.3613   237.8858     1.0469   158.0765];...
-%!         [32.900  -298.704   145.804   437.143; ...
-%!         -243.903   369.597   -34.265   226.648]; ...
-%!         [-99.081   409.127  -352.903   317.143; ...
-%!           55.289  -114.223   -26.781   318.076]; ...
-%!         [-342.231   191.266   168.108   274.286; ...
-%!           58.870   -38.083   -89.358   232.362]};
-
-%!test
-%! v = shapecentroid (shape)(:);
-%! nshape = shapetransform (shape, -v);
-%! vn = shapecentroid (nshape)(:);
-%! assert(vn,[0; 0],1e-2);
-
-%!test
-%! v = shapecentroid (shape)(:);
-%! T = createLineReflection([0 0 1 0]);
-%! nshape = shapetransform (shape, T);
-%! vn = shapecentroid (nshape)(:);
-%! assert(vn,T(1:2,1:2)*v);
-
-%!test
-%! v = shapecentroid (shape)(:);
-%! T = createRotation(v.',pi/2);
-%! nshape = shapetransform (shape, T);
-%! vn = shapecentroid (nshape)(:);
-%! assert(vn,v,1e-2);

@@ -39,8 +39,8 @@
 %% With only one input argument, calculates the polynomial @var{pp} of the cubic
 %% Bezier curve defined by the 4 control points stored in @var{points}. The first
 %% point is the inital point of the curve. The segment joining the first point
-%% with the second point defines the tangent of the curve at the initial point.
-%% The segment that joints the third point with the fourth defines the tanget at
+%% with the second point (first center) defines the tangent of the curve at the initial point.
+%% The segment that joints the third point (second center) with the fourth defines the tanget at
 %% the end-point of the curve, which is defined in the fourth point.
 %% @var{points} is either a 4-by-2 array (vertical concatenation of point
 %% coordinates), or a 1-by-8 array (horizotnal concatenation of point

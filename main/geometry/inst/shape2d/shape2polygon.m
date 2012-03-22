@@ -29,21 +29,24 @@
 function polygon = shape2polygon (shape, N=16)
 
   polygon = cell2mat ( ...
-             cellfun(@(x) func (x,N), shape,'UniformOutput',false) );
+             cellfun (@(x) func (x,N), shape,'UniformOutput',false) );
 
-  if size(polygon, 1) == 1
-    polygon(2,1) = polyval(shape{1}(1,:),1);
-    polygon(2,2) = polyval(shape{1}(2,:),1);
+  %% TODO simply the polygon based on curvature
+%  polygon = unique (polygon, 'rows');
+
+  if size (polygon, 1) == 1
+    polygon(2,1) = polyval (shape{1}(1,:), 1);
+    polygon(2,2) = polyval (shape{1}(2,:), 1);
   end
 
 endfunction
 
-function y = func(x,N)
+function y = func (x,N)
 
-  if size(x,2) > 2
-    t = linspace(0,1-1/N,N).';
-    y(:,1) = polyval(x(1,:),t);
-    y(:,2) = polyval(x(2,:),t);
+  if size (x,2) > 2
+    t = linspace (0,1-1/N,N).';
+    y(:,1) = polyval (x(1,:), t);
+    y(:,2) = polyval (x(2,:), t);
   else
     y = x(:,2).';
   end

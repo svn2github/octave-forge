@@ -26,10 +26,12 @@
 %% @seealso{shapecentroid, shape2polygon, shapeplot}
 %% @end deftypefn
 
-function A = shapearea (shape)
+function [A ccw] = shapearea (shape)
 
   A = sum(cellfun (@Aint, shape));
   if A < 0
+    warning ('geom2d:shapearea:InvalidResult', ...
+    'Shape has negative area. Assuming this is due to a clockwise parametrization of the boundary');
     A = -A;
   end
 
@@ -46,12 +48,16 @@ function dA = Aint (x)
 
 end
 
-%!demo % non-convex bezier shape
-%! weirdhearth ={[-17.6816  -34.3989    7.8580    3.7971; ...
-%!                15.4585  -28.3820  -18.7645    9.8519]; ...
-%!                 [-27.7359   18.1039  -34.5718    3.7878; ...
-%!                  -40.7440   49.7999  -25.5011    2.2304]};
-%! A = shapearea (weirdhearth)
+%!demo % non-convex piece-wise polynomial shape
+%! boomerang = {[ 0 -2 1; ...
+%!               -4  4 0]; ...
+%!              [0.25 -1; ...
+%!               0     0]; ...
+%!              [ 0 1.5 -0.75; ...
+%!               -3 3    0];
+%!              [0.25 0.75; ...
+%!               0 0]};
+%! A = shapearea (boomerang)
 
 %!test
 %! triangle = {[1 0; 0 0]; [-0.5 1; 1 0]; [-0.5 0.5; -1 1]};

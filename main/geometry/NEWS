@@ -14,11 +14,12 @@ geometry-1.4.1   Release Date: 2012-03-22  Release Manager: Juan Pablo Carbajal
  - @svg/path2polygon.m
  - Fix addpath/rmpath installation warnings
  - Fix octclip/src/Makefile
+ - Fix shapecentriod.m for piece-wise polynomial shapes.
 
 * Known issues
  - simplifypolygon.m returns empty polygons when points are repeated, i.e when
   the polygon is not correctly formed.
- - shapecentriod.m gives wierd results for Bezier curves.
+
 
 ===============================================================================
 geometry-1.4.0   Release Date: 2012-01-25   Release Manager: Juan Pablo Carbajal

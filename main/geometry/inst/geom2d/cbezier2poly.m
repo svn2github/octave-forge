@@ -10,8 +10,8 @@
 %%
 %% 1. Redistributions of source code must retain the above copyright notice, this
 %%    list of conditions and the following disclaimer.
-%%     
-%% 2. Redistributions in binary form must reproduce the above copyright notice, 
+%%
+%% 2. Redistributions in binary form must reproduce the above copyright notice,
 %%    this list of conditions and the following disclaimer in the documentation
 %%    and/or other materials provided with the distribution.
 %%
@@ -19,9 +19,9 @@
 %% AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 %% IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
 %% ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
-%% LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+%% LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
 %% CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-%% SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
+%% SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 %% INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
 %% CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 %% ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
@@ -37,7 +37,11 @@
 %% Returns the polynomial representation of the cubic Bezier defined by the control points @var{points}.
 %%
 %% With only one input argument, calculates the polynomial @var{pp} of the cubic
-%% Bezier curve defined by the 4 control points stored in @var{points}.
+%% Bezier curve defined by the 4 control points stored in @var{points}. The first
+%% point is the inital point of the curve. The segment joining the first point
+%% with the second point defines the tangent of the curve at the initial point.
+%% The segment that joints the third point with the fourth defines the tanget at
+%% the end-point of the curve, which is defined in the fourth point.
 %% @var{points} is either a 4-by-2 array (vertical concatenation of point
 %% coordinates), or a 1-by-8 array (horizotnal concatenation of point
 %% coordinates). @var{pp} is a 2-by-3 array, 1st row is the polynomial for the
@@ -73,7 +77,7 @@ function varargout = cbezier2poly (points, ti=[])
 
   % compute coefficients of Bezier Polynomial
   pp = zeros(2,4);
-  
+
   pp(:,4) = [p1(1); ...
              p1(2)];
   pp(:,3) = [3 * c1(1) - 3 * p1(1); ...
@@ -148,4 +152,3 @@ endfunction
 %! y2 = polyval(pp(2,:),t);
 %! assert(x,x2);
 %! assert(y,y2);
-

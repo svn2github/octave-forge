@@ -1,24 +1,25 @@
 ## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <prnienhuis at users.sf.net>
-##
-## This program is free software; you can redistribute it and/or modify it under
-## the terms of the GNU General Public License as published by the Free Software
-## Foundation; either version 3 of the License, or (at your option) any later
-## version.
-##
-## This program is distributed in the hope that it will be useful, but WITHOUT
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-## FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
-## details.
-##
-## You should have received a copy of the GNU General Public License along with
-## this program; if not, see <http://www.gnu.org/licenses/>.
+## 
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+## 
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+## 
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} @var{ods} = odsopen (@var{filename})
 ## @deftypefnx {Function File} @var{ods} = odsopen (@var{filename}, @var{readwrite})
 ## @deftypefnx {Function File} @var{ods} = odsopen (@var{filename}, @var{readwrite}, @var{reqintf})
 ## Get a pointer to an OpenOffice_org spreadsheet in the form of return
-## argument (struct) @var{ods}.
+## argument @var{ods}.
 ##
 ## Calling odsopen without specifying a return argument is fairly useless!
 ##
@@ -91,7 +92,7 @@
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-02-26 Added ";" to suppress echo of filename f UNO
 ##
-## Latest change on subfunctions below: 2012-02-01
+## Latest change on subfunctions below: 2012-03-22
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
@@ -305,6 +306,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 #		<other interfaces here>
 
 	if (~odssupport)
+    printf ("None.\n");
 		warning ("No support for OpenOffice.org .ods I/O"); 
 		ods = [];
 	else
@@ -328,19 +330,20 @@ endfunction
 
 
 ## Copyright (C) 2009,2010,2011 Philip Nienhuis <prnienhuis at users.sf.net>
-##
-## This program is free software; you can redistribute it and/or modify it under
-## the terms of the GNU General Public License as published by the Free Software
-## Foundation; either version 3 of the License, or (at your option) any later
-## version.
-##
-## This program is distributed in the hope that it will be useful, but WITHOUT
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-## FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
-## details.
-##
-## You should have received a copy of the GNU General Public License along with
-## this program; if not, see <http://www.gnu.org/licenses/>.
+## 
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+## 
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+## 
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} @var{odsinterfaces} = getodsinterfaces (@var{odsinterfaces})
@@ -388,19 +391,24 @@ endfunction
 ## 2011-09-03 Fixed order of odsinterfaces.<member> statement in Java detection try-catch
 ##     ''     Reset tmp1 (always allow interface rediscovery) for empty odsinterfaces arg
 ## 2011-09-18 Added temporary warning about UNO interface
+## 2012-03-22 Improved Java checks (analogous to xlsopen)
 
 function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 
-	persistent tmp1 = []; persistent jcp;
+  # tmp1 = [] (not initialized), 0 (No Java detected), or 1 (Working Java found)
+	persistent tmp1 = []; persistent jcp;  # Java class path
   persistent uno_1st_time = 0;
 
 	if (isempty (odsinterfaces.OTK) && isempty (odsinterfaces.JOD) && isempty (odsinterfaces.UNO))
     # Assume no interface detection has happened yet
-		printf ("Detected interfaces: ");
+		printf ("Detected ODS interfaces: ");
     tmp1 = [];
 	elseif (isempty (odsinterfaces.OTK) || isempty (odsinterfaces.JOD) || isempty (odsinterfaces.UNO))
-    # At least one interface is requested by user
-		tmp1 = [];
+    # Can't be first call. Here one of the Java interfaces is requested
+    if (~tmp1)
+      # Check Java support again
+      tmp1 = [];
+    endif
 	endif
 	deflt = 0;
 
@@ -422,21 +430,23 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 			tmp1 = 1;
 		catch
 			# No Java support
+      tmp1 = 0;
 			if ~(isempty (odsinterfaces.OTK) && isempty (odsinterfaces.JOD) && isempty (odsinterfaces.UNO))
-				# Some Java-based interface requested but Java support is absent
-				error ('No Java support found.');
+				# Some Java-based interface explicitly requested but Java support is absent
+        xlsinterfaces.OTK = 0;
+        xlsinterfaces.JOD = 0;
+        xlsinterfaces.UNO = 0;
+				warning (' No Java support found (no Java JRE? no Java pkg installed AND loaded?');
 			else
 				# No specific Java-based interface requested. Just return (needed for if
 				# ever a non-Java based interfaces will be implemented)
         odsinterfaces.OTK = 0;
         odsinterfaces.JOD = 0;
         odsinterfaces.UNO = 0;
+        printf ("\n");
 				return;
 			endif
 		end_try_catch
-	elseif (~tmp1)
-		% Earlier on no Java support detected
-		error (" No Java support found.");
 	endif
 
 	# Try Java & ODF toolkit

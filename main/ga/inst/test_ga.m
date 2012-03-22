@@ -43,7 +43,3 @@ test rastriginsfcn
 ## Genetic Algorithm
 test gaoptimset
 test ga
-## TODO: split performance tests
-
-## TODO: review all unit tests (DONE: rastriginsfcn)
-## TODO: write missing unit tests, or write per-function TODOs

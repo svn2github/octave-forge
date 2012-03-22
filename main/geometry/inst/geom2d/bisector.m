@@ -10,8 +10,8 @@
 %%
 %% 1. Redistributions of source code must retain the above copyright notice, this
 %%    list of conditions and the following disclaimer.
-%%     
-%% 2. Redistributions in binary form must reproduce the above copyright notice, 
+%%
+%% 2. Redistributions in binary form must reproduce the above copyright notice,
 %%    this list of conditions and the following disclaimer in the documentation
 %%    and/or other materials provided with the distribution.
 %%
@@ -19,9 +19,9 @@
 %% AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 %% IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
 %% ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
-%% LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+%% LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
 %% CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-%% SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
+%% SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 %% INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
 %% CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 %% ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
@@ -43,7 +43,7 @@
 %%   The result has the form [x0 y0 dx dy], with [x0 y0] being the origin
 %%   point ans [dx dy] being the direction vector, normalized to have unit
 %%   norm.
-%%   
+%%
 %%   @seealso{lines2d, rays2d}
 %% @end deftypefn
 
@@ -53,9 +53,9 @@ function ray = bisector(varargin)
       % two lines
       line1 = varargin{1};
       line2 = varargin{2};
-      
-      point = intersectLines(line1, line2);    
-      
+
+      point = intersectLines(line1, line2);
+
   elseif length(varargin)==3
       % three points
       p1 = varargin{1};
@@ -65,7 +65,7 @@ function ray = bisector(varargin)
       line1 = createLine(p2, p1);
       line2 = createLine(p2, p3);
       point = p2;
-      
+
   elseif length(varargin)==1
       % three points, given in one array
       var = varargin{1};
@@ -90,7 +90,11 @@ function ray = bisector(varargin)
 
 endfunction
 
+%!shared privpath
+%! privpath = [fileparts(which('geom2d_Contents')) filesep() 'private'];
+
 %!test
+%!  addpath (privpath,'-end')
 %!  p0 = [0 0];
 %!  p1 = [10 0];
 %!  p2 = [0 10];
@@ -99,19 +103,24 @@ endfunction
 %!  ray = bisector(line1, line2);
 %!  assertElementsAlmostEqual([0 0], ray(1,1:2));
 %!  assertAlmostEqual(pi/4, lineAngle(ray));
+%!  rmpath (privpath);
 
 %!test
+%!  addpath (privpath,'-end')
 %!  p0 = [0 0];
 %!  p1 = [10 0];
 %!  p2 = [0 10];
 %!  ray = bisector(p1, p0, p2);
 %!  assertElementsAlmostEqual([0 0], ray(1,1:2));
 %!  assertAlmostEqual(pi/4, lineAngle(ray));
+%!  rmpath (privpath);
 
 %!test
+%!  addpath (privpath,'-end')
 %!  p0 = [0 0];
 %!  p1 = [10 0];
 %!  p2 = [0 10];
 %!  ray = bisector([p1; p0; p2]);
 %!  assertElementsAlmostEqual([0 0], ray(1,1:2));
 %!  assertAlmostEqual(pi/4, lineAngle(ray));
+%!  rmpath (privpath);

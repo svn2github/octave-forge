@@ -10,8 +10,8 @@
 %%
 %% 1. Redistributions of source code must retain the above copyright notice, this
 %%    list of conditions and the following disclaimer.
-%%     
-%% 2. Redistributions in binary form must reproduce the above copyright notice, 
+%%
+%% 2. Redistributions in binary form must reproduce the above copyright notice,
 %%    this list of conditions and the following disclaimer in the documentation
 %%    and/or other materials provided with the distribution.
 %%
@@ -19,9 +19,9 @@
 %% AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 %% IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
 %% ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
-%% LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+%% LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
 %% CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-%% SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
+%% SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 %% INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
 %% CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 %% ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
@@ -47,7 +47,7 @@
 %%   Creates the median of the @var{edge}. @var{edge} is a 1*4 array, containing [X1 Y1]
 %%   coordinates of first point, and [X2 Y2], the coordinates of the second
 %%   point.
-%%  
+%%
 %%   Example
 %%
 %%  @example
@@ -84,27 +84,27 @@ function lin = medianLine(varargin)
       tab = varargin{1};
       if size(tab, 2)==2
           % input is an array of two points
-          x0 = tab(1,1); 
+          x0 = tab(1,1);
           y0 = tab(1,2);
-          dx = tab(2,1)-x0; 
+          dx = tab(2,1)-x0;
           dy = tab(2,2)-y0;
       else
           % input is an edge
-          x0 = tab(:, 1); 
+          x0 = tab(:, 1);
           y0 = tab(:, 2);
-          dx = tab(:, 3) - tab(:, 1); 
+          dx = tab(:, 3) - tab(:, 1);
           dy = tab(:, 4) - tab(:, 2);
       end
-      
+
   elseif nargs==2
       % input is given as two points, or two point arrays
       p1 = varargin{1};
       p2 = varargin{2};
-      x0 = p1(:, 1); 
+      x0 = p1(:, 1);
       y0 = p1(:, 2);
-      dx = bsxfun(@minus, p2(:, 1), x0); 
+      dx = bsxfun(@minus, p2(:, 1), x0);
       dy = bsxfun(@minus, p2(:, 2), y0);
-      
+
   else
       error('Too many input arguments');
   end
@@ -115,23 +115,32 @@ function lin = medianLine(varargin)
 
 endfunction
 
+%!shared privpath
+%! privpath = [fileparts(which('geom2d_Contents')) filesep() 'private'];
+
 %!test
+%!  addpath (privpath,'-end')
 %!  p1 = [0 0];
 %!  p2 = [10 0];
 %!  exp = [5 0 0 10];
 %!  lin = medianLine(p1, p2);
 %!  assertElementsAlmostEqual(exp, lin);
-  
+%!  rmpath (privpath);
+
 %!test
+%!  addpath (privpath,'-end')
 %!  p1 = [0 0];
 %!  p2 = [10 0];
 %!  exp = [5 0 0 10];
 %!  lin = medianLine([p1 p2]);
 %!  assertElementsAlmostEqual(exp, lin);
+%!  rmpath (privpath);
 
 %!test
+%!  addpath (privpath,'-end')
 %!  p1 = [0 0; 10 10];
 %!  p2 = [10 0;10 20];
 %!  exp = [5 0 0 10; 10 15 -10 0];
 %!  lin = medianLine(p1, p2);
 %!  assertElementsAlmostEqual(exp, lin);
+%!  rmpath (privpath);

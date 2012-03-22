@@ -10,8 +10,8 @@
 %%
 %% 1. Redistributions of source code must retain the above copyright notice, this
 %%    list of conditions and the following disclaimer.
-%%     
-%% 2. Redistributions in binary form must reproduce the above copyright notice, 
+%%
+%% 2. Redistributions in binary form must reproduce the above copyright notice,
 %%    this list of conditions and the following disclaimer in the documentation
 %%    and/or other materials provided with the distribution.
 %%
@@ -19,9 +19,9 @@
 %% AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 %% IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
 %% ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
-%% LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+%% LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
 %% CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-%% SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
+%% SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 %% INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
 %% CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 %% ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
@@ -36,7 +36,7 @@
 %% @deftypefnx {Function File} {@var{circle} = } createCircle (@var{p1}, @var{p2})
 %% Create a circle from 2 or 3 points.
 %%
-%%   Creates the circle passing through the 3 given points. 
+%%   Creates the circle passing through the 3 given points.
 %%   C is a 1x3 array of the form: [XC YX R].
 %%
 %% When two points are given, creates the circle whith center @var{p1} and passing
@@ -46,7 +46,7 @@
 %%   result has as many lines as the point arrays.
 %%
 %%   Example
-%% 
+%%
 %% @example
 %%   % Draw a circle passing through 3 points.
 %%     p1 = [10 15];
@@ -70,7 +70,7 @@ function circle = createCircle(varargin)
       x0 = p1(:,1);
       y0 = p1(:,2);
       r = hypot((p2(:,1)-x0), (p2(:,2)-y0));
-      
+
   elseif nargin == 3
       % inputs are three points on the circle
       p1 = varargin{1};
@@ -81,19 +81,23 @@ function circle = createCircle(varargin)
       line1 = medianLine(p1, p2);
       line2 = medianLine(p1, p3);
       point = intersectLines(line1, line2);
-      x0 = point(:, 1); 
+      x0 = point(:, 1);
       y0 = point(:, 2);
-      
+
       % circle radius
       r = hypot((p1(:,1)-x0), (p1(:,2)-y0));
   end
-      
-  % create array for returning result        
+
+  % create array for returning result
   circle = [x0 y0 r];
 
 endfunction
 
+%!shared privpath
+%! privpath = [fileparts(which('geom2d_Contents')) filesep() 'private'];
+
 %!test
+%!  addpath (privpath,'-end')
 %!  p1 = [10 15];
 %!  p2 = [15 20];
 %!  p3 = [10 25];
@@ -104,8 +108,10 @@ endfunction
 %!  assertEqual(exp, circle);
 %!  circle = createCircle(p2, p3, p1);
 %!  assertEqual(exp, circle);
+%!  rmpath (privpath);
 
 %!test
+%!  addpath (privpath,'-end')
 %!  p1 = [10 15];
 %!  p2 = [15 20];
 %!  p3 = [10 25];
@@ -120,4 +126,4 @@ endfunction
 %!  assertEqual(exp, circle);
 %!  circle = createCircle(p2, p3, p1);
 %!  assertEqual(exp, circle);
-
+%!  rmpath (privpath);

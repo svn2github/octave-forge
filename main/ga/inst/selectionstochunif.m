@@ -32,3 +32,15 @@ function parents = selectionstochunif (expectation, nParents, options)
     parents(1, index_steps) = index_line;
   endfor
 endfunction
+
+
+## number of input arguments
+# TODO
+
+## number of output arguments
+# TODO
+
+## type of arguments
+# TODO
+
+# TODO

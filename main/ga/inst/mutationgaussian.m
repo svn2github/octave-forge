@@ -46,3 +46,15 @@ function mutationChildren = \
       thisPopulation(parents(1, 1:nc_parents), 1:nvars) + \
       expanded_current_std .* randn (nc_parents, nvars);
 endfunction
+
+
+## number of input arguments
+# TODO
+
+## number of output arguments
+# TODO
+
+## type of arguments
+# TODO
+
+# TODO

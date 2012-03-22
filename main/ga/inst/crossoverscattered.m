@@ -35,3 +35,15 @@ function xoverKids = crossoverscattered (parents, options, nvars, FitnessFcn,
   xoverKids(1:n_children, 1:nvars) = \
       b .* p1 + (ones (n_children, nvars) - b) .* p2;
 endfunction
+
+
+## number of input arguments
+# TODO
+
+## number of output arguments
+# TODO
+
+## type of arguments
+# TODO
+
+# TODO

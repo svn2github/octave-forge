@@ -29,6 +29,17 @@ function expectation = fitscalingrank (scores, nParents)
 endfunction
 
 
+## number of input arguments
+# TODO
+
+## number of output arguments
+# TODO
+
+## type of arguments
+# TODO
+
+# TODO
+
 %!shared scores, nParents, expectation
 %! scores = rand (20, 1);
 %! nParents = 32;

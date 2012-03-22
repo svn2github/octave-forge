@@ -51,3 +51,15 @@ function Population = gacreationuniform (GenomeLength, FitnessFcn, options)
        rand (options.PopulationSize, GenomeLength)) + \
       (ones (options.PopulationSize, 1) * LB);
 endfunction
+
+
+## number of input arguments
+# TODO
+
+## number of output arguments
+# TODO
+
+## type of arguments
+# TODO
+
+# TODO

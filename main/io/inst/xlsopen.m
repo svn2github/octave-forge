@@ -466,7 +466,7 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 	if (isempty (xlsinterfaces.COM) && isempty (xlsinterfaces.POI) && isempty (xlsinterfaces.JXL)
    && isempty (xlsinterfaces.OXS) && isempty (xlsinterfaces.UNO))
     # Looks like first call to xlsopen. Check Java support
-		printf ("Detected interfaces: ");
+		printf ("Detected XLS interfaces: ");
     tmp1 = [];
 	elseif (isempty (xlsinterfaces.POI) || isempty (xlsinterfaces.JXL)
        || isempty (xlsinterfaces.OXS) || isempty (xlsinterfaces.UNO))

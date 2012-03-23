@@ -168,11 +168,70 @@ endfunction
 %! nvars = 3;
 %! x = ga (@(x) (x(:, 1) ** 2) + (x(:, 2) ** 2) + (x(:, 3) ** 2), nvars);
 
+## flawless execution with any supported optimization parameter
+## different from the default value
+%!shared f, nvars
+%! f = @rastriginsfcn;
+%! nvars = 2;
+%!function [C, Ceq] = nonlcon (x)
+%!  C = [];
+%!  Ceq = [];
+%!test
+%! options = gaoptimset ();
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
+%!#test
+%!# options = gaoptimset ("CreationFcn", TODO);
+%!# x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
+%!#test
+%!# options = gaoptimset ("CrossoverFcn", TODO);
+%!# x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
+%!test
+%! options = gaoptimset ("CrossoverFraction", 0.6);
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
+%!test
+%! options = gaoptimset ("EliteCount", 5);
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
+%!test
+%! options = gaoptimset ("FitnessLimit", 1e-7);
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
+%!#test
+%!# options = gaoptimset ("FitnessScalingFcn", TODO);
+%!# x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
+%!test
+%! options = gaoptimset ("Generations", 200);
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
+%!test
+%! options = gaoptimset ("InitialPopulation", rand (4, nvars));
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
+%!#test
+%!# options = gaoptimset ("InitialScores", TODO);
+%!# x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
+%!#test
+%!# options = gaoptimset ("MutationFcn", TODO);
+%!# x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
+%!test
+%! options = gaoptimset ("PopInitRange", [-2; 2]);
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
+%!test
+%! options = gaoptimset ("PopulationSize", 200);
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
+%!#test
+%!# options = gaoptimset ("SelectionFcn", TODO);
+%!# x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
+%!#test
+%!# options = gaoptimset ("TimeLimit", TODO);
+%!# x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
+%!#xtest
+%!# options = gaoptimset ("UseParallel", "always");
+%!# x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
+%!test
+%! options = gaoptimset ("Vectorized", "on");
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
+
+
 # TODO: structure/add tests below
 
-%!test x = ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("FitnessLimit", 1e-7, "Generations", 200)));
-
-%!test x = ga (struct ("fitnessfcn", @(x) rastriginsfcn (x(1:2)) + ((x(3) ** 2) - (cos (2 * pi * x(3))) + 1) + (x(4) ** 2), "nvars", 4, "options", gaoptimset ("EliteCount", 5, "FitnessLimit", 1e-7, "PopInitRange", [-2; 2], "PopulationSize", 200)));
+%!test x = ga (struct ("fitnessfcn", @(x) rastriginsfcn (x(1:2)) + ((x(3) ** 2) - (cos (2 * pi * x(3))) + 1) + (x(4) ** 2), "nvars", 4, "options", gaoptimset ()));
 
 
 ## nvars == 1    and    min == zeros (1, nvars)
@@ -193,10 +252,3 @@ endfunction
 %!test ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("Generations", 10, "InitialPopulation", [0, 0; 0, 0; 0, 0; 0, 0], "InitialScores", [0; 0; 0])));
 
 %!test ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("Generations", 10, "InitialPopulation", [0, 0; 0, 0; 0, 0; 0, 0], "InitialScores", [0; 0; 0; 0])));
-
-
-## Vectorized and UseParallel options
-
-%!test ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("Generations", 10, "Vectorized", "on")));
-
-%!#xtest ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("Generations", 10, "UseParallel", "always"))); TODO

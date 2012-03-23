@@ -255,6 +255,7 @@ endfunction
 %!test x = ga (struct ("fitnessfcn", @(x) rastriginsfcn (x(1:2)) + ((x(3) ** 2) - (cos (2 * pi * x(3))) + 1) + (x(4) ** 2), "nvars", 4, "options", gaoptimset ()));
 
 
+# TODO: convert to simple xtests
 ## nvars == 1    and    min == zeros (1, nvars)
 
 %!test assert (ga (@(x) x ** 2, 1), 0, 1e-3);

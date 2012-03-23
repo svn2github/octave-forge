@@ -229,6 +229,7 @@ endfunction
 %! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
 
 ## error with conflicting optimization parameters
+# TODO: Elite count cannot be greater than the population size
 %!shared f, nvars
 %! f = @rastriginsfcn;
 %! nvars = 2;

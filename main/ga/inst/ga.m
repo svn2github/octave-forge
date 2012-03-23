@@ -157,6 +157,17 @@ endfunction
 %!                   "options", gaoptimset ());
 %! x = ga (problem);
 
+## number of nvars
+%!test
+%! nvars = 1;
+%! x = ga (@(x) x(1, 1) ** 2, nvars);
+%!test
+%! nvars = 2;
+%! x = ga (@(x) (x(:, 1) ** 2) + (x(:, 2) ** 2), nvars);
+%!test
+%! nvars = 3;
+%! x = ga (@(x) (x(:, 1) ** 2) + (x(:, 2) ** 2) + (x(:, 3) ** 2), nvars);
+
 # TODO: structure/add tests below
 
 %!test x = ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("FitnessLimit", 1e-7, "Generations", 200)));

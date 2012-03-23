@@ -157,7 +157,7 @@ endfunction
 %!                   "options", gaoptimset ());
 %! x = ga (problem);
 
-## number of nvars
+## flawless execution with any nvars
 %!test
 %! nvars = 1;
 %! x = ga (@(x) x(1, 1) ** 2, nvars);

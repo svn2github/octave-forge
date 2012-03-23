@@ -186,7 +186,7 @@ endfunction
 %! options = gaoptimset ("CrossoverFcn", @crossoverscattered);
 %! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
 %!test
-%! options = gaoptimset ("CrossoverFraction", 0.6);
+%! options = gaoptimset ("CrossoverFraction", rand);
 %! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
 %!test
 %! options = gaoptimset ("EliteCount", 5);

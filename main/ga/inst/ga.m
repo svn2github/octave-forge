@@ -177,14 +177,14 @@ endfunction
 %!  C = [];
 %!  Ceq = [];
 %!test
-%! options = gaoptimset ();
+%! default_options = gaoptimset ();
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, default_options);
+%!test # TODO: use non-default value
+%! options = gaoptimset ("CreationFcn", @gacreationuniform);
 %! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
-%!#test
-%!# options = gaoptimset ("CreationFcn", TODO);
-%!# x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
-%!#test
-%!# options = gaoptimset ("CrossoverFcn", TODO);
-%!# x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
+%!test # TODO: use non-default value
+%! options = gaoptimset ("CrossoverFcn", @crossoverscattered);
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
 %!test
 %! options = gaoptimset ("CrossoverFraction", 0.6);
 %! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
@@ -194,34 +194,34 @@ endfunction
 %!test
 %! options = gaoptimset ("FitnessLimit", 1e-7);
 %! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
-%!#test
-%!# options = gaoptimset ("FitnessScalingFcn", TODO);
-%!# x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
+%!test # TODO: use non-default value
+%! options = gaoptimset ("FitnessScalingFcn", @fitscalingrank);
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
 %!test
 %! options = gaoptimset ("Generations", 200);
 %! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
 %!test
 %! options = gaoptimset ("InitialPopulation", rand (4, nvars));
 %! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
-%!#test
-%!# options = gaoptimset ("InitialScores", TODO);
-%!# x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
-%!#test
-%!# options = gaoptimset ("MutationFcn", TODO);
-%!# x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
+%!test # TODO: use non-default value
+%! options = gaoptimset ("InitialScores", []);
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
+%!test # TODO: use non-default value
+%! options = gaoptimset ("MutationFcn", {@mutationgaussian, 1, 1});
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
 %!test
 %! options = gaoptimset ("PopInitRange", [-2; 2]);
 %! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
 %!test
 %! options = gaoptimset ("PopulationSize", 200);
 %! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
-%!#test
-%!# options = gaoptimset ("SelectionFcn", TODO);
-%!# x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
-%!#test
-%!# options = gaoptimset ("TimeLimit", TODO);
-%!# x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
-%!#xtest
+%!test # TODO: use non-default value
+%! options = gaoptimset ("SelectionFcn", @selectionstochunif);
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
+%!test # TODO: use non-default value
+%! options = gaoptimset ("TimeLimit", Inf);
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
+%!#xtest # TODO
 %!# options = gaoptimset ("UseParallel", "always");
 %!# x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
 %!test

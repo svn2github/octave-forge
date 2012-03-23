@@ -228,6 +228,27 @@ endfunction
 %! options = gaoptimset ("Vectorized", "on");
 %! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
 
+## error with conflicting optimization parameters
+%!shared f, nvars
+%! f = @rastriginsfcn;
+%! nvars = 2;
+%!function [C, Ceq] = nonlcon (x)
+%!  C = [];
+%!  Ceq = [];
+%!error # The number of individuals in the initial population cannot be greater of the population size
+%! ps = 3;
+%! bad_options = gaoptimset ("PopulationSize",    ps,
+%!                           "InitialPopulation", zeros (ps + 1, nvars));
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, bad_options);
+%!error # Initial scores cannot be specified without specifying the initial population too
+%! bad_options = gaoptimset ("InitialScores", zeros (3, 1));
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, bad_options);
+%!error # The number of initial scores specified cannot be greater of the number of individuals in the initial population
+%! ip = 3;
+%! bad_options = gaoptimset ("InitialPopulation", zeros (ip, nvars),
+%!                           "InitialScores",     zeros (ip + 1, 1));
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, bad_options);
+# TODO
 
 # TODO: structure/add tests below
 
@@ -242,12 +263,6 @@ endfunction
 
 
 ## InitialPopulation and InitialScores options
-
-%!error ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("InitialPopulation", [0, 0; 0, 0; 0, 0; 0, 0], "PopulationSize", 3)));
-
-%!error ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("InitialScores", [0; 0; 0])));
-
-%!error ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("InitialPopulation", [0, 0; 0, 0], "InitialScores", [0; 0; 0])));
 
 %!test ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("Generations", 10, "InitialPopulation", [0, 0; 0, 0; 0, 0; 0, 0], "InitialScores", [0; 0; 0])));
 

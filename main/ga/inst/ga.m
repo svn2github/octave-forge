@@ -170,14 +170,14 @@ endfunction
 
 ## flawless execution with any supported optimization parameter
 ## different from the default value
-%!shared f, nvars
+%!shared f, nvars, default_options
 %! f = @rastriginsfcn;
 %! nvars = 2;
+%! default_options = gaoptimset ();
 %!function [C, Ceq] = nonlcon (x)
 %!  C = [];
 %!  Ceq = [];
 %!test
-%! default_options = gaoptimset ();
 %! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, default_options);
 %!test # TODO: use non-default value
 %! options = gaoptimset ("CreationFcn", @gacreationuniform);
@@ -189,7 +189,8 @@ endfunction
 %! options = gaoptimset ("CrossoverFraction", rand);
 %! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
 %!test
-%! options = gaoptimset ("EliteCount", 5);
+%! ps = getfield (default_options, "PopulationSize");
+%! options = gaoptimset ("EliteCount", randi ([0, ps]));
 %! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
 %!test
 %! options = gaoptimset ("FitnessLimit", 1e-7);
@@ -198,14 +199,49 @@ endfunction
 %! options = gaoptimset ("FitnessScalingFcn", @fitscalingrank);
 %! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
 %!test
-%! options = gaoptimset ("Generations", 200);
+%! g = getfield (default_options, "Generations");
+%! options = gaoptimset ("Generations", g + 1);
 %! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
 %!test
-%! options = gaoptimset ("InitialPopulation", rand (4, nvars));
-%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
-%!test # TODO: use non-default value
-%! options = gaoptimset ("InitialScores", []);
-%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
+%! ps = getfield (default_options, "PopulationSize");
+%! ## Initial population can be partial
+%! options_w_full_ip = \
+%!     gaoptimset ("InitialPopulation", rand (ps,         nvars));
+%! partial_ip = randi ([0, ps - 1]);
+%! options_w_partial_ip = \
+%!     gaoptimset ("InitialPopulation", rand (partial_ip, nvars));
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options_w_full_ip);
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options_w_partial_ip);
+%!test
+%! ps = getfield (default_options, "PopulationSize");
+%! ## Initial scores needs initial population
+%!
+%! options_w_full_ip_full_is = \
+%!     gaoptimset ("InitialPopulation", rand (ps, nvars),
+%!                 "InitialScores",     rand (ps, 1    ));
+%! partial_ip = randi ([2, ps - 1]);
+%! options_w_partial_ip_full_is = \
+%!     gaoptimset ("InitialPopulation", rand (partial_ip, nvars),
+%!                 "InitialScores",     rand (partial_ip, 1    ));
+%!
+%! ## Initial scores can be partial
+%! partial_is_when_full_ip    = randi ([1, ps         - 1]);
+%! partial_is_when_partial_ip = randi ([1, partial_ip - 1]);
+%! options_w_full_ip_partial_is = \
+%!     gaoptimset ("InitialPopulation", rand (ps,                      nvars),
+%!                 "InitialScores",     rand (partial_is_when_full_ip, 1    ));
+%! options_w_partial_ip_partial_is = \
+%!     gaoptimset ("InitialPopulation", rand (partial_ip,                 nvars),
+%!                 "InitialScores",     rand (partial_is_when_partial_ip, 1    ));
+%!
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon,
+%!         options_w_full_ip_full_is);
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon,
+%!         options_w_partial_ip_full_is);
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon,
+%!         options_w_full_ip_partial_is);
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon,
+%!         options_w_partial_ip_partial_is);
 %!test # TODO: use non-default value
 %! options = gaoptimset ("MutationFcn", {@mutationgaussian, 1, 1});
 %! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
@@ -262,10 +298,3 @@ endfunction
 %!test assert (ga (@(x) x ** 2, 1), 0, 1e-3);
 
 %!test assert (ga (@(x) (x ** 2) - (cos (2 * pi * x)) + 1, 1), 0, 1e-3);
-
-
-## InitialPopulation and InitialScores options
-
-%!test ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("InitialPopulation", [0, 0; 0, 0; 0, 0; 0, 0], "InitialScores", [0; 0; 0])));
-
-%!test ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("InitialPopulation", [0, 0; 0, 0; 0, 0; 0, 0], "InitialScores", [0; 0; 0; 0])));

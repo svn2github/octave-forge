@@ -265,13 +265,17 @@ endfunction
 %! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
 
 ## error with conflicting optimization parameters
-# TODO: Elite count cannot be greater than the population size
 %!shared f, nvars
 %! f = @rastriginsfcn;
 %! nvars = 2;
 %!function [C, Ceq] = nonlcon (x)
 %!  C = [];
 %!  Ceq = [];
+%!error # Elite count cannot be greater than the population size
+%! ps = 3;
+%! bad_options = gaoptimset ("PopulationSize", ps,
+%!                           "EliteCount",     ps + 1);
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, bad_options);
 %!error # The number of individuals in the initial population cannot be greater of the population size
 %! ps = 3;
 %! bad_options = gaoptimset ("PopulationSize",    ps,

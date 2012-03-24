@@ -60,3 +60,8 @@ demo demo_ga
 ## The "UseParallel" option should speed up execution
                                 # TODO: write demo (after implementing
                                 # UseParallel) - low priority
+
+
+## This code shows a more complex objective function
+                                # TODO: convert to demo
+# %!test x = ga (struct ("fitnessfcn", @(x) rastriginsfcn (x(1:2)) + ((x(3) ** 2) - (cos (2 * pi * x(3))) + 1) + (x(4) ** 2), "nvars", 4, "options", gaoptimset ()));

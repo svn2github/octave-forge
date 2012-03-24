@@ -36,7 +36,7 @@ function cm = shapecentroid (shape)
 
   [~,id] = lastwarn ('','');
   if strcmp (id ,'geom2d:shapearea:InvalidResult')
-    lastwarn('Inverting centriod','geom2d:shapecentriod:InvalidResult');
+    lastwarn('Inverting centroid','geom2d:shapecentroid:InvalidResult');
     cm = -cm;
   end
 
@@ -65,13 +65,13 @@ endfunction
 %!              [0.25 0.75; ...
 %!               0 0]};
 %! CoM = shapecentroid (boomerang)
-%! Gcentriod = centroid(shape2polygon(boomerang))
+%! Gcentroid = centroid(shape2polygon(boomerang))
 %!
 %! figure(1); clf;
 %! shapeplot(boomerang,10,'-o');
 %! hold on
-%! drawPoint(CoM,'xk;shape centriod;');
-%! drawPoint(Gcentriod,'xr;point centriod;');
+%! drawPoint(CoM,'xk;shape centroid;');
+%! drawPoint(Gcentroid,'xr;point centroid;');
 %! hold off
 %! axis equal
 
@@ -83,12 +83,12 @@ endfunction
 %!             [0.00000   1.10798; 0.28965  -0.53032]; ...
 %!             [-0.34163   1.10798; 0.00000  -0.24067]};...
 %! CoM = shapecentroid (Lshape)
-%! Gcentriod = centroid (shape2polygon (Lshape))
+%! Gcentroid = centroid (shape2polygon (Lshape))
 %!
 %! shapeplot(Lshape,10,'-o');
 %! hold on
-%! drawPoint(CoM,'xk;shape centriod;');
-%! drawPoint(Gcentriod,'xr;point centriod;');
+%! drawPoint(CoM,'xk;shape centroid;');
+%! drawPoint(Gcentroid,'xr;point centroid;');
 %! hold off
 %! axis equal
 

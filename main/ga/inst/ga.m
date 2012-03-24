@@ -289,7 +289,6 @@ endfunction
 %! bad_options = gaoptimset ("InitialPopulation", zeros (ip, nvars),
 %!                           "InitialScores",     zeros (ip + 1, 1));
 %! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, bad_options);
-# TODO
 
 # TODO: structure/add tests below
 

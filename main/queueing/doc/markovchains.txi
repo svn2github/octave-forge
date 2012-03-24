@@ -31,7 +31,7 @@
 @section Discrete-Time Markov Chains
 
 Let @math{X_0, X_1, @dots{}, X_n, @dots{} } be a sequence of random
-variables, each one defined over a discete state space @math{0, 1, 2,
+variables defined over a discete state space @math{0, 1, 2,
 @dots{}}. The sequence @math{X_0, X_1, @dots{}, X_n, @dots{}}  is a
 @emph{stochastic process} with discrete time @math{0, 1, 2,
 @dots{}}. A @emph{Markov chain} is a stochastic process @math{@{X_n,
@@ -47,21 +47,21 @@ $$\eqalign{P\left(X_{n+1} = x_{n+1}\ |\ X_n = x_n, X_{n-1} = x_{n-1}, \ldots, X_
 @math{P(X_{n+1} = x_{n+1} | X_n = x_n, X_{n-1} = x_{n-1}, ..., X_0 = x_0) = P(X_{n+1} = x_{n+1} | X_n = x_n)}
 @end ifnottex
 
-@noindent which means that the probability that the system is in
+@noindent which basically means that the probability that the system is in
 a particular state at time @math{n+1} only depends on the state the
 system was at time @math{n}.
 
 The evolution of a Markov chain with finite state space @math{@{1, 2,
 @dots{}, N@}} can be fully described by a stochastic matrix @math{{\bf
-P}(n) = [ P_{i,j}(n) ]} such that @math{P_{i, j}(n) = P( X_{n+1} = j\ |\
-X_n = i )}.  If the Markov chain is homogeneous (that is, the
+P}(n) = [ P_{i,j}(n) ]} such that @math{P_{i, j}(n) = P( X_{n+1} = j\
+|\ X_n = i )}.  If the Markov chain is homogeneous (that is, the
 transition probability matrix @math{{\bf P}(n)} is time-independent),
-we can simply write @math{{\bf P} = [P_{i, j}]}, where @math{P_{i, j} =
-P( X_{n+1} = j\ |\ X_n = i )} for all @math{n=0, 1, @dots{}}.
+we can write @math{{\bf P} = [P_{i, j}]}, where @math{P_{i, j} = P(
+X_{n+1} = j\ |\ X_n = i )} for all @math{n=0, 1, @dots{}}.
 
 The transition probability matrix @math{\bf P} must satisfy the
 following two properties: (1) @math{P_{i, j} @geq{} 0} for all
-@math{i, j}, and (2) @math{\sum_{j=1}^N P_{i,j} = 1}.
+@math{i, j}, and (2) @math{\sum_{j=1}^N P_{i,j} = 1} for all @math{i}
 
 @c
 @DOCSTRING(dtmc_check_P)
@@ -82,15 +82,14 @@ following two properties: (1) @math{P_{i, j} @geq{} 0} for all
 @subsection State occupancy probabilities
 
 We denote with @math{{\bf \pi}(n) = \left(\pi_1(n), \pi_2(n), @dots{},
-\pi_N(n) \right)} the @emph{state occupancy probability vector} at step
-@math{n}. @math{\pi_i(n)} denotes the probability that the system is
-in state @math{i} after @math{n} transitions.
+\pi_N(n) \right)} the @emph{state occupancy probability vector} at
+step @math{n}. @math{\pi_i(n)} denotes the probability that the system
+is in state @math{i} after @math{n} transitions.
 
 Given the transition probability matrix @math{\bf P} and the initial
 state occupancy probability vector @math{{\bf \pi}(0) =
-\left(\pi_1(0), \pi_2(0), @dots{}, \pi_N(0)\right)}, the state
-occupancy probabilities @math{{\bf \pi}(n)} after @math{n} transitions
-can easily be computed as:
+\left(\pi_1(0), \pi_2(0), @dots{}, \pi_N(0)\right)}, @math{{\bf
+\pi}(n)} can be computed as:
 
 @iftex
 @tex
@@ -107,9 +106,9 @@ $${\bf \pi}(n) = {\bf \pi}(0) {\bf P}^n$$
 
 Under certain conditions, there exists a @emph{stationary state
 occupancy probability} @math{{\bf \pi} = \lim_{n \rightarrow +\infty}
-{\bf \pi}(n)}, which is independent from the initial occupancy
-@math{{\bf \pi}(0)}. The stationary vector @math{\bf \pi} can be
-computed as the solution of the following linear system:
+{\bf \pi}(n)}, which is independent from @math{{\bf \pi}(0)}. The
+stationary vector @math{\bf \pi} is the solution of the following
+linear system:
 
 @iftex
 @tex
@@ -162,10 +161,10 @@ as shown in the following figure
 @end example
 
 A mouse is placed in one of the rooms and can wander around. At each
-step, the mouse moves to one of the neighboring rooms with equal
-probability: if it is in room 1, it van move to room 2 and 4 with
-probability 1/2. If the mouse is in room 8, it can move to either 7, 5
-or 9 with probability 1/3.
+step, the mouse moves from the current room to a neighboring one with
+equal probability: if it is in room 1, it can move to room 2 and 4
+with probability 1/2, respectively. If the mouse is in room 8, it can
+move to either 7, 5 or 9 with probability 1/3.
 
 The transition probability @math{\bf P} from room @math{i} to room
 @math{j} is the following:
@@ -250,8 +249,8 @@ L(n) =  >   pi(i) =  >   pi(0) P
 @noindent where @math{{\bf \pi}(i) = {\bf \pi}(0){\bf P}^i} is the state 
 occupancy probability after @math{i} transitions.
 
-If @math{\bf P} is absorbing, we can rearrange the states to rewrite
-@math{\bf P} as:
+If @math{\bf P} has absorbing states, that is, states with no out
+transitions, we can rearrange the states to rewrite @math{\bf P} as:
 
 @iftex
 @tex
@@ -270,13 +269,14 @@ P = |---+---|
 @end ifnottex
 
 @noindent where the first @math{t} states are transient
-and the last @math{r} states are absorbing. The matrix @math{{\bf N} =
-({\bf I} - {\bf Q})^{-1}} is called the @emph{fundamental matrix};
-@math{N(i,j)} represents the expected number of times that the process
-is in the @math{j}-th transient state if it is started in the
-@math{i}-th transient state. If we reshape @math{\bf N} to the size of
-@math{\bf P} (filling missing entries with zeros), we have that, for
-absorbing chains @math{{\bf L} = {\bf \pi}(0){\bf N}}.
+and the last @math{r} states are absorbing (@math{t+r = N}). The
+matrix @math{{\bf N} = ({\bf I} - {\bf Q})^{-1}} is called the
+@emph{fundamental matrix}; @math{N(i,j)} represents the expected
+number of times that the process is in the @math{j}-th transient state
+if it is started in the @math{i}-th transient state. If we reshape
+@math{\bf N} to the size of @math{\bf P} (filling missing entries with
+zeros), we have that, for absorbing chains @math{{\bf L} = {\bf
+\pi}(0){\bf N}}.
 
 @DOCSTRING(dtmc_exps)
 
@@ -440,12 +440,11 @@ $$\eqalign{P(X(t_{n+1}) = x_{n+1}\ |\ X(t_n) = x_n, X(t_{n-1}) = x_{n-1}, \ldots
 @end ifnottex
 
 A continuous-time Markov chain is defined according to an
-@emph{infinitesimal generator matrix} @math{{\bf Q} = [Q_{i,j}]} such
-that for each @math{i \neq j}, @math{Q_{i, j}} is the transition rate
-from state @math{i} to state @math{j}. The elements @math{Q_{i, i}}
-qre defined as @math{Q_{i, i} = - \sum_{j \neq i} Q_{i, j}}, such that
-matrix @math{\bf Q} satisfies the property that, for all @math{i},
-@math{\sum_{j=1}^N Q_{i, j} = 0}.
+@emph{infinitesimal generator matrix} @math{{\bf Q} = [Q_{i,j}]},
+where for each @math{i \neq j}, @math{Q_{i, j}} is the transition rate
+from state @math{i} to state @math{j}. The matrix @math{\bf Q} must
+satisfy the property that, for all @math{i}, @math{\sum_{j=1}^N Q_{i,
+j} = 0}.
 
 @DOCSTRING(ctmc_check_Q)
 
@@ -463,12 +462,13 @@ matrix @math{\bf Q} satisfies the property that, for all @math{i},
 
 Similarly to the discrete case, we denote with @math{{\bf \pi}(t) =
 (\pi_1(t), \pi_2(t), @dots{}, \pi_N(t) )} the @emph{state occupancy
-probability vector} at time @math{t}. @math{\pi_i(t)} denotes the
-probability that the system is in state @math{i} at time @math{t @geq{} 0}.
+probability vector} at time @math{t}. @math{\pi_i(t)} is the
+probability that the system is in state @math{i} at time @math{t
+@geq{} 0}.
 
 Given the infinitesimal generator matrix @math{\bf Q} and the initial
-state occupancy probability vector @math{{\bf \pi}(0) = (\pi_1(0),
-\pi_2(0), @dots{}, \pi_N(0))}, the state occupancy probability vector
+state occupancy probabilities @math{{\bf \pi}(0) = (\pi_1(0),
+\pi_2(0), @dots{}, \pi_N(0))}, the state occupancy probabilities
 @math{{\bf \pi}(t)} at time @math{t} can be computed as:
 
 @iftex
@@ -488,9 +488,8 @@ $${\bf \pi}(t) = {\bf \pi}(0) \exp( {\bf Q} t )$$
 of @math{{\bf Q} t}. Under certain conditions, there exists a
 @emph{stationary state occupancy probability} @math{{\bf \pi} =
 \lim_{t \rightarrow +\infty} {\bf \pi}(t)}, which is independent from
-the initial state occupancy @math{{\bf \pi}(0)}. The stationary state
-occupancy probability vector @math{\bf \pi} can be computed as the
-solution of the following linear system:
+@math{{\bf \pi}(0)}.  @math{\bf \pi} is the solution of the following
+linear system:
 
 @iftex
 @tex

@@ -15,10 +15,9 @@
 
 ##-*- texinfo -*-
 ## @deftypefn{Function File} infoskeleton(@var{prototype}, @var{index_str}, @var{see_also})
-## @cindex infoskeleton
-## The function @var{infoskeleton} generates TeXinfo skeleton documentation of the
-## given @var{prototype}. Optionally @var{index_str} and @var{see_also}
-## can be specified. 
+## Generate TeXinfo skeleton documentation of @var{prototype}.
+##
+## Optionally @var{index_str} and @var{see_also} can be specified.
 ##
 ## Usage of this function is typically,
 ## @example

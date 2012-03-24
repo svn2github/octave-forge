@@ -133,6 +133,7 @@ endfunction
 # TODO
 # TODO: test that each field in the user-specified "problem" structure is checked
 
+
 ## flawless execution with right arguments
 %!shared f, nvars
 %! f = @rastriginsfcn;
@@ -264,6 +265,7 @@ endfunction
 %! options = gaoptimset ("Vectorized", "on");
 %! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
 
+
 ## error with conflicting optimization parameters: population size et al.
 %!shared f, nvars
 %! f = @rastriginsfcn;
@@ -334,6 +336,7 @@ endfunction
 %! bad_options = gaoptimset ("UseParallel", "garbage",
 %!                           "Vectorized",  "garbage");
 %! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, bad_options);
+
 
 # TODO: structure/add tests below
 

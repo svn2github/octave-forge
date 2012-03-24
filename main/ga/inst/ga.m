@@ -130,6 +130,9 @@ endfunction
 # TODO
 
 ## type of arguments
+%!function f = ff (nvars)
+%!  f = @(x) sum (x(:, 1:nvars) .** 2, 2);
+%!error x = ga (ff (3), 2);
 # TODO
 # TODO: test that each field in the user-specified "problem" structure is checked
 

@@ -25,7 +25,7 @@ x = [ones(n,1) randn(n,k-1)];
 w = [x, rand(n,1)];
 theta_true = ones(k,1);
 lambda = exp(x*theta_true);
-y = poisson_rnd(lambda);
+y = poissrnd(lambda);
 [xs, scalecoef] = scale_data(x);
 
 # The arguments for gmm_estimate

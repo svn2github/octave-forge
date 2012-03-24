@@ -88,7 +88,7 @@ function [theta, V, obj_value] = gmm_results(theta, data, weight, moments, momen
 	df = n - k;
 	if df > 0
 		clabels = char("Value","df","p-value");
-		a = [n*obj_value, df, 1 - chisquare_cdf(n*obj_value, df)];
+		a = [n*obj_value, df, 1 - chi2cdf(n*obj_value, df)];
 		printf("\n");
 		prettyprint(a, junk, clabels);
 	else
@@ -96,7 +96,7 @@ function [theta, V, obj_value] = gmm_results(theta, data, weight, moments, momen
 	end;
 
 	# results for parameters
-	a =[theta, se, theta./se, 2 - 2*normal_cdf(abs(theta ./ se))];
+	a =[theta, se, theta./se, 2 - 2*normcdf(abs(theta ./ se))];
 	clabels = char("estimate", "st. err", "t-stat", "p-value");
 	printf("\n");
 	prettyprint(a, names, clabels);

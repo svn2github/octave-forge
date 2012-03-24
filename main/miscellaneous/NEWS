@@ -38,3 +38,9 @@ Summary of important user-visible changes for miscellaneous 1.1.0:
  ** Package is no longer automatically loaded.
 
  ** improvements to help text.
+
+ ** The function `csv2latex' has been made silent and had bugs fixed.
+
+ ** The function `publish' had bugs fixed.
+
+ ** The function `match' can now accept cell arrays as input.

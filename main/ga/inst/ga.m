@@ -294,6 +294,35 @@ endfunction
 %!                           "InitialScores",     zeros (ip + 1, 1));
 %! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, bad_options);
 
+## error with vectorized evaluation of objective function. Vectorized
+## objective functions are better because can be evaluated both as
+## serial and vectorized.
+%!shared nvars
+%! nvars = 2;
+%!function [C, Ceq] = nonlcon (x)
+%!  C = [];
+%!  Ceq = [];
+%!function f = ff (nvars)
+%!  f = @(x) sum (x(:, 1:nvars) .** 2, 2);
+%!function f_not_vectorized = ff_not_vectorized (nvars)
+%!  f_not_vectorized = @(x) sum (x(1:nvars) .** 2);
+%!test # A non-vectorized objective function works when no vectorization is required
+%! f = ff_not_vectorized (nvars);
+%! options = gaoptimset ("Vectorized", "off");
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
+%!error # A non-vectorized objective function does not work when vectorization is required
+%! f = ff_not_vectorized (nvars);
+%! options = gaoptimset ("Vectorized", "on");
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
+%!test # A vectorized objective function works when no vectorization is required
+%! f = ff (nvars);
+%! options = gaoptimset ("Vectorized", "off");
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
+%!test # A vectorized objective function works when vectorization is required
+%! f = ff (nvars);
+%! options = gaoptimset ("Vectorized", "on");
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
+
 ## error with conflicting optimization parameters: parallel and
 ## vectorized evaluation of objective function
 %!shared f, nvars

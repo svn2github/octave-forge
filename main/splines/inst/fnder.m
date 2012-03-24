@@ -31,19 +31,16 @@ function dpp = fnder (pp, o)
   if (nargin < 2)
     o = 1;
   endif
-  
-  P = pp.P;
+
+  [X, P, N, K, D] = unmkpp (pp);
   c = columns (P);
   r = rows (P);
 
   for i = 1:o
     #pp.P = polyder (pp.P); matrix capable polyder is needed.
     P = P(:, 1:c - 1) .* kron ((c - 1):- 1:1, ones (r,1));
-    c = columns (P);
   endfor
 
-  dpp = pp;
-  dpp.P = P;
-  dpp.k = c;
+  dpp = mkpp (X, P);
 
 endfunction

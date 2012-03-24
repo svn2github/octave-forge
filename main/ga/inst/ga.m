@@ -257,14 +257,14 @@ endfunction
 %!test # TODO: use non-default value
 %! options = gaoptimset ("TimeLimit", Inf);
 %! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
-%!#xtest # TODO
-%!# options = gaoptimset ("UseParallel", "always");
-%!# x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
+%!error # TODO: this should become test
+%! options = gaoptimset ("UseParallel", "always");
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
 %!test
 %! options = gaoptimset ("Vectorized", "on");
 %! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
 
-## error with conflicting optimization parameters
+## error with conflicting optimization parameters: population size et al.
 %!shared f, nvars
 %! f = @rastriginsfcn;
 %! nvars = 2;
@@ -288,6 +288,51 @@ endfunction
 %! ip = 3;
 %! bad_options = gaoptimset ("InitialPopulation", zeros (ip, nvars),
 %!                           "InitialScores",     zeros (ip + 1, 1));
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, bad_options);
+
+## error with conflicting optimization parameters: parallel and
+## vectorized evaluation of objective function
+%!shared f, nvars
+%! f = @rastriginsfcn;
+%! nvars = 2;
+%!function [C, Ceq] = nonlcon (x)
+%!  C = [];
+%!  Ceq = [];
+%!test
+%! options = gaoptimset ("UseParallel", "never",
+%!                       "Vectorized",  "off");
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
+%!error # TODO: this should become test
+%! options = gaoptimset ("UseParallel", "always",
+%!                       "Vectorized",  "off");
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
+%!error
+%! bad_options = gaoptimset ("UseParallel", "garbage",
+%!                           "Vectorized",  "off");
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, bad_options);
+%!test
+%! options = gaoptimset ("UseParallel", "never",
+%!                       "Vectorized",  "on");
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, options);
+%!warning
+%! bad_options = gaoptimset ("UseParallel", "always",
+%!                           "Vectorized",  "on");
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, bad_options);
+%!warning
+%! bad_options = gaoptimset ("UseParallel", "garbage",
+%!                           "Vectorized",  "on");
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, bad_options);
+%!error
+%! bad_options = gaoptimset ("UseParallel", "never",
+%!                           "Vectorized",  "garbage");
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, bad_options);
+%!error
+%! bad_options = gaoptimset ("UseParallel", "always",
+%!                           "Vectorized",  "garbage");
+%! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, bad_options);
+%!error
+%! bad_options = gaoptimset ("UseParallel", "garbage",
+%!                           "Vectorized",  "garbage");
 %! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, bad_options);
 
 # TODO: structure/add tests below

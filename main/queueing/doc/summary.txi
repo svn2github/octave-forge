@@ -65,15 +65,14 @@ queueing systems:
 @item @math{M/H_m/1} (Hyperexponential service time distribution)
 @end itemize
 
-Functions for Markov chain analysis are also provided, for discrete-time
-chains (DTMC) or continuous-time chains (CTMC):
+Functions for Markov chain analysis are also provided:
 
 @itemize
 
 @item Birth-death process;
 @item Transient and steady-state occupancy probabilities;
 @item Mean times to absorption;
-@item Expected sojourn times and time-averaged sojourn times (CTMC only);
+@item Expected sojourn times and time-averaged sojourn times;
 @item Mean first passage times;
 
 @end itemize

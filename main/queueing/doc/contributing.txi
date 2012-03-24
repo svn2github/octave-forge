@@ -30,32 +30,28 @@ guidelines:
 
 @item If you are contributing a new function, please embed proper
 documentation within the function itself. The documentation must be in
-@code{texinfo} format, so that it will be extracted and formatted into
+@code{texinfo} format, so that it can be extracted and formatted into
 the printable manual. See the existing functions of the
 @code{queueing} package for the documentation style.
 
-@item The documentation should be as precise as possible. In particular,
-always state what the valid ranges of the parameters are.
-
-@item If you are contributing a new function, ensure that the function
+@item Make sure that each new function 
 properly checks the validity of its input parameters. For example,
 each function accepting vectors should check whether the dimensions
 match.
 
-@item Always provide bibliographic references for each algorithm you 
+@item Provide bibliographic references for each new algorithm you 
 contribute. If your implementation differs in some way from the
 reference you give, please describe how and why your implementation
-differs.
+differs. Add references to the @file{doc/references.txi} file.
 
-@item Include Octave test and demo blocks with your code.
-Test blocks are particularly important, because Queueing Network
-algorithms tend to be quite complex to implement correctly, and we
-must ensure that the implementations provided with the
-@code{queueing} package are (mostly) correct.
+@item Include test and demo blocks with your code.
+Test blocks are particularly important, since most algorithms tend to
+be quite tricky to implement correctly. If appropriate, test blocks
+should also verify that the function fails on incorrect input
+parameters.
 
 @end itemize
 
 Send your contribution to Moreno Marzolla
-(@email{marzolla@@cs.unibo.it}). Even if you are just a user of
-@code{queueing}, and find this package useful, let me know by
-dropping me a line. Thanks.
+(@email{marzolla@@cs.unibo.it}). If you are just a user of this
+package and find it useful, let me know by dropping me a line. Thanks.

@@ -249,8 +249,11 @@ L(n) =  >   pi(i) =  >   pi(0) P
 @noindent where @math{{\bf \pi}(i) = {\bf \pi}(0){\bf P}^i} is the state 
 occupancy probability after @math{i} transitions.
 
-If @math{\bf P} has absorbing states, that is, states with no out
-transitions, we can rearrange the states to rewrite @math{\bf P} as:
+If @math{\bf P} is absorbing, i.e., the stochastic process eventually
+reaches with probability 1 a state with no outgoing transitions, then
+we can compute the expected number of visits until absorption
+@math{\bf L}. To do so, we first rearrange the states to rewrite
+matrix @math{\bf P} as:
 
 @iftex
 @tex
@@ -271,12 +274,11 @@ P = |---+---|
 @noindent where the first @math{t} states are transient
 and the last @math{r} states are absorbing (@math{t+r = N}). The
 matrix @math{{\bf N} = ({\bf I} - {\bf Q})^{-1}} is called the
-@emph{fundamental matrix}; @math{N(i,j)} represents the expected
-number of times that the process is in the @math{j}-th transient state
-if it is started in the @math{i}-th transient state. If we reshape
-@math{\bf N} to the size of @math{\bf P} (filling missing entries with
-zeros), we have that, for absorbing chains @math{{\bf L} = {\bf
-\pi}(0){\bf N}}.
+@emph{fundamental matrix}; @math{N_{i,j}} is the expected number of
+times that the process is in the @math{j}-th transient state if it
+started in the @math{i}-th transient state. If we reshape @math{\bf N}
+to the size of @math{\bf P} (filling missing entries with zeros), we
+have that, for absorbing chains @math{{\bf L} = {\bf \pi}(0){\bf N}}.
 
 @DOCSTRING(dtmc_exps)
 
@@ -293,11 +295,11 @@ zeros), we have that, for absorbing chains @math{{\bf L} = {\bf
 The @emph{mean time to absorption} is defined as the average number of
 transitions which are required to reach an absorbing state, starting
 from a transient state (or given an initial state occupancy
-probability vector @math{{\bf \pi}(0)} ). 
+probability vector @math{{\bf \pi}(0)}). 
 
-Let @math{{\bf t}_i} be the expected number of steps before being
-absorbed in any absorbing state, starting from state @math{i}.  Vector
-@math{\bf t} can be easiliy computed from the fundamental matrix
+Let @math{{\bf t}_i} be the expected number of transitions before
+being absorbed in any absorbing state, starting from state @math{i}.
+Vector @math{\bf t} can be computed from the fundamental matrix
 @math{\bf N} (@pxref{Expected number of visits (DTMC)}) as
 
 @iftex
@@ -311,10 +313,10 @@ t = 1 N
 @end example
 @end ifnottex
 
-We can define a matrix @math{{\bf B} = [ B_{i, j} ]} such that
-@math{B_{i, j}} is the probability of being absorbed in state
-@math{j}, starting from transient state @math{i}. Again, using
-the fundamental matrix @math{\bf N} and @math{\bf R}, we have
+Let @math{{\bf B} = [ B_{i, j} ]} be a matrix where @math{B_{i, j}} is
+the probability of being absorbed in state @math{j}, starting from
+transient state @math{i}. Again, using matrices @math{\bf N} and
+@math{\bf R} (@pxref{Expected number of visits (DTMC)}) we can write
 
 @iftex
 @tex
@@ -333,9 +335,9 @@ B = N R
 @node First passage times (DTMC)
 @subsection First Passage Times
 
-The First Passage Time @math{M_{i, j}} is defined as the average
-number of transitions needed to visit state @math{j} for the first
-time, starting from state @math{i}. Matrix @math{\bf M} satisfies the
+The First Passage Time @math{M_{i, j}} is the average number of
+transitions needed to visit state @math{j} for the first time,
+starting from state @math{i}. Matrix @math{\bf M} satisfies the
 property that
 
 @iftex
@@ -359,7 +361,7 @@ To compute @math{{\bf M} = [ M_{i, j}]} a different formulation is
 used.  Let @math{\bf W} be the @math{N \times N} matrix having each
 row equal to the steady-state probability vector @math{\bf \pi} for
 @math{\bf P}; let @math{\bf I} be the @math{N \times N} identity
-matrix. Define matrix @math{\bf Z} as follows:
+matrix. Define @math{\bf Z} as follows:
 
 @iftex
 @tex
@@ -393,10 +395,9 @@ M_ij = -----------
 @end ifnottex
 
 According to the definition above, @math{M_{i,i} = 0}. We arbitrarily
-redefine @math{M_{i,i}} to be the @emph{mean recurrence time}
-@math{r_i} for state @math{i}, that is the average number of
-transitions needed to return to state @math{i} starting from
-it. @math{r_i} is defined as:
+let @math{M_{i,i}} to be the @emph{mean recurrence time} @math{r_i}
+for state @math{i}, that is the average number of transitions needed
+to return to state @math{i} starting from it. @math{r_i} is:
 
 @iftex
 @tex
@@ -412,9 +413,6 @@ r_i = -----
 @end group
 @end example
 @end ifnottex
-
-@noindent where @math{\pi_i} is the stationary probability of visiting state
-@math{i}.
 
 @DOCSTRING(dtmc_fpt)
 

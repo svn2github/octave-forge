@@ -20,7 +20,7 @@
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
 ## Created: March 2012
-## Version: 0.2
+## Version: 0.3
 
 ## Creation
 test gacreationuniform
@@ -43,3 +43,7 @@ test rastriginsfcn
 ## Genetic Algorithm
 test gaoptimset
 test ga
+
+## Private functions
+test __ga_initial_population__
+test __ga_problem_update_state_at_each_generation__

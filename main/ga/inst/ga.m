@@ -159,15 +159,17 @@ endfunction
 %! x = ga (problem);
 
 ## flawless execution with any nvars
+%!function f = ff (nvars)
+%!  f = @(x) sum (x(:, 1:nvars) .** 2, 2);
 %!test
 %! nvars = 1;
-%! x = ga (@(x) x(1, 1) ** 2, nvars);
+%! x = ga (ff (nvars), nvars);
 %!test
 %! nvars = 2;
-%! x = ga (@(x) (x(:, 1) ** 2) + (x(:, 2) ** 2), nvars);
+%! x = ga (ff (nvars), nvars);
 %!test
 %! nvars = 3;
-%! x = ga (@(x) (x(:, 1) ** 2) + (x(:, 2) ** 2) + (x(:, 3) ** 2), nvars);
+%! x = ga (ff (nvars), nvars);
 
 ## flawless execution with any supported optimization parameter
 ## different from the default value

@@ -3,10 +3,6 @@ miscellaneous
  apply
  asci
  cell2cell
- cell2csv
- csv2cell
- csvconcat
- csvexplode
  chebyshevpoly
  clip
  colorboard
@@ -34,8 +30,6 @@ miscellaneous
  temp_name
  text_waitbar
  units
- xmlread
- xmlwrite
  zagzig
  z_curve
  zigzag

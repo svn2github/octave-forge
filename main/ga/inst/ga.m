@@ -372,14 +372,69 @@ endfunction
 %! x = ga (f, nvars, [], [], [], [], [], [], @nonlcon, bad_options);
 
 
-# TODO: structure/add tests below
-
-%!test x = ga (struct ("fitnessfcn", @(x) rastriginsfcn (x(1:2)) + ((x(3) ** 2) - (cos (2 * pi * x(3))) + 1) + (x(4) ** 2), "nvars", 4, "options", gaoptimset ()));
-
-
-# TODO: convert to simple xtests
-## nvars == 1    and    min == zeros (1, nvars)
-
-%!test assert (ga (@(x) x ** 2, 1), 0, 1e-3);
-
-%!test assert (ga (@(x) (x ** 2) - (cos (2 * pi * x)) + 1, 1), 0, 1e-3);
+## simple optimization result checks. Failures here could happen because
+## of non-determinism in the result but if one of these tests always
+## fails for you, plese consider dropping an email to the octave-forge
+## mailing list <octave-dev@lists.sourceforge.net>.
+%!function f = ff (min)
+%!  f = @(x) sum ((x(:, 1:(columns (min))) - repmat (min,
+%!                                                   rows (x), 1)) .** 2, 2);
+%!function [C, Ceq] = nonlcon (x)
+%!  C = [];
+%!  Ceq = [];
+%!function r = rand_porcelain (interval_min, interval_max, nvars)
+%!  assert (interval_min < interval_max);
+%!  r = interval_min + ((interval_max - interval_min) * rand (1, nvars));
+%!function t = tol (nvars)
+%!  t = repelems (0.15, [1; nvars]);
+%!xtest
+%! nvars = 1;
+%! minimum = zeros (1, nvars);
+%! assert (ga (ff (minimum), nvars), minimum, tol (nvars));
+%!xtest
+%! nvars = 2;
+%! minimum = zeros (1, nvars);
+%! assert (ga (ff (minimum), nvars), minimum, tol (nvars));
+%!xtest
+%! nvars = 3;
+%! minimum = zeros (1, nvars);
+%! assert (ga (ff (minimum), nvars), minimum, tol (nvars));
+%!xtest
+%! nvars = 1;
+%! minimum = ones (1, nvars);
+%! assert (ga (ff (minimum), nvars), minimum, tol (nvars));
+%!xtest
+%! nvars = 2;
+%! minimum = ones (1, nvars);
+%! assert (ga (ff (minimum), nvars), minimum, tol (nvars));
+%!xtest
+%! nvars = 3;
+%! minimum = ones (1, nvars);
+%! assert (ga (ff (minimum), nvars), minimum, tol (nvars));
+%!xtest
+%! nvars = 1;
+%! interval_min = -10;
+%! interval_max =  10;
+%! minimum = - rand_porcelain (interval_min, interval_max, nvars);
+%! options = gaoptimset ("PopInitRange", 2 .* [interval_min; interval_max],
+%!                       "CrossoverFraction", 0.2);
+%! x = ga (ff (minimum), nvars, [], [], [], [], [], [], @nonlcon, options);
+%! assert (x, minimum, 4 .* tol (nvars));
+%!xtest
+%! nvars = 2;
+%! interval_min = -10;
+%! interval_max =  10;
+%! minimum = - rand_porcelain (interval_min, interval_max, nvars);
+%! options = gaoptimset ("PopInitRange", 2 .* [interval_min; interval_max],
+%!                       "CrossoverFraction", 0.2);
+%! x = ga (ff (minimum), nvars, [], [], [], [], [], [], @nonlcon, options);
+%! assert (x, minimum, 4 .* tol (nvars));
+%!xtest
+%! nvars = 3;
+%! interval_min = -10;
+%! interval_max =  10;
+%! minimum = - rand_porcelain (interval_min, interval_max, nvars);
+%! options = gaoptimset ("PopInitRange", 2 .* [interval_min; interval_max],
+%!                       "CrossoverFraction", 0.2);
+%! x = ga (ff (minimum), nvars, [], [], [], [], [], [], @nonlcon, options);
+%! assert (x, minimum, 4 .* tol (nvars));

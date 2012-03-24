@@ -1,0 +1,9 @@
+On revision 10042 the files server.cc, listencanfork.c and stringmatch.c were
+removed from the src/ directory of the miscellaneous package since no one on the
+mailing list knew what to do with these files. The packages releases were also
+not properly configured to handle it's code and even Debian packages of
+miscellaneous do not include them.
+
+Looking at the code of server.cc, it seems to implement the functions server,
+listen and senderror. Some of these would conflict with the functions in the
+package sockets. Maybe this code should be merged with sockets.

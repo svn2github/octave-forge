@@ -18,7 +18,9 @@
 DEFUN_DLD (cell2cell, args, , 
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} cell2cell (@var{c}, @var{dim})\n\
-Return a one-dimensional cell array, extending along dimension @var{dim}, which contains the slices of cell array @var{c} vertical to dimension @var{dim}.\n\
+Return a one-dimensional cell array, extending along dimension @var{dim},\n\
+which contains the slices of cell array @var{c} vertical to dimension\n\
+@var{dim}.\n\
 @end deftypefn")
 {
   std::string fname ("cell2cell");
@@ -40,7 +42,7 @@ Return a one-dimensional cell array, extending along dimension @var{dim}, which 
   if (error_state)
     {
       error ("%s: second argument must be an integer",
-	     fname.c_str ());
+             fname.c_str ());
       return octave_value_list ();
     }
 
@@ -57,16 +59,16 @@ Return a one-dimensional cell array, extending along dimension @var{dim}, which 
   if (n_cdims >= dim && cdims(dim - 1) > 1)
     {
       if (dim == 1)
-	{
-	  rdims.resize (2);
+        {
+          rdims.resize (2);
 
-	  rdims(1) = 1;
-	}
+          rdims(1) = 1;
+        }
       else
-	rdims.resize (dim);
+        rdims.resize (dim);
 
       for (i = 0; i < dim - 1; i++)
-	rdims(i) = 1;
+        rdims(i) = 1;
 
       rdims(dim - 1) = (nr = cdims(dim - 1));
 
@@ -109,16 +111,16 @@ Return a one-dimensional cell array, extending along dimension @var{dim}, which 
       cursor = 0;
 
       for (j = 0; j < nt; j++)
-	{
-	  t(j) = c(origin + cursor++);
+        {
+          t(j) = c(origin + cursor++);
 
-	  if (cursor == skip_count)
-	    {
-	      cursor = 0;
+          if (cursor == skip_count)
+            {
+              cursor = 0;
 
-	      origin += skip;
-	    }
-	}
+              origin += skip;
+            }
+        }
 
       retval(i) = t;
 

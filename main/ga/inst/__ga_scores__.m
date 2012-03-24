@@ -14,13 +14,12 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 5.5.1
+## Version: 5.5.2
 
 function Scores = __ga_scores__ (problem, Population)
   if (strcmp (problem.options.Vectorized, "on")) ## using vectorized evaluation
     if (strcmp (problem.options.UseParallel, "always"))
-      warning ("'Vectorized' option is 'on': ignoring 'UseParallel' \
-          option, even if it is 'always'");
+      warning ("'Vectorized' option is 'on': ignoring 'UseParallel' option, even if it is 'always'");
     endif
     Scores = problem.fitnessfcn (Population);
   else ## not using vectorized evaluation

@@ -432,7 +432,7 @@ void octave_ncfile::sync(void) {
 
   if (status != NC_NOERR)
     {
-      error("Error syncronizing file: %s", nc_strerror(status));
+      error("Error synchronizing file: %s", nc_strerror(status));
     }
 }
 

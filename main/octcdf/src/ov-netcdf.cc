@@ -682,7 +682,7 @@ void ov_nc_put_att(int ncid, int varid,const std::string name,
 
     default: {
 	status = NC_NOERR;
-	error("Unkown type of variable: %d", nctype);        
+	error("Unknown type of variable: %d", nctype);        
     } 
   }
 
@@ -802,7 +802,7 @@ octave_value ov_nc_get_vars(int ncid, int varid,std::list<Range> ranges,nc_type 
       }
 
     default:  {
-	error("Unkown type of variable: %d", nctype);
+	error("Unknown type of variable: %d", nctype);
         
       } 
     }
@@ -942,7 +942,7 @@ void ov_nc_put_vars(int ncid, int varid,std::list<Range> ranges,nc_type nctype,o
 
       default: {
 	status = NC_NOERR;
-	error("Unkown type of variable: %d", nctype);        
+	error("Unknown type of variable: %d", nctype);        
       } 
     }
 
@@ -1021,7 +1021,7 @@ nc_type ncname2nctype(std::string name) {
   else if (name == "double")
     return NC_DOUBLE;
   else {
-    error("Unkown type: %s",name.c_str());
+    error("Unknown type: %s",name.c_str());
     return NC_NAT ;
   }
 }

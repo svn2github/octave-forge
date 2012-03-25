@@ -49,7 +49,7 @@ octave_ncatt::octave_ncatt(octave_ncvar* ncvar, int attnump) {
   status = nc_inq_attname(get_ncid(),get_varid(),get_attnum(),name);
 
   if (status != NC_NOERR) {
-    error("Error while quering attribute: %s",nc_strerror(status));
+    error("Error while querying attribute: %s",nc_strerror(status));
     return;
   }
 
@@ -78,7 +78,7 @@ octave_ncatt::octave_ncatt(octave_ncvar* ncvar, std::string attnamep) {
   status = nc_inq_attid(get_ncid(),get_varid(),get_name().c_str(),&attnum);
 
   if (status != NC_NOERR) {
-    error("Error while quering attribute: %s",nc_strerror(status));
+    error("Error while querying attribute: %s",nc_strerror(status));
     return;
   }
 
@@ -112,7 +112,7 @@ octave_ncatt::octave_ncatt(octave_ncfile* ncfilep, int attnump) {
   status = nc_inq_attname(get_ncid(),get_varid(),get_attnum(),name);
 
   if (status != NC_NOERR) {
-    error("Error while quering attribute: %s",nc_strerror(status));
+    error("Error while querying attribute: %s",nc_strerror(status));
     return;
   }
 
@@ -143,7 +143,7 @@ octave_ncatt::octave_ncatt(octave_ncfile* ncfilep, std::string attnamep) {
   status = nc_inq_attid(get_ncid(),get_varid(),get_name().c_str(),&attnum);
 
   if (status != NC_NOERR) {
-    error("Error while quering attribute: %s",nc_strerror(status));
+    error("Error while querying attribute: %s",nc_strerror(status));
     return;
   }
 
@@ -217,7 +217,7 @@ void octave_ncatt::read_info() {
 
 
   if (status != NC_NOERR) {
-    error("Error while quering attribute: %s",nc_strerror(status));
+    error("Error while querying attribute: %s",nc_strerror(status));
     return;
   }
 

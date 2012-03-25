@@ -126,7 +126,7 @@ void octave_ncfile::read_info() {
   status = nc_inq(get_ncid(),&(nf->ndims),&(nf->nvars),&(nf->natts),&(nf->unlimdimid));
 
   if (status != NC_NOERR)
-    error("Error while quering file: %s",nc_strerror(status));
+    error("Error while querying file: %s",nc_strerror(status));
 
 }
 

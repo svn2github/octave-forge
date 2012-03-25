@@ -133,7 +133,7 @@ void octave_ncvar::read_info() {
   status = nc_inq_var(get_ncid(),get_varid(),name,&nctype,&ndims,dimids,&natts);
 
   if (status != NC_NOERR) {
-    error("Error while quering variable: %s",nc_strerror(status));
+    error("Error while querying variable: %s",nc_strerror(status));
     return;
   }
 
@@ -161,7 +161,7 @@ void octave_ncvar::read_info() {
     status = nc_inq_dim(get_ncid(),dimids[i],name,&length);
   
     if (status != NC_NOERR)
-      error("Error while quering dimenstion: %s",nc_strerror(status));
+      error("Error while querying dimenstion: %s",nc_strerror(status));
 
     set_dimid(i,dimids[i]);
     dimnames.push_back(name);  

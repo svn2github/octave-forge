@@ -1,8 +1,6 @@
 /*
 
-Copyright (C) 2009 John W. Eaton
-Copyright (C) 2009 Jaroslav Hajek <highegg@gmail.com>
-Copyright (C) 2010, 2011 Olaf Till
+Copyright (C) 2010, 2011, 2012 Olaf Till
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,37 +17,38 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// This code and the comments are taken and slightly modified from
-// Octave-3.2.4, src/data.cc (do_cat()), src/ov.cc (do_cat_op ()),
-// src/OPERATORS/op-struct.cc, src/ops.h, and oct-map.cc
-// (Octave_map::concat ()).
+// Code of the files of Octave-3.2.4 src/data.cc (do_cat()), src/ov.cc
+// (do_cat_op ()), src/OPERATORS/op-struct.cc, src/ops.h, and
+// oct-map.cc (Octave_map::concat ()) has been studied and initially
+// re-used, but in the end it has been made differently here.
 
 #include <octave/oct.h>
 #include <octave/ov-struct.h>
 
-static octave_value
-structcat_cat_op_fcn (const octave_value& v1, const octave_value& v2, 
-		      const Array<octave_idx_type>& ra_idx)
+static Octave_map
+structcat_op_fcn (const Octave_map& m1, const Octave_map& m2,
+		      const dim_vector& dv,
+		      const Array<octave_idx_type>& ra_idx,
+		      const octave_value& fillv)
 {
-  Octave_map m1 = v1.map_value ();
-  Octave_map m2 = v2.map_value ();
+  Octave_map retval (dv);
 
-  dim_vector dv1 (m1.dims ());
-
-  Octave_map retval (dv1);
-
-  Cell c2 (m2.dims ());
+  Cell c2 (m2.dims (), fillv);
 
   for (Octave_map::const_iterator pa = m1.begin (); pa != m1.end (); pa++)
     {
+      Cell c (dv);
+
+      c.insert (m1.contents(pa), 0, 0);
+
       Octave_map::const_iterator pb = m2.seek (m1.key(pa));
 
       if (pb == m2.end ())
-	retval.assign (m1.key(pa),
-		       m1.contents(pa).insert (c2, ra_idx));
+	c.insert (c2, ra_idx);
       else
-	retval.assign (m1.key(pa),
-		       m1.contents(pa).insert (m2.contents(pb), ra_idx));
+	c.insert (m2.contents(pb), ra_idx);
+
+      retval.assign (m1.key(pa), c);
     }
 
   for (Octave_map::const_iterator pa = m2.begin (); pa != m2.end (); pa++)
@@ -58,9 +57,10 @@ structcat_cat_op_fcn (const octave_value& v1, const octave_value& v2,
 
       if (pb == m1.end ())
 	{
-	  Cell c1 (dv1);
+	  Cell c (dv, fillv);
+
 	  retval.assign (m2.key(pa),
-			 c1.insert (m2.contents(pa), ra_idx));
+			 c.insert (m2.contents(pa), ra_idx));
 	}
     }
 
@@ -71,115 +71,81 @@ structcat_cat_op_fcn (const octave_value& v1, const octave_value& v2,
 DEFUN_DLD (structcat, args, , 
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} structcat (@var{dim}, @var{struct1}, @dots{}, @var{structn})\n\
-Return the concatenation of N-d structures @var{struct1}, @dots{}, @var{structn} along dimension @var{dim}. Differently to @code{cat}, fields need not match --- missing fields get an empty matrix value. Without structure arguments, an empty structure array is returned.\n\
+@deftypefnx {Loadable Function} {} structcat (@var{dim}, @var{default}, @var{struct1}, @dots{}, @var{structn})\n\
+Return the concatenation of N-d structures @var{struct1}, @dots{}, @var{structn} along dimension @var{dim}. Differently to @code{cat}, fields need not match --- missing fields get an empty matrix value. Without structure arguments, an empty structure array is returned. If a scalar argument @var{default} is given, missing fields get its value instead of an empty matrix value.\n\
+\n\
+@seealso{structcat_default}\n\
 @end deftypefn")
 {
   std::string fname ("structcat");
 
-  octave_value retval;
+  Octave_map retval;
 
-  int n_args = args.length (); 
+  octave_idx_type n_args = args.length ();
 
-  if (n_args == 1)
-    retval = Octave_map ();
-  else if (n_args == 2)
-    retval = args(1).map_value ();
-  else if (n_args > 2)
+  if (n_args == 0)
+    print_usage ();
+  else
     {
       octave_idx_type dim = args(0).int_value () - 1;
 
-      if (error_state)
+      if (error_state || dim < 0)
 	{
-	  error ("%s: expecting first argument to be a integer",
+	  error ("%s: first argument must be a positive integer",
 		 fname.c_str ());
-	  return retval;
+	  return octave_value ();
 	}
-  
-      if (dim >= 0)
+
+      octave_idx_type m1_id;
+      octave_value fillv;
+
+      if (n_args > 1 && args(1).is_scalar_type ())
 	{
- 	  dim_vector  dv = args(1).dims ();
-	  std::string result_type ("struct");
+	  m1_id = 2;
 
- 	  for (int i = 2; i < args.length (); i++)
-  	    {
- 	      // Construct a dimension vector which holds the
-	      // dimensions of the final array after concatenation.
-      
-	      if (! dv.concat (args(i).dims (), dim))
-		{
-		  // Dimensions do not match. 
-		  error ("%s: dimension mismatch", fname.c_str ());
-		  return retval;
-		}
-	      
-	      if (args(i).class_name () != result_type)
-		{
-		  error ("%s: some argument not a structure",
-			 fname.c_str ());
-		  return retval;
-		}
-	    }
-
-	  // The lines below might seem crazy, since we take a
-	  // copy of the first argument, resize it to be empty and
-	  // then resize it to be full. This is done since it
-	  // means that there is no recopying of data, as would
-	  // happen if we used a single resize.  It should be
-	  // noted that resize operation is also significantly
-	  // slower than the do_cat_op function, so it makes sense
-	  // to have an empty matrix and copy all data.
-	  //
-	  // We might also start with a empty octave_value using
-	  //   tmp = octave_value_typeinfo::lookup_type 
-	  //                                (args(1).type_name());
-	  // and then directly resize. However, for some types there might
-	  // be some additional setup needed, and so this should be avoided.
-
-	  octave_value tmp = args (1);
-	  tmp = tmp.resize (dim_vector (0, 0)).resize (dv);
-
-	  if (error_state)
-	    return retval;
-
-	  int dv_len = dv.length ();
-	  Array<octave_idx_type> ra_idx (dim_vector (dv_len, 1), 0);
-
-	  for (int j = 1; j < n_args; j++)
-	    {
-	      dim_vector dv_tmp = args (j).dims ();
-
-	      if (! dv_tmp.all_zero ())
-		{
-		  tmp = structcat_cat_op_fcn (tmp, args(j), ra_idx);
-
-		  if (error_state)
-		    return retval;
-
-		  if (dim >= dv_len)
-		    {
-		      if (j > 1)
-			error ("%s: indexing error", fname.c_str ());
-		      break;
-		    }
-		  else
-		    ra_idx (dim) += (dim < dv_tmp.length () ? 
-				     dv_tmp (dim) : 1);
-		}
-	    }
-	  retval = tmp;
-
-	  if (! error_state)
-	    {
-	      // Reshape, chopping trailing singleton dimensions
-	      dv.chop_trailing_singletons ();
-	      retval = retval.reshape (dv);
-	    }
+	  fillv = args(1);
 	}
       else
-	error ("%s: invalid dimension argument", fname.c_str ());
-    }
-  else
-    print_usage ();
+	{
+	  m1_id = 1;
 
-  return retval;
+	  fillv = Matrix ();
+	}
+
+      dim_vector dv;
+
+      octave_idx_type idx_len = dv.length ();
+
+      if (dim >= idx_len) idx_len = dim + 1;
+
+      Array<octave_idx_type> ra_idx (dim_vector (idx_len, 1), 0);
+
+      for (octave_idx_type i = m1_id; i < n_args; i++)
+	{
+	  if (! args(i).is_map ())
+	    {
+	      error ("%s: some argument not a structure", fname.c_str ());
+
+	      return octave_value ();
+	    }
+
+	  dim_vector dvi = args(i).dims (), old_dv = dv;
+
+	  if (! dv.concat (dvi, dim))
+	    {
+	      error ("%s: dimension mismatch", fname.c_str ());
+
+	      return octave_value ();
+	    }
+
+	  if (! dvi.all_zero ())
+	    {
+	      retval = structcat_op_fcn (retval, args(i).map_value (),
+					 dv, ra_idx, fillv);
+
+	      ra_idx(dim) += (dim < dvi.length () ? dvi(dim) : 1);
+	    }
+	}  
+    }
+  return octave_value (retval);
 }

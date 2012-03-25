@@ -2,7 +2,7 @@
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
+## the Free Software Foundation; either version 3 of the License, or
 ## (at your option) any later version.
 ##
 ## This program is distributed in the hope that it will be useful,
@@ -16,19 +16,30 @@
 ## -*- texinfo -*-
 ## @deftypefn {Built-in Function} {} [@var{v1},...] =
 ## getfields (@var{s}, 'k1',...) = [@var{s}.k1,...]
-## Return selected values from a struct. Provides some compatibility
-## and some flexibility.
+## Return selected values from a scalar struct. Provides some
+## compatibility and some flexibility.
 ## @end deftypefn
-## @seealso{setfields,rmfield,isfield,isstruct,fields,cmpstruct,struct}
+## @seealso{setfields,rmfield,isfield,isstruct,struct}
 
 ## Author:        Etienne Grossmann <etienne@cs.uky.edu>
 ## Last modified: January 2003
 
-function [varargout] = getfields(s,varargin)
-    for i=length(varargin):-1:1
-	varargout{i} = s.(varargin{i});
-    end
-end
+## modified by Olaf Till
+
+function [varargout] = getfields (s, varargin)
+
+  if (! all (isfield (s, varargin)))
+    error ("some fields not present");
+  endif
+
+  if (all (size (s) <= 1))
+    varargout = fields2cell (s, varargin);
+  else
+    error ("structure must be scalar or empty");
+  endif
+
+endfunction
+
 %!
-%!assert(getfields(struct('key','value'),'key'),'value')
+%!assert (getfields (struct ('key', 'value'), 'key'), 'value');
 %!

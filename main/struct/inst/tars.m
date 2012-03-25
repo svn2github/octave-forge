@@ -8,8 +8,10 @@
 ## Author:        Etienne Grossmann <etienne@isr.ist.utl.pt>
 ## Last modified: October 2000
 
-function s = tars(varargin)
+## modified by Olaf Till
 
-for i=1:nargin
-   s.(deblank(argn(i,:))) = varargin{i};
-end
+function s = tars (varargin)
+
+  s = cell2struct (varargin, deblank (cellstr (argn)), 2);
+
+endfunction

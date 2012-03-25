@@ -1,12 +1,12 @@
 Name: Struct
-Version: 1.0.9
-Date: 2011-10-13
-Author: Etienne Grossmann <etienne@cs.uky.edu> and Olaf Till <olaf.till@uni-jena.de>
-Maintainer: Etienne Grossmann <etienne@cs.uky.edu>
+Version: 1.0.10
+Date: 2012-03-25
+Author: Etienne Grossmann <etienne@cs.uky.edu> and Olaf Till <i7tiol@t-online.de>
+Maintainer: Olaf Till <i7tiol@t-online.de>
 Title: Structure Handling.
 Description: Additional Structure manipulations functions.
 Categories: Structs
 Depends: octave (>= 2.9.7)
 Autoload: yes
-License: GPL version 2 or later
+License: GPL, see individual files for version
 Url: http://octave.sf.net

@@ -2,7 +2,7 @@
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
+## the Free Software Foundation; either version 3 of the License, or
 ## (at your option) any later version.
 ##
 ## This program is distributed in the hope that it will be useful,
@@ -26,20 +26,29 @@
 ## November 2000: Paul Kienzle <pkienzle@users.sf.net>
 ##     return error rather than trapping to keyboard
 
-function s = setfields(s,varargin)
-if nargin == 0
-  s= struct; % doesn't work on older versions of octave
-elseif rem(nargin,2) != 1,
-  error('setfields: expected struct, key1, val1, key2, val2, ...\n') ; 
-endif
-	
-for i=1:2:nargin-1
-  if ! ischar(varargin{i}) ,
-    error('setfields: called with non-string key') ; 
+## modified by Olaf Till
+
+function s = setfields (s, varargin)
+
+  if ((nargs = nargin ()) == 0)
+    s = struct ();
+  elseif (all (size (s) <= 1))
+    if (rem (nargs, 2))
+      pairs = reshape (varargin, 2, []);
+      if (! iscellstr (pairs(1, :)))
+	error ("setfields: called with non-string key");
+      endif
+      if (isempty (s))
+	s = struct (); # might have been an empty array
+      endif
+      s = cell2fields (pairs(2, :), pairs(1, :), 2, s);
+    else
+      error ("setfields: expected struct, key1, val1, key2, val2, ...");
+    endif
   else
-    s.(varargin{i}) = varargin{i+1};
-  end
-end
+    error ("structure must be scalar or empty");
+  endif
+
 %!
-%!assert(setfields({},'key','value'),struct('key','value'))
+%!assert (setfields ({}, 'key', 'value'), struct ('key', 'value'));
 %!

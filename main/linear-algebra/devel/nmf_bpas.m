@@ -87,75 +87,77 @@
 
 # TODO
 # - Use inputParser for options.
+# - Write docstring.
+# - Write demos using example files.
+# - Format code.
+# - Vectorize loops.
+
 function [W, H, iter, HIS] = nmf_bpas (A, k , varargin)
 
-    [m,n] = size(A);
-    ST_RULE = 1;
+  [m,n] = size(A);
+  ST_RULE = 1;
 
-    % Default configuration
-    par.m = m;
-    par.n = n;
-    par.type = 'regularized';
-    par.nnls_solver = 'bp';
-    par.alpha = 0;
-    par.beta = 0;
-    par.max_iter = 100;
-    par.min_iter = 20;
-    par.max_time = 1e6;
-    par.tol = 1e-3;
-    par.verbose = 0;
+  # --- Parse arguments --- #
+  parser = inputParser ();
+  parser.FunctionName = "nmf_bpas";
+  parser = addParamValue (parser,'Winit', rand(m,k), @ismatrix);
+  parser = addParamValue (parser,'Hinit', rand(k,n), @ismatrix);
+  parser = addParamValue (parser,'Tol', 1e-3, @(x)x>0);
+  parser = addParamValue (parser,'Alpha', mean (A(:)), @(x)x>=0);
+  parser = addParamValue (parser,'Beta', mean (A(:)), @(x)x>=0);
+  parser = addParamValue (parser,'MaxIter', 100, @(x)x>0);
+  parser = addParamValue (parser,'MaxTime', 1e3, @(x)x>0);
+  parser = addParamValue (parser,'Verbose', false);
 
-    W = rand(m,k);
-    H = rand(k,n);
+  val_type = @(x,c) ischar(x) && any(strcmpi(x,c);
+  parser = addParamValue (parser,'Type', 'regularized', ...
+                            @(x)val_type (x,{'regularized', 'sparse','plain'}));
+  parser = addParamValue (parser,'NNLSSolver', 'bp', , ...
+                                                 @(x)val_type (x,{'bp', 'as'}));
 
-    % Read optional parameters
-    if (rem(length(varargin),2)==1)
-        error('Optional parameters should always go by pairs');
-    else
-        for i=1:2:(length(varargin)-1)
-            switch upper(varargin{i})
-                case 'TYPE',                par.type = varargin{i+1};
-                case 'NNLS_SOLVER',         par.nnls_solver = varargin{i+1};
-                case 'ALPHA',               argAlpha = varargin{i+1};,par.alpha = argAlpha;
-                case 'BETA',                argBeta = varargin{i+1};,par.beta = argBeta;
-                case 'MAX_ITER',            par.max_iter = varargin{i+1};
-                case 'MIN_ITER',            par.min_iter = varargin{i+1};
-                case 'MAX_TIME',            par.max_time = varargin{i+1};
-                case 'W_INIT',              W = varargin{i+1};
-                case 'H_INIT',              H = varargin{i+1};
-                case 'TOL',                 par.tol = varargin{i+1};
-                case 'VERBOSE',             par.verbose = varargin{i+1};
-                otherwise
-                    error(['Unrecognized option: ',varargin{i}]);
-            end
-        end
-    end
+  parser = parse(parser,varargin{:});
 
-    % for regularized/sparse case
-    if strcmp(par.type,'regularized')
-        if ~exist('argAlpha','var') par.alpha = mean(A(:));, end
-        if ~exist('argBeta','var') par.beta = mean(A(:));, end
-        salphaI = sqrt(par.alpha)*eye(k);
-        sbetaI = sqrt(par.beta)*eye(k);
-        zerokn = zeros(k,n);
-        zerokm = zeros(k,m);
-    elseif strcmp(par.type,'sparse')
-        if ~exist('argAlpha','var') par.alpha = mean(A(:));, end
-        if ~exist('argBeta','var')par.beta = mean(A(:));, end
-        salphaI = sqrt(par.alpha)*eye(k);
-        sbetaE = sqrt(par.beta)*ones(1,k);
-        betaI = par.beta*ones(k,k);
-        zero1n = zeros(1,n);
-        zerokm = zeros(k,m);
-    elseif ~strcmp(par.type,'plain')
-        error(['Unrecognized type: use ''plain'', ''regularized'', or ''sparse''.']);
-    end
+  % Default configuration
+  par.m           = m;
+  par.n           = n;
+  par.type        = parser.Results.Type;
+  par.nnls_solver = parser.Results.NNLSSolver;
+  par.alpha       = parser.Results.Alpha;
+  par.beta        = parser.Results.Beta;
+  par.max_iter    = parser.Results.MaxIter;
+  par.min_iter    = 20;
+  par.max_time    = parser.Results.MaxTime;
+  par.tol         = parser.Results.Tol;
+  par.verbose     = parser.Results.Verbose;
+  W               = parser.Results.Winit;
+  H               = parser.Results.Hinit;
 
-    if ~strcmp(par.nnls_solver,'bp') && ~strcmp(par.nnls_solver,'as')
-        error(['Unrecognized nnls_solver: use ''bp'' or ''as''.']);
-    end
+  # TODO check if can be removed
+  argAlpha        = par.alpha;
+  argBeta         = par.beta;
 
-    display(par);
+  clear parser val_type
+
+### PARSING TYPE
+  % for regularized/sparse case
+  salphaI = sqrt (par.alpha) * eye (k);
+  zerokm = zeros (k,m);
+
+  if strcmpi (par.type, 'regularized')
+      sbetaI = sqrt (par.beta) * eye (k);
+      zerokn = zeros (k,n);
+
+  elseif strcmpi (par.type, 'sparse')
+      sbetaE = sqrt (par.beta) * ones (1,k);
+      betaI  = par.beta * ones (k,k);
+      zero1n = zeros (1,n);
+
+  end
+###
+
+# Verbosity
+  display(par);
+### Done till here Sun Mar 25 19:00:26 2012
 
     HIS = 0;
     if par.verbose          % collect information for analysis/debugging
@@ -185,10 +187,13 @@ function [W, H, iter, HIS] = nmf_bpas (A, k , varargin)
         tPrev = cputime;
     end
 
-    tStart = cputime;, tTotal = 0;
+    tStart = cputime;
+    tTotal = 0;
     initSC = getInitCriterion(ST_RULE,A,W,H,par.type,par.alpha,par.beta);
-    SCconv = 0; SC_COUNT = 3;
+    SCconv = 0;
+    SC_COUNT = 3;
 
+#TODO: Replace with callbacks avoid switching each time
     for iter=1:par.max_iter
         switch par.type
             case 'plain'

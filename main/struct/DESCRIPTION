@@ -8,5 +8,5 @@ Description: Additional Structure manipulations functions.
 Categories: Structs
 Depends: octave (>= 2.9.7)
 Autoload: no
-License: GPL, see individual files for version
+License: GPLv3+
 Url: http://octave.sf.net

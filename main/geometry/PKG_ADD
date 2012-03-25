@@ -32,4 +32,4 @@ else
 endif
 
 warning('off', 'Octave:fopen-file-in-path');
-clear dirlist dirname pp
+clear dirlist dirname pp arch pkg_folder dep_folder

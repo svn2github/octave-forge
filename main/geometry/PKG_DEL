@@ -30,4 +30,4 @@ else
   endfor
 endif
 
-clear dirlist dirname pp
+clear dirlist dirname pp arch pkg_folder dep_folder

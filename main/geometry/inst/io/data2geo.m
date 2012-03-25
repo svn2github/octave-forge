@@ -16,7 +16,7 @@
 %% -*- texinfo -*-
 %% @deftypefn {Function File} {@var{fileStr} =} data2geo (@var{data}, @var{lc})
 %% @deftypefnx {Function File} {@var{fileStr} =} data2geo (@dots{}, @var{param}, @var{value})
-%% Builds a file compatible with gmsh form data.
+%% Uses data to build a file compatible with Gmsh.
 %%
 %% @var{data} is assumed to describe a polygon in @code{polygon2d} format.
 %% The argument @var{lc} specifies the edge size.

@@ -49,7 +49,7 @@ Operation of @var{clip} - @var{sub}.\n\
 \n\
 For the matrices @var{sub} and @var{clip}, the first point is not needed to\n\
 be repeated at the end (but is permitted). Pairs of (NaN,NaN) coordinates in\n\
-@var{sub} and/or @var{clip} are ommitted.\n\
+@var{sub} and/or @var{clip} are omitted.\n\
 \n\
 @var{X} is a column vector containing the X coordinates of the vertices for.\n\
 resultant polygon(s).\n\n\

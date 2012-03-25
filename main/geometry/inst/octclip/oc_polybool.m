@@ -45,7 +45,7 @@
 ##
 ## For the matrices @var{sub} and @var{clip}, the first point is not needed to
 ## be repeated at the end (but is permitted). Pairs of (NaN,NaN) coordinates in
-## @var{sub} and/or @var{clip} are ommitted.
+## @var{sub} and/or @var{clip} are omitted.
 ##
 ## @var{X} is a column vector containing the X coordinates of the vertices for.
 ## resultant polygon(s).

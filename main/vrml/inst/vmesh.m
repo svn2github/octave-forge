@@ -1,16 +1,17 @@
-
-## Copyright (C) 2002-2009 Etienne Grossmann.  All rights reserved.
+## Copyright (C) 2002-2009 Etienne Grossmann <etienne@cs.uky.edu>
 ##
-## This program is free software; you can redistribute it and/or modify it
-## under the terms of the GNU General Public License as published by the
-## Free Software Foundation; either version 2, or (at your option) any
-## later version.
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free Software
+## Foundation; either version 3 of the License, or (at your option) any later
+## version.
 ##
-## This is distributed in the hope that it will be useful, but WITHOUT
+## This program is distributed in the hope that it will be useful, but WITHOUT
 ## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-## for more details.
+## FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+## details.
 ##
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## s = vmesh (x, y, z [, options] ) - Visualize a 3D surface
 ## s = vmesh (z [, options] )
@@ -72,8 +73,6 @@
 ## "normalize"  :       Normalize z to [-1,1]
 ##
 ## See also: vrml_surf(), vrml_faces(), demo("vmesh")
-
-## Author:        Etienne Grossmann <etienne@isr.ist.utl.pt>
 
 function s = vmesh (x, y, z, varargin)
 

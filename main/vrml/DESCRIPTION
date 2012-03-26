@@ -6,7 +6,7 @@ Maintainer: Etienne Grossmann <etienne@cs.uky.edu>
 Title: VRML.
 Description: 3D graphics using VRML
 Depends: octave (>= 2.9.7), miscellaneous, struct, statistics
-Autoload: yes
+Autoload: no
 SystemRequirements: freewrl
-License: GPL version 2 or later and GFDL
+License: GPLv3+, GFDL
 Url: http://octave.sf.net

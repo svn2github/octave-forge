@@ -8,5 +8,5 @@ Description: A Drift-Diffusion simulator for 2d semiconductor devices
 Categories: Electrical Engineering
 Depends: octave (>= 3.0.5)
 Autoload: no
-License: GPL version 2 or later
+License: GPLv3+
 

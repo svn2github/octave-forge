@@ -139,18 +139,19 @@ function [W, H, iter, HIS] = nmf_bpas (A, k , varargin)
   clear parser val_type
 
 ### PARSING TYPE
+# TODO add callbacks here to use during main loop. See [1]
   % for regularized/sparse case
   salphaI = sqrt (par.alpha) * eye (k);
   zerokm = zeros (k,m);
 
   if strcmpi (par.type, 'regularized')
-      sbetaI = sqrt (par.beta) * eye (k);
-      zerokn = zeros (k,n);
+    sbetaI = sqrt (par.beta) * eye (k);
+    zerokn = zeros (k,n);
 
   elseif strcmpi (par.type, 'sparse')
-      sbetaE = sqrt (par.beta) * ones (1,k);
-      betaI  = par.beta * ones (k,k);
-      zero1n = zeros (1,n);
+    sbetaE = sqrt (par.beta) * ones (1,k);
+    betaI  = par.beta * ones (k,k);
+    zero1n = zeros (1,n);
 
   end
 ###
@@ -193,7 +194,7 @@ function [W, H, iter, HIS] = nmf_bpas (A, k , varargin)
     SCconv = 0;
     SC_COUNT = 3;
 
-#TODO: Replace with callbacks avoid switching each time
+#TODO: [1] Replace with callbacks avoid switching each time
     for iter=1:par.max_iter
         switch par.type
             case 'plain'

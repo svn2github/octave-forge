@@ -7,7 +7,7 @@ ga-0.9.9   Release Date: 2012-xx-yy   Release Manager: Luca Favatella
 ** Remove dependency on the "communications" package and require
    Octave version 3.4.0 (or better).  The "communications" package was
    used only for its "randint" function; now the "randi" function,
-   introduced on Octave 3.4.0, is used instead.
+   introduced in Octave 3.4.0, is used instead.
 
 ** Reorganize the unit test suite.  All available tests can be
    executed by running "test_ga".  Fix bug #3287917 (Debian bug

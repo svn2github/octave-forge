@@ -53,16 +53,17 @@ function pp = csape (x, y, cond, valc)
   ## Check the size and shape of y
   ndy = ndims (y);
   szy = size (y);
-  if (ndy == 2 && (szy(1) == 1 || szy(2) == 1))
-    if (szy(1) == 1)
+  if (ndy == 2 && (szy(1) == n || szy(2) == n))
+    if (szy(2) == n)
       a = y.';
     else
       a = y;
       szy = fliplr (szy);
     endif
   else
-    a = reshape (y, [prod(szy(1:end-1)), szy(end)]).';
+    a = shiftdim (reshape (y, [prod(szy(1:end-1)), szy(end)]), 1);
   endif
+
 
   b = c = zeros (size (a));
   h = diff (x);
@@ -218,8 +219,7 @@ function pp = csape (x, y, cond, valc)
   endif
 
   d = d(1:n-1,:); c=c(1:n-1,:); b=b(1:n-1,:); a=a(1:n-1,:);
-  coeffs = [d(:), c(:), b(:), a(:)];
-  pp = mkpp (x, coeffs, szy(1:end-1));
+  pp = mkpp (x, cat (2, d'(:), c'(:), b'(:), a'(:)), szy(1:end-1));
 
 endfunction
 

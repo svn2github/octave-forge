@@ -272,6 +272,8 @@ while (indi <= size(varargin, 2))
              the_line = cellfun (@(x) sscanf (x, "%f", locales), dummy, \
                                  'UniformOutput', false);
             else
+              %# this code require a patch to src/file-io.cc in main
+              %# Octave tree
               the_line = sscanf (dummy, "%f", locales);
               the_line = cellfun (@(x) x{1}, the_line, 'UniformOutput', false);
             endif

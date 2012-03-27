@@ -210,9 +210,15 @@ while (indi <= size(varargin, 2))
           
           %# content = cellfun(@(x) regexp(x, '(\b|[-+\.''])[^,]*(''|\b)', 'match'),\
           %# lines, 'UniformOutput', false); %# extract fields
-          content = cellfun (@(x) strsplit (x, sep), lines, \
-                             'UniformOutput', false); %# extract fields  
-          indl = 1; indj = 1;  %#disp('line 151 '); keyboard
+          
+          if (strfind (sep, ' '))
+            content = cellfun (@(x) strsplit (x, sep, true), lines, \
+                               'UniformOutput', false); %# extract fields  
+          else
+            content = cellfun (@(x) strsplit (x, sep), lines, \
+                               'UniformOutput', false); %# extract fields 
+          endif
+          indl = 1; indj = 1; %# disp('line 151 '); keyboard
           if (~isempty (seeked))
             while (indl <= length (lines))
               dummy = content{indl};
@@ -239,7 +245,7 @@ while (indi <= size(varargin, 2))
               endif
               if (size (dummy, 2) >= 2 && ...
                   ~isempty (regexp (dummy{2}, trigger, 'match')))
-                %#was  (strcmp (dummy{1}, trigger))
+                %# was  (strcmp (dummy{1}, trigger))
                 break;
               endif
             endwhile
@@ -260,9 +266,16 @@ while (indi <= size(varargin, 2))
               indl = indl + 1; indj = indj + 1;
               continue;
             endif
+            
             %# try to convert to float
-            the_line = cellfun (@(x) sscanf (x, "%f", locales), dummy, \
-                                'UniformOutput', false);
+           if (1)
+             the_line = cellfun (@(x) sscanf (x, "%f", locales), dummy, \
+                                 'UniformOutput', false);
+            else
+              the_line = sscanf (dummy, "%f", locales);
+              the_line = cellfun (@(x) x{1}, the_line, 'UniformOutput', false);
+            endif
+
             for indk = (1:size (the_line, 2))
               if (isempty (the_line{indk}) || any (size (the_line{indk}) > 1)) 
                 %#if indi > 1 && indk > 1, disp('line 117 '); keyboard; %#endif
@@ -284,11 +297,12 @@ while (indi <= size(varargin, 2))
                   x(indj, indk) = regexp (dummy{indk}, '[^ ].*', 'match');
                 endif
               else
-                if (~isempty (regexp (dummy{indk}, '[/:]')))
+                if (~isempty (regexp (dummy{indk}, '[/:-]')))
                   %# try to convert to a date
                   [timeval, nfields] = strptime( dummy{indk}, 
                                                 [char(37) 'd/' char(37) 'm/' char(37) 'Y ' char(37) 'T']);
                   if (nfields > 0) %# at least a few fields are OK
+                    keyboard
                     timestr =  strftime ([char(37) 'H:' char(37) 'M:' char(37) 'S'], 
                                          timeval);
                     %# try to extract the usec field, if any
@@ -302,6 +316,9 @@ while (indi <= size(varargin, 2))
                     endif
                     x(indj, indk) =  str2num (strftime ([char(37) 's'], timeval)) + ...
                         timeval.usec * 1e-6;
+                  else
+                    %# store it as is
+                    x(indj, indk) = the_line{indk}; 
                   endif
                 else
                   x(indj, indk) = the_line{indk}; 

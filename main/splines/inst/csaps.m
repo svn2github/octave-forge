@@ -33,6 +33,8 @@
 ##       an intermediate amount of smoothing is chosen (the smoothing term and the interpolation term are scaled to be of the same magnitude)
 ## @end table
 ##
+## Reference: Carl de Boor (1978), A Practical Guide to Splines, Springer, Chapter XIV
+##
 ## @end deftypefn
 ## @seealso{spline, csapi, ppval, gcvspl}
 

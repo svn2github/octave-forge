@@ -23,7 +23,7 @@
 #include <string.h>
 #include <limits.h>
 #include <ctype.h>
-#include "routines/tsa.h"
+#include "tsa.h"
 
 #define WID_STR "Produces delay vectors"
 

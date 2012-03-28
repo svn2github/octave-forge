@@ -36,8 +36,8 @@ function dcm = CMint (x)
 
     px = x(1,:);
     py = x(2,:);
-    Px = polyint (conv(conv (px , px)/2 , polyder (py)));
-    Py = polyint (conv(-conv (py , py)/2 , polyder (px)));
+    Px = polyint (conv(conv (-px , py) , polyder (px)));
+    Py = polyint (conv(conv (px , py) , polyder (py)));
 
     dcm = zeros (1,2);
     dcm(1) = diff(polyval(Px,[0 1]));

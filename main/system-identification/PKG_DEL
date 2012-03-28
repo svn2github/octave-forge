@@ -1,5 +1,5 @@
 %1
-dirlist = {"geom2d","io","polygons2d","shape2d","octclip","graphs"};
+dirlist = {"tisean"};
 dirname = fileparts (canonicalize_file_name (mfilename ("fullpath")));
 pp = strsplit (dirname,filesep (), true);
 
@@ -29,7 +29,7 @@ if (! exist (fullfile (dirname, "inst"), "dir"))
     rmpath ( [ pkg_folder filesep() dirlist{ii}])
   endfor
 else
-  warning("geometry:Devel","Removing path for testing.");
+  warning("system-identification:Devel","Removing path for testing.");
   for ii=1:length(dirlist)
     rmpath ([ dirname "/inst/" dirlist{ii}])
   endfor

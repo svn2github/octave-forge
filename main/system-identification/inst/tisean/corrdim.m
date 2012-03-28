@@ -20,13 +20,15 @@
 %%
 %% @end deftypefn
 
-function [c d h] = corrdim (data, comp=1, maxedim=10, varargin)
+function [c d h] = corrdim (data, varargin)
 
 
   [nT M] = size (data);
   # --- Parse arguments --- #
   parser = inputParser ();
   parser.FunctionName = "corrdim";
+  parser = addParamValue (parser,'Components', 1, @(x)x>0);
+  parser = addParamValue (parser,'MaxEdim', 10, @(x)x>0);
   parser = addParamValue (parser,'Delay', 1, @(x)x>0);
   parser = addParamValue (parser,'TheilerWindow', 0, @(x)x>=0);
   parser = addParamValue (parser,'ScaleSpan', nT*[1e-3 1], @(x)all(x>0));
@@ -50,7 +52,8 @@ function [c d h] = corrdim (data, comp=1, maxedim=10, varargin)
   %% Prepare format of the embedding vector
   syscmd = sprintf ("d2 -d%d -M%d,%d -t%d -r%d -R%d -#%d -N%d %s -o%s -V0 %s", ...
                         parser.Results.Delay, ...
-                        comp, maxedim, ...
+                        parser.Results.Components, ...
+                        parser.Results.MaxEdim, ...
                         parser.Results.TheilerWindow, ...
                         parser.Results.ScaleSpan, ...
                         parser.Results.EpsilonCount, ...

@@ -1,13 +1,11 @@
 Name: quaternion
-Version: 1.0.0
-Date: 2008-07-17
-Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
-Maintainer: The Octave-Forge Community
-Title: Quaternion Package
-Description: Package for the manipulation of Quaternion's used for
- frame transformation
-Categories: Mathematics
-Depends: octave (>= 3.1.0)
+Version: 2.0.0
+Date: 2012-03-28
+Author: Lukas Reichlin <lukas.reichlin@gmail.com>
+Maintainer: Lukas Reichlin <lukas.reichlin@gmail.com>
+Title: Quaternion
+Description: Overloaded operators for quaternions
+Depends: octave (>= 3.6.0)
 Autoload: yes
 License: GPL version 3 or later
 Url: http://octave.sf.net

@@ -1,33 +1,108 @@
 /*
- *   This file is part of TISEAN
- *
- *   Copyright (c) 1998-2007 Rainer Hegger, Holger Kantz, Thomas Schreiber
- *
- *   TISEAN is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- *   TISEAN is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with TISEAN; if not, write to the Free Software
- *   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-/*Author: Rainer Hegger. Last modified (rewritten in C) Aug 22, 2004*/
+Copyright (c) 2012 Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+Delay vectors either from time series.
+Uses TISEAN 3.0.1 delay.c by courtesy of Rainer Hegger, Holger Kantz and Thomas Schreiber. Original-Author: Rainer Hegger. Last modified (rewritten in C) Aug 22, 2004
+<http://www.mpipks-dresden.mpg.de/~tisean/Tisean_3.0.1/>
+
+
+Author: Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
+Created: Wednesday, March 28 2012
+Version: 0.1
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
 #include <ctype.h>
 #include "tsa.h"
+#include <octave/oct.h>
 
 #define WID_STR "Produces delay vectors"
 
+DEFUN_DLD (delay, args, nargout,
+   "-*- texinfo -*-\n\
+Not documented.")
+{
+    int nargin = args.length ();
+    octave_value_list retval;
 
+    if (nargin != 3)
+    {
+        print_usage ();
+    }
+    else
+    {
+        // arguments in
+        // TODO Prepare input arguments
+        // arguments out
+        // TODO Prepare output arguments
+        // workspace
+        // TODO what is this?
+        // error indicators
+        // TODO Prepare error indicators
+
+        // Call TISEAN SLICOT routine
+        // TODO call function
+
+        //Check errors/warnings
+
+        // return values
+        // TODO Prepare return values
+    }
+
+    return retval;
+}
+
+void create_delay_list(void)
+{
+  unsigned int i=0,num=0;
+
+  while (multidelay[i]) {
+    if (!(isdigit(multidelay[i])) && !(multidelay[i] == ',')) {
+      fprintf(stderr,"Wrong format of -D parameter. Exiting!\n");
+      exit(DELAY_WRONG_FORMAT_D);
+    }
+    i++;
+  }
+
+  i=0;
+  while (multidelay[i]) {
+    if (multidelay[i++] == ',')
+      num++;
+  }
+
+  check_alloc(delaylist=(unsigned int*)malloc(sizeof(int)*(num+1)));
+  for (i=0;i<=num;i++) {
+    sscanf(multidelay,"%d",&delaylist[i]);
+    if (i<num) {
+      while ((*multidelay) != ',')
+	multidelay++;
+    }
+    multidelay++;
+  }
+
+  if ((num+1) != (embdim-indim)) {
+    fprintf(stderr,"Wrong number of delays. See man page. Exiting!\n");
+    exit(DELAY_WRONG_NUM_D);
+  }
+}
+
+/*
 unsigned long length=ULONG_MAX;
 unsigned long exclude=0;
 unsigned int verbosity=0xff;
@@ -152,39 +227,6 @@ void create_format_list(void)
     embdim=sum;
 }
 
-void create_delay_list(void)
-{
-  unsigned int i=0,num=0;
-
-  while (multidelay[i]) {
-    if (!(isdigit(multidelay[i])) && !(multidelay[i] == ',')) {
-      fprintf(stderr,"Wrong format of -D parameter. Exiting!\n");
-      exit(DELAY_WRONG_FORMAT_D);
-    }
-    i++;
-  }
-
-  i=0;
-  while (multidelay[i]) {
-    if (multidelay[i++] == ',')
-      num++;
-  }
-
-  check_alloc(delaylist=(unsigned int*)malloc(sizeof(int)*(num+1)));
-  for (i=0;i<=num;i++) {
-    sscanf(multidelay,"%d",&delaylist[i]);
-    if (i<num) {
-      while ((*multidelay) != ',')
-	multidelay++;
-    }
-    multidelay++;
-  }
-
-  if ((num+1) != (embdim-indim)) {
-    fprintf(stderr,"Wrong number of delays. See man page. Exiting!\n");
-    exit(DELAY_WRONG_NUM_D);
-  }
-}
 
 int main(int argc,char **argv)
 {
@@ -329,3 +371,4 @@ int main(int argc,char **argv)
 
   return 0;
 }
+*/

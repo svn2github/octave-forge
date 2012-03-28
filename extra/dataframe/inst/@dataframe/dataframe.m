@@ -27,6 +27,7 @@ function df = dataframe(x = [], varargin)
   %# @item colnames : take the values as initialiser for column names
   %# @item seeked : a (kept) field value which triggers start of processing.
   %# @item trigger : a (unkept) field value which triggers start of processing.
+  %# @item datefmt: date format, see datestr help 
   %# Each preceeding line is silently skipped. Default: none
   %# @item unquot: a logical switch telling wheter or not strings should
   %# be unquoted before storage, default = true;
@@ -90,7 +91,7 @@ endif
 
 %# default values
 seeked = []; trigger =[]; unquot = true; sep = "\t,"; cmt_lines = [];
-locales = "C";
+locales = "C"; datefmt = '';
 
 if (length (varargin) > 0)
   indi = 1;
@@ -145,6 +146,9 @@ if (length (varargin) > 0)
         case 'locales'
           locales = varargin{indi + 1};
           varargin(indi:indi+1) = [];
+        case 'datefmt'
+          datefmt = varargin{indi + 1};
+          varargin(indi:indi+1) = [];
         otherwise %# FIXME: just skip it for now
           disp (sprintf ("Ignoring unkown argument %s", varargin{indi}));
           indi = indi + 1;    
@@ -160,10 +164,10 @@ if (~isempty (seeked) && ~isempty (trigger))
 endif
 
 indi = 0; 
-while (indi <= size(varargin, 2))
+while (indi <= size (varargin, 2))
   indi = indi + 1;
   if (~isa (x, 'dataframe'))
-    if (isa(x, 'char') && size(x, 1) < 2)
+    if (isa (x, 'char') && size (x, 1) < 2)
       %# read the data frame from a file
       try
         dummy = tilde_expand (x);
@@ -171,7 +175,7 @@ while (indi <= size(varargin, 2))
         df._src{end+1, 1} = dummy;
       catch
         %# try our own method
-        UTF8_BOM = char([0xEF 0xBB 0xBF]);
+        UTF8_BOM = char ([0xEF 0xBB 0xBF]);
         unwind_protect
           dummy = tilde_expand (x);
           fid = fopen (dummy);
@@ -250,7 +254,7 @@ while (indi <= size(varargin, 2))
               endif
             endwhile
           endif
-          x = cell (1+length (lines)-indl, size(dummy, 2)); 
+          x = cell (1+length (lines)-indl, size (dummy, 2)); 
           empty_lines = []; cmt_lines = [];
           while (indl <= length (lines))
             dummy = content{indl};
@@ -268,9 +272,9 @@ while (indi <= size(varargin, 2))
             endif
             
             %# try to convert to float
-           if (1)
-             the_line = cellfun (@(x) sscanf (x, "%f", locales), dummy, \
-                                 'UniformOutput', false);
+            if (1)
+              the_line = cellfun (@(x) sscanf (x, "%f", locales), dummy, \
+                                  'UniformOutput', false);
             else
               %# this code require a patch to src/file-io.cc in main
               %# Octave tree
@@ -299,29 +303,22 @@ while (indi <= size(varargin, 2))
                   x(indj, indk) = regexp (dummy{indk}, '[^ ].*', 'match');
                 endif
               else
-                if (~isempty (regexp (dummy{indk}, '[/:-]')))
-                  %# try to convert to a date
-                  [timeval, nfields] = strptime( dummy{indk}, 
-                                                [char(37) 'd/' char(37) 'm/' char(37) 'Y ' char(37) 'T']);
-                  if (nfields > 0) %# at least a few fields are OK
-                    keyboard
-                    timestr =  strftime ([char(37) 'H:' char(37) 'M:' char(37) 'S'], 
-                                         timeval);
-                    %# try to extract the usec field, if any
-                    idx = regexp (dummy{indk}, timestr, 'end');
-                    if (~isempty (idx))
-                      idx = idx + 1;
-                      if (ispunct (dummy{indk}(idx)))
-                        idx = idx + 1;
-                      endif
-                      timeval.usec = str2num(dummy{indk}(idx:end));
-                    endif
+                if (~isempty (regexp (dummy{indk}, '[/:-]')) && ...
+                    ~isempty (datefmt))
+                  
+                  try
+                    datetime = datevec (dummy{indk}, datefmt);
+                    timeval = struct ("usec", 0, "sec", floor (datetime (6)),
+                                      "min", datetime(5), "hour", datetime(4),
+                                      "mday", datetime(3), "mon", datetime(2)-1,
+                                      "year", datetime(1)-1900);
+                    timeval.usec = 1e6*(datetime(6)-timeval.sec);
                     x(indj, indk) =  str2num (strftime ([char(37) 's'], timeval)) + ...
                         timeval.usec * 1e-6;
-                  else
+                  catch
                     %# store it as is
                     x(indj, indk) = the_line{indk}; 
-                  endif
+                  end_try_catch
                 else
                   x(indj, indk) = the_line{indk}; 
                 endif
@@ -349,10 +346,10 @@ while (indi <= size(varargin, 2))
       indj = df._cnt(2)+(1:size (x, 2));
     else
       %# at this point, reading some filename failed
-      error("dataframe: can't open '%s' for reading data", x);
+      error ("dataframe: can't open '%s' for reading data", x);
     endif;
 
-    if (iscell(x))
+    if (iscell (x))
       if (2 == length (x))
         %# use the intermediate value as destination column
         [indc, ncol] = df_name2idx (df._name{2}, x{1}, df._cnt(2), "column");
@@ -367,7 +364,7 @@ while (indi <= size(varargin, 2))
         end_try_catch
         df = df_pad (df, 2, [length(dummy) indc], dummy);
         x = x{2}; 
-        indj =  indc + (1:size(x, 2));  %# redefine target range
+        indj =  indc + (1:size (x, 2));  %# redefine target range
       else
         if (isa (x{1}, 'cell'))
           x = x{1}; %# remove one cell level
@@ -385,7 +382,7 @@ while (indi <= size(varargin, 2))
         if (1 == length (df._name{2}) && length (df._name{2}) < \
             length (indj))
           [df._name{2}(indj, 1),  df._over{2}(1, indj)] ...
-              = df_colnames (char(df._name{2}), indj);
+              = df_colnames (char (df._name{2}), indj);
         elseif (length (df._name{2}) < indj(1) || isempty (df._name{2}(indj)))
           [df._name{2}(indj, 1),  df._over{2}(1, indj)] ...
               = df_colnames (inputname(indi), indj);

@@ -16,6 +16,9 @@
 %% You should have received a copy of the GNU General Public License
 %% along with SECS1D; If not, see <http://www.gnu.org/licenses/>.
 
+%%
+%% Solve the scaled stationary bipolar DD equation system using Gummel algorithm.
+%%
 %% [n, p, V, Fn, Fp, Jn, Jp, it, res] = secs1d_dd_gummel_map (x, D, Na, Nd, 
 %%                                                       pin, nin, Vin, Fnin, 
 %%                                                       Fpin, l2, er, u0n, 
@@ -24,9 +27,6 @@
 %%                                                       betap, Nrefp, theta, tn, tp, 
 %%                                                       Cn, Cp, an, ap, Ecritnin, Ecritpin, 
 %%                                                       toll, maxit, ptoll, pmaxit)         
-%%
-%% This function solves the scaled stationary bipolar DD 
-%% equation system using Gummel algorithm
 %%
 %%     input: 
 %%            x                        spatial grid

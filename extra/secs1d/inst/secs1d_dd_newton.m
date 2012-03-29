@@ -16,12 +16,12 @@
 %% You should have received a copy of the GNU General Public License
 %% along with SECS1D; If not, see <http://www.gnu.org/licenses/>.
 
+%% Solve the scaled stationary bipolar DD equation system using Newton's method.
+%%
 %% [n, p, V, Fn, Fp, Jn, Jp, it, res] = secs1d_dd_newton (x, D, Vin, nin, 
 %%                                                        pin, l2, er, un, 
 %%                                                        up, theta, tn, tp, 
 %%                                                        Cn, Cp, toll, maxit)
-%%
-%% Solve the scaled stationary bipolar DD equation system using Newton's method
 %%
 %%     input: 
 %%       x                spatial grid

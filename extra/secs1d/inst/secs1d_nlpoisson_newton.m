@@ -16,6 +16,8 @@
 %% You should have received a copy of the GNU General Public License
 %% along with SECS1D; If not, see <http://www.gnu.org/licenses/>.
 
+%% Solve the non-linear Poisson problem using Newton's algorithm.
+%%
 %% [V, n, p, res, niter] = secs1d_nlpoisson_newton (x, sinodes, Vin, nin, pin,
 %%                                                  Fnin, Fpin, D, l2, er, toll, maxit)
 %%

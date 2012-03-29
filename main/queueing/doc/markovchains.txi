@@ -250,7 +250,7 @@ L(n) =  >   pi(i) =  >   pi(0) P
 occupancy probability after @math{i} transitions.
 
 If @math{\bf P} is absorbing, i.e., the stochastic process eventually
-reaches with probability 1 a state with no outgoing transitions, then
+reaches a state with no outgoing transitions with probability 1, then
 we can compute the expected number of visits until absorption
 @math{\bf L}. To do so, we first rearrange the states to rewrite
 matrix @math{\bf P} as:

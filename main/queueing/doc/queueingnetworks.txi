@@ -215,7 +215,6 @@ V_j =  >   V_i P_(i, j)
       /___
        i=1
 
-V(1) == 1 && V == V*P;
 @end example
 @end ifnottex
 

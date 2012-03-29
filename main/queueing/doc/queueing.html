@@ -130,7 +130,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#dir">(dir)</a>
 <h2 class="unnumbered">queueing</h2>
 
 <p>This manual documents how to install and run the Queueing Toolbox. 
-It corresponds to version 1.X.0 of the package.
+It corresponds to version 1.1.0 of the package.
 
 <!--  -->
 <ul class="menu">
@@ -218,14 +218,13 @@ queueing systems:
 <li>M/H_m/1 (Hyperexponential service time distribution)
 </ul>
 
-   <p>Functions for Markov chain analysis are also provided, for discrete-time
-chains (DTMC) or continuous-time chains (CTMC):
+   <p>Functions for Markov chain analysis are also provided:
 
      <ul>
 <li>Birth-death process;
 <li>Transient and steady-state occupancy probabilities;
 <li>Mean times to absorption;
-<li>Expected sojourn times and time-averaged sojourn times (CTMC only);
+<li>Expected sojourn times and time-averaged sojourn times;
 <li>Mean first passage times;
 
    </ul>
@@ -317,7 +316,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Installation">Installation</a>
 
 <h3 class="section">2.1 Installation through Octave package management system</h3>
 
-<p>The most recent version of <code>queueing</code> is 1.X.0 and can
+<p>The most recent version of <code>queueing</code> is 1.1.0 and can
 be downloaded from Octave-Forge
 
    <p><a href="http://octave.sourceforge.net/queueing/">http://octave.sourceforge.net/queueing/</a>
@@ -339,13 +338,13 @@ your machine. You can verify that the package is indeed installed:
 <pre class="example">     octave:1&gt;<kbd>pkg list queueing</kbd>
      Package Name  | Version | Installation directory
      --------------+---------+-----------------------
-         queueing *|   1.X.0 | /home/moreno/octave/queueing-1.X.0
+         queueing *|   1.1.0 | /home/moreno/octave/queueing-1.1.0
 </pre>
    <p>Alternatively, you can first download <code>queueing</code> from
 Octave-Forge; then, to install the package in the system-wide
 location issue this command at the Octave prompt:
 
-<pre class="example">     octave:1&gt; <kbd>pkg install </kbd><em>queueing-1.X.0.tar.gz</em>
+<pre class="example">     octave:1&gt; <kbd>pkg install </kbd><em>queueing-1.1.0.tar.gz</em>
 </pre>
    <p class="noindent">(you may need to start Octave as root in order to allow the
 installation to copy the files to the target locations). After this,
@@ -354,7 +353,7 @@ without the need to tweak the search path.
 
    <p>If you do not have root access, you can do a local install using:
 
-<pre class="example">     octave:1&gt; <kbd>pkg install -local queueing-1.X.0.tar.gz</kbd>
+<pre class="example">     octave:1&gt; <kbd>pkg install -local queueing-1.1.0.tar.gz</kbd>
 </pre>
    <p>This will install <code>queueing</code> within your home directory, and the
 package will be available to your user only. <strong>Note:</strong> Octave
@@ -380,8 +379,8 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Installation">Installation</a>
 <p>If you want to manually install <code>queueing</code> in a custom location,
 you can download the tarball and unpack it somewhere:
 
-<pre class="example">     <kbd>tar xvfz queueing-1.X.0.tar.gz</kbd>
-     <kbd>cd queueing-1.X.0/queueing/</kbd>
+<pre class="example">     <kbd>tar xvfz queueing-1.1.0.tar.gz</kbd>
+     <kbd>cd queueing-1.1.0/queueing/</kbd>
 </pre>
    <p>Copy all <code>.m</code> files from the <samp><span class="file">inst/</span></samp> directory to some
 target location. Then, start Octave with the <samp><span class="option">-p</span></samp> option to add
@@ -1049,8 +1048,11 @@ during the first n transitions. The vector \bf L(n) =
    <p class="noindent">where \bf \pi(i) = \bf \pi(0)\bf P^i is the state
 occupancy probability after i transitions.
 
-   <p>If \bf P has absorbing states, that is, states with no out
-transitions, we can rearrange the states to rewrite \bf P as:
+   <p>If \bf P is absorbing, i.e., the stochastic process eventually
+reaches a state with no outgoing transitions with probability 1, then
+we can compute the expected number of visits until absorption
+\bf L. To do so, we first rearrange the states to rewrite
+matrix \bf P as:
 
 <pre class="example">         / Q | R \
      P = |---+---|
@@ -1059,12 +1061,11 @@ transitions, we can rearrange the states to rewrite \bf P as:
    <p class="noindent">where the first t states are transient
 and the last r states are absorbing (t+r = N). The
 matrix \bf N = (\bf I - \bf Q)^-1 is called the
-<em>fundamental matrix</em>; N(i,j) represents the expected
-number of times that the process is in the j-th transient state
-if it is started in the i-th transient state. If we reshape
-\bf N to the size of \bf P (filling missing entries with
-zeros), we have that, for absorbing chains \bf L = \bf
-\pi(0)\bf N.
+<em>fundamental matrix</em>; N_i,j is the expected number of
+times that the process is in the j-th transient state if it
+started in the i-th transient state. If we reshape \bf N
+to the size of \bf P (filling missing entries with zeros), we
+have that, for absorbing chains \bf L = \bf \pi(0)\bf N.
 
    <p><a name="doc_002ddtmc_005fexps"></a>
 
@@ -1176,19 +1177,19 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Discrete_002dTime-Markov-Chains">Discr
 <p>The <em>mean time to absorption</em> is defined as the average number of
 transitions which are required to reach an absorbing state, starting
 from a transient state (or given an initial state occupancy
-probability vector \bf \pi(0) ).
+probability vector \bf \pi(0)).
 
-   <p>Let \bf t_i be the expected number of steps before being
-absorbed in any absorbing state, starting from state i.  Vector
-\bf t can be easiliy computed from the fundamental matrix
+   <p>Let \bf t_i be the expected number of transitions before
+being absorbed in any absorbing state, starting from state i. 
+Vector \bf t can be computed from the fundamental matrix
 \bf N (see <a href="#Expected-number-of-visits-_0028DTMC_0029">Expected number of visits (DTMC)</a>) as
 
 <pre class="example">     t = 1 N
 </pre>
-   <p>We can define a matrix \bf B = [ B_i, j ] such that
-B_i, j is the probability of being absorbed in state
-j, starting from transient state i. Again, using
-the fundamental matrix \bf N and \bf R, we have
+   <p>Let \bf B = [ B_i, j ] be a matrix where B_i, j is
+the probability of being absorbed in state j, starting from
+transient state i. Again, using matrices \bf N and
+\bf R (see <a href="#Expected-number-of-visits-_0028DTMC_0029">Expected number of visits (DTMC)</a>) we can write
 
 <pre class="example">     B = N R
 </pre>
@@ -1260,9 +1261,9 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Discrete_002dTime-Markov-Chains">Discr
 
 <h4 class="subsection">4.1.6 First Passage Times</h4>
 
-<p>The First Passage Time M_i, j is defined as the average
-number of transitions needed to visit state j for the first
-time, starting from state i. Matrix \bf M satisfies the
+<p>The First Passage Time M_i, j is the average number of
+transitions needed to visit state j for the first time,
+starting from state i. Matrix \bf M satisfies the
 property that
 
 <pre class="example">                ___
@@ -1275,7 +1276,7 @@ property that
 used.  Let \bf W be the N \times N matrix having each
 row equal to the steady-state probability vector \bf \pi for
 \bf P; let \bf I be the N \times N identity
-matrix. Define matrix \bf Z as follows:
+matrix. Define \bf Z as follows:
 
 <pre class="example">                    -1
      Z = (I - P + W)
@@ -1287,18 +1288,14 @@ matrix. Define matrix \bf Z as follows:
                \pi_j
 </pre>
    <p>According to the definition above, M_i,i = 0. We arbitrarily
-redefine M_i,i to be the <em>mean recurrence time</em>
-r_i for state i, that is the average number of
-transitions needed to return to state i starting from
-it. r_i is defined as:
+let M_i,i to be the <em>mean recurrence time</em> r_i
+for state i, that is the average number of transitions needed
+to return to state i starting from it. r_i is:
 
 <pre class="example">             1
      r_i = -----
            \pi_i
 </pre>
-   <p class="noindent">where \pi_i is the stationary probability of visiting state
-i.
-
    <p><a name="doc_002ddtmc_005ffpt"></a>
 
 <div class="defun">
@@ -2652,7 +2649,6 @@ P_0, j = \lambda_j / \lambda.
            /___
             i=1
      
-     V(1) == 1 &amp;&amp; V == V*P;
 </pre>
    <h4 class="subsection">6.1.2 Multiple class models</h4>
 
@@ -5159,35 +5155,31 @@ guidelines:
      <ul>
 <li>If you are contributing a new function, please embed proper
 documentation within the function itself. The documentation must be in
-<code>texinfo</code> format, so that it will be extracted and formatted into
+<code>texinfo</code> format, so that it can be extracted and formatted into
 the printable manual. See the existing functions of the
 <code>queueing</code> package for the documentation style.
 
-     <li>The documentation should be as precise as possible. In particular,
-always state what the valid ranges of the parameters are.
-
-     <li>If you are contributing a new function, ensure that the function
+     <li>Make sure that each new function
 properly checks the validity of its input parameters. For example,
 each function accepting vectors should check whether the dimensions
 match.
 
-     <li>Always provide bibliographic references for each algorithm you
+     <li>Provide bibliographic references for each new algorithm you
 contribute. If your implementation differs in some way from the
 reference you give, please describe how and why your implementation
-differs.
+differs. Add references to the <samp><span class="file">doc/references.txi</span></samp> file.
 
-     <li>Include Octave test and demo blocks with your code. 
-Test blocks are particularly important, because Queueing Network
-algorithms tend to be quite complex to implement correctly, and we
-must ensure that the implementations provided with the
-<code>queueing</code> package are (mostly) correct.
+     <li>Include test and demo blocks with your code. 
+Test blocks are particularly important, since most algorithms tend to
+be quite tricky to implement correctly. If appropriate, test blocks
+should also verify that the function fails on incorrect input
+parameters.
 
    </ul>
 
    <p>Send your contribution to Moreno Marzolla
-(<a href="mailto:marzolla@cs.unibo.it">marzolla@cs.unibo.it</a>). Even if you are just a user of
-<code>queueing</code>, and find this package useful, let me know by
-dropping me a line. Thanks.
+(<a href="mailto:marzolla@cs.unibo.it">marzolla@cs.unibo.it</a>). If you are just a user of this
+package and find it useful, let me know by dropping me a line. Thanks.
 
 <!-- DO NOT EDIT!  Generated automatically by munge-texi. -->
 <!-- *- texinfo -*- -->

@@ -28,10 +28,10 @@ function resu = ldivide(A, B);
   %#
 
   try
-    resu = df_func(@ldivide, A, B);
+    resu = df_func (@ldivide, A, B);
   catch
-    disp(lasterr());
-    error("Operator .\\ problem for %s vs. %s", class(A), class(B));
+    disp (lasterr ());
+    error ("Operator .\\ problem for %s vs. %s", class(A), class(B));
   end_try_catch
 
 endfunction

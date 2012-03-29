@@ -90,7 +90,7 @@ else
 endif
 
 %# default values
-seeked = []; trigger =[]; unquot = true; sep = "\t,"; cmt_lines = [];
+seeked = []; trigger = []; unquot = true; sep = "\t,"; cmt_lines = [];
 locales = "C"; datefmt = '';
 
 if (length (varargin) > 0)
@@ -125,8 +125,8 @@ if (length (varargin) > 0)
           %# detect assignment - functions calls - ranges
           dummy = cellfun ('size', cellfun (@(x) strsplit (x, ":=("), df._name{2}, \
                                             "UniformOutput", false), 2);
-          if (any(dummy > 1))
-            warning('dataframe colnames taken literally and not interpreted');
+          if (any (dummy > 1))
+            warning ('dataframe colnames taken literally and not interpreted');
           endif
           df._name{2} = genvarname (df._name{2});
           df._over{2}(1, 1:length (df._name{2})) = false;
@@ -276,10 +276,11 @@ while (indi <= size (varargin, 2))
               the_line = cellfun (@(x) sscanf (x, "%f", locales), dummy, \
                                   'UniformOutput', false);
             else
-              %# this code require a patch to src/file-io.cc in main
-              %# Octave tree
+              %# this faster code requires a patch to src/file-io.cc in
+              %# main Octave tree
               the_line = sscanf (dummy, "%f", locales);
-              the_line = cellfun (@(x) x{1}, the_line, 'UniformOutput', false);
+              the_line = cellfun (@(x) x{1}, the_line, \
+                                  'UniformOutput', false);
             endif
 
             for indk = (1:size (the_line, 2))
@@ -302,40 +303,41 @@ while (indi <= size (varargin, 2))
                   %# no conversion possible, store and remove leading space(s)
                   x(indj, indk) = regexp (dummy{indk}, '[^ ].*', 'match');
                 endif
-              else
-                if (~isempty (regexp (dummy{indk}, '[/:-]')) && ...
-                    ~isempty (datefmt))
-                  
-                  try
-                    datetime = datevec (dummy{indk}, datefmt);
-                    timeval = struct ("usec", 0, "sec", floor (datetime (6)),
-                                      "min", datetime(5), "hour", datetime(4),
-                                      "mday", datetime(3), "mon", datetime(2)-1,
-                                      "year", datetime(1)-1900);
-                    timeval.usec = 1e6*(datetime(6)-timeval.sec);
-                    x(indj, indk) =  str2num (strftime ([char(37) 's'], timeval)) + ...
-                        timeval.usec * 1e-6;
-                  catch
-                    %# store it as is
-                    x(indj, indk) = the_line{indk}; 
-                  end_try_catch
-                else
+              elseif (~isempty (regexp (dummy{indk}, '[/:-]')) && ...
+                      ~isempty (datefmt))
+                try
+                  datetime = datevec (dummy{indk}, datefmt);
+                  timeval = struct ("usec", 0, "sec", floor (datetime (6)),
+                                    "min", datetime(5), "hour", datetime(4),
+                                    "mday", datetime(3), "mon", datetime(2)-1,
+                                    "year", datetime(1)-1900);
+                  timeval.usec = 1e6*(datetime(6)-timeval.sec);
+                  x(indj, indk) =  str2num (strftime ([char(37) 's'], timeval)) + ...
+                      timeval.usec * 1e-6;
+                catch
+                  %# store it as is
                   x(indj, indk) = the_line{indk}; 
-                endif
+                end_try_catch
+              else
+                x(indj, indk) = the_line{indk}; 
               endif
             endfor
             indl = indl + 1; indj = indj + 1;
           endwhile
+          
           if (~isempty (empty_lines))
             x(empty_lines, :) = [];
           endif
+          
           %# detect empty columns
           empty_lines = find (0 == sum (cellfun ('size', x, 2)));
           if (~isempty (empty_lines))
             x(:, empty_lines) = [];
           endif
+          
           clear UTF8_BOM fid in lines indl the_line content empty_lines
           clear timeval timestr nfields idx
+        
         endif
       end_try_catch
     endif
@@ -365,11 +367,10 @@ while (indi <= size (varargin, 2))
         df = df_pad (df, 2, [length(dummy) indc], dummy);
         x = x{2}; 
         indj =  indc + (1:size (x, 2));  %# redefine target range
-      else
-        if (isa (x{1}, 'cell'))
-          x = x{1}; %# remove one cell level
-        endif
+      elseif (isa (x{1}, 'cell'))
+        x = x{1}; %# remove one cell level
       endif
+      
       if (length (df._name{2}) < indj(1) || isempty (df._name{2}(indj)))
         [df._name{2}(indj, 1),  df._over{2}(1, indj)] ...
             = df_colnames (inputname(indi), indj);
@@ -377,19 +378,19 @@ while (indi <= size (varargin, 2))
       endif
       %# allow overwriting of column names
       df._over{2}(1, indj) = true;
-    else
-      if (~isempty (indj))        
-        if (1 == length (df._name{2}) && length (df._name{2}) < \
-            length (indj))
-          [df._name{2}(indj, 1),  df._over{2}(1, indj)] ...
-              = df_colnames (char (df._name{2}), indj);
-        elseif (length (df._name{2}) < indj(1) || isempty (df._name{2}(indj)))
-          [df._name{2}(indj, 1),  df._over{2}(1, indj)] ...
-              = df_colnames (inputname(indi), indj);
-        endif
-        df._name{2} = genvarname (df._name{2});
+  
+    elseif (~isempty (indj))        
+      if (1 == length (df._name{2}) && length (df._name{2}) < \
+          length (indj))
+        [df._name{2}(indj, 1),  df._over{2}(1, indj)] ...
+            = df_colnames (char (df._name{2}), indj);
+      elseif (length (df._name{2}) < indj(1) || isempty (df._name{2}(indj)))
+        [df._name{2}(indj, 1),  df._over{2}(1, indj)] ...
+            = df_colnames (inputname(indi), indj);
       endif
+      df._name{2} = genvarname (df._name{2});
     endif
+    
     if (~isempty (indj))
       %# the exact row size will be determined latter
       idx.subs = {'', indj};

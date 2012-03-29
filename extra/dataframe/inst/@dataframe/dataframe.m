@@ -162,7 +162,12 @@ endif
 if (~isempty (datefmt))
   %# replace consecutive spaces by one
   datefmt =  regexprep (datefmt, '[ ]+', ' ');
-  datefields = 1 + length (regexp (datefmt, ' '));
+  %# is "space" used as separator ? Then we may take more than one field. 
+  if (~isempty (regexp (sep, ' ')))
+    datefields = 1 + length (regexp (datefmt, ' '));
+  else
+    datefields = 1; 
+  endif
 else
   datefields = 1;
 endif
@@ -323,6 +328,9 @@ while (indi <= size (varargin, 2))
                   for indc = (2:datefields)
                     datetime = cstrcat(datetime, ' ', dummy{indk+indc-1});
                   endfor
+                else
+                  %# ensure spaces are unique
+                  datetime =  regexprep (datetime, '[ ]+', ' ');
                 endif
                 
                 try

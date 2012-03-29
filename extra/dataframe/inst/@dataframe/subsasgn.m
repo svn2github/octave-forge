@@ -30,7 +30,7 @@ function df = subasgn(df, S, RHS)
   if (isnull (df))
     error ('dataframe subsasgn: first argument may not be empty');
   endif
-  
+
   switch (S(1).type)
     case '{}'
       error ('Invalid dataframe as cell assignement');
@@ -65,6 +65,19 @@ function df = subasgn(df, S, RHS)
           if (isnull(RHS)) error("Types can't be nulled"); endif
           if (1 == length (S))
             %# perform explicit cast on each column
+            switch (RHS)
+              case {'char'}
+                for indj = (1:df._cnt(2))
+                  if (isnumeric (df._data{indj}) || islogical (df._data{indj}))
+                    df._data(indj) = cellfun (@(x) cellstr (num2str(x, "%f")), \
+                                              df._data(indj), 
+                                              "UniformOutput", false); 
+                  endif
+                endfor
+              otherwise
+                df._data = cellfun (@(x) cast (x, RHS), df._data, 
+                                    "UniformOutput", false);
+            endswitch
             df._data = cellfun (@(x) cast (x, RHS), df._data, 
                                 "UniformOutput", false);
             df._type(1:end) = RHS;
@@ -81,8 +94,17 @@ function df = subasgn(df, S, RHS)
             else
               indj = S(2).subs{1}; ncol = length (indj);
             endif
-            df._data(indj) = cellfun (@(x) cast (x, RHS), df._data(indj), 
-                                      "UniformOutput", false);
+            switch (RHS)
+              case {'char'}
+                if (isnumeric (df._data{indj}) || islogical (df._data{indj}))
+                  df._data(indj) = cellfun (@(x) cellstr (num2str(x, "%f")), \
+                                            df._data(indj), 
+                                            "UniformOutput", false); 
+                endif
+              otherwise
+                df._data(indj) = cellfun (@(x) cast (x, RHS), df._data(indj), 
+                                          "UniformOutput", false);
+            endswitch
             df._type(indj) = {RHS};
           endif
           return
@@ -180,9 +202,7 @@ function df = subasgn(df, S, RHS)
       if (~isnull (RHS))
         S(1).subs{1} = indr; S(1).subs{2} = indc;
       endif
-
       df = df_matassign (df, S, indc, ncol, RHS);
-      
   endswitch
   
   %# disp("end of subasgn"); keyboard

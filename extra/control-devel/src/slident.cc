@@ -113,7 +113,7 @@ For internal use only.")
         char conct;
         char ctrl;
         char metha;
-        char jobda;
+        char jobda; // ??? unused
         
         Matrix y = args(0).matrix_value ();
         Matrix u = args(1).matrix_value ();

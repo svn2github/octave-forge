@@ -95,7 +95,7 @@ For internal use only.")
     int nargin = args.length ();
     octave_value_list retval;
     
-    if (nargin != 13)
+    if (nargin != 4)
     {
         print_usage ();
     }
@@ -106,101 +106,27 @@ For internal use only.")
 ////////////////////////////////////////////////////////////////////////////////////
 
         // arguments in
-        char meth;
-        char alg;
-        char jobd;
-        char batch;
-        char conct;
-        char ctrl;
-        char metha;
-        char jobda;
+        char meth = 'N';  // <--- not used, use metha
+        char alg = 'C';
+        char jobd = 'N';
+        char batch = 'O';
+        
+        char conct = 'N';
+        char ctrl = 'N';
+        
+        char metha = 'N';
+        
+         // ??? char jobda ;
         
         Matrix y = args(0).matrix_value ();
         Matrix u = args(1).matrix_value ();
         int nobr = args(2).int_value ();
-        int nuser = args(3).int_value ();
         
-        const int imeth = args(4).int_value ();
-        const int ialg = args(5).int_value ();
-        const int ijobd = args(6).int_value ();
-        const int ibatch = args(7).int_value ();
-        const int iconct = args(8).int_value ();
-        const int ictrl = args(9).int_value ();
+        double rcond = 0.0;
+        double tol = -1.0;
         
-        double rcond = args(10).double_value ();
-        double tol = args(11).double_value ();
-        double tolb = args(10).double_value ();      // tolb = rcond
-        
-        int ldwork = args(12).int_value ();
+        int ldwork = args(3).int_value ();
 
-            
-        switch (imeth)
-        {
-            case 0:
-                meth = 'M';
-                metha = 'M';
-                break;
-            case 1:
-                meth = 'N';
-                metha = 'N';
-                break;
-            case 2:
-                meth = 'C';
-                metha = 'N';    // no typo here
-                break;
-            default:
-                error ("slib01ad: argument 'meth' invalid");
-        }
-
-        switch (ialg)
-        {
-            case 0:
-                alg = 'C';
-                break;
-            case 1:
-                alg = 'F';
-                break;
-            case 2:
-                alg = 'Q';
-                break;
-            default:
-                error ("slib01ad: argument 'alg' invalid");
-        }
-        
-        if (meth == 'C')
-            jobd = 'N';
-        else if (ijobd == 0)
-            jobd = 'M';
-        else
-            jobd = 'N';
-        
-        switch (ibatch)
-        {
-            case 0:
-                batch = 'F';
-                break;
-            case 1:
-                batch = 'I';
-                break;
-            case 2:
-                batch = 'L';
-                break;
-            case 3:
-                batch = 'O';
-                break;
-            default:
-                error ("slib01ad: argument 'batch' invalid");
-        }
-
-        if (iconct == 0)
-            conct = 'C';
-        else
-            conct = 'N';
-
-        if (ictrl == 0)
-            ctrl = 'C';
-        else
-            ctrl = 'N';
 
 
         int m = u.columns ();   // m: number of inputs
@@ -208,25 +134,8 @@ For internal use only.")
         int nsmp = y.rows ();   // nsmp: number of samples
         // y.rows == u.rows  is checked by iddata class
         // TODO: check minimal nsmp size
-        
-        if (batch == 'O')
-        {
-            if (nsmp < 2*(m+l+1)*nobr - 1)
-                error ("slident: require NSMP >= 2*(M+L+1)*NOBR - 1");
-        }
-        else
-        {
-            if (nsmp < 2*nobr)
-                error ("slident: require NSMP >= 2*NOBR");
-        }
-        
-        int ldu;
-        
-        if (m == 0)
-            ldu = 1;
-        else                    // m > 0
-            ldu = nsmp;
-
+                
+        int ldu = nsmp;
         int ldy = nsmp;
 
         // arguments out
@@ -322,18 +231,6 @@ ldwork *= 2;
 
 */
 
-/*
-IB01AD.f Lines 291-195:
-c             the workspace used for alg = 'q' is
-c                       ldrwrk*2*(m+l)*nobr + 4*(m+l)*nobr,
-c             where ldrwrk = ldwork/(2*(m+l)*nobr) - 2; recommended
-c             value ldrwrk = ns, assuming a large enough cache size.
-c             for good performance,  ldwork  should be larger.
-
-somehow ldrwrk and ldwork must have been mixed up here
-
-*/
-
 
         OCTAVE_LOCAL_BUFFER (int, iwork, liwork);
         OCTAVE_LOCAL_BUFFER (double, dwork, ldwork);
@@ -401,13 +298,6 @@ somehow ldrwrk and ldwork must have been mixed up here
         int rs = 2*(m+l)*nobr;
         r.resize (rs, rs);
         
-        if (nuser > 0)
-        {
-            if (nuser < nobr)
-                n = nuser;
-            else
-                error ("ident: 'nuser' invalid");
-        }
         
         retval(0) = r;
         retval(1) = sv;

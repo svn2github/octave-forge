@@ -77,6 +77,7 @@ err = cell (l-1, 1);
 
 for k = 2 : l
   err(k-1) = norm (abs(r{1}) - abs(r{k}), 1);
+  % err(k-1) = norm (r{1} - r{k}, 1);
   % err(k-1) = norm (abs(abs(r{1}) - abs(r{k})), 1);
 endfor
 

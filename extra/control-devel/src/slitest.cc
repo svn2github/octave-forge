@@ -106,15 +106,15 @@ For internal use only.")
 ////////////////////////////////////////////////////////////////////////////////////
 
         // arguments in
-        char meth = 'N';  // <--- not used, use metha
-        char alg = 'C';
-        char jobd = 'N';
+        char meth = 'M';  // <--- not used, use metha
+        char alg = 'Q';
+        char jobd = 'M';
         char batch = 'O';
         
         char conct = 'N';
         char ctrl = 'N';
         
-        char metha = 'N';
+        char metha = 'M';
         
          // ??? char jobda ;
         

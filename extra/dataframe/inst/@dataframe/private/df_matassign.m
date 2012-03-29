@@ -391,7 +391,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
         catch
           dummy = \
               sprintf ("Assignement failed for colum %d, of type %s and length %d,\nwith new content\n%s", \
-                       indj, df._type{indc(indi)}, length (indr), disp(RHS(:, indj)));
+                       indj, df._type{indc(indi)}, length (indr), disp (RHS(:, indj)));
           error (dummy);
         end_try_catch
       endif
@@ -426,14 +426,14 @@ function df = df_matassign(df, S, indc, ncol, RHS)
         [df, S] = df_cow(df, S, indc(indi));
         if (strcmp (df._type(indc(indi)), RHS._type(indi)))
           try
-            df._data{indc(indi)} = feval(@subsasgn, df._data{indc(indi)}, S, \
-                                         RHS._data{indi}(:, RHS._rep{indi}));
+            df._data{indc(indi)} = feval (@subsasgn, df._data{indc(indi)}, S, \
+                                          RHS._data{indi}(:, RHS._rep{indi}));
           catch
-            disp(lasterr()); disp('line 516 ???'); keyboard
+            disp (lasterr ()); disp('line 516 ???'); keyboard
           end_try_catch
         else
-          df._data{indc(indi)} = feval(@subsasgn, df._data{indc(indi)}, S, \
-                                       cast(RHS._data{indi}(:, RHS._rep{indi}),\
+          df._data{indc(indi)} = feval (@subsasgn, df._data{indc(indi)}, S, \
+                                        cast (RHS._data{indi}(:, RHS._rep{indi}),\
                                             df._type(indc(indi))));
         endif
         S = Sorig;
@@ -480,8 +480,8 @@ function df = df_matassign(df, S, indc, ncol, RHS)
             df._data{indc(indi)} = fillfunc (df._data{indc(indi)}, S, indi);
             S = Sorig;
           catch
-            disp(lasterr)
-            disp('line 470 '); keyboard
+            disp (lasterr  ())
+            disp ('line 470 '); keyboard
           end_try_catch
           # catch
           #   if ndims(df._data{indc(indi)}) > 2,
@@ -557,10 +557,10 @@ function df = df_matassign(df, S, indc, ncol, RHS)
         if (length (dummy) == ncol)
           df._name{2}(indc, 1) = dummy;
         else
-          disp('line 528 '); keyboard
+          disp ('line 528 '); keyboard
         endif
       else
-        disp('line 531 '); keyboard
+        disp ('line 531 '); keyboard
       endif
     end_try_catch
     df._over{2}(1, indc) = false;

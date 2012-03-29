@@ -84,8 +84,6 @@ function retdat = set (dat, varargin)
           dat.outunit = __adjust_labels__ (val, p);
         case {"inunit", "inputunit"}
           dat.inunit = __adjust_labels__ (val, m);
-        case {"tsam", "ts"}
-          dat.tsam;
         case {"timeunit"}
           dat.timeunit
         case {"expname", "experimentname"}

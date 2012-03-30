@@ -23,7 +23,7 @@
 ## accessor. See @command{help inputParser} for a more complete description.
 ##
 ## @seealso{inputParser, @@inputParser/addOptional, @@inputParser/addParamValue
-## @@inputParser/addParamValue, @@inputParser/addRequired}
+## @@inputParser/addParamValue, @@inputParser/addRequired, @@inputParser/addSwitch}
 ## @end deftypefn
 
 function inPar = parse (inPar, varargin)

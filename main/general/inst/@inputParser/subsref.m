@@ -1,4 +1,4 @@
-## Copyright (C) 2011 Carnë Draug <carandraug+dev@gmail.com>
+## Copyright (C) 2011-2012 Carnë Draug <carandraug+dev@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -38,7 +38,7 @@ function inPar = subsref (inPar, idx)
     inPar = parse_args (inPar, idx);
   case 'Unmatched'
   case 'UsingDefaults'
-  case {'addOptional', 'addParamValue', 'addRequired'}
+  case {'addOptional', 'addParamValue', 'addRequired', 'addSwitch'}
     inPar = check_methods (inPar, idx);
   otherwise
     error ("invalid index for reference of class %s", class (inPar) );
@@ -109,39 +109,47 @@ function inPar = parse_args (inPar, idx)
     inPar.Results.(name) = value;
   endfor
 
-  ## only ParamValue can be after Optional so their number must be even
-  if ( rem (numel (args), 2) )
-    error("%sodd number of Parameter/Values arguments", inPar.FunctionName);
-  endif
-
   ## loop a maximum #times of the number of ParamValue, taking pairs of keys and
   ## values out 'args'. We no longer expect an order so we need the index in
   ## 'copy' to remove it from there. Once ran out of 'args', move their name
   ## into usingDefaults, place their default values into 'Results', and break
-  for i = 1 : numel (fieldnames (inPar.ParamValue))
+  for i = 1 : (numel (fieldnames (inPar.ParamValue)) + numel (fieldnames (inPar.Switch)))
     if ( !numel (args) )
       ## loops the number of times left in 'copy' since these are the last type
       for n = 1 : numel (inPar.copy)
         [name, inPar.copy]   = pop (inPar.copy);
         inPar.UsingDefaults  = push (inPar.UsingDefaults, name);
-        inPar.Results.(name) = inPar.ParamValue.(name).default;
+        if (isfield (inPar.ParamValue, name))
+          inPar.Results.(name) = inPar.ParamValue.(name).default;
+        else
+          inPar.Results.(name) = inPar.Switch.(name).default;
+        endif
       endfor
       break
     endif
-    [key, args]   = pop (args);
-    [value, args] = pop (args);
+    [key, args] = pop (args);
     if ( !ischar (key) )
-      error("%sParameter names must be strings", inPar.FunctionName);
+      error("%sParameter/Switch names must be strings", inPar.FunctionName);
     endif
     if (inPar.CaseSensitive)
       index = find( strcmp(inPar.copy, key));
     else
       index = find( strcmpi(inPar.copy, key));
     endif
+    ## we can't use isfield here to support case insensitive
+    if (any (strcmpi (fieldnames (inPar.Switch), key)))
+      value  = true;
+      method = "Switch";
+    else
+      ## then it must be a ParamValue, pop its value
+      [value, args] = pop (args);
+      method = "ParamValue";
+    endif
+
     ## index == 0 means no match so either return error or move them into 'Unmatched'
     if ( index != 0 )
       [name, inPar.copy] = pop (inPar.copy, index);
-      if ( !feval (inPar.ParamValue.(name).validator, value) )
+      if ( !feval (inPar.(method).(name).validator, value))
         error("%sinvalid value for parameter '%s'", inPar.FunctionName, key);
       endif
       ## we use the name popped from 'copy' instead of the key from 'args' in case
@@ -188,7 +196,7 @@ function inPar = check_methods (inPar, idx)
   ## a validator is optional but that complicates handling all the parsing with
   ## few functions and conditions. If not specified @() true will always return
   ## true. Simply using true is not enough because if the argument is zero it
-  ## return false and it it's too large, takes up memory
+  ## return false and if it's too large, takes up memory
   switch method
   case {'addOptional', 'addParamValue'}
     if     ( numel (args) == 1 )
@@ -207,6 +215,9 @@ function inPar = check_methods (inPar, idx)
     else
       print_usage(func);
     endif
+    def = false;
+  case {'addSwitch'}
+    val = def_val;
     def = false;
   otherwise
     error ("invalid index for reference of class %s", class (inPar) );
@@ -238,13 +249,14 @@ function inPar = validate_args (method, inPar, name, val, def = false)
   endif
 
   ## because the order arguments are specified are the order they are expected,
-  ## can't have ParamValue before Optional, and Optional before Required
+  ## can't have ParamValue/Switch before Optional, and Optional before Required
   n_optional  = numel (fieldnames (inPar.Optional));
   n_params    = numel (fieldnames (inPar.ParamValue));
-  if     ( strcmp (method, 'Required') && ( n_optional || n_params ) )
-    error ("Can't specify 'Required' arguments after Optional or ParamValue");
-  elseif ( strcmp (method, 'Optional') && n_params )
-    error ("Can't specify 'Required' arguments after Optional or ParamValue");
+  n_switch    = numel (fieldnames (inPar.Switch));
+  if     ( strcmp (method, 'Required') && ( n_optional || n_params || n_switch) )
+    error ("Can't specify 'Required' arguments after Optional, ParamValue or Switch");
+  elseif ( strcmp (method, 'Optional') && ( n_params || n_switch) )
+    error ("Can't specify 'Optional' arguments after ParamValue or Switch");
   endif
 
   ## even if CaseSensitive is turned on, we still shouldn't have two args with

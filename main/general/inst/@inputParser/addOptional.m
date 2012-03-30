@@ -34,7 +34,7 @@
 ## @emph{Note}: if @command{ParamValue} arguments are also specified, all @command{Optional}
 ## arguments will have to be specified before.
 ##
-## @seealso{inputParser, @@inputParser/addParamValue
+## @seealso{inputParser, @@inputParser/addParamValue, @@inputParser/addSwitch,
 ## @@inputParser/addParamValue, @@inputParser/addRequired, @@inputParser/parse}
 ## @end deftypefn
 

@@ -19,7 +19,7 @@
 ## class.
 ##
 ## @seealso{inputParser, @@inputParser/addOptional, @@inputParser/addParamValue
-## @@inputParser/addParamValue, @@inputParser/addRequired,
+## @@inputParser/addParamValue, @@inputParser/addRequired, @@inputParser/addSwitch,
 ## @@inputParser/parse}
 ## @end deftypefn
 

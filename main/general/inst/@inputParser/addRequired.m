@@ -37,7 +37,7 @@
 ## it must be the first (see @command{@@inputParser}).
 ##
 ## @seealso{inputParser, @@inputParser/addOptional, @@inputParser/addParamValue
-## @@inputParser/addParamValue, @@inputParser/parse}
+## @@inputParser/addParamValue, @@inputParser/addSwitch, @@inputParser/parse}
 ## @end deftypefn
 
 function inPar = addRequired (inPar, name, val)

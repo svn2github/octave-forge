@@ -29,7 +29,7 @@
 ## for the parameter with name @var{argname}. Alternatively, a function name
 ## can be used.
 ##
-## @seealso{inputParser, @@inputParser/addOptional,
+## @seealso{inputParser, @@inputParser/addOptional, @@inputParser/addSwitch,
 ## @@inputParser/addParamValue, @@inputParser/addRequired, @@inputParser/parse}
 ## @end deftypefn
 

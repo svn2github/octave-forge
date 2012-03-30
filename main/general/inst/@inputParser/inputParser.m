@@ -1,4 +1,4 @@
-## Copyright (C) 2011 Carnë Draug <carandraug+dev@gmail.com>
+## Copyright (C) 2011-2012 Carnë Draug <carandraug+dev@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -24,7 +24,7 @@
 ## @item mandatory (see @command{@@inputParser/addRequired});
 ## @item optional (see @command{@@inputParser/addOptional});
 ## @item named (see @command{@@inputParser/addParamValue});
-## @item switch (not implemented yet).
+## @item switch (see @command{@@inputParser/addSwitch}).
 ## @end enumerate
 ##
 ## After defining the function API with this methods, the supplied arguments can
@@ -53,7 +53,10 @@
 ## @deftypefnx {Class property} parser.KeepUnmatched = @var{boolean}
 ## Set whether an error should be given for non-defined arguments. Defaults to
 ## false. If set to true, the extra arguments can be accessed through
-## @code{Unmatched} after the @code{parse} method.
+## @code{Unmatched} after the @code{parse} method. Note that since @command{Switch}
+## and @command{ParamValue} arguments can be mixed, it is not possible to know
+## the unmatched type. If argument is found unmatched it is assumed to be of the
+## @command{ParamValue} type and it is expected to be followed by a value.
 ##
 ## @deftypefnx {Class property} parser.StructExpand = @var{boolean}
 ## Set whether a structure can be passed to the function instead of parameter
@@ -77,13 +80,16 @@
 ##     ## create two ParamValue type of arguments
 ##     val_type = @@(x) ischar(x) && any(strcmp(x, @{"linear", "quadratic"@});
 ##     p = p.addParamValue ("type", "linear", @@val_type);
-##     val_verb = @@(x) ischar(x) && any(strcmp(x, @{"silent", "verbose", "debug"@});
-##     p = p.addParamValue ("verbosity", "silent", @@val_verb)';
+##     val_verb = @@(x) ischar(x) && any(strcmp(x, @{"low", "medium", "high"@});
+##     p = p.addParamValue ("tolerance", "low", @@val_verb);
+##
+##     ## create a switch type of argument
+##     p = p.addSwitch ("verbose");
 ##
 ##     p = p.parse (pack, path, mat, varargin@{:@});
 ##
 ##     ## the rest of the function can access the input by accessing p.Results
-##     ## for example, to access the value of verbosity, use p.Results.verbosity
+##     ## for example, to access the value of tolerance, use p.Results.tolerance
 ## endfunction
 ##
 ## check ("mech");            # valid, will use defaults for other arguments
@@ -92,6 +98,10 @@
 ## check ("mech", "~/dev");   # valid, will use defaults for other arguments
 ##
 ## check ("mech", "~/dev", [0 1 0 0], "type", "linear");  # valid
+##
+## ## the following is also valid. Note how the Switch type of argument can be
+## ## mixed into or before the ParamValue (but still after Optional)
+## check ("mech", "~/dev", [0 1 0 0], "verbose", "tolerance", "high");
 ##
 ## ## the following returns an error since not all optional arguments, `path' and
 ## ## `mat', were given before the named argument `type'.
@@ -107,7 +117,8 @@
 ##
 ## @emph{Note 2}: if both @command{Optional} and @command{ParamValue} arguments
 ## are mixed in a function API, the user will have to specify @emph{all}
-## @command{Optional} arguments before the @command{ParamValue} arguments.
+## @command{Optional} arguments before the @command{ParamValue} and
+## @command{Switch}arguments.
 ##
 ## @seealso{@@inputParser/addOptional, @@inputParser/addSwitch,
 ## @@inputParser/addParamValue, @@inputParser/addRequired,
@@ -128,6 +139,7 @@ function inPar = inputParser
   inPar.ParamValue    = struct;
   inPar.Optional      = struct;
   inPar.Required      = struct;
+  inPar.Switch        = struct;
 
   ## this will be filled when the methodd parse is used and will be a struct whose
   ## fieldnames are the argnames that return their value

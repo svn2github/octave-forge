@@ -6,8 +6,8 @@ Summary of important user-visible changes for string 1.1.0:
 
       strtrim
 
-  ** Package is no longer automatically loaded.
+ ** Package is no longer automatically loaded.
 
-  ** The function `cstrcmp' has been completely rewritten. It should
+ ** The function `cstrcmp' has been completely rewritten. It should
      perform faster and will accept arguments exactly the same way as
      Octave's core `strcmp'.

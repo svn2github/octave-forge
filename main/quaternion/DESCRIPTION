@@ -7,5 +7,5 @@ Title: Quaternion
 Description: Overloaded operators for quaternions
 Depends: octave (>= 3.6.0)
 Autoload: yes
-License: GPL version 3 or later
+License: GPLv3+
 Url: http://octave.sf.net

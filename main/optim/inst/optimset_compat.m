@@ -41,7 +41,12 @@ function opt = optimset_compat (varargin)
 ## Display      , ["off","iter","notify","final"] 
 ##                               : N/A
 
-  warning ("'optimset_compat' has been deprecated in favor of 'optimset', which is now part of core Octave. This function will possibly be removed from future versions of the 'optim' package.");
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "`optimset_compat' has been deprecated, and will be removed in the future. Use `optimset' from Octave core instead.");
+  endif
 
 args = varargin;
 

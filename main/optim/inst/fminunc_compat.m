@@ -42,9 +42,15 @@
 ##                         the 'backend' option of minimize().
 ##
 ## This function is a front-end to minimize().
+
 function [x,fval,flag,out,df,d2f] = fminunc_compat (fun,x0,opt,varargin)
 
-  warning ("'fminunc_compat' has been deprecated in favor of 'fminunc', which is now part of core Octave. This function will possibly be removed from future versions of the 'optim' package.");
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "`fminunc_compat' has been deprecated, and will be removed in the future. Use `fminunc' from Octave core instead.");
+  endif
 
 if nargin < 3, opt = struct (); end
 if nargin > 3, 

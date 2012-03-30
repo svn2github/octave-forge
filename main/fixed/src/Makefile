@@ -1,5 +1,7 @@
 sinclude Makeconf
 
+HDF5_LIBS := $(shell  grep "\#define OCTAVE_CONF_HDF5_LIBS"  $(shell  mkoctfile -p OCTINCLUDEDIR)/oct-conf.h | sed "s/^.*LIBS //"  )
+
 FIXEDVERTARGET = fixedversion.h
 FIXEDTARGET = fixed.oct 
 
@@ -74,7 +76,7 @@ endif
 
 $(FIXEDTARGET) : $(DEPENDS) $(FIXEDOBJECTS) 
 	@echo "Linking $@";
-	$(MKOCTFILE) $(ADD_FLAGS) $(MOFLAGS) $(FIXEDOBJECTS) $(EXTRALIBS) -o $@
+	$(MKOCTFILE) $(ADD_FLAGS) $(MOFLAGS) $(FIXEDOBJECTS) $(EXTRALIBS) $(HDF5_LIBS) -o $@
 
 $(FIXEDVERTARGET) :
 	@echo "Creating $@"; $(RM) -f $@;

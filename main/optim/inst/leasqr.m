@@ -202,7 +202,7 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %%       8) Change to more efficent algorithm of Bard for selecting epsL.
   %%       9) Tighten up memory usage by making use of sparse matrices (if 
   %%          MATLAB version >= 4.0) in computation of covp, corp, stdresid.
-  %% Modified by Francesco Potortì
+  %% Modified by Francesco PotortÃ¬
   %%       for use in Octave
   %% Added linear inequality constraints with quadratic programming to
   %% this file and special case bounds to this file and to dfdp.m

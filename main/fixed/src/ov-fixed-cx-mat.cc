@@ -616,7 +616,7 @@ octave_fixed_complex_matrix::save_hdf5 (hid_t loc_id, const char *name,
 					bool save_as_floats)
 {
   hid_t group_hid = -1;
-  group_hid = H5Gcreate (loc_id, name, 0);
+  group_hid = H5Gcreate (loc_id, name, 0, H5P_DEFAULT, H5P_DEFAULT);
   if (group_hid < 0 ) return false;
 
   dim_vector d = dims ();
@@ -644,7 +644,8 @@ octave_fixed_complex_matrix::save_hdf5 (hid_t loc_id, const char *name,
       return false;
     }
 
-  data_hid = H5Dcreate (group_hid, "int", type_hid, space_hid, H5P_DEFAULT);
+  data_hid = H5Dcreate (group_hid, "int", type_hid, space_hid, H5P_DEFAULT,
+                        H5P_DEFAULT, H5P_DEFAULT);
   if (data_hid < 0) 
     {
       H5Sclose (space_hid);
@@ -671,7 +672,8 @@ octave_fixed_complex_matrix::save_hdf5 (hid_t loc_id, const char *name,
       return false;
     }    
 
-  data_hid = H5Dcreate (group_hid, "dec", type_hid, space_hid, H5P_DEFAULT);
+  data_hid = H5Dcreate (group_hid, "dec", type_hid, space_hid, H5P_DEFAULT,
+                        H5P_DEFAULT, H5P_DEFAULT);
   if (data_hid < 0) 
     {
       H5Sclose (space_hid);
@@ -707,7 +709,8 @@ octave_fixed_complex_matrix::save_hdf5 (hid_t loc_id, const char *name,
       return false;
     }
 
-  data_hid = H5Dcreate (group_hid, "num", type_hid, space_hid, H5P_DEFAULT);
+  data_hid = H5Dcreate (group_hid, "num", type_hid, space_hid, H5P_DEFAULT,
+                        H5P_DEFAULT, H5P_DEFAULT);
   if (data_hid < 0) 
     {
       H5Sclose (space_hid);
@@ -740,13 +743,13 @@ octave_fixed_complex_matrix::load_hdf5 (hid_t loc_id, const char *name,
   hid_t group_hid, data_hid, space_id, type_hid;
   hsize_t rank, rank_old;
 
-  group_hid = H5Gopen (loc_id, name);
+  group_hid = H5Gopen (loc_id, name, H5P_DEFAULT);
   if (group_hid < 0 ) return false;
 
   hid_t complex_type = hdf5_make_fixed_complex_type (H5T_NATIVE_UINT, 
 						     sizeof(unsigned int));
 
-  data_hid = H5Dopen (group_hid, "int");
+  data_hid = H5Dopen (group_hid, "int", H5P_DEFAULT);
   type_hid = H5Dget_type (data_hid);
 
   if (! hdf5_types_compatible (type_hid, complex_type))
@@ -810,7 +813,7 @@ octave_fixed_complex_matrix::load_hdf5 (hid_t loc_id, const char *name,
   H5Tclose(type_hid);
   H5Dclose (data_hid);
 
-  data_hid = H5Dopen (group_hid, "dec");
+  data_hid = H5Dopen (group_hid, "dec", H5P_DEFAULT);
   type_hid = H5Dget_type (data_hid);
 
   if (! hdf5_types_compatible (type_hid, complex_type))
@@ -875,7 +878,7 @@ octave_fixed_complex_matrix::load_hdf5 (hid_t loc_id, const char *name,
   H5Tclose(type_hid);
   H5Dclose (data_hid);
 
-  data_hid = H5Dopen (group_hid, "num");
+  data_hid = H5Dopen (group_hid, "num", H5P_DEFAULT);
   type_hid = H5Dget_type (data_hid);
 
   if (! hdf5_types_compatible (type_hid, complex_type))

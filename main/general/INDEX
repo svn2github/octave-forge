@@ -1,4 +1,20 @@
-general_html >> General purpose functions
+general >> General purpose functions
+Dictionaries
+ @dict/dict
+ @dict/get
+ @dict/has
+ @dict/isempty
+ @dict/join
+ @dict/length
+ @dict/struct
+Input check
+ @inputParser/inputParser
+ @inputParser/addOptional
+ @inputParser/addRequired
+ @inputParser/addParamValue
+ @inputParser/addSwitch
+ @inputParser/createCopy
+ @inputParser/parse
 Parallel Computing
  pararrayfun
  parcellfun
@@ -15,16 +31,3 @@ Various Functions
  unvech
  ztvals
  SHA1
-Dictionaries
- @dict/dict
- @dict/display
- @dict/end
- @dict/get
- @dict/has
- @dict/isempty
- @dict/join
- @dict/length
- @dict/struct
- @dict/subsasgn
- @dict/subsref
-

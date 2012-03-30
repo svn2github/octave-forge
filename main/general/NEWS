@@ -4,6 +4,17 @@ Summary of important user-visible changes for general 1.3.0:
  ** The following functions are new:
       majle
 
+ ** The class `inputParser' class has been implemented with many methods. It
+    attempts to be as compatible with Matlab as possible. However, since
+    classdef is not yet implemented the syntax differs slightly. Unlike the
+    Matlab implementation, this functions return the object. For example:
+
+        obj.method (arguments)        # matlab implementation
+        obj = obj.method (arguments)  # octave implementation
+
+    The octave implementatino expands on the Matlab one as it has one more type
+    of API, see `help @inputParser/addSwitch'.
+
  ** The function `unvech' accepts a new argument scale to calculate
     the upper triangular part of the matrix thus returning non-symmetric
     matrix.

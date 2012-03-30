@@ -17,3 +17,5 @@ Summary of important user-visible changes for optim 1.1.0:
       deriv   linprog
 
  ** The function `line_min' has a configurable setpesize and max evals
+
+ ** Package is no longer automatically loaded.

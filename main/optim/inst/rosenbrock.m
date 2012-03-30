@@ -1,24 +1,24 @@
-# Copyright (C) 2004   Michael Creel   <michael.creel@uab.es>
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; If not, see <http://www.gnu.org/licenses/>.
+## Copyright (C) 2004 Michael Creel <michael.creel@uab.es>
+##
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free Software
+## Foundation; either version 3 of the License, or (at your option) any later
+## version.
+##
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+## details.
+##
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, see <http://www.gnu.org/licenses/>.
 
-# Rosenbrock function - used to create example obj. fns.
-#
-# Function value and gradient vector of the rosenbrock function
-# The minimizer is at the vector (1,1,..,1),
-# and the minimized value is 0.
-#
+## Rosenbrock function - used to create example obj. fns.
+##
+## Function value and gradient vector of the rosenbrock function
+## The minimizer is at the vector (1,1,..,1),
+## and the minimized value is 0.
+
 function [obj_value, gradient] = rosenbrock(x);
 	dimension = length(x);
 	obj_value = sum(100*(x(2:dimension)-x(1:dimension-1).^2).^2 + (1-x(1:dimension-1)).^2);

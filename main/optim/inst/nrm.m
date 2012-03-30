@@ -1,29 +1,26 @@
-## Copyright (C) 2000 Ben Sapp.  All rights reserved.
+## Copyright (C) 2000 Ben Sapp <bsapp@lanl.gov>
+## Copyright (C) 2002 Paul Kienzle <pkienzle@gmail.com>
 ##
-## This program is free software; you can redistribute it and/or modify it
-## under the terms of the GNU General Public License as published by the
-## Free Software Foundation; either version 2, or (at your option) any
-## later version.
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free Software
+## Foundation; either version 3 of the License, or (at your option) any later
+## version.
 ##
-## This is distributed in the hope that it will be useful, but WITHOUT
+## This program is distributed in the hope that it will be useful, but WITHOUT
 ## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-## for more details.
+## FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+## details.
+##
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{xmin} =} nrm(@var{f},@var{x0})
 ## Using @var{x0} as a starting point find a minimum of the scalar
-## function @var{f}.  The Newton-Raphson method is used.  
+## function @var{f}.  The Newton-Raphson method is used.
 ## @end deftypefn
 
-## Author: Ben Sapp <bsapp@lanl.gov>
 ## Reference: David G Luenberger's Linear and Nonlinear Programming
-
-## 2002-01-28 Paul Kienzle
-## * save two function evaluations by inlining the derivatives
-## * pass through varargin{:} to the function
-## 2002-03-13 Paul Kienzle
-## * simplify update expression
 
 function x = nrm(f,x,varargin)
   velocity = 1;

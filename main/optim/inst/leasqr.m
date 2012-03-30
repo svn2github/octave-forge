@@ -1,151 +1,155 @@
 %% Copyright (C) 1992-1994 Richard Shrager
-%% Copyright (C) 1992-1994 Arthur Jutan
-%% Copyright (C) 1992-1994 Ray Muzic
+%% Copyright (C) 1992-1994 Arthur Jutan <jutan@charon.engga.uwo.ca>
+%% Copyright (C) 1992-1994 Ray Muzic <rfm2@ds2.uh.cwru.edu>
 %% Copyright (C) 2010, 2011 Olaf Till <olaf.till@uni-jena.de>
 %%
-%% This program is free software; you can redistribute it and/or modify
-%% it under the terms of the GNU General Public License as published by
-%% the Free Software Foundation; either version 2 of the License, or
-%% (at your option) any later version.
+%% This program is free software; you can redistribute it and/or modify it under
+%% the terms of the GNU General Public License as published by the Free Software
+%% Foundation; either version 3 of the License, or (at your option) any later
+%% version.
 %%
-%% This program is distributed in the hope that it will be useful,
-%% but WITHOUT ANY WARRANTY; without even the implied warranty of
-%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%% GNU General Public License for more details.
+%% This program is distributed in the hope that it will be useful, but WITHOUT
+%% ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+%% FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+%% details.
 %%
-%% You should have received a copy of the GNU General Public License
-%% along with this program; If not, see <http://www.gnu.org/licenses/>.
+%% You should have received a copy of the GNU General Public License along with
+%% this program; if not, see <http://www.gnu.org/licenses/>.
+
+%%function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]=
+%%                   leasqr(x,y,pin,F,{stol,niter,wt,dp,dFdp,options})
+%%
+%% Levenberg-Marquardt nonlinear regression of f(x,p) to y(x).
+%%
+%% Version 3.beta
+%% Optional parameters are in braces {}.
+%% x = vector or matrix of independent variables.
+%% y = vector or matrix of observed values.
+%% wt = statistical weights (same dimensions as y).  These should be
+%%   set to be proportional to (sqrt of var(y))^-1; (That is, the
+%%   covariance matrix of the data is assumed to be proportional to
+%%   diagonal with diagonal equal to (wt.^2)^-1.  The constant of
+%%   proportionality will be estimated.); default = ones( size (y)).
+%% pin = vec of initial parameters to be adjusted by leasqr.
+%% dp = fractional increment of p for numerical partial derivatives;
+%%   default = .001*ones(size(pin))
+%%   dp(j) > 0 means central differences on j-th parameter p(j).
+%%   dp(j) < 0 means one-sided differences on j-th parameter p(j).
+%%   dp(j) = 0 holds p(j) fixed i.e. leasqr wont change initial guess: pin(j)
+%% F = name of function in quotes or function handle; the function
+%%   shall be of the form y=f(x,p), with y, x, p of the form y, x, pin
+%%   as described above.
+%% dFdp = name of partial derivative function in quotes or function
+%% handle; default is 'dfdp', a slow but general partial derivatives
+%% function; the function shall be of the form
+%% prt=dfdp(x,f,p,dp,F[,bounds]). For backwards compatibility, the
+%% function will only be called with an extra 'bounds' argument if the
+%% 'bounds' option is explicitely specified to leasqr (see dfdp.m).
+%% stol = scalar tolerance on fractional improvement in scalar sum of
+%%   squares = sum((wt.*(y-f))^2); default stol = .0001;
+%% niter = scalar maximum number of iterations; default = 20;
+%% options = structure, currently recognized fields are 'fract_prec',
+%% 'max_fract_change', 'inequc', 'bounds', and 'equc'. For backwards
+%% compatibility, 'options' can also be a matrix whose first and
+%% second column contains the values of 'fract_prec' and
+%% 'max_fract_change', respectively.
+%%   Field 'options.fract_prec': column vector (same length as 'pin')
+%%   of desired fractional precisions in parameter estimates.
+%%   Iterations are terminated if change in parameter vector (chg)
+%%   relative to current parameter estimate is less than their
+%%   corresponding elements in 'options.fract_prec' [ie. all (abs
+%%   (chg) < abs (options.fract_prec .* current_parm_est))] on two
+%%   consecutive iterations, default = zeros().
+%%   Field 'options.max_fract_change': column vector (same length as
+%%   'pin) of maximum fractional step changes in parameter vector.
+%%   Fractional change in elements of parameter vector is constrained to
+%%   be at most 'options.max_fract_change' between sucessive iterations.
+%%   [ie. abs(chg(i))=abs(min([chg(i)
+%%   options.max_fract_change(i)*current param estimate])).], default =
+%%   Inf*ones().
+%%   Field 'options.inequc': cell-array containing up to four entries,
+%%   two entries for linear inequality constraints and/or one or two
+%%   entries for general inequality constraints. Initial parameters
+%%   must satisfy these constraints. Either linear or general
+%%   constraints may be the first entries, but the two entries for
+%%   linear constraints must be adjacent and, if two entries are given
+%%   for general constraints, they also must be adjacent. The two
+%%   entries for linear constraints are a matrix (say m) and a vector
+%%   (say v), specifying linear inequality constraints of the form
+%%   `m.' * parameters + v >= 0'. If the constraints are just bounds,
+%%   it is suggested to specify them in 'options.bounds' instead,
+%%   since then some sanity tests are performed, and since the
+%%   function 'dfdp.m' is guarantied not to violate constraints during
+%%   determination of the numeric gradient only for those constraints
+%%   specified as 'bounds' (possibly with violations due to a certain
+%%   inaccuracy, however, except if no constraints except bounds are
+%%   specified). The first entry for general constraints must be a
+%%   differentiable vector valued function (say h), specifying general
+%%   inequality constraints of the form `h (p[, idx]) >= 0'; p is the
+%%   column vector of optimized paraters and the optional argument idx
+%%   is a logical index. h has to return the values of all constraints
+%%   if idx is not given, and has to return only the indexed
+%%   constraints if idx is given (so computation of the other
+%%   constraints can be spared). If a second entry for general
+%%   constraints is given, it must be a function (say dh) which
+%%   returnes a matrix whos rows contain the gradients of the
+%%   constraint function h with respect to the optimized parameters.
+%%   It has the form jac_h = dh (vh, p, dp, h, idx[, bounds]); p is
+%%   the column vector of optimized parameters, and idx is a logical
+%%   index --- only the rows indexed by idx must be returned (so
+%%   computation of the others can be spared). The other arguments of
+%%   dh are for the case that dh computes numerical gradients: vh is
+%%   the column vector of the current values of the constraint
+%%   function h, with idx already applied. h is a function h (p) to
+%%   compute the values of the constraints for parameters p, it will
+%%   return only the values indexed by idx. dp is a suggestion for
+%%   relative step width, having the same value as the argument 'dp'
+%%   of leasqr above. If bounds were specified to leasqr, they are
+%%   provided in the argument bounds of dh, to enable their
+%%   consideration in determination of numerical gradients. If dh is
+%%   not specified to leasqr, numerical gradients are computed in the
+%%   same way as with 'dfdp.m' (see above). If some constraints are
+%%   linear, they should be specified as linear constraints (or
+%%   bounds, if applicable) for reasons of performance, even if
+%%   general constraints are also specified.
+%%   Field 'options.bounds': two-column-matrix, one row for each
+%%   parameter in 'pin'. Each row contains a minimal and maximal value
+%%   for each parameter. Default: [-Inf, Inf] in each row. If this
+%%   field is used with an existing user-side function for 'dFdp'
+%%   (see above) the functions interface might have to be changed.
+%%   Field 'options.equc': equality constraints, specified the same
+%%   way as inequality constraints (see field 'options.inequc').
+%%   Initial parameters must satisfy these constraints.
+%%   Note that there is possibly a certain inaccuracy in honoring
+%%   constraints, except if only bounds are specified. 
+%%   _Warning_: If constraints (or bounds) are set, returned guesses
+%%   of corp, covp, and Z are generally invalid, even if no constraints
+%%   are active for the final parameters. If equality constraints are
+%%   specified, corp, covp, and Z are not guessed at all.
+%%   Field 'options.cpiv': Function for complementary pivot algorithm
+%%   for inequality constraints, default: cpiv_bard. No different
+%%   function is supplied.
+%%
+%%          OUTPUT VARIABLES
+%% f = column vector of values computed: f = F(x,p).
+%% p = column vector trial or final parameters. i.e, the solution.
+%% cvg = scalar: = 1 if convergence, = 0 otherwise.
+%% iter = scalar number of iterations used.
+%% corp = correlation matrix for parameters.
+%% covp = covariance matrix of the parameters.
+%% covr = diag(covariance matrix of the residuals).
+%% stdresid = standardized residuals.
+%% Z = matrix that defines confidence region (see comments in the source).
+%% r2 = coefficient of multiple determination, intercept form.
+%%
+%% Not suitable for non-real residuals.
+%%
+%% References:
+%% Bard, Nonlinear Parameter Estimation, Academic Press, 1974.
+%% Draper and Smith, Applied Regression Analysis, John Wiley and Sons, 1981.
 
 function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
       leasqr(x,y,pin,F,stol,niter,wt,dp,dFdp,options)
-
-  %%function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]=
-  %%                   leasqr(x,y,pin,F,{stol,niter,wt,dp,dFdp,options})
-  %%
-  %% Levenberg-Marquardt nonlinear regression of f(x,p) to y(x).
-  %%
-  %% Version 3.beta
-  %% Optional parameters are in braces {}.
-  %% x = vector or matrix of independent variables.
-  %% y = vector or matrix of observed values.
-  %% wt = statistical weights (same dimensions as y).  These should be
-  %%   set to be proportional to (sqrt of var(y))^-1; (That is, the
-  %%   covariance matrix of the data is assumed to be proportional to
-  %%   diagonal with diagonal equal to (wt.^2)^-1.  The constant of
-  %%   proportionality will be estimated.); default = ones( size (y)).
-  %% pin = vec of initial parameters to be adjusted by leasqr.
-  %% dp = fractional increment of p for numerical partial derivatives;
-  %%   default = .001*ones(size(pin))
-  %%   dp(j) > 0 means central differences on j-th parameter p(j).
-  %%   dp(j) < 0 means one-sided differences on j-th parameter p(j).
-  %%   dp(j) = 0 holds p(j) fixed i.e. leasqr wont change initial guess: pin(j)
-  %% F = name of function in quotes or function handle; the function
-  %%   shall be of the form y=f(x,p), with y, x, p of the form y, x, pin
-  %%   as described above.
-  %% dFdp = name of partial derivative function in quotes or function
-  %% handle; default is 'dfdp', a slow but general partial derivatives
-  %% function; the function shall be of the form
-  %% prt=dfdp(x,f,p,dp,F[,bounds]). For backwards compatibility, the
-  %% function will only be called with an extra 'bounds' argument if the
-  %% 'bounds' option is explicitely specified to leasqr (see dfdp.m).
-  %% stol = scalar tolerance on fractional improvement in scalar sum of
-  %%   squares = sum((wt.*(y-f))^2); default stol = .0001;
-  %% niter = scalar maximum number of iterations; default = 20;
-  %% options = structure, currently recognized fields are 'fract_prec',
-  %% 'max_fract_change', 'inequc', 'bounds', and 'equc'. For backwards
-  %% compatibility, 'options' can also be a matrix whose first and
-  %% second column contains the values of 'fract_prec' and
-  %% 'max_fract_change', respectively.
-  %%   Field 'options.fract_prec': column vector (same length as 'pin')
-  %%   of desired fractional precisions in parameter estimates.
-  %%   Iterations are terminated if change in parameter vector (chg)
-  %%   relative to current parameter estimate is less than their
-  %%   corresponding elements in 'options.fract_prec' [ie. all (abs
-  %%   (chg) < abs (options.fract_prec .* current_parm_est))] on two
-  %%   consecutive iterations, default = zeros().
-  %%   Field 'options.max_fract_change': column vector (same length as
-  %%   'pin) of maximum fractional step changes in parameter vector.
-  %%   Fractional change in elements of parameter vector is constrained to
-  %%   be at most 'options.max_fract_change' between sucessive iterations.
-  %%   [ie. abs(chg(i))=abs(min([chg(i)
-  %%   options.max_fract_change(i)*current param estimate])).], default =
-  %%   Inf*ones().
-  %%   Field 'options.inequc': cell-array containing up to four entries,
-  %%   two entries for linear inequality constraints and/or one or two
-  %%   entries for general inequality constraints. Initial parameters
-  %%   must satisfy these constraints. Either linear or general
-  %%   constraints may be the first entries, but the two entries for
-  %%   linear constraints must be adjacent and, if two entries are given
-  %%   for general constraints, they also must be adjacent. The two
-  %%   entries for linear constraints are a matrix (say m) and a vector
-  %%   (say v), specifying linear inequality constraints of the form
-  %%   `m.' * parameters + v >= 0'. If the constraints are just bounds,
-  %%   it is suggested to specify them in 'options.bounds' instead,
-  %%   since then some sanity tests are performed, and since the
-  %%   function 'dfdp.m' is guarantied not to violate constraints during
-  %%   determination of the numeric gradient only for those constraints
-  %%   specified as 'bounds' (possibly with violations due to a certain
-  %%   inaccuracy, however, except if no constraints except bounds are
-  %%   specified). The first entry for general constraints must be a
-  %%   differentiable vector valued function (say h), specifying general
-  %%   inequality constraints of the form `h (p[, idx]) >= 0'; p is the
-  %%   column vector of optimized paraters and the optional argument idx
-  %%   is a logical index. h has to return the values of all constraints
-  %%   if idx is not given, and has to return only the indexed
-  %%   constraints if idx is given (so computation of the other
-  %%   constraints can be spared). If a second entry for general
-  %%   constraints is given, it must be a function (say dh) which
-  %%   returnes a matrix whos rows contain the gradients of the
-  %%   constraint function h with respect to the optimized parameters.
-  %%   It has the form jac_h = dh (vh, p, dp, h, idx[, bounds]); p is
-  %%   the column vector of optimized parameters, and idx is a logical
-  %%   index --- only the rows indexed by idx must be returned (so
-  %%   computation of the others can be spared). The other arguments of
-  %%   dh are for the case that dh computes numerical gradients: vh is
-  %%   the column vector of the current values of the constraint
-  %%   function h, with idx already applied. h is a function h (p) to
-  %%   compute the values of the constraints for parameters p, it will
-  %%   return only the values indexed by idx. dp is a suggestion for
-  %%   relative step width, having the same value as the argument 'dp'
-  %%   of leasqr above. If bounds were specified to leasqr, they are
-  %%   provided in the argument bounds of dh, to enable their
-  %%   consideration in determination of numerical gradients. If dh is
-  %%   not specified to leasqr, numerical gradients are computed in the
-  %%   same way as with 'dfdp.m' (see above). If some constraints are
-  %%   linear, they should be specified as linear constraints (or
-  %%   bounds, if applicable) for reasons of performance, even if
-  %%   general constraints are also specified.
-  %%   Field 'options.bounds': two-column-matrix, one row for each
-  %%   parameter in 'pin'. Each row contains a minimal and maximal value
-  %%   for each parameter. Default: [-Inf, Inf] in each row. If this
-  %%   field is used with an existing user-side function for 'dFdp'
-  %%   (see above) the functions interface might have to be changed.
-  %%   Field 'options.equc': equality constraints, specified the same
-  %%   way as inequality constraints (see field 'options.inequc').
-  %%   Initial parameters must satisfy these constraints.
-  %%   Note that there is possibly a certain inaccuracy in honoring
-  %%   constraints, except if only bounds are specified. 
-  %%   _Warning_: If constraints (or bounds) are set, returned guesses
-  %%   of corp, covp, and Z are generally invalid, even if no constraints
-  %%   are active for the final parameters. If equality constraints are
-  %%   specified, corp, covp, and Z are not guessed at all.
-  %%   Field 'options.cpiv': Function for complementary pivot algorithm
-  %%   for inequality constraints, default: cpiv_bard. No different
-  %%   function is supplied.
-  %%
-  %%          OUTPUT VARIABLES
-  %% f = column vector of values computed: f = F(x,p).
-  %% p = column vector trial or final parameters. i.e, the solution.
-  %% cvg = scalar: = 1 if convergence, = 0 otherwise.
-  %% iter = scalar number of iterations used.
-  %% corp = correlation matrix for parameters.
-  %% covp = covariance matrix of the parameters.
-  %% covr = diag(covariance matrix of the residuals).
-  %% stdresid = standardized residuals.
-  %% Z = matrix that defines confidence region (see comments in the source).
-  %% r2 = coefficient of multiple determination, intercept form.
-  %%
-  %% Not suitable for non-real residuals.
 
   %% The following two blocks of comments are chiefly from the original
   %% version for Matlab. For later changes the logs of the Octave Forge
@@ -216,11 +220,6 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %% constraints even if general constraints are specified. Equality
   %% constraints also implemented. Olaf Till
   %% Now split into files leasqr.m and __lm_svd__.m.
-
-  %%
-  %% References:
-  %% Bard, Nonlinear Parameter Estimation, Academic Press, 1974.
-  %% Draper and Smith, Applied Regression Analysis, John Wiley and Sons, 1981.
 
   %% needed for some anonymous functions
   if (exist ('ifelse') ~= 5)

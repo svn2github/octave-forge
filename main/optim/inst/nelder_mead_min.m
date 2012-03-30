@@ -1,17 +1,17 @@
-## Copyright (C) 2002-2008 Etienne Grossmann.  All rights reserved.
+## Copyright (C) 2002-2008 Etienne Grossmann <etienne@cs.uky.edu>
 ##
-## This program is free software; you can redistribute it and/or modify it
-## under the terms of the GNU General Public License as published by the
-## Free Software Foundation; either version 2, or (at your option) any
-## later version.
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free Software
+## Foundation; either version 3 of the License, or (at your option) any later
+## version.
 ##
-## This is distributed in the hope that it will be useful, but WITHOUT
+## This program is distributed in the hope that it will be useful, but WITHOUT
 ## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-## for more details.
+## FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+## details.
 ##
-## Changelog: 
-## 2002 / 05 / 09 : Default is no restart next to solution
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## [x0,v,nev] = nelder_mead_min (f,args,ctl) - Nelder-Mead minimization
 ##
@@ -80,10 +80,8 @@
 ##                  mind not getting a true minimum.                     <0>
 ##
 ## verbose, v     Be more or less verbose (quiet=0)                      <0>
+
 function [x,v,nev] = nelder_mead_min (f, args, varargin)
-
-## Author : Etienne Grossmann <etienne@cs.uky.edu>
-
 
 verbose = 0;
 

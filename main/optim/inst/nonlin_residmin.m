@@ -1,26 +1,25 @@
 ## Copyright (C) 2010, 2011 Olaf Till <olaf.till@uni-jena.de>
 ##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or
-## (at your option) any later version.
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free Software
+## Foundation; either version 3 of the License, or (at your option) any later
+## version.
 ##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+## details.
 ##
-## You should have received a copy of the GNU General Public License
-## along with this program; If not, see <http://www.gnu.org/licenses/>.
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-##
 ## @deftypefn {Function File} {[@var{p}, @var{resid}, @var{cvg}, @var{outp}] =} nonlin_residmin (@var{f}, @var{pin})
-##
 ## @deftypefnx {Function File} {[@var{p}, @var{resid}, @var{cvg}, @var{outp}] =} nonlin_residmin (@var{f}, @var{pin}, @var{settings})
-##
 ## Frontend for nonlinear minimization of residuals returned by a model
-## function. The functions supplied by the user have a minimal
+## function.
+##
+## The functions supplied by the user have a minimal
 ## interface; any additionally needed constants (e.g. observed values)
 ## can be supplied by wrapping the user functions into anonymous
 ## functions.
@@ -259,7 +258,6 @@
 ## method, with descent in each gradient component; for testing only.
 ##
 ## @seealso {nonlin_curvefit}
-##
 ## @end deftypefn
 
 function [p, resid, cvg, outp] = nonlin_residmin (varargin)

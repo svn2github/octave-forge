@@ -1,24 +1,23 @@
-%% Copyright (C) 2010 Olaf Till <olaf.till@uni-jena.de>
 %% Copyright (C) 2007 Paul Kienzle (sort-based lookup in ODE solver)
 %% Copyright (C) 2009 Thomas Treichl <thomas.treichl@gmx.net>
-%%               (ode23 code)
+%% Copyright (C) 2010 Olaf Till <olaf.till@uni-jena.de>
 %%
-%% This program is free software; you can redistribute it and/or modify
-%% it under the terms of the GNU General Public License as published by
-%% the Free Software Foundation; either version 3 of the License, or (at
-%% your option) any later version.
+%% This program is free software; you can redistribute it and/or modify it under
+%% the terms of the GNU General Public License as published by the Free Software
+%% Foundation; either version 3 of the License, or (at your option) any later
+%% version.
 %%
-%% This program is distributed in the hope that it will be useful, but
-%% WITHOUT ANY WARRANTY; without even the implied warranty of
-%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-%% General Public License for more details.
+%% This program is distributed in the hope that it will be useful, but WITHOUT
+%% ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+%% FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+%% details.
 %%
-%% You should have received a copy of the GNU General Public License
-%% along with this program; If not, see <http://www.gnu.org/licenses/>.
+%% You should have received a copy of the GNU General Public License along with
+%% this program; if not, see <http://www.gnu.org/licenses/>.
+
+%% Problems for testing optimizers. Documentation is in the code.
 
 function ret = optim_problems ()
-
-  %% Problems for testing optimizers. Documentation is in the code.
 
   %% As little external code as possible is called. This leads to some
   %% duplication of external code. The advantages are that thus these

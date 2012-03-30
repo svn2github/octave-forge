@@ -1,3 +1,19 @@
+## Copyright (C) 2002 Etienne Grossmann <etienne@isr.ist.utl.pt>
+## Copyright (C) 2009 Levente Torok <TorokLev@gmail.com>
+##
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free Software
+## Foundation; either version 3 of the License, or (at your option) any later
+## version.
+##
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+## details.
+##
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, see <http://www.gnu.org/licenses/>.
+
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{x0},@var{v},@var{nev}]} cg_min ( @var{f},@var{df},@var{args},@var{ctl} )
 ## NonLinear Conjugate Gradient method to minimize function @var{f}.
@@ -53,10 +69,6 @@
 ## Comment:  In general, BFGS method seems to be better performin in many cases but requires more computation per iteration
 ## @seealso{ bfgsmin, http://en.wikipedia.org/wiki/Nonlinear_conjugate_gradient }
 ## @end deftypefn
-
-## Author : Etienne Grossmann <etienne@isr.ist.utl.pt>
-## Modified by: Levente Torok <TorokLev@gmail.com>
-## This software is distributed under the terms of the GPL
 
 function [x,v,nev] = cg_min (f, dfn, args, ctl)
 

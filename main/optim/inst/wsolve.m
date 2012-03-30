@@ -1,3 +1,6 @@
+## Author: Paul Kienzle <pkienzle@gmail.com>
+## This program is granted to the public domain.
+
 ## [x,s] = wsolve(A,y,dy)
 ##
 ## Solve a potentially over-determined system with uncertainty in
@@ -48,8 +51,6 @@
 ## However, if the error bars really do increase by a factor of 10
 ## you should expect a corresponding increase in the scatter of 
 ## the data, which will increase the variance computed by the fit.
-
-## This program is public domain.
 
 function [x_out,s]=wsolve(A,y,dy)
   if nargin < 2, usage("[x dx] = wsolve(A,y[,dy])"); end

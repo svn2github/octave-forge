@@ -7,5 +7,5 @@ Title: Optimization.
 Description: Non-linear optimization toolkit.
 Depends: octave (>= 2.9.7), miscellaneous (>= 1.0.10), struct (>= 1.0.9)
 Autoload: no
-License: GPL version 2 or later and GFDL
+License: GFDL, GPLv3+, modified BSD, public domain
 Url: http://octave.sf.net

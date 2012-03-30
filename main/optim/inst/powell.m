@@ -1,21 +1,21 @@
-## Copyright (C) 2011  Nir Krakauer
+## Copyright (C) 2011 Nir Krakauer <nkrakauer@ccny.cuny.edu>
 ##
-## This program is free software: you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation, either version 3 of the License, or
-## (at your option) any later version.
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free Software
+## Foundation; either version 3 of the License, or (at your option) any later
+## version.
 ##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+## details.
 ##
-## You should have received a copy of the GNU General Public License
-## along with this program.  If not, see <http://www.gnu.org/licenses/>.
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} [@var{p}, @var{obj_value}, @var{convergence}, @var{iters}, @var{nevs}] = powell (@var{f}, @var{p0}, @var{control})
-##powell: implements a direction-set (Powell's) method for multidimensional minimization of a function without calculation of the gradient [1, 2]
+## Multidimensional minimization (direction-set method). Implements a direction-set (Powell's) method for multidimensional minimization of a function without calculation of the gradient [1, 2]
 ##
 ## @subheading Arguments
 ##
@@ -78,9 +78,6 @@
 ## Press, WH; Teukolsky, SA; Vetterling, WT; Flannery, BP (1992). @cite{Numerical Recipes in Fortran: The Art of Scientific Computing} (2nd Ed.). New York: Cambridge University Press (Section 10.5)
 ## @end enumerate
 ## @end deftypefn
-
-## Author: Nir Krakauer <nkrakauer@ccny.cuny.edu>
-## Description: Multidimensional minimization (direction-set method)
 
 ## PKG_ADD: __all_opts__ ("powell");
 

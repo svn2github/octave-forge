@@ -1,3 +1,19 @@
+## Copyright (C) 2000 Gert Van den Eynde <na.gvandeneynde@na-net.ornl.gov>
+## Copyright (C) 2002 Rolf Fabian <fabian@tu-cottbus.de>
+##
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free Software
+## Foundation; either version 3 of the License, or (at your option) any later
+## version.
+##
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+## details.
+##
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, see <http://www.gnu.org/licenses/>.
+
 ## USAGE  [alpha,c,rms] = expfit( deg, x1, h, y )
 ##
 ## Prony's method for non-linear exponential fitting
@@ -41,31 +57,12 @@
 ## roots of a polynomial. I used 'roots.m', if there is
 ## something better please use that code.
 ##
-## Copyright (C) 2000 Gert Van den Eynde
-## SCK-CEN (Nuclear Energy Research Centre)
-## Boeretang 200
-## 2400 Mol
-## Belgium
-## na.gvandeneynde@na-net.ornl.gov
-##
-## This code is under the GNU Public License (GPL) version 2 or later.
-## I hope that it is useful, but it is WITHOUT ANY WARRANTY, without
-## even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-## PARTICULAR PURPOSE.
-## __________________________________________________________________
-## Modified for full compatibility with complex fit-functions by
-## Rolf Fabian <fabian@tu-cottbus.de>                2002-Sep-23
-## Brandenburg University of Technology Cottbus
-## Dep. of Air Chemistry and Pollution Control
-##
 ## Demo for a complex fit-function:
 ## deg= 2; N= 20; x1= -(1+i), x= linspace(x1,1+i/2,N).';
 ## h = x(2) - x(1)
 ## y= (2+i)*exp( (-1-2i)*x ) + (-1+3i)*exp( (2+3i)*x );
 ## A= 5e-2; y+= A*(randn(N,1)+randn(N,1)*i); % add complex noise
 ## [alpha,c,rms]= expfit( deg, x1, h, y )
-## __________________________________________________________________
-
 
 function [a,c,rms] = expfit(deg,x1,h,y)
 

@@ -1,3 +1,5 @@
+## Author: Paul Kienzle <pkienzle@gmail.com>
+## This program is granted to the public domain.
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{p}, @var{s}] =} wpolyfit (@var{x}, @var{y}, @var{dy}, @var{n})
@@ -90,11 +92,7 @@
 ## New Jersey: John Wiley and Sons, Inc.
 ##
 ## @end deftypefn
-##
 ## @seealso{polyfit,polyconf}
-
-## This program is in the public domain.
-## Author: Paul Kienzle <pkienzle@users.sf.net>
 
 function [p_out, s, mu] = wpolyfit (varargin)
 

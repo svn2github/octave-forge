@@ -1,44 +1,57 @@
-function [x, fmax, nf] = adsmax(f, x, stopit, savit, P, varargin)
-%ADSMAX  Alternating directions method for direct search optimization.
-%        [x, fmax, nf] = ADSMAX(FUN, x0, STOPIT, SAVIT, P) attempts to
-%        maximize the function FUN, using the starting vector x0.
-%        The alternating directions direct search method is used.
-%        Output arguments:
-%               x    = vector yielding largest function value found,
-%               fmax = function value at x,
-%               nf   = number of function evaluations.
-%        The iteration is terminated when either
-%               - the relative increase in function value between successive
-%                 iterations is <= STOPIT(1) (default 1e-3),
-%               - STOPIT(2) function evaluations have been performed
-%                 (default inf, i.e., no limit), or
-%               - a function value equals or exceeds STOPIT(3)
-%                 (default inf, i.e., no test on function values).
-%        Progress of the iteration is not shown if STOPIT(5) = 0 (default 1).
-%        If a non-empty fourth parameter string SAVIT is present, then
-%        `SAVE SAVIT x fmax nf' is executed after each inner iteration.
-%        By default, the search directions are the co-ordinate directions.
-%        The columns of a fifth parameter matrix P specify alternative search
-%        directions (P = EYE is the default).
-%        NB: x0 can be a matrix.  In the output argument, in SAVIT saves,
-%            and in function calls, x has the same shape as x0.
-%        ADSMAX(fun, x0, STOPIT, SAVIT, P, P1, P2,...) allows additional
-%        arguments to be passed to fun, via feval(fun,x,P1,P2,...).
+%% Copyright (C) 2002 N.J.Higham
+%% Copyright (C) 2003 Andy Adler <adler@ncf.ca>
+%%
+%% This program is free software; you can redistribute it and/or modify it under
+%% the terms of the GNU General Public License as published by the Free Software
+%% Foundation; either version 3 of the License, or (at your option) any later
+%% version.
+%%
+%% This program is distributed in the hope that it will be useful, but WITHOUT
+%% ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+%% FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+%% details.
+%%
+%% You should have received a copy of the GNU General Public License along with
+%% this program; if not, see <http://www.gnu.org/licenses/>.
+
+%%ADSMAX  Alternating directions method for direct search optimization.
+%%        [x, fmax, nf] = ADSMAX(FUN, x0, STOPIT, SAVIT, P) attempts to
+%%        maximize the function FUN, using the starting vector x0.
+%%        The alternating directions direct search method is used.
+%%        Output arguments:
+%%               x    = vector yielding largest function value found,
+%%               fmax = function value at x,
+%%               nf   = number of function evaluations.
+%%        The iteration is terminated when either
+%%               - the relative increase in function value between successive
+%%                 iterations is <= STOPIT(1) (default 1e-3),
+%%               - STOPIT(2) function evaluations have been performed
+%%                 (default inf, i.e., no limit), or
+%%               - a function value equals or exceeds STOPIT(3)
+%%                 (default inf, i.e., no test on function values).
+%%        Progress of the iteration is not shown if STOPIT(5) = 0 (default 1).
+%%        If a non-empty fourth parameter string SAVIT is present, then
+%%        `SAVE SAVIT x fmax nf' is executed after each inner iteration.
+%%        By default, the search directions are the co-ordinate directions.
+%%        The columns of a fifth parameter matrix P specify alternative search
+%%        directions (P = EYE is the default).
+%%        NB: x0 can be a matrix.  In the output argument, in SAVIT saves,
+%%            and in function calls, x has the same shape as x0.
+%%        ADSMAX(fun, x0, STOPIT, SAVIT, P, P1, P2,...) allows additional
+%%        arguments to be passed to fun, via feval(fun,x,P1,P2,...).
+%%     Reference:
+%%     N. J. Higham, Optimization by direct search in matrix computations,
+%%        SIAM J. Matrix Anal. Appl, 14(2): 317-333, 1993.
+%%     N. J. Higham, Accuracy and Stability of Numerical Algorithms,
+%%        Second edition, Society for Industrial and Applied Mathematics,
+%%        Philadelphia, PA, 2002; sec. 20.5.
 
 % From Matrix Toolbox 
 % Copyright (C) 2002 N.J.Higham
 % www.maths.man.ac.uk/~higham/mctoolbox
-% distributed under the terms of the GNU General Public License
-%
 % Modifications for octave by A.Adler 2003
-% $Id$
 
-%     Reference:
-%     N. J. Higham, Optimization by direct search in matrix computations,
-%        SIAM J. Matrix Anal. Appl, 14(2): 317-333, 1993.
-%     N. J. Higham, Accuracy and Stability of Numerical Algorithms,
-%        Second edition, Society for Industrial and Applied Mathematics,
-%        Philadelphia, PA, 2002; sec. 20.5.
+function [x, fmax, nf] = adsmax(f, x, stopit, savit, P, varargin)
 
 x0 = x(:);  % Work with column vector internally.
 n = length(x0);

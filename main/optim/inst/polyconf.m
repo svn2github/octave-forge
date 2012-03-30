@@ -1,3 +1,6 @@
+## Author: Paul Kienzle <pkienzle@gmail.com>
+## This program is granted to the public domain.
+
 ## [y,dy] = polyconf(p,x,s)
 ##
 ##   Produce prediction intervals for the fitted y. The vector p 
@@ -31,8 +34,6 @@
 ##  plot(xf,yf,'g-;fit;',xf,yf+dyf,'g.;;',xf,yf-dyf,'g.;;',x,y,'xr;data;');
 ##  plot(x,y-polyval(p,x),';residuals;',xf,dyf,'g-;;',xf,-dyf,'g-;;');
 
-## Author: Paul Kienzle
-## This program is granted to the public domain.
 function [y,dy] = polyconf(p,x,varargin)
   alpha = s = [];
   typestr = 'pi';
@@ -45,7 +46,7 @@ function [y,dy] = polyconf(p,x,varargin)
     end
   end
   if (nargout>1 && (isempty(s)||nargin<3)) || nargin < 2
-    usage("[y,dy] = polyconf(p,x,s,alpha,['ci'|'pi'])");
+    print_usage;
   end
 
   if isempty(s)

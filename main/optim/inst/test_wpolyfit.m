@@ -1,10 +1,10 @@
+## Author: Paul Kienzle <pkienzle@gmail.com>
+## This program is granted to the public domain.
+
 ## Tests for wpolyfit.
 ##
 ## Test cases are taken from the NIST Statistical Reference Datasets
 ##    http://www.itl.nist.gov/div898/strd/
-
-## Author: Paul Kienzle
-## This program is public domain
 
 1;
 

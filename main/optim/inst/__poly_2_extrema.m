@@ -1,3 +1,19 @@
+## Copyright (C) 2002 Etienne Grossmann <etienne@isr.ist.utl.pt>
+## Copyright (C) 2009 Levente Torok <TorokLev@gmail.com>
+##
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free Software
+## Foundation; either version 3 of the License, or (at your option) any later
+## version.
+##
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+## details.
+##
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, see <http://www.gnu.org/licenses/>.
+
 ##  ex = poly_2_ex (l, f)       - Extremum of a 1-var deg-2 polynomial
 ##
 ## l  : 3 : variable values
@@ -7,9 +23,8 @@
 ## 
 ## Assuming that f(i) = a*l(i)^2 + b* l(i) + c = P(l(i)) for some a, b, c,
 ## ex is the extremum of the polynome P.
-##
-function ex = __poly_2_extrema (l, f)
 
+function ex = __poly_2_extrema (l, f)
 
 ### This somewhat helps if solution is very close to one of the points.
 [f,i] = sort (f);

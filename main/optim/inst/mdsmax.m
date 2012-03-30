@@ -1,52 +1,66 @@
-function [x, fmax, nf] = mdsmax(fun, x, stopit, savit, varargin)
-%MDSMAX  Multidirectional search method for direct search optimization.
-%        [x, fmax, nf] = MDSMAX(FUN, x0, STOPIT, SAVIT) attempts to
-%        maximize the function FUN, using the starting vector x0.
-%        The method of multidirectional search is used.
-%        Output arguments:
-%               x    = vector yielding largest function value found,
-%               fmax = function value at x,
-%               nf   = number of function evaluations.
-%        The iteration is terminated when either
-%               - the relative size of the simplex is <= STOPIT(1)
-%                 (default 1e-3),
-%               - STOPIT(2) function evaluations have been performed
-%                 (default inf, i.e., no limit), or
-%               - a function value equals or exceeds STOPIT(3)
-%                 (default inf, i.e., no test on function values).
-%        The form of the initial simplex is determined by STOPIT(4):
-%          STOPIT(4) = 0: regular simplex (sides of equal length, the default),
-%          STOPIT(4) = 1: right-angled simplex.
-%        Progress of the iteration is not shown if STOPIT(5) = 0 (default 1).
-%        If a non-empty fourth parameter string SAVIT is present, then
-%        `SAVE SAVIT x fmax nf' is executed after each inner iteration.
-%        NB: x0 can be a matrix.  In the output argument, in SAVIT saves,
-%            and in function calls, x has the same shape as x0.
-%        MDSMAX(fun, x0, STOPIT, SAVIT, P1, P2,...) allows additional
-%        arguments to be passed to fun, via feval(fun,x,P1,P2,...).
+%% Copyright (C) 2002 N.J.Higham
+%% Copyright (C) 2003 Andy Adler <adler@ncf.ca>
+%%
+%% This program is free software; you can redistribute it and/or modify it under
+%% the terms of the GNU General Public License as published by the Free Software
+%% Foundation; either version 3 of the License, or (at your option) any later
+%% version.
+%%
+%% This program is distributed in the hope that it will be useful, but WITHOUT
+%% ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+%% FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+%% details.
+%%
+%% You should have received a copy of the GNU General Public License along with
+%% this program; if not, see <http://www.gnu.org/licenses/>.
 
-% This implementation uses 2n^2 elements of storage (two simplices), where x0
-% is an n-vector.  It is based on the algorithm statement in [2, sec.3],
-% modified so as to halve the storage (with a slight loss in readability).
+%%MDSMAX  Multidirectional search method for direct search optimization.
+%%        [x, fmax, nf] = MDSMAX(FUN, x0, STOPIT, SAVIT) attempts to
+%%        maximize the function FUN, using the starting vector x0.
+%%        The method of multidirectional search is used.
+%%        Output arguments:
+%%               x    = vector yielding largest function value found,
+%%               fmax = function value at x,
+%%               nf   = number of function evaluations.
+%%        The iteration is terminated when either
+%%               - the relative size of the simplex is <= STOPIT(1)
+%%                 (default 1e-3),
+%%               - STOPIT(2) function evaluations have been performed
+%%                 (default inf, i.e., no limit), or
+%%               - a function value equals or exceeds STOPIT(3)
+%%                 (default inf, i.e., no test on function values).
+%%        The form of the initial simplex is determined by STOPIT(4):
+%%          STOPIT(4) = 0: regular simplex (sides of equal length, the default),
+%%          STOPIT(4) = 1: right-angled simplex.
+%%        Progress of the iteration is not shown if STOPIT(5) = 0 (default 1).
+%%        If a non-empty fourth parameter string SAVIT is present, then
+%%        `SAVE SAVIT x fmax nf' is executed after each inner iteration.
+%%        NB: x0 can be a matrix.  In the output argument, in SAVIT saves,
+%%            and in function calls, x has the same shape as x0.
+%%        MDSMAX(fun, x0, STOPIT, SAVIT, P1, P2,...) allows additional
+%%        arguments to be passed to fun, via feval(fun,x,P1,P2,...).
+%%
+%% This implementation uses 2n^2 elements of storage (two simplices), where x0
+%% is an n-vector.  It is based on the algorithm statement in [2, sec.3],
+%% modified so as to halve the storage (with a slight loss in readability).
+%%
+%% References:
+%% [1] V. J. Torczon, Multi-directional search: A direct search algorithm for
+%%     parallel machines, Ph.D. Thesis, Rice University, Houston, Texas, 1989.
+% [2] V. J. Torczon, On the convergence of the multidirectional search
+%%     algorithm, SIAM J. Optimization, 1 (1991), pp. 123-145.
+%% [3] N. J. Higham, Optimization by direct search in matrix computations,
+%%     SIAM J. Matrix Anal. Appl, 14(2): 317-333, 1993.
+%% [4] N. J. Higham, Accuracy and Stability of Numerical Algorithms,
+%%        Second edition, Society for Industrial and Applied Mathematics,
+%%        Philadelphia, PA, 2002; sec. 20.5.
 
 % From Matrix Toolbox 
 % Copyright (C) 2002 N.J.Higham
 % www.maths.man.ac.uk/~higham/mctoolbox
-% distributed under the terms of the GNU General Public License
-%
 % Modifications for octave by A.Adler 2003
-% $Id$
 
-% References:
-% [1] V. J. Torczon, Multi-directional search: A direct search algorithm for
-%     parallel machines, Ph.D. Thesis, Rice University, Houston, Texas, 1989.
-% [2] V. J. Torczon, On the convergence of the multidirectional search
-%     algorithm, SIAM J. Optimization, 1 (1991), pp. 123-145.
-% [3] N. J. Higham, Optimization by direct search in matrix computations,
-%     SIAM J. Matrix Anal. Appl, 14(2): 317-333, 1993.
-% [4] N. J. Higham, Accuracy and Stability of Numerical Algorithms,
-%        Second edition, Society for Industrial and Applied Mathematics,
-%        Philadelphia, PA, 2002; sec. 20.5.
+function [x, fmax, nf] = mdsmax(fun, x, stopit, savit, varargin)
 
 x0 = x(:);  % Work with column vector internally.
 n = length(x0);

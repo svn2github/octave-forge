@@ -1,17 +1,17 @@
 ## Copyright (C) 2009 Luca Favatella <slackydeb@gmail.com>
 ##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
-## (at your option) any later version.
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free Software
+## Foundation; either version 3 of the License, or (at your option) any later
+## version.
 ##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+## details.
 ##
-## You should have received a copy of the GNU General Public License
-## along with this program; If not, see <http://www.gnu.org/licenses/>.
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn{Function File} {@var{x} =} linprog (@var{f}, @var{A}, @var{b})
@@ -43,9 +43,6 @@
 ##
 ## @seealso{glpk}
 ## @end deftypefn
-
-## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 0.5
 
 function [x fval] = linprog (f, A, b,
                              Aeq = [], beq = [],
@@ -117,7 +114,6 @@ function [x fval] = linprog (f, A, b,
 
 endfunction
 
-
 %!test
 %! f = [1; -1];
 %! A = [];
@@ -128,7 +124,6 @@ endfunction
 %! ub = [-Inf; 0];
 %! x_exp = [2; 0];
 %! assert (linprog (f, A, b, Aeq, beq, lb, ub), x_exp);
-
 
 %!shared f, A, b, lb, ub, x_exp, fval_exp
 %! f  = [21 25 31 34  23 19 32  36 27 25 19]';

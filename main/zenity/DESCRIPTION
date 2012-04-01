@@ -1,8 +1,8 @@
 Name: Zenity
 Version: 0.5.7
 Date: 2009-05-06
-Author: Søren Hauberg <hauberg@gmail.com>
-Maintainer: Søren Hauberg <hauberg@gmail.com>
+Author: Søren Hauberg <hauberg@gmail.com>, Carnë Draug <carandraug+dev@gmail.com>
+Maintainer: Carnë Draug <carandraug+dev@gmail.com>
 Title: Zenity
 Description: A set of functions for creating simple graphical
  user interfaces. It is currently possible to create

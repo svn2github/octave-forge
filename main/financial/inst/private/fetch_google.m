@@ -60,6 +60,7 @@ function [data fields] = fetch_google (conn=[], symbol="",
               "\n%s\nURL was:\n%s"], msg, geturl)
     endif
     d = csv2cell (f);
+    d{1,1} = d{1,1}(4:end); # Remove byte order mark (BOM)
     unlink(f);
     ## Pull off the header
     fields = d(1,:);
@@ -67,13 +68,10 @@ function [data fields] = fetch_google (conn=[], symbol="",
     ## Put the dates into datenum format
     data = [datenum(datevec(d(:,1), "dd-mmm-yy")), \
             cell2mat(d(:,2:end))];
-    if (period == "d")
-      ## Note that google appears to have an off-by-one error in
-      ## returning historical data, so make sure that we only return the
-      ## requested data and not what Google sent.  This is only done if
-      ## the period is daily because
-      data((data(:,1) < fromdate) | (data(:,1) > todate), :) = [];
-    endif
+    ## Note that google appears to have an off-by-one error in
+    ## returning historical data, so make sure that we only return the
+    ## requested data and not what Google sent.
+    data((data(:,1) < fromdate) | (data(:,1) > todate), :) = [];
   else
     error ("Non-google connection passed to google fetch")
   endif
@@ -87,8 +85,8 @@ endfunction
 %!          732499,34.64,34.97,34.03,34.12,13451500;
 %!          732498,34.25,35.08,34.20,34.60,15845100;
 %!          732494,34.76,34.85,34.22,34.44,9740300];
-%! wgood = [732501,34.25,35.08,33.72,34.62,61542100;
-%!          732494,35.88,36.24,34.22,34.44,68433900];
+%! wgood = [732501,34.25,35.08,33.72,34.62,60859400;
+%!          732494,35.88,36.24,34.22,34.44,67132100];
 %!test
 %! [d f] = fetch_google (google(), "yhoo", 732494, 732501, "d");
 %! assert(d, dgood, eps);

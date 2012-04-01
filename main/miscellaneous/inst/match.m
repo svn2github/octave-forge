@@ -1,4 +1,4 @@
-## Copyright (C) 2007 Muthiah Annamalai <muthiah.annamalai@mavs.uta.edu>
+## Copyright (C) 2007 Muthiah Annamalai <muthiah.annamalai@uta.edu>
 ## Copyright (C) 2012 Carnë Draug <carandraug+dev@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or modify it under

@@ -1,5 +1,5 @@
 ## Copyright (C) 2003 Tomer Altman <taltman@lbl.gov>
-## Copyright (C) 2007 Muthiah Annamalai <muthiah.annamalai@mavs.uta.edu>
+## Copyright (C) 2007 Muthiah Annamalai <muthiah.annamalai@uta.edu>
 ## Copyright (C) 2012 Carnë Draug <carandraug+dev@gmail.com>
 ## Copyright (C) 2012 Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 ##

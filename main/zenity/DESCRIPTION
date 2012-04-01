@@ -1,7 +1,7 @@
 Name: Zenity
 Version: 0.5.7
 Date: 2009-05-06
-Author: Søren Hauberg <hauberg@gmail.com>, Carnë Draug <carandraug+dev@gmail.com>
+Author: Søren Hauberg <soren@hauberg.org>, Carnë Draug <carandraug+dev@gmail.com>
 Maintainer: Carnë Draug <carandraug+dev@gmail.com>
 Title: Zenity
 Description: A set of functions for creating simple graphical
@@ -9,6 +9,6 @@ Description: A set of functions for creating simple graphical
  calendar windows, text entries, file selection dialogs,
  lists, message windows, icons in the notification area,
  and windows for large amount of text.
-License: GPL version 2 or later
+License: GPLv3+
 SystemRequirements: zenity (>= 2.16)
 Url: http://octave.sf.net

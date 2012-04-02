@@ -26,21 +26,32 @@
 
 function plot (dat)
 
-  [n, p, m, e] = size (dat)
+  [n, p, m, e] = size (dat);
+  expname = __labels__ (dat.expname, "exp");
 
   if (m == 0)  # time series
     for k = 1 : e
+      if (k > 1)
+        pause
+      endif
       plot (dat.y{k})
-      hold on
+      title (expname{k})
+      % hold on
     endfor
   else         # inputs present
     for k = 1 : e
+      if (k > 1)
+        pause
+      endif
       subplot (2, 1, 1)
       plot (dat.y{k})
-      hold on
+      title (expname{k})
+      legend (__labels__ (dat.outname, "y"){:})
+      % hold on
       subplot (2, 1, 2)
       stairs (dat.u{k})
-      hold on
+      legend (__labels__ (dat.inname, "u"){:})
+      % hold on
     endfor
   endif
   

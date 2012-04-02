@@ -65,7 +65,7 @@ dat = iddata (Y, U, tsam, 'outname', outname, 'inname', inname);
 % ldwork = [401, 802, 1203, 1604]
 % warning: implicit conversion from real matrix to real scalar
 
-ldwork = [802, 1203, 1604]
+ldwork = [802, 1203, 1604, 3000, 10000]
 
 r = arrayfun (@(x) identtest (dat, 10, 8, x), ldwork, 'uniformoutput', false);
 

@@ -1,8 +1,8 @@
 DOC=queueing
-CHAPTERS=summary.texi installation.texi markovchains.texi singlestation.texi queueingnetworks.texi conf.texi ack.texi contributing.texi gpl.texi gettingstarted.texi references.texi
-DISTFILES=README INSTALL $(DOC).pdf $(DOC).html $(DOC).texi
+CHAPTERS=$(patsubst %.txi,%.texi,$(wildcard *.txi))
+DISTFILES=README INSTALL $(DOC).pdf $(DOC).html
 
-.PHONY: clean
+.PHONY: clean dist
 
 ALL: pdf html INSTALL
 
@@ -32,7 +32,7 @@ $(DOC).info: $(DOC).texi $(CHAPTERS)
 DOCSTRINGS: $(wildcard ../inst/*.m)
 	(cd ../scripts; ./mkdoc ../inst) > DOCSTRINGS || \rm -f DOCSTRINGS
 
-dist: $(DOC).pdf $(DOC).html
+dist:
 	ln $(DISTFILES) ../`cat ../fname`/doc/
 
 clean:

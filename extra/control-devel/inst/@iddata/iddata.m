@@ -16,40 +16,42 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {@var{dat} =} iddata (@var{y}, @var{u})
-## @deftypefnx{Function File} {@var{dat} =} iddata (@var{y}, @var{u}, @var{tsam})
-## Fit frequency response data with a state-space system.
-## If requested, the returned system is stable and minimum-phase.
+## @deftypefn{Function File} {@var{dat} =} iddata (@var{y})
+## @deftypefnx{Function File} {@var{dat} =} iddata (@var{y}, @var{u})
+## @deftypefnx{Function File} {@var{dat} =} iddata (@var{y}, @var{u}, @var{tsam}, @dots{})
+## @deftypefnx{Function File} {@var{dat} =} iddata (@var{y}, @var{u}, @var{[]}, @dots{})
+## Create identification dataset of output and input signals.
 ##
 ## @strong{Inputs}
 ## @table @var
-## @item dat
-## LTI model containing frequency response data of a SISO system.
-## @item n
-## The desired order of the system to be fitted.  @code{n <= length(dat.w)}.
-## @item flag
-## The flag controls whether the returned system is stable and minimum-phase.
-## @table @var
-## @item 0
-## The system zeros and poles are not constrained.  Default value.
-## @item 1
-## The system zeros and poles will have negative real parts in the
-## continuous-time case, or moduli less than 1 in the discrete-time case.
-## @end table
+## @item y
+## Real matrix containing the output signal in time-domain.
+## For a system with @var{p} outputs and @var{n} samples,
+## @var{y} is a n-by-p matrix.
+## For data from multiple experiments, @var{y} becomes a
+## e-by-1 or 1-by-e cell vector of n(i)-by-p matrices,
+## where @var{e} denotes the number of experiments
+## and n(i) the individual number of samples for each experiment.
+## @item u
+## Real matrix containing the input signal in time-domain.
+## For a system with @var{m} inputs and @var{n} samples,
+## @var{u} is a n-by-m matrix.
+## For data from multiple experiments, @var{u} becomes a
+## e-by-1 or 1-by-e cell vector of n(i)-by-m matrices,
+## where @var{e} denotes the number of experiments
+## and n(i) the individual number of samples for each experiment.
+## @item tsam
+## Sampling time.
+## @item @dots{}
+## Optional pairs of properties and values.
 ## @end table
 ##
 ## @strong{Outputs}
 ## @table @var
-## @item sys
-## State-space model of order @var{n}, fitted to frequency response data @var{dat}.
-## @item n
-## The order of the obtained system.  The value of @var{n}
-## could only be modified if inputs @code{n > 0} and @code{flag = 1}.
+## @item dat
+## iddata identification dataset.
 ## @end table
 ##
-## @strong{Algorithm}@*
-## Uses SLICOT SB10YD by courtesy of
-## @uref{http://www.slicot.org, NICONET e.V.}
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>

@@ -58,7 +58,7 @@
 ## @strong{Outputs}
 ## @table @var
 ## @item dat
-## iddata set.
+## Concatenated iddata set.
 ## @end table
 ##
 ## @seealso{horzcat, merge, vertcat}

@@ -85,19 +85,21 @@ function retdat = set (dat, varargin)
         case {"inunit", "inputunit"}
           dat.inunit = __adjust_labels__ (val, m);
         case {"timeunit"}
-          dat.timeunit
+          if (ischar (val))
+            dat.timeunit = val;
+          else
+            error ("iddata: set: property 'timeunit' requires a string");
+          endif
         case {"expname", "experimentname"}
           dat.expname = __adjust_labels__ (val, e);
         case {"tsam", "ts"}
           dat.tsam = __adjust_iddata_tsam__ (val, e);
-
         case "name"
           if (ischar (val))
             sys.name = val;
           else
-            error ("lti: set: property 'name' requires a string");
+            error ("iddata: set: property 'name' requires a string");
           endif
-
         case "notes"
           if (iscellstr (val))
             sys.notes = val;
@@ -106,10 +108,8 @@ function retdat = set (dat, varargin)
           else
             error ("lti: set: property 'notes' requires string or cell of strings");
           endif
-
         case "userdata"
           sys.userdata = val;
-
         otherwise
           error ("iddata: set: invalid property name '%s'", varargin{k});
       endswitch

@@ -3,6 +3,7 @@ Examples
 Experimental Data Handling
   iddata
   @iddata/cat
+  @iddata/detrend
   @iddata/diff
   @iddata/get
   @iddata/horzcat

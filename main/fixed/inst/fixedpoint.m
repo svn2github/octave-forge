@@ -180,7 +180,7 @@ function retval = fixedpoint(typ, tests)
 	error ("FAILED");
       endif
       empty = fixed(is,ds,[]);
-      if (isscalar(empty) || ismatrix(empty) || !isfixed(empty) ||
+      if (isscalar(empty) || !isfixed(empty) ||
 	  isvector(empty) || !isempty(empty) || isempty(zero))
 	error ("FAILED");
       endif
@@ -278,7 +278,7 @@ function retval = fixedpoint(typ, tests)
 	error ("FAILED");
       endif
       empty = fixed(is*(1+1i),ds*(1+1i),[]);
-      if (isscalar(empty) || ismatrix(empty) || !isfixed(empty) ||
+      if (isscalar(empty) || !isfixed(empty) ||
 	  isvector(empty) || !isempty(empty) || isempty(onei) ||
 	  iscomplex(empty))
 	## Not complex, since its type is narrowed!!

@@ -209,10 +209,10 @@ function retval = fixedpoint(typ, tests)
       if (size(zero) != [n,n])
 	error ("FAILED");
       endif
-      zero.int = zero.int+1;
-      zero.dec = zero.dec+1;
-      if (any(any(zero.x)) || any(any(zero.int != is+1)) || 
-	  any(any(zero.dec != ds+1)))
+      zero_int_plus_one = zero.int+1;
+      zero_dec_plus_one = zero.dec+1;
+      if (any(any(zero.x)) || any(any(zero_int_plus_one != is+1)) || 
+	  any(any(zero_dec_plus_one != ds+1)))
 	error ("FAILED");
       endif
       for i=1:100
@@ -312,10 +312,10 @@ function retval = fixedpoint(typ, tests)
       if (size(onei) != [n,n])
 	error ("FAILED");
       endif
-      onei.int = onei.int+1;
-      onei.dec = onei.dec+1;
-      if (any(any(onei.x != 1+1i)) || any(any(onei.int != is*(1+1i)+1)) || 
-	  any(any(onei.dec != ds*(1+1i)+1)))
+      onei_int_plus_one = onei.int+1;
+      onei_dec_plus_one = onei.dec+1;
+      if (any(any(onei.x != 1+1i)) || any(any(onei_int_plus_one != is*(1+1i)+1)) || 
+	  any(any(onei_dec_plus_one != ds*(1+1i)+1)))
 	error ("FAILED");
       endif
       for i=1:100
@@ -392,8 +392,7 @@ function retval = fixedpoint(typ, tests)
       if (any(any(abs(a(1,:).x - x(1,:)) > feps)) || !isfixed(a))
 	error ("FAILED");
       endif
-      a(1,:).dec = a(1,:).dec + 1;
-      if (a(1,:).dec != ds+1)
+      if (a(1,:).dec + 1 != ds+1)
         error("FAILED");
       endif
       if (a(2,:).dec != ds)
@@ -411,8 +410,7 @@ function retval = fixedpoint(typ, tests)
 	  !isfixed(a)) 
 	error ("FAILED");
       endif
-      a(1,:).dec = a(1,:).dec + 1;
-      if (a(1,:).dec != ds*(1+1i)+1)
+      if (a(1,:).dec + 1 != ds*(1+1i)+1)
         error("FAILED");
       endif
       if (a(2,:).dec != ds*(1+1i))

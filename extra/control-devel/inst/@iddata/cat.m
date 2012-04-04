@@ -96,6 +96,8 @@ function dat = cat (dim, varargin)
   outunit = tmp(1).outunit;
   inname = tmp(1).inname;
   inunit = tmp(1).inunit;
+  
+  check_domain (tmp, e);
 
   switch (dim)
     case 1                                          # vertcat - catenate samples
@@ -140,6 +142,8 @@ function dat = cat (dim, varargin)
   dat.outunit = outunit;
   dat.inname = inname;
   dat.inunit = inunit;
+  
+  % TODO: handle tsam, w
 
 endfunction
 
@@ -153,6 +157,10 @@ function check_experiments (tmp, e)
   
   if (! compare_strings (tmp.expname))
     warning ("iddata: cat: experiment names don't match")
+  endif
+
+  if (numel (e) > 1 && ! isequal (tmp.tsam))
+    warning ("iddata: cat: sampling times don't match");
   endif
 
 endfunction
@@ -201,7 +209,14 @@ function check_samples (n)
            mat2str (vertcat (n{:}), 10));
   endif
 
-  ## TODO: check sampling times
+endfunction
+
+
+function check_domain (tmp, e)
+
+  if (numel (e) > 1 && ! isequal (tmp.timedomain))  # isequal doesn't work with less than 2 arguments
+    error ("iddata: cat: can't mix time- and frequency-domain datasets");
+  endif
 
 endfunction
 

@@ -62,6 +62,10 @@ function varargout = get (dat, varargin)
           val = dat.notes;
         case "userdata"
           val = dat.userdata;
+        case {"domain", "timedomain"}
+          val = dat.timedomain;
+        case {"w", "frequency", "samplinginstants"}
+          val = dat.w;
         otherwise
           error ("iddata: get: invalid property name '%s'", varargin{k});
       endswitch

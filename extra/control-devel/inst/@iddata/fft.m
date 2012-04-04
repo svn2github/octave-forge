@@ -46,27 +46,11 @@ function dat = fft (dat, n = [])
     error ("iddata: fft: second argument invalid");
   endif
 
-%  if ((! is_real_scalar (ord) || fix (ord) != ord) && ! ischar (ord))   # chars are handled by built-in detrend
-%    error ("iddata: detrend: second argument must be a positve integer");
-%  endif
-
-%  dat.y = cellfun (@fft, dat.y, "uniformoutput", false);
-%  dat.u = cellfun (@fft, dat.u, "uniformoutput", false);
-
-%  dat.y = cellfun (@(y, n) fft (y, n) / sqrt (n), dat.y, n, "uniformoutput", false);
-%  dat.u = cellfun (@(u, n) fft (u, n) / sqrt (n), dat.u, n, "uniformoutput", false);
-
   dat.y = cellfun (@(y, n) fft (y, n)(1:fix(n/2)+1, :) / sqrt (n), dat.y, n, "uniformoutput", false);
   dat.u = cellfun (@(u, n) fft (u, n)(1:fix(n/2)+1, :) / sqrt (n), dat.u, n, "uniformoutput", false);
   
-  % w = (0:fix(n/2)) * (2*pi/tsam/n)
-  
   dat.w = cellfun (@(n, tsam) (0:fix(n/2)).' * (2*pi/tsam/n), n, dat.tsam, "uniformoutput", false);
-  
   dat.timedomain = false;
-
-%  dat.y = cellfun (@(y) fft (y, n), dat.y, "uniformoutput", false);
-%  dat.u = cellfun (@(u) fft (u, n), dat.u, "uniformoutput", false);
 
 endfunction
 

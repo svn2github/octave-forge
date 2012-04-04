@@ -53,6 +53,8 @@ function dat = fft (dat, n = [])
   dat.y = cellfun (@(y, n) fft (y, n)(1:fix(n/2)+1, :) / sqrt (n), dat.y, n, "uniformoutput", false);
   dat.u = cellfun (@(u, n) fft (u, n)(1:fix(n/2)+1, :) / sqrt (n), dat.u, n, "uniformoutput", false);
   
+  % w = (0:fix(n/2)) * (2*pi/tsam/n)
+  
   dat.timedomain = false;
 
 %  dat.y = cellfun (@(y) fft (y, n), dat.y, "uniformoutput", false);

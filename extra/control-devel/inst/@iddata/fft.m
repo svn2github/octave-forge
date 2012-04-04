@@ -47,8 +47,11 @@ function dat = fft (dat, n = [])
 %  dat.y = cellfun (@fft, dat.y, "uniformoutput", false);
 %  dat.u = cellfun (@fft, dat.u, "uniformoutput", false);
 
-  dat.y = cellfun (@(y, n) fft (y, n) / sqrt (n), dat.y, n, "uniformoutput", false);
-  dat.u = cellfun (@(u, n) fft (u, n) / sqrt (n), dat.u, n, "uniformoutput", false);
+%  dat.y = cellfun (@(y, n) fft (y, n) / sqrt (n), dat.y, n, "uniformoutput", false);
+%  dat.u = cellfun (@(u, n) fft (u, n) / sqrt (n), dat.u, n, "uniformoutput", false);
+
+  dat.y = cellfun (@(y, n) fft (y, n)(1:fix(n/2)+1, :) / sqrt (n), dat.y, n, "uniformoutput", false);
+  dat.u = cellfun (@(u, n) fft (u, n)(1:fix(n/2)+1, :) / sqrt (n), dat.u, n, "uniformoutput", false);
   
   dat.timedomain = false;
 

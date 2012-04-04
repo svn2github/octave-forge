@@ -176,7 +176,7 @@ function net = newff(Pr,ss,transFunc,trainFunc,notUsed,performFunc)
   function checkInputArgs(Pr,ss)
     
     ## check if Pr has correct format
-    if !isreal(Pr) | (size(Pr,2)!=2)
+    if !isreal(Pr) || (size(Pr,2)!=2)
       error("Input ranges must be a two column matrix!")
     endif
     if any(Pr(:,1) > Pr(:,2)) # check if numbers in the second column are larger as in the first one
@@ -192,7 +192,7 @@ function net = newff(Pr,ss,transFunc,trainFunc,notUsed,performFunc)
     endif
     for k=1:length(ss)
       sk = ss(k);
-      if !isreal(sk) | any(sk<1) | any(round(sk)!=sk)
+      if !isreal(sk) || any(sk<1) || any(round(sk)!=sk)
         error("Layer sizes is not a row vector of positive integers.")
       endif
     endfor

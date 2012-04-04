@@ -231,7 +231,7 @@ function [net] = __trainlm(net,Im,Pp,Tt,VV)
     endif
 
     ## goal can be zero or a positive double
-    if ( (goal<0) | !(isa(goal,"double")) )
+    if ( (goal<0) || !(isa(goal,"double")) )
       error("Goal is not zero or a positive real value.")
     endif
 
@@ -241,31 +241,31 @@ function [net] = __trainlm(net,Im,Pp,Tt,VV)
       error("maxFail is not a positive integer.")
     endif
 
-    if (!isa(minGrad,"double")) | (!isreal(minGrad)) | (!isscalar(minGrad)) | \
+    if (!isa(minGrad,"double")) || (!isreal(minGrad)) || (!isscalar(minGrad)) || \
       (minGrad < 0)
       error("minGrad is not zero or a positive real value.")
     end
 
     ## mu must be a positive real value. this parameter is responsible
     ## for moving from stepest descent to quasi newton
-    if ((!isa(mu,"double")) | (!isreal(mu)) | (any(size(mu)) != 1) | (mu <= 0))
+    if ((!isa(mu,"double")) || (!isreal(mu)) || (any(size(mu)) != 1) || (mu <= 0))
       error("mu is not a positive real value.")
     endif
 
     ## muDec defines the decrement factor
-    if ((!isa(muDec,"double")) | (!isreal(muDec)) | (any(size(muDec)) != 1) | \
-  		 (muDec < 0) | (muDec > 1))
+    if ((!isa(muDec,"double")) || (!isreal(muDec)) || (any(size(muDec)) != 1) || \
+  		 (muDec < 0) || (muDec > 1))
       error("muDec is not a real value between 0 and 1.")
     endif
 
     ## muInc defines the increment factor
-    if (~isa(muInc,"double")) | (!isreal(muInc)) | (any(size(muInc)) != 1) | \
+    if (~isa(muInc,"double")) || (!isreal(muInc)) || (any(size(muInc)) != 1) || \
       (muInc < 1)
       error("muInc is not a real value greater than 1.")
     endif
 
     ## muMax is the upper boundary for the mu value
-    if (!isa(muMax,"double")) | (!isreal(muMax)) | (any(size(muMax)) != 1) | \
+    if (!isa(muMax,"double")) || (!isreal(muMax)) || (any(size(muMax)) != 1) || \
       (muMax <= 0)
       error("muMax is not a positive real value.")
     endif
@@ -283,7 +283,7 @@ function [net] = __trainlm(net,Im,Pp,Tt,VV)
     endif
 
     ## check at last the time argument, must be zero or a positive real value
-    if (!isa(time,"double")) | (!isreal(time)) | (any(size(time)) != 1) | \
+    if (!isa(time,"double")) || (!isreal(time)) || (any(size(time)) != 1) || \
       (time < 0)
       error("Time is not zero or a positive real value.")
     end
@@ -301,7 +301,7 @@ function [net] = __trainlm(net,Im,Pp,Tt,VV)
     error(nargchk(12,12,nargin));
 
     ## show progress
-    if isfinite(show) & (!rem(iEpochs,show) | length(stop))
+    if isfinite(show) && (!rem(iEpochs,show) || length(stop))
       fprintf(shortStr);   # outputs the training algorithm
       if isfinite(epochs)
         fprintf(", Epoch %g/%g",iEpochs, epochs);

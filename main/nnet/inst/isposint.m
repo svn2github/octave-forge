@@ -42,7 +42,7 @@ function f = isposint(n)
   endif
 
   f = 1;
-  if ( (!isreal(n)) | (n<=0) | (round(n) != n) )
+  if ( (!isreal(n)) || (n<=0) || (round(n) != n) )
     f = 0;
   endif
 

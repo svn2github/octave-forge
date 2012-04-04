@@ -143,7 +143,7 @@ function net = __newnetwork(numInputs,numLayers,numOutputs,networkType)
     error(nargchk(2,2,nargin))
 
     ## check type of arguments
-    if ( !isscalar(numLayers) | !isposint(numLayers) )
+    if ( !isscalar(numLayers) || !isposint(numLayers) )
       error("second argument must be a positive integer scalar value!")
     endif
     if ( !__checknetstruct(net) )
@@ -169,7 +169,7 @@ function net = __newnetwork(numInputs,numLayers,numOutputs,networkType)
     error(nargchk(2,2,nargin))
 
     ## check type of arguments
-    if ( !isscalar(numLayers) | !isposint(numLayers) )
+    if ( !isscalar(numLayers) || !isposint(numLayers) )
       error("second argument must be a positive integer scalar value!")
     endif
     if ( !isstruct(net) )

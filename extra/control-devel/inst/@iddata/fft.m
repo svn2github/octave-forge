@@ -28,18 +28,27 @@
 ## Created: April 2012
 ## Version: 0.1
 
-function dat = fft (dat, n)
+function dat = fft (dat, n = [])
 
   if (nargin > 2)       # no need to test nargin == 0, this is handled by built-in fft
     print_usage ();
+  endif
+  
+  if (isempty (n))
+    n = num2cell (size (dat, 1));
+  else
+  
   endif
 
 %  if ((! is_real_scalar (ord) || fix (ord) != ord) && ! ischar (ord))   # chars are handled by built-in detrend
 %    error ("iddata: detrend: second argument must be a positve integer");
 %  endif
 
-  dat.y = cellfun (@fft, dat.y, "uniformoutput", false);
-  dat.u = cellfun (@fft, dat.u, "uniformoutput", false);
+%  dat.y = cellfun (@fft, dat.y, "uniformoutput", false);
+%  dat.u = cellfun (@fft, dat.u, "uniformoutput", false);
+
+  dat.y = cellfun (@(y, n) fft (y, n) / sqrt (n), dat.y, n, "uniformoutput", false);
+  dat.u = cellfun (@(u, n) fft (u, n) / sqrt (n), dat.u, n, "uniformoutput", false);
   
   dat.timedomain = false;
 

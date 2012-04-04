@@ -33,11 +33,17 @@ function dat = fft (dat, n = [])
   if (nargin > 2)       # no need to test nargin == 0, this is handled by built-in fft
     print_usage ();
   endif
-  
-  if (isempty (n))
-    n = num2cell (size (dat, 1));
+
+  [x, ~, ~, e] = size (dat);
+
+  if (isempty (n))                                                  # default case, n not specified
+    n = num2cell (x(:));
+  elseif (is_real_vector (n) && length (n) == e && fix (n) == n)    # individual n for each experiment 
+    n = num2cell (n(:));
+  elseif (is_real_scalar (n) && fix (n) == n)                       # common n for all experiments
+    n = num2cell (repmat (n, e, 1));
   else
-  
+    error ("iddata: fft: second argument invalid");
   endif
 
 %  if ((! is_real_scalar (ord) || fix (ord) != ord) && ! ischar (ord))   # chars are handled by built-in detrend
@@ -54,6 +60,8 @@ function dat = fft (dat, n = [])
   dat.u = cellfun (@(u, n) fft (u, n)(1:fix(n/2)+1, :) / sqrt (n), dat.u, n, "uniformoutput", false);
   
   % w = (0:fix(n/2)) * (2*pi/tsam/n)
+  
+  dat.w = cellfun (@(n, tsam) (0:fix(n/2)).' * (2*pi/tsam/n), n, dat.tsam, "uniformoutput", false);
   
   dat.timedomain = false;
 

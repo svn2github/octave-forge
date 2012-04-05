@@ -39,7 +39,7 @@ distclean: clean
 	for d in $(SUBDIRS); do \
 		$(MAKE) -C $$d $(MAKECMDGOALS); \
 	done
-	\rm -r -f doc/conf.texi fname DESCRIPTION
+	\rm -r -f doc/conf.texi fname DESCRIPTION $(PROGNAME)-html
 
 dist: ALL
 	\rm -r -f $(PROGNAME) fname

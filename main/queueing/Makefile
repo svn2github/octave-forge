@@ -1,5 +1,5 @@
 VERSIONNUM=1.1.0
-VERSIONDATE="2012-03-26"
+VERSIONDATE="2012-04-05"
 PROGNAME=queueing
 
 DISTNAME=$(PROGNAME)-$(VERSIONNUM)
@@ -52,4 +52,7 @@ dist: ALL
 	ln $(DISTFILES) $(PROGNAME)/
 	tar cfz $(DISTNAME).tar.gz $(PROGNAME)/
 	uuencode $(DISTNAME).tar.gz < $(DISTNAME).tar.gz > $(DISTNAME).tar.gz.uue
+	~/src/octave-3.6.1/run-octave -q --eval "pkg load generate_html; pkg install -local $(DISTNAME).tar.gz; generate_package_html ('queueing', 'queueing-html', 'octave-forge'); pkg uninstall $(PROGNAME)"
+	tar cfz $(PROGNAME)-html.tar.gz $(PROGNAME)-html
+	uuencode $(PROGNAME)-html.tar.gz < $(PROGNAME)-html.tar.gz > $(PROGNAME)-html.tar.gz.uue
 

@@ -13,7 +13,7 @@ Description: The queueing toolbox provides functions for queueing
  and continuous-time Markov chains can  be computed (state occupancy 
  probabilities, mean time to absorption, time-averaged sojourn times).
 Categories: Misc
-Depends: octave (>= 3.0.0)
+Depends: octave (>= 3.2.3)
 Autoload: yes
 License: GPL version 3 or later
 Url: http://www.moreno.marzolla.name/software/queueing/

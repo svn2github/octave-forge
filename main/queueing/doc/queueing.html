@@ -1424,11 +1424,14 @@ linear system:
 &mdash; Function File: <var>p</var> = <b>ctmc</b> (<var>Q, t. p0</var>)<var><a name="index-ctmc-31"></a></var><br>
 <blockquote>
         <p><a name="index-Markov-chain_002c-continuous-time-32"></a><a name="index-Continuous-time-Markov-chain-33"></a><a name="index-Markov-chain_002c-state-occupancy-probabilities-34"></a><a name="index-Stationary-probabilities-35"></a>
-With a single argument, compute the stationary state occupancy
+Compute stationary or transient state occupancy probabilities
+for a continuous-time Markov chain.
+
+        <p>With a single argument, compute the stationary state occupancy
 probability vector <var>p</var>(1), <small class="dots">...</small>, <var>p</var>(N) for a
-Continuous-Time Markov Chain with infinitesimal generator matrix
-<var>Q</var> of size  N \times N. With three arguments, compute the
-state occupancy probabilities <var>p</var>(1), <small class="dots">...</small>, <var>p</var>(N) at time
+continuous-time Markov chain with N \times N infinitesimal
+generator matrix <var>Q</var>. With three arguments, compute the state
+occupancy probabilities <var>p</var>(1), <small class="dots">...</small>, <var>p</var>(N) at time
 <var>t</var>, given initial state occupancy probabilities <var>p0</var> at time
 0.
 
@@ -1682,6 +1685,7 @@ spent in state i.
       for i=1:length(t)
         M(i,:) = ctmc_taexps(Q,t(i),p);
       endfor
+      clf;
       plot(t, M(:,1), ";State 1;", "linewidth", 2, \
            t, M(:,2), ";State 2;", "linewidth", 2, \
            t, M(:,3), ";State 3;", "linewidth", 2, \

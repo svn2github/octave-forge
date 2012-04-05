@@ -45,6 +45,7 @@ value_of_option() {
 vcs_export() {
     Path=$1
     #svn export . $Path ## svn ## svn is untested TODO: test
+    #hg archive $Path ## hg. Reference: http://sourceforge.net/mailarchive/message.php?msg_id=29008793
     git archive master | tar -x -C $Path ## git-svn
 }
 

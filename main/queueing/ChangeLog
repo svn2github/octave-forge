@@ -1,6 +1,6 @@
-2012-03-XX Moreno Marzolla <marzolla@cs.unibo.it>
+2012-04-05 Moreno Marzolla <marzolla@cs.unibo.it>
 
-	* Version 1.X.0 released
+	* Version 1.1.0 released
 	* Fixed bug in qnvisits() which made the function behave incorrectly
 	  under particular degenerate cases.
 	* Fixed bug in ctmc_exps() (wrong initial value in call to lsode)

@@ -15,6 +15,13 @@
 
 function ret=fmin(varargin)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "`fmin' has been deprecated, and will be removed in the future. Use `fminbnd' directly instead.");
+  endif
+
   ## alias for fminbnd
   ret = fminbnd(varargin{:});
 

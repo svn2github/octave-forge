@@ -10,6 +10,13 @@ Summary of important user-visible changes for optim 1.1.0:
 
       fminunc_compat  optimset_compat
 
+ ** The function `fmin' has been deprecated in favour of using `fminbnd'
+    directly. If one really wishes to use the short version, one can
+    easily create an alias on an octaverc file (see `doc startup') with
+    the following code
+
+      function out=fmin(varargin) out=fminbnd(varargin{:}); endfunction
+
  ** The package Makefile has been adapted for compatibility with Octave 3.6.0.
 
  ** Bugfixes on the functions:

@@ -119,7 +119,7 @@ TmpDir=$(mktempd $Pkg)
 ## Create an unversioned copy of the package in the sandbox dir
 mkdir ${TmpDir}/${Pkg}
 vcs_export ${TmpDir}/${Pkg}
-## TODO: consider deleting the devel/ folder
+#rm -r ${TmpDir}/${Pkg}/devel ## Do not release the devel/ folder
 
 ## Move to sandbox dir
 cd $TmpDir

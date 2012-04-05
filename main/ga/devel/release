@@ -1,5 +1,29 @@
 #! /bin/sh
 
+## Ease the preparation of Octave-Forge package and function
+## reference, automating the steps described at:
+##   http://octave.sourceforge.net/developers.html
+##
+## This script:
+## - Must be executed from the root directory of the package
+## (i.e. where the DESCRIPTION file is placed);
+## - Extracts package name and version from the DESCRIPTION file;
+## - Extracts code from the current directory (git-svn is assumed at
+## the moment, code for svn is disabled ATM) to a sandbox dir;
+## - Creates package and function reference in the sandbox dir;
+## - Lists created files in the sandbox dir.
+##
+## Comment/uncomment the relevant lines in the the vcs_export()
+## function in order to use svn or hg or git-svn (default).
+##
+##
+## This is an alternative for releasePKG, available at:
+##   http://octave.svn.sourceforge.net/viewvc/octave/trunk/octave-forge/admin/releasePKG.m?view=log
+## Usage of and contribution to releasePKG is recommended.
+##
+## Reference: http://sourceforge.net/mailarchive/message.php?msg_id=29010854
+
+
 ## Functions
 
 usage() {

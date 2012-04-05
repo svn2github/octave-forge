@@ -2,7 +2,7 @@ Summary of important user-visible changes for queueing-1.1.0
 ------------------------------------------------------------------------------
 
 ** Function ctmc_exps() can now compute the expected sojourn time
-   until absorption for absorming CTMC
+   until absorption for absorbing CTMC
 
 ** Functions ctmc_exps() and ctmc_taexps() now accept a scalar as
    the second argument (time). 

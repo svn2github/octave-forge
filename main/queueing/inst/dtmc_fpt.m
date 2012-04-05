@@ -140,15 +140,3 @@ endfunction
 %! M = dtmc_fpt(P);
 %! assert( M(1:9 != 5,5)', [6 5 6 5 5 6 5 6], 10*eps );
 
-%!demo
-%! P = [ 0.0 0.9 0.1; \
-%!       0.1 0.0 0.9; \
-%!       0.9 0.1 0.0 ];
-%! M = dtmc_fpt(P);
-%! w = dtmc(P);
-%! N = rows(P);
-%! W = repmat(w,N,1);
-%! Z = inv(eye(N)-P+W);
-%! M1 = (repmat(diag(Z),1,N) - Z) ./ repmat(w',1,N);
-%! assert(M, M1);
-

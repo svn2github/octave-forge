@@ -141,7 +141,7 @@ function [U R Q X p0 pm] = qnmmm( lambda, mu, m )
   R = Q ./ X;
 endfunction
 %!demo
-%! disp("This is figure 6.4 on p. 220 Bolch et al.");
+%! # This is figure 6.4 on p. 220 Bolch et al.
 %! rho = 0.9;
 %! ntics = 21;
 %! lambda = 0.9;
@@ -153,6 +153,6 @@ endfunction
 %! axis([0,ntics,0,25]);
 %! legend("Jobs in the system","Queue Length","location","northwest");
 %! xlabel("Number of servers (m)");
-%! title("\lambda = 0.9, \mu = 0.9");
+%! title("\\lambda = 0.9, \\mu = 0.9");
 
 

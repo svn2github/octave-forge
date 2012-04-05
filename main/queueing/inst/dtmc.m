@@ -86,9 +86,15 @@ function p = dtmc( P, n, p0 )
   ( N>0 ) || \
       usage( err );
 
-  if ( nargin == 1 )
-    p = __dtmc_steady_state( P );  
-  else
+  if ( nargin == 1 ) # steady-state analysis
+    A = P-eye(N);
+    A(:,N) = 1; # add normalization condition
+    rank( A ) == N || \
+	warning( "dtmc(): P is reducible" );
+    
+    b = [ zeros(1,N-1) 1 ];
+    p = b/A;
+  else # transient analysis
     ( isscalar(n) && n>=0 ) || \
 	usage( "n must be >=0" );
 
@@ -97,25 +103,8 @@ function p = dtmc( P, n, p0 )
 
     p0 = p0(:)'; # make p0 a row vector
 
-    p = __dtmc_transient(P, n, p0);
+    p = p0*P^n;
   endif
-endfunction
-
-## Helper function, compute steady-state probability
-function p = __dtmc_steady_state( P )
-  N = rows(P);
-  A = P-eye(N);
-  A(:,N) = 1; # add normalization condition
-  rank( A ) == N || \
-      warning( "dtmc(): P is reducible" );
-
-  b = [ zeros(1,N-1) 1 ];
-  p = b/A;
-endfunction
-
-## Helper function, compute transient probability
-function p = __dtmc_transient( P, n, p0 )
-  p = p0*P^n;
 endfunction
 
 %!test

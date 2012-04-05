@@ -75,7 +75,7 @@ function M = ctmc_taexps( Q, varargin )
   endif
 
   L = ctmc_exps(Q,varargin{:});
-  M = L ./ sum(L);
+  M = L ./ repmat(sum(L,2),1,columns(L));
 
 #{
   if ( nargin == 3 ) 
@@ -111,6 +111,7 @@ endfunction
 %! for i=1:length(t)
 %!   M(i,:) = ctmc_taexps(Q,t(i),p);
 %! endfor
+%! clf;
 %! plot(t, M(:,1), ";State 1;", "linewidth", 2, \
 %!      t, M(:,2), ";State 2;", "linewidth", 2, \
 %!      t, M(:,3), ";State 3;", "linewidth", 2, \
@@ -141,7 +142,7 @@ endfunction
 %!          0     0         0      d -d];
 %! p = ctmc(Q);
 %! printf("System availability: %f\n",p(1)+p(4));
-%! TT = linspace(1e-5,1*day,101);
+%! TT = linspace(0,1*day,101);
 %! PP = ctmc_taexps(Q,TT,[1 0 0 0 0]);
 %! A = At = Abart = zeros(size(TT));
 %! A(:) = p(1) + p(4); # steady-state availability
@@ -151,6 +152,7 @@ endfunction
 %!   At(n) = p(1) + p(4); # instantaneous availability
 %!   Abart(n) = PP(n,1) + PP(n,4); # interval base availability
 %! endfor
+%! clf;
 %! semilogy(TT,A,";Steady-state;", \
 %!      TT,At,";Instantaneous;", \
 %!      TT,Abart,";Interval base;");

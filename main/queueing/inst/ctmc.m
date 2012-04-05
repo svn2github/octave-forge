@@ -25,11 +25,14 @@
 ## @cindex Markov chain, state occupancy probabilities
 ## @cindex Stationary probabilities
 ##
+## Compute stationary or transient state occupancy probabilities
+## for a continuous-time Markov chain.
+##
 ## With a single argument, compute the stationary state occupancy
 ## probability vector @var{p}(1), @dots{}, @var{p}(N) for a
-## Continuous-Time Markov Chain with infinitesimal generator matrix
-## @var{Q} of size  @math{N \times N}. With three arguments, compute the
-## state occupancy probabilities @var{p}(1), @dots{}, @var{p}(N) at time
+## continuous-time Markov chain with @math{N \times N} infinitesimal
+## generator matrix @var{Q}. With three arguments, compute the state
+## occupancy probabilities @var{p}(1), @dots{}, @var{p}(N) at time
 ## @var{t}, given initial state occupancy probabilities @var{p0} at time
 ## 0.
 ##
@@ -74,6 +77,8 @@
 
 function q = ctmc( Q, t, p0 )
 
+  persistent epsilon = 10*eps;
+
   if ( nargin != 1 && nargin != 3 )
     print_usage();
   endif
@@ -83,50 +88,41 @@ function q = ctmc( Q, t, p0 )
   ( N>0 ) || \
       usage(err);
 
-  if ( nargin == 1 )
-    q = __ctmc_steady_state( Q );
-  else
+  if ( nargin == 1 ) # steady-state analysis
+
+    ## non zero columns
+    nonzero=find( any(abs(Q)>epsilon,1 ) );
+    if ( length(nonzero) == 0 )
+      error( "Q is the zero matrix" );
+    endif
+    
+    normcol = nonzero(1); # normalization condition column
+    
+    ## force probability of unvisited states to zero
+    for i=find( all(abs(Q)<epsilon,1) )
+      Q(i,i) = 1;
+    endfor
+    
+    ## assert( rank(Q) == N-1 );
+    
+    Q(:,normcol) = 1; # add normalization condition
+    b = zeros(1,N); b(normcol)=1;
+    q = b/Q; # qQ = b;
+    
+  else # transient analysis
+
     ( isscalar(t) && t>=0 ) || \
-        usage("t must be nonnegative");
+        usage("t must be a scalar >= 0");
 
     ( isvector(p0) && length(p0) == N && all(p0>=0) && abs(sum(p0)-1.0)<N*eps ) || \
         usage( "p0 must be a probability vector" );   
 
     p0 = p0(:)'; # make p0 a row vector
 
-    q = __ctmc_transient(Q, t, p0 );
+    q = p0*expm(Q*t);
+
   endif
 
-endfunction
-
-## Helper function, compute steady state probability
-function q = __ctmc_steady_state( Q )
-  persistent epsilon = 10*eps;
-  N = rows(Q);
-
-  ## non zero columns
-  nonzero=find( any(abs(Q)>epsilon,1 ) );
-  if ( length(nonzero) == 0 )
-    error( "Q is the zero matrix" );
-  endif
-
-  normcol = nonzero(1); # normalization condition column
-
-  ## force probability of unvisited states to zero
-  for i=find( all(abs(Q)<epsilon,1) )
-    Q(i,i) = 1;
-  endfor
-
-  ## assert( rank(Q) == N-1 );
-
-  Q(:,normcol) = 1; # add normalization condition
-  b = zeros(1,N); b(normcol)=1;
-  q = b/Q; # qQ = b;
-endfunction
-
-## Helper function, compute transient probability
-function q = __ctmc_transient( Q, t, p0 )
-  q = p0*expm(Q*t);
 endfunction
 
 %!test

@@ -1,4 +1,5 @@
 Summary of important user-visible changes for queueing-1.1.0
+------------------------------------------------------------------------------
 
 ** Function ctmc_exps() can now compute the expected sojourn time
    until absorption for absorming CTMC
@@ -15,10 +16,3 @@ Summary of important user-visible changes for queueing-1.1.0
 
 ** The following deprecated functions have been removed: ctmc_bd_solve(),
    ctmc_solve(), dtmc_solve()
-
-
-Summary of important user-visible changes for queueing-1.0.0
-------------------------------------------------------------------------------
-
-** First release of the queueing package
-

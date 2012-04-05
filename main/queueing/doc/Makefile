@@ -1,6 +1,6 @@
 DOC=queueing
 CHAPTERS=$(patsubst %.txi,%.texi,$(wildcard *.txi))
-DISTFILES=README INSTALL $(DOC).pdf $(DOC).html
+DISTFILES=README INSTALL $(DOC).pdf $(DOC).html $(DOC).texi $(CHAPTERS)
 
 .PHONY: clean dist
 

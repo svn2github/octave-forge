@@ -27,7 +27,7 @@
 //   along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 //    $Id$
-//    Copyright (C) 2010,2011 Alois Schloegl <alois.schloegl@gmail.com>
+//    Copyright (C) 2010,2011,2012 Alois Schloegl <alois.schloegl@ist.ac.at>
 //    This function is part of the NaN-toolbox
 //    http://pub.ist.ac.at/~schloegl/matlab/NaN/
 //
@@ -72,36 +72,75 @@ SPSS file format
 #define max(a,b)	(((a) > (b)) ? (a) : (b))
 #define min(a,b)	(((a) < (b)) ? (a) : (b))
 
-#ifdef __linux__
-/* use byteswap macros from the host system, hopefully optimized ones ;-) */
-#include <byteswap.h>
-#endif
+#if defined(__MINGW32__) 
+   /* use local version because MINGW does not provide byteswap.h */
+#  define __BIG_ENDIAN  	 4321
+#  define __LITTLE_ENDIAN  1234
+#  define __BYTE_ORDER 	__LITTLE_ENDIAN
+#  include "win32/byteswap.h"
+#  define bswap_16(x) __bswap_16(x)
+#  define bswap_32(x) __bswap_32(x)
+#  define bswap_64(x) __bswap_64(x)
 
-#ifdef _WIN32
-#define __LITTLE_ENDIAN 1234
-#define __BIG_ENDIAN 4321
-#define __BYTE_ORDER __LITTLE_ENDIAN
-#endif
+#elif defined(__NetBSD__)
+#  include <sys/bswap.h>
+#  define __BIG_ENDIAN _BIG_ENDIAN
+#  define __LITTLE_ENDIAN _LITTLE_ENDIAN
+#  define __BYTE_ORDER _BYTE_ORDER
+#  define bswap_16(x) bswap16(x)
+#  define bswap_32(x) bswap32(x)
+#  define bswap_64(x) bswap64(x)
 
-#if (defined(BSD) && (BSD >= 199103))
-#include <machine/endian.h>
-#define __BIG_ENDIAN _BIG_ENDIAN
-#define __LITTLE_ENDIAN _LITTLE_ENDIAN
-#define __BYTE_ORDER _BYTE_ORDER
-#endif
+#elif defined(__APPLE__)
+#  include <CoreFoundation/CFByteOrder.h>
+#  define __BIG_ENDIAN  	CFByteOrderBigEndian
+#  define __LITTLE_ENDIAN	CFByteOrderLittleEndian
+#  define __BYTE_ORDER (CFByteOrderGetCurrent)
+#  define bswap_16(x) CFSwapInt16(x)
+#  define bswap_32(x) CFSwapInt32(x)
+#  define bswap_64(x) CFSwapInt64(x)
 
-#ifndef _BYTESWAP_H
-/* define our own version - needed for Max OS X*/
-#define bswap_16(x)   \
+#elif (defined(BSD) && (BSD >= 199103))
+#  include <machine/endian.h>
+#  define __BIG_ENDIAN _BIG_ENDIAN
+#  define __LITTLE_ENDIAN _LITTLE_ENDIAN
+#  define __BYTE_ORDER _BYTE_ORDER
+#  define bswap_16(x) __bswap16(x)
+#  define bswap_32(x) __bswap32(x)
+#  define bswap_64(x) __bswap64(x)
+
+#elif defined(__GNUC__) 
+   /* use byteswap macros from the host system, hopefully optimized ones ;-) */
+#  include <endian.h>
+#  include <byteswap.h>
+#  define bswap_16(x) __bswap_16 (x)
+#  define bswap_32(x) __bswap_32 (x)
+#  define bswap_64(x) __bswap_64 (x)
+
+#elif defined(__sparc__) 
+#  define __BIG_ENDIAN  	4321
+#  define __LITTLE_ENDIAN  	1234
+#  define __BYTE_ORDER 	__BIG_ENDIAN
+
+#endif 
+
+
+# ifndef bswap_16
+#  define bswap_16(x)   \
 	((((x) & 0xff00) >> 8) | (((x) & 0x00ff) << 8))
+# endif
 
-#define bswap_32(x)   \
+# ifndef bswap_32
+#  define bswap_32(x)   \
 	 ((((x) & 0xff000000) >> 24) \
         | (((x) & 0x00ff0000) >> 8)  \
 	| (((x) & 0x0000ff00) << 8)  \
 	| (((x) & 0x000000ff) << 24))
 
-#define bswap_64(x) \
+# endif
+
+# ifndef bswap_64
+#  define bswap_64(x) \
       	 ((((x) & 0xff00000000000000ull) >> 56)	\
       	| (((x) & 0x00ff000000000000ull) >> 40)	\
       	| (((x) & 0x0000ff0000000000ull) >> 24)	\
@@ -110,7 +149,7 @@ SPSS file format
       	| (((x) & 0x0000000000ff0000ull) << 24)	\
       	| (((x) & 0x000000000000ff00ull) << 40)	\
       	| (((x) & 0x00000000000000ffull) << 56))
-#endif  /* _BYTESWAP_H */
+# endif
 
 
 #if __BYTE_ORDER == __BIG_ENDIAN

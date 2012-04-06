@@ -3,7 +3,7 @@ VERSIONDATE="2012-04-05"
 PROGNAME=queueing
 
 DISTNAME=$(PROGNAME)-$(VERSIONNUM)
-SUBDIRS=inst scripts examples doc test devel
+SUBDIRS=inst scripts doc test devel
 DISTFILES=COPYING NEWS DESCRIPTION
 DISTSUBDIRS=inst doc
 

@@ -79,7 +79,7 @@ rate @math{\lambda}; the service time is exponentially distributed
 with average service rate @math{\mu}. The system is stable if
 @math{\lambda < \mu}.
 
-@DOCSTRING(qnmm1)
+@include help/qnmm1.texi
 
 @noindent @strong{REFERENCES}
 
@@ -109,7 +109,7 @@ number @math{n} of nodes in the center:
 @code{mu(n) = min(m,n)*mu}
 @end example
 
-@DOCSTRING(qnmmm)
+@include help/qnmmm.texi
 
 @noindent @strong{REFERENCES}
 
@@ -134,7 +134,7 @@ except that there are infinitely many identical servers (that is,
 that queueing never occurs. The @math{M/M/\infty} system is always
 stable.
 
-@DOCSTRING(qnmminf)
+@include help/qnmminf.texi
 
 @noindent @strong{REFERENCES}
 
@@ -160,7 +160,7 @@ is lost. The queue has @math{K-1} slots. The @math{M/M/1/K} system is
 always stable, regardless of the arrival and service rates
 @math{\lambda} and @math{\mu}.
 
-@DOCSTRING(qnmm1k)
+@include help/qnmm1k.texi
 
 @c
 @c M/M/m/k
@@ -173,7 +173,7 @@ The @math{M/M/m/K} finite capacity system is similar to the
 where @math{1 \leq m \leq K}. The queue is made of @math{K-m}
 slots. The @math{M/M/m/K} system is always stable.
 
-@DOCSTRING(qnmmmk)
+@include help/qnmmmk.texi
 
 @noindent @strong{REFERENCES}
 
@@ -186,8 +186,6 @@ Science Applications}, Wiley, 1998, Section 6.6.
 @auindex de Meer, H.
 @auindex Trivedi, K.
 
-@DOCSTRING(qnmmmk_alt)
-
 @c
 @c Approximate M/M/m
 @c
@@ -198,7 +196,7 @@ The Asymmetric @math{M/M/m} system contains @math{m} servers connected
 to a single queue. Differently from the @math{M/M/m} system, in the
 asymmetric @math{M/M/m} each server may have a different service time.
 
-@DOCSTRING(qnammm)
+@include help/qnammm.texi
 
 @noindent @strong{REFERENCES}
 
@@ -217,12 +215,12 @@ Science Applications}, Wiley, 1998
 @node The M/G/1 System
 @section The @math{M/G/1} System 
 
-@DOCSTRING(qnmg1)
+@include help/qnmg1.texi
 
 @c
 @c
 @c
 @node The M/Hm/1 System
 @section The @math{M/H_m/1} System
-@DOCSTRING(qnmh1)
+@include help/qnmh1.texi
 

@@ -64,7 +64,7 @@ following two properties: (1) @math{P_{i, j} @geq{} 0} for all
 @math{i, j}, and (2) @math{\sum_{j=1}^N P_{i,j} = 1} for all @math{i}
 
 @c
-@DOCSTRING(dtmc_check_P)
+@include help/dtmc_check_P.texi
 
 @menu
 * State occupancy probabilities (DTMC)::
@@ -135,7 +135,7 @@ $$
 the transpose operator.
 
 @c
-@DOCSTRING(dtmc)
+@include help/dtmc.texi
 
 @noindent @strong{EXAMPLE}
 
@@ -205,7 +205,7 @@ using the following code:
 
 @example
 @c @group
-@verbatiminclude demo_1_dtmc.texi
+@include demos/demo_1_dtmc.texi
 @c @end group
     @result{} 0.083333   0.125000   0.083333   0.125000   
        0.166667   0.125000   0.083333   0.125000   
@@ -216,7 +216,7 @@ using the following code:
 @node Birth-death process (DTMC)
 @subsection Birth-death process
 
-@DOCSTRING(dtmc_bd)
+@include help/dtmc_bd.texi
 
 @c
 @node Expected number of visits (DTMC)
@@ -280,13 +280,13 @@ started in the @math{i}-th transient state. If we reshape @math{\bf N}
 to the size of @math{\bf P} (filling missing entries with zeros), we
 have that, for absorbing chains @math{{\bf L} = {\bf \pi}(0){\bf N}}.
 
-@DOCSTRING(dtmc_exps)
+@include help/dtmc_exps.texi
 
 @c
 @node Time-averaged expected sojourn times (DTMC)
 @subsection Time-averaged expected sojourn times
 
-@DOCSTRING(dtmc_taexps)
+@include help/dtmc_taexps.texi
 
 @c
 @node Mean time to absorption (DTMC)
@@ -329,7 +329,7 @@ B = N R
 @end example
 @end ifnottex
 
-@DOCSTRING(dtmc_mtta)
+@include help/dtmc_mtta.texi
 
 @c
 @node First passage times (DTMC)
@@ -414,7 +414,7 @@ r_i = -----
 @end example
 @end ifnottex
 
-@DOCSTRING(dtmc_fpt)
+@include help/dtmc_fpt.texi
 
 @c
 @c
@@ -444,7 +444,7 @@ from state @math{i} to state @math{j}. The matrix @math{\bf Q} must
 satisfy the property that, for all @math{i}, @math{\sum_{j=1}^N Q_{i,
 j} = 0}.
 
-@DOCSTRING(ctmc_check_Q)
+@include help/ctmc_check_Q.texi
 
 @menu
 * State occupancy probabilities (CTMC)::
@@ -510,7 +510,7 @@ $$
 @end example
 @end ifnottex
 
-@DOCSTRING(ctmc)
+@include help/ctmc.texi
 
 @noindent @strong{EXAMPLE}
 
@@ -519,7 +519,7 @@ are equal to 1. This can be solved as follows:
 
 @example
 @group
-@verbatiminclude demo_1_ctmc.texi
+@include demos/demo_1_ctmc.texi
     @result{} q = 0.50000   0.50000
 @end group
 @end example
@@ -530,7 +530,7 @@ are equal to 1. This can be solved as follows:
 @node Birth-death process (CTMC)
 @subsection Birth-Death Process
 
-@DOCSTRING(ctmc_bd)
+@include help/ctmc_bd.texi
 
 @c
 @c
@@ -583,7 +583,7 @@ L(t) = |   pi(u) du
 the state occupancy probability at time @math{t}; @math{\exp({\bf Q}t)}
 is the matrix exponential of @math{{\bf Q}t}.
 
-@DOCSTRING(ctmc_exps)
+@include help/ctmc_exps.texi
 
 @noindent @strong{EXAMPLE}
 
@@ -595,7 +595,7 @@ given the initial occupancy probability @math{{\bf \pi}_0=(1,0,0,0)}.
 
 @example
 @group
-@verbatiminclude demo_1_ctmc_exps.texi
+@include demos/demo_1_ctmc_exps.texi
 @end group
 @end example
 
@@ -605,13 +605,13 @@ given the initial occupancy probability @math{{\bf \pi}_0=(1,0,0,0)}.
 @node Time-averaged expected sojourn times (CTMC)
 @subsection Time-Averaged Expected Sojourn Times
 
-@DOCSTRING(ctmc_taexps)
+@include help/ctmc_taexps.texi
 
 @noindent @strong{EXAMPLE}
 
 @example
 @group
-@verbatiminclude demo_1_ctmc_taexps.texi
+@include demos/demo_1_ctmc_taexps.texi
 @end group
 @end example
 
@@ -647,7 +647,7 @@ only states in @math{A}, and @math{{\bf \pi}_A(0)} is the initial
 state occupancy probability at time 0, restricted to states in
 @math{A}.
 
-@DOCSTRING(ctmc_mtta)
+@include help/ctmc_mtta.texi
 
 @noindent @strong{EXAMPLE}
 
@@ -670,7 +670,7 @@ computed with the following expression:
 
 @example
 @group
-@verbatiminclude demo_1_ctmc_mtta.texi
+@include demos/demo_1_ctmc_mtta.texi
     @result{} t = 78.333
 @end group
 @end example
@@ -693,5 +693,5 @@ Performance Evaluation with Computer Science Applications}, Wiley,
 @node First passage times (CTMC)
 @subsection First Passage Times
 
-@DOCSTRING(ctmc_fpt)
+@include help/ctmc_fpt.texi
 

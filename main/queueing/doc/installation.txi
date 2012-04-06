@@ -22,8 +22,8 @@
 @ifset INSTALLONLY
 @include conf.texi
 
-This file documents the installation procedure of the @code{queueing}
-toolbox.
+This file documents the installation procedure of the Octave
+@code{queueing} toolbox.
 
 @code{queueing} is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License, version 3
@@ -31,9 +31,9 @@ or later, as published by the Free Software Foundation.
 
 @quotation Note
 This file (@file{INSTALL}) is automatically generated from
-@file{doc/installation.txi} in the @code{queueing} sources.  Do not
-modify this document directly, as changes will be lost. Modify the
-source @file{doc/installation.txi} instead.
+@file{doc/installation.txi} in the @code{queueing} subversion sources.
+Do not modify this document directly, as changes will be lost. Modify
+the source @file{doc/installation.txi} instead.
 @end quotation
 
 @end ifset
@@ -44,7 +44,7 @@ source @file{doc/installation.txi} instead.
 @menu
 * Installation through Octave package management system::
 * Manual installation::
-* Content of the source distribution::
+* Development sources::
 * Using the queueing toolbox::
 @end menu
 
@@ -60,13 +60,13 @@ be downloaded from Octave-Forge
 
 @url{http://octave.sourceforge.net/queueing/}
 
-The package Web page is
+Additional information can be found at
 
 @url{http://www.moreno.marzolla.name/software/queueing/}
 
 If you have a recent version of GNU Octave and a network connection,
-you can install @code{queueing} directly from the prompt using this
-command:
+you can install @code{queueing} directly from Octave command prompt
+using this command:
 
 @example
 octave:1> @kbd{pkg install -forge queueing}
@@ -103,12 +103,11 @@ octave:1> @kbd{pkg install -local queueing-@value{VERSION}.tar.gz}
 @end example
 
 This will install @code{queueing} within your home directory, and the
-package will be available to your user only. @strong{Note:} Octave
-version 3.2.3 as shipped with Ubuntu 10.04 seems to ignore
-@code{-local} and always tries to install the package on the system
-directory.
+package will be available to your user only. Note that Octave version
+3.2.3 as shipped with Ubuntu 10.04 seems to ignore @code{-local} and
+always tries to install the package on the system directory.
 
-To remove @code{queueing} you can use
+To remove @code{queueing} simply use
 
 @example
 octave:1> @kbd{pkg uninstall queueing}
@@ -159,17 +158,23 @@ longer need to specify the @option{-p} option on the command line.
 @c
 @c
 
-@node Content of the source distribution
-@section Content of the source distribution
+@ifclear INSTALLONLY
 
+@node Development sources
+@section Development sources
 
-The source code of the latest version of the @code{queueing} 
-package can be found in the Subversion repository at the URL:
+The source code of the @code{queueing} package can be found in the
+Subversion repository at the URL:
 
 @url{http://octave.svn.sourceforge.net/viewvc/octave/trunk/octave-forge/main/queueing/}
 
-The source distribution contains the following directories (some of
-which are not included in the installation tarball):
+The source distribution contains additional development files which
+are not present in the installation tarball. This section briefly
+describes the content of the source tree. This is only relevant for
+developers who want to modify the code or documentation; normal users
+of the @code{queueing} package don't need
+
+The source distribution contains the following directories:
 
 @table @file
 @item doc/
@@ -235,6 +240,8 @@ commands are used to clean up the source directory and prepare the
 distribution archive in compressed tar format.
 
 @end table
+
+@end ifclear
 
 @c
 @c

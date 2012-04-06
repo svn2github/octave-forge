@@ -38,13 +38,13 @@
 @strong{See also:} \args\.
 @end macro
 
-@macro examplefile{file}
-@example
-@group
-@verbatiminclude @value{top_srcdir}/examples/\file\
-@end group
-@end example
-@end macro
+@c @macro examplefile{file}
+@c @example
+@c @group
+@c @verbatiminclude @value{top_srcdir}/examples/\file\
+@c @end group
+@c @end example
+@c @end macro
 
 @ifinfo
 @format

@@ -18,7 +18,7 @@ doc/conf.texi:
 	\rm -f doc/conf.texi
 	echo "@set VERSION $(VERSIONNUM)" > doc/conf.texi
 	echo "@set VERSIONDATE $(VERSIONDATE)" >> doc/conf.texi
-	echo "@set top_srcdir " `pwd` >> doc/conf.texi
+	echo "@c @set top_srcdir " `pwd` >> doc/conf.texi
 
 DESCRIPTION: DESCRIPTION.in
 	cat DESCRIPTION.in | \
@@ -33,7 +33,7 @@ clean:
 	for d in $(SUBDIRS); do \
 		$(MAKE) -C $$d $(MAKECMDGOALS); \
 	done
-	\rm -r -f *~ $(DISTNAME).tar.gz $(DISTNAME).tar.gz.uue $(PROGNAME)
+	\rm -r -f *~ $(DISTNAME).tar.gz $(DISTNAME).tar.gz.uue $(PROGNAME) $(PROGNAME)-html.tar.gz $(PROGNAME)-html.tar.gz.uue $(PROGNAME)-html
 
 distclean: clean
 	for d in $(SUBDIRS); do \

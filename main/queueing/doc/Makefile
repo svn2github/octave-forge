@@ -1,6 +1,6 @@
 DOC=queueing
 CHAPTERS=$(patsubst %.txi,%.texi,$(wildcard *.txi))
-DISTFILES=README INSTALL $(DOC).pdf $(DOC).html
+DISTFILES=README INSTALL $(DOC).pdf $(DOC).html $(DOC).texi $(CHAPTERS) $(wildcard demo_*.texi)
 
 .PHONY: clean dist
 
@@ -26,17 +26,20 @@ $(DOC).pdf: $(DOC).texi $(CHAPTERS)
 $(DOC).info: $(DOC).texi $(CHAPTERS)
 	-$(MAKEINFO) $<
 
-%.texi: %.txi DOCSTRINGS
+%.texi: %.txi DOCSTRINGS DEMOS
 	../scripts/munge-texi -d DOCSTRINGS < $< > $@
 
 DOCSTRINGS: $(wildcard ../inst/*.m)
 	(cd ../scripts; ./mkdoc ../inst) > DOCSTRINGS || \rm -f DOCSTRINGS
 
+DEMOS:
+	octave -q grabdemo.m ../inst/ && touch DEMOS
+
 dist:
 	ln $(DISTFILES) ../`cat ../fname`/doc/
 
 clean:
-	\rm -f *.fns *.pdf *.aux *.log *.dvi *.out *.info *.html *.ky *.tp *.toc *.vr *.cp *.fn *.pg *.op *.au *.aus *.cps x.log *~ DOCSTRINGS $(CHAPTERS) ../INSTALL
+	\rm -f *.fns *.pdf *.aux *.log *.dvi *.out *.info *.html *.ky *.tp *.toc *.vr *.cp *.fn *.pg *.op *.au *.aus *.cps x.log *~ DOCSTRINGS DEMOS $(CHAPTERS) ../INSTALL demo_*.texi 
 
 distclean: clean
 

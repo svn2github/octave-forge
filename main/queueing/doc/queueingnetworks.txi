@@ -439,7 +439,7 @@ service center @math{k}.  We can define and solve the model as
 follows:
 
 @example
-@verbatiminclude @value{top_srcdir}/examples/demo_1_qnsolve.m
+@verbatiminclude demo_1_qnsolve.texi
 @end example
 
 
@@ -606,7 +606,7 @@ $$
 @end iftex
 
 @example
-@verbatiminclude @value{top_srcdir}/examples/demo_1_qnconvolution.m
+@verbatiminclude demo_1_qnconvolution.texi
 @print{} k(1)=1 prob=0.17975
 @print{} k(2)=2 prob=0.48404
 @print{} k(3)=0 prob=0.52779
@@ -719,7 +719,7 @@ $Q_s = \sum_{i=1}^K Q(i)$
 @noindent @strong{EXAMPLE}
 
 @example
-@verbatiminclude @value{top_srcdir}/examples/demo_1_qnopensingle.m
+@verbatiminclude demo_1_qnopensingle.texi
 @print{} R_s =  1.4062
 @print{} N =  4.2186
 @end example
@@ -769,7 +769,7 @@ other quantities of interest as follows:
 @noindent @strong{EXAMPLE}
 
 @example
-@verbatiminclude @value{top_srcdir}/examples/demo_1_qnclosedsinglemva.m
+@verbatiminclude demo_1_qnclosedsinglemva.texi
 @end example
 
 
@@ -1088,7 +1088,7 @@ function, respectively.
 @noindent @strong{EXAMPLE}
 
 @example
-@verbatiminclude @value{top_srcdir}/examples/demo_1_qnclosed.m
+@verbatiminclude demo_1_qnclosed.texi
 @end example
 
 @DOCSTRING(qnopen)
@@ -1175,7 +1175,7 @@ then @math{P_{0, s, j} = \lambda_{s, j} / \lambda}.
 @noindent @strong{EXAMPLE}
 
 @example
-@verbatiminclude @value{top_srcdir}/examples/demo_1_qnvisits.m
+@verbatiminclude demo_1_qnvisits.texi
 @end example
 
 @subsection Other utility functions

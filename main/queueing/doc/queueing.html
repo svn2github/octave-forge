@@ -44,7 +44,7 @@ modified versions.
 <ul>
 <li><a href="#Installation-through-Octave-package-management-system">2.1 Installation through Octave package management system</a>
 <li><a href="#Manual-installation">2.2 Manual installation</a>
-<li><a href="#Content-of-the-source-distribution">2.3 Content of the source distribution</a>
+<li><a href="#Development-sources">2.3 Development sources</a>
 <li><a href="#Using-the-queueing-toolbox">2.4 Using the queueing toolbox</a>
 </li></ul>
 <li><a name="toc_Getting-Started" href="#Getting-Started">3 Introduction and Getting Started</a>
@@ -302,7 +302,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 <ul class="menu">
 <li><a accesskey="1" href="#Installation-through-Octave-package-management-system">Installation through Octave package management system</a>
 <li><a accesskey="2" href="#Manual-installation">Manual installation</a>
-<li><a accesskey="3" href="#Content-of-the-source-distribution">Content of the source distribution</a>
+<li><a accesskey="3" href="#Development-sources">Development sources</a>
 <li><a accesskey="4" href="#Using-the-queueing-toolbox">Using the queueing toolbox</a>
 </ul>
 
@@ -321,13 +321,13 @@ be downloaded from Octave-Forge
 
    <p><a href="http://octave.sourceforge.net/queueing/">http://octave.sourceforge.net/queueing/</a>
 
-   <p>The package Web page is
+   <p>Additional information can be found at
 
    <p><a href="http://www.moreno.marzolla.name/software/queueing/">http://www.moreno.marzolla.name/software/queueing/</a>
 
    <p>If you have a recent version of GNU Octave and a network connection,
-you can install <code>queueing</code> directly from the prompt using this
-command:
+you can install <code>queueing</code> directly from Octave command prompt
+using this command:
 
 <pre class="example">     octave:1&gt; <kbd>pkg install -forge queueing</kbd>
 </pre>
@@ -356,19 +356,18 @@ without the need to tweak the search path.
 <pre class="example">     octave:1&gt; <kbd>pkg install -local queueing-1.1.0.tar.gz</kbd>
 </pre>
    <p>This will install <code>queueing</code> within your home directory, and the
-package will be available to your user only. <strong>Note:</strong> Octave
-version 3.2.3 as shipped with Ubuntu 10.04 seems to ignore
-<code>-local</code> and always tries to install the package on the system
-directory.
+package will be available to your user only. Note that Octave version
+3.2.3 as shipped with Ubuntu 10.04 seems to ignore <code>-local</code> and
+always tries to install the package on the system directory.
 
-   <p>To remove <code>queueing</code> you can use
+   <p>To remove <code>queueing</code> simply use
 
 <pre class="example">     octave:1&gt; <kbd>pkg uninstall queueing</kbd>
 </pre>
    <div class="node">
 <a name="Manual-installation"></a>
 <p><hr>
-Next:&nbsp;<a rel="next" accesskey="n" href="#Content-of-the-source-distribution">Content of the source distribution</a>,
+Next:&nbsp;<a rel="next" accesskey="n" href="#Development-sources">Development sources</a>,
 Previous:&nbsp;<a rel="previous" accesskey="p" href="#Installation-through-Octave-package-management-system">Installation through Octave package management system</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="#Installation">Installation</a>
 
@@ -403,7 +402,7 @@ added to the search path each time Octave is started, and you no
 longer need to specify the <samp><span class="option">-p</span></samp> option on the command line.
 
 <div class="node">
-<a name="Content-of-the-source-distribution"></a>
+<a name="Development-sources"></a>
 <p><hr>
 Next:&nbsp;<a rel="next" accesskey="n" href="#Using-the-queueing-toolbox">Using the queueing toolbox</a>,
 Previous:&nbsp;<a rel="previous" accesskey="p" href="#Manual-installation">Manual installation</a>,
@@ -411,15 +410,20 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Installation">Installation</a>
 
 </div>
 
-<h3 class="section">2.3 Content of the source distribution</h3>
+<h3 class="section">2.3 Development sources</h3>
 
-<p>The source code of the latest version of the <code>queueing</code>
-package can be found in the Subversion repository at the URL:
+<p>The source code of the <code>queueing</code> package can be found in the
+Subversion repository at the URL:
 
    <p><a href="http://octave.svn.sourceforge.net/viewvc/octave/trunk/octave-forge/main/queueing/">http://octave.svn.sourceforge.net/viewvc/octave/trunk/octave-forge/main/queueing/</a>
 
-   <p>The source distribution contains the following directories (some of
-which are not included in the installation tarball):
+   <p>The source distribution contains additional development files which
+are not present in the installation tarball. This section briefly
+describes the content of the source tree. This is only relevant for
+developers who want to modify the code or documentation; normal users
+of the <code>queueing</code> package don't need
+
+   <p>The source distribution contains the following directories:
 
      <dl>
 <dt><samp><span class="file">doc/</span></samp><dd>Documentation source. Most of the documentation is extracted from the
@@ -478,7 +482,7 @@ distribution archive in compressed tar format.
 <div class="node">
 <a name="Using-the-queueing-toolbox"></a>
 <p><hr>
-Previous:&nbsp;<a rel="previous" accesskey="p" href="#Content-of-the-source-distribution">Content of the source distribution</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#Development-sources">Development sources</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="#Installation">Installation</a>
 
 </div>

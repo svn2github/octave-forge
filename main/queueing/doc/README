@@ -10,47 +10,17 @@ Octave scripts for numerical evaluation of queueing network
 models. Open, closed and mixed networks are supported, with single or
 multiple classes of customers. The queueing toolbox also provides
 functions for steady-state and transient analysis of Markov chains, as
-well as fo single station queueing systems.
+well as for single station queueing systems.
 
 The Web page of the queueing toolbox is
 
 http://www.moreno.marzolla.name/software/queueing/
 
-The latest version can be downloaded from Octave-forge
+The latest version can be downloaded from Octave forge
 
 http://octave.sourceforge.net/
 
-This package requires GNU Octave; version 3.0.0 or later should work.
-The package contains the following directories (note that some of
-these are only available in the SVN repository, and are not included
-in the tarball published on Octave-forge):
-
-inst/        
-        Contains the Octave m-scripts implementing all functions
-        provided by the queueing toolbox.
-
-doc/
-        Contains the user documentation, which is automatically
-        generated from the texinfo strings embedded in the m-scripts.
-
-scripts/ 
-        Contains some scripts used to extract documentation strings
-        from the m-files. The scripts here have been taken almost
-        verbatim from the GNU Octave distribution.
-
-examples/
-        Contains demo functions which are automatically extracted from
-        the scripts included in the inst/ directory. The demo
-        functions are put in this directory so that they can be
-        embedded into the package documentation.
-
-test/
-        Contains the script used to execute all tests embedded within
-        functions in the inst/ directory.
-
-devel/
-        Contains scripts which are currently under development, and
-        therefore should not be used.
+This package requires GNU Octave; version 3.2.3 or later should work.
 
 The Octave queueing toolbox is distributed under the terms of the GNU
 General Public License, version 3 or later. See the file COPYING for

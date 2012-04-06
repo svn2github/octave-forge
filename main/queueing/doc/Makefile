@@ -38,7 +38,7 @@ dist:
 	ln $(DISTFILES) ../`cat ../fname`/doc/
 
 clean:
-	\rm -f *.fns *.pdf *.aux *.log *.dvi *.out *.info *.html *.ky *.tp *.toc *.vr *.cp *.fn *.pg *.op *.au *.aus *.cps x.log *~ demos/*.texi help/*.texi DOCSTRINGS DEMOS HELP $(CHAPTERS) INSTALL
+	\rm -f *.fns *.pdf *.aux *.log *.dvi *.out *.info *.html *.ky *.tp *.toc *.vr *.cp *.fn *.pg *.op *.au *.aus *.cps x.log *~ demos/*.texi help/*.texi DOCSTRINGS DEMOS HELP INSTALL
 
 distclean: clean
 

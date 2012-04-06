@@ -1,6 +1,6 @@
 DOC=queueing
 CHAPTERS=$(wildcard *.texi)
-DISTFILES=README INSTALL $(DOC).pdf $(DOC).html $(DOC).texi $(CHAPTERS) $(wildcard demos/*.texi) $(wildcard help/*.texi)
+DISTFILES=README INSTALL $(DOC).pdf $(DOC).html $(DOC).texi $(CHAPTERS) demos/ help/
 
 .PHONY: clean dist
 
@@ -24,9 +24,6 @@ $(DOC).pdf: $(DOC).texi $(CHAPTERS) DEMOS HELP
 
 $(DOC).info: $(DOC).texi $(CHAPTERS) DEMOS HELP
 	-$(MAKEINFO) $(DOC).texi
-
-DOCSTRINGS: $(wildcard ../inst/*.m)
-	(cd ../scripts; ./mkdoc ../inst) > DOCSTRINGS || \rm -f DOCSTRINGS
 
 DEMOS:
 	cd demos && octave -p ../../inst/ -q ../grabdemo.m ../../inst/ && touch ../DEMOS

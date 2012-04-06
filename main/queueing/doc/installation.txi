@@ -103,9 +103,13 @@ octave:1> @kbd{pkg install -local queueing-@value{VERSION}.tar.gz}
 @end example
 
 This will install @code{queueing} within your home directory, and the
-package will be available to your user only. Note that Octave version
-3.2.3 as shipped with Ubuntu 10.04 seems to ignore @code{-local} and
-always tries to install the package on the system directory.
+package will be available to your user only. 
+
+@quotation Note 
+Octave version 3.2.3 as shipped with Ubuntu 10.04 seems to ignore
+@code{-local} and always tries to install the package on the system
+directory.
+@end quotation
 
 To remove @code{queueing} simply use
 

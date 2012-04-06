@@ -356,9 +356,13 @@ without the need to tweak the search path.
 <pre class="example">     octave:1&gt; <kbd>pkg install -local queueing-1.1.0.tar.gz</kbd>
 </pre>
    <p>This will install <code>queueing</code> within your home directory, and the
-package will be available to your user only. Note that Octave version
-3.2.3 as shipped with Ubuntu 10.04 seems to ignore <code>-local</code> and
-always tries to install the package on the system directory.
+package will be available to your user only.
+
+   <blockquote>
+<b>Note:</b> Octave version 3.2.3 as shipped with Ubuntu 10.04 seems to ignore
+<code>-local</code> and always tries to install the package on the system
+directory. 
+</blockquote>
 
    <p>To remove <code>queueing</code> simply use
 

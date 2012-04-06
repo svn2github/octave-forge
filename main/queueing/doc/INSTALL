@@ -56,9 +56,11 @@ without the need to tweak the search path.
      octave:1> pkg install -local queueing-1.1.0.tar.gz
 
    This will install `queueing' within your home directory, and the
-package will be available to your user only. Note that Octave version
-3.2.3 as shipped with Ubuntu 10.04 seems to ignore `-local' and always
-tries to install the package on the system directory.
+package will be available to your user only.
+
+     Note: Octave version 3.2.3 as shipped with Ubuntu 10.04 seems to
+     ignore `-local' and always tries to install the package on the
+     system directory.
 
    To remove `queueing' simply use
 

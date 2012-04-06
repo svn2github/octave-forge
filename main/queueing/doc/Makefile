@@ -1,6 +1,7 @@
 DOC=queueing
 CHAPTERS=$(wildcard *.texi)
-DISTFILES=README INSTALL $(DOC).pdf $(DOC).html $(DOC).texi $(CHAPTERS) demos/ help/
+DISTFILES=README INSTALL $(DOC).pdf $(DOC).html $(DOC).texi $(CHAPTERS)
+SUBDIRS=demos help
 
 .PHONY: clean dist
 
@@ -16,26 +17,32 @@ INSTALL: installation.texi
 	-$(MAKEINFO) -D INSTALLONLY \
 	  --no-validate --no-headers --no-split --output INSTALL $<
 
-$(DOC).html: $(DOC).texi $(CHAPTERS) DEMOS HELP
+$(DOC).html: $(DOC).texi $(CHAPTERS) demos/DONE help/DONE
 	-$(MAKEINFO) --html --no-split $(DOC).texi
 
-$(DOC).pdf: $(DOC).texi $(CHAPTERS) DEMOS HELP
+$(DOC).pdf: $(DOC).texi $(CHAPTERS) demos/DONE help/DONE
 	texi2pdf  -o $(DOC).pdf $(DOC).texi
 
-$(DOC).info: $(DOC).texi $(CHAPTERS) DEMOS HELP
+$(DOC).info: $(DOC).texi $(CHAPTERS) demos/DONE help/DONE
 	-$(MAKEINFO) $(DOC).texi
 
-DEMOS:
-	cd demos && octave -p ../../inst/ -q ../grabdemo.m ../../inst/ && touch ../DEMOS
+demos/DONE:
+	$(MAKE) -C demos
 
-HELP:
-	cd help && octave -p ../../inst/ -q ../grabhelp.m ../../inst/ && touch ../HELP
+help/DONE:
+	$(MAKE) -C help
 
 dist:
 	ln $(DISTFILES) ../`cat ../fname`/doc/
 
 clean:
-	\rm -f *.fns *.pdf *.aux *.log *.dvi *.out *.info *.html *.ky *.tp *.toc *.vr *.cp *.fn *.pg *.op *.au *.aus *.cps x.log *~ demos/*.texi help/*.texi DOCSTRINGS DEMOS HELP INSTALL
+	for d in $(SUBDIRS); do \
+		$(MAKE) -C $$d $(MAKECMDGOALS); \
+	done
+	\rm -f *.fns *.pdf *.aux *.log *.dvi *.out *.info *.html *.ky *.tp *.toc *.vr *.cp *.fn *.pg *.op *.au *.aus *.cps x.log *~ DOCSTRINGS DEMOS HELP INSTALL
 
 distclean: clean
+	for d in $(SUBDIRS); do \
+		$(MAKE) -C $$d $(MAKECMDGOALS); \
+	done
 

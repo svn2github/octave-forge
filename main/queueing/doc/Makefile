@@ -28,7 +28,7 @@ $(DOC).info: $(DOC).texi $(CHAPTERS)
 %.texi: %.txi
 	octave -p../inst/ -q munge-texi.m $< ../inst/ > $@
 
-dist:
+dist: $(DISTFILES)
 	ln $(DISTFILES) ../`cat ../fname`/doc/
 
 clean:

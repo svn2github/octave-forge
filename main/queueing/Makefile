@@ -5,7 +5,7 @@ PROGNAME=queueing
 DISTNAME=$(PROGNAME)-$(VERSIONNUM)
 SUBDIRS=inst doc test devel
 DISTFILES=COPYING NEWS DESCRIPTION
-DISTSUBDIRS=inst doc doc/demos doc/help
+DISTSUBDIRS=inst doc
 
 .PHONY: clean check
 

@@ -1,7 +1,6 @@
 DOC=queueing
-CHAPTERS=$(wildcard *.texi)
+CHAPTERS=$(patsubst %.txi, %.texi, $(wildcard *.txi))
 DISTFILES=README INSTALL $(DOC).pdf $(DOC).html $(DOC).texi $(CHAPTERS)
-SUBDIRS=demos help
 
 .PHONY: clean dist
 
@@ -17,32 +16,23 @@ INSTALL: installation.texi
 	-$(MAKEINFO) -D INSTALLONLY \
 	  --no-validate --no-headers --no-split --output INSTALL $<
 
-$(DOC).html: $(DOC).texi $(CHAPTERS) demos/DONE help/DONE
+$(DOC).html: $(DOC).texi $(CHAPTERS)
 	-$(MAKEINFO) --html --no-split $(DOC).texi
 
-$(DOC).pdf: $(DOC).texi $(CHAPTERS) demos/DONE help/DONE
+$(DOC).pdf: $(DOC).texi $(CHAPTERS)
 	texi2pdf  -o $(DOC).pdf $(DOC).texi
 
-$(DOC).info: $(DOC).texi $(CHAPTERS) demos/DONE help/DONE
+$(DOC).info: $(DOC).texi $(CHAPTERS)
 	-$(MAKEINFO) $(DOC).texi
 
-demos/DONE:
-	$(MAKE) -C demos
-
-help/DONE:
-	$(MAKE) -C help
+%.texi: %.txi
+	octave -p../inst/ -q munge-texi.m $< ../inst/ > $@
 
 dist:
 	ln $(DISTFILES) ../`cat ../fname`/doc/
 
 clean:
-	for d in $(SUBDIRS); do \
-		$(MAKE) -C $$d $(MAKECMDGOALS); \
-	done
-	\rm -f *.fns *.pdf *.aux *.log *.dvi *.out *.info *.html *.ky *.tp *.toc *.vr *.cp *.fn *.pg *.op *.au *.aus *.cps x.log *~ DOCSTRINGS DEMOS HELP INSTALL
+	\rm -f *.fns *.pdf *.aux *.log *.dvi *.out *.info *.html *.ky *.tp *.toc *.vr *.cp *.fn *.pg *.op *.au *.aus *.cps x.log *~ DOCSTRINGS INSTALL $(CHAPTERS)
 
 distclean: clean
-	for d in $(SUBDIRS); do \
-		$(MAKE) -C $$d $(MAKECMDGOALS); \
-	done
 

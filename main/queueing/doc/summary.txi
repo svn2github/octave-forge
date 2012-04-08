@@ -22,6 +22,15 @@
 @node Summary
 @chapter Summary
 
+@menu
+* About the Queueing Toolbox::          What is the Queueing Toolbox
+* Contributing Guidelines::             How to contribute
+* Acknowledgements::
+@end menu
+
+@node About the Queueing Toolbox
+@section About the Queueing Toolbox
+
 This document describes the @code{queueing} toolbox for GNU Octave
 (@code{queueing} in short). The @code{queueing} toolbox, previously
 known as @code{qnetworks}, is a collection of functions written in GNU
@@ -122,3 +131,47 @@ An early draft of the paper above is available as Technical Report
 UBLCS-2010-04}, February 2010, Department of Computer Science,
 University of Bologna, Italy.
 
+@node Contributing Guidelines
+@section Contributing Guidelines
+
+Contributions and bug reports are @emph{always} welcome. If you want
+to contribute to the @code{queueing} package, here are some
+guidelines:
+
+@itemize
+
+@item If you are contributing a new function, please embed proper
+documentation within the function itself. The documentation must be in
+@code{texinfo} format, so that it can be extracted and formatted into
+the printable manual. See the existing functions of the
+@code{queueing} package for the documentation style.
+
+@item Make sure that each new function 
+properly checks the validity of its input parameters. For example,
+each function accepting vectors should check whether the dimensions
+match.
+
+@item Provide bibliographic references for each new algorithm you 
+contribute. If your implementation differs in some way from the
+reference you give, please describe how and why your implementation
+differs. Add references to the @file{doc/references.txi} file.
+
+@item Include test and demo blocks with your code.
+Test blocks are particularly important, since most algorithms tend to
+be quite tricky to implement correctly. If appropriate, test blocks
+should also verify that the function fails on incorrect input
+parameters.
+
+@end itemize
+
+Send your contribution to Moreno Marzolla
+(@email{marzolla@@cs.unibo.it}). If you are just a user of this
+package and find it useful, let me know by dropping me a line. Thanks.
+
+@node Acknowledgements
+@section Acknowledgements
+
+The following people (listed in alphabetical order) contributed to the
+@code{queueing} package, either by providing feedback, reporting bugs
+or contributing code: Philip Carinhas, Phil Colbourn, Yves Durand,
+Marco Guazzone, Dmitry Kolesnikov.

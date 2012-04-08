@@ -46,6 +46,14 @@
 @c @end example
 @c @end macro
 
+@c @macro GETHELP{file}
+
+@c @end macro
+
+@c @macro GETDEMO{file,n}
+
+@c @end macro
+
 @ifinfo
 @format
 START-INFO-DIR-ENTRY
@@ -158,8 +166,6 @@ It corresponds to version @value{VERSION} of the package.
 * Single Station Queueing Systems:: Functions for single-station queueing systems.
 * Queueing Networks::           Functions for queueing networks.
 * References::                  References
-* Contributing Guidelines::     How to contribute.
-* Acknowledgements::            People who contributed to the queueing toolbox.
 * Copying::                     The GNU General Public License.
 * Concept Index::               An item for each concept.
 * Function Index::              An item for each function.
@@ -179,8 +185,6 @@ It corresponds to version @value{VERSION} of the package.
 @c
 @c Appendix starts here
 @c
-@include contributing.texi
-@include ack.texi
 @include gpl.texi
 
 @c

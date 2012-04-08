@@ -399,14 +399,14 @@ models).
 Individual nodes in the network are structures build using the
 @code{qnmknode} function.
 
-@include help/qnmknode.texi
+@GETHELP{qnmknode}
 
 After the network has been defined, it is possible to solve it using
 the @code{qnsolve} function. Note that this function is somewhat less
 efficient than those described in later sections, but
 generally easier to use.
 
-@include help/qnsolve.texi
+@GETHELP{qnsolve}
 
 @noindent @strong{EXAMPLE}
 
@@ -439,7 +439,7 @@ service center @math{k}.  We can define and solve the model as
 follows:
 
 @example
-@include demos/demo_1_qnsolve.texi
+@GETDEMO{qnsolve,1}
 @end example
 
 
@@ -529,7 +529,7 @@ $$ \pi(k_1, k_2, \ldots, k_N) = \prod_{i=1}^N \pi_i(k_i) $$
 @noindent where @math{\pi_i(k_i)} is the steady-state probability
 that there are @math{k_i} requests at service center @math{i}.
 
-@include help/qnjackson.texi
+@GETHELP{qnjackson}
 
 @noindent @strong{REFERENCES}
 
@@ -586,7 +586,7 @@ centers.
 @c The Convolution Algorithm
 @c
 
-@include help/qnconvolution.texi
+@GETHELP{qnconvolution}
 
 @noindent @strong{EXAMPLE}
 
@@ -606,7 +606,7 @@ $$
 @end iftex
 
 @example
-@include demos/demo_1_qnconvolution.texi
+@GETDEMO{qnconvolution,1}
 @print{} k(1)=1 prob=0.17975
 @print{} k(2)=2 prob=0.48404
 @print{} k(3)=0 prob=0.52779
@@ -640,7 +640,7 @@ Performance Evaluation with Computer Science Applications}, Wiley,
 @c
 @c Convolution for load-dependent service centers
 @c
-@include help/qnconvolutionld.texi
+@GETHELP{qnconvolutionld}
 
 @noindent @strong{REFERENCES}
 
@@ -683,7 +683,7 @@ Aspects of Queueing Network Models}.
 @c
 @c Open networks with single class
 @c
-@include help/qnopensingle.texi
+@GETHELP{qnopensingle}
 
 From the results computed by this function, it is possible to derive
 other quantities of interest as follows:
@@ -719,7 +719,7 @@ $Q_s = \sum_{i=1}^K Q(i)$
 @noindent @strong{EXAMPLE}
 
 @example
-@include demos/demo_1_qnopensingle.texi
+@GETDEMO{qnopensingle,1}
 @print{} R_s =  1.4062
 @print{} N =  4.2186
 @end example
@@ -739,7 +739,7 @@ Computer Science Applications}, Wiley, 1998.
 @c
 @c Open network with multiple classes
 @c
-@include help/qnopenmulti.texi
+@GETHELP{qnopenmulti}
 
 @noindent @strong{REFERENCES}
 
@@ -761,7 +761,7 @@ particular, see section 7.4.1 ("Open Model Solution Techniques").
 @c MVA for single class, closed networks
 @c
 
-@include help/qnclosedsinglemva.texi
+@GETHELP{qnclosedsinglemva}
 
 From the results provided by this function, it is possible to derive 
 other quantities of interest as follows:
@@ -769,7 +769,7 @@ other quantities of interest as follows:
 @noindent @strong{EXAMPLE}
 
 @example
-@include demos/demo_1_qnclosedsinglemva.texi
+@GETDEMO{qnclosedsinglemva,1}
 @end example
 
 
@@ -799,7 +799,7 @@ Performance Evaluation with Computer Science Applications}, Wiley,
 @c
 @c MVA for single class, closed networks with load dependent servers
 @c
-@include help/qnclosedsinglemvald.texi
+@GETHELP{qnclosedsinglemvald}
 
 @noindent @strong{REFERENCES}
 
@@ -821,7 +821,7 @@ Networks''.
 @c
 @c CMVA for single class, closed networks with a single load dependent servers
 @c
-@include help/qncmva.texi
+@GETHELP{qncmva}
 
 @noindent @strong{REFERENCES}
 
@@ -835,7 +835,7 @@ closed networks}. Queueing Syst. Theory Appl., 60:193–202, December
 @c Approximate MVA for single class, closed networks
 @c
 
-@include help/qnclosedsinglemvaapprox.texi
+@GETHELP{qnclosedsinglemvaapprox}
 
 @noindent @strong{REFERENCES}
 
@@ -855,7 +855,7 @@ particular, see section 6.4.2.2 ("Approximate Solution Techniques").
 @c
 @c MVA for multiple class, closed networks
 @c
-@include help/qnclosedmultimva.texi
+@GETHELP{qnclosedmultimva}
 
 @noindent @strong{NOTE}
 
@@ -901,7 +901,7 @@ particular, see section 7.4.2.1 ("Exact Solution Techniques").
 @c
 @c Approximate MVA, with Bard-Schweitzer approximation
 @c
-@include help/qnclosedmultimvaapprox.texi
+@GETHELP{qnclosedmultimvaapprox}
 
 @noindent @strong{REFERENCES}
 
@@ -937,7 +937,7 @@ instead of the residence times.
 @c
 @c MVA for mixed networks
 @c
-@include help/qnmix.texi
+@GETHELP{qnmix}
 
 @noindent @strong{REFERENCES}
 
@@ -970,7 +970,7 @@ available at
 @c MVABLO algorithm for approximate analysis of closed, single class
 @c QN with blocking
 @c
-@include help/qnmvablo.texi
+@GETHELP{qnmvablo}
 
 @noindent @strong{REFERENCES}
 
@@ -980,7 +980,7 @@ april 1988, pp. 418--428.  @url{http://dx.doi.org/10.1109/32.4663}
 
 @auindex Akyildiz, I. F.
 
-@include help/qnmarkov.texi
+@GETHELP{qnmarkov}
 
 @c
 @c
@@ -989,7 +989,7 @@ april 1988, pp. 418--428.  @url{http://dx.doi.org/10.1109/32.4663}
 @section Bounds on performance
 
 @c
-@include help/qnopenab.texi
+@GETHELP{qnopenab}
 
 @noindent @strong{REFERENCES}
 
@@ -1005,7 +1005,7 @@ particular, see section 5.2 ("Asymptotic Bounds").
 @auindex Sevcik, K. C.
 
 @c
-@include help/qnclosedab.texi
+@GETHELP{qnclosedab}
 
 @noindent @strong{REFERENCES}
 
@@ -1022,7 +1022,7 @@ particular, see section 5.2 ("Asymptotic Bounds").
 
 
 @c
-@include help/qnopenbsb.texi
+@GETHELP{qnopenbsb}
 
 @noindent @strong{REFERENCES}
 
@@ -1038,10 +1038,10 @@ particular, see section 5.4 ("Balanced Systems Bounds").
 @auindex Sevcik, K. C.
 
 @c
-@include help/qnclosedbsb.texi
+@GETHELP{qnclosedbsb}
 
 @c
-@include help/qnclosedpb.texi
+@GETHELP{qnclosedpb}
 
 @noindent @strong{REFERENCES}
 
@@ -1061,7 +1061,7 @@ Transactions on Computers, 57(6):780-794, June 2008.
 @auindex Serazzi, G.
 
 @c
-@include help/qnclosedgb.texi
+@GETHELP{qnclosedgb}
 
 @noindent @strong{REFERENCES}
 
@@ -1083,15 +1083,15 @@ function, respectively.
 
 @subsection Open or closed networks 
 
-@include help/qnclosed.texi
+@GETHELP{qnclosed}
 
 @noindent @strong{EXAMPLE}
 
 @example
-@include demos/demo_1_qnclosed.texi
+@GETDEMO{qnclosed,1}
 @end example
 
-@include help/qnopen.texi
+@GETHELP{qnopen}
 
 @c
 @c Compute the visit counts
@@ -1170,18 +1170,18 @@ requests to service center @math{j}, and @math{\lambda = \sum_s \sum_j
 \lambda_{s, j}} is the overall external arrival rate to the whole system,
 then @math{P_{0, s, j} = \lambda_{s, j} / \lambda}.
 
-@include help/qnvisits.texi
+@GETHELP{qnvisits}
 
 @noindent @strong{EXAMPLE}
 
 @example
-@include demos/demo_1_qnvisits.texi
+@GETDEMO{qnvisits,1}
 @end example
 
 @subsection Other utility functions
 
 @c
-@include help/population_mix.texi
+@GETHELP{population_mix}
 
 @noindent @strong{REFERENCES}
 
@@ -1203,7 +1203,7 @@ Indices for a Complex Summation}, unpublished report, available at
 @auindex Santini, S.
 
 @c
-@include help/qnmvapop.texi
+@GETHELP{qnmvapop}
 
 @noindent @strong{REFERENCES}
 

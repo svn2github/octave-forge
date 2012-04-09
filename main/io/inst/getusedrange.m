@@ -1,4 +1,4 @@
-## Copyright (C) 2010,2011 Philip Nienhuis <pr.nienhuis@users.sf.net>
+## Copyright (C) 2010,2011,2012 Philip Nienhuis <pr.nienhuis@users.sf.net>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -67,7 +67,7 @@
 ## 2011-09-08 Style & layout updates
 ## 2012-01-26 Fixed "seealso" help string
 ##
-## Last subfunc update: 2012-03-02 (UNO)
+## Last subfunc update: 2012-04-09 (JOD)
 
 function [ trow, lrow, lcol, rcol ] = getusedrange (spptr, ii)
 
@@ -95,7 +95,7 @@ function [ trow, lrow, lcol, rcol ] = getusedrange (spptr, ii)
 endfunction
 
 
-## Copyright (C) 2010,2011 Philip Nienhuis, pr.nienhuis -at- users.sf.net
+## Copyright (C) 2010,2011,2012 Philip Nienhuis, pr.nienhuis -at- users.sf.net
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -118,7 +118,7 @@ endfunction
 ## 2010-08-24 Support for odfdom (ODF Toolkit) 0.8.6 checked; we still need 
 ##            => TableTable API because 0.8.6 is fooled by empty lowermost
 ##            filler rows comprising number-rows-repeated table attribute :-(
-##      "     Indentation changed from tab to double space
+##     ''     Indentation changed from tab to double space
 ## 2010-11-13 Catched jOpenDocument bug (1.2bx) where string cells have no office:value-type
 ##            attrib set (by JOD). Somehow OTK is more robust as it catches these cells;
 ##            Currently this fix is just commented.
@@ -211,7 +211,7 @@ function [ trow, lrow, lcol, rcol ] = getusedrange_otk (ods, ii)
 
 endfunction
 
-## Copyright (C) 2010 Philip Nienhuis <prnienhuis -aT- users.sf.net>
+## Copyright (C) 2010,2011,2012 Philip Nienhuis <prnienhuis -aT- users.sf.net>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -236,6 +236,7 @@ endfunction
 ## 2010-08-12 Little textual adaptations
 ## 2010-11-13 Catched jOpenDocument bug (1.2bx) where string cells have no office:value-type
 ##     ''     attrb set (by JOD). Somehow OTK is more robust as it catches these cells
+## 2012-04-09 Fixed rowrepcnt (str2num not applied to tablerow)
 
 function [ trow, brow, lcol, rcol ] = getusedrange_jod (ods, wsh)
 
@@ -275,7 +276,7 @@ function [ trow, brow, lcol, rcol ] = getusedrange_jod (ods, wsh)
 			rowrept = strfind (tablerow(1:rowend), 'number-rows-repeated');
 			if (~isempty (rowrept))
 				[st, en] = regexp (tablerow(rowrept:min (rowend, rowrept+30)), '\d+');
-				rowrepcnt += str2num (rowrept+st-1:min (rowend, rowrept+en-1)) - 1;
+				rowrepcnt += str2num (tablerow(rowrept+st-1:min (rowend, rowrept+en-1))) - 1;
 			endif
 
 			# Search table-cells. table-c is a table-covered-cell that is considered empty
@@ -352,7 +353,7 @@ function [ trow, brow, lcol, rcol ] = getusedrange_jod (ods, wsh)
 endfunction
 
 
-## Copyright (C) 2011 Philip Nienhuis
+## Copyright (C) 2011,2012 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -432,7 +433,7 @@ function [ srow, erow, scol, ecol ] = getusedrange_uno (ods, ii)
 endfunction
 
 
-## Copyright (C) 2010 Philip Nienhuis
+## Copyright (C) 2010,2011,2012 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -482,7 +483,7 @@ function [ trow, brow, lcol, rcol ] = getusedrange_com (xls, ii)
 endfunction
 
 
-## Copyright (C) 2010 Philip Nienhuis, prnienhuis at users.sf.net
+## Copyright (C) 2010,2011,2012 Philip Nienhuis, prnienhuis at users.sf.net
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -537,7 +538,7 @@ function [ trow, brow, lcol, rcol ] = getusedrange_poi (xls, ii)
 endfunction
 
 
-## Copyright (C) 2010 Philip Nienhuis, prnienhuis at users.sf.net
+## Copyright (C) 2010,2011,2012 Philip Nienhuis, prnienhuis at users.sf.net
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -591,7 +592,7 @@ function [ trow, brow, lcol, rcol ] = getusedrange_jxl (xls, wsh)
 endfunction
 
 
-## Copyright (C) 2010 Philip Nienhuis, <prnienhuis at users.sf.net>
+## Copyright (C) 2010,2011,2012 Philip Nienhuis, <prnienhuis at users.sf.net>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software

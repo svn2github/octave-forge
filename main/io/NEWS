@@ -1,5 +1,16 @@
 Summary of important user-visible changes for releases of the io package
 
+post-1.0.18 (in SVN only)
+
+** Bug fixes:
+--- getusedrange subfunc getusedrange_jod: str2num applied to indices rather
+    than the substring. Must have been there for > 2 years, only surfaced
+    with jopendocument v 1.3b1
+    
+** Compatible with jOpenDocument version 1.3b1
+
+** Compatible with Apache POI 3.8 final
+
 ===============================================================================
 io-1.0.18   Release Date: 2012-03-22   Release Manager: Philip Nienhuis
 ===============================================================================
@@ -30,7 +41,7 @@ io-1.0.17   Release Date: 2012-02-27   Release Manager: Philip Nienhuis
     have worked properly for two years (!)
 
 ** Fixed support for odfdom v.0.8.7 (ODS). Note: the OTK interface only works
-  well with xercesImpl.jar 2.9.1 (Sep 14, 2009)
+   well with xercesImpl.jar 2.9.1 (Sep 14, 2009)
 
 ** Many small bug fixes & documentation updated to actual functionality.
 
@@ -103,3 +114,5 @@ Hint:
 for older Octave versions (< 3.4.0) you can install io-1.0.15 using the -nodeps
   flag. You'll then loose the old and buggy textread and csv/dlm-read/write
   functions but I'd consider that as no big loss.
+  
+  <please scroll up/back to see rest of io NEWS>

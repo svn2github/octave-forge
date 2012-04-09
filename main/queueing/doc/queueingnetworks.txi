@@ -1118,11 +1118,10 @@ april 1988, pp. 418--428.  @url{http://dx.doi.org/10.1109/32.4663}
 The @code{queueing} package provides a high-level function
 @code{qnsolve} for analyzing QN models. @code{qnsolve} takes as input
 a high-level description of the queueing model, and delegates the
-actual solution of the model to one of the lower-level function
-described in the previous section. @code{qnsolve} supports single or
-multiclass models, but at the moment only product-form networks can be
-analyzed. For non product-form networks @xref{Algorithms for non
-Product-Form QNs}.
+actual solution of the model to one of the lower-level
+function. @code{qnsolve} supports single or multiclass models, but at
+the moment only product-form networks can be analyzed. For non
+product-form networks @xref{Algorithms for non Product-Form QNs}.
 
 @code{qnsolve} accepts two input parameters. The first one is the list
 of nodes, encoded as an Octave @emph{cell array}. The second parameter
@@ -1173,7 +1172,6 @@ follows:
 @example
 @GETDEMO{qnsolve,1}
 @end example
-
 
 @c
 @c

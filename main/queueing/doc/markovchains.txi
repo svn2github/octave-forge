@@ -139,8 +139,8 @@ the transpose operator.
 
 @noindent @strong{EXAMPLE}
 
-This example is from [GrSn97]. Let us consider a maze with nine rooms,
-as shown in the following figure
+This example is from @ref{GrSn97}. Let us consider a maze with nine
+rooms, as shown in the following figure
 
 @example
 @group

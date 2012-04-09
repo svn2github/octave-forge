@@ -40,7 +40,7 @@ function dump_help(func)
   ## Texinfo crashes if @end tex does not appear first on the line.
   text = regexprep (text, '^ +@end tex', '@end tex', 'lineanchors');
   
-  printf("%s\n", text);
+  printf("@anchor{doc-%s}\n%s\n", func, text);
 endfunction
 
 ##############################################################################

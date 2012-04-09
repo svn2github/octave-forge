@@ -55,7 +55,7 @@ G. Casale, R. R. Muntz, G. Serazzi,
 Queueing Networks}, IEEE Transactions on Computers, 57(6):780-794,
 June 2008. DOI @uref{http://doi.ieeecomputersociety.org/10.1109/TC.2008.37, 10.1109/TC.2008.37}
 
-@item [GrSn97]
+@item @anchor{GrSn97}[GrSn97]
 Charles M. Grinstead, J. Laurie Snell, (July 1997). @cite{Introduction
 to Probability}. American Mathematical Society. ISBN 978-0821807491;
 this excellent textbook is @uref{http://www.dartmouth.edu/~chance/teaching_aids/books_articles/probability_book/amsbook.mac.pdf, available in PDF format}

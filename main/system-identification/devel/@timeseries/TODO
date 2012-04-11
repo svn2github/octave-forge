@@ -1,0 +1,48 @@
+synchronize
+Synchronize and resample two timeseries objects using a common time vector.
+
+getinterpmethod
+Get the interpolation method for a timeseries object.
+
+resample
+Select or interpolate data in a timeseries object using a new time vector.
+
+setinterpmethod
+Set interpolation method for a timeseries object.
+
+addsample
+Add a data sample to a timeseries object.
+
+delsample
+Delete a sample from a timeseries object.
+
+append
+Concatenate timeseries objects in the time dimension.
+
+detrend
+Subtract the mean or best-fit line and remove all NaNs from time-series data.
+
+filter
+Shape frequency content of time-series data using a 1-D digital filter.
+
+getdatasamples
+Extract a subset of data samples from an existing timeseries object into an array using a subscripted indexed array.
+
+getsamples
+Extract a subset of data samples from an existing timeseries object into a new timeseries object using a subscript indexed array.
+
+getsampleusingtime
+Extract data samples from an existing timeseries object into a new timeseries object based on specified start and end time values.
+
+idealfilter
+Apply an ideal pass or notch (noncausal) filter to a timeseries object.
+
+setuniformtime
+Assign uniform time vector to timeseries object.
+
+transpose
+Transpose a timeseries object.
+
+ctranspose
+Transpose a timeseries object.
+

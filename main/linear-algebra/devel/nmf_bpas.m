@@ -1,98 +1,104 @@
-%% Copyright (c) 2012 by Jingu Kim and Haesun Park <jingu@cc.gatech.edu>
-%%
-%%    This program is free software: you can redistribute it and/or modify
-%%    it under the terms of the GNU General Public License as published by
-%%    the Free Software Foundation, either version 3 of the License, or
-%%    any later version.
-%%
-%%    This program is distributed in the hope that it will be useful,
-%%    but WITHOUT ANY WARRANTY; without even the implied warranty of
-%%    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%%    GNU General Public License for more details.
-%%
-%%    You should have received a copy of the GNU General Public License
-%%    along with this program. If not, see <http://www.gnu.org/licenses/>.
+## Copyright (c) 2012 by Jingu Kim and Haesun Park <jingu@cc.gatech.edu>
+##
+##    This program is free software: you can redistribute it and/or modify
+##    it under the terms of the GNU General Public License as published by
+##    the Free Software Foundation, either version 3 of the License, or
+##    any later version.
+##
+##    This program is distributed in the hope that it will be useful,
+##    but WITHOUT ANY WARRANTY; without even the implied warranty of
+##    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##    GNU General Public License for more details.
+##
+##    You should have received a copy of the GNU General Public License
+##    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-% Nonnegative Matrix Factorization by Alternating Nonnegativity Constrained Least Squares
-%      using Block Principal Pivoting/Active Set method
-%
-% This software solves one the following problems: given A and k, find W and H such that
-%     (1) minimize 1/2 * || A-WH ||_F^2
-%     (2) minimize 1/2 * ( || A-WH ||_F^2 + alpha * || W ||_F^2 + beta * || H ||_F^2 )
-%     (3) minimize 1/2 * ( || A-WH ||_F^2 + alpha * || W ||_F^2 + beta * (sum_(i=1)^n || H(:,i) ||_1^2 ) )
-%     where W>=0 and H>=0 elementwise.
-%
-% Reference:
-%  [1] For using this software, please cite:
-%          Jingu Kim and Haesun Park, Toward Faster Nonnegative Matrix Factorization: A New Algorithm and Comparisons,
-%                 In Proceedings of the 2008 Eighth IEEE International Conference on Data Mining (ICDM'08), 353-362, 2008
-%  [2] If you use 'nnls_solver'='as' (see below), please cite:
-%          Hyunsoo Kim and Haesun Park, Nonnegative Matrix Factorization Based on Alternating Nonnegativity Constrained Least Squares and Active Set Method,
-%                 SIAM Journal on Matrix Analysis and Applications, 2008, 30, 713-730
-%
-% Written by Jingu Kim (jingu@cc.gatech.edu)
-% Copyright 2008-2009 by Jingu Kim and Haesun Park,
-%                        School of Computational Science and Engineering,
-%                        Georgia Institute of Technology
-%
-% Check updated code at http://www.cc.gatech.edu/~jingu
-% Please send bug reports, comments, or questions to Jingu Kim.
-% This code comes with no guarantee or warranty of any kind.
-%
-% Last modified Feb-20-2010
-%
-% <Inputs>
-%        A : Input data matrix (m x n)
-%        k : Target low-rank
-%
-%        (Below are optional arguments: can be set by providing name-value pairs)
-%        TYPE : 'plain' to use formulation (1)
-%               'regularized' to use formulation (2)
-%               'sparse' to use formulation (3)
-%               Default is 'regularized', which is recommended for quick application testing unless 'sparse' or 'plain' is explicitly needed.
-%               If sparsity is needed for 'W' factor, then apply this function for the transpose of 'A' with formulation (3).
-%                      Then, exchange 'W' and 'H' and obtain the transpose of them.
-%               Imposing sparsity for both factors is not recommended and thus not included in this software.
-%        NNLS_SOLVER : 'bp' to use the algorithm in [1]
-%                      'as' to use the algorithm in [2]
-%                      Default is 'bp', which is in general faster.
-%        ALPHA : Parameter alpha in the formulation (2) or (3).
-%                Default is the average of all elements in A. No good justfication for this default value, and you might want to try other values.
-%        BETA : Parameter beta in the formulation (2) or (3).
-%               Default is the average of all elements in A. No good justfication for this default value, and you might want to try other values.
-%        MAX_ITER : Maximum number of iterations. Default is 100.
-%        MIN_ITER : Minimum number of iterations. Default is 20.
-%        MAX_TIME : Maximum amount of time in seconds. Default is 100,000.
-%        W_INIT : (m x k) initial value for W.
-%        H_INIT : (k x n) initial value for H.
-%        TOL : Stopping tolerance. Default is 1e-3. If you want to obtain a more accurate solution, decrease TOL and increase MAX_ITER at the same time.
-%        VERBOSE : 0 (default) - No debugging information is collected.
-%                  1 (debugging purpose) - History of computation is returned by 'HIS' variable.
-%                  2 (debugging purpose) - History of computation is additionally printed on screen.
-% <Outputs>
-%        W : Obtained basis matrix (m x k)
-%        H : Obtained coefficients matrix (k x n)
-%        iter : Number of iterations
-%        HIS : (debugging purpose) History of computation
-% <Usage Examples>
-%        nmf(A,10)
-%        nmf(A,20,'verbose',2)
-%        nmf(A,30,'verbose',2,'nnls_solver','as')
-%        nmf(A,5,'verbose',2,'type','sparse')
-%        nmf(A,60,'verbose',1,'type','plain','w_init',rand(m,k))
-%        nmf(A,70,'verbose',2,'type','sparse','nnls_solver','bp','alpha',1.1,'beta',1.3)
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{W}, @var{H}, @var{iter}, @var{HIS}] = } nmf_bpas (@var{A}, @var{k})
+## Nonnegative Matrix Factorization by Alternating Nonnegativity Constrained Least Squares
+## using Block Principal Pivoting/Active Set method.
+##
+## This function solves one the following problems: given @var{A} and @var{k}, find @var{W} and @var{H} such that
+##     (1) minimize 1/2 * || @var{A}-@var{W}@var{H} ||_F^2
+##     (2) minimize 1/2 * ( || @var{A}-@var{W}@var{H} ||_F^2 + alpha * || @var{W} ||_F^2 + beta * || @var{H} ||_F^2 )
+##     (3) minimize 1/2 * ( || @var{A}-@var{W}@var{H} ||_F^2 + alpha * || @var{W} ||_F^2 + beta * (sum_(i=1)^n || @var{H}(:,i) ||_1^2 ) )
+##     where @var{W}>=0 and @var{H}>=0 elementwise.
+## The input arguments are @var{A} : Input data matrix (m x n) and @var{k} : Target low-rank.
+##
+##
+## @strong{Optional Inputs}
+## @table @samp
+## @item Type : Default is 'regularized', which is recommended for quick application testing unless 'sparse' or 'plain' is explicitly needed. If sparsity is needed for 'W' factor, then apply this function for the transpose of 'A' with formulation (3). Then, exchange 'W' and 'H' and obtain the transpose of them. Imposing sparsity for both factors is not recommended and thus not included in this software.
+## @table @asis
+## @item 'plain' to use formulation (1)
+## @item 'regularized' to use formulation (2)
+## @item 'sparse' to use formulation (3)
+## @end table
+##
+## @item NNLSSolver : Default is 'bp', which is in general faster.
+## @table @asis
+## item 'bp' to use the algorithm in [1]
+## item 'as' to use the algorithm in [2]
+## @end table
+##
+## @item Alpha      : Parameter alpha in the formulation (2) or (3). Default is the average of all elements in A. No good justfication for this default value, and you might want to try other values.
+## @item  Beta      : Parameter beta in the formulation (2) or (3).
+##               Default is the average of all elements in A. No good justfication for this default value, and you might want to try other values.
+## @item MaxIter    : Maximum number of iterations. Default is 100.
+## @item MinIter    : Minimum number of iterations. Default is 20.
+## @item MaxTime    : Maximum amount of time in seconds. Default is 100,000.
+## @item Winit      : (m x k) initial value for W.
+## @item Hinit      : (k x n) initial value for H.
+## @item Tol        : Stopping tolerance. Default is 1e-3. If you want to obtain a more accurate solution, decrease TOL and increase MAX_ITER at the same time.
+## @item Verbose  :
+## @table @asis
+## @item 0 (default) - No debugging information is collected.@*
+## @item 1 (debugging purpose) - History of computation is returned by 'HIS' variable.
+## @item 2 (debugging purpose) - History of computation is additionally printed on screen.
+## @end table
+## @end table
+##
+## @strong{Outputs}
+## @table @samp
+## @item W    : Obtained basis matrix (m x k)
+## @item H    : Obtained coefficients matrix (k x n)
+## @item iter : Number of iterations
+## @item HIS  : (debugging purpose) History of computation
+## @end table
+##
+## Usage Examples:
+## @example
+##  nmf(A,10)
+##  nmf(A,20,'verbose',2)
+##  nmf(A,30,'verbose',2,'nnls_solver','as')
+##  nmf(A,5,'verbose',2,'type','sparse')
+##  nmf(A,60,'verbose',1,'type','plain','w_init',rand(m,k))
+##  nmf(A,70,'verbose',2,'type','sparse','nnls_solver','bp','alpha',1.1,'beta',1.3)
+## @end example
+##
+## References:
+##  [1] For using this software, please cite:@*
+##      Jingu Kim and Haesun Park, Toward Faster Nonnegative Matrix Factorization: A New Algorithm and Comparisons,@*
+##      In Proceedings of the 2008 Eighth IEEE International Conference on Data Mining (ICDM'08), 353-362, 2008@*
+##  [2] If you use 'nnls_solver'='as' (see below), please cite:@*
+##      Hyunsoo Kim and Haesun Park, Nonnegative Matrix Factorization Based @*
+##      on Alternating Nonnegativity Constrained Least Squares and Active Set Method, @*
+##      SIAM Journal on Matrix Analysis and Applications, 2008, 30, 713-730
+##
+## Check original code at @url{http://www.cc.gatech.edu/~jingu}
+##
+## @seealso{nmf_pg}
+## @end deftypefn
 
 ## 2012 - Modified and adapted to Octave 3.6.1 by
 ## Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 
 # TODO
-# - Use inputParser for options.
-# - Write docstring.
-# - Write demos using example files.
 # - Format code.
 # - Vectorize loops.
 
 function [W, H, iter, HIS] = nmf_bpas (A, k , varargin)
+  page_screen_output (0, "local");
 
   [m,n] = size(A);
   ST_RULE = 1;
@@ -109,10 +115,10 @@ function [W, H, iter, HIS] = nmf_bpas (A, k , varargin)
   parser = addParamValue (parser,'MaxTime', 1e3, @(x)x>0);
   parser = addParamValue (parser,'Verbose', false);
 
-  val_type = @(x,c) ischar(x) && any(strcmpi(x,c);
+  val_type = @(x,c) ischar (x) && any (strcmpi (x,c));
   parser = addParamValue (parser,'Type', 'regularized', ...
                             @(x)val_type (x,{'regularized', 'sparse','plain'}));
-  parser = addParamValue (parser,'NNLSSolver', 'bp', , ...
+  parser = addParamValue (parser,'NNLSSolver', 'bp', ...
                                                  @(x)val_type (x,{'bp', 'as'}));
 
   parser = parse(parser,varargin{:});
@@ -178,13 +184,15 @@ function [W, H, iter, HIS] = nmf_bpas (A, k , varargin)
         HIS(1,[1:5])=0;
         ver.initGrNormW = initGrNormW;
         ver.initGrNormH = initGrNormH;
-        ver.initNorm = initNorm;                            HIS(1,6)=ver.initNorm;
-        ver.SC1 = initSCs(1);                               HIS(1,7)=ver.SC1;
-        ver.SC2 = initSCs(2);                               HIS(1,8)=ver.SC2;
-        ver.SC3 = initSCs(3);                               HIS(1,9)=ver.SC3;
-        ver.W_density = length(find(W>0))/(m*k);            HIS(1,10)=ver.W_density;
-        ver.H_density = length(find(H>0))/(n*k);            HIS(1,11)=ver.H_density;
-        if par.verbose == 2, display(ver);, end
+        ver.initNorm = initNorm;                            HIS(1,6) = ver.initNorm;
+        ver.SC1 = initSCs(1);                               HIS(1,7) = ver.SC1;
+        ver.SC2 = initSCs(2);                               HIS(1,8) = ver.SC2;
+        ver.SC3 = initSCs(3);                               HIS(1,9) = ver.SC3;
+        ver.W_density = length(find(W>0))/(m*k);            HIS(1,10) = ver.W_density;
+        ver.H_density = length(find(H>0))/(n*k);            HIS(1,11) = ver.H_density;
+        if par.verbose == 2
+          disp (ver);
+        end
         tPrev = cputime;
     end
 
@@ -214,7 +222,7 @@ function [W, H, iter, HIS] = nmf_bpas (A, k , varargin)
         if par.verbose          % collect information for analysis/debugging
             elapsed = cputime-tPrev;
             tTotal = tTotal + elapsed;
-            ver = 0;
+            ver = [];
             idx = iter+1;
 %---(1)------(2)--------(3)--------(4)--------(5)---------(6)----------(7)------(8)-----(9)-------(10)--------------(11)-------
 % iter # | elapsed | totalTime | subIterW | subIterH | rel. obj.(%) | NM_GRAD | GRAD | DELTA | W density (%) | H density (%)
@@ -240,7 +248,9 @@ function [W, H, iter, HIS] = nmf_bpas (A, k , varargin)
                 break;
             elseif (SC/initSC <= par.tol)
                 SCconv = SCconv + 1;
-                if (SCconv >= SC_COUNT), break;, end
+                if (SCconv >= SC_COUNT)
+                  break;
+                end
             else
                 SCconv = 0;
             end
@@ -606,11 +616,11 @@ function [ Z,iter ] = solveNormalEqComb( AtA,AtB,PassSet )
         Z = zeros(size(AtB));
         [n,k1] = size(PassSet);
 
-        %% Fixed on Aug-12-2009
+        ## Fixed on Aug-12-2009
         if k1==1
             Z(PassSet)=AtA(PassSet,PassSet)\AtB(PassSet);
         else
-            %% Fixed on Aug-12-2009
+            ## Fixed on Aug-12-2009
             % The following bug was identified by investigating a bug report by Hanseung Lee.
             [sortedPassSet,sortIx] = sortrows(PassSet');
             breaks = any(diff(sortedPassSet)');
@@ -629,3 +639,73 @@ function [ Z,iter ] = solveNormalEqComb( AtA,AtB,PassSet )
         end
     end
 endfunction
+
+%!shared m, n, k, A
+%! m = 30;
+%! n = 20;
+%! k = 10;
+%! A = rand(m,n);
+
+%!test
+%! [W,H,iter,HIS]=nmf_bpas(A,k);
+
+%!test
+%! [W,H,iter,HIS]=nmf_bpas(A,k,'verbose',2);
+
+%!test
+%! [W,H,iter,HIS]=nmf_bpas(A,k,'verbose',1,'nnls_solver','as');
+
+%!test
+%! [W,H,iter,HIS]=nmf_bpas(A,k,'verbose',1,'type','sparse');
+
+%!test
+%! [W,H,iter,HIS]=nmf_bpas(A,k,'verbose',1,'type','sparse','nnls_solver','bp','alpha',1.1,'beta',1.3);
+
+%!test
+%! [W,H,iter,HIS]=nmf_bpas(A,k,'verbose',2,'type','plain','w_init',rand(m,k));
+
+%!demo
+%! m = 300;
+%! n = 200;
+%! k = 10;
+%!
+%! W_org = rand(m,k);, W_org(rand(m,k)>0.5)=0;
+%! H_org = rand(k,n);, H_org(rand(k,n)>0.5)=0;
+%!
+%! % normalize W, since 'nmf' normalizes W before return
+%! norm2=sqrt(sum(W_org.^2,1));
+%! toNormalize = norm2>0;
+%! W_org(:,toNormalize) = W_org(:,toNormalize)./repmat(norm2(toNormalize),m,1);
+%!
+%! A = W_org * H_org;
+%!
+%! [W,H,iter,HIS]=nmf_bpas (A,k,'type','plain','tol',1e-4);
+%!
+%! % -------------------- column reordering before computing difference
+%! reorder = zeros(k,1);
+%! selected = zeros(k,1);
+%! for i=1:k
+%!    for j=1:k
+%!        if ~selected(j), break, end
+%!    end
+%!    minIx = j;
+%!
+%!    for j=minIx+1:k
+%!        if ~selected(j)
+%!            d1 = norm(W(:,i)-W_org(:,minIx));
+%!            d2 = norm(W(:,i)-W_org(:,j));
+%!            if (d2<d1)
+%!                minIx = j;
+%!            end
+%!        end
+%!    end
+%!    reorder(i) = minIx;
+%!    selected(minIx) = 1;
+%! end
+%!
+%! W_org = W_org(:,reorder);
+%! H_org = H_org(reorder,:);
+%! % ---------------------------------------------------------------------
+%!
+%! recovery_error_W = norm(W_org-W)/norm(W_org)
+%! recovery_error_H = norm(H_org-H)/norm(H_org)

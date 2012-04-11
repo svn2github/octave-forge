@@ -38,8 +38,17 @@ function dat = detrend (dat, ord = 0)
     error ("iddata: detrend: second argument must be a positve integer");
   endif
 
+  [n, p, m] = size (dat);
+
   dat.y = cellfun (@(y) detrend (y, ord), dat.y, "uniformoutput", false);
   dat.u = cellfun (@(u) detrend (u, ord), dat.u, "uniformoutput", false);
+
+  ## if a MIMO experiment has only 1 sample, detrend works
+  ## row-wisely instead of column-wisely
+  ## therefore we set these experiments to zero
+  idx = (n == 1);
+  dat.y(idx) = zeros (1, p);
+  dat.u(idx) = zeros (1, m);
 
 endfunction
 

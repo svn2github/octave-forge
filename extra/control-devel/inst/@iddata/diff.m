@@ -32,7 +32,7 @@ function dat = diff (dat, k = 1)
     print_usage ();
   endif
 
-  dat.y = cellfun (@(y) diff (y, k), dat.y, "uniformoutput", false);
-  dat.u = cellfun (@(u) diff (u, k), dat.u, "uniformoutput", false);
+  dat.y = cellfun (@(y) diff (y, k, 1), dat.y, "uniformoutput", false);
+  dat.u = cellfun (@(u) diff (u, k, 1), dat.u, "uniformoutput", false);
 
 endfunction

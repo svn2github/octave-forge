@@ -46,20 +46,21 @@ function dat = fft (dat, n = [])
     error ("iddata: fft: second argument invalid");
   endif
 
-  dat.y = cellfun (@(y, n) fft (y, n)(1:fix(n/2)+1, :) / sqrt (n), dat.y, n, "uniformoutput", false);
-  dat.u = cellfun (@(u, n) fft (u, n)(1:fix(n/2)+1, :) / sqrt (n), dat.u, n, "uniformoutput", false);
+  dat.y = cellfun (@(y, n) fft (y, n, 1)(1:fix(n/2)+1, :) / sqrt (n), dat.y, n, "uniformoutput", false);
+  dat.u = cellfun (@(u, n) fft (u, n, 1)(1:fix(n/2)+1, :) / sqrt (n), dat.u, n, "uniformoutput", false);
+  ## fft (x, n, dim=1) because x could be a row vector (n=1)
   
-  dat.w = cellfun (@(n, tsam) (0:fix(n/2)).' * (2*pi/tsam/n), n, dat.tsam, "uniformoutput", false);
+  dat.w = cellfun (@(n, tsam) (0:fix(n/2)).' * (2*pi/abs(tsam)/n), n, dat.tsam, "uniformoutput", false);
+  ## abs(tsam) because of -1 for undefined sampling times
   dat.timedomain = false;
 
 endfunction
 
 
-%!shared DATD, Z
-%! DAT = iddata ({[(1:10).', (1:2:20).'], [(10:-1:1).', (20:-2:1).']}, {[(41:50).', (46:55).'], [(61:70).', (-66:-1:-75).']});
-%! DATD = detrend (DAT, "linear");
-%! Z = zeros (10, 2);
-%!assert (DATD.y{1}, Z, 1e-10);
-%!assert (DATD.y{2}, Z, 1e-10);
-%!assert (DATD.u{1}, Z, 1e-10);
-%!assert (DATD.u{2}, Z, 1e-10);
+%!shared DATD, Y, U
+%! Y = 1:10;
+%! U = 20:-2:1;
+%! DAT = iddata (Y, U);
+%! DATD = fft (DAT);
+%!assert (DATD.y{1}, Y, 1e-10);
+%!assert (DATD.u{1}, U, 1e-10);

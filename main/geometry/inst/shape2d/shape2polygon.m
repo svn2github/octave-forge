@@ -21,7 +21,7 @@
 %% @var{shape} is a n-by-1 cell where each element is a pair of polynomials
 %% compatible with polyval.
 %% @var{polygon} is a k-by-2 matrix, where each row represents a vertex.
-%% @var{N} defines the number of points to be used in non-straigth edges.
+%% @var{N} defines the number of points to be used in non-straight edges.
 %%
 %% @seealso{polygon2shape, drawPolygon}
 %% @end deftypefn

@@ -1,6 +1,19 @@
 Summary of important user-visible changes for releases of the geometry package
 
 ===============================================================================
+geometry-1.4.2   Release Date: 2012-XX-XX  Release Manager: Juan Pablo Carbajal
+===============================================================================
+
+* Added function
+ - curveval.m: Evaluates a polynomial curve defined as a 2-by-N matrix.
+ - curve2polyline.m: Converts a polynomial curve into a polyline by the adaptive
+                     sampling method.
+
+* Known issues
+ - simplifypolygon.m returns empty polygons when points are repeated, i.e when
+  the polygon is not correctly formed.
+
+===============================================================================
 geometry-1.4.1   Release Date: 2012-03-24  Release Manager: Juan Pablo Carbajal
 ===============================================================================
 

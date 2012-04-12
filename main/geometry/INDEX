@@ -124,6 +124,8 @@ geometry >> Computational Geometry
  shapecentroid
  shapeplot
  shapetransform
+ curvelval
+ curve2polyline
 2D Others
  bisector
  crackPattern2

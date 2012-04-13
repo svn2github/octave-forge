@@ -71,10 +71,10 @@ function t = ctmc_mtta( Q, p )
   [N err] = ctmc_check_Q(Q);
 
   (N>0) || \
-      usage(err);
+      error(err);
 
   ( isvector(p) && length(p) == N && all(p>=0) && abs(sum(p)-1.0)<epsilon ) || \
-      usage( "p must be a probability vector" );
+      error( "p must be a probability vector" );
 
   L = ctmc_exps(Q,p);
   t = sum(L);

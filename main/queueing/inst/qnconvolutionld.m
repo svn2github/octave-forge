@@ -93,17 +93,17 @@ function [U R Q X G] = qnconvolutionld( N, S, V )
   endif
 
   ( isscalar(N) && N>0 ) || \
-      usage( "N must be a positive scalar" );
+      error( "N must be a positive scalar" );
   K = N; # To be compliant with the reference, we denote K as the population size
   ( isvector(V) ) || \
-      usage( "V must be a vector" );
+      error( "V must be a vector" );
   V = V(:)'; # Make V a row vector
   N = length(V); # Number of service centers
   if ( isnumeric(S) ) 
     ( rows(S) == N && columns(S) == K) || \
-        usage( sprintf("S size mismatch: is %dx%d, should be %dx%d", rows(S), columns(S),K,N ) );
+        error( sprintf("S size mismatch: is %dx%d, should be %dx%d", rows(S), columns(S),K,N ) );
     all( all(S>=0) ) || \
-        usage( "S must be >=0" );
+        error( "S must be >=0" );
   endif
 
   ## Initialization

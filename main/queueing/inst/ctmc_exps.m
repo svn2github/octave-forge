@@ -79,7 +79,7 @@ function L = ctmc_exps( Q, varargin )
   [N err] = ctmc_check_Q(Q);
 
   (N>0) || \
-      usage(err);
+      error(err);
 
   if ( nargin == 2 )
     p = varargin{1};
@@ -89,14 +89,14 @@ function L = ctmc_exps( Q, varargin )
   endif
 
   ( isvector(p) && length(p) == size(Q,1) && all(p>=0) && abs(sum(p)-1.0)<epsilon ) || \
-      usage( "p must be a probability vector" );
+      error( "p must be a probability vector" );
 
   p = p(:)'; # make p a row vector
 
   if ( nargin == 3 ) # non-absorbing case
     if ( isscalar(t) )
       (t >= 0 ) || \
-	  usage( "t must be >= 0" );
+	  error( "t must be >= 0" );
       ## F(x) are the transient state occupancy probabilities at time x
       ## F(x) = p*expm(Q*x) (see function ctmc()).
       F = @(x) (p*expm(Q*x));
@@ -104,7 +104,7 @@ function L = ctmc_exps( Q, varargin )
     else
       ## FIXME: deprecate this?
       ( isvector(t) && abs(t(1)) < epsilon ) || \
-	  usage( "t must be a vector, and t(1) must be 0.0" );
+	  error( "t must be a vector, and t(1) must be 0.0" );
       t = t(:)'; # make tt a row vector
       ff = @(x,t) (x(:)'*Q+p);
       fj = @(x,t) (Q);

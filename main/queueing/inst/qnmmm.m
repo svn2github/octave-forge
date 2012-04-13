@@ -111,14 +111,14 @@ function [U R Q X p0 pm] = qnmmm( lambda, mu, m )
   endif
   [err lambda mu m] = common_size( lambda, mu, m );
   if ( err ) 
-    usage( "parameters are not of common size" );
+    error( "parameters are not of common size" );
   endif
 
   ( isvector(lambda) && isvector(mu) && isvector(m) ) || \
-      usage( "the parameters must be vectors" );
+      error( "the parameters must be vectors" );
   
   all( m>0 ) || \
-      usage( "m must be >0" );
+      error( "m must be >0" );
 
   all( lambda < m .* mu ) || \
       error( "Processing capacity exceeded" );

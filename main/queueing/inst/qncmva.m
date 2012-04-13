@@ -91,24 +91,24 @@ function [U R Q X] = qncmva( N, S, Sld, V, Z )
   endif
 
   isscalar(N) && N >= 0 || \
-      usage("N must be a positive scalar");
+      error("N must be a positive scalar");
 
   isvector(S) || \
-      usage("S must be a vector");
+      error("S must be a vector");
   S = S(:)'; # make S a row vector
   M = length(S)+1; # number of service centers (escluding the delay center)
   
   isvector(Sld) && length(Sld) == N && all(Sld>=0) || \
-      usage("Sld must be a vector with %d elements >= 0", N);
+      error("Sld must be a vector with %d elements >= 0", N);
   Sld = Sld(:)'; # Make Sld a row vector
 
   isvector(V) && length(V) == M && all(V>=0) || \
-      usage("V must be a vector with %d elements", M);
+      error("V must be a vector with %d elements", M);
   V = V(:)'; # Make V a row vector
 
   if ( nargin == 5 )
     isscalar(Z) && Z>=0 || \
-	usage("Z must be nonnegative");
+	error("Z must be nonnegative");
   else
     Z = 0;
   endif

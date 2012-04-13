@@ -52,12 +52,12 @@
 ## @table @var
 ##
 ## @item M
-## If this function is called with three parameters, @code{@var{M}(i)}
-## is the expected fraction of the interval @math{[0,t]} spent in state
-## @math{i} assuming that the state occupancy probability at time zero
-## is @var{p}. If this function is called with two parameters,
-## @code{@var{M}(i)} is the expected fraction of time until absorption
-## spent in state @math{i}.
+## When called with three arguments, @code{@var{M}(i)} is the expected
+## fraction of the interval @math{[0,t]} spent in state @math{i}
+## assuming that the state occupancy probability at time zero is
+## @var{p}. When called with two arguments, @code{@var{M}(i)} is the
+## expected fraction of time until absorption spent in state @math{i};
+## in this case the mean time to absorption is @code{sum(@var{M})}.
 ##
 ## @end table
 ##
@@ -80,7 +80,7 @@ function M = ctmc_taexps( Q, varargin )
 #{
   if ( nargin == 3 ) 
     (t >= 0) || \
-	usage( "t must be >= 0" );
+	error( "t must be >= 0" );
     F = @(x) (p*expm(Q*x));
     M = quadv(F,0,t) / t;
   else 

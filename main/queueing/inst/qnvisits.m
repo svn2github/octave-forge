@@ -80,7 +80,7 @@ function [V ch] = qnvisits( P, varargin )
   endif
 
   ( ndims(P) == 2 || ndims(P) == 4 ) || \
-      usage("P must be a 2- or 4-dimensional matrix");
+      error("P must be a 2- or 4-dimensional matrix");
 
   if ( ndims(P) == 2 ) 
     V = __qnvisitssingle( P, varargin{:} );
@@ -327,7 +327,7 @@ endfunction
 function [V chains] = __qnvisitsmulti( P, lambda )
   [C, K, C2, K2] = size( P );
   (K == K2 && C == C2) || \
-      usage( "P must be a [C,K,C,K] matrix");
+      error( "P must be a [C,K,C,K] matrix");
 
   chains = [];
 
@@ -409,7 +409,7 @@ function [V chains] = __qnvisitsmulti( P, lambda )
     ## lambda is defined as sum_r sum_i lambda(r,i)
   
     [C,K] == size(lambda) || \
-        usage( "lambda size mismatch" );
+        error( "lambda size mismatch" );
     
     ## solve the traffic equation
     A = eye(K*C) - reshape(P,[K*C K*C]);
@@ -479,7 +479,7 @@ function V = __qnvisitssingle( P, lambda )
   persistent epsilon = 10*eps;
 
   issquare(P)  || \
-      usage( "P must be a square matrix" );
+      error( "P must be a square matrix" );
 
   N = size(P,1);
   V = zeros(N,N);
@@ -490,7 +490,7 @@ function V = __qnvisitssingle( P, lambda )
     ##
     [res err] = dtmc_check_P(P);
     (res>0) || \
-        usage( "P is not a transition probability matrix for closed networks" );
+        error( "P is not a transition probability matrix for closed networks" );
 
     A = P-eye(N);
     b = zeros(1,N);
@@ -503,12 +503,12 @@ function V = __qnvisitssingle( P, lambda )
     ## Open network
     ##
     all( all(P>=0) ) && all( sum(P,2)<=1+1e-5 ) || \
-	usage( "P is not a transition probability matrix for open networks" );
+	error( "P is not a transition probability matrix for open networks" );
 
     ( isvector(lambda) && length(lambda) == N ) || \
-        usage( "lambda size mismatch" );
+        error( "lambda size mismatch" );
     all( lambda>= 0 ) || \
-        usage( "lambda contains negative values" );
+        error( "lambda contains negative values" );
 
     A = eye(N)-P;
     b = lambda / sum(lambda);

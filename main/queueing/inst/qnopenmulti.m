@@ -92,24 +92,24 @@ function [U R Q X] = qnopenmulti( lambda, S, V, m )
     print_usage();
   endif
   isvector(lambda) && all(lambda > 0) || \
-      usage( "lambda must be a vector of positive floats" );
+      error( "lambda must be a vector of positive floats" );
   lambda = lambda(:)'; # make lambda a row vector
   C = length(lambda);
   K = columns(S);
   [C,K] == size(S) || \
-      usage( "rows(S) must be equal to length(lambda)" );
+      error( "rows(S) must be equal to length(lambda)" );
   all(all( S > 0 )) || \
-      usage( "S(c,k) must be > 0" );
+      error( "S(c,k) must be > 0" );
   [C,K] == size(V) || \
-      usage( "V must be a matrix of the same size as S" );
+      error( "V must be a matrix of the same size as S" );
   all( all(V>= 0) ) || \
-      usage( "V must be >= 0 " );
+      error( "V must be >= 0 " );
 
   if ( nargin < 4 )
     m = ones(1,K);
   else
     ( isvector( m ) && length(m) == K && all( m <= 1 ) ) || \
-        usage( "m must be less than or equal to ones(1,K)" );
+        error( "m must be less than or equal to ones(1,K)" );
     m = m(:)'; # make m a row vector
   endif
 

@@ -115,7 +115,7 @@ function [U R Q X p0 pK] = qnmmmk( lambda, mu, m, K )
   endif
 
   ( isvector(lambda) && isvector(mu) && isvector(m) && isvector(K) ) || ...
-      usage( "lambda, mu, m, K must be vectors of the same size" );
+      error( "lambda, mu, m, K must be vectors of the same size" );
   lambda = lambda(:)'; # make lambda a row vector
   mu = mu(:)'; # make mu a row vector
   m = m(:)'; # make m a row vector
@@ -123,15 +123,15 @@ function [U R Q X p0 pK] = qnmmmk( lambda, mu, m, K )
 
   [err lambda mu m K] = common_size( lambda, mu, m, K );
   if ( err ) 
-    usage( "Parameters are not of common size" );
+    error( "Parameters are not of common size" );
   endif
 
   all( K>0 ) || \
-      usage( "k must be strictly positive" );
+      error( "k must be strictly positive" );
   all( m>0 ) && all( m <= K ) || \
-      usage( "m must be in the range 1:k" );
+      error( "m must be in the range 1:k" );
   all( lambda>0 ) && all( mu>0 ) || \
-      usage( "lambda and mu must be >0" );
+      error( "lambda and mu must be >0" );
   U = R = Q = X = p0 = pK = 0*lambda;
   for i=1:length(lambda)
     ## Build and solve the birth-death process describing the M/M/m/k system

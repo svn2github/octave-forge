@@ -139,33 +139,33 @@ function [U R Q X] = qnclosedmultimvaapprox( N, S, V, m, Z, \
   endif
 
   isvector(N) && all( N>=0 ) || \
-      usage( "N must be a vector of positive integers" );
+      error( "N must be a vector of positive integers" );
   N = N(:)'; # make N a row vector
   C = length(N); ## Number of classes
   K = columns(S); ## Number of service centers
   size(S) == [C,K] || \
-      usage( "S size mismatch" );
+      error( "S size mismatch" );
   size(V) == [C,K] || \
-      usage( "V size mismatch" );
+      error( "V size mismatch" );
 
   if ( nargin < 4 )
     m = ones(1,K);
   else
     isvector(m) || \
-	usage( "m must be a vector");
+	error( "m must be a vector");
     m = m(:)'; # make m a row vector
     ( length(m) == K && all( m <= 1 ) ) || \
-        usage( "m must be <= 1 and have %d elements", K );
+        error( "m must be <= 1 and have %d elements", K );
   endif
 
   if ( nargin < 5 )
     Z = zeros(1,C);
   else
     isvector(Z) || \
-	usage( "Z must be a vector" );
+	error( "Z must be a vector" );
     Z = Z(:)'; # make Z a row vector
     ( length(Z) == C && all(Z >= 0 ) ) || \
-	usage( "Z must be >= 0 and have %d elements", C );
+	error( "Z must be >= 0 and have %d elements", C );
   endif
 
   if ( nargin < 6 )
@@ -178,9 +178,9 @@ function [U R Q X] = qnclosedmultimvaapprox( N, S, V, m, Z, \
 
   ## Check consistency of parameters
   all( all( S >= 0 ) ) || \
-      usage( "S contains negative values" );
+      error( "S contains negative values" );
   all( all( V >= 0 ) ) || \
-      usage( "V contains negative values" );
+      error( "V contains negative values" );
 
   ## Initialize results
   R = zeros( C, K );

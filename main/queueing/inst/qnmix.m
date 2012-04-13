@@ -121,34 +121,34 @@ function [U R Q X] = qnmix( lambda, N, S, V, m )
     print_usage();
   endif
   isvector(lambda) || \
-      usage( "lambda must be a vector" );
+      error( "lambda must be a vector" );
   lambda = lambda(:)';
   isvector(N) || \
-      usage( "N must be a vector" );
+      error( "N must be a vector" );
   N = N(:)';
   size_equal(lambda,N) || \
-      usage( "lambda and N must be of equal length" );
+      error( "lambda and N must be of equal length" );
   ( !any( lambda>0 & N>0 ) ) || \
-      usage("A class cannot be open and closed at the same time. Check lambda and N" );
+      error("A class cannot be open and closed at the same time. Check lambda and N" );
   ( all( lambda>0 | N>0 ) ) || \
-      usage( "A class cannot be neither open nor closed. Check lambda and N" );
+      error( "A class cannot be neither open nor closed. Check lambda and N" );
   size_equal(S,V) || \
-      usage( "S and V must have the same size" );
+      error( "S and V must have the same size" );
   C = length(lambda); # number of classes
   K = columns(S); # number of service centers
   rows(S) == C || \
-      usage( "S must have %d rows", C );
+      error( "S must have %d rows", C );
   if ( nargin < 5 ) 
     m = ones(1,K);
   else
     isvector( m ) || \
-        usage( "m must be a vector" );
+        error( "m must be a vector" );
     m = m(:)';
     size_equal(lambda,m) || \
-        usage( "lambda and m must be of equal length" );
+        error( "lambda and m must be of equal length" );
   endif
   all( m<=1 ) || \
-      usage( "This function supports single-server and delay centers only. Check m" );
+      error( "This function supports single-server and delay centers only. Check m" );
   if ( !any(lambda>0) ) 
     warning( "qnmix(): There are no open classes. Using qnclosedmultimva()" );
     [U R Q X] = qnclosedmultimva( N, S, V, m );

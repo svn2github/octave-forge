@@ -89,8 +89,8 @@ function result = ctmc_fpt( Q, i, j )
       endfor
     endfor
   else
-    (isscalar(i) && i>=1 && j<=N) || usage("i must be an integer in the range 1..%d", N);
-    (isvector(j) && all(j>=1) && all(j<=N)) || usage("j must be an integer or vector with elements in 1..%d", N);
+    (isscalar(i) && i>=1 && j<=N) || error("i must be an integer in the range 1..%d", N);
+    (isvector(j) && all(j>=1) && all(j<=N)) || error("j must be an integer or vector with elements in 1..%d", N);
     j = j(:)'; # make j a row vector
     Q(j,:) = 0; # make state(s) j absorbing
     p0 = zeros(1,N); p0(i) = 1;

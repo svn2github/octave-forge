@@ -79,15 +79,15 @@ function [X_lower X_upper Q_lower Q_upper] = qnclosedgb( N, L, Z, X_minus, X_plu
     print_usage();
   endif
   ( isscalar(N) && N > 0 ) || \
-      usage( "N must be >0" );
+      error( "N must be >0" );
   ( isvector(L) && length(L) > 0 && all( L >= 0 ) ) || \
-      usage( "D must be a vector >=0" );
+      error( "D must be a vector >=0" );
   L = L(:)'; # make L a row vector
   if ( nargin < 3 )
     Z = 0;
   else
     ( isscalar(Z) && (Z >= 0) ) || \
-        usage( "Z must be >=0" );
+        error( "Z must be >=0" );
   endif
   L_tot = sum(L);
   L_max = max(L);
@@ -122,9 +122,9 @@ endfunction
 ## network with N customers, service demands D and think time Z. This
 ## function uses Eq. (8) and (13) from the reference paper.
 function [ Q_lower Q_upper ] = __compute_Q( N, L, Z, X_plus, X_minus )
-  isscalar(X_plus) || usage( "X_plus must be a scalar" );
-  isscalar(X_minus) || usage( "X_minus must be a scalar" );
-  ( isscalar(N) && (N>=0) ) || usage( "N is not valid" );
+  isscalar(X_plus) || error( "X_plus must be a scalar" );
+  isscalar(X_minus) || error( "X_minus must be a scalar" );
+  ( isscalar(N) && (N>=0) ) || error( "N is not valid" );
   L_tot = sum(L);
   L_max = max(L);
   M = length(L);

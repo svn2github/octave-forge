@@ -84,7 +84,7 @@ function p = dtmc( P, n, p0 )
   [N err] = dtmc_check_P(P);
   
   ( N>0 ) || \
-      usage( err );
+      error( err );
 
   if ( nargin == 1 ) # steady-state analysis
     A = P-eye(N);
@@ -96,10 +96,10 @@ function p = dtmc( P, n, p0 )
     p = b/A;
   else # transient analysis
     ( isscalar(n) && n>=0 ) || \
-	usage( "n must be >=0" );
+	error( "n must be >=0" );
 
     ( isvector(p0) && length(p0) == N && all(p0>=0) && abs(sum(p0)-1.0)<N*eps ) || \
-        usage( "p0 must be a probability vector" );   
+        error( "p0 must be a probability vector" );   
 
     p0 = p0(:)'; # make p0 a row vector
 

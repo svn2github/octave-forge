@@ -93,13 +93,13 @@ function [U R Q X p0] = qnmminf( lambda, mu )
   [ err lambda mu ] = common_size( lambda, mu );
 
   if ( err ) 
-    usage( "Parameters are of incompatible size" );
+    error( "Parameters are of incompatible size" );
   endif
   
   ( isvector(lambda) && isvector(mu) ) || \
-      usage( "lambda and mu must be vectors" );
+      error( "lambda and mu must be vectors" );
   ( all( lambda>0 ) && all( mu>0 ) ) || \
-      usage( "lambda and mu must be >0" );
+      error( "lambda and mu must be >0" );
   U = Q = lambda ./ mu; # Traffic intensity.
   p0 = exp(-lambda./mu); # probability that there are 0 requests in the system
   R = 1 ./ mu;

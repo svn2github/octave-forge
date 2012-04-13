@@ -119,13 +119,13 @@ function [U R Q X G] = qnclosedsinglemva( N, S, V, m, Z )
   endif
 
   isscalar(N) && N >= 0 || \
-      usage( "N must be >= 0" );
+      error( "N must be >= 0" );
   isvector(S) || \
-      usage( "S must be a vector" );
+      error( "S must be a vector" );
   S = S(:)'; # make S a row vector
 
   isvector(V) || \
-      usage( "V must be a vector" );
+      error( "V must be a vector" );
   V = V(:)'; # make V a row vector
 
   K = length(S); # Number of servers
@@ -134,23 +134,23 @@ function [U R Q X G] = qnclosedsinglemva( N, S, V, m, Z )
     m = ones(1,K);
   else
     isvector(m) || \
-	usage( "m must be a vector" );
+	error( "m must be a vector" );
     m = m(:)'; # make m a row vector
   endif
 
   [err S V m] = common_size(S, V, m);
   (err == 0) || \
-      usage( "S, V and m are of incompatible size" );
+      error( "S, V and m are of incompatible size" );
   all(S>=0) || \
-      usage( "S must be a vector >= 0" );
+      error( "S must be a vector >= 0" );
   all(V>=0) || \
-      usage( "V must be a vector >= 0" );
+      error( "V must be a vector >= 0" );
 
   if ( nargin < 5 )
     Z = 0;
   else
     (isscalar(Z) && Z >= 0) || \
-        usage( "Z must be >= 0" );
+        error( "Z must be >= 0" );
   endif
 
   U = R = Q = X = zeros( 1, K );

@@ -86,7 +86,7 @@ function q = ctmc( Q, t, p0 )
   [N err] = ctmc_check_Q(Q);
 
   ( N>0 ) || \
-      usage(err);
+      error(err);
 
   if ( nargin == 1 ) # steady-state analysis
 
@@ -112,10 +112,10 @@ function q = ctmc( Q, t, p0 )
   else # transient analysis
 
     ( isscalar(t) && t>=0 ) || \
-        usage("t must be a scalar >= 0");
+        error("t must be a scalar >= 0");
 
     ( isvector(p0) && length(p0) == N && all(p0>=0) && abs(sum(p0)-1.0)<N*eps ) || \
-        usage( "p0 must be a probability vector" );   
+        error( "p0 must be a probability vector" );   
 
     p0 = p0(:)'; # make p0 a row vector
 

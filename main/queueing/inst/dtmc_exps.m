@@ -74,7 +74,7 @@ function L = dtmc_exps ( P, varargin )
   [K err] = dtmc_check_P(P);
 
   (K>0) || \
-      usage(err);
+      error(err);
 
   if ( nargin == 2 )
     p0 = varargin{1};
@@ -84,7 +84,7 @@ function L = dtmc_exps ( P, varargin )
   endif
 
   ( isvector(p0) && length(p0) == K && all(p0>=0) && abs(sum(p0)-1.0)<epsilon ) || \
-      usage( "p0 must be a state occupancy probability vector" );
+      error( "p0 must be a state occupancy probability vector" );
 
   p0 = p0(:)'; # make p0 a row vector
 

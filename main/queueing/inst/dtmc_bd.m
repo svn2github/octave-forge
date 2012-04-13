@@ -75,17 +75,17 @@ function P = dtmc_bd( b, d )
   endif
 
   ( isvector( b ) && isvector( d ) ) || \
-      usage( "birth and death must be vectors" );
+      error( "birth and death must be vectors" );
   b = b(:); # make b a column vector
   d = d(:); # make d a column vector
   size_equal( b, d ) || \
-      usage( "birth and death vectors must have the same length" );
+      error( "birth and death vectors must have the same length" );
   all( b >= 0 ) || \
-      usage( "birth probabilities must be >= 0" );
+      error( "birth probabilities must be >= 0" );
   all( d >= 0 ) || \
-      usage( "death probabilities must be >= 0" );
+      error( "death probabilities must be >= 0" );
   all( ([b; 0] + [0; d]) <= 1 ) || \
-      usage( "d(i)+b(i+1) must be <= 1");
+      error( "d(i)+b(i+1) must be <= 1");
 
   P = diag( b, 1 ) + diag( d, -1 );
   P += diag( 1-sum(P,2) );

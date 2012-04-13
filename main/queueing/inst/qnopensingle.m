@@ -101,25 +101,25 @@ function [U R Q X] = qnopensingle( lambda, S, V, m )
     print_usage();
   endif
   ( isscalar(lambda) && lambda>0 ) || \
-      usage( "lambda must be a positive number" );
+      error( "lambda must be a positive number" );
   lambda = lambda(:)';
   ( isvector( S ) && all(S>0) ) || \
-      usage( "S must be a vector >0" );
+      error( "S must be a vector >0" );
   S = S(:)';
   K = length(S);
   ( isvector( V ) && length(V)==K && all(V>=0) ) || \
-      usage( "V must be a vector >=0 and of the same length as S" );
+      error( "V must be a vector >=0 and of the same length as S" );
   V = V(:)';
 
   if ( nargin < 4 )
     m = ones(1,K);
   else
     (isvector(m) && (length(m) == K)) || \
-	usage( "m must be a vector of %d elements", K);
+	error( "m must be a vector of %d elements", K);
     m = m(:)';
     [err m] = common_size(m,S);
     ( err == 0 ) || \
-        usage( "m and S are not of common size" );
+        error( "m and S are not of common size" );
   endif
 
   ## Compute maximum processing capacity

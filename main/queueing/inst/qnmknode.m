@@ -99,12 +99,12 @@
 function Q = qnmknode( node, S, varargin )
 
   ischar(node) || \
-      usage( "Parameter \"node\" must be a string" );
+      error( "Parameter \"node\" must be a string" );
 
   node = tolower(node);
 
   isvector(S) || ismatrix(S) || \
-      usage( "Parameter \"S\" must be a vector" );
+      error( "Parameter \"S\" must be a vector" );
   m = 1;
   s2 = ones( size(S) );
   if ( strcmp(node, "m/m/m-fcfs") )
@@ -115,7 +115,7 @@ function Q = qnmknode( node, S, varargin )
     if ( 3 == nargin )
       m = varargin{1};
       m>=1 || \
-	  usage( "m must be >=1" );
+	  error( "m must be >=1" );
     endif
   elseif ( strcmp(node, "m/m/1/k-fcfs") )
     ## M/M/1/k finite capacity node
@@ -125,7 +125,7 @@ function Q = qnmknode( node, S, varargin )
     if ( 3 == nargin )
       k = varargin{1};
       k>=1 || \
-	  usage( "k must be >=1" );
+	  error( "k must be >=1" );
     endif
   elseif ( strcmp(node, "-/g/1-lcfs-pr") )
     ## -/G/1-LCFS-PR node
@@ -149,7 +149,7 @@ function Q = qnmknode( node, S, varargin )
       s2 = varargin{1};
     endif
   else
-    usage( "Unknown node type \"%s\". node type must be one of \"m/m/m-fcfs\", \"-/g/1-lcfs-pr\", \"-/g/1-ps\" and \"-/g/inf\"", node );
+    error( "Unknown node type \"%s\". node type must be one of \"m/m/m-fcfs\", \"-/g/1-lcfs-pr\", \"-/g/1-ps\" and \"-/g/inf\"", node );
   endif
   Q = struct( "node", node, "m", m, "S", S, "s2", s2, "c", rows(S), "comment", "" );
 endfunction

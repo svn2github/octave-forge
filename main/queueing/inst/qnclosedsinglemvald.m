@@ -89,21 +89,21 @@ function [U R Q X] = qnclosedsinglemvald( N, S, V, Z )
   endif
 
   isvector(V) && all(V>=0) || \
-      usage( "V must be a vector >= 0" );
+      error( "V must be a vector >= 0" );
   V = V(:)'; # make V a row vector
   K = length(V); # Number of servers
   isscalar(N) && N >= 0 || \
-      usage( "N must be >= 0" );
+      error( "N must be >= 0" );
   ( ismatrix(S) && rows(S) == K && columns(S) >= N ) || \
-      usage( "S size mismatch: is %dx%d, should be %dx%d", rows(S), columns(S), K, N );
+      error( "S size mismatch: is %dx%d, should be %dx%d", rows(S), columns(S), K, N );
   all(all(S>=0)) || \
-      usage( "S must be >= 0" );
+      error( "S must be >= 0" );
 
   if ( nargin < 4 ) 
     Z = 0;
   else
     isscalar(Z) && Z>=0 || \
-        usage( "Z must be >= 0" );
+        error( "Z must be >= 0" );
   endif
 
   ## Initialize results

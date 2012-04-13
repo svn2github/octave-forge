@@ -89,14 +89,14 @@ function [U R Q X p0] = qnmm1( lambda, mu )
   ## bring the parameters to a common size
   [ err lambda mu ] = common_size( lambda, mu );
   if ( err ) 
-    usage( "parameters are of incompatible size" );
+    error( "parameters are of incompatible size" );
   endif
   ( isvector(lambda) && isvector(mu) ) || \
-      usage( "lambda and mu must be vectors" );
+      error( "lambda and mu must be vectors" );
   all( lambda > 0 ) || \
-      usage( "lambda must be >0" );
+      error( "lambda must be >0" );
   all( mu > lambda ) || \
-      usage( "The system is not ergodic" );
+      error( "The system is not ergodic" );
   U = rho = lambda ./ mu; # utilization
   p0 = 1-rho;
   Q = rho ./ (1-rho);

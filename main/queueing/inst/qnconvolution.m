@@ -94,25 +94,25 @@ function [U R Q X G] = qnconvolution( N, S, V, m )
   endif
 
   ( isscalar(N) && N>0 ) || \
-      usage( "K must be a positive scalar" );
+      error( "K must be a positive scalar" );
   K = N; # To be compliant with the reference, we use K to denote the population size
   ( isvector(S) && all(S >= 0) ) || \
-      usage( "S must be a vector of positive scalars" );
+      error( "S must be a vector of positive scalars" );
   S = S(:)'; # make S a row vector
   N = length(S); # Number of service centers
   ( isvector(V) && size_equal(V,S) ) || \
-      usage( "V must be a vector of the same length as S" );
+      error( "V must be a vector of the same length as S" );
   V = V(:)';
 
   if ( nargin < 4 )
     m = ones(1,N);
   else
     isvector(m) || \
-	usage( "m must be a vector" );
+	error( "m must be a vector" );
     m = m(:)';
     [err m S] = common_size(m, S);
     (err == 0) || \
-        usage( "m and S have incompatible size" );
+        error( "m and S have incompatible size" );
   endif
 
   ## First, we remember the indexes of IS nodes
@@ -208,7 +208,7 @@ endfunction
 ## and accepts a vector as parameter j.
 function result = F(i,j,v,S,m)
   isscalar(i) || \
-      usage( "i must be a scalar" );
+      error( "i must be a scalar" );
   k_i = j;
   if ( m(i) == 1 )
     result = ( v(i)*S(i) ).^k_i;

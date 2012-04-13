@@ -91,15 +91,15 @@ function [U R Q X] = qnmvablo( K, S, M, P )
     print_usage();
   endif
   ( isscalar(K) && K > 0 ) || \
-      usage( "K must be a positive integer" );
+      error( "K must be a positive integer" );
   isvector(S) && all(S>0) || \
       error ("S must be a vector > 0");
   S = S(:)'; # make S a row vector
   N = length(S);
   ( isvector(M) && length(M) == N ) || \
-      usage( "M must be a vector with %d elements", N );
+      error( "M must be a vector with %d elements", N );
   all( M >= 1) || \
-      usage( "M must be >= 1");
+      error( "M must be >= 1");
   M = M(:)'; # make M a row vector
 
   (K < sum(M)) || \

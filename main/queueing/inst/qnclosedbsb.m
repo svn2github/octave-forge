@@ -69,14 +69,14 @@ function [Xl Xu Rl Ru] = qnclosedbsb( N, D, Z )
     print_usage();
   endif
   ( isscalar(N) && N>0 ) || \
-      usage( "N must be a positive scalar" );
+      error( "N must be a positive scalar" );
   ( isvector(D) && length(D)>0 && all(D>=0) ) || \
-      usage( "D must be a vector of nonnegative floats" );
+      error( "D must be a vector of nonnegative floats" );
   if ( nargin < 3 )
     Z = 0;
   else
     ( isscalar(Z) && Z>=0 ) || \
-        usage( "Z must be a nonnegative scalar" );
+        error( "Z must be a nonnegative scalar" );
   endif
 
   D_max = max(D);

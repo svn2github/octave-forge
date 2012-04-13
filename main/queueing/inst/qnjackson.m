@@ -24,9 +24,9 @@
 ## @cindex open network, single class
 ## @cindex Jackson network
 ##
-## With three or four input parameters, this function computes the
-## steady-state occupancy probabilities for a Jackson network. With five
-## input parameters, this function computes the steady-state probability
+## With three or four arguments, this function computes the steady-state
+## occupancy probabilities for a Jackson network. With five arguments,
+## this function computes the steady-state probability
 ## @code{@var{pi}(j)} that there are @code{@var{k}(j)} requests at
 ## service center @math{j}.
 ##
@@ -66,8 +66,8 @@
 ## @code{@var{m}(i)} is the number of servers at service center
 ## @math{i}. If @code{@var{m}(i) < 1}, service center @math{i} is an
 ## infinite-server node. Otherwise, it is a regular FCFS queueing center with
-## @code{@var{m}(i)} servers. If this parameter is omitted, default is
-## @code{@var{m}(i) = 1} for all @math{i}. If this parameter is a scalar,
+## @code{@var{m}(i)} servers. If this argument is omitted, default is
+## @code{@var{m}(i) = 1} for all @math{i}. If this argument is a scalar,
 ## it will be promoted to a vector with the same size as @var{lambda}.
 ## Otherwise, @var{m} must be a vector of length @math{N}.
 ##
@@ -116,18 +116,18 @@ function [U_or_pi R Q X] = qnjackson( lambda, S, P, m, k )
     print_usage();
   endif
   ( isvector(lambda) && all(lambda>=0) ) || \
-      usage( "lambda must be a vector >= 0" );
+      error( "lambda must be a vector >= 0" );
   lambda=lambda(:)'; # make lambda a row vector
   N = length(lambda);
   isvector(S) || \
-      usage( "S must be a vector" );
+      error( "S must be a vector" );
   S = S(:)'; # make S a row vector
   size_equal(lambda,S) || \
-      usage( "lambda and S must of be of the same length" );
+      error( "lambda and S must of be of the same length" );
   all(S>0) || \
-      usage( "S must be >0" );
+      error( "S must be >0" );
   [N,N] == size(P) || \
-      usage(" P must be a matrix of size length(lambda) x length(lambda)" );  
+      error(" P must be a matrix of size length(lambda) x length(lambda)" );  
   all(all(P>=0)) && all(sum(P,2)<=1) || \
       error( "P is not a transition probability matrix" );
 
@@ -136,7 +136,7 @@ function [U_or_pi R Q X] = qnjackson( lambda, S, P, m, k )
   else
     [errorcode, lambda, m] = common_size(lambda, m);
     ( isvector(m) && (errorcode==0) ) || \
-        usage("m and lambda must have the same length" );
+        error("m and lambda must have the same length" );
   endif
 
   ## Compute the arrival rates using the traffic equation:
@@ -153,9 +153,9 @@ function [U_or_pi R Q X] = qnjackson( lambda, S, P, m, k )
   if ( nargin == 5 )
 
     ( isvector(k) && size_equal(lambda,k) ) || \
-        usage( "k must be a vector of the same size as lambda" );
+        error( "k must be a vector of the same size as lambda" );
     all(k>=0) || \
-        usage( "k must be nonnegative" );
+        error( "k must be nonnegative" );
 
     ## compute occupancy probability
     rho = l .* S ./ m;      

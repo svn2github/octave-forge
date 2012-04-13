@@ -144,17 +144,17 @@ function [U R Q X] = qnmarkov( x, S, C, P, m )
     print_usage();
   endif
 
-  isvector(S) || usage( "S must be a vector" );
+  isvector(S) || error( "S must be a vector" );
   K = length(S); # number of service centers
 
   if ( nargin < 5 )
     m = ones(1,K);
   else
-    size_equal(m,S) || usage( "m must have the same langth as S" );
+    size_equal(m,S) || error( "m must have the same langth as S" );
   endif
 
   ( [K,K] == size(P) && all( all(P>=0)) && all(sum(P,2) <= 1)) || \
-      usage( "P must be SxS and nonnegative" );
+      error( "P must be SxS and nonnegative" );
 
   if ( isscalar(x) )
     is_open = false;
@@ -167,7 +167,7 @@ function [U R Q X] = qnmarkov( x, S, C, P, m )
     is_open = true;
     lambda = x; # open network
     size_equal(lambda, S ) || \
-        usage( "lambda must have the same langth as S" );
+        error( "lambda must have the same langth as S" );
   endif
 
   ( all(m > 0) && all(m <= C) ) || \

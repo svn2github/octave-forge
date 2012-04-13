@@ -75,7 +75,7 @@ function [U R Q X p0 pm] = qnammm( lambda, mu )
   endif
 
   ( isscalar(lambda) && isvector(mu) ) || \
-      usage( "the parameters must be vectors" );
+      error( "the parameters must be vectors" );
 
   m = length(mu); # number of servers
 

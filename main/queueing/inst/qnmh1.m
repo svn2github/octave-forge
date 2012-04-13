@@ -95,12 +95,12 @@ function [U R Q X p0] = qnmh1(lambda, mu, alpha)
       print_usage();
    endif
    if ( size(mu) != size(alpha) )
-      usage( "parameters are of incompatible size" );
+      error( "parameters are of incompatible size" );
    endif
    [n c] = size(mu);
 
    if (!is_scalar(lambda) && (n != length(lambda)) ) 
-      usage( "parameters are of incompatible size" );
+      error( "parameters are of incompatible size" );
    endif
    for i=1:n
       avg  = sum( alpha(i,:) .* (1 ./ mu(i,:)) );

@@ -64,9 +64,9 @@ function [X_upper R_lower] = qnopenab( lambda, D )
     print_usage();
   endif
   ( isscalar(lambda) && lambda > 0 ) || \
-      usage( "lambda must be a positive scalar" );
+      error( "lambda must be a positive scalar" );
   ( isvector(D) && length(D)>0 && all( D>=0 ) ) || \
-      usage( "D must be a vector of nonnegative scalars" );
+      error( "D must be a vector of nonnegative scalars" );
 
   X_upper = 1/max(D);
   R_lower = sum(D);

@@ -79,7 +79,7 @@ function [U R Q X p0] = qnmg1(lambda, xavg, x2nd)
    ## bring the parameters to a common size
    [ err lambda xavg x2nd ] = common_size( lambda, xavg, x2nd );
    if ( err ) 
-      usage( "parameters are of incompatible size" );
+      error( "parameters are of incompatible size" );
    endif
 
    mu = 1 ./ xavg;

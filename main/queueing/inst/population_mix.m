@@ -84,10 +84,10 @@ function pop_mix = population_mix( k, population )
   endif
 
   isvector( population ) && all( population>=0 ) || \
-      usage( "N must be an array >=0" );
+      error( "N must be an array >=0" );
   R = length(population); # number of classes
   ( isscalar(k) && k >= 0 && k <= sum(population) ) || \
-      usage( "k must be a scalar <= %d", sum(population));
+      error( "k must be a scalar <= %d", sum(population));
   N = zeros(1, R);
   const = min(k, population);
   mp = 0;

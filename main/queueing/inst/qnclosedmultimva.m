@@ -27,9 +27,8 @@
 ## @cindex Mean Value Analysys (MVA)
 ## @cindex closed network, multiple classes
 ##
-## Analyze closed, multiclass queueing networks with @math{K} service
-## centers and @math{C} independent customer classes (chains) using the
-## Mean Value Analysys (MVA) algorithm. 
+## Compute steady-state performance measures for closed, multiclass
+## queueing networks using the Mean Value Analysys (MVA) algorithm.
 ##
 ## Queueing policies at service centers can be any of the following:
 ##
@@ -63,9 +62,10 @@
 ##
 ## If this function is called specifying the routing probability matrix
 ## @var{P}, then class switching @strong{is} allowed; however, in this
-## case all nodes are restricted to be fixed rate service centers or
-## delay centers: multiple-server and general load-dependent
-## centers are not supported. @end quotation
+## case all nodes are restricted to be fixed rate servers or delay
+## centers: multiple-server and general load-dependent centers are not
+## supported.
+## @end quotation
 ##
 ## @strong{INPUTS}
 ##
@@ -74,30 +74,31 @@
 ## @item N
 ## @code{@var{N}(c)} is the number of class @math{c} requests in the
 ## system; @code{@var{N}(c) @geq{} 0}. If class @math{c} has
-## no requests (@code{@var{N}(c) = 0}), then
+## no requests (@code{@var{N}(c) == 0}), then for all @var{k},
 ## @code{@var{U}(c,k) = @var{R}(c,k) = @var{Q}(c,k) = @var{X}(c,k) = 0}
-## for all @var{k}.
 ##
 ## @item S
 ## @code{@var{S}(c,k)} is the mean service time for class @math{c}
-## customers at center @math{k} (@code{@var{S}(c,k) @geq{} 0}).
-## If service time at center @math{k} is class-dependent,
-## then center #math{k} is assumed to be of type @math{-/G/1}--PS
-## (Processor Sharing).
+## customers at center @math{k} (@code{@var{S}(c,k) @geq{} 0}). If the
+## service time at center @math{k} is class-dependent, i.e., different
+## classes have different service times at center @math{k}, then center
+## @math{k} is assumed to be of type @math{-/G/1}--PS (Processor
+## Sharing).
 ## If center @math{k} is a FCFS node (@code{@var{m}(k)>1}), then the
-## service times @strong{must} be class-independent.
+## service times @strong{must} be class-independent, i.e., all classes
+## @strong{must} have the same service time.
 ##
 ## @item V
 ## @code{@var{V}(c,k)} is the average number of visits of class @math{c}
 ## customers to service center @math{k}; @code{@var{V}(c,k) @geq{} 0},
 ## default is 1.
-## @strong{If you pass this parameter, class switching is not
+## @strong{If you pass this argument, class switching is not
 ## allowed}
 ##
 ## @item P
 ## @code{@var{P}(r,i,s,j)} is the probability that a class @math{r}
 ## job completing service at center @math{i} is routed to center @math{j}
-## as a class @math{s} job. @strong{If you pass this parameter, 
+## as a class @math{s} job. @strong{If you pass this argument,
 ## class switching is allowed}.
 ##
 ## @item m
@@ -162,17 +163,17 @@ function [U R Q X] = qnclosedmultimva( N, S, V, varargin )
 
   ## basic sanity checks
   isvector(N) && all( N>=0 ) || \
-      usage( "N must be a vector >=0" );
+      error( "N must be a vector >=0" );
   C = length(N); ## Number of classes
   ( ndims(S) == 2 ) || \
-      usage( "S must be a matrix" );
+      error( "S must be a matrix" );
 
   if ( nargin == 2 )
     V = ones(size(S));
   endif
 
   ( ismatrix(V) && (ndims(V) == 2 || ndims(V) == 4) ) || \
-      usage("The third parametermust be a 2- or 4-dimensional matrix" );
+      error("The third argument must be a 2- or 4-dimensional matrix" );
 
   if ( ndims(V) == 2 )
     [U R Q X] = __qnclosedmultimva_nocs( N, S, V, varargin{:} );
@@ -191,34 +192,34 @@ function [U R Q X] = __qnclosedmultimva_cs( N, S, P, m )
   endif
 
   isvector(N) && all( N>=0 ) || \
-      usage( "N must be >=0" );
+      error( "N must be >=0" );
   N = N(:)'; # make N a row vector
   C = length(N); ## Number of classes
   ( ndims(S) == 2 ) || \
-      usage( "S must be a matrix" );
+      error( "S must be a matrix" );
   K = columns(S); ## Number of service centers
   size(S) == [C,K] || \
-      usage( "S size mismatch (is %dx%d, should be %dx%d)", rows(S), columns(S), C, K );
+      error( "S size mismatch (is %dx%d, should be %dx%d)", rows(S), columns(S), C, K );
   ndims(P) == 4 && size(P) == [C,K,C,K] || \
-      usage( "P size mismatch (should be %dx%dx%dx%d)",C,K,C,K );
+      error( "P size mismatch (should be %dx%dx%dx%d)",C,K,C,K );
 
   if ( nargin < 4 ) 
     m = ones(1,K);
   else
     isvector(m) || \
-        usage( "m must be a vector" );
+        error( "m must be a vector" );
     m = m(:)'; # make m a row vector
     length(m) == K || \
-        usage( "m size mismatch (should be %d, is %d)", K, length(m) );
+        error( "m size mismatch (should be %d, is %d)", K, length(m) );
   endif
 
   ## Check consistency of parameters
   all( all( S >= 0 ) ) || \
-      usage( "S must be >= 0" );
+      error( "S must be >= 0" );
   all( any(S>0,2) ) || \
-      usage( "S must contain at least a value >0 for each row" );
+      error( "S must contain at least a value >0 for each row" );
   all( all( P >= 0 ) ) || \
-      usage( "V must be >=0" );
+      error( "V must be >=0" );
 
   U = R = Q = X = zeros(C,K);
 
@@ -288,42 +289,42 @@ function [U R Q X Qnm1] = __qnclosedmultimva_nocs( N, S, V, m, Z )
   endif
 
   isvector(N) && all( N>=0 ) || \
-      usage( "N must be >=0" );
+      error( "N must be >=0" );
   N = N(:)'; # make N a row vector
   C = length(N); ## Number of classes
   K = columns(S); ## Number of service centers
   size(S) == [C,K] || \
-      usage( "S size mismatch" );
+      error( "S size mismatch" );
   size(V) == [C,K] || \
-      usage( "V size mismatch" );
+      error( "V size mismatch" );
 
   if ( nargin < 4 ) 
     m = ones(1,K);
   else
     isvector(m) || \
-        usage( "m must be a vector" );
+        error( "m must be a vector" );
     m = m(:)'; # make m a row vector
     length(m) == K || \
-        usage( "m size mismatch (should be %d, is %d)", K, length(m) );
+        error( "m size mismatch (should be %d, is %d)", K, length(m) );
   endif
 
   if ( nargin < 5 )
     Z = zeros(1,C);
   else
     isvector(Z) || \
-        usage( "Z must be a vector" );
+        error( "Z must be a vector" );
     Z = Z(:)'; # make Z a row vector
     length(Z) == C || \
-	usage( "Z size mismatch (should be %d, is %d)", C, length(Z) );
+	error( "Z size mismatch (should be %d, is %d)", C, length(Z) );
   endif
 
   ## Check consistency of parameters
   all( all( S >= 0 ) ) || \
-      usage( "S must be >= 0" );
+      error( "S must be >= 0" );
   all( any(S>0,2) ) || \
-      usage( "S must contain at least a value >0 for each row" );
+      error( "S must contain at least a value >0 for each row" );
   all( all( V >= 0 ) ) || \
-      usage( "V must be >=0" );
+      error( "V must be >=0" );
 
   ## ensure that the service times for multiserver nodes
   ## are class-independent
@@ -476,7 +477,7 @@ endfunction
 %! S = [1 2 3; 1 2 3];
 %! N = [1 1];
 %! V = zeros(3,2,3);
-%! fail( "qnclosedmultimva(N,S,V)", "third parameter" );
+%! fail( "qnclosedmultimva(N,S,V)", "third argument" );
 
 ## Check degenerate case (population is zero); LI servers
 %!test

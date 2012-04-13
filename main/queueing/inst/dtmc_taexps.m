@@ -31,18 +31,16 @@
 ##
 ## @table @var
 ##
-## @item Q
-## Infinitesimal generator matrix. @code{@var{Q}(i,j)} is the transition
-## rate from state @math{i} to state @math{j},
-## @math{1 @leq{} i \neq j @leq{} N}. The
-## matrix @var{Q} must also satisfy the condition @math{\sum_{j=1}^N Q_{i, j} = 0}
+## @item P
+## @math{N \times N} transition probability matrix.
 ##
-## @item t
-## Time. If omitted, the results are computed until absorption.
+## @item n
+## Number of transitions during which the time-averaged expected sojourn times
+## are computed (@math{@var{n} @geq{} 0}). if @math{@var{n} = 0},
+## returns @var{p0}.
 ##
-## @item p
-## @code{@var{p}(i)} is the probability that, at time 0, the system was in
-## state @math{i}, for all @math{i = 1, @dots{}, N}
+## @item p0
+## Initial state occupancy probabilities.
 ##
 ## @end table
 ##
@@ -51,12 +49,12 @@
 ## @table @var
 ##
 ## @item M
-## If this function is called with three arguments, @code{@var{M}(i)}
-## is the expected fraction of the interval @math{[0,t]} spent in state
-## @math{i} assuming that the state occupancy probability at time zero
-## is @var{p}. If this function is called with two arguments,
-## @code{@var{M}(i)} is the expected fraction of time until absorption
-## spent in state @math{i}.
+## If this function is called with three arguments, @code{@var{M}(i)} is
+## the expected fraction of steps @math{@{0, 1, @dots{}, n@}} spent in
+## state @math{i}, assuming that the state occupancy probabilities at
+## time zero are @var{p0}. If this function is called with two
+## arguments, @code{@var{M}(i)} is the expected fraction of steps spent
+## in state @math{i} until absorption.
 ##
 ## @end table
 ##

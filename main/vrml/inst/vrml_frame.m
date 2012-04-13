@@ -48,7 +48,7 @@ args = nargin; # nargin is now a function
 while args && numeric_args<2,
 
 
-  tmp = nth (varargin, numeric_args + 1);
+  tmp = varargin{numeric_args + 1};
   if ischar (tmp), break; end
   --args;
   numeric_args++;

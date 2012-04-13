@@ -75,7 +75,7 @@ i = 1;
 args = nargin; # nargin is now a function
 while --args,
 
-  tmp = nth (varargin, i++);
+  tmp = varargin{i++};
   if     strcmp (tmp, "nobg"),
     bg_node = "";
   elseif strcmp (tmp, "nolight"),
@@ -111,7 +111,7 @@ while i <= length (varargin) ,
 
   if verbose, printf ("save_vrml : %i'th string\n",i); end
 
-  fprintf (fid,"%s", nth (varargin, i)) ;
+  fprintf (fid,"%s", varargin{i}) ;
   i++ ;
 end
 

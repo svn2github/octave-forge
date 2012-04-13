@@ -80,13 +80,13 @@ make install
 %_mandir/*
 
 %changelog
-* Wed Jun 16 2004 Laurent Mazet <laurent.mazet@math.cnrs.fr> 2003.1-1mdk
+* Wed Jun 16 2004 Laurent Mazet <mazet@crm.mot.com> 2003.1-1mdk
 - Update to qhull new version
 
-* Thu Sep 05 2002 Laurent Mazet <laurent.mazet@math.cnrs.fr> 2002.1-1mdk
+* Thu Sep 05 2002 Laurent Mazet <mazet@crm.mot.com> 2002.1-1mdk
 - Update to qhull new version
 
-* Thu May 30 2002 Laurent Mazet <laurent.mazet@math.cnrs.fr> 3.1-1mdk
+* Thu May 30 2002 Laurent Mazet <mazet@crm.mot.com> 3.1-1mdk
 - First package
 
 # end of file

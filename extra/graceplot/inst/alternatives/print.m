@@ -77,7 +77,7 @@
 ##
 
 ## Author: Daniel Heiserer <Daniel.heiserer@physik.tu-muenchen.de>
-## 2001-03-23  Laurent Mazet <laurent.mazet@math.cnrs.fr>
+## 2001-03-23  Laurent Mazet <mazet@crm.mot.com>
 ##     * simplified interface: guess the device from the extension
 ##     * font support
 ## 2001-03-25  Paul Kienzle <pkienzle@users.sf.net>
@@ -85,7 +85,7 @@
 ##     * use tmpnam to generate temporary name
 ##     * move "set term" before "set output" as required by gnuplot
 ##     * more options, and flexible options
-## 2001-03-29  Laurent Mazet <laurent.mazet@math.cnrs.fr>
+## 2001-03-29  Laurent Mazet <mazet@crm.mot.com>
 ##     * add solid and dashed options
 ##     * change PBMplus device
 ##     * add Corel device
@@ -95,7 +95,7 @@
 ##     * create a .ps for printing (avoid some filtering problems).
 ##     * default printing is mono, default convert is color.
 ##     * add font size support.
-## 2001-03-30  Laurent Mazet <laurent.mazet@math.cnrs.fr>
+## 2001-03-30  Laurent Mazet <mazet@crm.mot.com>
 ##     * correct correl into corel
 ##     * delete a irrelevant test
 ##     * check for convert before choosing the ouput device

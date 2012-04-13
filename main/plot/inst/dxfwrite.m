@@ -1,5 +1,5 @@
 ## Copyright (C) 2004 Patrick Labbe
-## Copyright (C) 2004 Laurent Mazet <laurent.mazet@math.cnrs.fr>
+## Copyright (C) 2004 Laurent Mazet <mazet@crm.mot.com>
 ## Copyright (C) 2005 Larry Doolittle <ldoolitt@recycle.lbl.gov>
 ##
 ## This program is free software; you can redistribute it and/or modify

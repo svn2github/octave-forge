@@ -1,8 +1,8 @@
 Name: Vrml
 Version: 1.0.12
 Date: 2010-04-11
-Author: Etienne Grossmann <etienne@cs.uky.edu>
-Maintainer: Etienne Grossmann <etienne@cs.uky.edu>
+Author: Etienne Grossmann <etienne@isr.ist.utl.pt>
+Maintainer: Etienne Grossmann <etienne@isr.ist.utl.pt>
 Title: VRML.
 Description: 3D graphics using VRML
 Depends: octave (>= 2.9.7), miscellaneous, struct, statistics

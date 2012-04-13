@@ -1,4 +1,4 @@
-## Copyright (C) 2000 Etienne Grossmann <etienne@cs.uky.edu>
+## Copyright (C) 2000 Etienne Grossmann <etienne@isr.ist.utl.pt>
 ## Copyright (C) 2000 Paul Kienzle <pkienzle@users.sf.net>
 ## Copyright (C) 2012 Olaf Till <i7tiol@t-online.de>
 ##

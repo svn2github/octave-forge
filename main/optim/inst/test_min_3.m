@@ -1,4 +1,4 @@
-## Copyright (C) 2002 Etienne Grossmann <etienne@cs.uky.edu>
+## Copyright (C) 2002 Etienne Grossmann <etienne@isr.ist.utl.pt>
 ## Copyright (C) 2004 Michael Creel <michael.creel@uab.es>
 ##
 ## This program is free software; you can redistribute it and/or modify it under

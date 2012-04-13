@@ -19,7 +19,7 @@
 ## Optionally, returns also linear indices.
 ## @end deftypefn
 
-## Author:        Etienne Grossmann <etienne@cs.uky.edu>
+## Author:        Etienne Grossmann <etienne@isr.ist.utl.pt>
 ## Author:        Jaroslav Hajek <highegg@gmail.com>
 
 function [y, f] = nze (x)

@@ -1,8 +1,33 @@
+2012-04-13  José Luis García Pallero  <jgpallero@gmail.com>
+
+	* .hgtags:
+	Version 1.1.0
+	[12956dd625ba] [tip]
+
+	* src/projwrap.c:
+	Fix bug with return of pj_transform (this bug was introduced in the
+	previous commit)
+	[37daef7c6a9f] [OctPROJ-1.1.0]
+
+	* DESCRIPTION:
+	Change DESCRIPTION file for the new version
+	[be913864a259]
+
+	* doc/octproj.pdf, doc/octproj.tex:
+	Put the date of different releases in the reference manual
+	[b08517c90fe3]
+
+	* src/projwrap.c, src/projwrap.h:
+	Changes for working with PROJ >= 4.8.0: include proj_api.h instead
+	of projects.h and change detection for inverse step in projections.
+	Remains backward compatible until PROJ 4.5.0
+	[b102562a313b]
+
 2011-05-13  José Luis García Pallero  <jgpallero@gmail.com>
 
 	* .hgtags:
 	version 1.0.2
-	[9f5db47ce5c1] [tip]
+	[9f5db47ce5c1]
 
 	* DESCRIPTION:
 	Update the DESCRIPTION file with the new version number

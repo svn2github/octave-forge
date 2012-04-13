@@ -138,14 +138,6 @@ int proj_inv(double* u,
         //exit
         return *idErr;
     }
-    //test if inverse step exist
-    if(pjStruct->inv==0)
-    {
-        //error text
-        sprintf(errorText,"Inverse step do not exists\n\t%s",params);
-        //exit
-        return PROJWRAP_ERR_NOT_INV_PROJ;
-    }
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
     //projection error initialization
@@ -168,14 +160,28 @@ int proj_inv(double* u,
             out.v = HUGE_VAL;
             //assign error code
             idErr = pj_get_errno_ref();
-            //error text (only the first time)
-            if(pos==0)
+            //was the error due to inverse step do not exist?
+            if((*idErr)==PROJ_ERR_NOT_INV_PROJ)
             {
+                //memory free
+                pj_free(pjStruct);
                 //error text
-                sprintf(errorText,"Projection error\n\t%s",pj_strerrno(*idErr));
+                sprintf(errorText,"Inverse step do not exists\n\t%s",params);
+                //exit
+                return PROJWRAP_ERR_NOT_INV_PROJ;
             }
-            //projection error identificator
-            *projectionError = 1;
+            else
+            {
+                //error text (only the first time)
+                if(pos==0)
+                {
+                    //error text
+                    sprintf(errorText,"Projection error\n\t%s",
+                            pj_strerrno(*idErr));
+                }
+                //projection error identificator
+                *projectionError = 1;
+            }
         }
         //assign output coordinates
         u[pos] = out.u;
@@ -209,53 +215,57 @@ int proj_transform(double* u,
                    char errorText[])
 {
     //error codes
-    int* idErr1=NULL;
-    int idErr2=0;
+    int* idErr=NULL;
+    int idErrTrans=0;
     //proj structures
     projPJ pjStart;
     projPJ pjEnd;
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
-    //start projection initialization
+    //start and end projections initialization
     pjStart = pj_init_plus(paramsStart);
-    if(!pjStart)
-    {
-        //error code
-        idErr1 = pj_get_errno_ref();
-        //error text
-        sprintf(errorText,"Start system parameters\n\t%s\n\t%s",
-                pj_strerrno(*idErr1),paramsStart);
-        //exit
-        return *idErr1;
-    }
-    //end projection initialization
     pjEnd = pj_init_plus(paramsEnd);
-    if(!pjEnd)
+    //error testing
+    if((!pjStart)||(!pjEnd))
     {
-        //error code
-        idErr1 = pj_get_errno_ref();
-        //error text
-        sprintf(errorText,"End system parameters\n\t%s\n\t%s",
-                pj_strerrno(*idErr1),paramsEnd);
-        //free memory
+        //memory free
         pj_free(pjStart);
+        pj_free(pjEnd);
+        //error code
+        idErr = pj_get_errno_ref();
+        //error text
+        sprintf(errorText,"Wrong system parameters\n\t%s\n\t"
+                          "Start: %s\n\tEnd: %s",
+                pj_strerrno(*idErr),paramsStart,paramsEnd);
         //exit
-        return *idErr1;
+        return *idErr;
     }
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
     //transformation
-    idErr2 = pj_transform(pjStart,pjEnd,nElem,incElem,u,v,z);
+    idErrTrans = pj_transform(pjStart,pjEnd,(long)nElem,(int)incElem,u,v,z);
     //catching possible errors
-    if(idErr2)
+    if(idErrTrans)
     {
-        //error text
-        sprintf(errorText,"Projection error\n\t%s",pj_strerrno(idErr2));
         //memory free
         pj_free(pjStart);
         pj_free(pjEnd);
-        //exit
-        return idErr2;
+        //was the error due to inverse step do not exist?
+        if(idErrTrans==PROJ_ERR_NOT_INV_PROJ)
+        {
+            //error text
+            sprintf(errorText,"Inverse step do not exists\n\t"
+                              "Start: %s\n\tEnd: %s",paramsStart,paramsEnd);
+            //exit
+            return PROJWRAP_ERR_NOT_INV_PROJ;
+        }
+        else
+        {
+            //error text
+            sprintf(errorText,"Projection error\n\t%s",pj_strerrno(idErrTrans));
+            //exit
+            return idErrTrans;
+        }
     }
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
@@ -265,7 +275,7 @@ int proj_transform(double* u,
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
     //exit
-    return idErr2;
+    return idErrTrans;
 }
 /******************************************************************************/
 /******************************************************************************/

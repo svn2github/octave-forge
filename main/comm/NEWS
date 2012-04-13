@@ -1,6 +1,10 @@
 Summary of important user-visible changes for communications 1.1.1:
 -------------------------------------------------------------------
 
+ ** The following functions are new:
+
+      convenc
+
  ** The function `reedmullerdec' had a bug fix introduced on the
     previous release
 
@@ -10,4 +14,3 @@ Summary of important user-visible changes for communications 1.1.1:
  ** Use of deprecated functions has been removed
 
  ** Package is no longer automatically loaded.
-

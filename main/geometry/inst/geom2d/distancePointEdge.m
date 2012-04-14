@@ -1,5 +1,5 @@
+%% Copyright (c) 2007-2011, David Legland <david.legland@grignon.inra.fr>
 %% Copyright (c) 2012, Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
-%% Derived from distancePointEdge.m by David Legland <david.legland@grignon.inra.fr>
 %%
 %% All rights reserved.
 %% (simplified BSD License)

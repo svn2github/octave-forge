@@ -72,7 +72,7 @@ function [] = odepkg_validate_ccfiles ()
 
   for vcnt=1:length(vfile)
     printf ('Testing function %s ... ', vsolv{vcnt});
-    autoload (vsolv{vcnt}, canonicalize_file_name ('dldsolver.oct'));
+    autoload (vsolv{vcnt}, which ('dldsolver.oct'));
     test (vfile{vcnt}, 'quiet'); fflush (1);
   end
 

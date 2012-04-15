@@ -1,4 +1,4 @@
-## Copyright (C) 2002 Etienne Grossmann <etienne@isr.ist.utl.pt>
+## Copyright (C) 2002-2012 Etienne Grossmann.  All rights reserved.
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -58,7 +58,14 @@ else
   ## keyboard
 end
 if any (tmp = isnan(sz)), sz(find (tmp)) = s0(find (tmp)) ; end
-sz .*= [1, sz([1 1 1])]; 
+## Was: sz .*= [1, sz([1 1 1])]; 
+for i = 2:4
+  if sz(i) >= 0
+	sz(i) *= sz(1);
+  else
+	sz(i) = -sz(i);
+  endif
+endfor
 
 				# Do material nodes
 smat1 = vrml_material (col(:,1), emit);

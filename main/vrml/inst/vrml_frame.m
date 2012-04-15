@@ -1,4 +1,4 @@
-## Copyright (C) 2002 Etienne Grossmann <etienne@isr.ist.utl.pt>
+## Copyright (C) 2002-2012 Etienne Grossmann.  All rights reserved.
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -41,14 +41,23 @@ diam = [nan,nan,nan];
 col = [0.3 0.4 0.9];
 hcol = [];
 
+dc = nan(1,3);
+dr = nan(1,3);
+
 ######################################################################
 ## Read options
 numeric_args = 0;
+<<<<<<< .mine
+args = nargin;  # nargin is now a function
+while args && numeric_args<2 && numeric_args<numel(varargin)
+  tmp = varargin{numeric_args + 1};
+=======
 args = nargin; # nargin is now a function
 while args && numeric_args<2,
 
 
   tmp = varargin{numeric_args + 1};
+>>>>>>> .r10218
   if ischar (tmp), break; end
   --args;
   numeric_args++;
@@ -59,20 +68,23 @@ end
 
 if args
 
-  leftover_args = varargin;	# pos 2.1.39
-  leftover_args = leftover_args (numeric_args+1:length(leftover_args));
+  leftover_args = {varargin{numeric_args+1:end}};	# pos 2.1.39
 
   verbose = 0;
 
   ## df = tars (col, hcol, diam, scale, verbose);
-  df = struct ("col",    col,   \
-	       "hcol",   hcol,  \
-	       "diam",   diam,  \
-	       "scale",  scale, \
+  df = struct ("dc",     dc,    \ # Diameter of cone (absolute)
+	       "dr",     dr,    \ # Diameter of rod (absolute)
+	       "col",    col,   \ # Color
+	       "hcol",   hcol,  \ # Color of head (if different)
+	       "diam",   diam,  \ # Diameter of cone relative to branch length
+	       "scale",  scale, \ # Lenght of branches
 	       "verbose",verbose);
-  op1 = " col hcol diam scale ";
+  op1 = " col hcol diam scale dc dr ";
   op0 = " verbose ";
   s = read_options (leftover_args, "op1",op1,"op0",op0,"default",df,"skipnan",1);
+  dc = s.dc;
+  dr = s.dr;
   col = s.col;
   hcol = s.hcol;
   diam = s.diam;
@@ -92,18 +104,22 @@ if prod (size (hcol))==3,  hcol =  [1;1;1]*hcol(:)' ; end
 if prod (size (diam))==1,  diam =  [1,1,1]*diam ; end
 if prod (size (scale))==1, scale = [1,1,1]*scale ; end
 
-diam = diam(:)' ;
 scale = scale(:)' ;
 
-ii = find (scale & ! isnan (scale));
-diam(ii) = diam(ii).*scale(ii);
-rdiam = nan*ones(1,3) ; ## ones (1,3)/24 ;
-
-ml = max (abs (scale(ii)));
-diam(ii) = ml./scale/16;
-rdiam(ii) = ml./scale/32;
+diam = - ones(1,3) * nanmax (scale) / 16;
+rdiam = - ones(1,3) * nanmax (scale) / 32;
 
 sz = [scale; nan*ones(1,3); diam; rdiam] ;
+
+if any (! isnan (dc))
+  ii = find (! isnan (dc));
+  sz(3,ii) = dc(ii);
+end
+if any (! isnan (dr))
+  ii = find (! isnan (dr));
+  sz(4,ii) = dr(ii);
+end
+
 
 ## roddiam = min (nze (scale))/12 ;
 ## if roddiam, d = roddiam.*scale ; else d = [nan,nan,nan] ; end

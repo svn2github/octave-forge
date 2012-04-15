@@ -260,7 +260,7 @@ function [varargout] = ode78d (vfun, vslot, vinit, vlags, vhist, varargin)
 
   %# Implementation of the option Mass has been finished. This option
   %# can be set by the user to another value than default value.
-  if (~isempty (vodeoptions.Mass) && ismatrix (vodeoptions.Mass))
+  if (~isempty (vodeoptions.Mass) && isnumeric (vodeoptions.Mass))
     vhavemasshandle = false; vmass = vodeoptions.Mass; %# constant mass
   elseif (isa (vodeoptions.Mass, 'function_handle'))
     vhavemasshandle = true; %# mass defined by a function handle

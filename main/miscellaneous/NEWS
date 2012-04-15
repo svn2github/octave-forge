@@ -1,5 +1,14 @@
-Summary of important user-visible changes for miscellaneous 1.1.0:
--------------------------------------------------------------------
+Summary of important user-visible changes for the miscellaneous package
+------------------------------------------------------------------------
+===============================================================================
+miscellaneous-1.2.0   Release Date: 2012-XX-XX  Release Manager:
+===============================================================================
+ ** New functions:
+   truncate.m : truncates a number to a given precision.
+
+===============================================================================
+miscellaneous-1.1.0   Release Date: 2012-03-24  Release Manager:
+===============================================================================
 
  ** IMPORTANT NOTE:
     * the function `waitbar' has been renamed `text_waitbar'. Octave core has

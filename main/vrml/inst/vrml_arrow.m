@@ -22,9 +22,12 @@
 ## sz = [len, alen, dc, dr] has size 1, 2, 3 or 4, where
 ##
 ##   len  : total length                                   <1>
-##   alen : length of arrow/total length                   <len/4>
-##   dc   : Diameter of cone base/total length             <len/16>
-##   dr   : Diameter of rod/total length                   <min(dc, len/32)>
+##   alen : If positive: length of cone/total length       <1/4>
+##          If negative: -(length of cone)
+##   dc   : If positive: diameter of cone base/total len   <1/16>
+##          If negative: -(diameter of cone) 
+##   dr   : If positive: diameter of rod/total length      <min(dc, len/32)>
+##          If negative: -(diameter of rod) 
 ##
 ## col    : 3 or 3x2 : Color of body and cone              <[0.3 0.4 0.9]>
 ##
@@ -48,7 +51,6 @@ col = col' ;
 s0 = [1, 1/4, 1/16, 1/32];
 				# Get absolute size
 if nargin<1 || isempty (sz) || isnan (sz),  sz = s0 ;
-
 elseif length (sz) == 4,      sz = [sz(1),sz(2),sz(3),sz(4)];
 elseif length (sz) == 3,      sz = [sz(1),sz(2),sz(3),s0(4)];
 elseif length (sz) == 2,      sz = [sz(1),sz(2),s0(3),s0(4)];
@@ -57,8 +59,11 @@ else
   error ("vrml_arrow : sz has size %dx%d. (should be in 1-4)\n", size(sz));
   ## keyboard
 end
-if any (tmp = isnan(sz)), sz(find (tmp)) = s0(find (tmp)) ; end
-## Was: sz .*= [1, sz([1 1 1])]; 
+
+assert (sz(1) > 0)
+
+if !isempty (tmp = find(isnan(sz))), sz(tmp) = s0(tmp) ; end
+
 for i = 2:4
   if sz(i) >= 0
 	sz(i) *= sz(1);

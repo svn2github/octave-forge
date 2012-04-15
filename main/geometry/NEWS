@@ -15,8 +15,8 @@ geometry-1.4.2   Release Date: 2012-XX-XX  Release Manager: Juan Pablo Carbajal
                         and all edges. A third optional argument provides
                         backward compatibility.
 
-* Known issues
- - simplifypolygon.m returns empty polygons when points are repeated, i.e when
+* Solved bugs:
+ - simplifypolygon.m returned empty polygons when points are repeated, i.e when
   the polygon is not correctly formed.
 
 ===============================================================================

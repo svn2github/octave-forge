@@ -4,12 +4,13 @@ Summary of important user-visible changes for releases of the geometry package
 geometry-1.4.2   Release Date: 2012-XX-XX  Release Manager: Juan Pablo Carbajal
 ===============================================================================
 
-* Added function
+* Added functions:
  - curveval.m: Evaluates a polynomial curve defined as a 2-by-N matrix.
  - curve2polyline.m: Converts a polynomial curve into a polyline by the adaptive
                      sampling method.
+ - simplifypolyline.m:  Ramer-Douglas-Peucker algorithm to simplify polylines.
 
-* Changed functions
+* Changed functions:
  - distancePointEdge.m: Now the function computes the distance between all points
                         and all edges. A third optional argument provides
                         backward compatibility.

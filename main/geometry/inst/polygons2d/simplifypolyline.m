@@ -42,6 +42,7 @@
 %% @end deftypefn
 
 function [pline idx] = simplifypolyline (pline_o, varargin)
+%% TODO do not print warnings if user provided Nmax or MaxIter.
 
   # --- Parse arguments --- #
   parser = inputParser ();
@@ -67,11 +68,13 @@ function [pline idx] = simplifypolyline (pline_o, varargin)
     % Find the point with the maximum distance.
     [dist ii] = maxdistance (pline_o, idx);
 
-    if dist < tol;
+    tf = dist > tol;
+    n = sum(tf);
+    if all(!tf);
       break;
     end
 
-    idx(end+1) = ii;
+    idx(end+1:end+n) = ii(tf);
     idx = sort(idx);
 
     if length(idx) >= Nmax
@@ -87,22 +90,29 @@ function [pline idx] = simplifypolyline (pline_o, varargin)
   pline = pline_o(idx,:);
 endfunction
 
-function [dist ii] = maxdistance (p,idx)
+function [dist ii] = maxdistance (p, idx)
 
+  %% Separate the groups of points according to the edge they can divide.
+  func = @(x,y) x:y;
+  idxc   = arrayfun (func, idx(1:end-1), idx(2:end), "UniformOutput",false);
+  points = cellfun (@(x)p(x,:), idxc, "UniformOutput",false);
+
+  %% Build the edges
   edges = [p(idx(1:end-1),:) p(idx(2:end),:)];
-  %% Calculate distance between all points and edges
-  %% What is better? this or a only comparing the points that are between the extrema
-  %% of each edge.
-  [d pos] = distancePointEdge (p, edges);
+  edges = mat2cell (edges, ones(1,size(edges,1)), 4)';
 
-  %% Filter out all points outside the edges
-  tf = pos == 0 | pos == 1;
+  %% Calculate distance between the points and the corresponding edge
+  [dist ii] = cellfun(@dd, points,edges,idxc);
+
+endfunction
+
+function [dist ii] = dd (p,e,idx)
+  [d pos] = distancePointEdge(p,e);
+  tf = abs(pos) <= abs(pos*eps) | abs(pos-1) <= abs((pos-1)*eps);
   d(tf) = -1;
-
-  [dist j] = max(d(:));
-  ii = ind2sub (size(d),j);
-
-end
+  [dist ii] = max(d);
+  ii = idx(ii);
+endfunction
 
 %!demo
 %! t     = linspace(0,1,100).';

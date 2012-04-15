@@ -48,7 +48,8 @@ function [pline idx] = simplifypolyline (pline_o, varargin)
   parser = inputParser ();
   parser.FunctionName = "simplifypolyline";
   parser = addParamValue (parser,'Nmax', 100, @(x)x>0);
-  parser = addParamValue (parser,'Tol', 1e-4, @(x)x>0);
+  toldef = 1e-4;%max(sumsq(diff(pline_o),2))*2;
+  parser = addParamValue (parser,'Tol', toldef, @(x)x>0);
   parser = addParamValue (parser,'MaxIter', 100, @(x)x>0);
   parser = parse(parser,varargin{:});
 
@@ -56,7 +57,7 @@ function [pline idx] = simplifypolyline (pline_o, varargin)
   tol       = parser.Results.Tol;
   MaxIter   = parser.Results.MaxIter;
 
-  clear parser
+  clear parser toldef
   msg = ["Maximum number of points reached with maximal error %g." ...
        " Increase '%s' if the result is not satisfactory."];
   # ------ #
@@ -108,8 +109,6 @@ endfunction
 
 function [dist ii] = dd (p,e,idx)
   [d pos] = distancePointEdge(p,e);
-  tf = abs(pos) <= abs(pos*eps) | abs(pos-1) <= abs((pos-1)*eps);
-  d(tf) = -1;
   [dist ii] = max(d);
   ii = idx(ii);
 endfunction
@@ -137,3 +136,20 @@ endfunction
 %!
 %! % ---------------------------------------------------------
 %! % Four approximations of the initial polyline with decreasing tolerances.
+
+%!demo
+%! P       = [0 0; 3 1; 3 4; 1 3; 2 2; 1 1];
+%! func    = @(x,y) linspace(x,y,5);
+%! P2(:,1) = cell2mat( ...
+%!             arrayfun (func, P(1:end-1,1),P(2:end,1), ...
+%!             'uniformoutput',false))'(:);
+%! P2(:,2) = cell2mat( ...
+%!             arrayfun (func, P(1:end-1,2),P(2:end,2), ...
+%!             'uniformoutput',false))'(:);
+%!
+%! P2s = simplifypolyline (P2);
+%!
+%! plot(P(:,1),P(:,2),'s',P2(:,1),P2(:,2),'o',P2s(:,1),P2s(:,2),'-ok');
+%!
+%! % ---------------------------------------------------------
+%! % Simplification of a polyline in the plane.

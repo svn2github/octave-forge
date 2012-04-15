@@ -15,37 +15,32 @@
 
 %% -*- texinfo -*-
 %% @deftypefn {Function File} {@var{spoly} = } simplifypolygon (@var{poly})
-%% Filter colinear vertex from a 2D polygon.
+%% Simplify a polygon using the Ramer-Douglas-Peucker algorithm.
 %%
 %% @var{poly} is a N-by-2 matrix, each row representing a vertex.
 %%
-%% @seealso{shape2polygon}
+%% @seealso{simplifypolyline, shape2polygon}
 %% @end deftypefn
 
-function polygonsimp = simplifypolygon (polygon)
+function polygonsimp = simplifypolygon (polygon, varargin)
 
-  # Filter colinear points
-  edges = diff(polygon([1:end 1],:));
-  ned = size(edges,1);
-  nxt = [2:ned 1];
+  polygonsimp = simplifypolyline (polygon,varargin{:});
 
-  # check if consecutive edges are parallel
-  para = edges(:,1).*edges(nxt,2) - edges(:,2).*edges(nxt,1);
-  ind = abs(para) > sqrt(eps);
-
-  polygonsimp = polygon(circshift (ind,1),:);
-
-  if isempty(polygonsimp)
-    warning('simplifypolygon:devel',"The simplification gives an empty polygon. Returning original\n");
-    polygonsimp = polygon;
-  end
+  # Remove parrallel consecutive edges
+  PL = polygonsimp(1:end-1,:);
+  PC = polygonsimp(2:end,:);
+  PR = polygonsimp([3:end 1],:);
+  a = PL - PC;
+  b = PR - PC;
+  tf = find(isParallel(a,b))+1;
+  polygonsimp (tf,:) = [];
 
 endfunction
 
 %!test
 %!  P = [0 0; 1 0; 0 1];
 %!  P2 = [0 0; 0.1 0; 0.2 0; 0.25 0; 1 0; 0 1; 0 0.7; 0 0.6; 0 0.3; 0 0.1];
-%! assert(P,simplifypolygon (P2))
+%! assert(simplifypolygon (P2),P,min(P2(:))*eps)
 
 %!demo
 %!

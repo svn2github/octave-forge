@@ -100,6 +100,7 @@ function f = bumpyness (p)
 %% -- abs(p0-pt) + abs(pt-p1) - abs(p0-p1) almost zero.
 %% -- Curve's tange at 0,t,1 are almost parallel.
 %% -- pt is in chord p0 -> p1.
+%% Do this in isParallel.m and remove this function
 
   PL = p(1:2:end-2,:);
   PC = p(2:2:end-1,:);

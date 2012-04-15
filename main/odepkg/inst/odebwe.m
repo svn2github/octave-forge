@@ -1,4 +1,4 @@
-%# Copyright (C) 2009, Sebastian Schoeps <schoeps AT math DOT uni-wuppertal DOT de>
+%# Copyright (C) 2009-2012, Sebastian Schoeps <schoeps AT math DOT uni-wuppertal DOT de>
 %# OdePkg - A package for solving ordinary differential equations and more
 %#
 %# This program is free software; you can redistribute it and/or modify
@@ -198,7 +198,7 @@ function [varargout] = odebwe (vfun, vslot, vinit, varargin)
 
   %# Implementation of the option Jacobian has been finished. This option
   %# can be set by the user to another value than default value.
-  if (~isempty (vodeoptions.Jacobian) && ismatrix (vodeoptions.Jacobian))
+  if (~isempty (vodeoptions.Jacobian) && isnumeric (vodeoptions.Jacobian))
     vhavejachandle = false; vjac = vodeoptions.Jacobian; %# constant jac
   elseif (isa (vodeoptions.Jacobian, 'function_handle'))
     vhavejachandle = true; %# jac defined by a function handle
@@ -208,7 +208,7 @@ function [varargout] = odebwe (vfun, vslot, vinit, varargin)
   
   %# Implementation of the option Mass has been finished. This option
   %# can be set by the user to another value than default value.
-  if (~isempty (vodeoptions.Mass) && ismatrix (vodeoptions.Mass))
+  if (~isempty (vodeoptions.Mass) && isnumeric (vodeoptions.Mass))
     vhavemasshandle = false; vmass = vodeoptions.Mass; %# constant mass
   elseif (isa (vodeoptions.Mass, 'function_handle'))
     vhavemasshandle = true; %# mass defined by a function handle
@@ -326,22 +326,22 @@ function [varargout] = odebwe (vfun, vslot, vinit, varargin)
       %# We do not use a higher order approximation for the
       %# comparsion, but two steps by the Backward Euler
       %# method
-      for i=1:j
+      for i = 1:j
         % Initialize the time stepping parameters 
-        vthestep = vstepsize/j;
+        vthestep = vstepsize / j;
         vthetime = vtimestamp + i*vthestep;
         vnewtit  = 1;
-        vresnrm  = inf(1,vodeoptions.MaxNewtonIterations);
+        vresnrm  = inf (1, vodeoptions.MaxNewtonIterations);
 
         %# Start the Newton iteration
-        while (vnewtit<vodeoptions.MaxNewtonIterations) && ...
-              (vresnrm(vnewtit)>vodeoptions.NewtonTol)
+        while (vnewtit < vodeoptions.MaxNewtonIterations) && ...
+              (vresnrm (vnewtit) > vodeoptions.NewtonTol)
 
           %# Compute the Jacobian of the non-linear equation,
           %# that is the matrix pencil of the mass matrix and
           %# the right-hand-side's Jacobian. Perform a (sparse)
           %# LU-Decomposition afterwards.
-          if (vnewtit<=1) | (~vsimplified)
+          if ( (vnewtit==1) || (~vsimplified) )
             %# Get the mass matrix from the left-hand-side
             if (vhavemasshandle)   %# Handle only the dynamic mass matrix,
               if (vmassdependence) %# constant mass matrices have already
@@ -564,9 +564,9 @@ function [varargout] = odebwe (vfun, vslot, vinit, varargin)
     end
     %# Print cost statistics if no output argument is given
     if (nargout == 0)
-      vmsg = fprintf (1, 'Number of successful steps: %d', vnsteps);
-      vmsg = fprintf (1, 'Number of failed attempts:  %d', vnfailed);
-      vmsg = fprintf (1, 'Number of function calls:   %d', vnfevals);
+      vmsg = fprintf (1, 'Number of successful steps: %d\n', vnsteps);
+      vmsg = fprintf (1, 'Number of failed attempts:  %d\n', vnfailed);
+      vmsg = fprintf (1, 'Number of function calls:   %d\n', vnfevals);
     end
   else
     vhavestats = false;

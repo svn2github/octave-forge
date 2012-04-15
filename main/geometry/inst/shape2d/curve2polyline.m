@@ -15,7 +15,7 @@
 
 %% -*- texinfo -*-
 %% @deftypefn {Function File} {@var{polyline} = } curve2polyline (@var{curve})
-%% @deftypefnx {Function File} {@var{polyline} = } curve2polyline (@dots,@var{property},@var{value},@dots)
+%% @deftypefnx {Function File} {@var{polyline} = } curve2polyline (@dots{},@var{property},@var{value},@dots{})
 %% Adaptive sampling of a parametric curve.
 %%
 %% The @var{curve} is described as a 2-by-N matrix. Rows correspond to the
@@ -45,6 +45,7 @@
 %% Thursday, April 12 2012 -- JuanPi
 
 function [polyline t bump]= curve2polyline (curve, varargin)
+%% TODO make tolerance relative to the "diameter" of the curve.
 
   # --- Parse arguments --- #
   parser = inputParser ();
@@ -58,7 +59,7 @@ function [polyline t bump]= curve2polyline (curve, varargin)
   tol       = parser.Results.Tol;
   MaxIter   = parser.Results.MaxIter;
 
-  clear parser
+  clear parser toldef
   # ------ #
 
   t = [0; 1];

@@ -27,7 +27,7 @@
 %% @strong{Parameters}
 %% @table @samp
 %% @item 'Nmax'
-%% Maximum number of vertices. Default value @code{100}.
+%% Maximum number of vertices. Default value @code{1e3}.
 %% @item 'Tol'
 %% Tolerance for the error criteria. Default value @code{1e-4}.
 %% @item 'MaxIter'
@@ -47,7 +47,7 @@ function [pline idx] = simplifypolyline (pline_o, varargin)
   # --- Parse arguments --- #
   parser = inputParser ();
   parser.FunctionName = "simplifypolyline";
-  parser = addParamValue (parser,'Nmax', 100, @(x)x>0);
+  parser = addParamValue (parser,'Nmax', 1e3, @(x)x>0);
   toldef = 1e-4;%max(sumsq(diff(pline_o),2))*2;
   parser = addParamValue (parser,'Tol', toldef, @(x)x>0);
   parser = addParamValue (parser,'MaxIter', 100, @(x)x>0);
@@ -58,8 +58,8 @@ function [pline idx] = simplifypolyline (pline_o, varargin)
   MaxIter   = parser.Results.MaxIter;
 
   clear parser toldef
-  msg = ["Maximum number of points reached with maximal error %g." ...
-       " Increase '%s' if the result is not satisfactory."];
+  msg = ["simplifypolyline: Maximum number of points reached with maximum error %g." ...
+       " Increase %s if the result is not satisfactory."];
   # ------ #
 
   [N dim] = size(pline_o);
@@ -79,13 +79,14 @@ function [pline idx] = simplifypolyline (pline_o, varargin)
     idx = sort(idx);
 
     if length(idx) >= Nmax
-      warning('geometry:MayBeWrongOutput', sprintf(msg,dist,'Nmax'));
+      %% TODO remove extra points
+      warning('geometry:MayBeWrongOutput', sprintf(msg,max(dist),'Nmax'));
       break;
     end
 
   end
   if iter == MaxIter
-    warning('geometry:MayBeWrongOutput', sprintf(msg,dist,'MaxIter'));
+    warning('geometry:MayBeWrongOutput', sprintf(msg,max(dist),'MaxIter'));
   end
 
   pline = pline_o(idx,:);

@@ -32,8 +32,8 @@
 
 %% -*- texinfo -*-
 %% @deftypefn {Function File} {@var{dist} = } distancePointEdge (@var{point}, @var{edge})
-%% @deftypefnx {Function File} {@var{dist} = } distancePointEdge (@dots, @var{opt})
-%% @deftypefnx {Function File} {[@var{dist} @var{pos}]= } distancePointEdge (@dots)
+%% @deftypefnx {Function File} {@var{dist} = } distancePointEdge (@dots{}, @var{opt})
+%% @deftypefnx {Function File} {[@var{dist} @var{pos}]= } distancePointEdge (@dots{})
 %% Minimum distance between a point and an edge
 %%
 %% Return the euclidean distance between edge @var{edge} and point @var{point}.

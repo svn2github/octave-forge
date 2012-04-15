@@ -117,6 +117,7 @@ geometry >> Computational Geometry
 2D Polygons
  drawPolygon
  simplifypolygon
+ simplifypolyline
  oc_polybool
 2D Piecewise polynomial shapes
  polygon2shape

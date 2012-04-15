@@ -27,9 +27,11 @@
 %% @seealso{drawPolygon, shape2polygon}
 %% @end deftypefn
 
-function h = shapeplot(shape, N = 16, varargin)
+function h = shapeplot(shape, varargin)
 
-  p = shape2polygon(shape, N);
+  n = cell2mat(cellfun(@(x)curveval(x,[0 1]), shape, 'uniformoutput',false));
+  dr = (max(n(:,1))-min(n(:,1)))*(max(n(:,2))-min(n(:,2)))/10;
+  p = shape2polygon(shape,'tol', dr);
   h = drawPolygon(p,varargin{:});
 
 endfunction

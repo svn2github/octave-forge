@@ -10,7 +10,7 @@
 %!assert(isempty(x.rowidx), false);
 %! x.types(2) ='single';
 %!assert(class(x.array(1, 2)), 'single')
-%! x=dataframe('octave_frame/data_test.csv');
+%! x=dataframe('data_test.csv');
 %!assert(isna(x.array(9, 4)))
 %! # remove rownames
 %! x.rownames = [];
@@ -177,7 +177,7 @@
 %!assert(z.array, y(y)); 
 
 %!demo
-%! x=dataframe('octave_frame/data_test.csv')
+%! x=dataframe('data_test.csv')
 %! disp("Access as a struct: x.VBIAS(1:6)")
 %! x.VBIAS(1:6)
 %! pause; disp("Access as a matrix: x(6, 'OK')")

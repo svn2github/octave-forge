@@ -280,7 +280,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
       endfor
       indi = nrow;
       while (indi > 0)
-        if (1 == eff_len(indi))
+        if (eff_len(indi) < ncol)
           nrow = nrow - 1;
           indr(end) = [];
           RHS(end, :) = [];
@@ -295,7 +295,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
       endwhile
       clear eff_len;
     endif
-    
+
     %# the real assignement
     if (1 == size (RHS, 1)) %# each cell contains one vector
       fillfunc = @(x) RHS{x};

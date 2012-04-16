@@ -290,7 +290,7 @@ while (indi <= size (varargin, 2))
                                   'UniformOutput', false);
             else
               %# this faster code requires a patch to src/file-io.cc in
-              %# main Octave tree
+              %# the main Octave tree
               the_line = sscanf (dummy, "%f", locales);
               the_line = cellfun (@(x) x{1}, the_line, \
                                   'UniformOutput', false);

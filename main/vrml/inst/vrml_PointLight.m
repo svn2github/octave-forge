@@ -37,7 +37,7 @@
 
 function s = vrml_PointLight (varargin)
 
-if mod(nargin,2) != 0, usage("vrml_PointLight('key',val,...)"); end
+if mod(nargin,2) != 0, print_usage; end
 h = struct (varargin{:});
 
 tpl = struct ("ambientIntensity", "%8.3f",\

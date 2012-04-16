@@ -38,7 +38,7 @@
 
 function s = vrml_Viewpoint (varargin)
 
-if mod(nargin,2) != 0, usage("vrml_Viewpoint('key',val,...)"); end
+if mod(nargin,2) != 0, print_usage; end
 
 h = struct (varargin{:});
  

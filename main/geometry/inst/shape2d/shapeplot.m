@@ -29,8 +29,8 @@
 
 function h = shapeplot(shape, varargin)
 
-  n = cell2mat(cellfun(@(x)curveval(x,[0 1]), shape, 'uniformoutput',false));
-  dr = (max(n(:,1))-min(n(:,1)))*(max(n(:,2))-min(n(:,2)))/10;
+  n = cell2mat(cellfun(@(x)curveval(x,rand(1,5)), shape, 'uniformoutput',false));
+  dr = (max(n(:,1))-min(n(:,1)))*(max(n(:,2))-min(n(:,2)))/100;
   p = shape2polygon(shape,'tol', dr);
   h = drawPolygon(p,varargin{:});
 

@@ -54,7 +54,7 @@ endfunction
 %!            58.870   -38.083   -89.358   232.362]};
 %!
 %! % Estimate a good tolerance
-%! n  = cell2mat(cellfun(@(x)curveval(x,[0 1]), shape, 'uniformoutput',false));
+%! n  = cell2mat(cellfun(@(x)curveval(x,rand(1,10)), shape, 'uniformoutput',false));
 %! dr = (max(n(:,1))-min(n(:,1)))*(max(n(:,2))-min(n(:,2)))*40;
 %! p  = shape2polygon (shape,'tol',dr);
 %!

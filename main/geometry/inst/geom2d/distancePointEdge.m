@@ -76,9 +76,11 @@ function [dist, tp] = distancePointEdge(point, edge, opt=[])
   % (Size of tp is the max number of edges or points)
 
   delta = dx .* dx + dy .* dy;
+  mask = delta < eps;
+  delta(mask) = 1;
   warning ('off', 'Octave:broadcast');
   tp = ((point(:, 1) - edge(1, :)) .* dx + (point(:, 2) - edge(2, :)) .* dy) ./ delta;
-  tp(:,delta < eps) = 0;
+  tp(:,mask) = 0;
 
   % change position to ensure projected point is located on the edge
   tp(tp < 0) = 0;

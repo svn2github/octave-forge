@@ -98,14 +98,12 @@ endfunction
 %! shape = shapetransform (shape,-T + [2; 0]);
 %!
 %! close
-%! shapeplot (shape,10,'-r','linewidth',2)
+%! shapeplot (shape,'-r','linewidth',2)
 %! hold on
 %! for i = 1:9
 %!   T = createRotation (i*pi/5)(1:2,1:2)/exp(0.3*i);
-%!   shapeplot (shapetransform(shape, T), 10, 'color',rand(1,3),'linewidth',2);
+%!   shapeplot (shapetransform(shape, T), 'color',rand(1,3),'linewidth',2);
 %! end
 %! hold off
 %! axis tight
 %! axis square
-
-

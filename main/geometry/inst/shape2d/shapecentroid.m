@@ -66,9 +66,8 @@ endfunction
 %!               0 0]};
 %! CoM = shapecentroid (boomerang)
 %! Gcentroid = centroid(shape2polygon(boomerang))
-%!
 %! figure(1); clf;
-%! shapeplot(boomerang,10,'-o');
+%! shapeplot(boomerang,'-o');
 %! hold on
 %! drawPoint(CoM,'xk;shape centroid;');
 %! drawPoint(Gcentroid,'xr;point centroid;');
@@ -85,7 +84,7 @@ endfunction
 %! CoM = shapecentroid (Lshape)
 %! Gcentroid = centroid (shape2polygon (Lshape))
 %!
-%! shapeplot(Lshape,10,'-o');
+%! shapeplot(Lshape,'-o');
 %! hold on
 %! drawPoint(CoM,'xk;shape centroid;');
 %! drawPoint(Gcentroid,'xr;point centroid;');

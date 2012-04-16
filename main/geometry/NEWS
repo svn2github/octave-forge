@@ -18,7 +18,8 @@ geometry-1.5.0   Release Date: 2012-04-15  Release Manager: Juan Pablo Carbajal
 * Solved bugs:
  - simplifypolygon.m returned empty polygons when points are repeated, i.e when
   the polygon is not correctly formed.
-
+ - Removed installation warnings.
+ 
 ===============================================================================
 geometry-1.4.1   Release Date: 2012-03-24  Release Manager: Juan Pablo Carbajal
 ===============================================================================

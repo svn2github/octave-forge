@@ -30,7 +30,7 @@ end
 
 %dep_folder = [dep_folder filesep arch];
 
-if (! exist (fullfile (pkg_folder, "inst"), "dir"))
+if (! exist (fullfile (dirname, "inst"), "dir"))
 %% Installing
   for ii=1:length (dirlist)
     addpath ( [ pkg_folder filesep() dirlist{ii}],"-end")
@@ -40,7 +40,7 @@ else
 %% Testing
   warning("geometry:Devel","Adding path for testing.");
   for ii=1:length(dirlist)
-    addpath ([ pkg_folder "/inst/" dirlist{ii}])
+    addpath ([ dirname "/inst/" dirlist{ii}])
   endfor
 endif
 %addpath (dep_folder)

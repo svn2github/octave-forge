@@ -29,7 +29,7 @@ end
 
 %dep_folder = [dep_folder filesep arch];
 
-if (! exist (fullfile (pkg_folder, "inst"), "dir"))
+if (! exist (fullfile (dirname, "inst"), "dir"))
 ## Run this if the package is installed
   for ii=1:length (dirlist)
     rmpath ( [ pkg_folder filesep() dirlist{ii}])
@@ -37,7 +37,7 @@ if (! exist (fullfile (pkg_folder, "inst"), "dir"))
 else
   warning("geometry:Devel","Removing path for testing.");
   for ii=1:length(dirlist)
-    rmpath ([ pkg_folder "/inst/" dirlist{ii}])
+    rmpath ([ dirname "/inst/" dirlist{ii}])
   endfor
 endif
 %rmpath (dep_folder);

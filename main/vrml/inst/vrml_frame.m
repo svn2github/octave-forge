@@ -47,17 +47,9 @@ dr = nan(1,3);
 ######################################################################
 ## Read options
 numeric_args = 0;
-<<<<<<< .mine
 args = nargin;  # nargin is now a function
 while args && numeric_args<2 && numeric_args<numel(varargin)
   tmp = varargin{numeric_args + 1};
-=======
-args = nargin; # nargin is now a function
-while args && numeric_args<2,
-
-
-  tmp = varargin{numeric_args + 1};
->>>>>>> .r10218
   if ischar (tmp), break; end
   --args;
   numeric_args++;

@@ -97,6 +97,7 @@ endfunction
 %! ids = dc.pathid();
 %! P = dc.path2polygon(ids{1},12)(1:end-1,:);
 %! P = bsxfun(@minus, P, centroid(P));
+%! P = simplifypolygon(P,'tol',5e-1);
 %! filename = tmpnam ();
 %! meshsize = sqrt(mean(sumsq(diff(P,1,1),2)))/2;
 %! data2geo (P, meshsize, 'output', [filename '.geo']);

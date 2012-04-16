@@ -125,7 +125,7 @@ geometry >> Computational Geometry
  shapecentroid
  shapeplot
  shapetransform
- curvelval
+ curveval
  curve2polyline
 2D Others
  bisector

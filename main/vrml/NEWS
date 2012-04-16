@@ -21,3 +21,9 @@ Summary of important user-visible changes for vrml 1.0.13:
 
  ** Some bug fixes on the function `vrml_cyl' and `vrml_material' to handles
     colors correctly
+
+ ** Package is no longer automatically loaded.
+
+ ** The `linear-algebra' package is now a dependecy (altough not listed,
+    previous releases of `vrml' were also dependent on it so this is a
+    bugfix).

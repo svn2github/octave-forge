@@ -16,6 +16,7 @@ geometry >> Computational Geometry
  centroid
  distancePoints
  drawPoint
+ isCounterClockwise
  isPointOnRay
  isPointInCircle
  isPointOnCircle
@@ -115,10 +116,15 @@ geometry >> Computational Geometry
  drawBezierCurve
  cbezier2poly
 2D Polygons
+ curvature
  drawPolygon
+ oc_polybool
+ parametrize
+ reversePolyline
+ reversePolygon
  simplifypolygon
  simplifypolyline
- oc_polybool
+ supportFunction
 2D Piecewise polynomial shapes
  polygon2shape
  shape2polygon
@@ -136,7 +142,6 @@ geometry >> Computational Geometry
  drawParabola
  drawShape
  hexagonalGrid
- isCounterClockwise
  squareGrid
  triangleGrid
 Geometric graphs creation

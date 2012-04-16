@@ -54,7 +54,7 @@
 ##
 ## FIXME: scl < 1 seems to be buggy
 
-### Author Etienne Grossmann <etienne@isr.ist.utl.pt>
+### Author Etienne Grossmann <etienne@egdn.net>
 function im = myimage (im, varargin)
 
 ##viewer = "qiv";			# If I need to display image

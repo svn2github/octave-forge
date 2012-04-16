@@ -1,4 +1,4 @@
-## Copyright (C) 2002 Etienne Grossmann <etienne@isr.ist.utl.pt>
+## Copyright (C) 2002 Etienne Grossmann <etienne@egdn.net>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -66,7 +66,7 @@
 ## wx : (D+W)x(D*P)
 ##               Derivatives of [w;d] wrt to x.
 ##
-## Author  : Etienne Grossmann <etienne@isr.ist.utl.pt>
+## Author  : Etienne Grossmann <etienne@egdn.net>
 ## Created : March 2000
 ##
 function [d,w,rx,cv,wx] = best_dir( x, a, sx )

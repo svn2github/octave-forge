@@ -1,4 +1,4 @@
-## Copyright (C) 2002 Etienne Grossmann <etienne@isr.ist.utl.pt>
+## Copyright (C) 2002 Etienne Grossmann <etienne@egdn.net>
 ## Copyright (C) 2009 Levente Torok <TorokLev@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or modify it under

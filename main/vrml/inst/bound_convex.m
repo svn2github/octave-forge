@@ -1,4 +1,4 @@
-## Copyright (C) 2002 Etienne Grossmann <etienne@isr.ist.utl.pt>
+## Copyright (C) 2002 Etienne Grossmann <etienne@egdn.net>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -19,7 +19,7 @@
 ##            in the plane d*y == v. The corners are sorted.
 ##
 
-## Author:        Etienne Grossmann <etienne@isr.ist.utl.pt>
+## Author:        Etienne Grossmann <etienne@egdn.net>
 
 function y = bound_convex(d,h,x,pad) 
 

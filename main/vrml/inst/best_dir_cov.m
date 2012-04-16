@@ -1,4 +1,4 @@
-## Copyright (C) 2002 Etienne Grossmann <etienne@isr.ist.utl.pt>
+## Copyright (C) 2002 Etienne Grossmann <etienne@egdn.net>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -26,7 +26,7 @@
 ## wx (W+D)x(P*D) : derivatives of ML estimate wrt to observations
 ##
 
-## Author:        Etienne Grossmann <etienne@isr.ist.utl.pt>
+## Author:        Etienne Grossmann <etienne@egdn.net>
 ## Last modified: Setembro 2002
 
 function  [cv,wx] = best_dir_cov(x,a,sx,wd)

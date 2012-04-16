@@ -1,7 +1,7 @@
 Name: Struct
 Version: 1.0.10
 Date: 2012-03-25
-Author: Etienne Grossmann <etienne@isr.ist.utl.pt>, Olaf Till <i7tiol@t-online.de>
+Author: Etienne Grossmann <etienne@egdn.net>, Olaf Till <i7tiol@t-online.de>
 Maintainer: Olaf Till <i7tiol@t-online.de>
 Title: Structure Handling.
 Description: Additional Structure manipulations functions.

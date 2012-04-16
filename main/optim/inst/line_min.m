@@ -1,5 +1,5 @@
 ## Copyright (C) 2000 Ben Sapp <bsapp@lanl.gov>
-## Copyright (C) 2002 Etienne Grossmann <etienne@isr.ist.utl.pt>
+## Copyright (C) 2002 Etienne Grossmann <etienne@egdn.net>
 ## Copyright (C) 2011 Nir Krakauer nkrakauer@ccny.cuny.edu
 ##
 ## This program is free software; you can redistribute it and/or modify it under

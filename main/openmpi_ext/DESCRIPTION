@@ -6,6 +6,6 @@ Maintainer: Riccardo Corradini <riccardocorradini@yahoo.it>
 Title: openmpi_ext
 Description: MPI functions for parallel computing using simple MPI Derived Datatypes.
 Depends: octave (>= 3.2.4)
-Autoload: yes
-License: GPL version 2 or later
+Autoload: no
+License: GPLv3+
 Url: http://octave.sf.net

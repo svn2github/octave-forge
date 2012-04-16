@@ -139,6 +139,10 @@ function [pkgtar htmltar] = releasePKG (pkgname, varargin)
       warning ("md5sum failed.\n");
     end
 
+    % Uninstall package
+    printf("Uninstalling...\n");
+    fflush(stdout);
+    pkg ('uninstall', pkgname);
 
   endif % do_doc
 

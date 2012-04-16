@@ -47,21 +47,16 @@
 
 function h = supportFunction(polygon, varargin)
   N = 24;
-  u = 0:2*pi/N:2*pi*(1-1/N);
+  u = (0:2*pi/N:2*pi*(1-1/N)).';
 
   if length(varargin)==1
       var = varargin{1};
       if length(var)==1
           N = var;
-          u = 0:2*pi/N:2*pi*(1-1/N);
+          u = (0:2*pi/N:2*pi*(1-1/N)).';
       else
-          u = var;
+          u = var(:);
       end
-  end
-
-  % ensure u vertical vector
-  if size(u, 1)==1
-      u=u';
   end
 
 

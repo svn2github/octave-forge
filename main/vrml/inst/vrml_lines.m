@@ -30,7 +30,6 @@
 function s = vrml_lines(x,f,varargin)
 
 if nargin < 2, f = ones (1,columns(x)); end
-args = nargin; # nargin is now a function
 col = [1, 0, 0] ;
 
 opt1 = " col " ;
@@ -38,10 +37,9 @@ opt0 = " " ;
 
 verbose = 0 ;
 
-args -= 2 ;
 i=1;
 
-while args>=i ,
+while (nargin -2) >=i ,
 
   tmp = varargin{i++} ;	# pos 2.1.39
   if ! ischar(tmp) ,

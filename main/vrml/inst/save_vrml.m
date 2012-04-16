@@ -67,9 +67,7 @@ lightstr = sprintf (["PointLight {\n",\
 lightstr = "";
 
 				# Read eventual options
-nargin = nargin();
 ninit = nargin;
-
 
 i = 1;
 args = nargin; # nargin is now a function

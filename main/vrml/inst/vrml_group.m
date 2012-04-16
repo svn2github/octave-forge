@@ -17,7 +17,6 @@
 
 function v = vrml_group ( varargin )
 
-nargin = nargin();
 if nargin == 0, return end
 
 s = "";

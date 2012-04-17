@@ -1,0 +1,4 @@
+Summary of important user-visible changes for plot 1.1.1:
+-------------------------------------------------------------------
+
+ ** Package is no longer automatically loaded.

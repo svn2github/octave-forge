@@ -7,6 +7,6 @@ Title: Plotting.
 Description: Additional ploting tools for Octave.
 Categories: Plotting
 Depends: octave (>= 3.2)
-Autoload: yes
+Autoload: no
 License: GPLv3+, public domain
 Url: http://octave.sf.net

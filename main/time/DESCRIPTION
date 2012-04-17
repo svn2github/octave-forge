@@ -7,6 +7,6 @@ Title: Time and Dates
 Description: Additional date manipulation tools.
 Categories: Time
 Depends: octave (>= 3.0.1)
-Autoload: yes
+Autoload: no
 License: GPLv3+
 Url: http://octave.sf.net

@@ -6,4 +6,7 @@ Summary of important user-visible changes for plot 1.1.1:
       calc_shading
       implicit
 
+ ** Use of deprecated functions have been removed for compatibility
+    with newer releases of Octave.
+
  ** Package is no longer automatically loaded.

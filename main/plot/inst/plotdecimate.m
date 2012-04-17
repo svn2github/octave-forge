@@ -31,16 +31,10 @@
 ## plots, set @var{so} to @var{false}.
 ## @end deftypefn
 
-function C = plotdecimate (P, so, res)
+function C = plotdecimate (P, so = true, res = 1e-3)
 
   if (!ismatrix(P) || columns(P) != 2)
     error("P must be a matrix with two columns");
-  endif
-  if (nargin < 2)
-    so = true;                  # do segment optimisation
-  endif
-  if (nargin < 3)
-    res = 1e-3;                 # default resolution is 1000 dots/axis
   endif
 
   ## Slack: admissible error on coordinates on the output plot

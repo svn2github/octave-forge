@@ -34,8 +34,7 @@ function [nb] = dxfwrite (filename, varargin)
   ## Check arguments
   nb = 0;
   if nargin <= 1
-    usage("dxfwrite = (filename, pl, ...)");
-    return;
+    print_usage;
   endif
   
   ## Open file

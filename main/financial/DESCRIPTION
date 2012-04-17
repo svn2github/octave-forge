@@ -8,5 +8,5 @@ Description: Financial manipulation, plotting functions and additional
  date manipulation tools.
 Depends: octave (>= 3.0.1), io (>= 1.0.18)
 Autoload: no
-License: GPL version 3 and GPL version 2 or later
+License: GPLv3+
 Url: http://octave.sf.net

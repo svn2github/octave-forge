@@ -1,18 +1,17 @@
 ## Copyright (C) 2008 Bill Denney <bill@denney.ws>
 ##
-## This software is free software; you can redistribute it and/or modify it
-## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free Software
+## Foundation; either version 3 of the License, or (at your option) any later
+## version.
 ##
-## This software is distributed in the hope that it will be useful, but
-## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+## details.
 ##
-## You should have received a copy of the GNU General Public License
-## along with this software; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{hhv} =} hhigh (@var{data})
@@ -26,20 +25,13 @@
 ## @seealso{llow}
 ## @end deftypefn
 
-function hhv = hhigh (data, nperiods, dim)
+function hhv = hhigh (data, nperiods = 14, dim = find (size (data) > 1, 1);)
 
   if nargin < 1 || nargin > 3
     print_usage ();
   elseif ! isvector (data)
     ## FIXME
     error ("cannot yet handle more than one dimensional data")
-  endif
-  if nargin < 2
-    nperiods = 14;
-  endif
-  if nargin < 3
-    ## Use the first non-singleton dimension
-    dim = find (size (data) > 1, 1);
   endif
 
   if dim > ndims (data)

@@ -29,12 +29,10 @@
 ## @seealso{yeardays, yearfrac}
 ## @end deftypefn
 
-function mos = months (startdate, enddate, endmonthflag)
+function mos = months (startdate, enddate, endmonthflag = 1)
 
-  if nargin == 2
-	endmonthflag = 1;
-  elseif nargin != 3
-	print_usage ();
+  if (nargin < 2 || nargin > 3)
+    print_usage ();
   endif
 
   s = datevec (startdate);

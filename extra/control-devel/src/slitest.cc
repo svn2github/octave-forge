@@ -134,6 +134,8 @@ For internal use only.")
         int nsmp = y.rows ();   // nsmp: number of samples
         // y.rows == u.rows  is checked by iddata class
         // TODO: check minimal nsmp size
+        if (nsmp < 2*nobr)
+            error ("slitest: nsmp < 2*nobr");
                 
         int ldu = nsmp;
         int ldy = nsmp;

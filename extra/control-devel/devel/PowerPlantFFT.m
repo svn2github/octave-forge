@@ -59,26 +59,10 @@ outname = {'steam pressure',
            
 tsam = 1228.8;
 
-dat = iddata (Y, U, tsam, 'outname', outname, 'inname', inname);
+dat = iddata (Y, U, tsam, 'outputname', outname, 'inputname', inname)
 
 
-% ldwork = [401, 802, 1203, 1604]
-% warning: implicit conversion from real matrix to real scalar
+a = fft (dat)
 
-ldwork = [802, 1203, 1604, 3000, 1e4, 1e5]
+b = ifft (a)
 
-r = arrayfun (@(x) identtest (dat, 10, 8, x), ldwork, 'uniformoutput', false);
-
-     % s=10, n=8
-
-l = length (ldwork);
-
-err = cell (l-1, 1);
-
-for k = 2 : l
-  err(k-1) = norm (abs(r{1}) - abs(r{k}), 1);
-  % err(k-1) = norm (r{1} - r{k}, 1);
-  % err(k-1) = norm (abs(abs(r{1}) - abs(r{k})), 1);
-endfor
-
-err

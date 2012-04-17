@@ -4,9 +4,10 @@ Date: 2009-05-03
 Author: Bill Denney <bill@denney.ws>
 Maintainer: Octave-Forge community <octave-dev@lists.sourceforge.net>
 Title: Time and Dates
-Description: Additional date manipulation tools.
+Description: Additional date manipulation tools. This a dummy package
+ as transition for the financial package.
 Categories: Time
-Depends: octave (>= 3.0.1)
+Depends: financial (>= 0.4.0)
 Autoload: no
 License: GPLv3+
 Url: http://octave.sf.net

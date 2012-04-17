@@ -88,6 +88,13 @@
 
 function [y, m, d, h, mi, s] = datesplit(ds, P)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "`datesplit' has been deprecated in favor of `datevec' from Octave core. This function will be removed from future versions of the `financial' package");
+  endif
+
   if nargin < 2
     P = [];
   endif

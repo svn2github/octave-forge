@@ -91,7 +91,9 @@ function s = vrml_faces (x,f,varargin)
   verbose = 0 ;
 
   i = 1;
-  while (nargin -2) >= i
+
+  while numel(varargin)>=i
+
     tmp = varargin{i++};
     if ! ischar(tmp) ,
       error ("vrml_faces : Non-string option : \n") ;

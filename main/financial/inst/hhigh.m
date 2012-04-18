@@ -25,7 +25,7 @@
 ## @seealso{llow}
 ## @end deftypefn
 
-function hhv = hhigh (data, nperiods = 14, dim = find (size (data) > 1, 1);)
+function hhv = hhigh (data, nperiods = 14, dim = find (size (data) > 1, 1))
 
   if nargin < 1 || nargin > 3
     print_usage ();

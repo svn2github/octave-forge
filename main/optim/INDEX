@@ -1,6 +1,6 @@
 optimization >> Optimization
 Minimization
- minimize 
+ minimize
  nelder_mead_min
  d2_min
  nrm
@@ -31,7 +31,7 @@ Compatibility
  linprog
 Numerical derivatives
  dfdp dcdp dfpdp dfxpdp cdiff deriv
- numgradient numhessian jacobs
+ numgradient numhessian jacobs cauchy
 Pivoting
  cpiv_bard
  gjp

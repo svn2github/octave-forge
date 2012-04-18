@@ -3,7 +3,7 @@ Summary of important user-visible changes for optim 1.1.0:
 
  ** The following functions are new optim 1.1.0:
 
-      powell
+      powell cauchy
 
  ** The following functions have been deprecated since they have been
     implemented in Octave core:

@@ -7,6 +7,6 @@ Title: Special Matrices
 Description: Additional Special Matrices for Octave.
 Categories: Special Matrices
 Depends: octave (>= 2.9.7)
-Autoload: yes
+Autoload: no
 License: public domain
 Url: http://octave.sf.net

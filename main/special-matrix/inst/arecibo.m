@@ -1,3 +1,6 @@
+## Author: Jaroslav Hajek <highegg@gmail.com>
+## This program is granted to the public domain.
+
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{a} =} arecibo ()
 ## Returns the 73x23 logical matrix corresponding to the Arecibo message.

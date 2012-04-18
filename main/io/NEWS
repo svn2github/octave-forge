@@ -8,6 +8,7 @@ post-1.0.18 (in SVN only)
     with jopendocument v 1.3b1
     
 ** Compatible with jOpenDocument version 1.3b1
+   getUsedRange() method added (MUCH faster than the old hack)
 
 ** Compatible with Apache POI 3.8 final
 

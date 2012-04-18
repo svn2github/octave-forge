@@ -254,6 +254,7 @@ For internal use only.")
         // TODO: Handle 'k' for DWORK
 
         int ldwork;
+        int ns = nsmp - 2*nobr + 1;
         
         if (alg == 'C')
         {
@@ -289,7 +290,7 @@ For internal use only.")
         }
         else    // (alg == 'Q')
         {
-            int ns = nsmp - 2*nobr + 1;
+            // int ns = nsmp - 2*nobr + 1;
             
             if (ldr >= ns && batch == 'F')
             {
@@ -311,12 +312,24 @@ For internal use only.")
                 ldwork = 6*(m+l)*nobr;
             }
         }
-////////////////////////////////////////////////////////////////////
-// TO BE REMOVED !!!
-////////////////////////////////////////////////////////////////////        
-ldwork *= 2;
-//ldwork = 1000000;
-////////////////////////////////////////////////////////////////////
+
+/*
+IB01AD.f Lines 438-445
+C     FURTHER COMMENTS
+C
+C     For ALG = 'Q', BATCH = 'O' and LDR < NS, or BATCH <> 'O', the
+C     calculations could be rather inefficient if only minimal workspace
+C     (see argument LDWORK) is provided. It is advisable to provide as
+C     much workspace as possible. Almost optimal efficiency can be
+C     obtained for  LDWORK = (NS+2)*(2*(M+L)*NOBR),  assuming that the
+C     cache size is large enough to accommodate R, U, Y, and DWORK.
+*/
+
+// warning ("==================== ldwork before: %d =====================", ldwork);
+// ldwork = (ns+2)*(2*(m+l)*nobr);
+ldwork = max (ldwork, (ns+2)*(2*(m+l)*nobr));
+// warning ("==================== ldwork after: %d =====================", ldwork);
+
 
 /*
 IB01AD.f Lines 291-195:

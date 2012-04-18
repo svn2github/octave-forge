@@ -32,6 +32,7 @@ function [sys, x0] = ident (dat, s = [], n = [])
     ctrl = 0;  # confirm system order estimate
     n = 0;
   else         # s & n non-empty
+  disp ("======== hallo ===============")
     nsmp = ns(1);
     nobr = fix ((nsmp+1)/(2*(m+l+1)));
     if (s > nobr)

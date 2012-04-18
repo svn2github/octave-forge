@@ -1,6 +1,6 @@
 Name: financial
-Version: 0.3.2
-Date: 2008-08-17
+Version: 0.4.0
+Date: 2012-04-18
 Author: Bill Denney <bill@denney.ws>, Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
 Maintainer: Octave-Forge community <octave-dev@lists.sourceforge.net>
 Title: Financial

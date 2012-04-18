@@ -1,0 +1,8 @@
+Summary of important user-visible changes for special-matrix 1.1.0:
+-------------------------------------------------------------------
+
+ ** The following function is new:
+
+      arecibo
+
+ ** Package is no longer automatically loaded.

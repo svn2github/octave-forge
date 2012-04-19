@@ -74,8 +74,8 @@ dat = iddata (Y_dest, U_dest)
 err = norm (Y_dest - y, 1) / norm (Y_dest, 1)
 
 figure (1)
-plot (t, Y_dest, 'b')
-%plot (t, Y_dest, 'b', t, y, 'r')
+%plot (t, Y_dest, 'b')
+plot (t, Y_dest, 'b', t, y, 'r')
 legend ('y measured', 'y simulated', 'location', 'southeast')
 
 

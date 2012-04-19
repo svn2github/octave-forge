@@ -1,18 +1,17 @@
 ## Copyright (C) 2000-2011 A.V. Knyazev <Andrew.Knyazev@ucdenver.edu>
 ##
-## This library is free software; you can redistribute it and/or
-## modify it under the terms of the GNU Lesser General Public
-## License as published by the Free Software Foundation; either
-## version 2.1 of the License, or (at your option) any later version.
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU Lesser General Public License as published by the Free
+## Software Foundation; either version 3 of the License, or (at your option) any
+## later version.
 ##
-## This library is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## Lesser General Public License for more details.
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
+## for more details.
 ##
-## You should have received a copy of the GNU Lesser General Public
-## License along with this library; if not, write to the Free Software
-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+## You should have received a copy of the GNU Lesser General Public License
+## along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{blockVectorX}, @var{lambda}] =} lobpcg (@var{blockVectorX}, @var{operatorA})
@@ -250,11 +249,6 @@
 ## A C-version of this code is a part of the @uref{http://code.google.com/p/blopex/}
 ## package and is directly available, e.g., in PETSc and HYPRE.  
 ## @end deftypefn
-
-%   License: GNU LGPL ver 2.1 or above 
-%   Copyright (c) 2000-2011 A.V. Knyazev, Andrew.Knyazev@ucdenver.edu
-%   $Revision: 4.13 $  $Date: 16-Oct-2011
-%   Tested in MATLAB 6.5-7.13 and Octave 3.2.3-3.4.2.  
 
 function [blockVectorX,lambda,varargout] = lobpcg(blockVectorX,operatorA,varargin)
   %Begin

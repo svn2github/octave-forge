@@ -5,6 +5,9 @@ geometry-1.5.0   Release Date: 2012-04-16  Release Manager: Juan Pablo Carbajal
 ===============================================================================
 
 * Added functions:
+ - beltproblem.m : Finds the four lines tangent to two circles with given centers and
+     radii. This is the solution to  the belt problem in 2D.
+
  - curveval.m: Evaluates a polynomial curve defined as a 2-by-N matrix.
 
  - curve2polyline.m: Converts a polynomial curve into a polyline by the adaptive

@@ -29,22 +29,33 @@
 
 function [a, b] = circulant_eig (v)
 
-  warning ("off", "Octave:broadcast"); #the code below uses broadcasting
+  ## FIXME when warning for broadcastin is turned off by default, this
+  ## unwind_protect block could be removed
 
-  #find the eigenvalues
-  n = numel(v);
-  lambda = ones(n, 1);
-  s = (0:(n-1));
-  lambda = sum(v .* exp(-2*pi*i*s'*s/n))';
+  ## we are using broadcasting on the code below so we turn off the
+  ## warnings but will restore to previous state at the end
+  bc_warn = warning ("query", "Octave:broadcast");
+  unwind_protect
+    warning ("off", "Octave:broadcast");
 
-  if nargout < 2
-    a = lambda;
-    return
-  endif
+    #find the eigenvalues
+    n = numel(v);
+    lambda = ones(n, 1);
+    s = (0:(n-1));
+    lambda = sum(v .* exp(-2*pi*i*s'*s/n))';
 
-  #find the eigenvectors (which in fact do not depend on v)
-  a = exp(-2*i*pi*s'*s/n) / sqrt(n);
-  b = diag(lambda);
+    if nargout < 2
+      a = lambda;
+      return
+    endif
+
+    #find the eigenvectors (which in fact do not depend on v)
+    a = exp(-2*i*pi*s'*s/n) / sqrt(n);
+    b = diag(lambda);
+  unwind_protect_cleanup
+    ## restore broadcats warning status
+    warning (bc_warn.state, "Octave:broadcast");
+  end_unwind_protect
 
 endfunction
 

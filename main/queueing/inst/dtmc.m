@@ -47,7 +47,7 @@
 ##
 ## @item n
 ## Number of transitions after which compute the state occupancy probabilities
-## (@math{n=0, 1, @enddots{}})
+## (@math{n=0, 1, @dots{}})
 ##
 ## @item p0
 ## @code{@var{p0}(i)} is the probability that at step 0 the system

@@ -31,6 +31,8 @@
 ## for the argument with name @var{argname}. Alternatively, a function name
 ## can be used.
 ##
+## See @command{help @inputParser} for examples.
+##
 ## @emph{Note}: if @command{ParamValue} arguments are also specified, all @command{Optional}
 ## arguments will have to be specified before.
 ##

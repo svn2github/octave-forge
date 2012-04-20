@@ -31,7 +31,7 @@
 ## for the argument with name @var{argname}. Alternatively, a function name
 ## can be used.
 ##
-## See @command{help @@inputParser} for examples.
+## See @command{help @inputParser} for examples.
 ##
 ## @emph{Note}: this can be used together with the other type of arguments but
 ## it must be the first (see @command{@@inputParser}).

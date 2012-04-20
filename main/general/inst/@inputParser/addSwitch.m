@@ -27,7 +27,7 @@
 ## arguments supplied is a string like @var{argname}, then after parsing the value
 ## of @var{parse}.Results.@var{argname} will be true.
 ##
-## See @command{help @@inputParser} for examples.
+## See @command{help inputParser} for examples.
 ##
 ## @seealso{inputParser, @@inputParser/addOptional, @@inputParser/addParamValue
 ## @@inputParser/addParamValue, @@inputParser/addRequired, @@inputParser/parse}

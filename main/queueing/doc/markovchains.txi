@@ -583,6 +583,33 @@ L(t) = |   pi(u) du
 the state occupancy probability at time @math{t}; @math{\exp({\bf Q}t)}
 is the matrix exponential of @math{{\bf Q}t}.
 
+If there are absorbing states, we can define the vector @emph{expected
+sojourn times until absorption} @math{{\bf L}(\infty)}, where for each
+transient state @math{i}, @math{L_i(\infty)} is the expected total
+time spent in state @math{i} until absorption, assuming that the
+system started with a given state occupancy probability vector
+@math{{\bf \pi}(0)}. Let @math{\tau} be the set of transient (i.e.,
+non absorbing) states; let @math{{\bf Q}_\tau} be the restriction of
+@math{\bf Q} to the transient substates only. Similarly, let
+@math{{\bf \pi}_\tau(0)} be the restriction of the initial probability
+vector @math{{\bf \pi}(0)} to transient states @math{\tau}.
+
+The expected time to absorption @math{{\bf L}_\tau(\infty)} is defined as
+the solution of the following equation:
+
+@iftex
+@tex
+$$ {\bf L}_\tau(\infty){\bf Q}_\tau = -{\bf \pi}_\tau(0) $$
+@end tex
+@end iftex
+@ifnottex
+@example
+@group
+L_T( inf ) Q_T = -pi_T(0)
+@end group
+@end example
+@end ifnottex
+
 @GETHELP{ctmc_exps}
 
 @noindent @strong{EXAMPLE}
@@ -620,32 +647,6 @@ given the initial occupancy probability @math{{\bf \pi}_0=(1,0,0,0)}.
 @c
 @node Mean time to absorption (CTMC)
 @subsection Mean Time to Absorption
-
-If we consider a Markov Chain with absorbing states, it is possible to
-define the @emph{expected time to absorption} as the expected time
-until the system goes into an absorbing state. More specifically, let
-us suppose that @math{A} is the set of transient (i.e., non-absorbing)
-states of a CTMC with @math{N} states and infinitesimal generator
-matrix @math{\bf Q}. The expected time to absorption @math{{\bf
-L}_A(\infty)} is defined as the solution of the following equation:
-
-@iftex
-@tex
-$$ {\bf L}_A(\infty){\bf Q}_A = -{\bf \pi}_A(0) $$
-@end tex
-@end iftex
-@ifnottex
-@example
-@group
-L_A( inf ) Q_A = -pi_A(0)
-@end group
-@end example
-@end ifnottex
-
-@noindent where @math{{\bf Q}_A} is the restriction of matrix @math{\bf Q} to
-only states in @math{A}, and @math{{\bf \pi}_A(0)} is the initial
-state occupancy probability at time 0, restricted to states in
-@math{A}.
 
 @GETHELP{ctmc_mtta}
 

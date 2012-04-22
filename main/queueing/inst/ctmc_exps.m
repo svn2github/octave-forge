@@ -24,10 +24,10 @@
 ## @cindex Expected sojourn time
 ##
 ## With three arguments, compute the expected times @code{@var{L}(i)}
-## spent in each state @math{i} during the time interval
-## @math{[0,t]}, assuming that the state occupancy probabilities
-## at time 0 are @var{p}. With two arguments, compute the expected time
-## @code{@var{L}(i)} spent in each state @math{i} until absorption.
+## spent in each state @math{i} during the time interval @math{[0,t]},
+## assuming that the initial occupancy vector is @var{p}. With two
+## arguments, compute the expected time @code{@var{L}(i)} spent in each
+## transient state @math{i} until absorption.
 ##
 ## @strong{INPUTS}
 ##
@@ -57,9 +57,9 @@
 ## If this function is called with three arguments, @code{@var{L}(i)} is
 ## the expected time spent in state @math{i} during the interval
 ## @math{[0,t]}. If this function is called with two arguments
-## @code{@var{L}(i)} is either the expected time spent in state @math{i}
-## until absorption (if @math{i} is a transient state), or zero (if
-## @var{i} is an absorbing state).
+## @code{@var{L}(i)} is the expected time spent in transient state
+## @math{i} until absorption; if state @math{i} is absorbing,
+## @code{@var{L}(i)} is zero.
 ##
 ## @end table
 ##

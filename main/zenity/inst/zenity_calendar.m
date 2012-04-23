@@ -1,5 +1,5 @@
 ## Copyright (C) 2006 Søren Hauberg <soren@hauberg.org>
-## Copyright (C) 2010 Carnë Draug <carandraug+dev@gmail.com>
+## Copyright (C) 2010, 2012 Carnë Draug <carandraug+dev@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software

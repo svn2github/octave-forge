@@ -9,6 +9,8 @@ Description: A set of functions for creating simple graphical
  calendar windows, text entries, file selection dialogs,
  lists, message windows, icons in the notification area,
  and windows for large amount of text.
-License: GPLv3+
+Autoload: no
+Depends: general (>= 1.3.0)
 SystemRequirements: zenity (>= 2.16)
+License: GPLv3+
 Url: http://octave.sf.net

@@ -1,0 +1,9 @@
+Summary of important user-visible changes for zenity 1.0.0:
+-------------------------------------------------------------------
+
+ ** IMPORTANT NOTE: all functions have a completely new API incompatible
+    with the previous releases
+
+ ** Check individual functions for many news options
+
+ ** package is now dependent on general (>= 1.3.0)

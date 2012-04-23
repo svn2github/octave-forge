@@ -1,5 +1,5 @@
 ## Copyright (C) 2006 Søren Hauberg <soren@hauberg.org>
-## Copyright (C) 2010 Carnë Draug <carandraug+dev@gmail.com>
+## Copyright (C) 2010, 2012 Carnë Draug <carandraug+dev@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -35,14 +35,14 @@
 ## @item text
 ## Sets the text of the dialog window. Requires a string as value.
 ##
-## @item auto close
+## @item auto_close
 ## When the bar reachs @code{100}, automatically closes the dialog window. Requires no value.
 ##
-## @item auto kill
+## @item auto_kill
 ## If the @option{cancel} button is pressed, it will kill the parent process
 ## (@abbr{i.e.} the program that is calling the function). Requires no value.
 ##
-## @item hide cancel
+## @item hide_cancel
 ## Hides the @option{cancel} button from the dialog window (the user can still
 ## close the window with its functions). Requires no value.
 ##
@@ -84,7 +84,7 @@
 ## The fourth form of the @command{zenity_progress} function finishes the progress
 ## bar, given the handle @var{h} followed by the string @code{close}. This will
 ## move the progress bar to the end and wait for the user to press
-## @option{OK}. To avoid this behaviour, @option{auto close} can be set when
+## @option{OK}. To avoid this behaviour, @option{auto_close} can be set when
 ## creating the progress bar. Returns @code{0} on success and @code{-1} on error.
 ##
 ## @strong{Note:} ultimately, the availability of some parameters is dependent
@@ -130,12 +130,12 @@ function sta = zenity_progress(varargin)
     ## " #test text"  <-- no error, but does nothing
     ## "#test text"   <-- changes text for 'test text
     ## "# test text"  <-- exactly the same as above
-    options.text    = add_newline (options.text);
-    options.percent = add_newline (options.percent);
+    options.text       = add_newline (options.text);
+    options.percentage = add_newline (options.percentage);
 
     pre_cmd = sprintf("%s", ...
                       options.text, ...
-                      options.percent);
+                      options.percentage);
     try
       ## just in case someone has been playing with the pipe, flush it before
       fflush (handle);
@@ -154,7 +154,7 @@ function sta = zenity_progress(varargin)
                       options.timeout, ...
                       options.icon, ...
                       options.text, ...
-                      options.percent, ...
+                      options.percentage, ...
                       options.auto_close, ...
                       options.pulsate, ...
                       options.auto_kill,...

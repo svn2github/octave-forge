@@ -1,5 +1,5 @@
 ## Copyright (C) 2006 Søren Hauberg <soren@hauberg.org>
-## Copyright (C) 2010 Carnë Draug <carandraug+dev@gmail.com>
+## Copyright (C) 2010, 2012 Carnë Draug <carandraug+dev@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -43,10 +43,12 @@
 ## notification panel. Trough all the example, the text stays @samp{working}.
 ##
 ## @example
+## @group
 ## h = zenity_notification ("text", "working", "icon", "info")
 ## zenity_notification (h, "message", "step 1 started")
 ## zenity_notification (h, "message", "error during step 1", "icon", "error")
 ## zenity_notification (h, "close")
+## @end group
 ## @end example
 ##
 ## All @var{parameters} are optional but if given, may require a corresponding
@@ -122,7 +124,7 @@ function sta = zenity_notification (varargin)
         warning ("There's %g argument(s) after '%s' which will be ignored", (nargin-2), varargin{1})
       endif
       try
-        sta = pclose(handle);
+        sta = fclose (handle);
       catch
         sta = -1;
       end_try_catch
@@ -133,6 +135,10 @@ function sta = zenity_notification (varargin)
       return
     endif
     options = zenity_options ("piped notification", varargin);
+    if ( isempty(options.icon))
+      options.type = "--info";
+    endif
+
     ## Must add the new line only if they exist or zenity will complain about
     ## not being able to parse some of the lines.
     ## Atention to whitespace after the command. Example:
@@ -164,7 +170,7 @@ function sta = zenity_notification (varargin)
     pre_cmd = sprintf("%s ", ...
                       options.icon, ... 
                       options.text, ...
-                      options.timeout);
+                      options.timeout)
     cmd     = sprintf("zenity --notification --listen %s", pre_cmd);
     try
       sta   = popen(cmd, "w");

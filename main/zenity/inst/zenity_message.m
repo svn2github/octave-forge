@@ -1,5 +1,5 @@
 ## Copyright (C) 2006 Søren Hauberg <soren@hauberg.org>
-## Copyright (C) 2010 Carnë Draug <carandraug+dev@gmail.com>
+## Copyright (C) 2010, 2012 Carnë Draug <carandraug+dev@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -54,18 +54,18 @@
 ## @item warning
 ## @end table
 ##
-## @item OK button
+## @item ok
 ## Sets the the text to show on the @option{OK} button if type of message is set
 ## to @option{question}. Requires a string as value.
 ##
-## @item cancel button
+## @item cancel
 ## Sets the the text to show on the @option{cancel} button if type of message is
 ## set to @option{question}. Requires a string as value.
 ##
 ## @item title
 ## Sets the title of the window. Requires a string as value.
 ##
-## @item no-wrap
+## @item no_wrap
 ## Disables text wrapping. No value is required.
 ##
 ## @item width
@@ -102,6 +102,10 @@ function status = zenity_message(text, varargin)
 
   options = zenity_options ("message", varargin);
 
+  if ( isempty(options.type))
+    options.type = "--info";
+  endif
+
   ## Sanity checks
   if ( !strcmpi(options.type, "--question") && (options.ok || options.cancel))
     error("Paremeters 'ok button' and 'cancel button' can only bet set in 'question' messages")
@@ -110,7 +114,7 @@ function status = zenity_message(text, varargin)
   pre_cmd = sprintf("%s ", ...
                     options.type, ...
                     text, ...
-                    options.wrap, ...
+                    options.no_wrap, ...
                     options.title, ...
                     options.icon, ...
                     options.width, ...

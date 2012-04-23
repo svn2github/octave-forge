@@ -1,5 +1,5 @@
 ## Copyright (C) 2006 Søren Hauberg <soren@hauberg.org>
-## Copyright (C) 2010 Carnë Draug <carandraug+dev@gmail.com>
+## Copyright (C) 2010, 2012 Carnë Draug <carandraug+dev@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -36,17 +36,18 @@
 ## Sets the default selected file. Requires a string as value.
 ##
 ## @item filter
-## Sets a filename filter. Requires a string as value. Multiple filters can be
-## set with multiple calls of this parameter, or one filter can be made with
-## multiple regexp. Filters can also be named which blocks the user from actualy
-## seeing the filter.. The following examples shows how to create two filters,
-## two named filters, one filter for two different extensions, and the same
-## filter but named:
+## Sets a filename filter. Requires a string as value. Only one filter can be set
+## but it can have multiple regex. Filters can also be named which blocks the user
+## from actually seeing the filter.
 ## @example
-## @code{zenity_file_selection ("filter", "*.txt", "filter", "*.m")}
-## @code{zenity_file_selection ("filter", "text files| *.txt", "filter", "octave files| *.m")}
-## @code{zenity_file_selection ("filter", "*.tif *.png")}
-## @code{zenity_file_selection ("filter", "Images | *.tif *.png")}
+## @group
+## ## only txt files will be selectable
+## zenity_file_selection ("filter", "*.txt")
+## ## both txt and m files will be selectable
+## zenity_file_selection ("filter", "*.txt *.m")
+## ## both txt and m files will be selectable but the users will see `text files'
+## zenity_file_selection ("filter", "Text files | *.txt *.m")
+## @end group
 ## @end example
 ##
 ## @item icon
@@ -86,6 +87,26 @@
 ##
 ## @seealso{zenity_list, zenity_entry, zenity_message, zenity_text_info}
 ## @end deftypefn
+
+## TODO
+## for some time (but only on the development version, never released version) it
+## was possible to set multiple filters filter with this function (see the help text created below).
+## This was when using a manual parsing of the options. Once using @inputParser
+## this was no longer working. Maybe when inputParser allows for an option to be
+## used multiple times... all the code is ready for this, just uncomment some lines
+## @item filter
+## Sets a filename filter. Requires a string as value. Multiple filters can be
+## set with multiple calls of this parameter, or one filter can be made with
+## multiple regexp. Filters can also be named which blocks the user from actualy
+## seeing the filter.. The following examples shows how to create two filters,
+## two named filters, one filter for two different extensions, and the same
+## filter but named:
+## @example
+## @code{zenity_file_selection ("filter", "*.txt", "filter", "*.m")}
+## @code{zenity_file_selection ("filter", "text files| *.txt", "filter", "octave files| *.m")}
+## @code{zenity_file_selection ("filter", "*.tif *.png")}
+## @code{zenity_file_selection ("filter", "Images | *.tif *.png")}
+## @end example
 
 function [files, status] = zenity_file_selection(varargin)
 

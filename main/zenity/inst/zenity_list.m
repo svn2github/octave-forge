@@ -1,5 +1,5 @@
 ## Copyright (C) 2006 Søren Hauberg <soren@hauberg.org>
-## Copyright (C) 2010 Carnë Draug <carandraug+dev@gmail.com>
+## Copyright (C) 2010, 2012 Carnë Draug <carandraug+dev@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -28,10 +28,12 @@
 ## @code{Height}, will have the values @code{120cm} and @code{180cm}:
 ##
 ## @example
+## @group
 ## columns = @{"Age", "Height"@}
-## data    = @{"10", "120cm",
-##            "20"; "180cm"@}
+## data    = @{"10", "120cm"
+##            "20", "180cm"@}
 ## zenity_list(columns, data)
+## @end group
 ## @end example
 ##
 ## @var{selected} holds a string with the value of the first column of the
@@ -68,13 +70,15 @@
 ## with the strings @code{FreeBSD} and @code{Linux}.
 ##
 ## @example
+## @group
 ## columns = @{"", "OS"@}
-## data    = @{"true" , "FreeBSD",
-##            "true" , "Linux",
+## data    = @{"true" , "FreeBSD"
+##            "true" , "Linux"
 ##            "false", "NetBSD"
-##            "false", "OpenBSD",
+##            "false", "OpenBSD"
 ##            "false", "OpenSolaris"@}
 ## zenity_list(columns, data, "checklist")
+## @end group
 ## @end example
 ##
 ## @item editable
@@ -85,7 +89,7 @@
 ## @item height
 ## Sets the height of the dialog window. Requires a scalar as value.
 ##
-## @item hide column
+## @item hide_column
 ## Hides the specified columns from the user. Requires a numeric data type as
 ## value. Multiple columns can be selected with ranges or matrixes. If
 ## @option{radiolist} or @option{checklist} are set, the first
@@ -97,15 +101,17 @@
 ## not shown and holds the numbers.
 ##
 ## @example
+## @group
 ## columns = @{"", "Foods", "not visible"@}
 ## data    = @{"true" , "Ice cream", "1"
 ##            "false", "Danish",    "2"
 ##            "false", "Soup",      "3"
 ##            "false", "Lasagne",   "4"@}
-## zenity_list(columns, data, "radiolist", "hide column", 3, "print column", 3)
+## zenity_list(columns, data, "radiolist", "hide_column", 3, "print_column", 3)
+## @end group
 ## @end example
 ##
-## @item no headers
+## @item no_headers
 ## Doesn't show the headers. No value is required. @var{columns} still needs to
 ## be defined and have the right size but may be a cell array of empty
 ## strings. Since the headers are hidden, the user cannot sort the values of the
@@ -126,7 +132,7 @@
 ## Allows multiple rows to be selected. No value is required. It cannot be set
 ## with @option{radiolist} and is automatically set when @option{checklist} is set.
 ##
-## @item numeric output
+## @item numeric_output
 ## Returns @var{selected} as a matrix and numeric values (double precision type)
 ## instead of cell array of strings. It uses the function str2double for the
 ## conversion. Requires a string as value. Possible values are: 
@@ -138,7 +144,7 @@
 ## Returns @code{NaN} for the values it is unable to convert.
 ## @end table
 ##
-## @item print column
+## @item print_column
 ## The numbers of the columns whose values should be returned. Requires a numeric
 ## data type as value. Multiple columns can be selected with ranges or matrixes,
 ## and all columns can be selected with the scalar @code{0}. If the
@@ -225,54 +231,48 @@ function [val, status] = zenity_list(col, data, varargin)
   ## Sanity checks
   ## by using numel(col) instead of columns, allows to not worry on the dimension they are placed
   if (columns(data) != numel(col))
-    error("Size of 'columns' (%g) is different than the number of columns in 'data' (%g).", ...
+    error("size of 'columns' (%g) is different than the number of columns in 'data' (%g).", ...
           numel(col), columns(data))
+  elseif (!all (cellfun (@ischar, data)))
+      error ("all elements in 'data' must be strings.");
+  elseif (!all (cellfun (@ischar, col)))
+      error ("all elements in 'col' must be strings.");
   endif
-  for i = 1:numel(data)
-    if (!ischar(data{i}))
-      error ("Index '%g' of the argument 'data' is not a string.", i);
-    endif
-  endfor
-  for i = 1:numel(col)
-    if (!ischar(col{i}))
-      error ("Index '%g' of the argument 'columns' is not a string.", i);
-    endif
-  endfor
 
-  options                       = zenity_options ("list", varargin);
+  options = zenity_options ("list", varargin);
 
   ## More sanity checks
-  if ( !isempty(options.check) && !isempty(options.radio) )
+  if ( !isempty(options.checklist) && !isempty(options.radiolist) )
     error ("Parameter 'checklist' cannot be set together with 'radiolist'.")
-  elseif( !isempty(options.multiple) && !isempty(options.radio) )
+  elseif( !isempty(options.multiple) && !isempty(options.radiolist) )
     error ("Parameter 'multiple' cannot be set together with 'radiolist'.")
-  elseif ( !isempty(options.editable) && !isempty(options.radio) )
+  elseif ( !isempty(options.editable) && !isempty(options.radiolist) )
     error ("Parameter 'editable' cannot be set together with 'radiolist'.")
-  elseif ( !isempty(options.editable) && !isempty(options.check) )
+  elseif ( !isempty(options.editable) && !isempty(options.checklist) )
     error ("Parameter 'editable' cannot be set together with 'checklist'.")
-  elseif ( options.hide_min == 1 && (!isempty(options.check) || !isempty(options.radio)) )
+  elseif ( !isempty(options.hide_column) && options.hide_min == 1 && (!isempty(options.checklist) || !isempty(options.radiolist)) )
     error ("'hide column' cannot have a value of 1 when 'checklist' and 'radiolist' are set.");
-  elseif ( options.print_min == 1 && (!isempty(options.check) || !isempty(options.radio)) )
+  elseif ( !isempty(options.print_column) && options.print_min == 1 && (!isempty(options.checklist) || !isempty(options.radiolist)) )
     error ("'print column' cannot have a value of 1 when 'checklist' and 'radiolist' are set.");
-  elseif ( options.print_min == 0 && options.print_numel > 1)
+  elseif ( !isempty(options.print_column) && options.print_min == 0 && options.print_numel > 1)
     error ("Value of 0 (all) found as value for parameter 'print column' as part of multiple values. If desired, it must be set as scalar.");
-  elseif ( options.hide_max > numel(col) )
+  elseif ( !isempty(options.hide_column) && options.hide_max > numel(col) )
     error ("Value %g found for the parameter 'hide column' and is larger than the number of columns.", options.hide_max)
-  elseif ( options.print_max > numel(col) )
+  elseif ( !isempty(options.print_column) && options.print_max > numel(col) )
     error ("Value %g found for the parameter 'print column' and is larger than the number of columns.", options.print_max)
-  elseif ( options.print_min < 0 )
+  elseif ( !isempty(options.print_column) && options.print_min < 0 )
     error ("Negative value '%g' found for the parameter 'print column'.", options.print_min)
-  elseif ( options.hide_min < 1 )
+  elseif ( !isempty(options.hide_column) && options.hide_min < 1 )
     error ("Parameter 'hide column' cannot have values smaller than 1 (found minimun as '%g').", options.hide_min)
   endif
 
-  if ( !isempty(options.check) )
+  if ( !isempty(options.checklist) )
     for i = 1:rows(data)
       if ( !strcmpi(data{i,1},"true") && !strcmpi(data{i,1},"false") )
         error ("All cells on the first column of 'data' must be either 'true' or 'false' when 'radiolist' or 'checklist' are set.");
       endif
     endfor
-  elseif (!isempty(options.radio) )
+  elseif (!isempty(options.radiolist) )
     seen_true = 0;
     for i = 1:rows(data)
       if ( !strcmpi(data{i,1},"true") && !strcmpi(data{i,1},"false") )
@@ -304,15 +304,15 @@ function [val, status] = zenity_list(col, data, varargin)
                     options.timeout, ...
                     options.separator, ...
                     options.text, ...
-                    options.hide, ...
-                    options.print_col, ...
+                    options.hide_column, ...
+                    options.print_column, ...
                     options.multiple, ...
-                    options.radio, ...
-                    options.check, ...
+                    options.radiolist, ...
+                    options.checklist, ...
                     options.editable, ...
                     options.icon, ...
                     options.col, ...
-                    options.no_head, ...
+                    options.no_headers, ...
                     options.data);
 
   cmd               = sprintf ("zenity --list %s", pre_cmd);
@@ -325,18 +325,18 @@ function [val, status] = zenity_list(col, data, varargin)
   # Exit code  5 = The dialog has been closed because the timeout has been reached
 
   # If it would be possible for the function to return more than one value
-  if ( !isempty(options.check) || !isempty(options.multiple) || options.print_numel > 1)
+  if ( !isempty(options.checklist) || !isempty(options.multiple) || (!isempty(options.print_column) && options.print_numel > 1))
     multi = 1;
   else
     multi = 0;
   endif
 
   # Calculate the number of expected columns
-  if ( options.print_min == 0 && (options.check || options.radio) )
+  if ( !isempty(options.print_column) && options.print_min == 0 && (options.checklist || options.radiolist) )
     expec_col = numel(col) -1;
-  elseif (options.print_min == 0)
+  elseif (!isempty(options.print_column) && options.print_min == 0)
     expec_col = numel(col);
-  elseif (options.print_min != 0)
+  elseif (!isempty(options.print_column) && options.print_min != 0)
     expec_col = options.print_numel;
   else
     expec_col = 1;
@@ -394,13 +394,13 @@ function [val, status] = zenity_list(col, data, varargin)
   ## cell array gives an error on str2double. However, in the future (gnome
   ## bug #651948) this may be changed. When it does, the condition should accept
   ## status == 5 AND check if the cell array is not completely empty
-  if (status == 0 && options.num_out)
+  if (status == 0 && options.numeric_output)
     val = str2double(val);
-    if (strcmpi(options.num_out, "error"))
+    if (strcmpi(options.numeric_output, "error"))
       if ( any(isnan( val(:) )) )
         error("Conversion of output to numeric form was unsucessful")
       endif
-    elseif (strcmpi(options.num_out, "nan"))
+    elseif (strcmpi(options.numeric_output, "nan"))
       ## Do nothing
     else
       error("Unknow value '%s' for the parameter 'numeric output'", option.num_out)

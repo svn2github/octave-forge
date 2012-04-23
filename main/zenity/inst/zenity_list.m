@@ -15,7 +15,7 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} [@var{selected}, @var{status}] = zenity_list(@var{columns}, @var{data}, @var{param1}, @var{value1}, ...)
+## @deftypefn {Function File} {[@var{selected}, @var{status}] =} zenity_list (@var{columns}, @var{data}, @var{param1}, @var{value1}, @dots{})
 ## Displays a graphical list of data using Zenity. The values on the list can be
 ## selected and/or modified by the user.
 ##

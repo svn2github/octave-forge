@@ -15,10 +15,10 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} @var{h} = zenity_notification
-## @deftypefnx {Function File} @var{h} = zenity_notification (@var{param1}, @var{value1}, ...)
-## @deftypefnx {Function File} @var{s} = zenity_notification (@var{h}, @var{param1}, @var{value1}, ...)
-## @deftypefnx {Function File} @var{s} = zenity_notification (@var{h}, "close")
+## @deftypefn {Function File} {@var{h} =} zenity_notification
+## @deftypefnx {Function File} {@var{h} =} zenity_notification (@var{param1}, @var{value1}, @dots{})
+## @deftypefnx {Function File} {@var{s} =} zenity_notification (@var{h}, @var{param1}, @var{value1}, @dots{})
+## @deftypefnx {Function File} {@var{s} =} zenity_notification (@var{h}, "close")
 ## Displays an icon with a text in the notification area, and pop up messages
 ## using Zenity.
 ##

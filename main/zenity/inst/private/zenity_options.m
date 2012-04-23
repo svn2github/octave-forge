@@ -14,7 +14,7 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} @var{options} = _zenity_options (@var{dialog}, @var{param1}, @var{value1}, ...)
+## @deftypefn {Function File} {@var{options} =} zenity_options (@var{dialog}, @var{param1}, @var{value1}, @dots{})
 ## This function is not intended for users but for the other functions of the
 ## zenity package. Returns the structure @var{options} that holds the processed
 ## @var{param} and @var{value} for the function of the zenity package

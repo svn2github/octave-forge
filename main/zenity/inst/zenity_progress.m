@@ -15,10 +15,10 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} @var{h} = zenity_progress
-## @deftypefnx {Function File} @var{h} = zenity_progress (@var{param1}, @var{value1}, ...)
-## @deftypefnx {Function File} @var{s} = zenity_progress (@var{h}, @var{param1}, @var{value1}, ...)
-## @deftypefnx {Function File} @var{s} = zenity_progress (@var{h}, "close")
+## @deftypefn {Function File} {@var{h} =} zenity_progress
+## @deftypefnx {Function File} {@var{h} =} zenity_progress (@var{param1}, @var{value1}, @dots{})
+## @deftypefnx {Function File} {@var{s} =} zenity_progress (@var{h}, @var{param1}, @var{value1}, @dots{})
+## @deftypefnx {Function File} {@var{s} =} zenity_progress (@var{h}, "close")
 ## Displays a progress bar dialog using Zenity.
 ##
 ## The first and second forms of the @command{zenity_progress} function creates

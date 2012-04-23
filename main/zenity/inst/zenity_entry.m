@@ -15,7 +15,7 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} [@var{entry}, @var{status}] = zenity_entry(@var{text}, @var{parameter1}, @var{value1}, ...)
+## @deftypefn {Function File} {[@var{entry}, @var{status}] =} zenity_entry (@var{text}, @var{parameter1}, @var{value1}, @dots{})
 ## Displays a text entry dialog using Zenity.
 ##
 ## The variable @var{text} sets the dialog text and is the only mandatory

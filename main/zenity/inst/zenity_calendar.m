@@ -15,7 +15,7 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} [@var{date} @var{status}] = zenity_calendar (@var{param1}, @var{value1}, ...)
+## @deftypefn {Function File} {[@var{date} @var{status}] =} zenity_calendar (@var{param1}, @var{value1}, @dots{})
 ## Opens a date selection dialog using Zenity.
 ##
 ## @var{date} is the first three members of the date vector of the selected date,

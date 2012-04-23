@@ -15,7 +15,7 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} @var{status} = zenity_message(@var{text}, @var{parameter1}, @var{value1}, ...)
+## @deftypefn {Function File} {@var{status} =} zenity_message (@var{text}, @var{parameter1}, @var{value1}, @dots{})
 ## Displays different types of graphical message dialogs using Zenity.
 ##
 ## Returns @code{0} if @option{OK} is pressed; @code{1} if @option{Close} is

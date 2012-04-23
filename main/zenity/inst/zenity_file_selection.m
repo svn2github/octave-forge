@@ -15,7 +15,7 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} [@var{files} @var{status}] = zenity_file_selection (@var{param1}, @var{value1}, ...)
+## @deftypefn {Function File} {[@var{files} @var{status}] =} zenity_file_selection (@var{param1}, @var{value1}, @dots{})
 ## Opens a file selection dialog using Zenity.
 ##
 ## @var{files} is a string or a cell array of strings depending on whether the

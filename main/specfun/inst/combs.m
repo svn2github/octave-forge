@@ -39,6 +39,13 @@
 ## 
 
 function L=combs(Set,K)
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "`combs' has been deprecated in favor of `nchoosek'. This function will be removed from future versions of the `specfun' package");
+  endif
+
   if ( nargin < 2 )
     print_usage()
   end

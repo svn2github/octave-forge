@@ -6,6 +6,12 @@ miscellaneous-1.2.0   Release Date: 2012-XX-XX  Release Manager:
  ** New functions:
    truncate.m : truncates a number to a given precision.
 
+ ** The following functions have been imported from the combinatorics
+    package which has been removed:
+
+      partcnt     partint
+
+
 ===============================================================================
 miscellaneous-1.1.0   Release Date: 2012-03-24  Release Manager:
 ===============================================================================

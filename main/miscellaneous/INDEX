@@ -19,6 +19,8 @@ miscellaneous
  normr
  nze
  partarray
+ partcnt
+ partint
  peano_curve
  publish
  read_options

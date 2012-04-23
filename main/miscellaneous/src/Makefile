@@ -1,6 +1,8 @@
-all: cell2cell.oct partarray.oct sample.oct text_waitbar.oct 
-
 MKOCTFILE = mkoctfile -Wall
+
+PROGS = $(patsubst %.cc,%.oct,$(wildcard *.cc))
+
+all: $(PROGS)
 
 %.oct: %.cc
 	$(MKOCTFILE) $<

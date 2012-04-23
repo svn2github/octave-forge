@@ -1,25 +1,17 @@
-/*
-## Copyright (C) 2006   Torsten Finke   <fi@igh-essen.com>
-##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
-## (at your option) any later version.
-##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
-##
-## You should have received a copy of the GNU General Public License
-## along with this program; If not, see <http://www.gnu.org/licenses/>.
-
-$Revision$
-$Date$
-$RCSfile$
-
-*/
-
+// Copyright (C) 2006 Torsten Finke <fi@igh-essen.com>
+//
+// This program is free software; you can redistribute it and/or modify it under
+// the terms of the GNU General Public License as published by the Free Software
+// Foundation; either version 3 of the License, or (at your option) any later
+// version.
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+// details.
+//
+// You should have received a copy of the GNU General Public License along with
+// this program; if not, see <http://www.gnu.org/licenses/>.
 
 #include <octave/oct.h>
 #include <octave/lo-ieee.h>
@@ -32,22 +24,22 @@ unsigned long * pcnt(unsigned long n)
     unsigned long *x = new unsigned long[n*n];
     unsigned long **p = new unsigned long*[n];
     for (unsigned long k=0; k<n; ++k)  {
-	p[k] = x + (k*n);
-	s[k] = 0;
+        p[k] = x + (k*n);
+        s[k] = 0;
     }
     for (unsigned long k=0; k<n*n; ++k)  x[k] = 0;
     p[0][0] = 1;
     for (unsigned long k=1; k<n; ++k)
-    {	
+    {
         // p[N][j] == numpart of N with max summand j
-	for (unsigned long j=1; j<=k; ++j) {
-	    p[k][j] = p[k-1][j-1] + p[k-j][j];
-	}
-	for (unsigned long j=1; j<=k; ++j) { 
-	    s[k] += p[k][j]; // S(k) = numpart(n)
-	}
+        for (unsigned long j=1; j<=k; ++j) {
+            p[k][j] = p[k-1][j-1] + p[k-j][j];
+        }
+        for (unsigned long j=1; j<=k; ++j) {
+            s[k] += p[k][j]; // S(k) = numpart(n)
+        }
     }
-    return s; 
+    return s;
 }
 
 DEFUN_DLD (partcnt, args, ,
@@ -77,42 +69,42 @@ Joerg Arndt: Algorithms for programmers (http://www.jjj.de), 2006.\n\n\
 @end deftypefn\n\
 @seealso{partint}\n\
 ")
-{    
+{
     octave_value r;
     
     int nargin = args.length ();
     if (nargin != 1) {
-	error("partcnt accepts exactly one argument"); 
-	return r; 
+        error("partcnt accepts exactly one argument");
+        return r; 
     }
     if ( ! args(0).is_numeric_type()) {
-	error("partcnt only accepts a numeric argument"); 
-	return r;
+        error("partcnt only accepts a numeric argument");
+        return r;
     }
 
     NDArray f(args(0).matrix_value());
-    RowVector m(f.max()); 
+    RowVector m(f.max());
     double mmax = m.max();
     if ( mmax < 1 ) {
-	error("partcnt is only defined for non-negative arguments"); 
-	return r;
+        error("partcnt is only defined for non-negative arguments");
+        return r;
     }
 
-    unsigned long n = (unsigned long) mmax + 1; 
-    unsigned long *s = pcnt(n); 
+    unsigned long n = (unsigned long) mmax + 1;
+    unsigned long *s = pcnt(n);
     unsigned long fr = (unsigned long) f.rows();
     unsigned long fc = (unsigned long) f.columns();
     for (unsigned long i=0; i<fr; i++) {
-	for (unsigned long k=0; k<fc; k++) {
-	    unsigned long idx = (unsigned long) f(i, k); 
-	    if (0 < idx && idx < n) {
-		f(i, k) = s[idx];
-	    } else {
-		f(i, k) = lo_ieee_nan_value(); 
-	    }
-	}
+        for (unsigned long k=0; k<fc; k++) {
+            unsigned long idx = (unsigned long) f(i, k);
+            if (0 < idx && idx < n) {
+                f(i, k) = s[idx];
+            } else {
+                f(i, k) = lo_ieee_nan_value();
+            }
+        }
     }
-    r = f; 
+    r = f;
     return r;
 }
 
@@ -183,37 +175,37 @@ Joerg Arndt: Algorithms for programmers (http://www.jjj.de), 2006.\n\n\
 @end deftypefn\n\
 @seealso{partcnt}\n\
 ")
-{    
+{
     octave_value r;
     
     int nargin = args.length ();
     if (nargin != 1 || 
-	! args(0).is_scalar_type() ||
-	! args(0).is_numeric_type()
-	) {
-	error("partint only accepts one scalar positive integer argument"); 
-	return r;
+        ! args(0).is_scalar_type() ||
+        ! args(0).is_numeric_type()
+        ) {
+        error("partint only accepts one scalar positive integer argument");
+        return r;
     }
     double arg0 = args(0).double_value();
     if ( arg0 < 1 ) {
-	error("partint is only defined for positive integer arguments"); 
-	return r;
+        error("partint is only defined for positive integer arguments");
+        return r;
     }
 
     unsigned long n = (unsigned long) arg0;
-    unsigned long *s = pcnt(n+1); 
-    unsigned long k = s[n]; 
+    unsigned long *s = pcnt(n+1);
+    unsigned long k = s[n];
     Matrix pa(k, n, 0);
-    int_partition p(n); 
-    unsigned long i = 0; 
+    int_partition p(n);
+    unsigned long i = 0;
     do {
-	const unsigned long *d = p.data(); 
-	for (unsigned long j=0; j<n; j++) {
-	    pa(i, j) = (unsigned long)d[j+1];  
-	}	
-	i ++; 
-    } while (p.next()); 
-    r = pa; 
+        const unsigned long *d = p.data();
+        for (unsigned long j=0; j<n; j++) {
+            pa(i, j) = (unsigned long)d[j+1];
+        }
+        i ++;
+    } while (p.next());
+    r = pa;
     return r;
 }
 
@@ -231,10 +223,3 @@ Joerg Arndt: Algorithms for programmers (http://www.jjj.de), 2006.\n\n\
 %! p = partint(4)
 
 */
-
-/*
-  ;;; Local Variables: ***
-  ;;; mode: C++ ***
-  ;;; End: ***
-*/
-    

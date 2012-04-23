@@ -1,37 +1,11 @@
-## Copyright (C) 2006   Torsten Finke   <fi@igh-essen.com>
-##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
-## (at your option) any later version.
-##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
-##
-## You should have received a copy of the GNU General Public License
-## along with this program; if not, see <http://www.gnu.org/licenses/>.
+MKOCTFILE = /home/octave-admin/bin-3.6.1/bin/mkoctfile -Wall
 
-# $Revision$
-# $Date$
-# $RCSfile$
+PROGS = $(patsubst %.cc,%.oct,$(wildcard *.cc))
 
-OCT = partint.oct
-HDR = partint.h
-SRC := $(OCT:.oct=.cc)
-BASE := $(OCT:.oct=)
+all: $(PROGS)
 
-.phony: all
-all: $(OCT)
+%.oct: %.cc
+	$(MKOCTFILE) $<
 
-%.oct: %.cc $(HDR)
-	mkoctfile -s $<
-
-.phony: test
-test: $(BASE)
-	for i in $^; do echo "test $$i"; done | octave --silent
-
-.phony: clean
-clean: 
-	$(RM) $(PART) *.o *.oct octave-core *~
+clean:
+	rm -f *.o octave-core core *.oct *~

@@ -72,15 +72,19 @@ SPSS file format
 #define max(a,b)	(((a) > (b)) ? (a) : (b))
 #define min(a,b)	(((a) < (b)) ? (a) : (b))
 
-#if defined(__MINGW32__) 
+#if 0
+
+#elif defined(__linux__) 
+#  include <byteswap.h>
+
+#elif defined(__GLIBC__)	// for Hurd
+#  include <byteswap.h>
+
+#elif defined(__MINGW32__) 
    /* use local version because MINGW does not provide byteswap.h */
-#  define __BIG_ENDIAN  	 4321
-#  define __LITTLE_ENDIAN  1234
-#  define __BYTE_ORDER 	__LITTLE_ENDIAN
-#  include "win32/byteswap.h"
-#  define bswap_16(x) __bswap_16(x)
-#  define bswap_32(x) __bswap_32(x)
-#  define bswap_64(x) __bswap_64(x)
+#  define __BIG_ENDIAN		4321
+#  define __LITTLE_ENDIAN  	1234
+#  define __BYTE_ORDER 		__LITTLE_ENDIAN
 
 #elif defined(__NetBSD__)
 #  include <sys/bswap.h>
@@ -93,14 +97,18 @@ SPSS file format
 
 #elif defined(__APPLE__)
 #  include <CoreFoundation/CFByteOrder.h>
-#  define __BIG_ENDIAN  	CFByteOrderBigEndian
-#  define __LITTLE_ENDIAN	CFByteOrderLittleEndian
-#  define __BYTE_ORDER (CFByteOrderGetCurrent)
+#  define __BIG_ENDIAN       4321
+#  define __LITTLE_ENDIAN  1234
+#if (defined(__LITTLE_ENDIAN__) && (__LITTLE_ENDIAN__ == 1))
+    #define __BYTE_ORDER __LITTLE_ENDIAN
+#else
+    #define __BYTE_ORDER __BIG_ENDIAN
+#endif
 #  define bswap_16(x) CFSwapInt16(x)
 #  define bswap_32(x) CFSwapInt32(x)
 #  define bswap_64(x) CFSwapInt64(x)
 
-#elif (defined(BSD) && (BSD >= 199103))
+#elif (defined(BSD) && (BSD >= 199103)) && !defined(__GLIBC__)
 #  include <machine/endian.h>
 #  define __BIG_ENDIAN _BIG_ENDIAN
 #  define __LITTLE_ENDIAN _LITTLE_ENDIAN

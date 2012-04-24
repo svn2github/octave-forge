@@ -72,12 +72,15 @@ SPSS file format
 #define max(a,b)	(((a) > (b)) ? (a) : (b))
 #define min(a,b)	(((a) < (b)) ? (a) : (b))
 
+
 #if 0
 
 #elif defined(__linux__) 
+#  include <endian.h>
 #  include <byteswap.h>
 
 #elif defined(__GLIBC__)	// for Hurd
+#  include <endian.h>
 #  include <byteswap.h>
 
 #elif defined(__MINGW32__) 
@@ -130,8 +133,11 @@ SPSS file format
 #  define __LITTLE_ENDIAN  	1234
 #  define __BYTE_ORDER 	__BIG_ENDIAN
 
+#else
+#  error Unknown platform
 #endif 
 
+#if defined(__MINGW32__) || defined(__sparc__) 
 
 # ifndef bswap_16
 #  define bswap_16(x)   \
@@ -158,6 +164,17 @@ SPSS file format
       	| (((x) & 0x000000000000ff00ull) << 40)	\
       	| (((x) & 0x00000000000000ffull) << 56))
 # endif
+
+#endif
+
+
+#if !defined(__BIG_ENDIAN) && !defined(__LITTLE_ENDIAN) 
+#error  ENDIANITY is not known 
+#endif 
+
+#if !defined(bswap_16) || !defined(bswap_32) || !defined(bswap_64)
+#error SWAP operation not available 
+#endif 
 
 
 #if __BYTE_ORDER == __BIG_ENDIAN

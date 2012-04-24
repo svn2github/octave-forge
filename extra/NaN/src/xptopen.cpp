@@ -833,7 +833,7 @@ if present.
 				size_t maxlen = b_endian_u16(*(int16_t*)(H2+k*sz2+4));
 
 				ListOfVarNames[k] = VarNames+pos;
-				unsigned int n = k*sz2+8;
+				size_t n = k*sz2+8;
 				// int flagDate = (!memcmp(H2+n+48,"DATE    ",8) || !memcmp(H2+n+48,"MONNAME ",8)); // not used
 				do {
 					VarNames[pos++] = H2[n];
@@ -936,7 +936,7 @@ if present.
 		mxArray **F = (mxArray**) mxMalloc(NS*sizeof(mxArray*));
 		char **Fstr = (char**) malloc(NS*sizeof(char*));
 		size_t *MAXLEN = (size_t*) malloc(NS*sizeof(size_t*));
-		for (int16_t k = 0; k < NS; k++) {
+		for (uint16_t k = 0; k < NS; k++) {
 			Fstr[k] = NULL;
 			MAXLEN[k]=0;
 			F[k] = mxGetFieldByNumber(PInputs[2],0,k);
@@ -978,7 +978,7 @@ if present.
 		/* write OBS header line */
 		count += fwrite(LO, 1, strlen(LO), fid);
 		for (mwIndex m = 0; m < M; m++) {
-			for (int16_t k = 0; k < NS; k++) {
+			for (uint16_t k = 0; k < NS; k++) {
 
 				if (*(int16_t*)(H2+k*sz2) == b_endian_u16(1)) {
 					// numeric
@@ -1130,7 +1130,7 @@ double tm_time2gdf_time(struct tm *t) {
 
 	// Set start of year to March by moving Jan. and Feb. to previous year.
   	// Correct for months > 12 by moving to subsequent years.
-  	Y += fix ((M-14.0)/12);
+  	Y += (int)fix ((M-14.0)/12);
 
   	const int monthstart[] = {306, 337, 0, 31, 61, 92, 122, 153, 184, 214, 245, 275};
 	// Lookup number of days since start of the current year.

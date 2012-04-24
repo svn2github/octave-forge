@@ -4,7 +4,8 @@ Summary of important user-visible changes for the miscellaneous package
 miscellaneous-1.2.0   Release Date: 2012-XX-XX  Release Manager:
 ===============================================================================
  ** New functions:
-   truncate.m : truncates a number to a given precision.
+   truncate: truncates a number to a given precision.
+   textable: create LaTeX tables from matrix
 
  ** The following functions have been imported from the combinatorics
     package which has been removed:

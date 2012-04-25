@@ -12,6 +12,14 @@ miscellaneous-1.2.0   Release Date: 2012-XX-XX  Release Manager:
 
       partcnt     partint
 
+ ** The function `physical_constant' has been imported from the
+    physicalconstants package.
+
+ ** The values returned by `physical_constant' have been adjusted to the
+    latest (2010) recommended values by CODATA.
+
+ ** The function `physical_constant' has a new API and should also
+    perform faster.
 
 ===============================================================================
 miscellaneous-1.1.0   Release Date: 2012-03-24  Release Manager:

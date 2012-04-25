@@ -6,7 +6,7 @@ Maintainer: Octave-Forge community <octave-dev@lists.sourceforge.net>
 Title: Physical Constants
 Description: Physical Constants from Atomic & Molecular Physics, taken from NIST database
 Categories: Physics
-Depends: octave (>= 2.9.7)
+Depends: miscellaneous (>= 1.2.0)
 Autoload: no
 License: GPLv3+
 Url: http://octave.sf.net

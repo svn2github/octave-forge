@@ -1,0 +1,8 @@
+Summary of important user-visible changes for physicalconstants 1.0.0:
+-------------------------------------------------------------------
+
+ ** The values returned by `physical_constant' have been adjusted to the
+    latest (2010) recommended values by CODATA.
+
+ ** The function `physical_constant' has a new API and should also
+    perform faster.

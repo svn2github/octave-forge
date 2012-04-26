@@ -94,10 +94,10 @@ function textable (data, filename, rlines = 1, clines = 1, alignment = "r", matr
     end
   end
 
-  if exist ('matrixformat')
+  if matrixformat == 1
     clines = 0;
     rlines = 0;
-    alignment = 0;
+    alignment = "c";
   else
     matrixformat = 0;
   endif

@@ -1,6 +1,6 @@
 sinclude Makeconf
 
-HDF5_LIBS := $(shell  grep "\#define OCTAVE_CONF_HDF5_LIBS"  $(shell  mkoctfile -p OCTINCLUDEDIR)/oct-conf.h | sed "s/^.*LIBS //"  )
+HDF5_LIBS := $(shell  grep "\#define OCTAVE_CONF_HDF5_LIBS"  $(shell  $(MKOCTFILE) -p OCTINCLUDEDIR)/oct-conf.h | sed "s/^.*LIBS //"  )
 
 GALOISTARGET = gf.oct
 GALOISSOURCES = galois.cc galois-def.cc galoisfield.cc gf.cc \

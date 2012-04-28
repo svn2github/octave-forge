@@ -3,8 +3,8 @@ function [sys, x0] = ident (dat, s = [], n = [])
 
 
   %nobr = 15;
-  meth = 2;
-  alg = 0;
+  meth = 2; % 2    % geht: meth/alg  1/1, 
+  alg = 0; % 0     % geht nicht: meth/alg  0/1
   jobd = 1;
   batch = 3;
   conct = 1;

@@ -50,6 +50,8 @@ This file describes the data in the destill.dat file.
 	Y_dest_n30=Y(:,10:12);
 %}
 
+clear all, close all, clc
+
 load destill.dat
 U=destill(:,1:20);
 Y=destill(:,21:32);

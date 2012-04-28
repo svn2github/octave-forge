@@ -328,6 +328,7 @@ C     cache size is large enough to accommodate R, U, Y, and DWORK.
 // warning ("==================== ldwork before: %d =====================", ldwork);
 // ldwork = (ns+2)*(2*(m+l)*nobr);
 ldwork = max (ldwork, (ns+2)*(2*(m+l)*nobr));
+// ldwork *= 3;
 // warning ("==================== ldwork after: %d =====================", ldwork);
 
 
@@ -413,7 +414,10 @@ somehow ldrwrk and ldwork must have been mixed up here
         if (nuser > 0)
         {
             if (nuser < nobr)
+            {
                 n = nuser;
+                // warning ("ident: nuser (%d) < nobr (%d), n = nuser", nuser, nobr);
+            }
             else
                 error ("ident: 'nuser' invalid");
         }
@@ -429,6 +433,9 @@ somehow ldrwrk and ldwork must have been mixed up here
         // TODO: if meth == 'C', which meth should be taken for IB01AD.f, 'M' or 'N'?
 
         int nsmpl = nsmp;
+        
+        if (nsmpl < 2*(m+l)*nobr)
+            error ("slident: nsmpl (%d) < 2*(m+l)*nobr (%d)", nsmpl, nobr);
         
         // arguments out
         int lda = max (1, n);
@@ -463,7 +470,7 @@ somehow ldrwrk and ldwork must have been mixed up here
         int ldw1;
         int ldw2;
         int ldw3;
-        
+/*        
         if (meth == 'M')
         {
             int ldw1a = max (2*(l*nobr-l)*n+2*n, (l*nobr-l)*n+n*n+7*n);
@@ -507,9 +514,57 @@ somehow ldrwrk and ldwork must have been mixed up here
             ldw2 = l*nobr*n+m*nobr*(n+l)*(m*(n+l)+1)+ max ((n+l)*(n+l), 4*m*(n+l)+1);
 
         }
+*/
+
+            int ldw1ax = max (2*(l*nobr-l)*n+2*n, (l*nobr-l)*n+n*n+7*n);
+            int ldw1bx = max (2*(l*nobr-l)*n+n*n+7*n,
+                             (l*nobr-l)*n+n+6*m*nobr,
+                             (l*nobr-l)*n+n+max (l+m*nobr, l*nobr + max (3*l*nobr+1, m)));
+            int ldw1x = max (ldw1ax, ldw1bx);
+            
+            int aw;
+            
+            if (m == 0 || job == 'C')
+                aw = n + n*n;
+            else
+                aw = 0;
+            
+            int ldw2x = l*nobr*n + max ((l*nobr-l)*n+aw+2*n+max(5*n,(2*m+l)*nobr+l), 4*(m*nobr+n)+1, m*nobr+2*n+l );
+
+
+
+            int ldw1y = l*nobr*n + max ((l*nobr-l)*n+2*n+(2*m+l)*nobr+l,
+                                   2*(l*nobr-l)*n+n*n+8*n,
+                                   n+4*(m*nobr+n)+1,
+                                   m*nobr+3*n+l);
+                int ldw2y;                   
+            if (m == 0 || job == 'C')
+                int ldw2y = 0;
+            else
+                int ldw2y = l*nobr*n+m*nobr*(n+l)*(m*(n+l)+1)+ max ((n+l)*(n+l), 4*m*(n+l)+1);
+
+
+            int ldw1az = max (2*(l*nobr-l)*n+2*n, (l*nobr-l)*n+n*n+7*n);
+            int ldw1bz = l*nobr*n + max ((l*nobr-l)*n+2*n+(2*m+l)*nobr+l,
+                                        2*(l*nobr-l)*n+n*n+8*n,
+                                        n+4*(m*nobr+n)+1,
+                                        m*nobr+3*n+l);
+                                        
+            int ldw1z = max (ldw1az, ldw1bz);
+                                        
+            int ldw2z = l*nobr*n+m*nobr*(n+l)*(m*(n+l)+1)+ max ((n+l)*(n+l), 4*m*(n+l)+1);
+
+
+        ldw1 = max (ldw1x, ldw1y, ldw1z);
+        ldw2 = max (ldw2x, ldw2y, ldw2z);
+
+
             
         ldw3 = max(4*n*n + 2*n*l + l*l + max (3*l, n*l), 14*n*n + 12*n + 5);
         ldwork_b = max (ldw1, ldw2, ldw3);
+        
+        //
+        ldwork_b *= 3;
 
         OCTAVE_LOCAL_BUFFER (int, iwork_b, liwork_b);
         OCTAVE_LOCAL_BUFFER (double, dwork_b, ldwork_b);
@@ -690,6 +745,7 @@ somehow ldrwrk and ldwork must have been mixed up here
         retval(7) = k;
         
         retval(8) = x0;
+        //retval(8) = ColumnVector (n);
         //retval(0) = octave_value (n);
         //retval(1) = r;
         //retval(2) = sv;

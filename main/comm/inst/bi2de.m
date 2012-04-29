@@ -15,6 +15,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{d} = } bi2de (@var{b})
+## @deftypefnx {Function File} {@var{d} = } bi2de (@var{b},@var{f})
 ## @deftypefnx {Function File} {@var{d} = } bi2de (@var{b},@var{p})
 ## @deftypefnx {Function File} {@var{d} = } bi2de (@var{b},@var{p},@var{f})
 ##
@@ -29,13 +30,9 @@
 ## The variable @var{f} defines whether the first or last element of @var{b}
 ## is considered to be the most-significant. Valid values of @var{f} are
 ## 'right-msb' or 'left-msb'. By default @var{f} is 'right-msb'.
-## @end deftypefn
+##
 ## @seealso{de2bi}
-
-## 2001-02-02
-##   initial release
-## 2003-02-02
-##   add orientation of b and help in texinfo
+## @end deftypefn
 
 function d = bi2de (b, p, f)
 
@@ -43,31 +40,31 @@ function d = bi2de (b, p, f)
     case 1,
       p = 2;
       f = 'right-msb';
-     case 2,
-      if (ischar(p))
+    case 2,
+      if (ischar (p))
         f = p;
         p = 2;
       else
         f = 'right-msb';
       endif
-     case 3,
-      if (ischar(p))
+    case 3,
+      if (ischar (p))
         tmp = f;
         f = p;
         p = tmp;
       endif
-   otherwise
-      error ("usage: d = bi2de (b, [p])");
+    otherwise
+      print_usage ();
   endswitch
 
-  if ( any (b (:) < 0) || any (b (:) > p - 1) )
-    error ("bi2de: d must only contain value in [0, p-1]");
+  if ( any (b(:) < 0) || any (b(:) != floor (b(:))) || any (b(:) > p - 1) )
+    error ("bi2de: d must only contain integers in the range [0, p-1]");
   endif
 
-  if (strcmp(f,'left-msb'))
+  if (strcmp (f, 'left-msb'))
     b = b(:,size(b,2):-1:1);
-  elseif (!strcmp(f,'right-msb'))
-    error("bi2de: unrecognized flag");
+  elseif (!strcmp (f, 'right-msb'))
+    error ("bi2de: unrecognized flag");
   endif
 
   if (length (b) == 0)
@@ -76,4 +73,24 @@ function d = bi2de (b, p, f)
     d = b * ( p .^ [ 0 : (columns(b)-1) ]' );
   endif
 
-endfunction;
+endfunction
+
+%!shared x
+%! x = randi ([0 1], 100, 16);
+%!assert (bi2de (0), 0)
+%!assert (bi2de (1), 1)
+%!assert (bi2de (ones (1, 8)), 255)
+%!assert (bi2de ([7 7 7 7], 8), 4095)
+%!assert (size (bi2de (x)), [100 1])
+%!assert (bi2de (x, "right-msb"), bi2de (x))
+%!assert (bi2de (x, "left-msb"), bi2de (fliplr (x)))
+
+%% Test input validation
+%!error bi2de ()
+%!error bi2de (1, 2, 3, 4)
+%!error bi2de (1, 2, 3)
+%!error bi2de (1, 2, "invalid")
+%!error bi2de (0.1)
+%!error bi2de (-1)
+%!error bi2de (2)
+%!error bi2de (7, 6)

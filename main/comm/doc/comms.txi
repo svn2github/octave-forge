@@ -1497,7 +1497,7 @@ example is
 
 @example
 octave:1> a = minpol(gf(14,5));
-octave:2> b = de2bi(a.x,"left-msb");
+octave:2> b = de2bi(a.x,[],"left-msb");
 @end example
 
 converts the polynomial form of the minimum polynomial of 14 in GF(2^5) into

@@ -21,16 +21,17 @@ function sys = arx (dat, na, nb)
 
   Y = dat.y{1};
   U = dat.u{1};
+  Ts = dat.tsam{1};
+
+  PhiY = toeplitz (Y(1:end-1, :), zeros (1, na));
+  PhiU = toeplitz (U(1:end-1, :), zeros (1, nb));
+  Phi = [-PhiY, PhiU]
   
-  PhiY = toeplitz ([0; Y(1:end-1, :)], zeros (1, na));
-  PhiU = toeplitz ([0; U(1:end-1, :)], zeros (1, nb));
-  Phi = [PhiY, PhiU];
+  Theta = Phi \ Y(2:end, :);
   
-  Theta = Phi \ Y;
+  A = [1; Theta(1:na)];     % ???
+  B = Theta(na+1:end);
   
-  A = Theta(1:n);
-  B = Theta(n+1:end);
-  
-  sys = tf ({B, 1}, {A, A}, dat.tsam);
+  sys = tf ({B, 1}, {A, A}, Ts);
 
 endfunction

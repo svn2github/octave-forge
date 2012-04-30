@@ -23,14 +23,15 @@ function sys = arx (dat, na, nb)
   U = dat.u{1};
   Ts = dat.tsam{1};
 
-  PhiY = toeplitz (Y(1:end-1, :), zeros (1, na));
-  PhiU = toeplitz (U(1:end-1, :), zeros (1, nb));
-  Phi = [-PhiY, PhiU]
+  ## avoid warning: toeplitz: column wins anti-diagonal conflict
+  PhiY = toeplitz (Y(1:end-1, :), [Y(1, :); zeros(na-1, 1)]);
+  PhiU = toeplitz (U(1:end-1, :), [U(1, :); zeros(nb-1, 1)]);
+  Phi = [-PhiY, PhiU];
   
   Theta = Phi \ Y(2:end, :);
   
-  A = [1; Theta(1:na)];     % ???
-  B = Theta(na+1:end);
+  A = [1; Theta(1:na)];     # a0 = 1, a1 = Theta(1), an = Theta(n)
+  B = Theta(na+1:end);      # b0 = 0 (leading zeros are removed by tf, no need to add one)
   
   sys = tf ({B, 1}, {A, A}, Ts);
 

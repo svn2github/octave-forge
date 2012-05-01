@@ -18,7 +18,7 @@
 ## -*- texinfo -*-
 ## Check whether tsam is a e-by-1 cell array of valid sampling times.
 ## If not, it tries to convert tsam accordingly.
-## Empty tsam are filled with default value 1.
+## Empty tsam are filled with default value -1.
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: February 2012
@@ -27,14 +27,14 @@
 function tsam = __adjust_iddata_tsam__ (tsam, e)
 
   if (isempty (tsam))
-    tsam = num2cell (ones (e, 1));
+    tsam = num2cell (-ones (e, 1));
   elseif (iscell (tsam))
     tsam = reshape (tsam, [], 1);
   else
     tsam = {tsam};
   endif
 
-  tmp = cellfun (@issample, tsam);
+  tmp = cellfun (@(x) issample (x, -1), tsam);
   
   if (any (! tmp))
     error ("iddata: invalid sampling time");

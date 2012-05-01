@@ -41,7 +41,7 @@
 ## where @var{e} denotes the number of experiments
 ## and n(i) the individual number of samples for each experiment.
 ## @item tsam
-## Sampling time.
+## Sampling time.  If not specified, default value -1 (unspecified) is taken.
 ## @item @dots{}
 ## Optional pairs of properties and values.
 ## @end table

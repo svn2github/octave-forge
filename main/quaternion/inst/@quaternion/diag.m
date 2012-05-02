@@ -1,4 +1,4 @@
-## Copyright (C) 2010   Lukas F. Reichlin
+## Copyright (C) 2010, 2012   Lukas F. Reichlin
 ##
 ## This program is free software: you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -22,11 +22,13 @@
 ## If it is negative, it is placed on the -K-th sub-diagonal.
 ## The default value of K is 0, and the vector is placed
 ## on the main diagonal.
+## Given a matrix argument, instead of a vector, @command{diag}
+## extracts the @var{K}-th diagonal of the matrix.
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: May 2010
-## Version: 0.1
+## Version: 0.2
 
 function a = diag (a, b = 0)
 
@@ -42,7 +44,7 @@ function a = diag (a, b = 0)
 endfunction
 
 
-%!shared R, S
+%!shared R, S, T, U
 %! Q = quaternion (2, 3, 4, 5);
 %! R = diag ([Q, Q, Q]);
 %! W = diag ([2, 2, 2]);
@@ -50,4 +52,7 @@ endfunction
 %! Y = diag ([4, 4, 4]);
 %! Z = diag ([5, 5, 5]);
 %! S = quaternion (W, X, Y, Z);
+%! T = diag (R);
+%! U = [Q; Q; Q];
 %!assert (R == S);
+%!assert (T == U);

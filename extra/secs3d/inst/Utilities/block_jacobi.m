@@ -50,9 +50,21 @@ function [x, res, it] = block_jacobi (A, b, x0, nblocks, maxit, tol)
     if (norm (res, inf) < tol); break; endif
     for ib = 1:nblocks
       range = first(ib):last(ib);
-      pres(range) = diag (diag (A(range, range))) \ res(range);
+      pres(range) = A(range, range) \ res(range);
     endfor
     x += pres;
   endfor
-  
+
 endfunction
+
+%!test
+%! msh = bim3c_mesh_properties (msh3m_structured_mesh (0:.1:1, 0:.1:1, 0:.1:1, 1, 1:6));
+%! x = msh.p(1, :).';
+%! A = bim3a_advection_diffusion (msh, 1, x);
+%! b = bim3a_rhs (msh, 1, 1);
+%! dnodes = bim3c_unknowns_on_faces (msh, [1 2]);
+%! inodes = setdiff (1:numel(x), dnodes);
+%! w = u = zeros (size (x));
+%! u(inodes) = A(inodes, inodes) \ b(inodes);
+%! [w(inodes), ~, nit] = block_jacobi (A(inodes, inodes), b(inodes), b(inodes), 5, 400, 1e-9); 
+%! assert (u, w, 1e-7);

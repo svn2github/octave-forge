@@ -117,13 +117,22 @@ geometry >> Computational Geometry
  cbezier2poly
 2D Polygons
  curvature
+ distancePolygons
+ distancePointPolygon
+ distancePointPolyline
  drawPolygon
+ expandPolygon
+ medialAxisConvex
  oc_polybool
  parametrize
+ polygonLoops
+ polygonSelfIntersections
+ polylineSelfIntersections
  reversePolyline
  reversePolygon
  simplifypolygon
  simplifypolyline
+ splitPolygons
  supportFunction
 2D Piecewise polynomial shapes
  polygon2shape

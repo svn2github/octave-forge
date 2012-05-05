@@ -37,8 +37,7 @@ This file describes the data in the glassfurnace.dat file.
 
 %}
 
-
-close all, clc
+ close all, clc
 
 load glassfurnace.dat
 T=glassfurnace(:,1);
@@ -48,7 +47,7 @@ Y=glassfurnace(:,5:10);
 
 dat = iddata (Y, U)
 
-[sys, x0] = ident (dat, 10, 5)     % s=10, n=5
+[sys, x0] = ident_a (dat, 10, 5)     % s=10, n=5
 
 
 [y, t] = lsim (sys, U, [], x0);

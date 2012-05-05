@@ -40,7 +40,7 @@ This file describes the data in the powerplant.dat file.
 
 %}
 
-close all, clc
+ close all, clc
 
 load powerplant.dat
 U=powerplant(:,1:5);
@@ -61,7 +61,7 @@ tsam = 1228.8;
 
 dat = iddata (Y, U, tsam, 'outname', outname, 'inname', inname)
 
-[sys, x0] = ident (dat, 10, 8)     % s=10, n=8
+[sys, x0] = ident_a (dat, 10, 8)     % s=10, n=8
 
 
 [y, t] = lsim (sys, U, [], x0);

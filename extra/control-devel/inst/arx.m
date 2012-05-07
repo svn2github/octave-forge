@@ -12,7 +12,8 @@ function sys = arx (dat, na, nb)
     error ("arx: ");
   endif
   
-  if (! is_real_scalar (na, nb))
+##  if (! is_real_scalar (na, nb))
+  if (! is_real_vector (na, nb))
     error ("arx: ");
     ## Test for integers
     ## numel (nb) == size (dat, 3)
@@ -33,7 +34,7 @@ function sys = arx (dat, na, nb)
   ## PhiU = toeplitz (U(1:end-1, :), [U(1, :); zeros(nb-1, 1)]);
   PhiU = arrayfun (@(x) toeplitz (U(1:end-1, x), [U(1, x); zeros(nb(x)-1, 1)]), 1:m, "uniformoutput", false);
   Phi = horzcat (-PhiY, PhiU{:});
-  Phi = Phi(n:end, :)
+  Phi = Phi(n:end, :);
   
   ## Theta = Phi \ Y(n+1:end, :);             # naive formula
   

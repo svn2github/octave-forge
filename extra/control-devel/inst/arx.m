@@ -22,13 +22,16 @@ function sys = arx (dat, na, nb)
   Y = dat.y{1};
   U = dat.u{1};
   Ts = dat.tsam{1};
+  
+  n = max (na, nb);
 
   ## avoid warning: toeplitz: column wins anti-diagonal conflict
   PhiY = toeplitz (Y(1:end-1, :), [Y(1, :); zeros(na-1, 1)]);
   PhiU = toeplitz (U(1:end-1, :), [U(1, :); zeros(nb-1, 1)]);
   Phi = [-PhiY, PhiU];
+  Phi = Phi(n:end, :)
   
-  ## Theta = Phi \ Y(2:end, :);             # naive formula
+  ## Theta = Phi \ Y(n+1:end, :);             # naive formula
   
   ## solve linear least squares problem by pseudoinverse
   ## the pseudoinverse is computed by singular value decomposition
@@ -42,7 +45,7 @@ function sys = arx (dat, na, nb)
   V = V(:, 1:r);
   S = S(1:r);
   U = U(:, 1:r);
-  Theta = V * (S .\ (U' * Y(2:end, :)));    # U' is the conjugate transpose
+  Theta = V * (S .\ (U' * Y(n+1:end, :)));  # U' is the conjugate transpose
   
   A = [1; Theta(1:na)];                     # a0 = 1, a1 = Theta(1), an = Theta(n)
   B = [0; Theta(na+1:end)];                 # b0 = 0 (leading zero required by filt)

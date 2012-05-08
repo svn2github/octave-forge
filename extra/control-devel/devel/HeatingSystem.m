@@ -75,29 +75,22 @@ dat = iddata (Y, U, 2.0, 'inname', 'input drive voltage', \
                          'outunit', '°C')
 
 % s=15, n=7
-sys = arx (dat, 7, 7)       % normally na = nb
+[sys1, x0] = ident (dat, 15, 7)
+sys2 = arx (dat, 7, 7)       % normally na = nb
 
-[y, t] = lsim (sys(:, 1), U);
+[y1, t1] = lsim (sys1, U, [], x0);
+[y2, t] = lsim (sys2(:, 1), U);
 
-
-err = norm (Y - y, 1) / norm (Y, 1)
-
-figure (1)
-plot (t, Y(:,1), 'b', t, y(:,1), 'r')
-title ('DaISy: Heating System [99-001]')
-legend ('measured temperature', 'simulated temperature', 'location', 'southeast')
-
-
-[sys2, x0] = ident (dat, 15, 7)
-
-[y2, t2] = lsim (sys2, U, [], x0);
-
+err1 = norm (Y - y1, 1) / norm (Y, 1)
 err2 = norm (Y - y2, 1) / norm (Y, 1)
 
-figure (2)
-plot (t, Y, 'b', t, y, 'r', t, y2, 'g')
+figure (1)
+plot (t, Y, t, y1, t, y2)
 title ('DaISy: Heating System [99-001]')
-legend ('measured temperature', 'simulated temperature', 'slicot', 'location', 'southeast')
+xlim ([t(1), t(end)])
+xlabel ('Time [s]')
+ylabel ('Temperature [Degree Celsius]')
+legend ('measured', 'simulated subspace', 'simulated ARX', 'location', 'southeast')
 
 
 

@@ -49,6 +49,6 @@ function [sys, x0] = ident (dat, s = [], n = [])
 %nobr = 10
   [a, b, c, d, q, ry, s, k, x0] = slident (dat.y{1}, dat.u{1}, nobr, n, meth, alg, jobd, batch, conct, ctrl, rcond, tol);
 
-  sys = ss (a, b, c, d, -1);
+  sys = ss (a, b, c, d, dat.tsam{1});
 
 endfunction

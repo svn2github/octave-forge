@@ -2,6 +2,7 @@ analysis >> Data analysis
 Spline functions
  csapi
  csape
+ csaps
  fnplt 
  fnder
  fnval

@@ -303,7 +303,7 @@ while (indi <= size (varargin, 2))
                 if (unquot)
                   try
                     %# remove quotes and leading space(s)
-                    x(indj, indm) = regexp (dummy{indk}, '[^'' ].*[^'']', 'match'){1};
+                    x(indj, indm) = regexp (dummy{indk}, '[^''" ].*[^''"]', 'match'){1};
                   catch
                     %# if the previous test fails, try a simpler one
                     in = regexp (dummy{indk}, '[^'' ]+', 'match');

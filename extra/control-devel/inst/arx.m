@@ -9,25 +9,36 @@ function sys = arx (dat, na, nb)
   endif
   
   if (! isa (dat, "iddata"))
-    error ("arx: ");
-  endif
-  
-##  if (! is_real_scalar (na, nb))
-  if (! is_real_vector (na, nb))
-    error ("arx: ");
-    ## Test for integers
-    ## numel (nb) == size (dat, 3)
+    error ("arx: first argument must be an iddata dataset");
   endif
 
-  ## TODO: handle MIMO and multi-experiment data
+  ## p: outputs,  m: inputs,  ex: experiments
   [~, p, m, ex] = size (dat);
 
+  ## extract data  
   Y = dat.y;
   U = dat.u;
-  Ts = dat.tsam{1};
+  tsam = dat.tsam;
+
+  ## multi-experiment data requires equal sampling times  
+  if (ex > 1 && ! isequal (tsam{:}))
+    error ("arx: require equally sampled experiments");
+  else
+    tsam = tsam{1};
+  endif
+
   
-  max_nb = max (nb);
-  n = max (na, max_nb);
+  if (is_real_scalar (na, nb))
+    na = repmat (na, p, 1);     # na(p-by-1)
+    nb = repmat (nb, p, m);     # nb(p-by-m)
+  elseif (! (is_real_vector (na) && is_real_matrix (nb) \
+          && rows (na) == p && rows (nb) == p && columns (nb) == m))
+    error ("arx: require na(%dx1) instead of (%dx%d) and nb(%dx%d) instead of (%dx%d)", \
+            p, rows (na), columns (na), p, m, rows (nb), columns (nb));
+  endif
+
+  max_nb = max (nb, [], 2);     # one maximum for each row/output, max_nb(p-by-1)
+  n = max (na, max_nb);         # n(p-by-1)
 
 
   num = cell (p, m+1);
@@ -38,16 +49,17 @@ function sys = arx (dat, na, nb)
     for e = 1 : ex      # for every experiment  
       ## avoid warning: toeplitz: column wins anti-diagonal conflict
       ## therefore set first row element equal to y(1)
-      PhiY = toeplitz (Y{e}(1:end-1, i), [Y{e}(1, i); zeros(na-1, 1)]); % TODO: multiple na
-      PhiU = arrayfun (@(x) toeplitz (U{e}(1:end-1, x), [U{e}(1, x); zeros(nb(x)-1, 1)]), 1:m, "uniformoutput", false);
-      Phi{e} = (horzcat (-PhiY, PhiU{:}))(n:end, :);
+      PhiY = toeplitz (Y{e}(1:end-1, i), [Y{e}(1, i); zeros(na(i)-1, 1)]);
+      ## create MISO Phi for every experiment
+      PhiU = arrayfun (@(x) toeplitz (U{e}(1:end-1, x), [U{e}(1, x); zeros(nb(i,x)-1, 1)]), 1:m, "uniformoutput", false);
+      Phi{e} = (horzcat (-PhiY, PhiU{:}))(n(i):end, :);
     endfor
   
     Theta = __theta__ (Phi, Y, i, n);
       
-    A = [1; Theta(1:na)];                     # a0 = 1, a1 = Theta(1), an = Theta(n)
-    ThetaB = Theta(na+1:end);                 # b0 = 0 (leading zero required by filt)
-    B = mat2cell (ThetaB, nb);
+    A = [1; Theta(1:na(i))];                     # a0 = 1, a1 = Theta(1), an = Theta(n)
+    ThetaB = Theta(na(i)+1:end);                 # b0 = 0 (leading zero required by filt)
+    B = mat2cell (ThetaB, nb(i,:));
     B = reshape (B, 1, []);
     B = cellfun (@(x) [0; x], B, "uniformoutput", false);
 
@@ -55,7 +67,7 @@ function sys = arx (dat, na, nb)
     den(i, :) = repmat ({A}, 1, m+1);
   endfor
 
-  sys = filt (num, den, Ts);
+  sys = filt (num, den, tsam);
 
 endfunction
 
@@ -81,7 +93,7 @@ function theta = __theta__ (phi, y, i, n)
     V = V(:, 1:r);
     S = S(1:r);
     U = U(:, 1:r);
-    theta = V * (S .\ (U' * y{1}(n+1:end, i)));     # U' is the conjugate transpose
+    theta = V * (S .\ (U' * y{1}(n(i)+1:end, i)));     # U' is the conjugate transpose
   else
     ## multi-experiment dataset
     ## TODO: find more sophisticated formula than
@@ -92,7 +104,7 @@ function theta = __theta__ (phi, y, i, n)
     C = plus (tmp{:});
     
     ## PhiTY = (Phi1' Y1 + Phi2' Y2 + ...)
-    tmp = cellfun (@(Phi, Y) Phi.' * Y(n+1:end, i), phi, y, "uniformoutput", false);
+    tmp = cellfun (@(Phi, Y) Phi.' * Y(n(i)+1:end, i), phi, y, "uniformoutput", false);
     PhiTY = plus (tmp{:});
     
     ## pseudoinverse  Theta = C \ Phi'Y
@@ -100,18 +112,3 @@ function theta = __theta__ (phi, y, i, n)
   endif
   
 endfunction
-
-%{
-function Phi = __phi__ (dat, na, nb, ex)
-
-  ## avoid warning: toeplitz: column wins anti-diagonal conflict
-  ## therefore set first row element equal to y(1)
-  PhiY = toeplitz (Y(1:end-1, :), [Y(1, :); zeros(na-1, 1)]);
-  
-  ## PhiU = toeplitz (U(1:end-1, :), [U(1, :); zeros(nb-1, 1)]);
-  PhiU = arrayfun (@(x) toeplitz (U(1:end-1, x), [U(1, x); zeros(nb(x)-1, 1)]), 1:m, "uniformoutput", false);
-  Phi = horzcat (-PhiY, PhiU{:});
-  Phi = Phi(n:end, :);
-
-endfunction
-%}

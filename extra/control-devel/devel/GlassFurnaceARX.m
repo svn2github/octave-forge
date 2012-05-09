@@ -49,7 +49,7 @@ Y=glassfurnace(:,5:10);
 dat = iddata (Y, U)
 
 %[sys, x0] = ident (dat, 10, 5)     % s=10, n=5
-sys = arx (dat, 5, [5 5 5])
+sys = arx (dat, 5, 5)
 
 %[y, t] = lsim (sys, U, [], x0);
 [y, t] = lsim (sys(:, 1:3), U);

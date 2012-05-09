@@ -22,6 +22,8 @@
 ##
 ## The chosen cubic spline with natural boundary conditions @var{pp}(@var{x}) minimizes @var{p} Sum_i @var{w}_i*(@var{y}_i - @var{pp}(@var{x}_i))^2  +  (1-@var{p}) Int @var{pp}''(@var{x}) d@var{x}  
 ##
+## Outside the range of @var{x}, the cubic spline is a straight line
+##
 ## @var{x} and @var{w} should be n by 1 in size; @var{y} should be n by m; @var{xi} should be k by 1; the values in @var{x} should be distinct; the values in @var{w} should be nonzero
 ##
 ## @table @asis
@@ -61,7 +63,7 @@ function [ret,p]=csaps(x,y,p,xi,w)
   [x,i] = sort(x);
   y = y(i, :);
 
-  n = numel(x);
+  [n m] = size(y); #should also be that n = numel(x);
   
   if isempty(w)
     w = ones(n, 1);
@@ -83,17 +85,24 @@ function [ret,p]=csaps(x,y,p,xi,w)
   u = (6*(1-p)*QT*diag(1 ./ w)*QT' + p*R) \ (QT*y);
   a = y - 6*(1-p)*diag(1 ./ w)*QT'*u;
 
-## derivatives at all but the last knot for the piecewise cubic spline
-  aa = a(1:(end-1), :);
-  cc = zeros(size(y)); 
-  cc(2:(n-1), :) = 6*p*u; #cc([1 n], :) = 0 [natural spline]
-  dd = diff(cc) ./ h;
-  cc = cc(1:(end-1), :);
-  bb = diff(a) ./ h - (cc/2).*h - (dd/6).*(h.^2);
-
+## note: add knots to either end of spline pp-form to ensure linear extrapolation
+  xminus = x(1) - eps(x(1));
+  xplus = x(end) + eps(x(end));
+  x = [xminus; x; xplus];
+  
+## derivatives for the piecewise cubic spline  
+  aa = bb = cc = dd = zeros (n+1, m);
+  aa(2:end, :) = a;
+  cc(3:n, :) = 6*p*u; #second derivative at endpoints is 0 [natural spline]
+  dd(2:n, :) = diff(cc(2:(n+1), :)) ./ h;
+  bb(2:n, :) = diff(a) ./ h - (cc(2:n, :)/2).*h - (dd(2:n, :)/6).*(h.^2);
+  bb(1, :) = bb(2, :); #linear extension of splines
+  bb(n + 1, :) = bb(n, :);
+  aa(1, :) = a(1, :) - eps(x(1))*bb(1, :);
+  
   ret = mkpp (x, cat (2, dd'(:)/6, cc'(:)/2, bb'(:), aa'(:)), size(y, 2));
 
-  if ~isempty(xi)
+  if ~isempty (xi)
     ret = ppval (ret, xi);
   endif
 

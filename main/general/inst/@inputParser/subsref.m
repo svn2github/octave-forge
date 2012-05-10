@@ -121,7 +121,6 @@ function inPar = parse_args (inPar, idx)
         error("%sinvalid value for parameter '%s'", inPar.FunctionName, name);
       endif
     else
-      
       inPar.Results.(name) = value;
     endif
   endfor
@@ -159,6 +158,9 @@ function inPar = parse_args (inPar, idx)
       method = "Switch";
     else
       ## then it must be a ParamValue, shift its value
+      if (numel (args) < 1)
+        error ("%sno value found for Parameter '%s'", inPar.FunctionName, key);
+      endif
       [value, args] = shift (args);
       method = "ParamValue";
     endif

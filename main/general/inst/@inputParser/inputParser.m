@@ -160,3 +160,65 @@ function inPar = inputParser
   inPar = class (inPar, 'inputParser');
 
 endfunction
+
+%!shared p, out
+%! p = inputParser;
+%! p = p.addRequired   ("req1", @(x) ischar (x));
+%! p = p.addOptional   ("op1", "val", @(x) ischar (x) && any (strcmp (x, {"val", "foo"})));
+%! p = p.addOptional   ("op2", 78, @(x) (x) > 50);
+%! p = p.addSwitch     ("verbose");
+%! p = p.addParamValue ("line", "tree", @(x) ischar (x) && any (strcmp (x, {"tree", "circle"})));
+%! ## check normal use, only required are given
+%! out = p.parse ("file");
+%!assert ({out.Results.req1, out.Results.op1, out.Results.op2, out.Results.verbose, out.Results.line}, 
+%!        {"file"          , "val"          , 78             , false              , "tree"});
+%!assert (out.UsingDefaults, {"op1", "op2", "verbose", "line"});
+%! ## check normal use, but give values different than defaults
+%! out = p.parse ("file", "foo", 80, "line", "circle", "verbose");
+%!assert ({out.Results.req1, out.Results.op1, out.Results.op2, out.Results.verbose, out.Results.line}, 
+%!        {"file"          , "foo"          , 80             , true              , "circle"});
+%! ## check optional is skipped and considered ParamValue if unvalidated string
+%! out = p.parse ("file", "line", "circle");
+%!assert ({out.Results.req1, out.Results.op1, out.Results.op2, out.Results.verbose, out.Results.line}, 
+%!        {"file"          , "val"          , 78             , false              , "circle"});
+%! ## check case insensitivity
+%! out = p.parse ("file", "foo", 80, "LiNE", "circle", "vERbOSe");
+%!assert ({out.Results.req1, out.Results.op1, out.Results.op2, out.Results.verbose, out.Results.line}, 
+%!        {"file"          , "foo"          , 80             , true              , "circle"});
+%! ## check KeepUnmatched
+%! p.KeepUnmatched = true;
+%! out = p.parse ("file", "foo", 80, "line", "circle", "verbose", "extra", 50);
+%!assert (out.Unmatched.extra, 50)
+%! ## check error when missing required
+%!error(p.parse())
+%! ## check error when given required do not validate
+%!error(p.parse(50))
+%! ## check error when given optional do not validate
+%!error(p.parse("file", "no-val"))
+%! ## check error when given ParamValue do not validate
+%!error(p.parse("file", "foo", 51, "line", "round"))
+
+## check alternative method (obj), ...) API
+%!shared p, out
+%! p = inputParser;
+%! p = addRequired   (p, "req1", @(x) ischar (x));
+%! p = addOptional   (p, "op1", "val", @(x) ischar (x) && any (strcmp (x, {"val", "foo"})));
+%! p = addOptional   (p, "op2", 78, @(x) (x) > 50);
+%! p = addSwitch     (p, "verbose");
+%! p = addParamValue (p, "line", "tree", @(x) ischar (x) && any (strcmp (x, {"tree", "circle"})));
+%! ## check normal use, only required are given
+%! out = parse (p, "file");
+%!assert ({out.Results.req1, out.Results.op1, out.Results.op2, out.Results.verbose, out.Results.line}, 
+%!        {"file"          , "val"          , 78             , false              , "tree"});
+%!assert (out.UsingDefaults, {"op1", "op2", "verbose", "line"});
+%! ## check normal use, but give values different than defaults
+%! out = parse (p, "file", "foo", 80, "line", "circle", "verbose");
+%!assert ({out.Results.req1, out.Results.op1, out.Results.op2, out.Results.verbose, out.Results.line}, 
+%!        {"file"          , "foo"          , 80             , true              , "circle"});
+
+## if we were matlab compatible...
+%!shared p, out
+%! p = inputParser;
+%! p = p.addOptional   ("op1", "val");
+%! p = p.addParamValue ("line", "tree");
+%!xtest assert (getfield (p.parse("line", "circle"), "Results"), struct ("op1", "val", "line", "circle"));

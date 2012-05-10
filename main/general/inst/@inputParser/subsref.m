@@ -217,8 +217,12 @@ function inPar = check_methods (inPar, idx)
     endif
     def = false;
   case {'addSwitch'}
-    val = def_val;
-    def = false;
+    if ( numel (args) == 0 )
+      val = def_val;
+      def = false;
+    else
+      print_usage(func);
+    endif
   otherwise
     error ("invalid index for reference of class %s", class (inPar) );
   endswitch

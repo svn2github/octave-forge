@@ -52,9 +52,11 @@ This file describes the data in the destill.dat file.
 
 clear all, close all, clc
 
+% DaISy code is wrong,
+% first column is sample number
 load destill.dat
-U=destill(:,1:20);
-Y=destill(:,21:32);
+U=destill(:,2:21);
+Y=destill(:,22:33);
 U_dest=U(:,1:5);
 U_dest_n10=U(:,6:10);
 U_dest_n20=U(:,11:15);	

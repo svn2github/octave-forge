@@ -1,0 +1,10 @@
+Working
+- CDplayer
+- Evaporator
+- GlassFurnace
+- HeatingSystem
+
+Broken
+- Destillation
+- PowerPlant
+- pH

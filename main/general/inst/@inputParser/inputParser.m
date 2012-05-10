@@ -116,9 +116,9 @@
 ## must be at the end.
 ##
 ## @emph{Note 2}: if both @command{Optional} and @command{ParamValue} arguments
-## are mixed in a function API, the user will have to specify @emph{all}
-## @command{Optional} arguments before the @command{ParamValue} and
-## @command{Switch}arguments.
+## are mixed in a function API, once a string Optional argument fails to validate
+## against, it will be considered the end of @command{Optional} arguments and the
+## first key for a @command{ParamValue} and @command{Switch} arguments.
 ##
 ## @seealso{@@inputParser/addOptional, @@inputParser/addSwitch,
 ## @@inputParser/addParamValue, @@inputParser/addRequired,

@@ -59,7 +59,7 @@ endfunction
 
 ## when parsing options, here's the principle: Required options have to be the
 ## first ones. They are followed by Optional if any. In the end come the
-## ParamValue. Any other order makes no sense
+## ParamValue mixed with Switch. Any other order makes no sense
 function inPar = parse_args (inPar, idx)
 
   ## make copy of ordered list of Parameters to keep the original intact and readable
@@ -80,8 +80,8 @@ function inPar = parse_args (inPar, idx)
   ## we take names out of 'copy' and values out of 'args', evaluate them and
   ## store them into 'Results'
   for i = 1 : numel (fieldnames (inPar.Required))
-    [name, inPar.copy] = pop (inPar.copy);
-    [value, args]      = pop (args);
+    [name, inPar.copy] = shift (inPar.copy);
+    [value, args]      = shift (args);
     if ( !feval (inPar.Required.(name).validator, value) )
       error("%sinvalid value for parameter '%s'", inPar.FunctionName, name);
     endif
@@ -91,22 +91,39 @@ function inPar = parse_args (inPar, idx)
   ## loop a maximum #times of the number of Optional, similarly to the required
   ## loop. Once ran out of 'args', move their name into usingDefaults, place
   ## their default values into 'Results', and break
+
+  ## because if an argument is string and does not validate, should be considered
+  ## a ParamValue key
+  found_possible_key = false;
+
   for i = 1 : numel (fieldnames (inPar.Optional))
-    if ( !numel (args) )
+    if ( !numel (args) || found_possible_key)
       ## loops the number of Optional options minus the number of them already processed
       for n = 1 : (numel (fieldnames (inPar.Optional)) - i + 1 )
-        [name, inPar.copy]   = pop (inPar.copy);
+        [name, inPar.copy]   = shift (inPar.copy);
         inPar.UsingDefaults  = push (inPar.UsingDefaults, name);
         inPar.Results.(name) = inPar.Optional.(name).default;
       endfor
       break
     endif
-    [name, inPar.copy] = pop (inPar.copy);
-    [value, args]      = pop (args);
+    [name, inPar.copy] = shift (inPar.copy);
+    [value, args]      = shift (args);
     if ( !feval (inPar.Optional.(name).validator, value) )
-      error("%sinvalid value for parameter '%s'", inPar.FunctionName, name);
+      if (ischar (value) )
+        ## maybe the other optional are not defined, this can be Paramvalue
+        ## place this one on defaults and go back to the top with note to clean loop
+        inPar.UsingDefaults  = push (inPar.UsingDefaults, name);
+        inPar.Results.(name) = inPar.Optional.(name).default;
+        found_possible_key   = true;
+        args = unshift (args, value);
+        continue
+      else
+        error("%sinvalid value for parameter '%s'", inPar.FunctionName, name);
+      endif
+    else
+      
+      inPar.Results.(name) = value;
     endif
-    inPar.Results.(name) = value;
   endfor
 
   ## loop a maximum #times of the number of ParamValue, taking pairs of keys and
@@ -117,7 +134,7 @@ function inPar = parse_args (inPar, idx)
     if ( !numel (args) )
       ## loops the number of times left in 'copy' since these are the last type
       for n = 1 : numel (inPar.copy)
-        [name, inPar.copy]   = pop (inPar.copy);
+        [name, inPar.copy]   = shift (inPar.copy);
         inPar.UsingDefaults  = push (inPar.UsingDefaults, name);
         if (isfield (inPar.ParamValue, name))
           inPar.Results.(name) = inPar.ParamValue.(name).default;
@@ -127,7 +144,7 @@ function inPar = parse_args (inPar, idx)
       endfor
       break
     endif
-    [key, args] = pop (args);
+    [key, args] = shift (args);
     if ( !ischar (key) )
       error("%sParameter/Switch names must be strings", inPar.FunctionName);
     endif
@@ -141,18 +158,18 @@ function inPar = parse_args (inPar, idx)
       value  = true;
       method = "Switch";
     else
-      ## then it must be a ParamValue, pop its value
-      [value, args] = pop (args);
+      ## then it must be a ParamValue, shift its value
+      [value, args] = shift (args);
       method = "ParamValue";
     endif
 
     ## index == 0 means no match so either return error or move them into 'Unmatched'
     if ( index != 0 )
-      [name, inPar.copy] = pop (inPar.copy, index);
+      [name, inPar.copy] = shift (inPar.copy, index);
       if ( !feval (inPar.(method).(name).validator, value))
         error("%sinvalid value for parameter '%s'", inPar.FunctionName, key);
       endif
-      ## we use the name popped from 'copy' instead of the key from 'args' in case
+      ## we use the name shifted from 'copy' instead of the key from 'args' in case
       ## the key is in the wrong case
       inPar.Results.(name) = value;
     elseif ( index == 0 && inPar.KeepUnmatched )
@@ -167,8 +184,8 @@ function inPar = parse_args (inPar, idx)
   ## have already been processed in the ParamValue loop
   if ( numel (args) && inPar.KeepUnmatched )
     for i = 1 : ( numel(args) / 2 )
-      [key, args]           = pop (args);
-      [value, args]         = pop (args);
+      [key, args]           = shift (args);
+      [value, args]         = shift (args);
       inPar.Unmatched.(key) = value;
     endfor
   elseif ( numel (args) )
@@ -192,7 +209,7 @@ function inPar = check_methods (inPar, idx)
     print_usage (func);
   endif
   def_val      = @() true;
-  [name, args] = pop (args);
+  [name, args] = shift (args);
   ## a validator is optional but that complicates handling all the parsing with
   ## few functions and conditions. If not specified @() true will always return
   ## true. Simply using true is not enough because if the argument is zero it
@@ -285,9 +302,17 @@ endfunction
 ## very auxiliary functions
 ################################################################################
 
-function [out, in] = pop (in, idx = 1)
+function [out, in] = shift (in, idx = 1)
   out     = in{idx};
   in(idx) = [];
+endfunction
+
+function [in] = unshift (in, add)
+  if ( !iscell (add) )
+    add = {add};
+  endif
+  in (numel(add) + 1 : end + numel(add)) = in;
+  in (1:numel(add)) = add;
 endfunction
 
 function [in] = push (in, add)

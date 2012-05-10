@@ -33,8 +33,11 @@
 ##
 ## See @command{help @inputParser} for examples.
 ##
-## @emph{Note}: if @command{ParamValue} arguments are also specified, all @command{Optional}
-## arguments will have to be specified before.
+## @emph{Note}: if a string argument does not validate, it will be considered a
+## ParamValue key. If an optional argument is not given a validator, anything
+## will be valid, and so any string will be considered will be the value of the
+## optional argument (in @sc{matlab}, if no validator is given and argument is
+## a string it will also be considered a ParamValue key).
 ##
 ## @seealso{inputParser, @@inputParser/addParamValue, @@inputParser/addSwitch,
 ## @@inputParser/addParamValue, @@inputParser/addRequired, @@inputParser/parse}

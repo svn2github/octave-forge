@@ -38,7 +38,7 @@ function inPar = addSwitch (inPar, name)
   ## check @inputParser/subsref for the actual code
   if (nargin == 2)
     inPar = subsref (inPar, substruct(
-                                      '.' , 'addParamValue',
+                                      '.' , 'addSwitch',
                                       '()', {name}
                                       ));
   else

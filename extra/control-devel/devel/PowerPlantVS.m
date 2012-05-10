@@ -42,10 +42,14 @@ This file describes the data in the powerplant.dat file.
 
  close all, clc
 
+% NB: the code from DaISy is wrong:
+%     powerplant(:,1) is just the sample number
+%     therefore increase indices by one
+%     it took me weeks to find that silly mistake ...
 load powerplant.dat
-U=powerplant(:,1:5);
-Y=powerplant(:,6:8);
-Yr=powerplant(:,9:11);
+U=powerplant(:,2:6);
+Y=powerplant(:,7:9);
+Yr=powerplant(:,10:12);
 
 inname = {'gas flow',
           'turbine valves opening',

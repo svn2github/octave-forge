@@ -87,7 +87,7 @@ function theta = __theta__ (phi, y, i, n)
     ## Th = Ph \ Y = Ph+ Y
     ## Th = V S+ U* Y,   S+ = 1 ./ diag (S)
 
-    [U, S, V] = svd (phi{1}, 0);                    # 0 for "economy size" decomposition, U overwrites input U
+    [U, S, V] = svd (phi{1}, 0);                    # 0 for "economy size" decomposition
     S = diag (S);                                   # extract main diagonal
     r = sum (S > eps*S(1));
     V = V(:, 1:r);

@@ -57,6 +57,7 @@ dat = iddata (Y, U)
 [y, t] = lsim (sys, U, [], x0);
 
 err = norm (Y - y, 1) / norm (Y, 1)
+st = isstable (sys)
 
 figure (1)
 plot (t, Y(:,1), 'b', t, y(:,1), 'r')

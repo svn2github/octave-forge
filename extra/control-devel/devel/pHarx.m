@@ -52,7 +52,7 @@ Y=pHdata(:,4);
 dat = iddata (Y, U)
 
 % [sys, x0] = ident (dat, 15, 6)     % s=15, n=6
-sys = arx (dat, 6, [6,6])       % normally na = nb
+sys = arx (dat, 6, 6)       % normally na = nb
 
 % [y, t] = lsim (sys, U, [], x0);
 [y, t] = lsim (sys(:, 1:2), U);

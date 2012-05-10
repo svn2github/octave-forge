@@ -1,3 +1,17 @@
+Summary of important user-visible changes for general 1.3.1:
+-------------------------------------------------------------------
+
+ ** general 1.3.1 is a bug fix release
+
+ ** The `addSwitch' method from inputParser class has been fixed
+
+ ** For Matlab compatibility, optional arguments of the inputParser class
+    will be skipped and followed by ParamValue and Switch arguments if they
+    are a string that does not validate. Note that unlike Matlab, if no
+    validator is given, anything is valid, so giving no validator to an
+    Optional argument will not turn any string on the list of arguments
+    to be considered a ParamValue key.
+
 Summary of important user-visible changes for general 1.3.0:
 -------------------------------------------------------------------
 

@@ -838,7 +838,7 @@ DEFUN_DLD (glu, args, nargout,
   }
 
   if (! error_state) {
-    LU fact (m);
+    galoisLU fact (m);
 
     switch (nargout) {
     case 0:

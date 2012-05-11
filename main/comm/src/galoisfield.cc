@@ -23,16 +23,16 @@
 #include "galois-def.h"
 
 // The default primitive polynomials for GF(2^(indx+1))
-int default_galois_primpoly[] = {   0x3,     0x7,     0xb,    0x13,    0x25, 
-			           0x43,    0x89,   0x11d,   0x211,   0x409,
-			          0x805,  0x1053,  0x201b,  0x4443,  0x8003,
-			        0x1100b};
+int default_galois_primpoly[] = {   0x3,     0x7,     0xb,    0x13,    0x25,
+                                    0x43,    0x89,   0x11d,   0x211,   0x409,
+                                    0x805,  0x1053,  0x201b,  0x4443,  0x8003,
+                                    0x1100b};
 
-galois_field_node::galois_field_node (void) : 
-  m (0), 
-  primpoly (0), 
-  n (0), 
-  next (NULL), 
+galois_field_node::galois_field_node (void) :
+  m (0),
+  primpoly (0),
+  n (0),
+  next (NULL),
   prev (NULL),
   count (0) { }
 
@@ -54,13 +54,14 @@ galois_field_node::galois_field_node (const int& _m, const int& _primpoly)
 
   // Setup the primitive polynomial with some basic tests
   if (_primpoly != 0) {
-    if ((_primpoly & (0x7FFFFFFF - (1<<(m+1)) + 1)) || 
-	!(_primpoly & (1<<m))) {
+    if ((_primpoly & (0x7FFFFFFF - (1<<(m+1)) + 1)) ||
+        !(_primpoly & (1<<m))) {
       gripe_degree_galois(primpoly);
       return;
     }
     primpoly = _primpoly;
-  } else
+  }
+  else
     primpoly = default_galois_primpoly[m-1];
 
   // Setup the lookup table, etc
@@ -94,25 +95,25 @@ galois_field_node::galois_field_node (const int& _m, const int& _primpoly)
       gripe_irred_galois(primpoly);
       return;
     }
-  
+
   count = 1;   // Field is good now !!
   return;
 }
 
-galois_field_node & galois_field_node::operator = (const galois_field_node &t) 
+galois_field_node & galois_field_node::operator = (const galois_field_node &t)
 {
-  m = t.m; 
-  primpoly = t.primpoly; 
+  m = t.m;
+  primpoly = t.primpoly;
   n = t.n;
-  alpha_to = t.alpha_to; 
-  index_of = t.index_of; 
+  alpha_to = t.alpha_to;
+  index_of = t.index_of;
   next  = NULL;
   prev = NULL;
   count = 1;
   return *this;
 }
 
-galois_field_list::~galois_field_list (void) { 
+galois_field_list::~galois_field_list (void) {
   while (first) {
     galois_field_node * tmp  = first->next;
     delete first;
@@ -171,7 +172,7 @@ int galois_field_list::delete_galois_field (galois_field_node* field) {
     } else if (field == last) {
       last = field->prev;
       if (last)
-	last->next = NULL;
+        last->next = NULL;
     } else {
       field->prev->next = field->next;
       field->next->prev = field->prev;
@@ -183,7 +184,7 @@ int galois_field_list::delete_galois_field (galois_field_node* field) {
 }
 
 /*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
+  ;;; Local Variables: ***
+  ;;; mode: C++ ***
+  ;;; End: ***
 */

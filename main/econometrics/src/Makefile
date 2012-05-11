@@ -1,7 +1,11 @@
-all: __kernel_weights.oct
+MKOCTFILE = mkoctfile -Wall
+
+PROGS = $(patsubst %.cc,%.oct,$(wildcard *.cc))
+
+all: $(PROGS)
 
 %.oct: %.cc
-	mkoctfile -s $<
+	$(MKOCTFILE) $<
 
 clean:
-	-rm *.o core octave-core *.oct *~
+	rm -f *.o octave-core core *.oct *~

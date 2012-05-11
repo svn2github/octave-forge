@@ -14,6 +14,9 @@
 // this program; if not, see <http://www.gnu.org/licenses/>.
 
 // __kernel_weights: for internal use by kernel density and regression functions
+// This function was originally written as .m file and eventually rewritten in
+// C++ for performance. the .m file was removed from the package on revision
+// 10407 by carandraug
 
 #include <oct.h>
 #include <octave/parse.h>

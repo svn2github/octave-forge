@@ -1,4 +1,5 @@
-## Copyright (C) 2012 Markus Bergholz <markuman at gmail dot com>
+## Copyright (C) 2012 Markus Bergholz <markuman@gmail.com>
+## Copyright (C) 2012 carnë Draug <carandraug+dev@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -14,129 +15,156 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} textable (@var{matrix}, @var{texfile})
-## @deftypefnx {Function File} {} textable (@var{matrix}, @var{texfile}, @var{rlines})
-## @deftypefnx {Function File} {} textable (@var{matrix}, @var{texfile}, @var{rlines}, @var{clines})
-## @deftypefnx {Function File} {} textable (@var{matrix}, @var{texfile}, @var{rlines}, @var{clines}, @var{alignment})
-## @deftypefnx {Function File} {} textable (@var{matrix}, @var{texfile}, @var{rlines}, @var{clines}, @var{alignment}, @var{matrixformat})
-## Save matrix in Latex table (tabular) format.
+## @deftypefn {Function File} {} textable (@var{matrix})
+## @deftypefnx {Function File} {} textable (@var{matrix}, @var{params}, @dots{})
+## Save @var{matrix} in LaTeX format (tabular or array).
 ##
-## The generated latex file can be inserted in any latex document by using the
-## @code{\input@{latex file name without .tex@}} statement.
+## The input matrix must be numeric and two dimensional.
 ##
-## Allowed values:
+## The generated LaTeX source can be saved directly to a file with the option
+## @command{file}. The file can then be inserted in any latex document by using
+## the @code{\input@{latex file name without .tex@}} statement.
+##
+## Available parameters are:
 ## @itemize @bullet
-## @item @var{matrix}: your matrix. doesn't matter if it comes from variable or not.
-## @item @var{texfile}: location where you want to save your .tex file.
-## @item @var{rlines}: 0 (false), 1 (true [default])
-## @item @var{clines}: 0 (false), 1 (true [default])
-## @item @var{alignment}: 0 (center), 1 (left), 2 (right [default])
-## @item @var{matrixformat}: 0 [default], 1 [forces all other values to false/0]
+## @item @code{file}: filename to save the generated LaTeX source. Requires a string
+## as value.
+## @item @code{rlines}: display row lines.
+## @item @code{clines}: display column lines.
+## @item @code{align}: column alignment. Valid values are `l', `c' and `r' for
+## center, left and right (default).
+## @item @code{math}: create table in array environment inside displaymath
+## environment. It requires a string as value which will be the name of the matrix.
 ## @end itemize
 ##
-## The following example creates a LaTeX code with rows and columns lines and
-## right alignment (default values).
-##
+## The basic usage is to generate the source for a table without lines and right
+## alignment (default values):
 ## @example
 ## @group
-## textable ([1 4; 7.5 2], "example.tex")
-##
-## ## will save on the example.tex file
-## \begin@{tabular@}@{|r|r|@}
-## \hline 
-## 1 & 4 \\ 
-## \hline 
-## 7.5 & 2 \\ 
-## \hline 
-## \end@{tabular@}
+## textable (data)
+##     @result{}
+##        \begin@{tabular@}@{rrr@}
+##            0.889283 & 0.949328 & 0.205663 \\
+##            0.225978 & 0.426528 & 0.189561 \\
+##            0.245896 & 0.466162 & 0.225864 \\
+##        \end@{tabular@}
 ## @end group
 ## @end example
 ##
-## Creates a table from matrix A without rows lines, without columns lines and
-## with center alignment:
+## Alternatively, the source can be saved directly into a file:
 ## @example
 ## @group
-## textable(A, "my-A-Matrix.tex",0,0,0)
+## textable (data, "file", "data.tex");
 ## @end group
 ## @end example
 ##
-##
-## Creates a table from a random matrix without rows lines, but with columns
-## lines and with left alignment:
+## The appearance of the table can be controled with switches and key values. The
+## following generates a table with both row and column lines (rlines and clines),
+## and center alignment:
 ## @example
 ## @group
-## textable(rand(3,3), 'amazing-random-table.tex',0,1,1)
+## textable (data, "rlines", "clines", "align", "c")
+##     @result{}
+##        \begin{tabular}{|c|c|c|}
+##            \hline 
+##            0.889283 & 0.949328 & 0.205663 \\
+##            \hline 
+##            0.225978 & 0.426528 & 0.189561 \\
+##            \hline 
+##            0.245896 & 0.466162 & 0.225864 \\
+##            \hline 
+##        \end{tabular}
+## @end group
+## @end example
+##
+## Finnally, for math mode, it is also possible to place the matrix in an array
+## environment and name the matrix:
+## @example
+## @group
+## textable (data, "math", "matrix-name")
+##     @result{}
+##        \begin{displaymath}
+##          \mathbf{matrix-name} =
+##          \left(
+##          \begin{array}{*{ 3 }{rrr}}
+##            0.889283 & 0.949328 & 0.205663 \\
+##            0.225978 & 0.426528 & 0.189561 \\
+##            0.245896 & 0.466162 & 0.225864 \\
+##          \end{array}
+##          \right)
+##        \end{displaymath}
 ## @end group
 ## @end example
 ##
 ## @seealso{csv2latex, publish}
 ## @end deftypefn
 
-## rlines = row lines = \hline
-## clines = column lines = |
-## alignment = center, left or right = c,l,r
+function [str] = textable (data, varargin)
 
-function textable (data, filename, rlines = 1, clines = 1, alignment = "r", matrixformat = 0)
-
-  if (nargin < 2 || nargin > 6)
+  if (nargin < 1)
     print_usage;
+  elseif (!isnumeric (data) || !ismatrix (data)|| ndims (data) != 2)
+    error ("first argument must be a 2D numeric matrix");
   endif
 
-  if nargin >= 5
-    if alignment == 0
-      alignment = "c";
-    elseif alignment == 1
-      alignment = "l";
-    elseif alignment == 2
-      alignment = "r";
-    else
-      error ("unknown value for alignment");
-    end
-  end
+  p = inputParser;
+  p = p.addSwitch ("clines");
+  p = p.addSwitch ("rlines");
+  p = p.addParamValue ("math", "X", @ischar);
+  p = p.addParamValue ("file", "matrix.tex", @ischar);
+  p = p.addParamValue ("align", "r", @(x) any(strcmpi(x, {"l", "c", "r"})));
+  p = p.parse (varargin{:});
 
-  if matrixformat == 1
-    clines = 0;
-    rlines = 0;
-    alignment = "c";
+  ## if there is no filename given we won't print to file
+  print_to_file = all (!strcmp ("file", p.UsingDefaults));
+
+  ## will we use an array environment (in displaymath)
+  math = all (!strcmp ("math", p.UsingDefaults));
+
+  if (p.Results.clines)
+    align = sprintf ("|%s", repmat (cstrcat (p.Results.align, "|"), [1, columns(data)]));
+    ## if we are in a array environment, we need to remove the last | or we end
+    ## with two lines at the end
+    if (math), align = align(1:end-1); endif
   else
-    matrixformat = 0;
+    align = sprintf ("%s", repmat (p.Results.align, [1, columns(data)]));
   endif
 
-  ## print my tex file
-  f = fopen(filename,"w");
-
-  if matrixformat == 1
-    fprintf(f,"\\begin{displaymath} \n");
-    fprintf(f,"\\mathbf{X} = \n");
-    fprintf(f,["\\left( \\begin{array} {*{ %d }{c}}\n"
-               "  \n \\toprule \n"],\
-               columns(data));
+  ## start making table
+  if (math)
+    str = "\\begin{displaymath}\n";
+    str = strcat (str, sprintf ("  \\mathbf{%s} =\n", p.Results.math));
+    str = strcat (str,          "  \\left(\n");
+    str = strcat (str, sprintf ("  \\begin{array}{*{ %d }{%s}}\n", columns (data), align));
   else
-    if clines == 1 
-      fprintf(f, ["\\begin{tabular}{|%s}\n"], repmat (cstrcat(alignment,"|"),[1,columns(data)]));
-    else
-      fprintf(f, ["\\begin{tabular}{%s}\n"], repmat (alignment,[1,columns(data)]));
-    endif
+    str = sprintf ("\\begin{tabular}{%s}\n", align);
   endif
 
-  if rlines == 1
-    fprintf(f," \\hline \n");
+  if (p.Results.rlines)
+    str = strcat (str, "    \\hline \n");
   endif
-
 
   for ii = 1:rows(data)
-    fprintf(f,"%g",data(ii,1));
-    fprintf(f," & %g",data(ii,2:end));
-    fprintf(f," \\\\ \n");
-    if rlines == 1
-      fprintf(f," \\hline \n");
+    str = strcat (str, sprintf ("    %g", data (ii, 1)));
+    str = strcat (str, sprintf (" & %g", data (ii, 2:end)));
+    str = strcat (str, " \\\\\n");
+    if (p.Results.rlines)
+      str = strcat (str, "    \\hline \n");
     endif
   endfor
-  if matrixformat == 1
-    fprintf(f,"\\end{array}\\right)\n");
-    fprintf(f,"\\end{displaymath}")
+
+  if (math)
+    str = strcat (str, "  \\end{array}\n  \\right)\n\\end{displaymath}");
   else
-    fprintf(f,"\\end{tabular}\n");
+    str = strcat (str, "\\end{tabular}\n");
   endif
-  fclose(f);
+
+  if (print_to_file)
+    [fid, msg] = fopen (p.Results.file, "w");
+    if (fid == -1)
+      error ("Could not fopen file '%s' for writing: %s", p.Results.file, msg);
+    endif
+    fputs (fid, str);
+    fclose (fid);
+  endif
 endfunction

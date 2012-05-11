@@ -21,6 +21,8 @@ miscellaneous-1.2.0   Release Date: 2012-XX-XX  Release Manager:
  ** The function `physical_constant' has a new API and should also
     perform faster.
 
+ ** Package is now dependent on the general (>= 1.3.1)
+
 ===============================================================================
 miscellaneous-1.1.0   Release Date: 2012-03-24  Release Manager:
 ===============================================================================

@@ -1,4 +1,6 @@
-//Copyright (C) 2003 David Bateman
+// Copyright (C) 1994-1997 Robert Morelos-Zaragoza <owner@eccpage.com>
+// Copyright (C) 2002 Phil Karn <karn@ka9q.net>
+// Copyright (C) 2003 David Bateman
 //
 // This program is free software; you can redistribute it and/or modify it under
 // the terms of the GNU General Public License as published by the Free Software
@@ -18,29 +20,12 @@
 // Open Source Initiative (www.opensource.org)
 
 /*
-Part of the function rsenc and the function decode_rs are Copyrighted
-by Phil Karn and originally bore the copyright
+Part of the function rsenc and the function decode_rs are from Phil Karn. See
+the website http://www.ka9q.net/code/fec for more details.
 
- Reed-Solomon encoder
- Copyright 2002, Phil Karn, KA9Q
- May be used under the terms of the GNU General Public License (GPL)
-
-See the website http://www.ka9q.net/code/fec for more details.
-
-Parts of the function bchenco and bchdeco are Copyrighted by Robert 
-Morelos-Zaragoza. The original code bore the copyright
-
-  COPYRIGHT NOTICE: This computer program is free for non-commercial purposes.
-  You may implement this program for any non-commercial application. You may 
-  also implement this program for commercial purposes, provided that you
-  obtain my written permission. Any modification of this program is covered
-  by this copyright.
- 
-  == Copyright (c) 1994-7,  Robert Morelos-Zaragoza. All rights reserved.  ==
-
-Permission has been granted for a GPL release of this code. See the
-website http://www.eccpage.com for more details.
-
+Parts of the function bchenco and bchdeco are from Robert Morelos-Zaragoza. See
+the website http://www.eccpage.com for more details. Permission has been granted
+for a GPL release of his code
 */
 
 #include "galois.h"
@@ -1353,14 +1338,6 @@ DEFUN_DLD (rsenc, args, nargout,
   return retval;
 }
 
-/* A modified version of code bearing the copyright
- *
- * Reed-Solomon encoder
- * Copyright 2002, Phil Karn, KA9Q
- * May be used under the terms of the GNU General Public License (GPL)
- *
- * is included below.
- */
 int decode_rs(galois& data, const int prim, const int iprim, const int nroots,
 	      const int fcr, const int drow, const bool msb_first)
 {
@@ -2391,9 +2368,3 @@ DEFUN_DLD (bchdeco, args, ,
   retval(2) = octave_value(code);
   return retval;
 }
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

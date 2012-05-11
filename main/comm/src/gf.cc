@@ -2,22 +2,23 @@
 // Copyright (C) 2002 Phil Karn <karn@ka9q.net>
 // Copyright (C) 2003 David Bateman
 //
-// This program is free software; you can redistribute it and/or modify it under
-// the terms of the GNU General Public License as published by the Free Software
-// Foundation; either version 3 of the License, or (at your option) any later
-// version.
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License as
+// published by the Free Software Foundation; either version 3 of the
+// License, or (at your option) any later version.
 //
-// This program is distributed in the hope that it will be useful, but WITHOUT
-// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-// FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
-// details.
+// This program is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License along with
-// this program; if not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, see
+// <http://www.gnu.org/licenses/>.
 //
-// In addition to the terms of the GPL, you are permitted to link
-// this program with any Open Source program, as defined by the
-// Open Source Initiative (www.opensource.org)
+// In addition to the terms of the GPL, you are permitted to link this
+// program with any Open Source program, as defined by the Open Source
+// Initiative (www.opensource.org)
 
 /*
 Part of the function rsenc and the function decode_rs are from Phil Karn. See
@@ -41,17 +42,17 @@ DEFUN_DLD (isgalois, args, ,
   "-*- texinfo -*-\n"
 "@deftypefn {Loadable Function} {} isgalois (@var{expr})\n"
 "Return 1 if the value of the expression @var{expr} is a Galois Field.\n"
-"@end deftypefn") 
+"@end deftypefn")
 {
-   if (args.length() != 1) 
-     print_usage ();
-   else if (!galois_type_loaded)
-     // Can be of Galois type if the type isn't load :-/
-     return octave_value(0.);
-   else 
-     return octave_value(args(0).type_id () ==
-			    octave_galois::static_type_id ());
-   return octave_value();
+  if (args.length() != 1)
+    print_usage ();
+  else if (!galois_type_loaded)
+    // Can be of Galois type if the type isn't load :-/
+    return octave_value(0.);
+  else
+    return octave_value(args(0).type_id () ==
+                        octave_galois::static_type_id ());
+  return octave_value();
 }
 
 // XXX FIXME XXX
@@ -104,14 +105,14 @@ DEFUN_DLD (gf, args, nargout,
   }
 
   if (!galois_type_loaded) {
-      octave_galois::register_type ();
-      install_gm_gm_ops ();
-      install_m_gm_ops ();
-      install_gm_m_ops ();
-      install_s_gm_ops ();
-      install_gm_s_ops ();
-      galois_type_loaded = true;
-      mlock ();
+    octave_galois::register_type ();
+    install_gm_gm_ops ();
+    install_m_gm_ops ();
+    install_gm_m_ops ();
+    install_s_gm_ops ();
+    install_gm_s_ops ();
+    galois_type_loaded = true;
+    mlock ();
   }
 
   retval = new octave_galois(data, m, primpoly);
@@ -123,51 +124,51 @@ make_gdiag (const octave_value& a, const octave_value& b)
 {
   octave_value retval;
 
-  if ((!galois_type_loaded) || (a.type_id () != 
-				octave_galois::static_type_id ()))
+  if ((!galois_type_loaded) || (a.type_id () !=
+                                octave_galois::static_type_id ()))
     gripe_wrong_type_arg ("gdiag", a);
   else {
     galois m = ((const octave_galois&) a.get_rep()).galois_value ();
     int k = b.nint_value();
 
     if (! error_state)
-      {
-	int nr = m.rows ();
-	int nc = m.columns ();
+    {
+      int nr = m.rows ();
+      int nc = m.columns ();
 
-	if (nr == 0 || nc == 0)
-	  retval = new octave_galois (m);
-	else if (nr == 1 || nc == 1) {
-	  int roff = 0;
-	  int coff = 0;
-	  if (k > 0) {
-	    roff = 0;
-	    coff = k;
-	  } else if (k < 0) {
-	    k = -k;
-	    roff = k;
-	    coff = 0;
-	  }
+      if (nr == 0 || nc == 0)
+        retval = new octave_galois (m);
+      else if (nr == 1 || nc == 1) {
+        int roff = 0;
+        int coff = 0;
+        if (k > 0) {
+          roff = 0;
+          coff = k;
+        } else if (k < 0) {
+          k = -k;
+          roff = k;
+          coff = 0;
+        }
 
-	  if (nr == 1) {
-	    int n = nc + k;
-	    galois r (n, n, 0, m.m(), m.primpoly());
-	    for (int i = 0; i < nc; i++)
-	      r (i+roff, i+coff) = m (0, i);
-	    retval = new octave_galois (r);
-	  } else {
-	    int n = nr + k;
-	    galois r (n, n, 0, m.m(), m.primpoly());
-	    for (int i = 0; i < nr; i++)
-	      r (i+roff, i+coff) = m (i, 0);
-	    retval = new octave_galois (r);
-	  }
-	} else {
-	  galois r = m.diag (k);
-	  if (r.capacity () > 0)
-	    retval = new octave_galois (r);
-	}
+        if (nr == 1) {
+          int n = nc + k;
+          galois r (n, n, 0, m.m(), m.primpoly());
+          for (int i = 0; i < nc; i++)
+            r (i+roff, i+coff) = m (0, i);
+          retval = new octave_galois (r);
+        } else {
+          int n = nr + k;
+          galois r (n, n, 0, m.m(), m.primpoly());
+          for (int i = 0; i < nr; i++)
+            r (i+roff, i+coff) = m (i, 0);
+          retval = new octave_galois (r);
+        }
+      } else {
+        galois r = m.diag (k);
+        if (r.capacity () > 0)
+          retval = new octave_galois (r);
       }
+    }
     else
       gripe_wrong_type_arg ("gdiag", a);
   }
@@ -260,8 +261,8 @@ DEFUN_DLD (greshape, args, ,
   } else {
     int mr = 0, mc = 0;
 
-    if ((!galois_type_loaded) || (args(0).type_id () != 
-				octave_galois::static_type_id ())) {
+    if ((!galois_type_loaded) || (args(0).type_id () !=
+                                  octave_galois::static_type_id ())) {
       gripe_wrong_type_arg ("greshape", args(0));
       return retval;
     }
@@ -274,7 +275,7 @@ DEFUN_DLD (greshape, args, ,
     } else if (nargin == 3) {
       mr = args(1).nint_value ();
       mc = args(2).nint_value ();
-    } 
+    }
 
     int nr = a.rows();
     int nc = a.cols();
@@ -283,55 +284,55 @@ DEFUN_DLD (greshape, args, ,
     else {
       RowVector tmp1(mr*mc);
       for (int i=0;i<nr;i++)
-	for (int j=0;j<nc;j++)
-	  tmp1(i+j*nr) = (double)a(i,j);
+        for (int j=0;j<nc;j++)
+          tmp1(i+j*nr) = (double)a(i,j);
       galois tmp2(mr,mc,0,a.m(),a.primpoly());
       for (int i=0;i<mr;i++)
-	for (int j=0;j<mc;j++)
-	  tmp2(i,j) = (int)tmp1(i+j*mr);
+        for (int j=0;j<mc;j++)
+          tmp2(i,j) = (int)tmp1(i+j*mr);
       retval = new octave_galois(tmp2);
     }
   }
   return retval;
 }
 
-#define DATA_REDUCTION(FCN) \
- \
-  octave_value_list retval; \
- \
-  int nargin = args.length (); \
- \
-  if (nargin == 1 || nargin == 2) \
-    { \
-      octave_value arg = args(0); \
- \
-      int dim = (nargin == 1 ? -1 : args(1).int_value (true) - 1); \
- \
-      if (! error_state) \
-	{ \
-	  if (dim <= 1 && dim >= -1) \
-	    { \
-              if (galois_type_loaded && (arg.type_id () == \
-                                     octave_galois::static_type_id ())) \
-		{ \
-		  galois tmp = ((const octave_galois&)arg.get_rep()).galois_value (); \
- \
-		  if (! error_state) \
-		    retval(0) = new octave_galois (tmp.FCN (dim)); \
-		} \
-	      else \
-		{ \
-		  gripe_wrong_type_arg (#FCN, arg); \
-		  return retval; \
-		} \
-	    } \
-	  else \
-	    error (#FCN ": invalid dimension argument = %d", dim + 1); \
-	} \
-    } \
-  else \
-    print_usage (); \
- \
+#define DATA_REDUCTION(FCN)                     \
+                                                \
+  octave_value_list retval;                     \
+                                                \
+  int nargin = args.length ();                  \
+                                                \
+  if (nargin == 1 || nargin == 2)               \
+  {                                             \
+    octave_value arg = args(0);                 \
+                                                                    \
+    int dim = (nargin == 1 ? -1 : args(1).int_value (true) - 1);    \
+                                                                    \
+    if (! error_state)                                              \
+    {                                                               \
+      if (dim <= 1 && dim >= -1)                                    \
+      {                                                             \
+        if (galois_type_loaded && (arg.type_id () ==                    \
+                                   octave_galois::static_type_id ()))   \
+        {                                                               \
+          galois tmp = ((const octave_galois&)arg.get_rep()).galois_value (); \
+                                                                        \
+          if (! error_state)                                            \
+            retval(0) = new octave_galois (tmp.FCN (dim));              \
+        }                                                               \
+        else                                                            \
+        {                                                               \
+          gripe_wrong_type_arg (#FCN, arg);                             \
+          return retval;                                                \
+        }                                                               \
+      }                                                                 \
+      else                                                              \
+        error (#FCN ": invalid dimension argument = %d", dim + 1);      \
+    }                                                                   \
+  }                                                                     \
+  else                                                                  \
+    print_usage ();                                                     \
+                                                                        \
   return retval
 
 // PKG_ADD: autoload ("gprod", "gf.oct");
@@ -392,8 +393,8 @@ DEFUN_DLD (gsqrt, args, ,
     return retval;
   }
 
-  if (!galois_type_loaded || (args(0).type_id () != 
-			      octave_galois::static_type_id ())) {
+  if (!galois_type_loaded || (args(0).type_id () !=
+                              octave_galois::static_type_id ())) {
     gripe_wrong_type_arg ("gsqrt", args(0));
     return retval;
   }
@@ -422,8 +423,8 @@ DEFUN_DLD (glog, args, ,
     return retval;
   }
 
-  if (!galois_type_loaded || (args(0).type_id () != 
-			      octave_galois::static_type_id ())) {
+  if (!galois_type_loaded || (args(0).type_id () !=
+                              octave_galois::static_type_id ())) {
     gripe_wrong_type_arg ("glog", args(0));
     return retval;
   }
@@ -453,8 +454,8 @@ DEFUN_DLD (gexp, args, ,
     return retval;
   }
 
-  if (!galois_type_loaded || (args(0).type_id () != 
-			      octave_galois::static_type_id ())) {
+  if (!galois_type_loaded || (args(0).type_id () !=
+                              octave_galois::static_type_id ())) {
     gripe_wrong_type_arg ("gexp", args(0));
     return retval;
   }
@@ -493,8 +494,8 @@ galois filter(galois& b, galois& a, galois& x, galois& si) {
     int idx_norm = b.index_of(norm);
     for (int i=0; i < b.length(); i++) {
       if (b(i,0) != 0)
-	b(i,0) = b.alpha_to(modn(b.index_of(b(i,0))-idx_norm+b.n(),
-		b.m(),b.n()));
+        b(i,0) = b.alpha_to(modn(b.index_of(b(i,0))-idx_norm+b.n(),
+                                 b.m(),b.n()));
     }
   }
   if (a.length() > 1) {
@@ -503,74 +504,74 @@ galois filter(galois& b, galois& a, galois& x, galois& si) {
     if (norm != 1) {
       int idx_norm = a.index_of(norm);
       for (int i=0; i < a.length(); i++)
-	if (a(i,0) != 0)
-	  a(i,0) = a.alpha_to(modn(a.index_of(a(i,0))-idx_norm+a.n(),
-				 a.m(),a.n()));
+        if (a(i,0) != 0)
+          a(i,0) = a.alpha_to(modn(a.index_of(a(i,0))-idx_norm+a.n(),
+                                   a.m(),a.n()));
     }
 
     for (int i=0; i < x.length(); i++) {
       retval(i,0) = si(0,0);
       if ((b(0,0) != 0) && (x(i,0) != 0))
-	retval(i,0) ^= b.alpha_to(modn(b.index_of(b(0,0)) + 
-		b.index_of(x(i,0)),b.m(),b.n()));
+        retval(i,0) ^= b.alpha_to(modn(b.index_of(b(0,0)) +
+                                       b.index_of(x(i,0)),b.m(),b.n()));
       if (si.length() > 1) {
-	for (int j = 0; j < si.length() - 1; j++) {
-	  si(j,0) = si(j+1,0);
-	  if ((a(j+1,0) != 0) && (retval(i,0) != 0))
-	    si(j,0) ^= a.alpha_to(modn(a.index_of(a(j+1,0)) + 
-		a.index_of(retval(i,0)),a.m(),a.n()));
-	  if ((b(j+1,0) != 0) && (x(i,0) != 0))
-	    si(j,0) ^= b.alpha_to(modn(b.index_of(b(j+1,0)) + 
-		b.index_of(x(i,0)),b.m(),b.n()));
-	}
-	si(si.length()-1,0) = 0;
-	if ((a(si.length(),0) != 0) && (retval(i,0) != 0))
-	  si(si.length()-1,0) ^= a.alpha_to(modn(a.index_of(
-		a(si.length(),0))+a.index_of(retval(i,0)),
-		a.m(),a.n()));
-	if ((b(si.length(),0) != 0) && (x(i,0) != 0))
-	  si(si.length()-1,0) ^= b.alpha_to(modn(b.index_of(
-		b(si.length(),0))+ b.index_of(x(i,0)),
-		b.m(),b.n()));
+        for (int j = 0; j < si.length() - 1; j++) {
+          si(j,0) = si(j+1,0);
+          if ((a(j+1,0) != 0) && (retval(i,0) != 0))
+            si(j,0) ^= a.alpha_to(modn(a.index_of(a(j+1,0)) +
+                                       a.index_of(retval(i,0)),a.m(),a.n()));
+          if ((b(j+1,0) != 0) && (x(i,0) != 0))
+            si(j,0) ^= b.alpha_to(modn(b.index_of(b(j+1,0)) +
+                                       b.index_of(x(i,0)),b.m(),b.n()));
+        }
+        si(si.length()-1,0) = 0;
+        if ((a(si.length(),0) != 0) && (retval(i,0) != 0))
+          si(si.length()-1,0) ^= a.alpha_to(modn(a.index_of(
+                                                            a(si.length(),0))+a.index_of(retval(i,0)),
+                                                 a.m(),a.n()));
+        if ((b(si.length(),0) != 0) && (x(i,0) != 0))
+          si(si.length()-1,0) ^= b.alpha_to(modn(b.index_of(
+                                                            b(si.length(),0))+ b.index_of(x(i,0)),
+                                                 b.m(),b.n()));
       } else {
-	si(0,0) = 0;
-	if ((a(1,0) != 0) && (retval(i,0) != 0))
-	  si(0,0) ^=  a.alpha_to(modn(a.index_of(a(1,0))+ 
-		a.index_of(retval(i,0)),a.m(),a.n()));
-	if ((b(1,0) != 0) && (x(i,0) != 0))
-	  si(0,0) ^= b.alpha_to(modn(b.index_of(b(1,0))+
-		b.index_of(x(i,0)),b.m(),b.n()));
+        si(0,0) = 0;
+        if ((a(1,0) != 0) && (retval(i,0) != 0))
+          si(0,0) ^=  a.alpha_to(modn(a.index_of(a(1,0))+
+                                      a.index_of(retval(i,0)),a.m(),a.n()));
+        if ((b(1,0) != 0) && (x(i,0) != 0))
+          si(0,0) ^= b.alpha_to(modn(b.index_of(b(1,0))+
+                                     b.index_of(x(i,0)),b.m(),b.n()));
       }
     }
   } else if (si.length() > 0) {
     for (int i = 0; i < x.length(); i++) {
       retval(i,0) = si(0,0);
       if ((b(0,0) != 0) && (x(i,0) != 0))
-	retval(i,0) ^= b.alpha_to(modn(b.index_of(b(0,0)) + 
-		b.index_of(x(i,0)),b.m(),b.n()));
+        retval(i,0) ^= b.alpha_to(modn(b.index_of(b(0,0)) +
+                                       b.index_of(x(i,0)),b.m(),b.n()));
       if (si.length() > 1) {
-	for (int j = 0; j < si.length() - 1; j++) {
-	  si(j,0) = si(j+1,0);
-	  if ((b(j+1,0) != 0) && (x(i,0) != 0))
-	    si(j,0) ^= b.alpha_to(modn(b.index_of(b(j+1,0)) + 
-		b.index_of(x(i,0)),b.m(),b.n()));
-	}
-	si(si.length()-1,0) = 0;
-	if ((b(si.length(),0) != 0) && (x(i,0) != 0))
-	  si(si.length()-1,0) ^= b.alpha_to(modn(b.index_of(
-		b(si.length(),0)) + b.index_of(x(i,0)),b.m(),b.n()));
+        for (int j = 0; j < si.length() - 1; j++) {
+          si(j,0) = si(j+1,0);
+          if ((b(j+1,0) != 0) && (x(i,0) != 0))
+            si(j,0) ^= b.alpha_to(modn(b.index_of(b(j+1,0)) +
+                                       b.index_of(x(i,0)),b.m(),b.n()));
+        }
+        si(si.length()-1,0) = 0;
+        if ((b(si.length(),0) != 0) && (x(i,0) != 0))
+          si(si.length()-1,0) ^= b.alpha_to(modn(b.index_of(
+                                                            b(si.length(),0)) + b.index_of(x(i,0)),b.m(),b.n()));
       } else {
-	si(0,0) = 0;
-	if ((b(1,0) != 0) && (x(i,0) != 0))
-	  si(0,0) ^= b.alpha_to(modn(b.index_of(b(1,0)) + 
-		b.index_of(x(i,0)), b.m(), b.n()));
+        si(0,0) = 0;
+        if ((b(1,0) != 0) && (x(i,0) != 0))
+          si(0,0) ^= b.alpha_to(modn(b.index_of(b(1,0)) +
+                                     b.index_of(x(i,0)), b.m(), b.n()));
       }
     }
   } else
     for (int i=0; i<x.length(); i++)
       if ((b(0,0) != 0) && (x(i,0) != 0))
-	retval(i,0) = b.alpha_to(modn(b.index_of(b(0,0)) + 
-		b.index_of(x(i,0)), b.m(),b.n()));
+        retval(i,0) = b.alpha_to(modn(b.index_of(b(0,0)) +
+                                      b.index_of(x(i,0)), b.m(),b.n()));
 
   return retval;
 }
@@ -696,7 +697,7 @@ DEFUN_DLD (gfilter, args, nargout,
   if (!ib) {
     if (ia)
       b = galois(args(0).matrix_value(), a.m(), a.primpoly());
-     else if (ix)
+    else if (ix)
       b = galois(args(0).matrix_value(), x.m(), x.primpoly());
     else if (isi)
       b = galois(args(0).matrix_value(), si.m(), si.primpoly());
@@ -705,7 +706,7 @@ DEFUN_DLD (gfilter, args, nargout,
     a =  galois(args(1).matrix_value(), b.m(), b.primpoly());
   if (!ix)
     x =  galois(args(2).matrix_value(), b.m(), b.primpoly());
-  
+
   if (nargin == 4) {
     if (!isi)
       si =  galois(args(3).matrix_value(), b.m(), b.primpoly());
@@ -714,12 +715,12 @@ DEFUN_DLD (gfilter, args, nargout,
     int b_len = b.length ();
 
     int si_len = (a_len > b_len ? a_len : b_len) - 1;
-	  
+
     si = galois(si_len, 1, 0, b.m(), b.primpoly());
   }
 
   if ((b.m() != a.m()) || (b.m() != x.m()) || (b.m() != si.m()) ||
-      (b.primpoly() != a.primpoly()) || (b.primpoly() != x.primpoly()) || 
+      (b.primpoly() != a.primpoly()) || (b.primpoly() != x.primpoly()) ||
       (b.primpoly() != si.primpoly())) {
     error("gfilter: arguments must be in same galois field");
     return retval;
@@ -746,7 +747,7 @@ DEFUN_DLD (gfilter, args, nargout,
     else
       retval(1) = new octave_galois (si);
   }
-	  
+
   if (x_is_row_vector)
     retval(0) = new octave_galois (y.transpose ());
   else
@@ -803,20 +804,20 @@ DEFUN_DLD (glu, args, nargout,
 "@seealso{lu}")
 {
   octave_value_list retval;
-  
+
 
   int nargin = args.length ();
 
   if (nargin != 1 || nargout > 3)
-    {
-      print_usage ();
-      return retval;
-    }
+  {
+    print_usage ();
+    return retval;
+  }
 
   octave_value arg = args(0);
 
-  if (!galois_type_loaded || (arg.type_id () != 
-			      octave_galois::static_type_id ())) {
+  if (!galois_type_loaded || (arg.type_id () !=
+                              octave_galois::static_type_id ())) {
     gripe_wrong_type_arg ("glu", arg);
     return retval;
   }
@@ -845,15 +846,15 @@ DEFUN_DLD (glu, args, nargout,
     case 1:
     case 2:
       {
-	// While we don't have sparse galois matrices converting the
-	// permutation matrix to a full matrix is the best we can do.
-	Matrix P = Matrix (fact.P ());
-	galois L = P.transpose () * fact.L ();
-	retval(1) = new octave_galois (fact.U ());
-	retval(0) = new octave_galois (L);
+        // While we don't have sparse galois matrices converting the
+        // permutation matrix to a full matrix is the best we can do.
+        Matrix P = Matrix (fact.P ());
+        galois L = P.transpose () * fact.L ();
+        retval(1) = new octave_galois (fact.U ());
+        retval(0) = new octave_galois (L);
       }
       break;
-	    
+
     case 3:
     default:
       retval(2) = fact.P ();
@@ -862,7 +863,7 @@ DEFUN_DLD (glu, args, nargout,
       break;
     }
   }
-  
+
   return retval;
 }
 
@@ -881,18 +882,18 @@ DEFUN_DLD (ginv, args, nargout,
   int nargin = args.length ();
 
   if (nargin != 1)
-    {
-      print_usage ();
-      return retval;
-    }
+  {
+    print_usage ();
+    return retval;
+  }
 
   octave_value arg = args(0);
 
   int nr = arg.rows ();
   int nc = arg.columns ();
 
-  if (!galois_type_loaded || (arg.type_id () != 
-			      octave_galois::static_type_id ())) {
+  if (!galois_type_loaded || (arg.type_id () !=
+                              octave_galois::static_type_id ())) {
     gripe_wrong_type_arg ("ginverse", arg);
     return retval;
   }
@@ -904,30 +905,30 @@ DEFUN_DLD (ginv, args, nargout,
   if (arg_is_empty < 0)
     return retval;
   else if (arg_is_empty > 0) {
-    retval(0) = new octave_galois (galois(0, 0, 0, m.m(), m.primpoly())); 
+    retval(0) = new octave_galois (galois(0, 0, 0, m.m(), m.primpoly()));
     return retval;
   }
   if (nr != nc)
-    {
-      gripe_square_matrix_required ("ginverse");
-      return retval;
-    }
+  {
+    gripe_square_matrix_required ("ginverse");
+    return retval;
+  }
 
   if (! error_state)
-    {
-      int info;
-      double rcond = 0.0;
+  {
+    int info;
+    double rcond = 0.0;
 
-      galois result = m.inverse (info, 1);
+    galois result = m.inverse (info, 1);
 
-      if (nargout > 1)
-	retval(1) = rcond;
+    if (nargout > 1)
+      retval(1) = rcond;
 
-      retval(0) = new octave_galois (result);
+    retval(0) = new octave_galois (result);
 
-      if (nargout < 2 && info == -1)
-	warning ("inverse: matrix singular to machine precision, rcond = %g", rcond);
-    }
+    if (nargout < 2 && info == -1)
+      warning ("inverse: matrix singular to machine precision, rcond = %g", rcond);
+  }
 
   return retval;
 }
@@ -965,8 +966,8 @@ DEFUN_DLD (gdet, args, nargout,
 
   octave_value arg = args(0);
 
-  if (!galois_type_loaded || (arg.type_id () != 
-			      octave_galois::static_type_id ())) {
+  if (!galois_type_loaded || (arg.type_id () !=
+                              octave_galois::static_type_id ())) {
     gripe_wrong_type_arg ("gdet", arg);
     return retval;
   }
@@ -981,7 +982,7 @@ DEFUN_DLD (gdet, args, nargout,
   if (arg_is_empty < 0)
     return retval;
   else if (arg_is_empty > 0) {
-    retval = new octave_galois (galois(1, 1, 1, m.m(), m.primpoly())); 
+    retval = new octave_galois (galois(1, 1, 1, m.m(), m.primpoly()));
     return retval;
   }
 
@@ -1014,8 +1015,8 @@ DEFUN_DLD (grank, args, nargout,
 
   octave_value arg = args(0);
 
-  if (!galois_type_loaded || (arg.type_id () != 
-			      octave_galois::static_type_id ())) {
+  if (!galois_type_loaded || (arg.type_id () !=
+                              octave_galois::static_type_id ())) {
     gripe_wrong_type_arg ("grank", arg);
     return retval;
   }
@@ -1039,31 +1040,31 @@ DEFUN_DLD (grank, args, nargout,
       int idx = -1;
       int iel = 0;
       for (int j = 0; j < nr; j++)
-	{
-	  ci[j] = m.elem (j,i);
-	  if (ci[j] != 0 && idx == -1)
-	    {
-	      iel = ci[j];
-	      idx = j;
-	    }
-	}
+      {
+        ci[j] = m.elem (j,i);
+        if (ci[j] != 0 && idx == -1)
+        {
+          iel = ci[j];
+          idx = j;
+        }
+      }
 
       if (idx != -1) {
-	d++;
-	int indx = m.index_of(iel);
-	for (int j = 0; j < nr; j++)
-	  if (ci[j] != 0)
-	    ci[j] = m.alpha_to(modn(m.index_of(ci[j]) - indx + mn, mm, mn));
+        d++;
+        int indx = m.index_of(iel);
+        for (int j = 0; j < nr; j++)
+          if (ci[j] != 0)
+            ci[j] = m.alpha_to(modn(m.index_of(ci[j]) - indx + mn, mm, mn));
 
-	for (int j = i+1; j < nc; j++) {
-	  if (m.elem(idx,j) != 0) {
-	    indx = m.index_of(m.elem(idx,j));
-	    for (int k = 0; k < nr; k++)
-	      if (ci[k] != 0)
-		m.elem (k, j) ^= m.alpha_to(modn(m.index_of(ci[k]) + indx + 
-						 mn, mm, mn));
-	  }
-	} 
+        for (int j = i+1; j < nc; j++) {
+          if (m.elem(idx,j) != 0) {
+            indx = m.index_of(m.elem(idx,j));
+            for (int k = 0; k < nr; k++)
+              if (ci[k] != 0)
+                m.elem (k, j) ^= m.alpha_to(modn(m.index_of(ci[k]) + indx +
+                                                 mn, mm, mn));
+          }
+        }
       }
     }
     retval = (double)d;
@@ -1127,14 +1128,14 @@ DEFUN_DLD (rsenc, args, nargout,
 {
   octave_value retval;
   int nargin = args.length ();
-  
+
   if ((nargin < 3) || (nargin > 5)) {
     print_usage ();
     return retval;
   }
 
-  if (!galois_type_loaded || (args(0).type_id () != 
-			      octave_galois::static_type_id ())) {
+  if (!galois_type_loaded || (args(0).type_id () !=
+                              octave_galois::static_type_id ())) {
     gripe_wrong_type_arg ("rsenc", args(0));
     return retval;
   }
@@ -1181,35 +1182,35 @@ DEFUN_DLD (rsenc, args, nargout,
     if (args(i).is_string()) {
       std::string parstr = args(i).string_value();
       for (int j=0;j<(int)parstr.length();j++)
-	parstr[j] = toupper(parstr[j]);
-	
+        parstr[j] = toupper(parstr[j]);
+
       if (!parstr.compare("END")) {
-	parity_at_end = true;
+        parity_at_end = true;
       } else if (!parstr.compare("BEGINNING")) {
-	parity_at_end = false;
+        parity_at_end = false;
       } else {
-	error ("rsenc: unrecoginized parity position");
-	return retval;
+        error ("rsenc: unrecoginized parity position");
+        return retval;
       }
     } else {
       if (args(i).type_id () == octave_galois::static_type_id ()) {
-	if (have_genpoly) {
-	  print_usage ();
-	  return retval;
-	}
-	genpoly = ((const octave_galois&) args(i).get_rep()).galois_value ();
+        if (have_genpoly) {
+          print_usage ();
+          return retval;
+        }
+        genpoly = ((const octave_galois&) args(i).get_rep()).galois_value ();
 
-	if (genpoly.cols() > genpoly.rows())
-	  genpoly = genpoly.transpose();
+        if (genpoly.cols() > genpoly.rows())
+          genpoly = genpoly.transpose();
       } else {
-	if (have_genpoly) {
-	  if (prim != 0) {
-	    print_usage ();
-	    return retval;
-	  }
-	  prim = args(i).nint_value();
-	} else
-	  fcr = args(i).nint_value();
+        if (have_genpoly) {
+          if (prim != 0) {
+            print_usage ();
+            return retval;
+          }
+          prim = args(i).nint_value();
+        } else
+          fcr = args(i).nint_value();
       }
       have_genpoly = true;
     }
@@ -1231,16 +1232,17 @@ DEFUN_DLD (rsenc, args, nargout,
 
       // Multiply genpoly by  @**(root + x)
       for (int j = i; j > 0; j--){
-	int k = nroots - j;
-	if (genpoly(k,0) != 0)
-	  genpoly(k,0) = genpoly(k+1,0) ^ genpoly.alpha_to(
-		modn(genpoly.index_of(genpoly(k,0)) + root, m, n));
-	else
-	  genpoly(k,0) = genpoly(k+1,0);
+        int k = nroots - j;
+        if (genpoly(k,0) != 0)
+          genpoly(k,0) = genpoly(k+1,0)
+            ^ genpoly.alpha_to( modn(genpoly.index_of(genpoly(k,0))
+                                     + root, m, n));
+        else
+          genpoly(k,0) = genpoly(k+1,0);
       }
       // genpoly(nroots,0) can never be zero
-      genpoly(nroots,0) = genpoly.alpha_to(modn(genpoly.index_of(
-			genpoly(nroots,0)) + root, m, n));
+      genpoly(nroots,0) = genpoly
+        .alpha_to(modn(genpoly.index_of(genpoly(nroots,0)) + root, m, n));
     }
 
   } else {
@@ -1250,7 +1252,8 @@ DEFUN_DLD (rsenc, args, nargout,
     }
 
     if (genpoly.primpoly() != primpoly) {
-      error ("rsenc: the generator polynomial must be same galois field as the message");
+      error ("rsenc: the generator polynomial must be same galois field "
+             "as the message");
       return retval;
     }
 
@@ -1269,67 +1272,67 @@ DEFUN_DLD (rsenc, args, nargout,
   // Add space for parity block
   msg.resize(dim_vector (nsym, n), 0);
 
-  // The code below basically finds the parity bits by treating the 
+  // The code below basically finds the parity bits by treating the
   // message as a polynomial and dividing it by the generator polynomial.
   // The parity bits are then the remainder of this division. If the parity
-  // is at the end the polynomial is treat MSB first, otherwise it is 
+  // is at the end the polynomial is treat MSB first, otherwise it is
   // treated LSB first
   //
-  // This code could just as easily be written as 
+  // This code could just as easily be written as
   //    [ignore par] = gdeconv(msg, genpoly);
   // But the code below has the advantage of being 20 times faster :-)
 
   if (parity_at_end) {
     for (int l = 0; l < nsym; l++) {
       galois par(nroots,1,0,m,primpoly);
-      for (int i = 0; i < k; i++) { 
-	int feedback = par.index_of(par(0,0) ^ msg(l,i));
-	if (feedback != nn) {
-	  if (norm != 1)
-	    feedback = modn(nn-genpoly(0,0)+feedback, m, nn);
-	  for (int j = 1; j < nroots; j++)
-	    par(j,0) ^= par.alpha_to(modn(feedback +
-					       genpoly(j,0), m, nn)); 
-	}
-	for (int j = 1; j < nroots; j++)
-	  par(j-1,0) = par(j,0);
-	if (feedback != nn)
-	  par(nroots-1,0) = par.alpha_to(modn(feedback+
-					genpoly(nroots,0), m, nn));
-	else
-	  par(nroots-1,0) = 0;
+      for (int i = 0; i < k; i++) {
+        int feedback = par.index_of(par(0,0) ^ msg(l,i));
+        if (feedback != nn) {
+          if (norm != 1)
+            feedback = modn(nn-genpoly(0,0)+feedback, m, nn);
+          for (int j = 1; j < nroots; j++)
+            par(j,0) ^= par.alpha_to(modn(feedback +
+                                          genpoly(j,0), m, nn));
+        }
+        for (int j = 1; j < nroots; j++)
+          par(j-1,0) = par(j,0);
+        if (feedback != nn)
+          par(nroots-1,0) = par.alpha_to(modn(feedback+
+                                              genpoly(nroots,0), m, nn));
+        else
+          par(nroots-1,0) = 0;
       }
       for (int j = 0; j < nroots; j++)
-	msg(l,k+j) = par(j,0);
+        msg(l,k+j) = par(j,0);
     }
   } else {
     for (int l = 0; l < nsym; l++) {
       for (int i=k; i > 0; i--)
-	msg(l,i+nroots-1) = msg(l,i-1);
+        msg(l,i+nroots-1) = msg(l,i-1);
       for (int i=0; i<nroots; i++)
-	msg(l,i) = 0;
+        msg(l,i) = 0;
     }
     for (int l = 0; l < nsym; l++) {
       galois par(nroots,1,0,m,primpoly);
-      for (int i = n; i > nroots; i--) { 
-	int feedback = par.index_of(par(0,0) ^ msg(l,i-1));
-	if (feedback != nn) {
-	  if (norm != 1)
-	    feedback = modn(nn-genpoly(0,0)+feedback, m, nn);
-	  for (int j = 1; j < nroots; j++)
-	    par(j,0) ^= par.alpha_to(modn(feedback +
-					       genpoly(j,0), m, nn)); 
-	}
-	for (int j = 1; j < nroots; j++)
-	  par(j-1,0) = par(j,0);
-	if (feedback != nn)
-	  par(nroots-1,0) = par.alpha_to(modn(feedback+
-					genpoly(nroots,0), m, nn));
-	else
-	  par(nroots-1,0) = 0;
+      for (int i = n; i > nroots; i--) {
+        int feedback = par.index_of(par(0,0) ^ msg(l,i-1));
+        if (feedback != nn) {
+          if (norm != 1)
+            feedback = modn(nn-genpoly(0,0)+feedback, m, nn);
+          for (int j = 1; j < nroots; j++)
+            par(j,0) ^= par.alpha_to(modn(feedback +
+                                          genpoly(j,0), m, nn));
+        }
+        for (int j = 1; j < nroots; j++)
+          par(j-1,0) = par(j,0);
+        if (feedback != nn)
+          par(nroots-1,0) = par.alpha_to(modn(feedback+
+                                              genpoly(nroots,0), m, nn));
+        else
+          par(nroots-1,0) = 0;
       }
       for (int j = 0; j < nroots; j++)
-	msg(l,j) = par(nroots-j-1,0);
+        msg(l,j) = par(nroots-j-1,0);
     }
   }
 
@@ -1339,7 +1342,7 @@ DEFUN_DLD (rsenc, args, nargout,
 }
 
 int decode_rs(galois& data, const int prim, const int iprim, const int nroots,
-	      const int fcr, const int drow, const bool msb_first)
+              const int fcr, const int drow, const bool msb_first)
 {
   int deg_lambda, el, deg_omega;
   int i, j, r, k;
@@ -1352,7 +1355,7 @@ int decode_rs(galois& data, const int prim, const int iprim, const int nroots,
   /* Err Locator and syndrome poly */
   OCTAVE_LOCAL_BUFFER(int,lambda,nroots+1);
   OCTAVE_LOCAL_BUFFER(int,s,nroots);
-  
+
   OCTAVE_LOCAL_BUFFER(int,b,nroots+1);
   OCTAVE_LOCAL_BUFFER(int,t,nroots+1);
   OCTAVE_LOCAL_BUFFER(int,omega,nroots+1);
@@ -1368,22 +1371,22 @@ int decode_rs(galois& data, const int prim, const int iprim, const int nroots,
 
     for(j=1;j<n;j++)
       for(i=0;i<nroots;i++)
-	if(s[i] == 0)
-	  s[i] = data(drow,j);
-	else
-	  s[i] = data(drow,j) ^ data.alpha_to(modn(data.index_of(s[i]) + 
-					(fcr+i)*prim, m, n));
+        if(s[i] == 0)
+          s[i] = data(drow,j);
+        else
+          s[i] = data(drow,j) ^ data.alpha_to(modn(data.index_of(s[i]) +
+                                                   (fcr+i)*prim, m, n));
   } else {
     for(i=0;i<nroots;i++)
       s[i] = data(drow,n-1);
 
     for(j=n-1;j>0;j--)
       for(i=0;i<nroots;i++)
-	if(s[i] == 0)
-	  s[i] = data(drow,j-1);
-	else 
-	  s[i] = data(drow,j-1) ^ data.alpha_to(modn(data.index_of(s[i]) +
-					(fcr+i)*prim, m, n));
+        if(s[i] == 0)
+          s[i] = data(drow,j-1);
+        else
+          s[i] = data(drow,j-1) ^ data.alpha_to(modn(data.index_of(s[i]) +
+                                                     (fcr+i)*prim, m, n));
   }
 
   /* Convert syndromes to index form, checking for nonzero condition */
@@ -1404,22 +1407,22 @@ int decode_rs(galois& data, const int prim, const int iprim, const int nroots,
 
   for(i=0;i<nroots+1;i++)
     b[i] = data.index_of(lambda[i]);
-  
+
   /*
    * Begin Berlekamp-Massey algorithm to determine error locator polynomial
    */
   r = 0;
   el = 0;
-  while (++r <= nroots) {	/* r is the step number */
+  while (++r <= nroots) {/* r is the step number */
     /* Compute discrepancy at the r-th step in poly-form */
     discr_r = 0;
     for (i = 0; i < r; i++){
       if ((lambda[i] != 0) && (s[r-i-1] != A0)) {
-	discr_r ^= data.alpha_to(modn(data.index_of(lambda[i]) + 
-				      s[r-i-1], m, n));
+        discr_r ^= data.alpha_to(modn(data.index_of(lambda[i]) +
+                                      s[r-i-1], m, n));
       }
     }
-    discr_r = data.index_of(discr_r);	/* Index form */
+    discr_r = data.index_of(discr_r);  /* Index form */
     if (discr_r == A0) {
       /* 2 lines below: B(x) <-- x*B(x) */
       memmove(&b[1],b,nroots*sizeof(b[0]));
@@ -1428,24 +1431,24 @@ int decode_rs(galois& data, const int prim, const int iprim, const int nroots,
       /* 7 lines below: T(x) <-- lambda(x) - discr_r*x*b(x) */
       t[0] = lambda[0];
       for (i = 0 ; i < nroots; i++) {
-	if(b[i] != A0)
-	  t[i+1] = lambda[i+1] ^ data.alpha_to(modn(discr_r + b[i], m, n));
-	else
-	  t[i+1] = lambda[i+1];
+        if(b[i] != A0)
+          t[i+1] = lambda[i+1] ^ data.alpha_to(modn(discr_r + b[i], m, n));
+        else
+          t[i+1] = lambda[i+1];
       }
       if (2 * el <= r - 1) {
-	el = r - el;
-	/*
-	 * 2 lines below: B(x) <-- inv(discr_r) *
-	 * lambda(x)
-	 */
-	for (i = 0; i <= nroots; i++)
-	  b[i] = (lambda[i] == 0) ? A0 : modn(data.index_of(lambda[i]) - 
-					      discr_r + n, m, n);
+        el = r - el;
+        /*
+         * 2 lines below: B(x) <-- inv(discr_r) *
+         * lambda(x)
+         */
+        for (i = 0; i <= nroots; i++)
+          b[i] = (lambda[i] == 0) ? A0 : modn(data.index_of(lambda[i]) -
+                                              discr_r + n, m, n);
       } else {
-	/* 2 lines below: B(x) <-- x*B(x) */
-	memmove(&b[1],b,nroots*sizeof(b[0]));
-	b[0] = A0;
+        /* 2 lines below: B(x) <-- x*B(x) */
+        memmove(&b[1],b,nroots*sizeof(b[0]));
+        b[0] = A0;
       }
       memcpy(lambda,t,(nroots+1)*sizeof(t[0]));
     }
@@ -1461,13 +1464,13 @@ int decode_rs(galois& data, const int prim, const int iprim, const int nroots,
 
   /* Find roots of the error locator polynomial by Chien search */
   memcpy(&reg[1],&lambda[1],nroots*sizeof(reg[0]));
-  count = 0;		/* Number of roots of lambda(x) */
+  count = 0;/* Number of roots of lambda(x) */
   for (i = 1,k=iprim-1; i <= n; i++,k = modn(k+iprim, m, n)) {
     q = 1; /* lambda[0] is always 0 */
     for (j = deg_lambda; j > 0; j--){
       if (reg[j] != A0) {
-	reg[j] = modn(reg[j] + j, m, n);
-	q ^= data.alpha_to(reg[j]);
+        reg[j] = modn(reg[j] + j, m, n);
+        q ^= data.alpha_to(reg[j]);
       }
     }
     if (q != 0)
@@ -1498,14 +1501,14 @@ int decode_rs(galois& data, const int prim, const int iprim, const int nroots,
     j = (deg_lambda < i) ? deg_lambda : i;
     for(;j >= 0; j--){
       if ((s[i - j] != A0) && (lambda[j] != A0))
-	tmp ^= data.alpha_to(modn(s[i - j] + lambda[j], m, n));
+        tmp ^= data.alpha_to(modn(s[i - j] + lambda[j], m, n));
     }
     if(tmp != 0)
       deg_omega = i;
     omega[i] = data.index_of(tmp);
   }
   omega[nroots] = A0;
-  
+
   /*
    * Compute error values in poly-form. num1 = omega(inv(X(l))), num2 =
    * inv(X(l))**(fcr-1) and den = lambda_pr(inv(X(l))) all in poly-form
@@ -1514,16 +1517,16 @@ int decode_rs(galois& data, const int prim, const int iprim, const int nroots,
     num1 = 0;
     for (i = deg_omega; i >= 0; i--) {
       if (omega[i] != A0)
-	num1  ^= data.alpha_to(modn(omega[i] + i * root[j], m, n));
+        num1  ^= data.alpha_to(modn(omega[i] + i * root[j], m, n));
     }
     num2 = data.alpha_to(modn(root[j] * (fcr - 1) + n, m, n));
     den = 0;
-    
+
     /* lambda[i+1] for i even is the formal deriv lambda_pr of lambda[i] */
-    for (i = (deg_lambda < nroots-1 ? deg_lambda : nroots-1) & ~1; i >= 0; 
-	 i -=2) {
+    for (i = (deg_lambda < nroots-1 ? deg_lambda : nroots-1) & ~1; i >= 0;
+         i -=2) {
       if(lambda[i+1] != A0)
-	den ^= data.alpha_to(modn(lambda[i+1] + i * root[j], m, n));
+        den ^= data.alpha_to(modn(lambda[i+1] + i * root[j], m, n));
     }
     if (den == 0) {
       count = -1;
@@ -1532,11 +1535,15 @@ int decode_rs(galois& data, const int prim, const int iprim, const int nroots,
     /* Apply error to data */
     if (num1 != 0) {
       if (msb_first)
-	data(drow,loc[j]) ^= data.alpha_to(modn(data.index_of(num1) + 
-			data.index_of(num2) + n - data.index_of(den), m, n));
+        data(drow,loc[j]) ^= data.alpha_to(modn(data.index_of(num1)
+                                                + data.index_of(num2)
+                                                + n - data.index_of(den),
+                                                m, n));
       else
-	data(drow,n-loc[j]-1) ^= data.alpha_to(modn(data.index_of(num1) + 
-			data.index_of(num2) + n - data.index_of(den), m, n));
+        data(drow,n-loc[j]-1) ^= data.alpha_to(modn(data.index_of(num1)
+                                                    + data.index_of(num2)
+                                                    + n - data.index_of(den),
+                                                    m, n));
     }
   }
 
@@ -1587,14 +1594,14 @@ DEFUN_DLD (rsdec, args, nargout,
   octave_value_list retval;
 
   int nargin = args.length ();
-  
+
   if ((nargin < 3) || (nargin > 5)) {
     print_usage ();
     return retval;
   }
 
-  if (!galois_type_loaded || (args(0).type_id () != 
-			      octave_galois::static_type_id ())) {
+  if (!galois_type_loaded || (args(0).type_id () !=
+                              octave_galois::static_type_id ())) {
     gripe_wrong_type_arg ("rsdec", args(0));
     return retval;
   }
@@ -1616,7 +1623,8 @@ DEFUN_DLD (rsdec, args, nargout,
   }
 
   if (code.m() != m) {
-    error ("rsdec: coded message in incorrect galois field for codeword length");
+    error ("rsdec: coded message in incorrect galois field for "
+           "codeword length");
     return retval;
   }
 
@@ -1641,36 +1649,36 @@ DEFUN_DLD (rsdec, args, nargout,
   for (int i = 3; i < 6; i++) {
     if (nargin > i) {
       if (args(i).is_string()) {
-	std::string parstr = args(i).string_value();
-	for (int j=0;j<(int)parstr.length();j++)
-	  parstr[j] = toupper(parstr[j]);
-	
-	if (!parstr.compare("END")) {
-	  parity_at_end = true;
+        std::string parstr = args(i).string_value();
+        for (int j=0;j<(int)parstr.length();j++)
+          parstr[j] = toupper(parstr[j]);
+
+        if (!parstr.compare("END")) {
+          parity_at_end = true;
         } else if (!parstr.compare("BEGINNING")) {
-	  parity_at_end = false;
-	} else {
-	  error ("rsdec: unrecoginized parrity position");
-	  return retval;
-	}
+          parity_at_end = false;
+        } else {
+          error ("rsdec: unrecoginized parrity position");
+          return retval;
+        }
       } else {
-	if (args(i).type_id () == octave_galois::static_type_id ()) {
-	  if (have_genpoly) {
-	    print_usage ();
-	    return retval;
-	  }
-	  genpoly = ((const octave_galois&) args(i).get_rep()).galois_value ();
-	} else {
-	  if (have_genpoly) {
-	    if (prim != 0) {
-	      print_usage ();
-	      return retval;
-	    }
-	    prim = args(i).nint_value();
-	  } else
-	    fcr = args(i).nint_value();
-	}
-	have_genpoly = true;
+        if (args(i).type_id () == octave_galois::static_type_id ()) {
+          if (have_genpoly) {
+            print_usage ();
+            return retval;
+          }
+          genpoly = ((const octave_galois&) args(i).get_rep()).galois_value ();
+        } else {
+          if (have_genpoly) {
+            if (prim != 0) {
+              print_usage ();
+              return retval;
+            }
+            prim = args(i).nint_value();
+          } else
+            fcr = args(i).nint_value();
+        }
+        have_genpoly = true;
       }
     }
   }
@@ -1678,129 +1686,131 @@ DEFUN_DLD (rsdec, args, nargout,
   if (have_genpoly) {
     if (fcr != 0) {
       if ((fcr < 1) || (fcr > nn)) {
-	error("rsdec: invalid first consecutive root of generator polynomial");
-	return retval;
+        error("rsdec: invalid first consecutive root of generator polynomial");
+        return retval;
       }
       if ((prim < 1) || (prim > nn)) {
-	error("rsdec: invalid primitive element of generator polynomial");
-	return retval;
+        error("rsdec: invalid primitive element of generator polynomial");
+        return retval;
       }
     } else {
       if (genpoly.cols() > genpoly.rows())
-	genpoly = genpoly.transpose();
+        genpoly = genpoly.transpose();
 
       if (genpoly.cols() != 1) {
-	error ("rsdec: the generator polynomial must be a vector");
-	return retval;
+        error ("rsdec: the generator polynomial must be a vector");
+        return retval;
       }
 
       if (genpoly.primpoly() != primpoly) {
-	error ("rsdec: the generator polynomial must be same galois field as the message");
-	return retval;
+        error ("rsdec: the generator polynomial must be same galois "
+               "field as the message");
+        return retval;
       }
-      
+
       if (genpoly.rows() != nroots+1) {
-	error ("rsdec: generator polynomial has incorrect order");
-	return retval;
+        error ("rsdec: generator polynomial has incorrect order");
+        return retval;
       }
 
       // Find the roots of the generator polynomial
       int count = 0;
       OCTAVE_LOCAL_BUFFER(int, roots, nroots);
       for (int j=0; j <=nn; j++) {
-	// Evaluate generator polynomial at j
-	int val = genpoly(0,0);
-	int indx = genpoly.index_of(j);
-	for (int i=0; i<nroots; i++) {
-	  if (val == 0)
-	    val = genpoly(i+1,0);
-	  else
-	    val = genpoly(i+1,0) ^ genpoly.alpha_to(modn(indx +
-				genpoly.index_of(val), m, nn));
-	}
-	if (val == 0) {
-	  roots[count] = j;
-	  count++;
-	  if (count == nroots)
-	    break;
-	}
+        // Evaluate generator polynomial at j
+        int val = genpoly(0,0);
+        int indx = genpoly.index_of(j);
+        for (int i=0; i<nroots; i++) {
+          if (val == 0)
+            val = genpoly(i+1,0);
+          else
+            val = genpoly(i+1,0) ^ genpoly.alpha_to(modn(indx +
+                                                         genpoly.index_of(val),
+                                                         m, nn));
+        }
+        if (val == 0) {
+          roots[count] = j;
+          count++;
+          if (count == nroots)
+            break;
+        }
       }
 
       if (count != nroots) {
-	error ("rsdec: generator polynomial can not have repeated roots");
-	return retval;
+        error ("rsdec: generator polynomial can not have repeated roots");
+        return retval;
       }
 
       // Logarithm of roots wrt primitive element
       for (int i=0; i < count; i++)
-	roots[i] = genpoly.index_of(roots[i]);
+        roots[i] = genpoly.index_of(roots[i]);
 
       // Find a corresponding fcr and prim that coincide with the roots.
       // XXX FIXME XXX. This is a naive algorithm and should be improved !!!
       bool found = true;
       for (fcr=1; fcr<n+1; fcr++) {
-	for (prim=1; prim<n+1; prim++) {
-	  found = true;
-	  for (int i=0; i<nroots; i++) {
-	    int tmp = modn((fcr + i)*prim, m, n);
-	    for (int j=0; j<count; j++) {
-	      if (tmp == roots[j]) {
-		tmp = -1;
-		break;
-	      }
-	    }
-	    if (tmp != -1) {
-	      found = false;
-	      break;
-	    }
-	  }
-	  if (found)
-	    break;
-	}
-	if (found)
-	  break;
+        for (prim=1; prim<n+1; prim++) {
+          found = true;
+          for (int i=0; i<nroots; i++) {
+            int tmp = modn((fcr + i)*prim, m, n);
+            for (int j=0; j<count; j++) {
+              if (tmp == roots[j]) {
+                tmp = -1;
+                break;
+              }
+            }
+            if (tmp != -1) {
+              found = false;
+              break;
+            }
+          }
+          if (found)
+            break;
+        }
+        if (found)
+          break;
       }
     }
   } else {
     fcr = 1;
     prim = 1;
   }
-  
+
   /* Find prim-th root of 1, used in decoding */
   for(iprim=1;(iprim % prim) != 0;iprim += n)
     ;
   iprim = iprim / prim;
-  
+
   galois msg(nsym,k,0,m,primpoly);
   ColumnVector nerr(nsym,0);
 
   if (nn != n) {
     code.resize(dim_vector (nsym, nn),0);
-    if (parity_at_end) 
+    if (parity_at_end)
       for (int l = 0; l < nsym; l++)
-	for (int i=n; i > 0; i--)
-	  code(l,i+nn-n-1) = code(l,i-1);
+        for (int i=n; i > 0; i--)
+          code(l,i+nn-n-1) = code(l,i-1);
   }
 
   for (int l = 0; l < nsym; l++)
     nerr(l) = decode_rs(code, prim, iprim, nroots, fcr, l, parity_at_end);
 
   if (nn != n) {
-    if (parity_at_end) 
+    if (parity_at_end)
       for (int l = 0; l < nsym; l++)
-	for (int i=0; i > n; i--)
-	  code(l,i) = code(l,i+nn-n);
+        for (int i=0; i > n; i--)
+          code(l,i) = code(l,i+nn-n);
     code.resize(dim_vector (nsym, n), 0);
   }
 
   if (parity_at_end) {
     for (int l = 0; l < nsym; l++)
       for (int i=0; i < k; i++)
-	msg(l,i) = code(l,i);
+        msg(l,i) = code(l,i);
   } else {
     for (int l = 0; l < nsym; l++)
       for (int i=0; i < k; i++)
-	msg(l,i) = code(l,nroots+i);
+        msg(l,i) = code(l,nroots+i);
   }
 
   retval(0) = new octave_galois (msg);
@@ -1852,7 +1862,7 @@ DEFUN_DLD (bchenco, args, ,
 {
   octave_value retval;
   int nargin = args.length ();
-  
+
   if ((nargin < 3) || (nargin > 5)) {
     print_usage ();
     return retval;
@@ -1887,30 +1897,30 @@ DEFUN_DLD (bchenco, args, ,
     if (args(i).is_string()) {
       std::string parstr = args(i).string_value();
       for (int j=0;j<(int)parstr.length();j++)
-	parstr[j] = toupper(parstr[j]);
-	
+        parstr[j] = toupper(parstr[j]);
+
       if (!parstr.compare("END")) {
-	parity_at_end = true;
+        parity_at_end = true;
       } else if (!parstr.compare("BEGINNING")) {
-	parity_at_end = false;
+        parity_at_end = false;
       } else {
-	error ("bchenco: unrecoginized parity position");
-	return retval;
+        error ("bchenco: unrecoginized parity position");
+        return retval;
       }
     } else {
       have_genpoly = true;
       genpoly = galois(args(i).matrix_value (), m);
       if (genpoly.cols() > genpoly.rows())
-	genpoly = genpoly.transpose();
+        genpoly = genpoly.transpose();
 
       if (genpoly.cols() != 1) {
-	error ("bchenco: the generator polynomial must be a vector");
-	return retval;
+        error ("bchenco: the generator polynomial must be a vector");
+        return retval;
       }
 
       if (genpoly.rows() != nn-k+1) {
-	error ("bchenco: generator polynomial has incorrect order");
-	return retval;
+        error ("bchenco: generator polynomial has incorrect order");
+        return retval;
       }
     }
   }
@@ -1931,19 +1941,19 @@ DEFUN_DLD (bchenco, args, ,
     while (found.min() == 0) {
       int idx = n;
       for (int i=0; i<n; i++)
-	if ((found(i) == 0) && (c.index_of(i+1) < idx))
-	  idx = c.index_of(i+1);
+        if ((found(i) == 0) && (c.index_of(i+1) < idx))
+          idx = c.index_of(i+1);
 
       c.resize(dim_vector (nc+1, m));
       cs.resize(dim_vector (nc+1, 1));
-      c(nc,0) = idx; 
+      c(nc,0) = idx;
       found(c.alpha_to(idx)-1) = 1;
       cs(nc) = 1;
       int r = idx;
       while ((r = modn(r<<1,m,n)) > idx) {
-	c(nc,cs(nc)) = r;
-	found(c.alpha_to(r)-1) = 1;
-	cs(nc) += 1;
+        c(nc,cs(nc)) = r;
+        found(c.alpha_to(r)-1) = 1;
+        cs(nc) += 1;
       }
       nc++;
     }
@@ -1957,23 +1967,23 @@ DEFUN_DLD (bchenco, args, ,
     do {
       t++;
       for (int i = 0; i < nc; i++) {
-	if (found(i) == 1) {
-	  for (int j = 2*(t-1); j<2*t; j++) {
-	    int flag = 0;
-	    for (int l=0; l<cs(i); l++) {
-	      if (c(i,l) == j+1) {
-		f.resize(dim_vector (1, nf+cs(i)));
-		for (int ll=0; ll<cs(i); ll++)
-		  f(0,nf+ll) = c(i,ll);
-		found(i) = 0;
-		nf += cs(i);
-		flag = 1;
-		break;
-	      }
-	    }
-	    if (flag) break;
-	  }
-	}
+        if (found(i) == 1) {
+          for (int j = 2*(t-1); j<2*t; j++) {
+            int flag = 0;
+            for (int l=0; l<cs(i); l++) {
+              if (c(i,l) == j+1) {
+                f.resize(dim_vector (1, nf+cs(i)));
+                for (int ll=0; ll<cs(i); ll++)
+                  f(0,nf+ll) = c(i,ll);
+                found(i) = 0;
+                nf += cs(i);
+                flag = 1;
+                break;
+              }
+            }
+            if (flag) break;
+          }
+        }
       }
     } while (nf < nn - k);
 
@@ -1981,7 +1991,7 @@ DEFUN_DLD (bchenco, args, ,
       error("bchenco: can not find valid generator polynomial for parameters");
       return retval;
     }
-    
+
     // Create polynomial of right length.
     genpoly = galois(nf+1,1,0,m);
 
@@ -1991,70 +2001,72 @@ DEFUN_DLD (bchenco, args, ,
 
       // Multiply genpoly by  @**(root + x)
       for (int l = i; l > 0; l--){
-	if (genpoly(l,0) != 0)
-	  genpoly(l,0) = genpoly(l-1,0) ^ genpoly.alpha_to(
-		modn(genpoly.index_of(genpoly(l,0)) + f(0,i), m, n));
-	else
-	  genpoly(l,0) = genpoly(l-1,0);
+        if (genpoly(l,0) != 0)
+          genpoly(l,0) = genpoly(l-1,0)
+            ^ genpoly.alpha_to(modn(genpoly.index_of(genpoly(l,0)) + f(0,i),
+                                    m, n));
+        else
+          genpoly(l,0) = genpoly(l-1,0);
       }
       // genpoly(0,0) can never be zero
-      genpoly(0,0) = genpoly.alpha_to(modn(genpoly.index_of(
-			genpoly(0,0)) + f(0,i), m, n));
+      genpoly(0,0) = genpoly.alpha_to(modn(genpoly.index_of(genpoly(0,0))
+                                           + f(0,i),
+                                           m, n));
     }
   }
 
   // Add space for parity block
   msg.resize(nsym,nn,0);
 
-  // The code below basically finds the parity bits by treating the 
+  // The code below basically finds the parity bits by treating the
   // message as a polynomial and dividing it by the generator polynomial.
-  // The parity bits are then the remainder of this division. 
+  // The parity bits are then the remainder of this division.
   //
-  // This code could just as easily be written as 
+  // This code could just as easily be written as
   //    [ignore par] = gdeconv(gf(msg), gf(genpoly));
   // But the code below has the advantage of being 20 times faster :-)
 
   if (parity_at_end) {
     for (int l = 0; l < nsym; l++) {
-      for (int i = 0; i < k; i++) { 
-	int feedback = (int)msg(l,i) ^ (int)msg(l,k);
-	if (feedback != 0) {
-	  for (int j = 0; j < nn-k-1; j++)
-	    if (genpoly(nn-k-j-1,0) != 0)
-	      msg(l,k+j) = (int)msg(l,k+j+1) ^ feedback;
-	    else
-	      msg(l,k+j) = msg(l,k+j+1);
-	  msg(l,nn-1) = genpoly(0,0) & feedback;
-	} else {
-	  for (int j = k; j < nn-1; j++)
-	    msg(l,j) = msg(l,j+1);
-	  msg(l,nn-1) = 0;
-	}
+      for (int i = 0; i < k; i++) {
+        int feedback = (int)msg(l,i) ^ (int)msg(l,k);
+        if (feedback != 0) {
+          for (int j = 0; j < nn-k-1; j++)
+            if (genpoly(nn-k-j-1,0) != 0)
+              msg(l,k+j) = (int)msg(l,k+j+1) ^ feedback;
+            else
+              msg(l,k+j) = msg(l,k+j+1);
+          msg(l,nn-1) = genpoly(0,0) & feedback;
+        } else {
+          for (int j = k; j < nn-1; j++)
+            msg(l,j) = msg(l,j+1);
+          msg(l,nn-1) = 0;
+        }
       }
     }
   } else {
     for (int l = 0; l < nsym; l++) {
       for (int i=k; i > 0; i--)
-	msg(l,i+nn-k-1) = msg(l,i-1);
+        msg(l,i+nn-k-1) = msg(l,i-1);
       for (int i=0; i<nn-k; i++)
-	msg(l,i) = 0;
+        msg(l,i) = 0;
     }
 
     for (int l = 0; l < nsym; l++) {
-      for (int i = k-1; i >= 0; i--) { 
-	int feedback = (int)msg(l,nn-k+i) ^ (int)msg(l,nn-k-1);
-	if (feedback != 0) {
-	  for (int j = nn - k -1; j > 0; j--)
-	    if (genpoly(j,0) != 0)
-	      msg(l,j) = (int)msg(l,j-1) ^ feedback;
-	    else
-	      msg(l,j) = msg(l,j-1);
-	  msg(l,0) = genpoly(0,0) & feedback;
-	} else {
-	  for (int j = nn - k - 1; j > 0; j--)
-	    msg(l,j) = msg(l,j-1);
-	  msg(l,0) = 0;
-	}
+      for (int i = k-1; i >= 0; i--) {
+        int feedback = (int)msg(l,nn-k+i) ^ (int)msg(l,nn-k-1);
+        if (feedback != 0) {
+          for (int j = nn - k -1; j > 0; j--)
+            if (genpoly(j,0) != 0)
+              msg(l,j) = (int)msg(l,j-1) ^ feedback;
+            else
+              msg(l,j) = msg(l,j-1);
+          msg(l,0) = genpoly(0,0) & feedback;
+        } else {
+          for (int j = nn - k - 1; j > 0; j--)
+            msg(l,j) = msg(l,j-1);
+          msg(l,0) = 0;
+        }
       }
     }
   }
@@ -2120,7 +2132,7 @@ DEFUN_DLD (bchdeco, args, ,
 {
   octave_value_list retval;
   int nargin = args.length ();
-  
+
   if ((nargin < 3) || (nargin > 5)) {
     print_usage ();
     return retval;
@@ -2144,41 +2156,42 @@ DEFUN_DLD (bchdeco, args, ,
     return retval;
   }
 
-  int prim = 0;		// primitve polynomial of zero flags default
+  int prim = 0;     // primitve polynomial of zero flags default
   bool parity_at_end = false;
 
   for (int i = 3; i < nargin; i++) {
     if (args(i).is_string()) {
       std::string parstr = args(i).string_value();
       for (int j=0;j<(int)parstr.length();j++)
-	parstr[j] = toupper(parstr[j]);
-      
+        parstr[j] = toupper(parstr[j]);
+
       if (!parstr.compare("END")) {
-	parity_at_end = true;
+        parity_at_end = true;
       } else if (!parstr.compare("BEGINNING")) {
-	parity_at_end = false;
+        parity_at_end = false;
       } else {
-	error ("bchdeco: unrecoginized parity position");
-	return retval;
+        error ("bchdeco: unrecoginized parity position");
+        return retval;
       }
     } else {
-      if (args(i).is_real_scalar()) 
-	prim = args(i).int_value();
-      else { 
-	Matrix tmp = args(i).matrix_value(); 
+      if (args(i).is_real_scalar())
+        prim = args(i).int_value();
+      else {
+        Matrix tmp = args(i).matrix_value();
 
-	if (tmp.cols() > tmp.rows())
-	  tmp = tmp.transpose();
+        if (tmp.cols() > tmp.rows())
+          tmp = tmp.transpose();
 
-	if (tmp.cols() != 1) {
-	  error ("bchdeco: the primitve polynomial must be a scalar or a vector");
-	  return retval;
-	}
+        if (tmp.cols() != 1) {
+          error ("bchdeco: the primitve polynomial must be a scalar "
+                 "or a vector");
+          return retval;
+        }
 
-	prim = 0;
-	for (int i=0; i < tmp.rows(); i++)
-	  if ((int)tmp(i,0) & 1)
-	    prim |= (1<<i);
+        prim = 0;
+        for (int i=0; i < tmp.rows(); i++)
+          if ((int)tmp(i,0) & 1)
+            prim |= (1<<i);
       }
     }
   }
@@ -2195,28 +2208,28 @@ DEFUN_DLD (bchdeco, args, ,
 
     for (int i = 1; i <= t2; i++) {
       for (int j = 0; j < nn; j++) {
-	if (parity_at_end) {
-	  if (code(lsym,nn-j-1) != 0)
-	    s(i) ^= tables.alpha_to(modn(i*j,m,n));
-	} else {
-	  if (code(lsym,j) != 0)
-	    s(i) ^= tables.alpha_to(modn(i*j,m,n));
-	}
+        if (parity_at_end) {
+          if (code(lsym,nn-j-1) != 0)
+            s(i) ^= tables.alpha_to(modn(i*j,m,n));
+        } else {
+          if (code(lsym,j) != 0)
+            s(i) ^= tables.alpha_to(modn(i*j,m,n));
+        }
       }
       if (s(i) != 0)
-	syn_error = true; /* set error flag if non-zero syndrome */
+        syn_error = true; /* set error flag if non-zero syndrome */
 
     }
 
-    if (syn_error) {	/* if there are errors, try to correct them */
+    if (syn_error) {    /* if there are errors, try to correct them */
       int q, u;
-      Array<int> d(dim_vector (t2+2, 1)), l(dim_vector (t2+2, 1)), 
-	u_lu(dim_vector (t2+2, 1)), reg(dim_vector (t2+2, 1)),
-	elp(dim_vector (t2+2, t2+2));
+      Array<int> d(dim_vector (t2+2, 1)), l(dim_vector (t2+2, 1)),
+        u_lu(dim_vector (t2+2, 1)), reg(dim_vector (t2+2, 1)),
+        elp(dim_vector (t2+2, t2+2));
 
       /* convert syndrome from polynomial form to index form  */
       for (int i = 1; i <= t2; i++)
-	s(i) = tables.index_of(s(i));
+        s(i) = tables.index_of(s(i));
 
       /*
        * Compute the error location polynomial via the Berlekamp
@@ -2225,130 +2238,131 @@ DEFUN_DLD (bchdeco, args, ,
        * u='mu'+1 and 'mu' (the Greek letter!) is the step number
        * ranging from -1 to 2*t (see L&C),  l(u) is the degree of
        * the elp at that step, and u_l(u) is the difference between
-       * the step number and the degree of the elp. 
+       * the step number and the degree of the elp.
        */
       /* initialise table entries */
-      d(0) = 0;			/* index form */
-      d(1) = s(1);		/* index form */
-      elp(0,0) = 0;		/* index form */
-      elp(1,0) = 1;		/* polynomial form */
+      d(0) = 0;         /* index form */
+      d(1) = s(1);      /* index form */
+      elp(0,0) = 0;     /* index form */
+      elp(1,0) = 1;     /* polynomial form */
       for (int i = 1; i < t2; i++) {
-	elp(0,i) = n;	/* index form */
-	elp(1,i) = 0;	/* polynomial form */
+        elp(0,i) = n;   /* index form */
+        elp(1,i) = 0;   /* polynomial form */
       }
       l(0) = 0;
       l(1) = 0;
       u_lu(0) = -1;
       u_lu(1) = 0;
       u = 0;
-    
-      do {
-	u++;
-	if (d(u) == n) {
-	  l(u + 1) = l(u);
-	  for (int i = 0; i <= l(u); i++) {
-	    elp(u + 1,i) = elp(u,i);
-	    elp(u,i) = tables.index_of(elp(u,i));
-	  }
-	} else
-	  /*
-	   * search for words with greatest u_lu(q) for
-	   * which d(q)!=0 
-	   */
-	  {
-	    q = u - 1;
-	    while ((d(q) == n) && (q > 0))
-	      q--;
-	    /* have found first non-zero d(q)  */
-	    if (q > 0) {
-	      int j = q;
-	      do {
-		j--;
-		if ((d(j) != n) && (u_lu(q) < u_lu(j)))
-		  q = j;
-	      } while (j > 0);
-	    }
-	  
-	    /*
-	     * have now found q such that d(u)!=0 and
-	     * u_lu(q) is maximum 
-	     */
-	    /* store degree of new elp polynomial */
-	    if (l(u) > l(q) + u - q)
-	      l(u + 1) = l(u);
-	    else
-	      l(u + 1) = l(q) + u - q;
-	    
-	    /* form new elp(x) */
-	    for (int i = 0; i < t2; i++)
-	      elp(u + 1,i) = 0;
-	    for (int i = 0; i <= l(q); i++)
-	      if (elp(q,i) != n)
-		elp(u + 1,i + u - q) = 
-		  tables.alpha_to(modn((d(u) + n - d(q) + elp(q,i)),m,n));
-	    for (int i = 0; i <= l(u); i++) {
-	      elp(u + 1,i) ^= elp(u,i);
-	      elp(u,i) = tables.index_of(elp(u,i));
-	    }
-	  }
-	u_lu(u + 1) = u - l(u + 1);
-	
-	/* form (u+1)th discrepancy */
-	if (u < t2) {	
-	  /* no discrepancy computed on last iteration */
-	  d(u + 1) = tables.alpha_to(s(u + 1));
 
-	  for (int i = 1; i <= l(u + 1); i++)
-	    if ((s(u + 1 - i) != n) && (elp(u + 1,i) != 0))
-	      d(u + 1) ^= tables.alpha_to(modn(s(u + 1 - i) 
-				    + tables.index_of(elp(u + 1,i)), m, n));
-	  /* put d(u+1) into index form */
-	  d(u + 1) = tables.index_of(d(u + 1));	
-	}
+      do {
+        u++;
+        if (d(u) == n) {
+          l(u + 1) = l(u);
+          for (int i = 0; i <= l(u); i++) {
+            elp(u + 1,i) = elp(u,i);
+            elp(u,i) = tables.index_of(elp(u,i));
+          }
+        } else
+          /*
+           * search for words with greatest u_lu(q) for
+           * which d(q)!=0
+           */
+        {
+          q = u - 1;
+          while ((d(q) == n) && (q > 0))
+            q--;
+          /* have found first non-zero d(q)  */
+          if (q > 0) {
+            int j = q;
+            do {
+              j--;
+              if ((d(j) != n) && (u_lu(q) < u_lu(j)))
+                q = j;
+            } while (j > 0);
+          }
+
+          /*
+           * have now found q such that d(u)!=0 and
+           * u_lu(q) is maximum
+           */
+          /* store degree of new elp polynomial */
+          if (l(u) > l(q) + u - q)
+            l(u + 1) = l(u);
+          else
+            l(u + 1) = l(q) + u - q;
+
+          /* form new elp(x) */
+          for (int i = 0; i < t2; i++)
+            elp(u + 1,i) = 0;
+          for (int i = 0; i <= l(q); i++)
+            if (elp(q,i) != n)
+              elp(u + 1,i + u - q) =
+                tables.alpha_to(modn((d(u) + n - d(q) + elp(q,i)),m,n));
+          for (int i = 0; i <= l(u); i++) {
+            elp(u + 1,i) ^= elp(u,i);
+            elp(u,i) = tables.index_of(elp(u,i));
+          }
+        }
+        u_lu(u + 1) = u - l(u + 1);
+
+        /* form (u+1)th discrepancy */
+        if (u < t2) {
+          /* no discrepancy computed on last iteration */
+          d(u + 1) = tables.alpha_to(s(u + 1));
+
+          for (int i = 1; i <= l(u + 1); i++)
+            if ((s(u + 1 - i) != n) && (elp(u + 1,i) != 0))
+              d(u + 1) ^= tables.alpha_to(modn(s(u + 1 - i)
+                                               + tables.index_of(elp(u + 1,i))
+                                               , m, n));
+          /* put d(u+1) into index form */
+          d(u + 1) = tables.index_of(d(u + 1));
+        }
       } while ((u < t2) && (l(u + 1) <= t));
-      
+
       u++;
       if (l(u) <= t) {/* Can correct errors */
-	int count;
-	Array<int> loc(dim_vector (t+2, 1));
+        int count;
+        Array<int> loc(dim_vector (t+2, 1));
 
-	/* put elp into index form */
-	for (int i = 0; i <= l(u); i++)
-	  elp(u,i) = tables.index_of(elp(u,i));
+        /* put elp into index form */
+        for (int i = 0; i <= l(u); i++)
+          elp(u,i) = tables.index_of(elp(u,i));
 
-	/* Chien search: find roots of the error location polynomial */
-	for (int i = 1; i <= l(u); i++)
-	  reg(i) = elp(u,i);
-	count = 0;
-	for (int i = 1; i <= n; i++) {
-	  q = 1;
-	  for (int j = 1; j <= l(u); j++)
-	    if (reg(j) != n) {
-	      reg(j) = modn((reg(j) + j),m,n);
-	      q ^= tables.alpha_to(reg(j));
-	    }
-	  if (!q) {	/* store root and error
-			 * location number indices */
-	    loc(count) = n - i;
-	    count++;
-	    if (count > l(u))
-	      break;
-	  }
-	}
+        /* Chien search: find roots of the error location polynomial */
+        for (int i = 1; i <= l(u); i++)
+          reg(i) = elp(u,i);
+        count = 0;
+        for (int i = 1; i <= n; i++) {
+          q = 1;
+          for (int j = 1; j <= l(u); j++)
+            if (reg(j) != n) {
+              reg(j) = modn((reg(j) + j),m,n);
+              q ^= tables.alpha_to(reg(j));
+            }
+          if (!q) { /* store root and error
+                     * location number indices */
+            loc(count) = n - i;
+            count++;
+            if (count > l(u))
+              break;
+          }
+        }
 
-	if (count == l(u)) {
-	  /* no. roots = degree of elp hence <= t errors */
-	  nerr(lsym) = l(u);
-	  for (int i = 0; i < l(u); i++)
-	    if (parity_at_end)
-	      code(lsym,nn-loc(i)-1) = 
-		(int)code(lsym,nn-loc(i)-1) ^ 1;
-	    else
-	      code(lsym,loc(i)) = (int)code(lsym,loc(i)) ^ 1;
-	} else	/* elp has degree >t hence cannot solve */
-	  nerr(lsym) = -1;
+        if (count == l(u)) {
+          /* no. roots = degree of elp hence <= t errors */
+          nerr(lsym) = l(u);
+          for (int i = 0; i < l(u); i++)
+            if (parity_at_end)
+              code(lsym,nn-loc(i)-1) =
+                (int)code(lsym,nn-loc(i)-1) ^ 1;
+            else
+              code(lsym,loc(i)) = (int)code(lsym,loc(i)) ^ 1;
+        } else  /* elp has degree >t hence cannot solve */
+          nerr(lsym) = -1;
       } else
-	nerr(lsym) = -1;
+        nerr(lsym) = -1;
     }
   }
 
@@ -2356,13 +2370,13 @@ DEFUN_DLD (bchdeco, args, ,
   if (parity_at_end) {
     for (int l = 0; l < nsym; l++)
       for (int i = 0; i < k; i++)
-	msg(l,i) = code(l,i);
+        msg(l,i) = code(l,i);
   } else {
     for (int l = 0; l < nsym; l++)
       for (int i=0; i < k; i++)
-	msg(l,i) = code(l,nn-k+i);
+        msg(l,i) = code(l,nn-k+i);
   }
-  
+
   retval(0) = octave_value(msg);
   retval(1) = octave_value(nerr);
   retval(2) = octave_value(code);

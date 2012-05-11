@@ -1,21 +1,22 @@
 //Copyright (C) 2003 David Bateman
 //
-// This program is free software; you can redistribute it and/or modify it under
-// the terms of the GNU General Public License as published by the Free Software
-// Foundation; either version 3 of the License, or (at your option) any later
-// version.
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License as
+// published by the Free Software Foundation; either version 3 of the
+// License, or (at your option) any later version.
 //
-// This program is distributed in the hope that it will be useful, but WITHOUT
-// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-// FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
-// details.
+// This program is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License along with
-// this program; if not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, see
+// <http://www.gnu.org/licenses/>.
 //
-// In addition to the terms of the GPL, you are permitted to link
-// this program with any Open Source program, as defined by the
-// Open Source Initiative (www.opensource.org)
+// In addition to the terms of the GPL, you are permitted to link this
+// program with any Open Source program, as defined by the Open Source
+// Initiative (www.opensource.org)
 
 #include <iostream>
 #include <iomanip>
@@ -24,12 +25,12 @@
 #include <octave/pager.h>
 
 enum primpoly_type
-{
-  PRIMPOLY_MIN=0,
-  PRIMPOLY_MAX,
-  PRIMPOLY_ALL,
-  PRIMPOLY_K
-};
+  {
+    PRIMPOLY_MIN=0,
+    PRIMPOLY_MAX,
+    PRIMPOLY_ALL,
+    PRIMPOLY_K
+  };
 
 static bool
 do_isprimitive (const int& a, const int& m)
@@ -123,16 +124,16 @@ DEFUN_DLD (primpoly, args, nargout,
       std::string s_arg = args(1).string_value ();
 
       if (s_arg == "nodisplay")
-	disp = false;
+        disp = false;
       else if (s_arg == "min")
-	type = PRIMPOLY_MIN;
+        type = PRIMPOLY_MIN;
       else if (s_arg == "max")
-	type = PRIMPOLY_MAX;
+        type = PRIMPOLY_MAX;
       else if (s_arg == "all")
-	type = PRIMPOLY_ALL;
+        type = PRIMPOLY_ALL;
       else {
-	error ("primpoly: invalid argument");
-	return retval;
+        error ("primpoly: invalid argument");
+        return retval;
       }
     } else {
       error ("primpoly: incorrect argument type");
@@ -143,8 +144,8 @@ DEFUN_DLD (primpoly, args, nargout,
   if (nargin > 2) {
     if (args(2).is_scalar_type ()) {
       if (type == PRIMPOLY_K) {
-	error ("primpoly: invalid arguments");
-	return retval;
+        error ("primpoly: invalid arguments");
+        return retval;
       }
       k = args(2).int_value();
       type = PRIMPOLY_K;
@@ -152,25 +153,25 @@ DEFUN_DLD (primpoly, args, nargout,
       std::string s_arg = args(2).string_value ();
 
       if (s_arg == "nodisplay") {
-	if (!disp) {
-	  error ("primpoly: invalid arguments");
-	  return retval;
-	}
-	disp = false;
+        if (!disp) {
+          error ("primpoly: invalid arguments");
+          return retval;
+        }
+        disp = false;
       } else if (!disp) {
-	if (s_arg == "min")
-	  type = PRIMPOLY_MIN;
-	else if (s_arg == "max")
-	  type = PRIMPOLY_MAX;
-	else if (s_arg == "all")
-	  type = PRIMPOLY_ALL;
-	else {
-	  error ("primpoly: invalid argument");
-	  return retval;
-	}
+        if (s_arg == "min")
+          type = PRIMPOLY_MIN;
+        else if (s_arg == "max")
+          type = PRIMPOLY_MAX;
+        else if (s_arg == "all")
+          type = PRIMPOLY_ALL;
+        else {
+          error ("primpoly: invalid argument");
+          return retval;
+        }
       } else {
-	error ("primpoly: invalid arguments");
-	return retval;
+        error ("primpoly: invalid arguments");
+        return retval;
       }
     } else {
       error ("primpoly: incorrect argument type");
@@ -183,36 +184,36 @@ DEFUN_DLD (primpoly, args, nargout,
     primpolys.resize(1);
     for (int i = (1<<m)+1; i < (1<<(1+m)); i+=2)
       if (do_isprimitive(i,m)) {
-	primpolys(0) = (double)i;
-	break;
+        primpolys(0) = (double)i;
+        break;
       }
     break;
   case PRIMPOLY_MAX:
     primpolys.resize(1);
     for (int i = (1<<(m+1))-1; i > (1<<m); i-=2)
       if (do_isprimitive(i,m)) {
-	primpolys(0) = (double)i;
-	break;
+        primpolys(0) = (double)i;
+        break;
       }
     break;
   case PRIMPOLY_ALL:
     for (int i = (1<<m)+1; i < (1<<(1+m)); i+=2)
       if (do_isprimitive(i,m)) {
-	primpolys.resize(primpolys.length()+1);
-	primpolys(primpolys.length()-1) = (double)i;
+        primpolys.resize(primpolys.length()+1);
+        primpolys(primpolys.length()-1) = (double)i;
       }
     break;
   case PRIMPOLY_K:
     for (int i = (1<<m)+1; i < (1<<(1+m)); i+=2) {
       int ki = 0;
       for (int j=0; j < m+1; j++)
-	if (i & (1 << j))
-	  ki++;
+        if (i & (1 << j))
+          ki++;
       if (ki == k) {
-	if (do_isprimitive(i,m)) {
-	  primpolys.resize(primpolys.length()+1);
-	  primpolys(primpolys.length()-1) = (double)i;
-	}
+        if (do_isprimitive(i,m)) {
+          primpolys.resize(primpolys.length()+1);
+          primpolys(primpolys.length()-1) = (double)i;
+        }
       }
     }
     break;
@@ -227,27 +228,27 @@ DEFUN_DLD (primpoly, args, nargout,
     else {
       octave_stdout << std::endl << "Primitive polynomial(s) =" << std::endl << std::endl;
       for (int i=0; i < primpolys.length(); i++) {
-	bool first = true;
-	for (int j=m; j>=0; j--) {
-	  if ((int)primpolys(i) & (1<<j)) {
-	    if (j > 0) {
-	      if (first) {
-		first = false;
-		octave_stdout << "D";
-	      } else
-		octave_stdout << "+D";
-	      if (j != 1)
-		octave_stdout << "^" << j;
-	    } else {
-	      if (first) {
-		first = false;
-		octave_stdout << "1";
-	      } else
-		octave_stdout << "+1";
-	    }
-	  }
-	}
-	octave_stdout << std::endl;
+        bool first = true;
+        for (int j=m; j>=0; j--) {
+          if ((int)primpolys(i) & (1<<j)) {
+            if (j > 0) {
+              if (first) {
+                first = false;
+                octave_stdout << "D";
+              } else
+                octave_stdout << "+D";
+              if (j != 1)
+                octave_stdout << "^" << j;
+            } else {
+              if (first) {
+                first = false;
+                octave_stdout << "1";
+              } else
+                octave_stdout << "+1";
+            }
+          }
+        }
+        octave_stdout << std::endl;
       }
     }
     octave_stdout << std::endl;

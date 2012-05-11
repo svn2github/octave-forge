@@ -58,15 +58,17 @@ public:
   galois (const Array<int>& a, const int& m=1, const int& primpoly=0);
   galois (const MArray<int>& a, const int& m=1, const int& primpoly=0);
   galois (const Matrix& a, const int& m=1, const int& primpoly=0);
-  galois (int nr, int nc, const int& val=0, const int& _m=1, const int& _primpoly=0);
-  galois (int nr, int nc, double val=0., const int& _m=1, const int& _primpoly=0);
+  galois (int nr, int nc, const int& val=0, const int& _m=1,
+          const int& _primpoly=0);
+  galois (int nr, int nc, double val=0., const int& _m=1,
+          const int& _primpoly=0);
   galois (const galois& a);
   ~galois (void);
-  
+
   galois index (idx_vector& i, int resize_ok = 0, const int& rfv = 0) const;
 
   galois index (idx_vector& i, idx_vector& j, int resize_ok = 0,
-		const int& rfv = 0) const;
+                const int& rfv = 0) const;
 
   // unary operations
 
@@ -80,8 +82,8 @@ public:
 
   galois concat (const galois& rb, const Array<int>& ra_idx);
   galois concat (const Matrix& rb, const Array<int>& ra_idx);
-  friend galois concat (const Matrix& ra, const galois& rb, 
-			 const Array<int>& ra_idx);
+  friend galois concat (const Matrix& ra, const galois& rb,
+                        const Array<int>& ra_idx);
 
   galois& insert (const galois& a, int r, int c);
 
@@ -99,20 +101,20 @@ public:
   galois solve (const galois& b) const;
   galois solve (const galois& b, int& info) const;
   galois solve (const galois& b, int& info,
-		solve_singularity_handler sing_handler) const;
+                solve_singularity_handler sing_handler) const;
 
   galois determinant (void) const;
   galois determinant (int& info) const;
 
-  galois &operator = (const galois& t); 
-  galois &operator += (const galois& a); 
-  galois &operator -= (const galois& a); 
-  
- private:
+  galois &operator = (const galois& t);
+  galois &operator += (const galois& a);
+  galois &operator -= (const galois& a);
+
+private:
   // Pointer to the Galois field structure used
   galois_field_node *field;
-  
- public:
+
+public:
   // Is the variable initialized??
   bool have_field (void) const { return (field ? true : false); };
 
@@ -145,12 +147,12 @@ public:
   galoisLU (const galoisLU& a) : base_lu <galois> (a) { }
 
   galoisLU& operator = (const galoisLU& a)
-    {
-      if (this != &a)
-	base_lu <galois> :: operator = (a);
+  {
+    if (this != &a)
+      base_lu <galois> :: operator = (a);
 
-      return *this;
-    }
+    return *this;
+  }
 
   ~galoisLU (void) { }
 
@@ -158,7 +160,7 @@ public:
 
   galois U (void) const;
 
-  bool singular (void) const { return info != 0; } 
+  bool singular (void) const { return info != 0; }
 
   pivot_type type (void) const { return ptype; }
 private:

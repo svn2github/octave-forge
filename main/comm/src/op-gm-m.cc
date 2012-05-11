@@ -1,21 +1,22 @@
 //Copyright (C) 2003 David Bateman
 //
-// This program is free software; you can redistribute it and/or modify it under
-// the terms of the GNU General Public License as published by the Free Software
-// Foundation; either version 3 of the License, or (at your option) any later
-// version.
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License as
+// published by the Free Software Foundation; either version 3 of the
+// License, or (at your option) any later version.
 //
-// This program is distributed in the hope that it will be useful, but WITHOUT
-// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-// FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
-// details.
+// This program is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License along with
-// this program; if not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, see
+// <http://www.gnu.org/licenses/>.
 //
-// In addition to the terms of the GPL, you are permitted to link
-// this program with any Open Source program, as defined by the
-// Open Source Initiative (www.opensource.org)
+// In addition to the terms of the GPL, you are permitted to link this
+// program with any Open Source program, as defined by the Open Source
+// Initiative (www.opensource.org)
 
 #include <iostream>
 #include "galois.h"
@@ -62,13 +63,13 @@ DEFBINOP_FN (el_or, galois, matrix, mx_el_or)
 DEFCATOP_G_METHOD (gm_m, galois, matrix, concat)
 
 // Need to create temporary Galois array so that matrix values are checked
-DEFASSIGNOP (assign, galois, matrix) 
+DEFASSIGNOP (assign, galois, matrix)
 {
-    CAST_BINOP_ARGS (octave_galois&, const octave_matrix&);
+  CAST_BINOP_ARGS (octave_galois&, const octave_matrix&);
 
-    v1.assign (idx, galois(v2.matrix_value (), v1.galois_value().m(),
-		      v1.galois_value().primpoly()));
-    return octave_value ();
+  v1.assign (idx, galois(v2.matrix_value (), v1.galois_value().m(),
+                         v1.galois_value().primpoly()));
+  return octave_value ();
 }
 
 void

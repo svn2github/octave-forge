@@ -22,10 +22,11 @@
 
 void
 gripe_nonconformant_galois (const char *op, int op1_m, int op1_primpoly,
-		     int op2_m, int op2_primpoly)
+                            int op2_m, int op2_primpoly)
 {
   (*current_liboctave_error_handler)
-    ("%s: nonconformant arguments. op1 is GF(2^%d) (primitive polynomial %d), op2 is GF(2^%d) (primitive polynomial %d)",
+    ("%s: nonconformant arguments. op1 is GF(2^%d) "
+     "(primitive polynomial %d), op2 is GF(2^%d) (primitive polynomial %d)",
      op, op1_m, op1_primpoly, op2_m, op2_primpoly);
 }
 

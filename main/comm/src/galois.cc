@@ -1,21 +1,22 @@
 //Copyright (C) 2003 David Bateman
 //
-// This program is free software; you can redistribute it and/or modify it under
-// the terms of the GNU General Public License as published by the Free Software
-// Foundation; either version 3 of the License, or (at your option) any later
-// version.
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License as
+// published by the Free Software Foundation; either version 3 of the
+// License, or (at your option) any later version.
 //
-// This program is distributed in the hope that it will be useful, but WITHOUT
-// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-// FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
-// details.
+// This program is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License along with
-// this program; if not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, see
+// <http://www.gnu.org/licenses/>.
 //
-// In addition to the terms of the GPL, you are permitted to link
-// this program with any Open Source program, as defined by the
-// Open Source Initiative (www.opensource.org)
+// In addition to the terms of the GPL, you are permitted to link this
+// program with any Open Source program, as defined by the Open Source
+// Initiative (www.opensource.org)
 
 #include <iostream>
 
@@ -29,15 +30,17 @@ galois_field_list stored_galois_fields;
 
 // galois class
 
-galois::galois (const Array<int>& a, const int& _m, const int& _primpoly) : MArray<int> (a.dims ()), field (NULL) {
+galois::galois (const Array<int>& a, const int& _m,
+                const int& _primpoly) : MArray<int> (a.dims ()), field (NULL)
+{
   int _n = (1<<_m) - 1;
 
   // Check the validity of the data in the matrix
   for (int i=0; i<rows(); i++) {
     for (int j=0; j<columns(); j++) {
       if ((a(i,j) < 0) || (a(i,j) > _n)) {
-	gripe_range_galois(_m);
-	return;
+        gripe_range_galois(_m);
+        return;
       }
       xelem(i,j) = (int)a(i,j);
     }
@@ -46,15 +49,16 @@ galois::galois (const Array<int>& a, const int& _m, const int& _primpoly) : MArr
   field = stored_galois_fields.create_galois_field(_m, _primpoly);
 }
 
-galois::galois (const MArray<int>& a, const int& _m, const int& _primpoly) : MArray<int> (a.dims ()), field (NULL) {
+galois::galois (const MArray<int>& a, const int& _m,
+                const int& _primpoly) : MArray<int> (a.dims ()), field (NULL) {
   int _n = (1<<_m) - 1;
 
   // Check the validity of the data in the matrix
   for (int i=0; i<rows(); i++) {
     for (int j=0; j<columns(); j++) {
       if ((a(i,j) < 0) || (a(i,j) > _n)) {
-	gripe_range_galois(_m);
-	return;
+        gripe_range_galois(_m);
+        return;
       }
       xelem(i,j) = (int)a(i,j);
     }
@@ -63,19 +67,21 @@ galois::galois (const MArray<int>& a, const int& _m, const int& _primpoly) : MAr
   field = stored_galois_fields.create_galois_field(_m, _primpoly);
 }
 
-galois::galois (const Matrix& a, const int& _m, const int& _primpoly) : MArray<int> (a.dims()), field (NULL) {
+galois::galois (const Matrix& a, const int& _m,
+                const int& _primpoly) : MArray<int> (a.dims()), field (NULL)
+{
   int _n = (1<<_m) - 1;
 
   // Check the validity of the data in the matrix
   for (int i=0; i<rows(); i++) {
     for (int j=0; j<columns(); j++) {
       if ((a(i,j) < 0) || (a(i,j) > _n)) {
-	gripe_range_galois(_m);
-	return;
+        gripe_range_galois(_m);
+        return;
       }
       if ((a(i,j) - (double)((int)a(i,j))) != 0.) {
-	gripe_integer_galois();
-	return;
+        gripe_integer_galois();
+        return;
       }
       xelem(i,j) = (int)a(i,j);
     }
@@ -84,7 +90,10 @@ galois::galois (const Matrix& a, const int& _m, const int& _primpoly) : MArray<i
   field = stored_galois_fields.create_galois_field(_m, _primpoly);
 }
 
-galois::galois (int nr, int nc, const int& val, const int& _m, const int& _primpoly) : MArray<int> (dim_vector (nr, nc), val), field (NULL) {
+galois::galois (int nr, int nc, const int& val, const int& _m,
+                const int& _primpoly)
+  : MArray<int> (dim_vector (nr, nc), val), field (NULL)
+{
   int _n = (1<<_m) - 1;
 
   // Check the validity of the data in the matrix
@@ -96,7 +105,10 @@ galois::galois (int nr, int nc, const int& val, const int& _m, const int& _primp
   field = stored_galois_fields.create_galois_field(_m, _primpoly);
 }
 
-galois::galois (int nr, int nc, double val, const int& _m, const int& _primpoly) : MArray<int> (dim_vector (nr, nc), (int)val), field (NULL) {
+galois::galois (int nr, int nc, double val, const int& _m,
+                const int& _primpoly)
+  : MArray<int> (dim_vector (nr, nc), (int)val), field (NULL)
+{
   int _n = (1<<_m) - 1;
 
   // Check the validity of the data in the matrix
@@ -133,7 +145,7 @@ galois :: ~galois (void)
 }
 
 galois & galois::operator = (const galois& t)
-{ 
+{
   if (!t.have_field()) {
     gripe_copy_invalid_galois();
     if (have_field())
@@ -228,14 +240,14 @@ galois galois::index (idx_vector& i, int resize_ok, const int& rfv) const
 }
 
 galois  galois::index (idx_vector& i, idx_vector& j, int resize_ok,
-		   const int& rfv) const
+                       const int& rfv) const
 {
   galois retval(MArray<int>::index(i, j, resize_ok, rfv), m(), primpoly());
 
   return retval;
 }
 
-galois 
+galois
 galois::concat (const galois& rb, const Array<int>& ra_idx)
 {
   if (rb.numel() > 0)
@@ -243,7 +255,7 @@ galois::concat (const galois& rb, const Array<int>& ra_idx)
   return *this;
 }
 
-galois 
+galois
 galois::concat (const Matrix& rb, const Array<int>& ra_idx)
 {
   if (numel() == 1)
@@ -259,12 +271,12 @@ galois::concat (const Matrix& rb, const Array<int>& ra_idx)
   for (int i=0; i<r; i++) {
     for (int j=0; j<c; j++) {
       if ((rb(i,j) < 0) || (rb(i,j) > _n)) {
-	gripe_range_galois(m());
-	return *this;
+        gripe_range_galois(m());
+        return *this;
       }
       if ((rb(i,j) - (double)((int)rb(i,j))) != 0.) {
-	gripe_integer_galois();
-	return *this;
+        gripe_integer_galois();
+        return *this;
       }
       tmp(i,j) = (int)rb(i,j);
     }
@@ -292,22 +304,22 @@ galois concat (const Matrix& ra, const galois& rb,  const Array<int>& ra_idx)
     for (int j=0; j<c; j++) {
 #if 0
       if ((ra(i,j) < 0) || (ra(i,j) > _n)) {
-	gripe_range_galois(rb.m());
-	return retval;
+        gripe_range_galois(rb.m());
+        return retval;
       }
       if ((ra(i,j) - (double)((int)ra(i,j))) != 0.) {
-	gripe_integer_galois();
-	return retval;
+        gripe_integer_galois();
+        return retval;
       }
       retval(i,j) = (int)ra(i,j);
 #else
       int tmp = (int)ra(i,j);
       if (tmp < 0)
-	retval(i,j) = 0;
+        retval(i,j) = 0;
       else if (tmp > _n)
-	retval(i,j) = _n;
+        retval(i,j) = _n;
       else
-	retval(i,j) = tmp;
+        retval(i,j) = tmp;
 #endif
     }
   }
@@ -319,7 +331,8 @@ galois concat (const Matrix& ra, const galois& rb,  const Array<int>& ra_idx)
 galois& galois::insert (const galois& t, int r, int c)
 {
   if ((m() != t.m()) || (primpoly() != t.primpoly()))
-    (*current_liboctave_error_handler) ("inserted galois variable must be in the same field");
+    (*current_liboctave_error_handler) ("inserted galois variable must "
+                                        "be in the same field");
   else
     Array<int>::insert (t, r, c);
   return *this;
@@ -342,27 +355,27 @@ galois galois::diag (int k) const
     nnr += k;
 
   if (nnr > 0 && nnc > 0)
-    {
-      int ndiag = (nnr < nnc) ? nnr : nnc;
-      retval.resize(dim_vector(ndiag, 1));
+  {
+    int ndiag = (nnr < nnc) ? nnr : nnc;
+    retval.resize(dim_vector(ndiag, 1));
 
-      if (k > 0)
-	{
-	  for (int i = 0; i < ndiag; i++)
-	    retval (i,0) = xelem (i, i+k);
-	}
-      else if ( k < 0)
-	{
-	  for (int i = 0; i < ndiag; i++)
-	    retval (i,0) = xelem (i-k, i);
-	}
-      else
-	{
-	  for (int i = 0; i < ndiag; i++)
-	    retval (i,0) = xelem (i, i);
-	}
+    if (k > 0)
+    {
+      for (int i = 0; i < ndiag; i++)
+        retval (i,0) = xelem (i, i+k);
     }
-  else 
+    else if ( k < 0)
+    {
+      for (int i = 0; i < ndiag; i++)
+        retval (i,0) = xelem (i-k, i);
+    }
+    else
+    {
+      for (int i = 0; i < ndiag; i++)
+        retval (i,0) = xelem (i, i);
+    }
+  }
+  else
     error("diag: requested diagonal out of range");
 
   return retval;
@@ -396,7 +409,7 @@ galois :: transpose (void) const
   for (int j = 0; j < d2; j++)
     for (int i = 0; i < d1; i++)
       a (j, i) = xelem (i, j);
-  
+
   return a;
 }
 
@@ -429,42 +442,42 @@ galois elem_pow (const galois& a, const galois& b)
   }
 
   if (a_nr == 1 && a_nc == 1)
-    {
-      result.resize(dim_vector(b_nr, b_nc), 0);
-      int tmp = a.index_of(a(0,0));
-      for (int j = 0; j < b_nc; j++)
-	for (int i = 0; i < b_nr; i++)
-	  if (b(i,j) == 0)
-	    result (i,j) = 1;
-	  else if (a(0,0) != 0)
-	    result (i,j) = a.alpha_to(modn(tmp * b(i,j), a.m(),a.n()));
-    }
+  {
+    result.resize(dim_vector(b_nr, b_nc), 0);
+    int tmp = a.index_of(a(0,0));
+    for (int j = 0; j < b_nc; j++)
+      for (int i = 0; i < b_nr; i++)
+        if (b(i,j) == 0)
+          result (i,j) = 1;
+        else if (a(0,0) != 0)
+          result (i,j) = a.alpha_to(modn(tmp * b(i,j), a.m(),a.n()));
+  }
   else if (b_nr == 1 && b_nc == 1)
+  {
+    for (int j = 0; j < a_nc; j++)
+      for (int i = 0; i < a_nr; i++)
+        if (b(0,0) == 0)
+          result (i,j) = 1;
+        else if (a(i,j) != 0)
+          result (i,j) = a.alpha_to(modn(a.index_of(a(i,j)) *
+                                         b(0,0),a.m(),a.n()));
+  }
+  else
+  {
+    if (a_nr != b_nr || a_nc != b_nc)
     {
-      for (int j = 0; j < a_nc; j++)
-	for (int i = 0; i < a_nr; i++)
-	  if (b(0,0) == 0)
-	    result (i,j) = 1;
-	  else if (a(i,j) != 0)
-	    result (i,j) = a.alpha_to(modn(a.index_of(a(i,j)) * 
-					 b(0,0),a.m(),a.n()));
+      gripe_nonconformant ("operator .^", a_nr, a_nc, a_nr, a_nc);
+      return galois ();
     }
-  else 
-    {
-      if (a_nr != b_nr || a_nc != b_nc)
-	{
-	  gripe_nonconformant ("operator .^", a_nr, a_nc, a_nr, a_nc);
-	  return galois ();
-	}
 
-      for (int j = 0; j < a_nc; j++)
-	for (int i = 0; i < a_nr; i++)
-	  if (b(i,j) == 0)
-	    result (i,j) = 1;
-	  else if (a(i,j) != 0)
-	    result (i,j) = a.alpha_to(modn(a.index_of(a(i,j)) * 
-					 b(i,j),a.m(),a.n()));
-    }
+    for (int j = 0; j < a_nc; j++)
+      for (int i = 0; i < a_nr; i++)
+        if (b(i,j) == 0)
+          result (i,j) = 1;
+        else if (a(i,j) != 0)
+          result (i,j) = a.alpha_to(modn(a.index_of(a(i,j)) *
+                                         b(i,j),a.m(),a.n()));
+  }
 
   return result;
 }
@@ -480,25 +493,25 @@ galois elem_pow (const galois& a, const Matrix& b)
 
   if (b_nr == 1 && b_nc == 1)
     return elem_pow(a, b(0,0));
-  
+
   if (a_nr != b_nr || a_nc != b_nc)
-    {
-      gripe_nonconformant ("operator .^", a_nr, a_nc, b_nr, b_nc);
-      return galois ();
-    }
+  {
+    gripe_nonconformant ("operator .^", a_nr, a_nc, b_nr, b_nc);
+    return galois ();
+  }
 
   for (int j = 0; j < a_nc; j++)
     for (int i = 0; i < a_nr; i++)
-      {
-	int tmp = (int)b(i,j);
-	while (tmp < 0)
-	  tmp += a.n();
-	if (tmp == 0)
-	  result (i,j) = 1;
-	else  if (a(i,j) != 0)
-	  result (i,j) = a.alpha_to(modn(a.index_of(a(i,j)) * tmp,
-					a.m(),a.n()));
-      }
+    {
+      int tmp = (int)b(i,j);
+      while (tmp < 0)
+        tmp += a.n();
+      if (tmp == 0)
+        result (i,j) = 1;
+      else  if (a(i,j) != 0)
+        result (i,j) = a.alpha_to(modn(a.index_of(a(i,j)) * tmp,
+                                       a.m(),a.n()));
+    }
   return result;
 }
 
@@ -519,13 +532,13 @@ galois elem_pow (const galois& a, double b)
 
   for (int j = 0; j < a_nc; j++)
     for (int i = 0; i < a_nr; i++)
-      {
-	if (bi == 0)
-	  result (i,j) = 1;
-	else  if (a(i,j) != 0)
-	  result (i,j) = a.alpha_to(modn(a.index_of(a(i,j)) * 
-				bi,a.m(),a.n()));
-      }
+    {
+      if (bi == 0)
+        result (i,j) = 1;
+      else  if (a(i,j) != 0)
+        result (i,j) = a.alpha_to(modn(a.index_of(a(i,j)) *
+                                       bi,a.m(),a.n()));
+    }
   return result;
 }
 
@@ -540,13 +553,13 @@ galois elem_pow (const galois &a, int b)
 
   for (int j = 0; j < a_nc; j++)
     for (int i = 0; i < a_nr; i++)
-      {
-	if (b == 0)
-	  result (i,j) = 1;
-	else if (a(i,j) != 0)
-	  result (i,j) = a.alpha_to(modn(a.index_of(a(i,j)) * b,
-				a.m(),a.n()));
-      }
+    {
+      if (b == 0)
+        result (i,j) = 1;
+      else if (a(i,j) != 0)
+        result (i,j) = a.alpha_to(modn(a.index_of(a(i,j)) * b,
+                                       a.m(),a.n()));
+    }
   return result;
 }
 
@@ -595,36 +608,36 @@ galois pow (const galois& a, int b)
   }
 
   if (nr == 0 || nc == 0 || nr != nc)
-      gripe_square_galois();
-  else if (b == 0) 
-    {
-      retval = galois(nr, nc, 0, a.m(), a.primpoly());
-      for (int i =0; i<nr; i++)
-	retval(i,i) = 1;
-    } 
+    gripe_square_galois();
+  else if (b == 0)
+  {
+    retval = galois(nr, nc, 0, a.m(), a.primpoly());
+    for (int i =0; i<nr; i++)
+      retval(i,i) = 1;
+  }
   else
+  {
+    galois atmp;
+
+    if (b < 0 ) {
+      atmp = a.inverse();
+      b = abs(b);
+    } else
+      atmp = a;
+
+    retval = atmp;
+    b--;
+    while (b > 0)
     {
-      galois atmp;
+      if (b & 1)
+        retval = retval * atmp;
 
-      if (b < 0 ) {
-	atmp = a.inverse();
-	b = abs(b);
-      } else
-	atmp = a;
+      b >>= 1;
 
-      retval = atmp;
-      b--;
-      while (b > 0)
-	{
-	  if (b & 1)
-	    retval = retval * atmp;
-
-	  b >>= 1;
-
-	  if (b > 0)
-	    atmp = atmp * atmp;
-	}
+      if (b > 0)
+        atmp = atmp * atmp;
     }
+  }
 
   return retval;
 }
@@ -640,7 +653,7 @@ operator * (const Matrix& a, const galois& b)
 }
 
 galois
-operator * (const galois& a, const Matrix& b) 
+operator * (const galois& a, const Matrix& b)
 {
   galois tmp (b, a.m(), a.primpoly());
 
@@ -671,38 +684,39 @@ operator * (const galois& a, const galois& b)
   if ((a_nr == 1 && a_nc == 1) || (b_nr == 1 && b_nc == 1))
     return product (a, b);
   else if (a_nc != b_nr)
-    {
-      gripe_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
-      return galois();
-    }
+  {
+    gripe_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
+    return galois();
+  }
   else
+  {
+    galois retval(a_nr, b_nc, 0, a.m(), a.primpoly());
+    if (a_nr != 0 && a_nc != 0 && b_nc != 0)
     {
-      galois retval(a_nr, b_nc, 0, a.m(), a.primpoly());
-      if (a_nr != 0 && a_nc != 0 && b_nc != 0)
-	{
-	  // This is not optimum for referencing b, but can use vector
-	  // to represent index(a(k,j)). Seems to be the fastest.
-	  galois c(a_nr, 1, 0, a.m(), a.primpoly());
-	  for (int j=0; j<b_nr; j++) {
-	    for (int k=0; k<a_nr; k++) 
-	      c(k,0) = a.index_of(a(k,j));
+      // This is not optimum for referencing b, but can use vector
+      // to represent index(a(k,j)). Seems to be the fastest.
+      galois c(a_nr, 1, 0, a.m(), a.primpoly());
+      for (int j=0; j<b_nr; j++) {
+        for (int k=0; k<a_nr; k++)
+          c(k,0) = a.index_of(a(k,j));
 
-	    for (int i=0; i<b_nc; i++)
-	      if (b(j,i) != 0) {
-		int tmp = a.index_of(b(j,i));
-		for (int k=0; k<a_nr; k++) {
-		  if (a(k,j) != 0)
-		    retval(k,i) = retval(k,i) ^ a.alpha_to(
-			 modn(tmp + c(k,0),a.m(),a.n()));
-		}
-	      }
-	  }
-	}
-      return retval;
+        for (int i=0; i<b_nc; i++)
+          if (b(j,i) != 0) {
+            int tmp = a.index_of(b(j,i));
+            for (int k=0; k<a_nr; k++) {
+              if (a(k,j) != 0)
+                retval(k,i) = retval(k,i) ^ a.alpha_to(
+                                                       modn(tmp + c(k,0),a.m(),
+                                                            a.n()));
+            }
+          }
+      }
     }
+    return retval;
+  }
 }
 
-// Other operators 
+// Other operators
 boolMatrix
 galois::all (int dim) const
 {
@@ -725,19 +739,19 @@ galois::prod (int dim) const
 
   galois retval (0, 0, 0, m(), primpoly());
 
-#define ROW_EXPR \
+#define ROW_EXPR                                \
   if ((retval (i, 0) == 0) || (elem(i,j) == 0)) \
-    retval (i, 0) = 0; \
-  else \
+    retval (i, 0) = 0;                          \
+  else                                                    \
     retval (i, 0) = alpha_to(modn(index_of(retval(i,0)) + \
-				      index_of(elem(i,j)),m(),n()));
+                                  index_of(elem(i,j)),m(),n()));
 
-#define COL_EXPR \
+#define COL_EXPR                                \
   if ((retval (0, j) == 0) || (elem(i,j) == 0)) \
-    retval (0, j) = 0; \
-  else \
+    retval (0, j) = 0;                          \
+  else                                                    \
     retval (0, j) = alpha_to(modn(index_of(retval(0,j)) + \
-				      index_of(elem(i,j)),m(),n()));
+                                  index_of(elem(i,j)),m(),n()));
 
   GALOIS_REDUCTION_OP(retval, ROW_EXPR, COL_EXPR, 1, 1);
   return retval;
@@ -757,10 +771,10 @@ galois::sum (int dim) const
   galois retval (0, 0, 0, m(), primpoly());
 
 
-#define ROW_EXPR \
+#define ROW_EXPR                                \
   retval (i, 0) ^=  elem(i,j);
 
-#define COL_EXPR \
+#define COL_EXPR                                \
   retval (0, j) ^= elem(i,j);
 
   GALOIS_REDUCTION_OP (retval, ROW_EXPR, COL_EXPR, 0, 0);
@@ -780,12 +794,12 @@ galois::sumsq (int dim) const
 
   galois retval (0, 0, 0, m(), primpoly());
 
-#define ROW_EXPR \
-  if (elem(i,j) != 0) \
+#define ROW_EXPR      \
+  if (elem(i,j) != 0)                                               \
     retval (i, 0) ^= alpha_to(modn(2*index_of(elem(i,j)),m(),n()));
 
-#define COL_EXPR \
-  if (elem(i,j) != 0) \
+#define COL_EXPR      \
+  if (elem(i,j) != 0)                                               \
     retval (0, j) ^= alpha_to(modn(2*index_of(elem(i,j)),m(),n()));
 
   GALOIS_REDUCTION_OP (retval, ROW_EXPR, COL_EXPR, 0, 0);
@@ -805,19 +819,19 @@ galois::sqrt (void) const
   for (int j=0; j<nc; j++) {
     for (int i=0; i<nr; i++)
       if (retval.index_of(retval(i,j)) & 1)
-	retval(i,j) = retval.alpha_to((retval.index_of(retval(i,j))
-					    + retval.n()) / 2);
+        retval(i,j) = retval.alpha_to((retval.index_of(retval(i,j))
+                                       + retval.n()) / 2);
       else
-	retval(i,j) = retval.alpha_to(retval.index_of(retval(i,j))
-					   / 2);
-    }
+        retval(i,j) = retval.alpha_to(retval.index_of(retval(i,j))
+                                      / 2);
+  }
   return retval;
 }
 
 galois
 galois::log (void) const
 {
-  bool warned = false; 
+  bool warned = false;
   if (!have_field()) {
     gripe_invalid_galois ();
     return galois();
@@ -829,17 +843,17 @@ galois::log (void) const
 
   for (int j=0; j<nc; j++)
     for (int i=0; i<nr; i++) {
-      if (retval(i,j) == 0) { 
-	if (!warned) {
-	  warning("log of zero undefined in Galois field");
-	  warned = true;
-	}
-	// How do I flag a NaN without either
-	// 1) Having to check everytime that the data is valid
-	// 2) Causing overflow in alpha_to or index_of!!
-	retval(i,j) = retval.index_of(retval(i,j));
+      if (retval(i,j) == 0) {
+        if (!warned) {
+          warning("log of zero undefined in Galois field");
+          warned = true;
+        }
+        // How do I flag a NaN without either
+        // 1) Having to check everytime that the data is valid
+        // 2) Causing overflow in alpha_to or index_of!!
+        retval(i,j) = retval.index_of(retval(i,j));
       } else
-	retval(i,j) = retval.index_of(retval(i,j));
+        retval(i,j) = retval.index_of(retval(i,j));
     }
   return retval;
 }
@@ -847,7 +861,7 @@ galois::log (void) const
 galois
 galois::exp (void) const
 {
-  bool warned = false; 
+  bool warned = false;
   if (!have_field()) {
     gripe_invalid_galois ();
     return galois();
@@ -860,16 +874,16 @@ galois::exp (void) const
   for (int j=0; j<nc; j++)
     for (int i=0; i<nr; i++) {
       if (retval(i,j) ==  n()) {
-	if (!warned) {
-	  warning("warning: exp of 2^m-1 undefined in Galois field");
-	  warned = true;
-	}
-	// How do I flag a NaN without either
-	// 1) Having to check everytime that the data is valid
-	// 2) Causing overflow in alpha_to or index_of!!
-	retval(i,j) = retval.alpha_to(retval(i,j));
+        if (!warned) {
+          warning("warning: exp of 2^m-1 undefined in Galois field");
+          warned = true;
+        }
+        // How do I flag a NaN without either
+        // 1) Having to check everytime that the data is valid
+        // 2) Causing overflow in alpha_to or index_of!!
+        retval(i,j) = retval.alpha_to(retval(i,j));
       } else
-	retval(i,j) = retval.alpha_to(retval(i,j));
+        retval(i,j) = retval.alpha_to(retval(i,j));
     }
   return retval;
 }
@@ -893,64 +907,65 @@ galoisLU::factor (const galois& a, const pivot_type& typ)
     int jp = j;
 
     // Find the pivot and test for singularity
-    if (ptype == galoisLU::ROW) { 
+    if (ptype == galoisLU::ROW) {
       for (int i = j+1; i < a_nr; i++)
-	if (a_fact(i,j) > a_fact(jp,j))
-	  jp = i;
+        if (a_fact(i,j) > a_fact(jp,j))
+          jp = i;
     } else {
       for (int i = j+1; i < a_nc; i++)
-	if (a_fact(j,i) > a_fact(j,jp))
-	  jp = i;
+        if (a_fact(j,i) > a_fact(j,jp))
+          jp = i;
     }
 
     ipvt(j) = jp;
 
     if (a_fact(jp,j) != 0) {
-      if (ptype == galoisLU::ROW) { 
-	// Apply the interchange to columns 1:NC.
-	if (jp != j)
-	  for (int i = 0; i < a_nc; i++) {
-	    int tmp = a_fact(j,i);
-	    a_fact(j,i) = a_fact(jp,i);
-	    a_fact(jp,i) = tmp;
-	  }
+      if (ptype == galoisLU::ROW) {
+        // Apply the interchange to columns 1:NC.
+        if (jp != j)
+          for (int i = 0; i < a_nc; i++) {
+            int tmp = a_fact(j,i);
+            a_fact(j,i) = a_fact(jp,i);
+            a_fact(jp,i) = tmp;
+          }
       } else {
-	// Apply the interchange to rows 1:NR.
-	if (jp != j)
-	  for (int i = 0; i < a_nr; i++) {
-	    int tmp = a_fact(i,j);
-	    a_fact(i,j) = a_fact(i,jp);
-	    a_fact(i,jp) = tmp;
-	  }
+        // Apply the interchange to rows 1:NR.
+        if (jp != j)
+          for (int i = 0; i < a_nr; i++) {
+            int tmp = a_fact(i,j);
+            a_fact(i,j) = a_fact(i,jp);
+            a_fact(i,jp) = tmp;
+          }
       }
 
       // Compute elements J+1:M of J-th column.
       if ( j < a_nr-1) {
-	int idxj = a_fact.index_of(a_fact(j,j)); 
-	for (int i = j+1; i < a_nr; i++) {
-	  if (a_fact(i,j) == 0)
-	    a_fact(i,j) = 0;
-	  else
-	    a_fact(i,j) = a_fact.alpha_to(modn(a_fact.index_of(
-		a_fact(i,j)) - idxj + a_fact.n(), a_fact.m(), 
-		a_fact.n()));
-	}
+        int idxj = a_fact.index_of(a_fact(j,j));
+        for (int i = j+1; i < a_nr; i++) {
+          if (a_fact(i,j) == 0)
+            a_fact(i,j) = 0;
+          else
+            a_fact(i,j) = a_fact.alpha_to(modn(a_fact.index_of(a_fact(i,j))
+                                               - idxj + a_fact.n(), a_fact.m(),
+                                               a_fact.n()));
+        }
       }
     } else {
       info = 1;
     }
-    
+
     if (j < mn-1) {
       // Update trailing submatrix.
       for (int i=j+1; i < a_nr; i++) {
-	if (a_fact(i,j) != 0) {
-	  int idxi = a_fact.index_of(a_fact(i,j)); 
-	  for (int k=j+1; k < a_nc; k++) {
-	    if (a_fact(j,k) != 0)
-	      a_fact(i,k) ^= a_fact.alpha_to(modn(a_fact.index_of(
-			a_fact(j,k)) + idxi, a_fact.m(), a_fact.n()));
-	  }
-	}
+        if (a_fact(i,j) != 0) {
+          int idxi = a_fact.index_of(a_fact(i,j));
+          for (int k=j+1; k < a_nc; k++) {
+            if (a_fact(j,k) != 0)
+              a_fact(i,k) ^= a_fact.alpha_to(modn(a_fact.index_of(a_fact(j,k))
+                                                  + idxi, a_fact.m(),
+                                                  a_fact.n()));
+          }
+        }
       }
     }
   }
@@ -1007,17 +1022,17 @@ galois::inverse (int& info, int force) const
   if (nr != nc || nr == 0 || nc == 0) {
     (*current_liboctave_error_handler) ("inverse requires square matrix");
     return galois ();
-  } else { 
+  } else {
     int info = 0;
 
-    // Solve with identity matrix to find the inverse. 
+    // Solve with identity matrix to find the inverse.
     galois btmp(nr, nr, 0, m(), primpoly());
     for (int i=0; i < nr; i++)
       btmp(i,i) = 1;
 
     galois retval = solve(btmp, info, 0);
 
-    if (info == 0) 
+    if (info == 0)
       return retval;
     else
       return galois();
@@ -1052,14 +1067,14 @@ galois::determinant (int& info) const
 
       retval(0,0) = A(0,0);
       for (int i=1; i<nr; i++) {
-	if ((retval (0, 0) == 0) || (A(i,i) == 0)) {
-	  retval (0,0) = 0;
-	  error("What the hell are we doing here!!!");
-	} else 
-	  retval (0,0) = alpha_to(modn(index_of(retval(0,0)) + \
-					     index_of(A(i,i)),m(),n()));
+        if ((retval (0, 0) == 0) || (A(i,i) == 0)) {
+          retval (0,0) = 0;
+          error("What the hell are we doing here!!!");
+        } else
+          retval (0,0) = alpha_to(modn(index_of(retval(0,0)) +  \
+                                       index_of(A(i,i)),m(),n()));
       }
-    }    
+    }
   }
 
   return retval;
@@ -1080,7 +1095,7 @@ galois::solve (const galois& b, int& info) const
 
 galois
 galois::solve (const galois& b, int& info,
-	       solve_singularity_handler sing_handler) const
+               solve_singularity_handler sing_handler) const
 {
   galois retval (b);
 
@@ -1110,9 +1125,9 @@ galois::solve (const galois& b, int& info,
     if (fact.singular()) {
       info = -1;
       if (sing_handler)
-	sing_handler (0.0);
+        sing_handler (0.0);
       else
-	(*current_liboctave_error_handler)("galois matrix singular");
+        (*current_liboctave_error_handler)("galois matrix singular");
 
       return galois();
     } else {
@@ -1121,61 +1136,61 @@ galois::solve (const galois& b, int& info,
 
       // Resize the number of solution rows if needed
       if (nc > nr)
-	retval.resize(dim_vector(b_nr+nc-nr, b_nc), 0);
+        retval.resize(dim_vector(b_nr+nc-nr, b_nc), 0);
 
       //Solve L*X = B, overwriting B with X.
       int mn = (nc < nr ? nc : nr);
       for (int k=0; k<mn; k++) {
-	for (int i=k+1; i<nr; i++)
-	  c(i,0) = index_of(A(i,k));
+        for (int i=k+1; i<nr; i++)
+          c(i,0) = index_of(A(i,k));
 
-	for (int j=0; j<b_nc; j++)
-	  if (retval(k,j) != 0) {
-	    int idx = index_of(retval(k,j));
-	    for (int i=k+1; i<nr; i++)
-	      if (A(i,k) != 0)
-		retval(i,j) ^= alpha_to(modn(c(i,0) + idx, m(), n()));
-	  }
+        for (int j=0; j<b_nc; j++)
+          if (retval(k,j) != 0) {
+            int idx = index_of(retval(k,j));
+            for (int i=k+1; i<nr; i++)
+              if (A(i,k) != 0)
+                retval(i,j) ^= alpha_to(modn(c(i,0) + idx, m(), n()));
+          }
       }
 
       // Solve U*X = B, overwriting B with X.
       for (int k=(nc < nr ? nc-1 : nr-1); k>=0; k--) {
-	int mn = k+1 < nr ? k+1 : nr;
-	for (int i=0; i<mn; i++)
-	  c(i,0) = index_of(A(i,k));
-	mn = k < nr ? k : nr;
-	for (int j=0; j<b_nc; j++)
-	  if (retval(k,j) != 0) {
-	    retval(k,j) = alpha_to(modn(index_of(retval(k,j)) - 
-					c(k,0) + n(), m(), n()));
-	    int idx = index_of(retval(k,j));
-	    for (int i=0; i<mn; i++)
-	      if (A(i,k) != 0)
-		retval(i,j) ^= alpha_to(modn(c(i,0) + idx, m(), n()));
-	  }
+        int mn = k+1 < nr ? k+1 : nr;
+        for (int i=0; i<mn; i++)
+          c(i,0) = index_of(A(i,k));
+        mn = k < nr ? k : nr;
+        for (int j=0; j<b_nc; j++)
+          if (retval(k,j) != 0) {
+            retval(k,j) = alpha_to(modn(index_of(retval(k,j)) -
+                                        c(k,0) + n(), m(), n()));
+            int idx = index_of(retval(k,j));
+            for (int i=0; i<mn; i++)
+              if (A(i,k) != 0)
+                retval(i,j) ^= alpha_to(modn(c(i,0) + idx, m(), n()));
+          }
       }
 
       // Apply row interchanges to the right hand sides.
       //for (int j=0; j<IP.length(); j++) {
       for (int j=IP.length()-1; j>=0; j--) {
-	int piv = IP(j);
-	for (int i=0; i<b_nc; i++) {
-	  int tmp = retval(j,i);
-	  retval(j,i) = retval(piv,i);
-	  retval(piv,i) = tmp;
-	}
+        int piv = IP(j);
+        for (int i=0; i<b_nc; i++) {
+          int tmp = retval(j,i);
+          retval(j,i) = retval(piv,i);
+          retval(piv,i) = tmp;
+        }
       }
     }
-    
+
   } else {
     galoisLU fact (*this);
 
     if (fact.singular()) {
       info = -1;
       if (sing_handler)
-	sing_handler (0.0);
+        sing_handler (0.0);
       else
-	(*current_liboctave_error_handler)("galois matrix singular");
+        (*current_liboctave_error_handler)("galois matrix singular");
 
       return galois();
     } else {
@@ -1184,48 +1199,48 @@ galois::solve (const galois& b, int& info,
 
       // Apply row interchanges to the right hand sides.
       for (int j=0; j<IP.length(); j++) {
-	int piv = IP(j);
-	for (int i=0; i<b_nc; i++) {
-	  int tmp = retval(j,i);
-	  retval(j,i) = retval(piv,i);
-	  retval(piv,i) = tmp;
-	}
+        int piv = IP(j);
+        for (int i=0; i<b_nc; i++) {
+          int tmp = retval(j,i);
+          retval(j,i) = retval(piv,i);
+          retval(piv,i) = tmp;
+        }
       }
 
       //Solve L*X = B, overwriting B with X.
       int mn = (nc < nr ? nc : nr);
       for (int k=0; k<mn; k++) {
-	for (int i=k+1; i<nr; i++)
-	  c(i,0) = index_of(A(i,k));
-	for (int j=0; j<b_nc; j++)
-	  if (retval(k,j) != 0) {
-	    int idx = index_of(retval(k,j));
-	    for (int i=k+1; i<nr; i++)
-	      if (A(i,k) != 0)
-		retval(i,j) ^= alpha_to(modn(c(i,0) + idx, m(), n()));
-	  }
+        for (int i=k+1; i<nr; i++)
+          c(i,0) = index_of(A(i,k));
+        for (int j=0; j<b_nc; j++)
+          if (retval(k,j) != 0) {
+            int idx = index_of(retval(k,j));
+            for (int i=k+1; i<nr; i++)
+              if (A(i,k) != 0)
+                retval(i,j) ^= alpha_to(modn(c(i,0) + idx, m(), n()));
+          }
       }
 
       // Solve U*X = B, overwriting B with X.
       for (int k=(nc < nr ? nc-1 : nr-1); k>=0; k--) {
-	int mn = k+1 < nr ? k+1 : nr;
-	for (int i=0; i<mn; i++)
-	  c(i,0) = index_of(A(i,k));
-	mn = k < nr ? k : nr;
-	for (int j=0; j<b_nc; j++)
-	  if (retval(k,j) != 0) {
-	    retval(k,j) = alpha_to(modn(index_of(retval(k,j)) -
-				     c(k,0) + n(), m(), n()));
-	    int idx = index_of(retval(k,j));
-	    for (int i=0; i<mn; i++)
-	      if (A(i,k) != 0)
-		retval(i,j) ^= alpha_to(modn(c(i,0) + idx, m(), n()));
-	  }
+        int mn = k+1 < nr ? k+1 : nr;
+        for (int i=0; i<mn; i++)
+          c(i,0) = index_of(A(i,k));
+        mn = k < nr ? k : nr;
+        for (int j=0; j<b_nc; j++)
+          if (retval(k,j) != 0) {
+            retval(k,j) = alpha_to(modn(index_of(retval(k,j)) -
+                                        c(k,0) + n(), m(), n()));
+            int idx = index_of(retval(k,j));
+            for (int i=0; i<mn; i++)
+              if (A(i,k) != 0)
+                retval(i,j) ^= alpha_to(modn(c(i,0) + idx, m(), n()));
+          }
       }
 
       // Resize the number of solution rows if needed
       if (nc < nr)
-	retval.resize(dim_vector(b_nr+nc-nr, b_nc));
+        retval.resize(dim_vector(b_nr+nc-nr, b_nc));
 
     }
   }
@@ -1258,19 +1273,19 @@ xdiv (const galois& a, const galois& b)
 
   //  if ((a_nc != b_nc) || (b.rows () != b.cols ()))
   if (a_nc != b_nc)
-    {
-      int a_nr = a.rows ();
-      int b_nr = b.rows ();
+  {
+    int a_nr = a.rows ();
+    int b_nr = b.rows ();
 
-      gripe_nonconformant ("operator /", a_nr, a_nc, b_nr, b_nc);
-      return galois();
-    }
+    gripe_nonconformant ("operator /", a_nr, a_nc, b_nr, b_nc);
+    return galois();
+  }
 
   galois atmp = a.transpose ();
   galois btmp = b.transpose ();
   galois result = btmp.solve (atmp, info, 0);
 
-  if (info == 0) 
+  if (info == 0)
     return galois (result.transpose ());
   else
     return galois();
@@ -1302,13 +1317,13 @@ xleftdiv (const galois& a, const galois& b)
 
   //  if ((a_nr != b_nr) || (a.rows () != a.columns ()))
   if (a_nr != b_nr)
-    {
-      int a_nc = a.cols ();
-      int b_nc = b.cols ();
+  {
+    int a_nc = a.cols ();
+    int b_nc = b.cols ();
 
-      gripe_nonconformant ("operator \\", a_nr, a_nc, b_nr, b_nc);
-      return galois();
-    }
+    gripe_nonconformant ("operator \\", a_nr, a_nc, b_nr, b_nc);
+    return galois();
+  }
 
   galois result = a.solve (b, info, 0);
 

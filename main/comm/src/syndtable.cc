@@ -43,9 +43,9 @@ Array<int> get_errs (const int& nmin, const int& nmax, const int &nerrs)
       int l = pos.rows();
       pos.resize(dim_vector (l+new_pos.rows(), cols), 0);
       for (int j=0; j<new_pos.rows(); j++) {
-	for (int k=0; k<cols; k++)
-	  pos(l+j,k) = new_pos(j,k);
-	pos(l+j,COL_MAJ(i)) += (1<<COL_MIN(i));
+        for (int k=0; k<cols; k++)
+          pos(l+j,k) = new_pos(j,k);
+        pos(l+j,COL_MAJ(i)) += (1<<COL_MIN(i));
       }
     }
   }
@@ -127,11 +127,11 @@ DEFUN_DLD (syndtable, args, nargout,
       // Now use the syndrome as the rows indices to put the error vectors
       // in place
       if (((unsigned int)syndrome < nrows) && !filled(syndrome)) {
-	filled(syndrome) = 1;
-	nfilled--;
-	for (int i = 0; i < n; i++) 
-	  table(syndrome,i) = ((errpos(j,COL_MAJ(i)) & 
-				((unsigned int)1 << COL_MIN(i))) != 0);
+        filled(syndrome) = 1;
+        nfilled--;
+        for (int i = 0; i < n; i++) 
+          table(syndrome,i) = ((errpos(j,COL_MAJ(i)) & 
+                                ((unsigned int)1 << COL_MIN(i))) != 0);
       }
     }
 

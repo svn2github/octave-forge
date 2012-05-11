@@ -1,21 +1,22 @@
 //Copyright (C) 2003 David Bateman
 //
-// This program is free software; you can redistribute it and/or modify it under
-// the terms of the GNU General Public License as published by the Free Software
-// Foundation; either version 3 of the License, or (at your option) any later
-// version.
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License as
+// published by the Free Software Foundation; either version 3 of the
+// License, or (at your option) any later version.
 //
-// This program is distributed in the hope that it will be useful, but WITHOUT
-// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-// FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
-// details.
+// This program is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License along with
-// this program; if not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, see
+// <http://www.gnu.org/licenses/>.
 //
-// In addition to the terms of the GPL, you are permitted to link
-// this program with any Open Source program, as defined by the
-// Open Source Initiative (www.opensource.org)
+// In addition to the terms of the GPL, you are permitted to link this
+// program with any Open Source program, as defined by the Open Source
+// Initiative (www.opensource.org)
 
 #include <iostream>
 #include <iomanip>
@@ -25,8 +26,8 @@
 
 // A simplified version of the filter function for specific lengths of a and b
 // in the Galois field GF(2)
-Array<int> filter_gf2 (const Array<int>& b, const Array<int>& a, 
-			const Array<int>& x, const int& n) {
+Array<int> filter_gf2 (const Array<int>& b, const Array<int>& a,
+                       const Array<int>& x, const int& n) {
 
   int x_len = x.length ();
   Array<int> si (dim_vector (n, 1), 0);
@@ -36,13 +37,13 @@ Array<int> filter_gf2 (const Array<int>& b, const Array<int>& a,
     y(i) = si(0);
     if (b(0) && x(i))
       y(i) ^= 1;
-   
+
     for (int j = 0; j < n - 1; j++) {
       si(j) = si(j+1);
       if (a(j+1) && y(i))
-	si(j) ^= 1;
+        si(j) ^= 1;
       if (b(j+1) && x(i))
-	si(j) ^= 1;
+        si(j) ^= 1;
     }
     si(n-1) = 0;
     if (a(n) && y(i))
@@ -54,9 +55,9 @@ Array<int> filter_gf2 (const Array<int>& b, const Array<int>& a,
   return y;
 }
 
-// Cyclic polynomial is irreducible. I.E. it divides into x^n-1 without remainder
-// There must surely be an easier way of doing this as the polynomials are over
-// GF(2).
+// Cyclic polynomial is irreducible. I.E. it divides into x^n-1
+// without remainder There must surely be an easier way of doing this
+// as the polynomials are over GF(2).
 static bool
 do_is_cyclic_polynomial (const Array<int>& a, const int& n, const int& m)
 {
@@ -118,7 +119,7 @@ DEFUN_DLD (cyclgen, args, nargout,
 "matrix @var{g}."
 "\n"
 "@end deftypefn\n"
-"@seealso{hammgen,gen2par,cyclpoly}") 
+"@seealso{hammgen,gen2par,cyclpoly}")
 {
   octave_value_list retval;
   int nargin = args.length ();
@@ -155,26 +156,26 @@ DEFUN_DLD (cyclgen, args, nargout,
     if (tmp.rows() == 1) {
       mm = tmp.columns();
       for (int j=0; j<mm; j++) {
-	if (tmp(0,j) == 1) {
-	  p |= ((unsigned long long)1 << j);
-	  pp(j) = 1;
-	}
-	else if (tmp(0,j) != 0) {
-	  error ("cyclgen: illegal generator polynomial");
-	  return retval;
-	}
+        if (tmp(0,j) == 1) {
+          p |= ((unsigned long long)1 << j);
+          pp(j) = 1;
+        }
+        else if (tmp(0,j) != 0) {
+          error ("cyclgen: illegal generator polynomial");
+          return retval;
+        }
       }
     } else {
       mm = tmp.rows();
       for (int i=0; i<mm; i++) {
-	if (tmp(i,0) == 1) {
-	  p |= ((unsigned long long)1 << i);
-	  pp(i) = 1;
-	}
-	else if (tmp(i,0) != 0) {
-	  error ("cyclgen: illegal generator polynomial");
-	  return retval;
-	}
+        if (tmp(i,0) == 1) {
+          p |= ((unsigned long long)1 << i);
+          pp(i) = 1;
+        }
+        else if (tmp(i,0) != 0) {
+          error ("cyclgen: illegal generator polynomial");
+          return retval;
+        }
       }
     }
     mm = mm - 1;
@@ -186,12 +187,12 @@ DEFUN_DLD (cyclgen, args, nargout,
       std::string s_arg = args(2).string_value ();
 
       if (s_arg == "system")
-	system = true;
+        system = true;
       else if (s_arg == "nosys")
-	system = false;
+        system = false;
       else {
-	error ("cyclgen: illegal argument");
-	return retval;
+        error ("cyclgen: illegal argument");
+        return retval;
       }
     } else {
       error ("cyclgen: illegal argument");
@@ -210,7 +211,7 @@ DEFUN_DLD (cyclgen, args, nargout,
   }
 
   unsigned long long mask = 1;
-  unsigned long long *alpha_to = 
+  unsigned long long *alpha_to =
     (unsigned long long *)malloc(sizeof(unsigned long long) * n);
   for (int i = 0; i < n; i++) {
     alpha_to[i] = mask;
@@ -220,10 +221,10 @@ DEFUN_DLD (cyclgen, args, nargout,
   }
 
   Matrix parity(mm,n,0);
-  for (int i = 0; i < n; i++) 
-    for (int j = 0; j < mm; j++) 
+  for (int i = 0; i < n; i++)
+    for (int j = 0; j < mm; j++)
       if (alpha_to[i] & ((unsigned long long)1<<j))
-	parity(j,i) = 1;
+        parity(j,i) = 1;
 
   free(alpha_to);
   retval(0) = octave_value (parity);
@@ -231,10 +232,10 @@ DEFUN_DLD (cyclgen, args, nargout,
   if (nargout > 1) {
     Matrix generator(k,n,0);
 
-    for (int i = 0; i < (int)k; i++) 
-      for (int j = 0; j < (int)mm; j++) 
-	generator(i,j) = parity(j,i+mm);
-    for (int i = 0; i < (int)k; i++) 
+    for (int i = 0; i < (int)k; i++)
+      for (int j = 0; j < (int)mm; j++)
+        generator(i,j) = parity(j,i+mm);
+    for (int i = 0; i < (int)k; i++)
       generator(i,i+mm) = 1;
 
     retval(1) = octave_value(generator);

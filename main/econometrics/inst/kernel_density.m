@@ -1,46 +1,46 @@
-# Copyright (C) 2006 Michael Creel <michael.creel@uab.es>
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; If not, see <http://www.gnu.org/licenses/>.
+## Copyright (C) 2006 Michael Creel <michael.creel@uab.es>
+##
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free Software
+## Foundation; either version 3 of the License, or (at your option) any later
+## version.
+##
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+## details.
+##
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, see <http://www.gnu.org/licenses/>.
 
-# kernel_density: multivariate kernel density estimator
-#
-# usage:
-# 	dens = kernel_density(eval_points, data, bandwidth)
-#
-# inputs:
-#	eval_points: PxK matrix of points at which to calculate the density
-# 	data: NxK matrix of data points
-#	bandwidth: positive scalar, the smoothing parameter. The fit
-# 		is more smooth as the bandwidth increases.
-#	kernel (optional): string. Name of the kernel function. Default is
-#		Gaussian kernel.
-#	prewhiten bool (optional): default false. If true, rotate data
-# 		using Choleski decomposition of inverse of covariance,
-#		to approximate independence after the transformation, which
-#		makes a product kernel a reasonable choice.
-#	do_cv: bool (optional). default false. If true, calculate leave-1-out
-#		 density for cross validation
-#	computenodes: int (optional, default 0).
-#		Number of compute nodes for parallel evaluation
-#	debug: bool (optional, default false). show results on compute nodes if doing
-#		a parallel run
-# outputs:
-#	dens: Px1 vector: the fitted density value at each of the P evaluation points.
-#
-# References:
-# Wand, M.P. and Jones, M.C. (1995), 'Kernel smoothing'.
-# http://www.xplore-stat.de/ebooks/scripts/spm/html/spmhtmlframe73.html
+## kernel_density: multivariate kernel density estimator
+##
+## usage:
+##       dens = kernel_density(eval_points, data, bandwidth)
+##
+## inputs:
+##       eval_points: PxK matrix of points at which to calculate the density
+##       data: NxK matrix of data points
+##       bandwidth: positive scalar, the smoothing parameter. The fit
+##               is more smooth as the bandwidth increases.
+##       kernel (optional): string. Name of the kernel function. Default is
+##               Gaussian kernel.
+##       prewhiten bool (optional): default false. If true, rotate data
+##               using Choleski decomposition of inverse of covariance,
+##               to approximate independence after the transformation, which
+##               makes a product kernel a reasonable choice.
+##       do_cv: bool (optional). default false. If true, calculate leave-1-out
+##                density for cross validation
+##       computenodes: int (optional, default 0).
+##               Number of compute nodes for parallel evaluation
+##       debug: bool (optional, default false). show results on compute nodes if doing
+##               a parallel run
+## outputs:
+##       dens: Px1 vector: the fitted density value at each of the P evaluation points.
+##
+## References:
+## Wand, M.P. and Jones, M.C. (1995), 'Kernel smoothing'.
+## http://www.xplore-stat.de/ebooks/scripts/spm/html/spmhtmlframe73.html
 
 function z = kernel_density(eval_points, data, bandwidth, kernel, prewhiten, do_cv, computenodes, debug)
 

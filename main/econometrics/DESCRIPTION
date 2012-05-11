@@ -7,5 +7,5 @@ Title: Econometrics.
 Description: Econometrics functions including MLE and GMM based techniques.
 Depends: octave (>= 2.9.7), optim
 Autoload: yes
-License: GPL version 2 or later
+License: GPLv3+
 Url: http://octave.sf.net

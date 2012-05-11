@@ -1,36 +1,37 @@
-## Copyright (C) 2003,2004,2005  Michael Creel <michael.creel@uab.es>
+## Copyright (C) 2003, 2004, 2005 Michael Creel <michael.creel@uab.es>
 ##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
-## (at your option) any later version.
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free Software
+## Foundation; either version 3 of the License, or (at your option) any later
+## version.
 ##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+## details.
 ##
-## You should have received a copy of the GNU General Public License
-## along with this program; If not, see <http://www.gnu.org/licenses/>.
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, see <http://www.gnu.org/licenses/>.
 
-# usage:
-# [theta, obj_value, conv, iters] = mle_estimate(theta, data, model, modelargs, control, nslaves)
-#
-# inputs:
-# theta: column vector of model parameters
-# data: data matrix
-# model: name of function that computes log-likelihood
-# modelargs: (cell) additional inputs needed by model. May be empty ("")
-# control: (optional) BFGS or SA controls (see bfgsmin and samin). May be empty ("").
-# nslaves: (optional) number of slaves if executed in parallel (requires MPITB)
-#
-# outputs:
-# theta: ML estimated value of parameters
-# obj_value: the value of the log likelihood function at ML estimate
-# conv: return code from bfgsmin (1 means success, see bfgsmin for details)
-# iters: number of BFGS iteration used
-#
-# please see mle_example.m for examples of how to use this
+## usage:
+## [theta, obj_value, conv, iters] = mle_estimate(theta, data, model, modelargs, control, nslaves)
+##
+## inputs:
+## theta: column vector of model parameters
+## data: data matrix
+## model: name of function that computes log-likelihood
+## modelargs: (cell) additional inputs needed by model. May be empty ("")
+## control: (optional) BFGS or SA controls (see bfgsmin and samin). May be empty ("").
+## nslaves: (optional) number of slaves if executed in parallel (requires MPITB)
+##
+## outputs:
+## theta: ML estimated value of parameters
+## obj_value: the value of the log likelihood function at ML estimate
+## conv: return code from bfgsmin (1 means success, see bfgsmin for details)
+## iters: number of BFGS iteration used
+##
+## please see mle_example.m for examples of how to use this
+
 function [theta, obj_value, convergence, iters] = mle_estimate(theta, data, model, modelargs, control, nslaves = 0)
 
 

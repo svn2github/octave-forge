@@ -7,6 +7,11 @@ Summary of important user-visible changes for communications 1.1.1:
 
       convenc
 
+ ** The following functions have improved Matlab compatibility and tests:
+      bi2de
+      de2bi
+      oct2dec
+
  ** The function `reedmullerdec' had a bug fix introduced on the
     previous release
 

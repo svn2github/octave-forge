@@ -13,17 +13,23 @@
 ## You should have received a copy of the GNU General Public License along with
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
-## __kernel_normal: this function is for internal use by kernel_density
+## kernel_epanechnikov: this function is for internal use by kernel_density
 ## and kernel_regression
 ##
-## product normal kernel
+## multivariate spherical Epanechnikov kernel
 ## input: PxK matrix - P data points, each of which is in R^K
 ## output: Px1 vector, input matrix passed though the kernel
 ## other multivariate kernel functions should follow this convention
 
-function z = __kernel_normal(z)
+function z = kernel_epanechnikov(z)
 
-	z = normpdf(z);
-	z = prod(z,2);
+	K = columns(z);
+
+	# Volume of d-dimensional unit sphere
+	c = pi ^ (K/2) / gamma(K/2 + 1);
+
+	# compute kernel
+	z  =  sumsq(z, 2);
+	z = ((1/2) / c * (K + 2) * (1 - z)) .* (z < 1);
 
 endfunction

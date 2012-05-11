@@ -25,7 +25,7 @@
 function bandwidth = kernel_optimal_bandwidth(data, depvar, kernel)
 
 	if (nargin < 2) error("kernel_optimal_bandwidth: 3 arguments required"); endif
-	if (nargin < 3) kernel = "__kernel_epanechnikov"; endif
+	if (nargin < 3) kernel = "kernel_epanechnikov"; endif
 
 	do_density = false;
 	if isempty(depvar) do_density = true; endif;

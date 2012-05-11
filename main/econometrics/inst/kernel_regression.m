@@ -48,7 +48,7 @@ function z = kernel_regression(eval_points, depvar, condvars, bandwidth, kernel,
 
 	# set defaults for optional args
 	if (nargin < 4) bandwidth = (n ^ (-1/(4+k))); endif	# bandwidth - see Li and Racine pg. 66
-	if (nargin < 5) kernel = "__kernel_normal"; endif 	# what kernel?
+	if (nargin < 5) kernel = "kernel_normal"; endif 	# what kernel?
 	if (nargin < 6) prewhiten = true; endif 		# automatic prewhitening?
 	if (nargin < 7)	do_cv = false; endif 			# ordinary or leave-1-out
 	if (nargin < 8)	computenodes = 0; endif			# parallel?

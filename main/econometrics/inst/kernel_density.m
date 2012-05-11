@@ -52,7 +52,7 @@ function z = kernel_density(eval_points, data, bandwidth, kernel, prewhiten, do_
 
 	# set defaults for optional args
 	if (nargin < 3) bandwidth = (n ^ (-1/(4+k))); endif	# bandwidth - see Li and Racine pg. 26
-	if (nargin < 4) kernel = "__kernel_normal"; endif # what kernel?
+	if (nargin < 4) kernel = "kernel_normal"; endif # what kernel?
 	if (nargin < 5) prewhiten = false; endif 	# automatic prewhitening?
 	if (nargin < 6)	do_cv = false; endif 		# ordinary or leave-1-out
 	if (nargin < 7)	computenodes = 0; endif		# parallel?

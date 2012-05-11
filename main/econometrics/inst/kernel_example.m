@@ -61,7 +61,7 @@ bandwidth = 0.55;
 # bandwidth = kernel_optimal_bandwidth(data);
 # get the fitted density and do a plot
 tic;
-dens = kernel_density(grid_x, data, bandwidth, "__kernel_normal", false, false, compute_nodes);
+dens = kernel_density(grid_x, data, bandwidth, "kernel_normal", false, false, compute_nodes);
 t1 = toc;
 printf("\n");
 printf("########################################################################\n");
@@ -90,7 +90,7 @@ bandwidth = 0.85;
 # bandwidth = kernel_optimal_bandwidth(data);
 # get the fitted density and do a plot
 tic;
-dens = kernel_density(eval_points, data, bandwidth, "__kernel_normal", false, false, compute_nodes);
+dens = kernel_density(eval_points, data, bandwidth, "kernel_normal", false, false, compute_nodes);
 t1 = toc;
 printf("\n");
 printf("########################################################################\n");
@@ -128,7 +128,7 @@ if compute_nodes > 0 # only try this if parallel is available
 			y = trueline + sig*randn(n,1);
 			bandwidth = 0.45;
 			tic;
-			fit = kernel_regression(x, y, x, bandwidth, "__kernel_normal", false, false, compute_nodes);
+			fit = kernel_regression(x, y, x, bandwidth, "kernel_normal", false, false, compute_nodes);
 			t1 = toc;
 			ts(i, nodes) = t1;
 			plot(nodes, t1, "*");

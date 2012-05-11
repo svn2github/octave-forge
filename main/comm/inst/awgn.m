@@ -77,12 +77,12 @@ function y = awgn (x, snr, varargin)
     else
       narg++;
       switch (narg)
-	case 1,
-	  p = arg;
-	case 2,
-	  seed = arg;
-	otherwise
-	  error ("wgn: too many arguments");
+	      case 1,
+	        p = arg;
+	      case 2,
+	        seed = arg;
+	      otherwise
+	        error ("wgn: too many arguments");
       endswitch
     endif
   end
@@ -93,7 +93,7 @@ function y = awgn (x, snr, varargin)
 
   if (!isempty(seed))
     if (!isscalar(seed) || !isreal(seed) || (seed < 0) || 
-      ((seed-floor(seed)) != 0))
+        ((seed-floor(seed)) != 0))
       error ("awgn: random seed must be integer");
     endif
   endif
@@ -128,20 +128,20 @@ function y = awgn (x, snr, varargin)
   else
     np = p - snr;
   endif
-    
+  
   y = x + wgn (m, n, np, 1, seed, type, out);
   
 endfunction
 
-%!shared x, y, noisy
-%!       x = [0:0.01:2*pi]; y = sin (x);
-%!       noisy = awgn (y, 20, "dB", "measured");
+                                %!shared x, y, noisy
+                                %!       x = [0:0.01:2*pi]; y = sin (x);
+                                %!       noisy = awgn (y, 20, "dB", "measured");
 
 ## Test of noisy is pretty arbitrary, but should pickup most errors
-%!error awgn ();
-%!error awgn (1);
-%!error awgn (1,1,1,1,1);
-%!assert (isreal(noisy));
-%!assert (iscomplex(awgn(y+1i,20,"dB","measured")));
-%!assert (size(y) == size(noisy))
-%!assert (abs(10*log10(mean(y.^2)/mean((y-noisy).^ 2)) - 20) < 1);
+                                %!error awgn ();
+                                %!error awgn (1);
+                                %!error awgn (1,1,1,1,1);
+                                %!assert (isreal(noisy));
+                                %!assert (iscomplex(awgn(y+1i,20,"dB","measured")));
+                                %!assert (size(y) == size(noisy))
+                                %!assert (abs(10*log10(mean(y.^2)/mean((y-noisy).^ 2)) - 20) < 1);

@@ -113,4 +113,4 @@ function y = compand(x, mu, V, stype)
   endif
 
 endfunction
-		   
+

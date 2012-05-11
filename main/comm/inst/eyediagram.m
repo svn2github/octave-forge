@@ -106,7 +106,7 @@ function varargout = eyediagram (x, n, _per, _off, str, h)
     if (isempty(_off))
       off = 0;
     elseif (!isscalar(_off) || !isreal(_off) || (floor(_off) != _off) || ...
-	(_off < 0) || (_off > (n-1)))
+	          (_off < 0) || (_off > (n-1)))
       error ("eyediagram: offset must be an integer between 0 and n");
     else
       off = _off;

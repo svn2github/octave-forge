@@ -133,11 +133,11 @@ function y = ademodce (x, Fs, typ, varargin)
       y = y - offset;
     else
       if (min(size(y)) == 1)
-	y = y - mean(y);
+	      y = y - mean(y);
       else
-	for i=1:size(y,2)
-	  y(:,i) = y(:,i) - mean(y(:,i));
-	end
+	      for i=1:size(y,2)
+	        y(:,i) = y(:,i) - mean(y(:,i));
+	      end
       endif
     endif
   elseif (strcmp(typ,"amdsb-sc"))
@@ -178,7 +178,7 @@ function y = ademodce (x, Fs, typ, varargin)
       y = filter(num,den, y);
     else    
       for i=1:size(y,2)
-	y(:,i) = filter(num, den, y(:,i));
+	      y(:,i) = filter(num, den, y(:,i));
       end
     endif
   endif

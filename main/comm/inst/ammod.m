@@ -21,10 +21,10 @@
 
 
 function [y] = ammod(x,fc,fs)
-    if (nargin != 3)
+  if (nargin != 3)
 		usage ("ammod(x,fs,fc)");
 	endif
 	
-    l = length(x);
-    t=0:1./fs:(l-1)./fs;
-    y = x.*cos(2.*pi.*fc.*t);
+  l = length(x);
+  t=0:1./fs:(l-1)./fs;
+  y = x.*cos(2.*pi.*fc.*t);

@@ -123,31 +123,31 @@ function [msg, err, ccode, cerr] = decode(code, n, k, typ, opt1, opt2)
     else
       ## Why the hell did matlab decide on such an ugly way of passing 2 args!
       if (strcmp(typ,"linear") || strcmp(typ,"linear/binary"))
-	coding = "linear";
-	msgtyp = "binary";
+	      coding = "linear";
+	      msgtyp = "binary";
       elseif (strcmp(typ,"linear/decimal"))
-	coding = "linear";
-	msgtyp = "decimal";
+	      coding = "linear";
+	      msgtyp = "decimal";
       elseif (strcmp(typ,"cyclic") || strcmp(typ,"cyclic/binary"))
-	coding = "cyclic";
-	msgtyp = "binary";
+	      coding = "cyclic";
+	      msgtyp = "binary";
       elseif (strcmp(typ,"cyclic/decimal"))
-	coding = "cyclic";
-	msgtyp = "decimal";
+	      coding = "cyclic";
+	      msgtyp = "decimal";
       elseif (strcmp(typ,"bch") || strcmp(typ,"bch/binary"))
-	coding = "bch";
-	msgtyp = "binary";
+	      coding = "bch";
+	      msgtyp = "binary";
       elseif (strcmp(typ,"bch/decimal"))
-	coding = "bch";
-	msgtyp = "decimal";
+	      coding = "bch";
+	      msgtyp = "decimal";
       elseif (strcmp(typ,"hamming") || strcmp(typ,"hamming/binary"))
-	coding = "hamming";
-	msgtyp = "binary";
+	      coding = "hamming";
+	      msgtyp = "binary";
       elseif (strcmp(typ,"hamming/decimal"))
-	coding = "hamming";
-	msgtyp = "decimal";
+	      coding = "hamming";
+	      msgtyp = "decimal";
       else
-	error ("decode: unrecognized coding and/or message type");
+	      error ("decode: unrecognized coding and/or message type");
       endif
     endif
   else
@@ -201,50 +201,50 @@ function [msg, err, ccode, cerr] = decode(code, n, k, typ, opt1, opt2)
   else
     if (strcmp(coding,"linear"))
       if (nargin > 4)
-	gen = opt1;
-	if ((size(gen,1) != k) || (size(gen,2) != n))
-	  error ("decode: generator matrix is in incorrect form");
-	endif
-	par = gen2par(gen);
-	if (nargin > 5)
-	  st = opt2;
-	else
-	  st = syndtable(par);
-	endif
+	      gen = opt1;
+	      if ((size(gen,1) != k) || (size(gen,2) != n))
+	        error ("decode: generator matrix is in incorrect form");
+	      endif
+	      par = gen2par(gen);
+	      if (nargin > 5)
+	        st = opt2;
+	      else
+	        st = syndtable(par);
+	      endif
       else
-	error ("decode: linear coding must supply the generator matrix");
+	      error ("decode: linear coding must supply the generator matrix");
       endif
     elseif (strcmp(coding,"cyclic"))
       if (nargin > 4)
-	[par, gen] = cyclgen(n,opt1);
+	      [par, gen] = cyclgen(n,opt1);
       else
-	[par, gen] = cyclgen(n,cyclpoly(n,k));
+	      [par, gen] = cyclgen(n,cyclpoly(n,k));
       endif
       if (nargin > 5)
-	## XXX FIXME XXX Should we check that the generator polynomial is
-	## consistent with the syndrome table. Where is the acceleration in
-	## this case???
-	st = opt2;
+	      ## XXX FIXME XXX Should we check that the generator polynomial is
+	      ## consistent with the syndrome table. Where is the acceleration in
+	      ## this case???
+	      st = opt2;
       else
-	st = syndtable(par);
+	      st = syndtable(par);
       endif
     else
       m = log2(n + 1);
       if ((m != floor(m)) || (m < 3) || (m > 16))
-	error ("decode: codeword length must be of the form '2^m-1' with integer m");
+	      error ("decode: codeword length must be of the form '2^m-1' with integer m");
       endif
       if (k != (n-m))
-	error ("decode: illegal message length for hamming code");
+	      error ("decode: illegal message length for hamming code");
       endif
       if (nargin > 4)
-	[par, gen] = hammgen(m, opt1);
+	      [par, gen] = hammgen(m, opt1);
       else
-	[par, gen] = hammgen(m);
+	      [par, gen] = hammgen(m);
       endif
       if (nargin > 5)
-	error ("decode: illegal call for hamming coding");
+	      error ("decode: illegal call for hamming coding");
       else
-	st = syndtable(par);
+	      st = syndtable(par);
       endif
     endif
 

@@ -70,26 +70,26 @@ function yout = apkconst(varargin)
     arg = varargin{i};
     if (ischar(arg))
       if (strcmp(arg,"n"))
-	try
-	  text();
-	  printnums = 1;
-	catch
-	  printnums = 0;
-	end
+	      try
+	        text();
+	        printnums = 1;
+	      catch
+	        printnums = 0;
+	      end
       else
-	fmt = arg;
+	      fmt = arg;
       endif
     else
       numargs++;
       switch (numargs)
-	case 1,
-	  nsig = arg; 
-	case 2,
-	  amp = arg; 
-	case 3,
-	  phs = arg; 
-	otherwise
-	  error ("apkconst: too many numerical arguments");
+	      case 1,
+	        nsig = arg; 
+	      case 2,
+	        amp = arg; 
+	      case 3,
+	        phs = arg; 
+	      otherwise
+	        error ("apkconst: too many numerical arguments");
       endswitch
     endif
   end
@@ -121,7 +121,7 @@ function yout = apkconst(varargin)
       error ("apkconst: must have at least one point in ASK radii");
     endif
     y = [y; amp(i) * [cos(2*pi*[0:nsig(i)-1]'/nsig(i) + phs(i)) + ...
-		      1i*sin(2*pi*[0:nsig(i)-1]'/nsig(i) + phs(i))]];
+		                  1i*sin(2*pi*[0:nsig(i)-1]'/nsig(i) + phs(i))]];
   end
 
   if (nargout == 0)
@@ -134,7 +134,7 @@ function yout = apkconst(varargin)
     if (printnums)
       xd = 0.05 * max(real(y));
       for i=1:length(y)
-	text(real(y(i))+xd,imag(y(i)),num2str(i-1));
+	      text(real(y(i))+xd,imag(y(i)),num2str(i-1));
       end
     endif
     plot (real(y), imag(y), fmt);

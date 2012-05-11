@@ -49,78 +49,78 @@
 
 function [C,dec_error]=egolaydec(R)
 
-if ( nargin < 1 )
+  if ( nargin < 1 )
     error('usage: C=egolaydec(R)');
-elseif ( columns(R) ~= 24 )
+  elseif ( columns(R) ~= 24 )
     error('extended golay code is (24,12), use rx codeword of 24 bit column size');
-end
+  end
 
-I=eye(12);
-%P is 12x12 matrix
-P=[1 0 0 0 1 1 1 0 1 1 0 1;
-   0 0 0 1 1 1 0 1 1 0 1 1;
-   0 0 1 1 1 0 1 1 0 1 0 1;
-   0 1 1 1 0 1 1 0 1 0 0 1;
-   1 1 1 0 1 1 0 1 0 0 0 1;
-   1 1 0 1 1 0 1 0 0 0 1 1;
-   1 0 1 1 0 1 0 0 0 1 1 1;
-   0 1 1 0 1 0 0 0 1 1 1 1;
-   1 1 0 1 0 0 0 1 1 1 0 1;
-   1 0 1 0 0 0 1 1 1 0 1 1;
-   0 1 0 0 0 1 1 1 0 1 1 1;
-   1 1 1 1 1 1 1 1 1 1 1 0;];
+  I=eye(12);
+                                %P is 12x12 matrix
+  P=[1 0 0 0 1 1 1 0 1 1 0 1;
+     0 0 0 1 1 1 0 1 1 0 1 1;
+     0 0 1 1 1 0 1 1 0 1 0 1;
+     0 1 1 1 0 1 1 0 1 0 0 1;
+     1 1 1 0 1 1 0 1 0 0 0 1;
+     1 1 0 1 1 0 1 0 0 0 1 1;
+     1 0 1 1 0 1 0 0 0 1 1 1;
+     0 1 1 0 1 0 0 0 1 1 1 1;
+     1 1 0 1 0 0 0 1 1 1 0 1;
+     1 0 1 0 0 0 1 1 1 0 1 1;
+     0 1 0 0 0 1 1 1 0 1 1 1;
+     1 1 1 1 1 1 1 1 1 1 1 0;];
 
-H=[I; P]; %partiy check matrix transpose.
+  H=[I; P]; %partiy check matrix transpose.
 
-dec_error=[];
-C=zeros(size(R));
+  dec_error=[];
+  C=zeros(size(R));
 
-for rspn=1:rows(R)
-     RR=R(rspn,:);
-     S=mod(RR*H,2);
-wt=sum(S);
-done=0;
-if (wt <= 3)
-    E=[S, zeros(1,12)];
-    done=1;
-else
-    SP = mod(repmat(S,[12, 1])+P,2);
-    idx = find( sum(SP,2) <= 2 );    
-    if ( idx )
+  for rspn=1:rows(R)
+    RR=R(rspn,:);
+    S=mod(RR*H,2);
+    wt=sum(S);
+    done=0;
+    if (wt <= 3)
+      E=[S, zeros(1,12)];
+      done=1;
+    else
+      SP = mod(repmat(S,[12, 1])+P,2);
+      idx = find( sum(SP,2) <= 2 );    
+      if ( idx )
         idx=idx(1); %pick first of matches.
         Ui=zeros(1,12); Ui(idx)=1;
         E=[SP(idx,:),Ui];
         done=1;
+      end
     end
-end
 
-if ( ~done )
-    X=mod(S*P,2);
-    wt=sum(X);
-    if (wt==2 || wt==3)
+    if ( ~done )
+      X=mod(S*P,2);
+      wt=sum(X);
+      if (wt==2 || wt==3)
         E=[zeros(1,12), X];
         done=1;
-    else
+      else
         SP = mod(repmat(X,[12, 1])+P,2);
         idx = find( sum(SP,2) == 2 );
         if ( idx )
-            idx=idx(1);
-            Ui=zeros(1,12); Ui(idx)=1;
-            E=[Ui,SP(idx,:)];
-            done=1;
+          idx=idx(1);
+          Ui=zeros(1,12); Ui(idx)=1;
+          E=[Ui,SP(idx,:)];
+          done=1;
         end
+      end
     end
-end
 
-dec_error=[dec_error; 1-done];
-C(rspn,:)=mod(E+RR,2);
-end
+    dec_error=[dec_error; 1-done];
+    C(rspn,:)=mod(E+RR,2);
+  end
 
-return;
+  return;
 end
-%!
-%!assert(egolaydec([1 1 1 zeros(1,21)]),zeros(1,24))
-%!assert(egolaydec([1 0 1 zeros(1,20) 1]),zeros(1,24))
-%!
+                                %!
+                                %!assert(egolaydec([1 1 1 zeros(1,21)]),zeros(1,24))
+                                %!assert(egolaydec([1 0 1 zeros(1,20) 1]),zeros(1,24))
+                                %!
 
 

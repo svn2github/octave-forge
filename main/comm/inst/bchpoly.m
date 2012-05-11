@@ -112,19 +112,19 @@ function [p, f, c, par, t] = bchpoly(nn, k, varargin)
     if (ischar(arg))
       probe = 1;
       if (nargout > 1)
-	error ("bchpoly: only one output argument allowed when probing valid codes");
+	      error ("bchpoly: only one output argument allowed when probing valid codes");
       endif
     else
       if (prim != 0)
-	error ("bchpoly: primitive polynomial already defined");
+	      error ("bchpoly: primitive polynomial already defined");
       endif
       prim = arg;
       if (!isscalar(prim))
-	prim = bi2de(prim);
+	      prim = bi2de(prim);
       endif
       if ((floor(prim) != prim) || (prim < 2^m) || (prim > 2^(m+1)) || ...
-	  !isprimitive(prim))
-	error ("bchpoly: prim must be a primitive polynomial of GF(2^m)");
+	        !isprimitive(prim))
+	      error ("bchpoly: prim must be a primitive polynomial of GF(2^m)");
       endif
     endif
   end
@@ -143,29 +143,29 @@ function [p, f, c, par, t] = bchpoly(nn, k, varargin)
       f = [];
 
       for t=1:floor(n(ni)/2)
-	for i=1:nc
-	  if (fc(i) != 1)
-	    cl = log(c{i});
-	    for j=2*(t-1)+1:2*t
-	      if (find(cl == j))
-		f = [f, c{i}.x];
-		fc(i) = 1;
-		break;
+	      for i=1:nc
+	        if (fc(i) != 1)
+	          cl = log(c{i});
+	          for j=2*(t-1)+1:2*t
+	            if (find(cl == j))
+		            f = [f, c{i}.x];
+		            fc(i) = 1;
+		            break;
+	            endif
+	          end
+	        endif
+	      end
+
+	      k = nn(ni) - length(f);
+	      if (k < 2)
+	        break;
 	      endif
-	    end
-	  endif
-	end
 
-	k = nn(ni) - length(f);
-	if (k < 2)
-	  break;
-	endif
-
-	if (!isempty(p) && (k == p(size(p,1),2)))
-	  p(size(p,1),:) = [nn(ni), k, t];
-	else
-	  p = [p; [nn(ni), k, t]];
-	endif
+	      if (!isempty(p) && (k == p(size(p,1),2)))
+	        p(size(p,1),:) = [nn(ni), k, t];
+	      else
+	        p = [p; [nn(ni), k, t]];
+	      endif
       end
     end
   else
@@ -181,22 +181,22 @@ function [p, f, c, par, t] = bchpoly(nn, k, varargin)
       t++;
       f0 = f1;
       for i=1:nc
-	if (fc(i) != 1)
-	  cl = log(c{i});
-	  for j=2*(t-1)+1:2*t
-	    if (find(cl == j))
-	      f1 = [f1, c{i}.x];
-	      fc(i) = 1;
-	      ptmp = gf([c{i}(1), 1], m, prim);
-	      for l=2:length(c{i})
-		ptmp = conv(ptmp, [c{i}(l), 1]);
-	      end
-	      f = [f; [ptmp.x, zeros(1,m-length(ptmp)+1)]];
-	      fl = fl + length(ptmp);
-	      break;
-	    endif
-	  end
-	endif
+	      if (fc(i) != 1)
+	        cl = log(c{i});
+	        for j=2*(t-1)+1:2*t
+	          if (find(cl == j))
+	            f1 = [f1, c{i}.x];
+	            fc(i) = 1;
+	            ptmp = gf([c{i}(1), 1], m, prim);
+	            for l=2:length(c{i})
+		            ptmp = conv(ptmp, [c{i}(l), 1]);
+	            end
+	            f = [f; [ptmp.x, zeros(1,m-length(ptmp)+1)]];
+	            fl = fl + length(ptmp);
+	            break;
+	          endif
+	        end
+	      endif
       end
     until (length(f1) > nn - k)
     t--;
@@ -216,17 +216,17 @@ function [p, f, c, par, t] = bchpoly(nn, k, varargin)
 
       p = gf([f0(1), 1], m, prim);
       for i=2:length(f0)
-	p = conv(p, [f0(i), 1]);
+	      p = conv(p, [f0(i), 1]);
       end
       p = p.x;
 
       if (nargout > 3)
-	if (n > 64)
-	  warning("bchpoly: can not create parity matrix\n");
-	  par = [];
-	else
-	  par = cyclgen(n,p);
-	endif
+	      if (n > 64)
+	        warning("bchpoly: can not create parity matrix\n");
+	        par = [];
+	      else
+	        par = cyclgen(n,p);
+	      endif
       endif
     endif
   endif

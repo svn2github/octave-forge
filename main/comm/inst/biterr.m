@@ -116,24 +116,24 @@ function [num, rate, ind] = biterr (a, b, varargin)
     arg = varargin{i};
     if (ischar(arg))
       if (strcmp(arg,"row-wise"))
-	if (strcmp(type,"column"))
-	  error ("biterr: row-wise comparison not possible with column inputs");
-	endif
-	flag = "row";
+	      if (strcmp(type,"column"))
+	        error ("biterr: row-wise comparison not possible with column inputs");
+	      endif
+	      flag = "row";
       elseif (strcmp(arg,"column-wise"))
-	if (strcmp(type,"row"))
-	  error ("biterr: column-wise comparison not possible with row inputs");
-	endif
-	flag = "column";
+	      if (strcmp(type,"row"))
+	        error ("biterr: column-wise comparison not possible with row inputs");
+	      endif
+	      flag = "column";
       elseif (strcmp(arg,"overall"))
-	flag = "overall";
+	      flag = "overall";
       else
-	error ("biterr: unrecognized string argument");
+	      error ("biterr: unrecognized string argument");
       endif
     else
       k = arg;
       if (k < m)
-	error ("biterr: the symbol size is too small for largest element");
+	      error ("biterr: the symbol size is too small for largest element");
       endif
     endif
   end
@@ -148,16 +148,16 @@ function [num, rate, ind] = biterr (a, b, varargin)
   switch (flag)
     case 'row',
       if (strcmp(type,"matrix") && (ac == 1))
-	num = ind;
+	      num = ind;
       else
         num = sum(ind')';
       endif
       rate = num / k / max(ac,bc);
     case 'column',
       if (strcmp(type,"matrix") && (ar == 1))
-	num = ind;
+	      num = ind;
       else
-	num = sum(ind);
+	      num = sum(ind);
       endif
       rate = num / k / max(ar,br);
     case 'overall',

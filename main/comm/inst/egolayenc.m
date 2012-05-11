@@ -39,32 +39,32 @@
 ## @seealso{egolaygen,egolaydec}
 
 function C=egolayenc(M)
-if ( nargin < 1 )
+  if ( nargin < 1 )
     error('usage: C=egolayenc(M)');
-elseif ( columns(M) ~= 12 )
+  elseif ( columns(M) ~= 12 )
     error('extended golay code is (24,12), use message  of column size 12');
-end
+  end
 
-I=eye(12);
-P=[1 0 0 0 1 1 1 0 1 1 0 1;
-   0 0 0 1 1 1 0 1 1 0 1 1;
-   0 0 1 1 1 0 1 1 0 1 0 1;
-   0 1 1 1 0 1 1 0 1 0 0 1;
-   1 1 1 0 1 1 0 1 0 0 0 1;
-   1 1 0 1 1 0 1 0 0 0 1 1;
-   1 0 1 1 0 1 0 0 0 1 1 1;
-   0 1 1 0 1 0 0 0 1 1 1 1;
-   1 1 0 1 0 0 0 1 1 1 0 1;
-   1 0 1 0 0 0 1 1 1 0 1 1;
-   0 1 0 0 0 1 1 1 0 1 1 1;
-   1 1 1 1 1 1 1 1 1 1 1 0;];
-G=[P I]; %generator.
+  I=eye(12);
+  P=[1 0 0 0 1 1 1 0 1 1 0 1;
+     0 0 0 1 1 1 0 1 1 0 1 1;
+     0 0 1 1 1 0 1 1 0 1 0 1;
+     0 1 1 1 0 1 1 0 1 0 0 1;
+     1 1 1 0 1 1 0 1 0 0 0 1;
+     1 1 0 1 1 0 1 0 0 0 1 1;
+     1 0 1 1 0 1 0 0 0 1 1 1;
+     0 1 1 0 1 0 0 0 1 1 1 1;
+     1 1 0 1 0 0 0 1 1 1 0 1;
+     1 0 1 0 0 0 1 1 1 0 1 1;
+     0 1 0 0 0 1 1 1 0 1 1 1;
+     1 1 1 1 1 1 1 1 1 1 1 0;];
+  G=[P I]; %generator.
 
-##for rowi=1:rows(M)
-##   C(rowi,:)=mod(M(rowi,:)*G,2); %code.
-##end
+  ##for rowi=1:rows(M)
+  ##   C(rowi,:)=mod(M(rowi,:)*G,2); %code.
+  ##end
 
-C=mod(M*repmat(G,[1,rows(M)]),2);
-C=C(:,1:24);
+  C=mod(M*repmat(G,[1,rows(M)]),2);
+  C=C(:,1:24);
 
 end

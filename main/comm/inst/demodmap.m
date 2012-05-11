@@ -98,13 +98,13 @@ function z = demodmap (y, fd, fs, varargin)
   if (nargin > 3)
     method = varargin{1};
     if (!ischar(method) || (!strcmp(method,"ask") && ...
-	isempty(findstr(method,"msk")) && isempty(findstr(method,"fsk")) && ...
-	isempty(findstr(method,"samp")) && !strcmp(method,"psk") && ...
-	!strcmp(method,"qask") && !strcmp(method,"qam") && ...
-	!strcmp(method,"qsk") && !strcmp(method,"qask/cir") && ...
-	!strcmp(method,"qam/cir") && !strcmp(method,"qsk/cir") && ...
-	!strcmp(method,"qask/arb") && !strcmp(method,"qam/arb") && ...
-	!strcmp(method,"qsk/arb")))
+	                          isempty(findstr(method,"msk")) && isempty(findstr(method,"fsk")) && ...
+	                          isempty(findstr(method,"samp")) && !strcmp(method,"psk") && ...
+	                          !strcmp(method,"qask") && !strcmp(method,"qam") && ...
+	                          !strcmp(method,"qsk") && !strcmp(method,"qask/cir") && ...
+	                          !strcmp(method,"qam/cir") && !strcmp(method,"qsk/cir") && ...
+	                          !strcmp(method,"qask/arb") && !strcmp(method,"qam/arb") && ...
+	                          !strcmp(method,"qsk/arb")))
       error ("modmap: unknown mapping method");
     endif
   else
@@ -142,24 +142,24 @@ function z = demodmap (y, fd, fs, varargin)
   if (!isempty(findstr(method,"fsk")) || !isempty(findstr(method,"msk")))
     if (findstr(method,"msk"))
       if (nargin > 4)
-	error ("demodmap: too many arguments");
+	      error ("demodmap: too many arguments");
       endif
       M = 2;
       tone = fd/2;
     else
       if (nargin > 5)
-	tone = varargin{3};
+	      tone = varargin{3};
       else
-	tone = fd;
+	      tone = fd;
       endif
       if (nargin > 6)
-	error ("demodmap: too many arguments");
+	      error ("demodmap: too many arguments");
       endif
     endif
 
     if (findstr(method,"/max"))
       if (size(y,2) != M)
-	error ("demodmap: when using correlation must have M columns");
+	      error ("demodmap: when using correlation must have M columns");
       endif
       ## We have an M-column maximum from which with pick index of the maximum
       ## value in each row as the decoded value
@@ -177,37 +177,37 @@ function z = demodmap (y, fd, fs, varargin)
   elseif (strcmp(method,"psk"))
     c = apkconst(M,[],[]);
   elseif (!isempty(findstr(method,"qask")) || ...
-	  !isempty(findstr(method,"qsk")) || ... 
-	  !isempty(findstr(method,"qam")))
+	        !isempty(findstr(method,"qsk")) || ... 
+	        !isempty(findstr(method,"qam")))
     if (findstr(method,"/cir"))
       nsig = 2;
       amp = [];
       phs = [];
       if (nargin > 4)
-	nsig = varargin{2};
-	if (!isvector(nsig))
-	  error ("modmap: invalid number of constellation point in qask/cir");
-	endif
+	      nsig = varargin{2};
+	      if (!isvector(nsig))
+	        error ("modmap: invalid number of constellation point in qask/cir");
+	      endif
       endif
       if (nargin > 5)
-	amp = varargin{3};
+	      amp = varargin{3};
       endif
       if (nargin > 6)
-	phs = varargin{4};
+	      phs = varargin{4};
       endif
       c = apkconst(nsig,amp,phs);
       M = length(c);
     elseif (findstr(method,"/arb"))
       if (nargin == 4)
-	c = qaskenco(2);
+	      c = qaskenco(2);
       elseif (nargin == 5)
-	c = varargin{2}; 
+	      c = varargin{2}; 
       elseif (nargin == 6)
-	inphase = varargin{2}; 
-	quadr = varargin{3};
-	c = inphase + 1i*quadr;
+	      inphase = varargin{2}; 
+	      quadr = varargin{3};
+	      c = inphase + 1i*quadr;
       elseif (nargin > 6)
-	error ("demodmap: too many arguments");
+	      error ("demodmap: too many arguments");
       endif
       M = length(c);
     else
@@ -229,8 +229,8 @@ function z = demodmap (y, fd, fs, varargin)
       z = (b - 1).';
     else
       for i=1:size(y,1)
-	[a, b] = min(abs(repmat(y(i,:),M,1) - repmat(c,1,size(y,2))));
-	z(i,:) = b - 1;
+	      [a, b] = min(abs(repmat(y(i,:),M,1) - repmat(c,1,size(y,2))));
+	      z(i,:) = b - 1;
       end
     endif
   endif

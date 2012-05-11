@@ -1,4 +1,4 @@
-# Copyright (C) 2007 Sylvain Pelissier <sylvain.pelissier@gmail.com>
+## Copyright (C) 2007 Sylvain Pelissier <sylvain.pelissier@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -21,10 +21,10 @@
 ## @end deftypefn
 
 function [m] = amdemod(s,fc,fs)
-    if(nargin ~= 3)
-	usage("m = amdemod(s,fc,fs)");
-    end
-    t = 0:1./fs:(length(s)-1)./fs;
-    e = s.*cos(2.*pi.*fc.*t);
-    [b a] = butter(5,fc.*2./fs);
-    m = filtfilt(b,a,e).*2;
+  if(nargin ~= 3)
+	  usage("m = amdemod(s,fc,fs)");
+  end
+  t = 0:1./fs:(length(s)-1)./fs;
+  e = s.*cos(2.*pi.*fc.*t);
+  [b a] = butter(5,fc.*2./fs);
+  m = filtfilt(b,a,e).*2;

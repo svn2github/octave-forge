@@ -75,22 +75,22 @@ function d = bi2de (b, p, f)
 
 endfunction
 
-%!shared x
-%! x = randi ([0 1], 100, 16);
-%!assert (bi2de (0), 0)
-%!assert (bi2de (1), 1)
-%!assert (bi2de (ones (1, 8)), 255)
-%!assert (bi2de ([7 7 7 7], 8), 4095)
-%!assert (size (bi2de (x)), [100 1])
-%!assert (bi2de (x, "right-msb"), bi2de (x))
-%!assert (bi2de (x, "left-msb"), bi2de (fliplr (x)))
+                                %!shared x
+                                %! x = randi ([0 1], 100, 16);
+                                %!assert (bi2de (0), 0)
+                                %!assert (bi2de (1), 1)
+                                %!assert (bi2de (ones (1, 8)), 255)
+                                %!assert (bi2de ([7 7 7 7], 8), 4095)
+                                %!assert (size (bi2de (x)), [100 1])
+                                %!assert (bi2de (x, "right-msb"), bi2de (x))
+                                %!assert (bi2de (x, "left-msb"), bi2de (fliplr (x)))
 
 %% Test input validation
-%!error bi2de ()
-%!error bi2de (1, 2, 3, 4)
-%!error bi2de (1, 2, 3)
-%!error bi2de (1, 2, "invalid")
-%!error bi2de (0.1)
-%!error bi2de (-1)
-%!error bi2de (2)
-%!error bi2de (7, 6)
+                                %!error bi2de ()
+                                %!error bi2de (1, 2, 3, 4)
+                                %!error bi2de (1, 2, 3)
+                                %!error bi2de (1, 2, "invalid")
+                                %!error bi2de (0.1)
+                                %!error bi2de (-1)
+                                %!error bi2de (2)
+                                %!error bi2de (7, 6)

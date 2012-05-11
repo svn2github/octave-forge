@@ -106,31 +106,31 @@ function [code, added] = encode(msg, n, k, typ, opt)
     else
       ## Why the hell did matlab decide on such an ugly way of passing 2 args!
       if (strcmp(typ,"linear") || strcmp(typ,"linear/binary"))
-	coding = "linear";
-	msgtyp = "binary";
+	      coding = "linear";
+	      msgtyp = "binary";
       elseif (strcmp(typ,"linear/decimal"))
-	coding = "linear";
-	msgtyp = "decimal";
+	      coding = "linear";
+	      msgtyp = "decimal";
       elseif (strcmp(typ,"cyclic") || strcmp(typ,"cyclic/binary"))
-	coding = "cyclic";
-	msgtyp = "binary";
+	      coding = "cyclic";
+	      msgtyp = "binary";
       elseif (strcmp(typ,"cyclic/decimal"))
-	coding = "cyclic";
-	msgtyp = "decimal";
+	      coding = "cyclic";
+	      msgtyp = "decimal";
       elseif (strcmp(typ,"bch") || strcmp(typ,"bch/binary"))
-	coding = "bch";
-	msgtyp = "binary";
+	      coding = "bch";
+	      msgtyp = "binary";
       elseif (strcmp(typ,"bch/decimal"))
-	coding = "bch";
-	msgtyp = "decimal";
+	      coding = "bch";
+	      msgtyp = "decimal";
       elseif (strcmp(typ,"hamming") || strcmp(typ,"hamming/binary"))
-	coding = "hamming";
-	msgtyp = "binary";
+	      coding = "hamming";
+	      msgtyp = "binary";
       elseif (strcmp(typ,"hamming/decimal"))
-	coding = "hamming";
-	msgtyp = "decimal";
+	      coding = "hamming";
+	      msgtyp = "decimal";
       else
-	error ("encode: unrecognized coding and/or message type");
+	      error ("encode: unrecognized coding and/or message type");
       endif
     endif
   else
@@ -173,31 +173,31 @@ function [code, added] = encode(msg, n, k, typ, opt)
   else
     if (strcmp(coding,"linear"))
       if (nargin > 4)
-	gen = opt;
-	if ((size(gen,1) != k) || (size(gen,2) != n))
-	  error ("encode: generator matrix is in incorrect form");
-	endif
+	      gen = opt;
+	      if ((size(gen,1) != k) || (size(gen,2) != n))
+	        error ("encode: generator matrix is in incorrect form");
+	      endif
       else
-	error ("encode: linear coding must supply the generator matrix");
+	      error ("encode: linear coding must supply the generator matrix");
       endif
     elseif (strcmp(coding,"cyclic"))
       if (nargin > 4)
-	[par, gen] = cyclgen(n,opt);
+	      [par, gen] = cyclgen(n,opt);
       else
-	[par, gen] = cyclgen(n,cyclpoly(n,k));
+	      [par, gen] = cyclgen(n,cyclpoly(n,k));
       endif
     else
       m = log2(n + 1);
       if ((m != floor(m)) || (m < 3) || (m > 16))
-	error ("encode: codeword length must be of the form '2^m-1' with integer m");
+	      error ("encode: codeword length must be of the form '2^m-1' with integer m");
       endif
       if (k != (n-m))
-	error ("encode: illegal message length for hamming code");
+	      error ("encode: illegal message length for hamming code");
       endif
       if (nargin > 4)
-	[par, gen] = hammgen(m, opt);
+	      [par, gen] = hammgen(m, opt);
       else
-	[par, gen] = hammgen(m);
+	      [par, gen] = hammgen(m);
       endif
     endif
     code = mod(msg * gen, 2);

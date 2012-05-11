@@ -146,7 +146,7 @@ function y = amodce (x, Fs, typ, varargin)
   elseif (strcmp(typ,"qam"))
     if (isreal(x))
       if (floor(size(x,2)/2) != (size(x,2)/2))
-	error ("amodce: QAM modulation must have an even number of columns for real signals");
+	      error ("amodce: QAM modulation must have an even number of columns for real signals");
       endif
       y = (x(:,1:2:size(x,2)) + 1i * x(:,2:2:size(x,2))); 
     else
@@ -161,7 +161,7 @@ function y = amodce (x, Fs, typ, varargin)
     ## As x(t) is discrete and not a function, the only way to perform the
     ## above integration is with Simpson's rule. Note \Delta T = 2 * pi / Fs.
     pm = pi / Fs * dev * (cumsum([zeros(1,size(x,2));x(1:size(x,1)-1,:)]) ...
-			  + cumsum(x));
+			                    + cumsum(x));
     y = exp(1i * (pm + iphs));
   else
     error ("amodce: unknown modulation specified");

@@ -56,10 +56,10 @@ function x = convenc (m, G, k = 1)
     print_usage;
   endif
 
-  # Use conv2 to do repeated 1d convolutions of m with each row of G. 
-  # rem is used to transform the standard convolution result to one
-  # which uses modulo-2 addition.  Only cols with index a mult. of k 
-  # are in the actual enc. output
+                                # Use conv2 to do repeated 1d convolutions of m with each row of G. 
+                                # rem is used to transform the standard convolution result to one
+                                # which uses modulo-2 addition.  Only cols with index a mult. of k 
+                                # are in the actual enc. output
 
   x = rem(conv2(1, m(:)', G),2)(:,!rem(1:numel(m),k))(:)';
 endfunction

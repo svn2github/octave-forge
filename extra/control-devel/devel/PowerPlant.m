@@ -40,7 +40,7 @@ This file describes the data in the powerplant.dat file.
 
 %}
 
-close all, clc
+clear all, close all, clc
 
 % NB: the code from DaISy is wrong:
 %     powerplant(:,1) is just the sample number

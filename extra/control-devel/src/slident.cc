@@ -405,8 +405,8 @@ somehow ldrwrk and ldwork must have been mixed up here
                 "coefficient matrix"};
 
 
-        error_msg ("ident", info_a, 2, err_msg);
-        warning_msg ("ident", iwarn_a, 5, warn_msg);
+        error_msg ("ident: IB01AD", info_a, 2, err_msg);
+        warning_msg ("ident: IB01AD", iwarn_a, 5, warn_msg);
 
 
         // resize
@@ -586,8 +586,8 @@ somehow ldrwrk and ldwork must have been mixed up here
                 "gain matrix is set to zero"};
 
 
-        error_msg ("ident", info_b, 10, err_msg_b);
-        warning_msg ("ident", iwarn_b, 5, warn_msg_b);
+        error_msg ("ident: IB01BD", info_b, 10, err_msg_b);
+        warning_msg ("ident: IB01BD", iwarn_b, 5, warn_msg_b);
 
         // resize
         a.resize (n, n);
@@ -682,8 +682,8 @@ somehow ldrwrk and ldwork must have been mixed up here
                 "and/or  B and D  could be inaccurate"};
 
 
-        error_msg ("ident", info_c, 2, err_msg_c);
-        warning_msg ("ident", iwarn_c, 6, warn_msg_c);
+        error_msg ("ident: IB01CD", info_c, 2, err_msg_c);
+        warning_msg ("ident: IB01CD", iwarn_c, 6, warn_msg_c);
       
         
         // return values

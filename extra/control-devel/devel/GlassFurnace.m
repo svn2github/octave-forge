@@ -38,7 +38,7 @@ This file describes the data in the glassfurnace.dat file.
 %}
 
 
-close all, clc
+clear all, close all, clc
 
 load glassfurnace.dat
 T=glassfurnace(:,1);

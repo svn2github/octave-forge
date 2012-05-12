@@ -137,16 +137,16 @@ For internal use only.")
         switch (imeth)
         {
             case 0:
-                meth_b = 'M';
                 meth_a = 'M';
+                meth_b = 'M';
                 break;
             case 1:
-                meth_b = 'N';
                 meth_a = 'N';
+                meth_b = 'N';
                 break;
             case 2:
-                meth_b = 'C';
                 meth_a = 'N';    // no typo here
+                meth_b = 'C';
                 break;
             default:
                 error ("slib01ad: argument 'meth' invalid");

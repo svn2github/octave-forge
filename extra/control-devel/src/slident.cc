@@ -106,14 +106,13 @@ For internal use only.")
 ////////////////////////////////////////////////////////////////////////////////////
 
         // arguments in
-        char meth;
+        char meth_a;
+        char meth_b;
         char alg;
         char jobd;
         char batch;
         char conct;
         char ctrl;
-        char metha;
-        char jobda; // ??? unused
         
         Matrix y = args(0).matrix_value ();
         Matrix u = args(1).matrix_value ();
@@ -128,23 +127,26 @@ For internal use only.")
         const int ictrl = args(9).int_value ();
         
         double rcond = args(10).double_value ();
-        double tol = args(11).double_value ();
-        double tolb = args(10).double_value ();      // tolb = rcond
+        double tol_a = args(11).double_value ();
+
+        double tol_b = rcond;
+        double tol_c = rcond;
+        //double tol_b = args(10).double_value ();      // tol_b = rcond
 
             
         switch (imeth)
         {
             case 0:
-                meth = 'M';
-                metha = 'M';
+                meth_b = 'M';
+                meth_a = 'M';
                 break;
             case 1:
-                meth = 'N';
-                metha = 'N';
+                meth_b = 'N';
+                meth_a = 'N';
                 break;
             case 2:
-                meth = 'C';
-                metha = 'N';    // no typo here
+                meth_b = 'C';
+                meth_a = 'N';    // no typo here
                 break;
             default:
                 error ("slib01ad: argument 'meth' invalid");
@@ -165,7 +167,7 @@ For internal use only.")
                 error ("slib01ad: argument 'alg' invalid");
         }
         
-        if (meth == 'C')
+        if (meth_b == 'C')
             jobd = 'N';
         else if (ijobd == 0)
             jobd = 'M';
@@ -231,9 +233,9 @@ For internal use only.")
         int n;
         int ldr;
         
-        if (metha == 'M' && jobd == 'M')
+        if (meth_a == 'M' && jobd == 'M')
             ldr = max (2*(m+l)*nobr, 3*m*nobr);
-        else if (metha == 'N' || (metha == 'M' && jobd == 'N'))
+        else if (meth_a == 'N' || (meth_a == 'M' && jobd == 'N'))
             ldr = 2*(m+l)*nobr;
         else
             error ("slib01ad: could not handle 'ldr' case");
@@ -242,18 +244,18 @@ For internal use only.")
         ColumnVector sv (l*nobr);
 
         // workspace
-        int liwork;
+        int liwork_a;
 
-        if (metha == 'N')            // if METH = 'N'
-            liwork = (m+l)*nobr;
+        if (meth_a == 'N')            // if METH = 'N'
+            liwork_a = (m+l)*nobr;
         else if (alg == 'F')        // if METH = 'M' and ALG = 'F'
-            liwork = m+l;
+            liwork_a = m+l;
         else                        // if METH = 'M' and ALG = 'C' or 'Q'
-            liwork = 0;
+            liwork_a = 0;
 
         // TODO: Handle 'k' for DWORK
 
-        int ldwork;
+        int ldwork_a;
         int ns = nsmp - 2*nobr + 1;
         
         if (alg == 'C')
@@ -261,32 +263,32 @@ For internal use only.")
             if (batch == 'F' || batch == 'I')
             {
                 if (conct == 'C')
-                    ldwork = (4*nobr-2)*(m+l);
+                    ldwork_a = (4*nobr-2)*(m+l);
                 else    // (conct == 'N')
-                    ldwork = 1;
+                    ldwork_a = 1;
             }
-            else if (metha == 'M')   // && (batch == 'L' || batch == 'O')
+            else if (meth_a == 'M')   // && (batch == 'L' || batch == 'O')
             {
                 if (conct == 'C' && batch == 'L')
-                    ldwork = max ((4*nobr-2)*(m+l), 5*l*nobr);
+                    ldwork_a = max ((4*nobr-2)*(m+l), 5*l*nobr);
                 else if (jobd == 'M')
-                    ldwork = max ((2*m-1)*nobr, (m+l)*nobr, 5*l*nobr);
+                    ldwork_a = max ((2*m-1)*nobr, (m+l)*nobr, 5*l*nobr);
                 else    // (jobd == 'N')
-                    ldwork = 5*l*nobr;
+                    ldwork_a = 5*l*nobr;
             }
-            else    // meth == 'N' && (batch == 'L' || batch == 'O')
+            else    // meth_b == 'N' && (batch == 'L' || batch == 'O')
             {
-                ldwork = 5*(m+l)*nobr + 1;
+                ldwork_a = 5*(m+l)*nobr + 1;
             }
         }
         else if (alg == 'F')
         {
             if (batch != 'O' && conct == 'C')
-                ldwork = (m+l)*2*nobr*(m+l+3);
+                ldwork_a = (m+l)*2*nobr*(m+l+3);
             else if (batch == 'F' || batch == 'I')  // && conct == 'N'
-                ldwork = (m+l)*2*nobr*(m+l+1);
+                ldwork_a = (m+l)*2*nobr*(m+l+1);
             else    // (batch == 'L' || '0' && conct == 'N')
-                ldwork = (m+l)*4*nobr*(m+l+1)+(m+l)*2*nobr;
+                ldwork_a = (m+l)*4*nobr*(m+l+1)+(m+l)*2*nobr;
         }
         else    // (alg == 'Q')
         {
@@ -294,22 +296,22 @@ For internal use only.")
             
             if (ldr >= ns && batch == 'F')
             {
-                ldwork = 4*(m+l)*nobr;
+                ldwork_a = 4*(m+l)*nobr;
             }
             else if (ldr >= ns && batch == 'O')
             {
-                if (metha == 'M')
-                    ldwork = max (4*(m+l)*nobr, 5*l*nobr);
+                if (meth_a == 'M')
+                    ldwork_a = max (4*(m+l)*nobr, 5*l*nobr);
                 else    // (meth == 'N')
-                    ldwork = 5*(m+l)*nobr + 1;
+                    ldwork_a = 5*(m+l)*nobr + 1;
             }
             else if (conct == 'C' && (batch == 'I' || batch == 'L'))
             {
-                ldwork = 4*(nobr+1)*(m+l)*nobr;
+                ldwork_a = 4*(nobr+1)*(m+l)*nobr;
             }
             else    // if ALG = 'Q', (BATCH = 'F' or 'O', and LDR < NS), or (BATCH = 'I' or 'L' and CONCT = 'N')
             {
-                ldwork = 6*(m+l)*nobr;
+                ldwork_a = 6*(m+l)*nobr;
             }
         }
 
@@ -325,11 +327,11 @@ C     obtained for  LDWORK = (NS+2)*(2*(M+L)*NOBR),  assuming that the
 C     cache size is large enough to accommodate R, U, Y, and DWORK.
 */
 
-// warning ("==================== ldwork before: %d =====================", ldwork);
-// ldwork = (ns+2)*(2*(m+l)*nobr);
-ldwork = max (ldwork, (ns+2)*(2*(m+l)*nobr));
-// ldwork *= 3;
-// warning ("==================== ldwork after: %d =====================", ldwork);
+// warning ("==================== ldwork_a before: %d =====================", ldwork_a);
+// ldwork_a = (ns+2)*(2*(m+l)*nobr);
+ldwork_a = max (ldwork_a, (ns+2)*(2*(m+l)*nobr));
+// ldwork_a *= 3;
+// warning ("==================== ldwork_a after: %d =====================", ldwork_a);
 
 
 /*
@@ -345,17 +347,17 @@ somehow ldrwrk and ldwork must have been mixed up here
 */
 
 
-        OCTAVE_LOCAL_BUFFER (int, iwork, liwork);
-        OCTAVE_LOCAL_BUFFER (double, dwork, ldwork);
+        OCTAVE_LOCAL_BUFFER (int, iwork_a, liwork_a);
+        OCTAVE_LOCAL_BUFFER (double, dwork_a, ldwork_a);
         
         // error indicators
-        int iwarn = 0;
-        int info = 0;
+        int iwarn_a = 0;
+        int info_a = 0;
 
 
         // SLICOT routine IB01AD
         F77_XFCN (ib01ad, IB01AD,
-                 (metha, alg, jobd,
+                 (meth_a, alg, jobd,
                   batch, conct, ctrl,
                   nobr, m, l,
                   nsmp,
@@ -364,10 +366,10 @@ somehow ldrwrk and ldwork must have been mixed up here
                   n,
                   r.fortran_vec (), ldr,
                   sv.fortran_vec (),
-                  rcond, tol,
-                  iwork,
-                  dwork, ldwork,
-                  iwarn, info));
+                  rcond, tol_a,
+                  iwork_a,
+                  dwork_a, ldwork_a,
+                  iwarn_a, info_a));
 
 
         if (f77_exception_encountered)
@@ -403,8 +405,8 @@ somehow ldrwrk and ldwork must have been mixed up here
                 "coefficient matrix"};
 
 
-        error_msg ("ident", info, 2, err_msg);
-        warning_msg ("ident", iwarn, 5, warn_msg);
+        error_msg ("ident", info_a, 2, err_msg);
+        warning_msg ("ident", iwarn_a, 5, warn_msg);
 
 
         // resize
@@ -430,8 +432,6 @@ somehow ldrwrk and ldwork must have been mixed up here
         char job = 'A';
         char jobck = 'K';
         
-        // TODO: if meth == 'C', which meth should be taken for IB01AD.f, 'M' or 'N'?
-
         int nsmpl = nsmp;
         
         if (nsmpl < 2*(m+l)*nobr)
@@ -471,7 +471,7 @@ somehow ldrwrk and ldwork must have been mixed up here
         int ldw2;
         int ldw3;
 /*        
-        if (meth == 'M')
+        if (meth_b == 'M')
         {
             int ldw1a = max (2*(l*nobr-l)*n+2*n, (l*nobr-l)*n+n*n+7*n);
             int ldw1b = max (2*(l*nobr-l)*n+n*n+7*n,
@@ -488,7 +488,7 @@ somehow ldrwrk and ldwork must have been mixed up here
             
             ldw2 = l*nobr*n + max ((l*nobr-l)*n+aw+2*n+max(5*n,(2*m+l)*nobr+l), 4*(m*nobr+n)+1, m*nobr+2*n+l );
         }
-        else if (meth == 'N')
+        else if (meth_b == 'N')
         {
             ldw1 = l*nobr*n + max ((l*nobr-l)*n+2*n+(2*m+l)*nobr+l,
                                    2*(l*nobr-l)*n+n*n+8*n,
@@ -501,7 +501,7 @@ somehow ldrwrk and ldwork must have been mixed up here
                 ldw2 = l*nobr*n+m*nobr*(n+l)*(m*(n+l)+1)+ max ((n+l)*(n+l), 4*m*(n+l)+1);
 
         }
-        else    // (meth == 'C')
+        else    // (meth_b == 'C')
         {
             int ldw1a = max (2*(l*nobr-l)*n+2*n, (l*nobr-l)*n+n*n+7*n);
             int ldw1b = l*nobr*n + max ((l*nobr-l)*n+2*n+(2*m+l)*nobr+l,
@@ -578,7 +578,7 @@ somehow ldrwrk and ldwork must have been mixed up here
 
         // SLICOT routine IB01BD
         F77_XFCN (ib01bd, IB01BD,
-                 (meth, job, jobck,
+                 (meth_b, job, jobck,
                   nobr, n, m, l,
                   nsmpl,
                   r.fortran_vec (), ldr,
@@ -590,7 +590,7 @@ somehow ldrwrk and ldwork must have been mixed up here
                   ry.fortran_vec (), ldry,
                   s.fortran_vec (), lds,
                   k.fortran_vec (), ldk,
-                  tolb,
+                  tol_b,
                   iwork_b,
                   dwork_b, ldwork_b,
                   bwork,
@@ -698,7 +698,7 @@ somehow ldrwrk and ldwork must have been mixed up here
                   y.fortran_vec (), ldy,
                   x0.fortran_vec (),
                   v.fortran_vec (), ldv,
-                  tolb,
+                  tol_c,
                   iwork_c,
                   dwork_c, ldwork_c,
                   iwarn_c, info_c));

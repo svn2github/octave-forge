@@ -3,7 +3,7 @@ Summary of important user-visible changes for communications 1.1.1:
 
  ** The function `marcumq' has been moved to the signal package
 
- ** communications is no longer dependent on the signal package
+ ** communications is no longer dependent on the image package
 
  ** The following functions are new:
 

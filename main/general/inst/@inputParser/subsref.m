@@ -89,7 +89,7 @@ function inPar = parse_args (inPar, idx)
     [name, inPar.copy] = shift (inPar.copy);
     [value, args]      = shift (args);
     if ( !feval (inPar.Required.(name).validator, value) )
-      error("%sargument '%s' failed validation %s", inPar.FunctionName, name, func2str (inPar.Required.(name).validator));
+      error_invalid (inPar.FunctionName, name, inPar.Required.(name).validator);
     endif
     inPar.Results.(name) = value;
   endfor
@@ -124,7 +124,7 @@ function inPar = parse_args (inPar, idx)
         args = unshift (args, value);
         continue
       else
-        error("%sinvalid value for parameter '%s'", inPar.FunctionName, name);
+        error_invalid (inPar.FunctionName, name, inPar.Optional.(name).validator);
       endif
     else
       inPar.Results.(name) = value;
@@ -175,7 +175,7 @@ function inPar = parse_args (inPar, idx)
     if (!isempty (index))
       [name, inPar.copy] = shift (inPar.copy, index);
       if ( !feval (inPar.(method).(name).validator, value))
-        error("%sinvalid value for parameter '%s'", inPar.FunctionName, key);
+        error_invalid (inPar.FunctionName, key, inPar.(method).(name).validator);
       endif
       ## we use the name shifted from 'copy' instead of the key from 'args' in case
       ## the key is in the wrong case
@@ -301,9 +301,14 @@ function inPar = validate_args (method, inPar, name, val, def = false)
   ## make sure that the given default value is actually valid
   ## TODO make sure that when using the default, it's only validated once
   if ( isa (val, 'function_handle') && !strcmpi (method, 'Required') && !feval (val, def) )
-    error ("default value does not validate with '%s'", func2str (val) );
+    error ("default value for '%s' failed validation with '%s'", name, func2str (val) );
   endif
 
+endfunction
+
+## this is just for consistency of error message
+function error_invalid (prefix, name, val)
+  error("%sargument '%s' failed validation %s", prefix, name, func2str (val));
 endfunction
 
 ################################################################################

@@ -62,16 +62,16 @@ endfunction
 ## ParamValue mixed with Switch. Any other order makes no sense
 function inPar = parse_args (inPar, idx)
 
-  ## make copy of ordered list of Parameters to keep the original intact and readable
-  inPar.copy = inPar.Parameters;
-
-  ## this makes it easier to read but may be memory instensive
-  args = idx(2).subs;
-
   ## syntax is inPar.parse (arguments)
   if ( numel(idx) != 2 || idx(2).type != '()' )
     print_usage ("@inputParser/parse");
   endif
+
+  ## this makes it easier to read but may be memory instensive
+  args = idx(2).subs;
+
+  ## make copy of ordered list of Parameters to keep the original intact and readable
+  inPar.copy = inPar.Parameters;
 
   if ( numel (fieldnames (inPar.Required)) > numel (args) )
     error("%sNot enough arguments", inPar.FunctionName);

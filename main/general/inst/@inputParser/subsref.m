@@ -89,7 +89,7 @@ function inPar = parse_args (inPar, idx)
     [name, inPar.copy] = shift (inPar.copy);
     [value, args]      = shift (args);
     if ( !feval (inPar.Required.(name).validator, value) )
-      error("%sinvalid value for parameter '%s'", inPar.FunctionName, name);
+      error("%sargument '%s' failed validation %s", inPar.FunctionName, name, func2str (inPar.Required.(name).validator));
     endif
     inPar.Results.(name) = value;
   endfor
@@ -163,16 +163,16 @@ function inPar = parse_args (inPar, idx)
       value  = true;
       method = "Switch";
     else
-      ## then it must be a ParamValue, shift its value
+      ## then it must be a ParamValue (even if unmatched), shift its value
       if (numel (args) < 1)
-        error ("%sno value found for Parameter '%s'", inPar.FunctionName, key);
+        error ("%sparameter '%s' does not have a value", inPar.FunctionName, key);
       endif
       [value, args] = shift (args);
       method = "ParamValue";
     endif
 
-    ## index == 0 means no match so either return error or move them into 'Unmatched'
-    if ( index != 0 )
+    ## empty index means no match so either return error or move them into 'Unmatched'
+    if (!isempty (index))
       [name, inPar.copy] = shift (inPar.copy, index);
       if ( !feval (inPar.(method).(name).validator, value))
         error("%sinvalid value for parameter '%s'", inPar.FunctionName, key);
@@ -180,11 +180,11 @@ function inPar = parse_args (inPar, idx)
       ## we use the name shifted from 'copy' instead of the key from 'args' in case
       ## the key is in the wrong case
       inPar.Results.(name) = value;
-    elseif ( index == 0 && inPar.KeepUnmatched )
+    elseif (isempty (index) && inPar.KeepUnmatched )
       inPar.Unmatched.(key) = value;
       i = i - 1; # this time didn't count, go back one
-    elseif ( index == 0 && !inPar.KeepUnmatched )
-      error("%sfound unmatched parameter '%s'", inPar.FunctionName, name);
+    else
+      error ("%sargument '%s' did not match any valid parameter of the parser", inPar.FunctionName, key);
     endif
   endfor
 

@@ -29,7 +29,7 @@
 ## for the parameter with name @var{argname}. Alternatively, a function name
 ## can be used.
 ##
-## See @command{help @inputParser} for examples.
+## See @command{help inputParser} for examples.
 ##
 ## @seealso{inputParser, @@inputParser/addOptional, @@inputParser/addSwitch,
 ## @@inputParser/addParamValue, @@inputParser/addRequired, @@inputParser/parse}

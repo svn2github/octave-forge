@@ -31,7 +31,7 @@
 ## for the argument with name @var{argname}. Alternatively, a function name
 ## can be used.
 ##
-## See @command{help @inputParser} for examples.
+## See @command{help inputParser} for examples.
 ##
 ## @emph{Note}: if a string argument does not validate, it will be considered a
 ## ParamValue key. If an optional argument is not given a validator, anything

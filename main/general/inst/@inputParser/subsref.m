@@ -44,6 +44,12 @@ function inPar = subsref (inPar, idx)
     error ("invalid index for reference of class %s", class (inPar) );
   endswitch
 
+  ## TODO we should make inPar an object of the inputParser class again. At
+  ## least after running parse it becomes just a structure again. While that is
+  ## bad, at least allows for easy access to the Results and Unmatched fields
+  ## without extra coding.
+#  inPar = class (inPar, 'inputParser');
+
 endfunction
 
 function out = retrieve_results (inPar, idx)

@@ -112,6 +112,11 @@ function theta = __theta__ (phi, y, i, n)
     [U, S, V] = svd (phi{1}, 0);                    # 0 for "economy size" decomposition
     S = diag (S);                                   # extract main diagonal
     r = sum (S > eps*S(1));
+    if (r < length (S))
+      warning ("arx: rank-deficient coefficient matrix");
+      warning ("sampling time too small");
+      warning ("persistence of excitation");
+    endif
     V = V(:, 1:r);
     S = S(1:r);
     U = U(:, 1:r);

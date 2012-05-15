@@ -130,6 +130,10 @@ endfunction
 
 function x = __ls_svd__ (A, b)
 
+  ## solve the problem Ax=b
+  ## x = A\b  would also work,
+  ## but this way we have better control and warnings
+
   ## solve linear least squares problem by pseudoinverse
   ## the pseudoinverse is computed by singular value decomposition
   ## M = U S V*  --->  M+ = V S+ U*

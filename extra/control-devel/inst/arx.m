@@ -97,10 +97,8 @@ endfunction
 function theta = __theta__ (phi, y, i, n)
                                                 
   ## Theta = Phi \ Y(n+1:end, :);                   # naive formula
-  
-  ex = numel (phi);                                 # number of experiments
-  
-  if (ex == 1)
+    
+  if (numel (phi) == 1)
     ## single-experiment dataset
     theta = __ls_svd__ (phi{1}, y{1}(n(i)+1:end, i));
   else

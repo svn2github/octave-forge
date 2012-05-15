@@ -128,6 +128,7 @@ function theta = __theta__ (phi, y, i, n)
     
     ## covariance matrix C = (Phi1' Phi + Phi2' Phi2 + ...)
     tmp = cellfun (@(Phi) Phi.' * Phi, phi, "uniformoutput", false);
+    rc = cellfun (@rcond, tmp); # C auch noch testen? QR oder SVD?
     C = plus (tmp{:});
     
     ## PhiTY = (Phi1' Y1 + Phi2' Y2 + ...)

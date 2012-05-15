@@ -95,14 +95,17 @@ endfunction
 
 
 function theta = __theta__ (phi, y, i, n)
-                                                
-  ## Theta = Phi \ Y(n+1:end, :);                   # naive formula
     
-  if (numel (phi) == 1)
-    ## single-experiment dataset
-    theta = __ls_svd__ (phi{1}, y{1}(n(i)+1:end, i));
-  else
-    ## multi-experiment dataset
+  if (numel (phi) == 1)                             # single-experiment dataset
+    A = horzcat (phi{1}, y{1}(n(i)+1:end, i));      # [Phi, Y]
+    R0 = triu (qr (A, 0));                          # 0 for economy-size R (without zero rows)
+    R1 = R0(1:end-1, 1:end-1);                      # R1 is triangular - can we exploit this in R1\R2
+    R2 = R0(1:end-1, end);
+    theta = __ls_svd__ (R1, R2);                    # R1 \ R2
+    
+    ## Theta = Phi \ Y(n+1:end, :);                 # naive formula
+    ## theta = __ls_svd__ (phi{1}, y{1}(n(i)+1:end, i));
+  else                                              # multi-experiment dataset
     ## TODO: find more sophisticated formula than
     ## Theta = (Phi1' Phi + Phi2' Phi2 + ...) \ (Phi1' Y1 + Phi2' Y2 + ...)
     

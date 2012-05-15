@@ -102,25 +102,7 @@ function theta = __theta__ (phi, y, i, n)
   
   if (ex == 1)
     ## single-experiment dataset
-    
-    ## solve linear least squares problem by pseudoinverse
-    ## the pseudoinverse is computed by singular value decomposition
-    ## M = U S V*  --->  M+ = V S+ U*
-    ## Th = Ph \ Y = Ph+ Y
-    ## Th = V S+ U* Y,   S+ = 1 ./ diag (S)
-
-    [U, S, V] = svd (phi{1}, 0);                    # 0 for "economy size" decomposition
-    S = diag (S);                                   # extract main diagonal
-    r = sum (S > eps*S(1));
-    if (r < length (S))
-      warning ("arx: rank-deficient coefficient matrix");
-      warning ("sampling time too small");
-      warning ("persistence of excitation");
-    endif
-    V = V(:, 1:r);
-    S = S(1:r);
-    U = U(:, 1:r);
-    theta = V * (S .\ (U' * y{1}(n(i)+1:end, i)));     # U' is the conjugate transpose
+    theta = __ls_svd__ (phi{1}, y{1}(n(i)+1:end, i));
   else
     ## multi-experiment dataset
     ## TODO: find more sophisticated formula than
@@ -136,7 +118,31 @@ function theta = __theta__ (phi, y, i, n)
     PhiTY = plus (tmp{:});
     
     ## pseudoinverse  Theta = C \ Phi'Y
-    theta = C \ PhiTY;
+    theta = __ls_svd__ (C, PhiTY);
   endif
   
+endfunction
+
+
+function x = __ls_svd__ (A, b)
+
+  ## solve linear least squares problem by pseudoinverse
+  ## the pseudoinverse is computed by singular value decomposition
+  ## M = U S V*  --->  M+ = V S+ U*
+  ## Th = Ph \ Y = Ph+ Y
+  ## Th = V S+ U* Y,   S+ = 1 ./ diag (S)
+
+  [U, S, V] = svd (A, 0);                         # 0 for "economy size" decomposition
+  S = diag (S);                                   # extract main diagonal
+  r = sum (S > eps*S(1));
+  if (r < length (S))
+    warning ("arx: rank-deficient coefficient matrix");
+    warning ("sampling time too small");
+    warning ("persistence of excitation");
+  endif
+  V = V(:, 1:r);
+  S = S(1:r);
+  U = U(:, 1:r);
+  x = V * (S .\ (U' * b));                    # U' is the conjugate transpose
+
 endfunction

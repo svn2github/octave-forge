@@ -51,7 +51,7 @@ Y=CD_player_arm_1(:,3:4);
 dat = iddata (Y, U)
 
 % [sys, x0] = ident (dat, 15, 8)     % s=15, n=8
-sys = arx (dat, 4, [4 4])
+sys = arx (dat, 4, 4)
 
 %[y, t] = lsim (sys, U, [], x0);
 %[y, t] = lsim (sys(:,1:2), U);

@@ -27,6 +27,13 @@
 function sys = arx (dat, na, nb)
 
   ## TODO: delays
+  
+  ## FIXME: MIMO models have p error inputs, not just 1
+  
+  ## FIXME: Unlike SISO or MISO models, the transfer function
+  ##        B(z) over A(z) is wrong for MIMO models.
+  ##        We need a Matrix Fraction Description (MFD)
+  ##        y = A^-1(q) B(q) u(t) + A^-1(q) e(t)
 
   if (nargin != 3)
     print_usage ();

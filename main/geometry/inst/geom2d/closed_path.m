@@ -12,11 +12,11 @@
 %%
 %% You should have received a copy of the GNU General Public License
 %% along with this program; if not, see <http://www.gnu.org/licenses/>.
-%%
+
 %% -*- texinfo -*-
 %% @deftypefn {Function File} {@var{y} =} polygon (@var{x})
-%% Returns a simple closed path that passes through all the points in x.
-%% x is a vector containing 2D coordinates of the points.
+%% Returns a simple closed path that passes through all the points in @var{x}.
+%% @var{x} is a vector containing 2D coordinates of the points.
 %%
 %% @end deftypefn
 

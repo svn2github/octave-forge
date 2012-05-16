@@ -14,6 +14,7 @@ geometry >> Computational Geometry
  polygons2d
 2D Points
  centroid
+ closed_path
  distancePoints
  drawPoint
  isCounterClockwise

@@ -118,9 +118,9 @@ function [C,dec_error]=egolaydec(R)
 
   return;
 end
-                                %!
-                                %!assert(egolaydec([1 1 1 zeros(1,21)]),zeros(1,24))
-                                %!assert(egolaydec([1 0 1 zeros(1,20) 1]),zeros(1,24))
-                                %!
+%!
+%!assert(egolaydec([1 1 1 zeros(1,21)]),zeros(1,24))
+%!assert(egolaydec([1 0 1 zeros(1,20) 1]),zeros(1,24))
+%!
 
 

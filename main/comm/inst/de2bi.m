@@ -87,21 +87,21 @@ function b = de2bi (d, n, p, f)
 
 endfunction
 
-                                %!shared x
-                                %! x = randi ([0 2^16-1], 100, 1);
-                                %!assert (de2bi (0), 0)
-                                %!assert (de2bi (1), 1)
-                                %!assert (de2bi (255), ones (1, 8))
-                                %!assert (de2bi (255, [], 256), 255)
-                                %!assert (de2bi (1023, 8, 8), [7 7 7 1 0 0 0 0])
-                                %!assert (size (de2bi (x, 16)), [100 16])
-                                %!assert (de2bi (x, 16, "right-msb"), de2bi (x, 16))
-                                %!assert (de2bi (x, 16, "left-msb"), fliplr (de2bi (x, 16)))
+%!shared x
+%! x = randi ([0 2^16-1], 100, 1);
+%!assert (de2bi (0), 0)
+%!assert (de2bi (1), 1)
+%!assert (de2bi (255), ones (1, 8))
+%!assert (de2bi (255, [], 256), 255)
+%!assert (de2bi (1023, 8, 8), [7 7 7 1 0 0 0 0])
+%!assert (size (de2bi (x, 16)), [100 16])
+%!assert (de2bi (x, 16, "right-msb"), de2bi (x, 16))
+%!assert (de2bi (x, 16, "left-msb"), fliplr (de2bi (x, 16)))
 
 %% Test input validation
-                                %!error de2bi ()
-                                %!error de2bi (1, 2, 3, 4, 5)
-                                %!error de2bi (1, 2, 3, 4)
-                                %!error de2bi (1, 2, 3, "invalid")
-                                %!error de2bi (0.1)
-                                %!error de2bi (-1)
+%!error de2bi ()
+%!error de2bi (1, 2, 3, 4, 5)
+%!error de2bi (1, 2, 3, 4)
+%!error de2bi (1, 2, 3, "invalid")
+%!error de2bi (0.1)
+%!error de2bi (-1)

@@ -5,7 +5,6 @@ function [sys, x0] = ident_combinations (dat, s = [], n = [], meth, alg)
   %nobr = 15;
 %  meth = 1; % 2    % geht: meth/alg  1/1, 
 %  alg = 2; % 0     % geht nicht: meth/alg  0/1
-  batch = 3;
   conct = 1;
   ctrl = 0; %1;
   rcond = 0.0;
@@ -41,13 +40,12 @@ function [sys, x0] = ident_combinations (dat, s = [], n = [], meth, alg)
     ## TODO: specify n for IB01BD
   endif
   
-  %nsmp = ns(1)
-  %nobr = fix ((nsmp+1)/(2*(m+l+1)))
-  % nsmp >= 2*(m+l+1)*nobr - 1
-  % nobr <= (nsmp+1)/(2*(m+l+1))
-%nobr = 10
-  [a, b, c, d, q, ry, s, k, x0] = slident (dat.y{1}, dat.u{1}, nobr, n, meth, alg, batch, conct, ctrl, rcond, tol);
+  [a, b, c, d, q, ry, s, k, x0] = slident (dat.y, dat.u, nobr, n, meth, alg, conct, ctrl, rcond, tol);
 
   sys = ss (a, b, c, d, dat.tsam{1});
+  
+  if (numel (x0) == 1)
+    x0 = x0{1};
+  endif
 
 endfunction

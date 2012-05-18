@@ -11,10 +11,7 @@ function [sys, x0] = __slicot_identification__ (method, dat, s = [], n = [])
       error ("ident: invalid method");  # should never happen
   endswitch
 
-%  meth = 2; % 2    % geht: meth/alg  1/1, 
-  alg = 0; % 0     % geht nicht: meth/alg  0/1
-  jobd = 1;
-  batch = 3;
+  alg = 0;
   conct = 1;
   ctrl = 0; %1;
   rcond = 0.0;
@@ -50,8 +47,12 @@ function [sys, x0] = __slicot_identification__ (method, dat, s = [], n = [])
     ## TODO: specify n for IB01BD
   endif
   
-  [a, b, c, d, q, ry, s, k, x0] = slident (dat.y{1}, dat.u{1}, nobr, n, meth, alg, jobd, batch, conct, ctrl, rcond, tol);
+  [a, b, c, d, q, ry, s, k, x0] = slident (dat.y, dat.u, nobr, n, meth, alg, conct, ctrl, rcond, tol);
 
   sys = ss (a, b, c, d, dat.tsam{1});
+
+  if (numel (x0) == 1)
+    x0 = x0{1};
+  endif
 
 endfunction

@@ -68,7 +68,13 @@ Y_erie_n30=Y(:,7:8);
 Y = {Y_erie; Y_erie_n10; Y_erie_n20; Y_erie_n30};
 U = {U_erie; U_erie_n10; U_erie_n20; U_erie_n30};
 
-dat = iddata (Y, U)
+dat = iddata (Y, U, [], 'inname', {'a. water temperature';
+   	                               'b. water conductivity';
+   	                               'c. water alkalinity';
+   	                               'd. NO3';
+   	                               'e. total hardness'}, \
+   	                   'outname', {'a. dissolved oxygen';
+   	                               'b. algae'})
 
 [sys, x0] = ident (dat, 5, 4)    % s=5, n=4
 

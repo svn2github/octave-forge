@@ -28,7 +28,8 @@ Version: 0.1
 */
 
 #include <octave/oct.h>
-#include <f77-fcn.h>
+#include <octave/f77-fcn.h>
+#include <octave/Cell.h>
 #include "common.h"
 
 extern "C"
@@ -114,14 +115,16 @@ For internal use only.")
         char conct;
         char ctrl;
         
-        Matrix y = args(0).matrix_value ();
-        Matrix u = args(1).matrix_value ();
+        const Cell y_cell = args(0).cell_value ();
+        const Cell u_cell = args(1).cell_value ();
+        //Matrix y = args(0).matrix_value ();
+        //Matrix u = args(1).matrix_value ();
         int nobr = args(2).int_value ();
         int nuser = args(3).int_value ();
         
         const int imeth = args(4).int_value ();
         const int ialg = args(5).int_value ();
-        const int ibatch = args(6).int_value ();
+        // const int ibatch = args(6).int_value (); // löschen
         const int iconct = args(7).int_value ();
         const int ictrl = args(8).int_value ();
         
@@ -169,24 +172,6 @@ For internal use only.")
             jobd = 'M';
         else                    // meth_a == 'N'
             jobd = 'N';         // IB01AD.f says: This parameter is not relevant for METH = 'N'
-      
-        switch (ibatch)
-        {
-            case 0:
-                batch = 'F';
-                break;
-            case 1:
-                batch = 'I';
-                break;
-            case 2:
-                batch = 'L';
-                break;
-            case 3:
-                batch = 'O';
-                break;
-            default:
-                error ("slib01ad: argument 'batch' invalid");
-        }
 
         if (iconct == 0)
             conct = 'C';
@@ -199,31 +184,10 @@ For internal use only.")
             ctrl = 'N';
 
 
-        int m = u.columns ();   // m: number of inputs
-        int l = y.columns ();   // l: number of outputs
-        int nsmp = y.rows ();   // nsmp: number of samples
-        // y.rows == u.rows  is checked by iddata class
-        // TODO: check minimal nsmp size
+        int n_exp = y_cell.nelem ();    // number of experiments
         
-        if (batch == 'O')
-        {
-            if (nsmp < 2*(m+l+1)*nobr - 1)
-                error ("slident: require NSMP >= 2*(M+L+1)*NOBR - 1");
-        }
-        else
-        {
-            if (nsmp < 2*nobr)
-                error ("slident: require NSMP >= 2*NOBR");
-        }
-        
-        int ldu;
-        
-        if (m == 0)
-            ldu = 1;
-        else                    // m > 0
-            ldu = nsmp;
-
-        int ldy = nsmp;
+        int m = u_cell.elem(0).columns ();   // m: number of inputs
+        int l = y_cell.elem(0).columns ();   // l: number of outputs
 
         // arguments out
         int n;
@@ -239,77 +203,132 @@ For internal use only.")
         Matrix r (ldr, 2*(m+l)*nobr);
         ColumnVector sv (l*nobr);
 
-        // workspace
-        int liwork_a;
 
-        if (meth_a == 'N')            // if METH = 'N'
-            liwork_a = (m+l)*nobr;
-        else if (alg == 'F')        // if METH = 'M' and ALG = 'F'
-            liwork_a = m+l;
-        else                        // if METH = 'M' and ALG = 'C' or 'Q'
-            liwork_a = 0;
+        for (int i = 0; i < n_exp; i++)
+        {
+            if (n_exp == 1)
+                batch = 'O';        // one block only
+            else if (i == 0)
+                batch = 'F';        // first block
+            else if (i == n_exp-1)
+                batch = 'L';        // last block
+            else
+                batch = 'I';        // intermediate block
+      
+            Matrix y = y_cell.elem(i).matrix_value ();
+            Matrix u = u_cell.elem(i).matrix_value ();
 
-        // TODO: Handle 'k' for DWORK
-
-        int ldwork_a;
-        int ns = nsmp - 2*nobr + 1;
+            //int m = u.columns ();   // m: number of inputs
+            //int l = y.columns ();   // l: number of outputs
+            int nsmp = y.rows ();   // nsmp: number of samples
+            // y.rows == u.rows  is checked by iddata class
+            // TODO: check minimal nsmp size
         
-        if (alg == 'C')
-        {
-            if (batch == 'F' || batch == 'I')
+            if (batch == 'O')
             {
-                if (conct == 'C')
-                    ldwork_a = (4*nobr-2)*(m+l);
-                else    // (conct == 'N')
-                    ldwork_a = 1;
+                if (nsmp < 2*(m+l+1)*nobr - 1)
+                    error ("slident: require NSMP >= 2*(M+L+1)*NOBR - 1");
             }
-            else if (meth_a == 'M')   // && (batch == 'L' || batch == 'O')
+            else
             {
-                if (conct == 'C' && batch == 'L')
-                    ldwork_a = max ((4*nobr-2)*(m+l), 5*l*nobr);
-                else if (jobd == 'M')
-                    ldwork_a = max ((2*m-1)*nobr, (m+l)*nobr, 5*l*nobr);
-                else    // (jobd == 'N')
-                    ldwork_a = 5*l*nobr;
+                if (nsmp < 2*nobr)
+                    error ("slident: require NSMP >= 2*NOBR");
             }
-            else    // meth_b == 'N' && (batch == 'L' || batch == 'O')
+        
+            int ldu;
+        
+            if (m == 0)
+                ldu = 1;
+            else                    // m > 0
+                ldu = nsmp;
+
+            int ldy = nsmp;
+/*
+        // arguments out
+        int n;
+        int ldr;
+        
+        if (meth_a == 'M' && jobd == 'M')
+            ldr = max (2*(m+l)*nobr, 3*m*nobr);
+        else if (meth_a == 'N' || (meth_a == 'M' && jobd == 'N'))
+            ldr = 2*(m+l)*nobr;
+        else
+            error ("slib01ad: could not handle 'ldr' case");
+        
+        Matrix r (ldr, 2*(m+l)*nobr);
+        ColumnVector sv (l*nobr);
+*/
+            // workspace
+            int liwork_a;
+
+            if (meth_a == 'N')            // if METH = 'N'
+                liwork_a = (m+l)*nobr;
+            else if (alg == 'F')        // if METH = 'M' and ALG = 'F'
+                liwork_a = m+l;
+            else                        // if METH = 'M' and ALG = 'C' or 'Q'
+                liwork_a = 0;
+
+            // TODO: Handle 'k' for DWORK
+
+            int ldwork_a;
+            //int ns = nsmp - 2*nobr + 1;
+        
+            if (alg == 'C')
             {
-                ldwork_a = 5*(m+l)*nobr + 1;
-            }
-        }
-        else if (alg == 'F')
-        {
-            if (batch != 'O' && conct == 'C')
-                ldwork_a = (m+l)*2*nobr*(m+l+3);
-            else if (batch == 'F' || batch == 'I')  // && conct == 'N'
-                ldwork_a = (m+l)*2*nobr*(m+l+1);
-            else    // (batch == 'L' || '0' && conct == 'N')
-                ldwork_a = (m+l)*4*nobr*(m+l+1)+(m+l)*2*nobr;
-        }
-        else    // (alg == 'Q')
-        {
-            // int ns = nsmp - 2*nobr + 1;
-            
-            if (ldr >= ns && batch == 'F')
-            {
-                ldwork_a = 4*(m+l)*nobr;
-            }
-            else if (ldr >= ns && batch == 'O')
-            {
-                if (meth_a == 'M')
-                    ldwork_a = max (4*(m+l)*nobr, 5*l*nobr);
-                else    // (meth == 'N')
+                if (batch == 'F' || batch == 'I')
+                {
+                    if (conct == 'C')
+                        ldwork_a = (4*nobr-2)*(m+l);
+                    else    // (conct == 'N')
+                        ldwork_a = 1;
+                }
+                else if (meth_a == 'M')   // && (batch == 'L' || batch == 'O')
+                {
+                    if (conct == 'C' && batch == 'L')
+                        ldwork_a = max ((4*nobr-2)*(m+l), 5*l*nobr);
+                    else if (jobd == 'M')
+                        ldwork_a = max ((2*m-1)*nobr, (m+l)*nobr, 5*l*nobr);
+                    else    // (jobd == 'N')
+                        ldwork_a = 5*l*nobr;
+                }
+                else    // meth_b == 'N' && (batch == 'L' || batch == 'O')
+                {
                     ldwork_a = 5*(m+l)*nobr + 1;
+                }
             }
-            else if (conct == 'C' && (batch == 'I' || batch == 'L'))
+            else if (alg == 'F')
             {
-                ldwork_a = 4*(nobr+1)*(m+l)*nobr;
+                if (batch != 'O' && conct == 'C')
+                    ldwork_a = (m+l)*2*nobr*(m+l+3);
+                else if (batch == 'F' || batch == 'I')  // && conct == 'N'
+                    ldwork_a = (m+l)*2*nobr*(m+l+1);
+                else    // (batch == 'L' || '0' && conct == 'N')
+                    ldwork_a = (m+l)*4*nobr*(m+l+1)+(m+l)*2*nobr;
             }
-            else    // if ALG = 'Q', (BATCH = 'F' or 'O', and LDR < NS), or (BATCH = 'I' or 'L' and CONCT = 'N')
+            else    // (alg == 'Q')
             {
-                ldwork_a = 6*(m+l)*nobr;
+                int ns = nsmp - 2*nobr + 1;
+                
+                if (ldr >= ns && batch == 'F')
+                {
+                    ldwork_a = 4*(m+l)*nobr;
+                }
+                else if (ldr >= ns && batch == 'O')
+                {
+                    if (meth_a == 'M')
+                        ldwork_a = max (4*(m+l)*nobr, 5*l*nobr);
+                    else    // (meth == 'N')
+                        ldwork_a = 5*(m+l)*nobr + 1;
+                }
+                else if (conct == 'C' && (batch == 'I' || batch == 'L'))
+                {
+                    ldwork_a = 4*(nobr+1)*(m+l)*nobr;
+                }
+                else    // if ALG = 'Q', (BATCH = 'F' or 'O', and LDR < NS), or (BATCH = 'I' or 'L' and CONCT = 'N')
+                {
+                    ldwork_a = 6*(m+l)*nobr;
+                }
             }
-        }
 
 /*
 IB01AD.f Lines 438-445
@@ -343,66 +362,67 @@ somehow ldrwrk and ldwork must have been mixed up here
 */
 
 
-        OCTAVE_LOCAL_BUFFER (int, iwork_a, liwork_a);
-        OCTAVE_LOCAL_BUFFER (double, dwork_a, ldwork_a);
+            OCTAVE_LOCAL_BUFFER (int, iwork_a, liwork_a);
+            OCTAVE_LOCAL_BUFFER (double, dwork_a, ldwork_a);
         
-        // error indicators
-        int iwarn_a = 0;
-        int info_a = 0;
+            // error indicators
+            int iwarn_a = 0;
+            int info_a = 0;
 
 
-        // SLICOT routine IB01AD
-        F77_XFCN (ib01ad, IB01AD,
-                 (meth_a, alg, jobd,
-                  batch, conct, ctrl,
-                  nobr, m, l,
-                  nsmp,
-                  u.fortran_vec (), ldu,
-                  y.fortran_vec (), ldy,
-                  n,
-                  r.fortran_vec (), ldr,
-                  sv.fortran_vec (),
-                  rcond, tol_a,
-                  iwork_a,
-                  dwork_a, ldwork_a,
-                  iwarn_a, info_a));
+            // SLICOT routine IB01AD
+            F77_XFCN (ib01ad, IB01AD,
+                     (meth_a, alg, jobd,
+                      batch, conct, ctrl,
+                      nobr, m, l,
+                      nsmp,
+                      u.fortran_vec (), ldu,
+                      y.fortran_vec (), ldy,
+                      n,
+                      r.fortran_vec (), ldr,
+                      sv.fortran_vec (),
+                      rcond, tol_a,
+                      iwork_a,
+                      dwork_a, ldwork_a,
+                      iwarn_a, info_a));
 
 
-        if (f77_exception_encountered)
-            error ("ident: exception in SLICOT subroutine IB01AD");
+            if (f77_exception_encountered)
+                error ("ident: exception in SLICOT subroutine IB01AD");
 
-        static const char* err_msg[] = {
-            "0: OK",
-            "1: a fast algorithm was requested (ALG = 'C', or 'F') "
-                "in sequential data processing, but it failed; the "
-                "routine can be repeatedly called again using the "
-                "standard QR algorithm",
-            "2: the singular value decomposition (SVD) algorithm did "
-                "not converge"};
+            static const char* err_msg[] = {
+                "0: OK",
+                "1: a fast algorithm was requested (ALG = 'C', or 'F') "
+                    "in sequential data processing, but it failed; the "
+                    "routine can be repeatedly called again using the "
+                    "standard QR algorithm",
+                "2: the singular value decomposition (SVD) algorithm did "
+                    "not converge"};
 
-        static const char* warn_msg[] = {
-            "0: OK",
-            "1: the number of 100 cycles in sequential data "
-                "processing has been exhausted without signaling "
-                "that the last block of data was get; the cycle "
-                "counter was reinitialized",
-            "2: a fast algorithm was requested (ALG = 'C' or 'F'), "
-                "but it failed, and the QR algorithm was then used "
-                "(non-sequential data processing)",
-            "3: all singular values were exactly zero, hence  N = 0 "
-                "(both input and output were identically zero)",
-            "4: the least squares problems with coefficient matrix "
-                "U_f,  used for computing the weighted oblique "
-                "projection (for METH = 'N'), have a rank-deficient "
-                "coefficient matrix",
-            "5: the least squares problem with coefficient matrix "
-                "r_1  [6], used for computing the weighted oblique "
-                "projection (for METH = 'N'), has a rank-deficient "
-                "coefficient matrix"};
+            static const char* warn_msg[] = {
+                "0: OK",
+                "1: the number of 100 cycles in sequential data "
+                    "processing has been exhausted without signaling "
+                    "that the last block of data was get; the cycle "
+                    "counter was reinitialized",
+                "2: a fast algorithm was requested (ALG = 'C' or 'F'), "
+                    "but it failed, and the QR algorithm was then used "
+                    "(non-sequential data processing)",
+                "3: all singular values were exactly zero, hence  N = 0 "
+                    "(both input and output were identically zero)",
+                "4: the least squares problems with coefficient matrix "
+                    "U_f,  used for computing the weighted oblique "
+                    "projection (for METH = 'N'), have a rank-deficient "
+                    "coefficient matrix",
+                "5: the least squares problem with coefficient matrix "
+                    "r_1  [6], used for computing the weighted oblique "
+                    "projection (for METH = 'N'), has a rank-deficient "
+                    "coefficient matrix"};
 
 
-        error_msg ("ident: IB01AD", info_a, 2, err_msg);
-        warning_msg ("ident: IB01AD", iwarn_a, 5, warn_msg);
+            error_msg ("ident: IB01AD", info_a, 2, err_msg);
+            warning_msg ("ident: IB01AD", iwarn_a, 5, warn_msg);
+        }
 
 
         // resize

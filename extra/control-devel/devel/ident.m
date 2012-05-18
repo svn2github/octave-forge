@@ -33,7 +33,7 @@ function [sys, x0] = ident (dat, s = [], n = [])
     nsmp = ns(1);
     nobr = fix ((nsmp+1)/(2*(m+l+1)));
     if (s > nobr)
-      error ("ident: s > nobr");
+      warning ("ident: s > nobr");
     endif
     nobr = s;
     ctrl = 1;

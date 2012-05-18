@@ -184,10 +184,10 @@ For internal use only.")
             ctrl = 'N';
 
 
-        int n_exp = y_cell.nelem ();    // number of experiments
-        
-        int m = u_cell.elem(0).columns ();   // m: number of inputs
-        int l = y_cell.elem(0).columns ();   // l: number of outputs
+        int n_exp = y_cell.nelem ();            // number of experiments
+        int m = u_cell.elem(0).columns ();      // m: number of inputs
+        int l = y_cell.elem(0).columns ();      // l: number of outputs
+        int nsmpl = 0;                          // total number of samples
 
         // arguments out
         int n;
@@ -221,6 +221,7 @@ For internal use only.")
             //int m = u.columns ();   // m: number of inputs
             //int l = y.columns ();   // l: number of outputs
             int nsmp = y.rows ();   // nsmp: number of samples
+            nsmpl += nsmp;
             // y.rows == u.rows  is checked by iddata class
             // TODO: check minimal nsmp size
         
@@ -448,7 +449,7 @@ somehow ldrwrk and ldwork must have been mixed up here
         char job = 'A';
         char jobck = 'K';
         
-        int nsmpl = nsmp;
+        //int nsmpl = nsmp;
         
         if (nsmpl < 2*(m+l)*nobr)
             error ("slident: nsmpl (%d) < 2*(m+l)*nobr (%d)", nsmpl, nobr);
@@ -623,7 +624,7 @@ somehow ldrwrk and ldwork must have been mixed up here
 // TODO: use only one iwork and dwork for all three slicot routines
 //       ldwork = max (ldwork_a, ldwork_b, ldwork_c)
 
-
+/*
         // arguments in
         char jobx0 = 'X';
         char comuse = 'U';
@@ -700,7 +701,7 @@ somehow ldrwrk and ldwork must have been mixed up here
 
         error_msg ("ident: IB01CD", info_c, 2, err_msg_c);
         warning_msg ("ident: IB01CD", iwarn_c, 6, warn_msg_c);
-      
+*/      
         
         // return values
         retval(0) = a;
@@ -713,7 +714,8 @@ somehow ldrwrk and ldwork must have been mixed up here
         retval(6) = s;
         retval(7) = k;
         
-        retval(8) = x0;
+        // retval(8) = x0;
+        retval(8) = octave_value (0);
     }
     
     return retval;

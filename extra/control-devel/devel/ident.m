@@ -46,7 +46,7 @@ function [sys, x0] = ident (dat, s = [], n = [])
   % nsmp >= 2*(m+l+1)*nobr - 1
   % nobr <= (nsmp+1)/(2*(m+l+1))
 %nobr = 10
-  [a, b, c, d, q, ry, s, k, x0] = slident (dat.y{1}, dat.u{1}, nobr, n, meth, alg, batch, conct, ctrl, rcond, tol);
+  [a, b, c, d, q, ry, s, k, x0] = slident (dat.y, dat.u, nobr, n, meth, alg, batch, conct, ctrl, rcond, tol);
 
   sys = ss (a, b, c, d, dat.tsam{1});
 

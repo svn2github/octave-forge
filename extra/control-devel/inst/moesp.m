@@ -17,7 +17,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{dat} =} moesp (@var{dat}, @var{s}, @var{n})
-## MOESP.
+## MOESP: Multivariable Output Error State sPace.
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>

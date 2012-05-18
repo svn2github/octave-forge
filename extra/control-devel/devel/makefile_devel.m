@@ -14,7 +14,7 @@ cd (srcdir);
 
 ## system ("make realclean");  # recompile slicotlibrary.a
 system ("make clean");
-system ("make -j4 all");
+system ("make -j1 all");
 system ("rm *.o");
 
 cd (homedir);

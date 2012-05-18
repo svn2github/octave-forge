@@ -95,7 +95,7 @@ For internal use only.")
     int nargin = args.length ();
     octave_value_list retval;
     
-    if (nargin != 12)
+    if (nargin != 11)
     {
         print_usage ();
     }
@@ -121,18 +121,16 @@ For internal use only.")
         
         const int imeth = args(4).int_value ();
         const int ialg = args(5).int_value ();
-        const int ijobd = args(6).int_value ();
-        const int ibatch = args(7).int_value ();
-        const int iconct = args(8).int_value ();
-        const int ictrl = args(9).int_value ();
+        const int ibatch = args(6).int_value ();
+        const int iconct = args(7).int_value ();
+        const int ictrl = args(8).int_value ();
         
-        double rcond = args(10).double_value ();
-        double tol_a = args(11).double_value ();
+        double rcond = args(9).double_value ();
+        double tol_a = args(10).double_value ();
 
         double tol_b = rcond;
         double tol_c = rcond;
-        //double tol_b = args(10).double_value ();      // tol_b = rcond
-
+        
             
         switch (imeth)
         {
@@ -166,14 +164,12 @@ For internal use only.")
             default:
                 error ("slib01ad: argument 'alg' invalid");
         }
-        
-        if (meth_b == 'C')
-            jobd = 'N';
-        else if (ijobd == 0)
+
+        if (meth_a == 'M')
             jobd = 'M';
-        else
-            jobd = 'N';
-        
+        else                    // meth_a == 'N'
+            jobd = 'N';         // IB01AD.f says: This parameter is not relevant for METH = 'N'
+      
         switch (ibatch)
         {
             case 0:

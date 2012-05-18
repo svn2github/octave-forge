@@ -17,7 +17,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{dat} =} n4sid (@var{dat}, @var{s}, @var{n})
-## N4SID.
+## N4SID: Numerical algorithm for Subspace State Space System IDentification.
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>

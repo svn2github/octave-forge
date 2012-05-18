@@ -49,5 +49,9 @@ function [sys, x0] = ident (dat, s = [], n = [])
   [a, b, c, d, q, ry, s, k, x0] = slident (dat.y, dat.u, nobr, n, meth, alg, batch, conct, ctrl, rcond, tol);
 
   sys = ss (a, b, c, d, dat.tsam{1});
+  
+  if (numel (x0) == 1)
+    x0 = x0{1};
+  endif
 
 endfunction

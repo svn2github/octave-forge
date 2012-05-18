@@ -621,87 +621,103 @@ somehow ldrwrk and ldwork must have been mixed up here
 //      SLICOT IB01CD - estimating the initial state                              //
 ////////////////////////////////////////////////////////////////////////////////////
 
-// TODO: use only one iwork and dwork for all three slicot routines
-//       ldwork = max (ldwork_a, ldwork_b, ldwork_c)
-
-/*
         // arguments in
         char jobx0 = 'X';
         char comuse = 'U';
         char jobbd = 'D';
         
         // arguments out
-        int ldv = max (1, n);
+        Cell x0_cell (n_exp, 1);
         
-        ColumnVector x0 (n);
-        Matrix v (ldv, n);
+        for (int i = 0; i < n_exp; i++)
+        {
+            Matrix y = y_cell.elem(i).matrix_value ();
+            Matrix u = u_cell.elem(i).matrix_value ();
+            
+            int nsmp = y.rows ();   // nsmp: number of samples
+            int ldv = max (1, n);
+            
+            int ldu;
         
-        // workspace
-        int liwork_c = n;     // if  JOBX0 = 'X'  and  COMUSE <> 'C'
-        int ldwork_c;
-        int t = nsmp;
+            if (m == 0)
+                ldu = 1;
+            else                    // m > 0
+                ldu = nsmp;
+
+            int ldy = nsmp;
+
+
+            ColumnVector x0 (n);
+            Matrix v (ldv, n);
+
+            // workspace
+            int liwork_c = n;     // if  JOBX0 = 'X'  and  COMUSE <> 'C'
+            int ldwork_c;
+            int t = nsmp;
    
-        int ldw1_c = 2;
-        int ldw2_c = t*l*(n + 1) + 2*n + max (2*n*n, 4*n);
-        int ldw3_c = n*(n + 1) + 2*n + max (n*l*(n + 1) + 2*n*n + l*n, 4*n);
+            int ldw1_c = 2;
+            int ldw2_c = t*l*(n + 1) + 2*n + max (2*n*n, 4*n);
+            int ldw3_c = n*(n + 1) + 2*n + max (n*l*(n + 1) + 2*n*n + l*n, 4*n);
 
-        ldwork_c = ldw1_c + n*( n + m + l ) + max (5*n, ldw1_c, min (ldw2_c, ldw3_c));
-        
-        OCTAVE_LOCAL_BUFFER (int, iwork_c, liwork_c);
-        OCTAVE_LOCAL_BUFFER (double, dwork_c, ldwork_c);
+            ldwork_c = ldw1_c + n*( n + m + l ) + max (5*n, ldw1_c, min (ldw2_c, ldw3_c));
 
-        // error indicators
-        int iwarn_c = 0;
-        int info_c = 0;
-        
+            OCTAVE_LOCAL_BUFFER (int, iwork_c, liwork_c);
+            OCTAVE_LOCAL_BUFFER (double, dwork_c, ldwork_c);
 
-        // SLICOT routine IB01CD
-        F77_XFCN (ib01cd, IB01CD,
-                 (jobx0, comuse, jobbd,
-                  n, m, l,
-                  nsmp,
-                  a.fortran_vec (), lda,
-                  b.fortran_vec (), ldb,
-                  c.fortran_vec (), ldc,
-                  d.fortran_vec (), ldd,
-                  u.fortran_vec (), ldu,
-                  y.fortran_vec (), ldy,
-                  x0.fortran_vec (),
-                  v.fortran_vec (), ldv,
-                  tol_c,
-                  iwork_c,
-                  dwork_c, ldwork_c,
-                  iwarn_c, info_c));
+            // error indicators
+            int iwarn_c = 0;
+            int info_c = 0;
 
-
-        if (f77_exception_encountered)
-            error ("ident: exception in SLICOT subroutine IB01CD");
-
-        static const char* err_msg_c[] = {
-            "0: OK",
-            "1: the QR algorithm failed to compute all the "
-                "eigenvalues of the matrix A (see LAPACK Library "
-                "routine DGEES); the locations  DWORK(i),  for "
-                "i = g+1:g+N*N,  contain the partially converged "
-                "Schur form",
-            "2: the singular value decomposition (SVD) algorithm did "
-                "not converge"};
-
-        static const char* warn_msg_c[] = {
-            "0: OK",
-            "1: warning message not specified",
-            "2: warning message not specified",
-            "3: warning message not specified",
-            "4: the least squares problem to be solved has a "
-                "rank-deficient coefficient matrix",
-            "5: warning message not specified",
-            "6: the matrix  A  is unstable;  the estimated  x(0) "
-                "and/or  B and D  could be inaccurate"};
+            // SLICOT routine IB01CD
+            F77_XFCN (ib01cd, IB01CD,
+                     (jobx0, comuse, jobbd,
+                      n, m, l,
+                      nsmp,
+                      a.fortran_vec (), lda,
+                      b.fortran_vec (), ldb,
+                      c.fortran_vec (), ldc,
+                      d.fortran_vec (), ldd,
+                      u.fortran_vec (), ldu,
+                      y.fortran_vec (), ldy,
+                      x0.fortran_vec (),
+                      v.fortran_vec (), ldv,
+                      tol_c,
+                      iwork_c,
+                      dwork_c, ldwork_c,
+                      iwarn_c, info_c));
 
 
-        error_msg ("ident: IB01CD", info_c, 2, err_msg_c);
-        warning_msg ("ident: IB01CD", iwarn_c, 6, warn_msg_c);
-*/      
+            if (f77_exception_encountered)
+                error ("ident: exception in SLICOT subroutine IB01CD");
+
+            static const char* err_msg_c[] = {
+                "0: OK",
+                "1: the QR algorithm failed to compute all the "
+                    "eigenvalues of the matrix A (see LAPACK Library "
+                    "routine DGEES); the locations  DWORK(i),  for "
+                    "i = g+1:g+N*N,  contain the partially converged "
+                    "Schur form",
+                "2: the singular value decomposition (SVD) algorithm did "
+                    "not converge"};
+
+            static const char* warn_msg_c[] = {
+                "0: OK",
+                "1: warning message not specified",
+                "2: warning message not specified",
+                "3: warning message not specified",
+                "4: the least squares problem to be solved has a "
+                    "rank-deficient coefficient matrix",
+                "5: warning message not specified",
+                "6: the matrix  A  is unstable;  the estimated  x(0) "
+                    "and/or  B and D  could be inaccurate"};
+
+
+            error_msg ("ident: IB01CD", info_c, 2, err_msg_c);
+            warning_msg ("ident: IB01CD", iwarn_c, 6, warn_msg_c);
+            
+            x0_cell.elem(i) = x0;
+        }
+   
         
         // return values
         retval(0) = a;
@@ -714,8 +730,7 @@ somehow ldrwrk and ldwork must have been mixed up here
         retval(6) = s;
         retval(7) = k;
         
-        // retval(8) = x0;
-        retval(8) = octave_value (0);
+        retval(8) = x0_cell;
     }
     
     return retval;

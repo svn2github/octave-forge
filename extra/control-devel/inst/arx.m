@@ -76,7 +76,7 @@ function sys = arx (dat, na, nb)
   den = cell (p, m+1);
   
   for i = 1 : p     # for every output
-    Phi = cell (1, ex);
+    Phi = cell (ex, 1);
     for e = 1 : ex      # for every experiment  
       ## avoid warning: toeplitz: column wins anti-diagonal conflict
       ## therefore set first row element equal to y(1)
@@ -123,7 +123,7 @@ function theta = __theta__ (phi, y, i, n)
     tmp = cellfun (@(Phi) Phi.' * Phi, phi, "uniformoutput", false);
     rc = cellfun (@rcond, tmp); # C auch noch testen? QR oder SVD?
     C = plus (tmp{:});
-    
+
     ## PhiTY = (Phi1' Y1 + Phi2' Y2 + ...)
     tmp = cellfun (@(Phi, Y) Phi.' * Y(n(i)+1:end, i), phi, y, "uniformoutput", false);
     PhiTY = plus (tmp{:});

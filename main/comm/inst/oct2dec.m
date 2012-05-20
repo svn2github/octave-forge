@@ -37,7 +37,7 @@ function d = oct2dec (c)
   d = zeros (size (c));
   l = size (c, 2);
   for k = 1:l
-    str = num2str (c(:,k), "%d");
+    str = num2str (c(:,k), "%ld");
     d(:,k) = base2dec (str, 8);
     if (any (isnan (d(:,k))))
       error ("oct2dec: c must be an octal matrix");

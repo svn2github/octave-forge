@@ -10,6 +10,10 @@ function [sys, x0] = __slicot_identification__ (method, dat, s = [], n = [])
     otherwise
       error ("ident: invalid method");  # should never happen
   endswitch
+  
+  if (! isa (dat, "iddata"))
+    error ("%s: first argument must be an 'iddata' dataset", method);
+  endif
 
   alg = 0;
   conct = 1;

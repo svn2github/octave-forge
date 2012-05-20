@@ -26,6 +26,10 @@
 
 function [sys, x0] = n4sid (varargin)
 
+  if (nargin == 0)
+    print_usage ();
+  endif
+
   [sys, x0] = __slicot_identification__ ("n4sid", varargin{:});
 
 endfunction

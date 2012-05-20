@@ -28,6 +28,10 @@
 
 function [sys, x0] = moen4 (varargin)
 
+  if (nargin == 0)
+    print_usage ();
+  endif
+
   [sys, x0] = __slicot_identification__ ("moen4", varargin{:});
 
 endfunction

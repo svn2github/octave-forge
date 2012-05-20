@@ -27,13 +27,6 @@
 function sys = arx (dat, na, nb)
 
   ## TODO: delays
-  
-  ## FIXME: MIMO models have p error inputs, not just 1
-  
-  ## FIXME: Unlike SISO or MISO models, the transfer function
-  ##        B(z) over A(z) is wrong for MIMO models.
-  ##        We need a Matrix Fraction Description (MFD)
-  ##        y = A^-1(q) B(q) u(t) + A^-1(q) e(t)
 
   if (nargin != 3)
     print_usage ();
@@ -60,24 +53,24 @@ function sys = arx (dat, na, nb)
 
   
   if (is_real_scalar (na, nb))
-    na = repmat (na, p, 1);     # na(p-by-1)
-    nb = repmat (nb, p, m);     # nb(p-by-m)
+    na = repmat (na, p, 1);                         # na(p-by-1)
+    nb = repmat (nb, p, m);                         # nb(p-by-m)
   elseif (! (is_real_vector (na) && is_real_matrix (nb) \
           && rows (na) == p && rows (nb) == p && columns (nb) == m))
     error ("arx: require na(%dx1) instead of (%dx%d) and nb(%dx%d) instead of (%dx%d)", \
             p, rows (na), columns (na), p, m, rows (nb), columns (nb));
   endif
 
-  max_nb = max (nb, [], 2);     # one maximum for each row/output, max_nb(p-by-1)
-  n = max (na, max_nb);         # n(p-by-1)
+  max_nb = max (nb, [], 2);                         # one maximum for each row/output, max_nb(p-by-1)
+  n = max (na, max_nb);                             # n(p-by-1)
 
 
-  num = cell (p, m+1);
-  den = cell (p, m+1);
+  num = cell (p, m+p);
+  den = cell (p, m+p);
   
-  for i = 1 : p     # for every output
+  for i = 1 : p                                     # for every output
     Phi = cell (ex, 1);
-    for e = 1 : ex      # for every experiment  
+    for e = 1 : ex                                  # for every experiment  
       ## avoid warning: toeplitz: column wins anti-diagonal conflict
       ## therefore set first row element equal to y(1)
       PhiY = toeplitz (Y{e}(1:end-1, i), [Y{e}(1, i); zeros(na(i)-1, 1)]);
@@ -88,15 +81,24 @@ function sys = arx (dat, na, nb)
   
     Theta = __theta__ (Phi, Y, i, n);
       
-    A = [1; Theta(1:na(i))];                     # a0 = 1, a1 = Theta(1), an = Theta(n)
-    ThetaB = Theta(na(i)+1:end);                 # b0 = 0 (leading zero required by filt)
+    A = [1; Theta(1:na(i))];                        # a0 = 1, a1 = Theta(1), an = Theta(n)
+    ThetaB = Theta(na(i)+1:end);                    # b0 = 0 (leading zero required by filt)
     B = mat2cell (ThetaB, nb(i,:));
     B = reshape (B, 1, []);
     B = cellfun (@(x) [0; x], B, "uniformoutput", false);
 
-    num(i, :) = [B, {1}];
-    den(i, :) = repmat ({A}, 1, m+1);
+    Be = repmat ({0}, 1, p);
+    Be(i) = 1;
+    num(i, :) = [B, Be];
+    den(i, :) = repmat ({A}, 1, m+p);
   endfor
+
+  ## A(q) y(t) = B(q) u(t) + e(t)
+  ## there is only one A per row
+  ## B(z) and A(z) are a Matrix Fraction Description (MFD)
+  ## y = A^-1(q) B(q) u(t) + A^-1(q) e(t)
+  ## since A(q) is a diagonal polynomial matrix, its inverse is trivial:
+  ## the corresponding transfer function has common row denominators.
 
   sys = filt (num, den, tsam);
 
@@ -147,8 +149,8 @@ function x = __ls_svd__ (A, b)
   ## Th = Ph \ Y = Ph+ Y
   ## Th = V S+ U* Y,   S+ = 1 ./ diag (S)
 
-  [U, S, V] = svd (A, 0);                         # 0 for "economy size" decomposition
-  S = diag (S);                                   # extract main diagonal
+  [U, S, V] = svd (A, 0);                           # 0 for "economy size" decomposition
+  S = diag (S);                                     # extract main diagonal
   r = sum (S > eps*S(1));
   if (r < length (S))
     warning ("arx: rank-deficient coefficient matrix");
@@ -158,6 +160,6 @@ function x = __ls_svd__ (A, b)
   V = V(:, 1:r);
   S = S(1:r);
   U = U(:, 1:r);
-  x = V * (S .\ (U' * b));                    # U' is the conjugate transpose
+  x = V * (S .\ (U' * b));                          # U' is the conjugate transpose
 
 endfunction

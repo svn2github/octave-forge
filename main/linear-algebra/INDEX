@@ -12,6 +12,8 @@ Matrix functions
  thfm
 Matrix factorization
  gsvd
+ nmf_bpas
+ nmf_pg
 
 sparse >> Sparse matrix support
 Block sparse matrices
@@ -69,7 +71,7 @@ Kronecker Products
  @kronprod/transpose
  @kronprod/uminus
  @kronprod/uplus
- 
+
 Circulant matrices
  circulant_make_matrix
  circulant_matrix_vector_product

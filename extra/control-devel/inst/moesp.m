@@ -16,7 +16,10 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{dat} =} moesp (@var{dat}, @var{s}, @var{n})
+## @deftypefn {Function File} {[@var{sys}, @var{x0}] =} moesp (@var{dat}, @dots{})
+## @deftypefnx {Function File} {[@var{sys}, @var{x0}] =} moesp (@var{dat}, @var{n}, @dots{})
+## @deftypefnx {Function File} {[@var{sys}, @var{x0}] =} moesp (@var{dat}, @var{opt}, @dots{})
+## @deftypefnx {Function File} {[@var{sys}, @var{x0}] =} moesp (@var{dat}, @var{n}, @var{opt}, @dots{})
 ## MOESP: Multivariable Output Error State sPace.
 ## @end deftypefn
 

@@ -16,7 +16,10 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{dat} =} moen4 (@var{dat}, @var{s}, @var{n})
+## @deftypefn {Function File} {[@var{sys}, @var{x0}] =} moen4 (@var{dat}, @dots{})
+## @deftypefnx {Function File} {[@var{sys}, @var{x0}] =} moen4 (@var{dat}, @var{n}, @dots{})
+## @deftypefnx {Function File} {[@var{sys}, @var{x0}] =} moen4 (@var{dat}, @var{opt}, @dots{})
+## @deftypefnx {Function File} {[@var{sys}, @var{x0}] =} moen4 (@var{dat}, @var{n}, @var{opt}, @dots{})
 ## Combined method:  MOESP  algorithm for finding the
 ## matrices A and C, and  N4SID  algorithm for
 ## finding the matrices B and D.

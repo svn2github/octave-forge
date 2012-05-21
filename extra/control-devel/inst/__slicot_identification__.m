@@ -67,6 +67,7 @@ function [sys, x0, info] = __slicot_identification__ (method, dat, varargin)
   tol = -1.0; % 0;
   s = [];
   n = [];
+  conf = [];
   
   ## handle keys and values
   for k = 1 : 2 : nkv
@@ -84,6 +85,8 @@ function [sys, x0, info] = __slicot_identification__ (method, dat, varargin)
         tol = val;
       case "rcond"
         rcond = val;
+      case "confirm"
+        conf = logical (val);
       otherwise
         warning ("%s: invalid property name '%s' ignored", method, key);
     endswitch
@@ -114,6 +117,9 @@ function [sys, x0, info] = __slicot_identification__ (method, dat, varargin)
     endif
   endif
 
+  if (! isempty (conf))
+    ctrl = ! conf;
+  endif
   
   ## perform system identification
   [a, b, c, d, q, ry, s, k, x0] = slident (dat.y, dat.u, nobr, n, meth, alg, conct, ctrl, rcond, tol);

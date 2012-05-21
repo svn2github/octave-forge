@@ -1,4 +1,4 @@
-function [sys, x0] = __slicot_identification__ (method, dat, s = [], n = [])
+function [sys, x0] = __slicot_identification__ (method, dat, n = [])
 
   switch (method)
     case "moesp"
@@ -15,13 +15,24 @@ function [sys, x0] = __slicot_identification__ (method, dat, s = [], n = [])
     error ("%s: first argument must be an 'iddata' dataset", method);
   endif
 
+  ## default arguments
   alg = 0;
-  conct = 1;
-  ctrl = 0; %1;
+  conct = 1;    # no connection between experiments
+  ctrl = 1;     # don't confirm order n
   rcond = 0.0;
   tol = -1.0; % 0;
   
   [ns, l, m, e] = size (dat);
+  
+  s = min (2*n, n+10);                  # upper bound for n
+  nsmp = sum (ns);                      # total number of samples
+  nobr = fix ((nsmp+1)/(2*(m+l+1)));
+  if (e > 1)
+    nobr = min (nobr, fix (min (ns) / 2));
+  endif
+  nobr = min (nobr, s)
+
+%{
   
   if (isempty (s) && isempty (n))
     nsmp = ns(1);
@@ -50,6 +61,7 @@ function [sys, x0] = __slicot_identification__ (method, dat, s = [], n = [])
     ctrl = 1;
     ## TODO: specify n for IB01BD
   endif
+%}
   
   [a, b, c, d, q, ry, s, k, x0] = slident (dat.y, dat.u, nobr, n, meth, alg, conct, ctrl, rcond, tol);
 

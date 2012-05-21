@@ -51,7 +51,7 @@ Y=pHdata(:,4);
 
 dat = iddata (Y, U)
 
-[sys, x0] = ident (dat, 15, 6)     % s=15, n=6
+[sys, x0] = moen4 (dat, 6)     % s=15, n=6
 
 
 [y, t] = lsim (sys, U, [], x0);

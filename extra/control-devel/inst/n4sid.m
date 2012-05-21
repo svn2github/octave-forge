@@ -16,10 +16,10 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{sys}, @var{x0}] =} n4sid (@var{dat}, @dots{})
-## @deftypefnx {Function File} {[@var{sys}, @var{x0}] =} n4sid (@var{dat}, @var{n}, @dots{})
-## @deftypefnx {Function File} {[@var{sys}, @var{x0}] =} n4sid (@var{dat}, @var{opt}, @dots{})
-## @deftypefnx {Function File} {[@var{sys}, @var{x0}] =} n4sid (@var{dat}, @var{n}, @var{opt}, @dots{})
+## @deftypefn {Function File} {[@var{sys}, @var{x0}, @var{info}] =} n4sid (@var{dat}, @dots{})
+## @deftypefnx {Function File} {[@var{sys}, @var{x0}, @var{info}] =} n4sid (@var{dat}, @var{n}, @dots{})
+## @deftypefnx {Function File} {[@var{sys}, @var{x0}, @var{info}] =} n4sid (@var{dat}, @var{opt}, @dots{})
+## @deftypefnx {Function File} {[@var{sys}, @var{x0}, @var{info}] =} n4sid (@var{dat}, @var{n}, @var{opt}, @dots{})
 ## N4SID: Numerical algorithm for Subspace State Space System IDentification.
 ## @end deftypefn
 
@@ -27,12 +27,12 @@
 ## Created: May 2012
 ## Version: 0.1
 
-function [sys, x0] = n4sid (varargin)
+function [sys, x0, info] = n4sid (varargin)
 
   if (nargin == 0)
     print_usage ();
   endif
 
-  [sys, x0] = __slicot_identification__ ("n4sid", varargin{:});
+  [sys, x0, info] = __slicot_identification__ ("n4sid", varargin{:});
 
 endfunction

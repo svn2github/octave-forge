@@ -16,10 +16,10 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{sys}, @var{x0}] =} moesp (@var{dat}, @dots{})
-## @deftypefnx {Function File} {[@var{sys}, @var{x0}] =} moesp (@var{dat}, @var{n}, @dots{})
-## @deftypefnx {Function File} {[@var{sys}, @var{x0}] =} moesp (@var{dat}, @var{opt}, @dots{})
-## @deftypefnx {Function File} {[@var{sys}, @var{x0}] =} moesp (@var{dat}, @var{n}, @var{opt}, @dots{})
+## @deftypefn {Function File} {[@var{sys}, @var{x0}, @var{info}] =} moesp (@var{dat}, @dots{})
+## @deftypefnx {Function File} {[@var{sys}, @var{x0}, @var{info}] =} moesp (@var{dat}, @var{n}, @dots{})
+## @deftypefnx {Function File} {[@var{sys}, @var{x0}, @var{info}] =} moesp (@var{dat}, @var{opt}, @dots{})
+## @deftypefnx {Function File} {[@var{sys}, @var{x0}, @var{info}] =} moesp (@var{dat}, @var{n}, @var{opt}, @dots{})
 ## MOESP: Multivariable Output Error State sPace.
 ## @end deftypefn
 
@@ -27,12 +27,12 @@
 ## Created: May 2012
 ## Version: 0.1
 
-function [sys, x0] = moesp (varargin)
+function [sys, x0, info] = moesp (varargin)
 
   if (nargin == 0)
     print_usage ();
   endif
 
-  [sys, x0] = __slicot_identification__ ("moesp", varargin{:});
+  [sys, x0, info] = __slicot_identification__ ("moesp", varargin{:});
 
 endfunction

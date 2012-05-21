@@ -16,7 +16,7 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {[@var{sys}, @var{x0}] =} __slicot_identification__ (@var{method}, @var{dat}, @dots{})
+## @deftypefn{Function File} {[@var{sys}, @var{x0}], @var{info} =} __slicot_identification__ (@var{method}, @var{dat}, @dots{})
 ## Backend for moesp, moen4 and n4sid.
 ## @end deftypefn
 
@@ -24,7 +24,7 @@
 ## Created: May 2012
 ## Version: 0.1
 
-function [sys, x0] = __slicot_identification__ (method, dat, varargin)
+function [sys, x0, info] = __slicot_identification__ (method, dat, varargin)
 
   ## determine identification method
   switch (method)
@@ -121,9 +121,18 @@ function [sys, x0] = __slicot_identification__ (method, dat, varargin)
   ## assemble model
   sys = ss (a, b, c, d, dat.tsam{1});
 
+  ## return x0 as vector for single-experiment data
+  ## instead of a cell containing one vector
   if (numel (x0) == 1)
     x0 = x0{1};
   endif
+  
+  ## assemble info struct
+  ## Kalman gain matrix K
+  ## state covariance matrix Q
+  ## output covariance matrix Ry
+  ## state-output cross-covariance matrix S
+  info = struct ("K", k, "Q", q, "Ry", ry, "S", s)
 
 endfunction
 

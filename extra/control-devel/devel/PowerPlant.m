@@ -65,7 +65,7 @@ tsam = 1228.8;
 
 dat = iddata (Y, U, tsam, 'outname', outname, 'inname', inname)
 
-[sys, x0] = ident (dat, 10, 8)     % s=10, n=8
+[sys, x0] = moen4 (dat, 's', 10, 'n', 8)     % s=10, n=8
 
 
 [y, t] = lsim (sys, U, [], x0);

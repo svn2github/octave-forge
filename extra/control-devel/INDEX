@@ -5,15 +5,25 @@ Experimental Data Handling
   @iddata/cat
   @iddata/detrend
   @iddata/diff
+  @iddata/fft
   @iddata/get
   @iddata/horzcat
+  @iddata/ifft
   @iddata/merge
   @iddata/plot
   @iddata/set
   @iddata/size
   @iddata/vertcat
 System Identification
+  arx
   fitfrd
+  moen4
   moesp
   n4sid
-
+Overloaded Operators
+  @iddata/horzcat
+  @iddata/subsasgn
+  @iddata/subsref
+  @iddata/vertcat
+Miscellaneous
+  test_devel

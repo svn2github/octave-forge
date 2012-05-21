@@ -112,7 +112,7 @@
 ## 2012-02-27 More range param fixes
 ## 2012-03-07 Updated texinfo help text
 
-## Last script file update (incl. subfunctions): 2012-02-26
+## Last script file update (incl. subfunctions): 2012-05-21
 
 function [ xls, rstatus ] = oct2xls (obj, xls, wsh=1, crange='', spsh_opts=[])
 
@@ -483,6 +483,7 @@ endfunction
 ## 2011-11-19 Try-catch added to allow for changed method name for nr of worksheets
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-02-27 Copyright strings updated
+## 2012-05-21 "Double" cast added when writing numeric values
 
 function [ xls, rstatus ] = oct2jpoi2xls (obj, xls, wsh, crange, spsh_opts)
 
@@ -574,7 +575,11 @@ function [ xls, rstatus ] = oct2jpoi2xls (obj, xls, wsh, crange, spsh_opts)
 				end_try_catch
 			else
 				cell = row.createCell (kk, typearr(ii,jj));
-				cell.setCellValue (obj{ii, jj});
+        if (isnumeric (obj{ii, jj}))
+          cell.setCellValue (double (obj{ii, jj}));
+        else
+          cell.setCellValue (obj{ii, jj});
+        endif
 			endif
 		endfor
 	endfor
@@ -648,6 +653,7 @@ endfunction
 ## 2010-11-12 Moved ptr struct check into main func
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-02-27 Copyright strings updated
+## 2012-05-21 "Double" cast added when writing numeric values
 
 function [ xls, rstatus ] = oct2jxla2xls (obj, xls, wsh, crange, spsh_opts)
 
@@ -729,7 +735,7 @@ function [ xls, rstatus ] = oct2jxla2xls (obj, xls, wsh, crange, spsh_opts)
 			kk = jj + lcol - 2;		# JExcelAPI's column count is also 0-based
 			switch typearr(ii, jj)
 				case 1			# Numerical
-					tmp = java_new ('jxl.write.Number', kk, ll, obj{ii, jj});
+					tmp = java_new ('jxl.write.Number', kk, ll, double (obj{ii, jj}));
 					sh.addCell (tmp);
 				case 2			# Boolean
 					tmp = java_new ('jxl.write.Boolean', kk, ll, obj{ii, jj});
@@ -884,7 +890,7 @@ function [ xls, rstatus ] = oct2oxs2xls (obj, xls, wsh, crange, spsh_opts)
 				sh.getCell(jj+trow-2, ii+lcol-2).setVal (obj{jj, ii});  # Addr.cnt = 0-based
 				changed = 1;
 			catch
-				# Cell not existant. Add cell
+				# Cell not existent. Add cell
 				if ~(typearr(jj, ii) == 5)
 					sh.add (obj{jj, ii}, jj+trow-2, ii+lcol-2);
 					changed = 1;
@@ -924,6 +930,7 @@ endfunction
 ## 2012-02-25 Catch stray Java RuntimeException when deleting sheets
 ## 2012-02-26 Bug fix when adding sheets near L.994 (wrong if-else-end construct).
 ## 2012-02-27 Copyright strings updated
+## 2012-05-21 "Double" cast added when writing numeric values
 
 function [ xls, rstatus ] = oct2uno2xls (c_arr, xls, wsh, crange, spsh_opts)
 
@@ -1031,7 +1038,7 @@ function [ xls, rstatus ] = oct2uno2xls (c_arr, xls, wsh, crange, spsh_opts)
         XCell = sh.getCellByPosition (lcol+jj-1, trow+ii-1);
         switch typearr(ii, jj)
           case 1	# Float
-            XCell.setValue (c_arr{ii, jj});
+            XCell.setValue (double (c_arr{ii, jj}));
           case 2	# Logical. Convert to float as OOo has no Boolean type
             XCell.setValue (double (c_arr{ii, jj}));
           case 3	# String

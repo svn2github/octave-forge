@@ -69,7 +69,7 @@ function [pkgtar htmltar] = releasePKG (pkgname, varargin)
   % Export from repo
   outpath = checkpath(parser.Results.outpath);
 
-  exported = sprintf([outpath "%s"], pkgname);
+  exported = sprintf ([outpath "%s"], pkgname);
 
   % Repo path
   svn_repo = checkpath(parser.Results.repopath);
@@ -85,6 +85,11 @@ function [pkgtar htmltar] = releasePKG (pkgname, varargin)
               'to your .octaverc to make it permanent.' "\n\n"], ...
                            parser.Results.repopath, parser.Results.repopath);
     fflush (stdout);
+
+    % Delete .svnignore files
+    % This works only for unix
+    unix (sprintf('find %s -name .svnignore | xargs rm -v',exported));
+
   end
 
   printf("Exported to %s\n", exported);

@@ -41,4 +41,4 @@ endfunction
 
 %!shared v
 %! v = [1 2 3]';
-%!assert (make_circulant_matrix(circulant_inv(v)), inv(make_circulant_matrix(v)), 10*eps);
+%!assert (circulant_make_matrix(circulant_inv(v)), inv(circulant_make_matrix(v)), 10*eps);

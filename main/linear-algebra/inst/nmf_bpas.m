@@ -653,16 +653,16 @@ endfunction
 %! [W,H,iter,HIS]=nmf_bpas(A,k,'verbose',2);
 
 %!test
-%! [W,H,iter,HIS]=nmf_bpas(A,k,'verbose',1,'nnls_solver','as');
+%! [W,H,iter,HIS]=nmf_bpas(A,k,'verbose',1,'nnlssolver','as');
 
 %!test
 %! [W,H,iter,HIS]=nmf_bpas(A,k,'verbose',1,'type','sparse');
 
 %!test
-%! [W,H,iter,HIS]=nmf_bpas(A,k,'verbose',1,'type','sparse','nnls_solver','bp','alpha',1.1,'beta',1.3);
+%! [W,H,iter,HIS]=nmf_bpas(A,k,'verbose',1,'type','sparse','nnlssolver','bp','alpha',1.1,'beta',1.3);
 
 %!test
-%! [W,H,iter,HIS]=nmf_bpas(A,k,'verbose',2,'type','plain','w_init',rand(m,k));
+%! [W,H,iter,HIS]=nmf_bpas(A,k,'verbose',2,'type','plain','winit',rand(m,k));
 
 %!demo
 %! m = 300;

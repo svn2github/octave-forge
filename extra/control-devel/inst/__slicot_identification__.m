@@ -132,7 +132,7 @@ function [sys, x0, info] = __slicot_identification__ (method, dat, varargin)
   ## state covariance matrix Q
   ## output covariance matrix Ry
   ## state-output cross-covariance matrix S
-  info = struct ("K", k, "Q", q, "Ry", ry, "S", s)
+  info = struct ("K", k, "Q", q, "Ry", ry, "S", s);
 
 endfunction
 

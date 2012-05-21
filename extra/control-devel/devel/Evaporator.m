@@ -51,7 +51,7 @@ Y=evaporator(:,4:6);
 
 dat = iddata (Y, U)
 
-[sys, x0] = ident (dat, 10, 4)     % s=10, n=4
+[sys, x0] = moen4 (dat, 's', 10, 'n', 4)     % s=10, n=4
 
 
 [y, t] = lsim (sys, U, [], x0);

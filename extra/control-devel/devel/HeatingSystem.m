@@ -75,7 +75,7 @@ dat = iddata (Y, U, 2.0, 'inname', 'input drive voltage', \
                          'outunit', '°C')
 
 % s=15, n=7
-[sys1, x0] = ident (dat, 15, 7)
+[sys1, x0] = moen4 (dat, 's', 15, 'n', 7)
 sys2 = arx (dat, 7, 7)       % normally na = nb
 
 [y1, t1] = lsim (sys1, U, [], x0);

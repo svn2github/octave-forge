@@ -71,7 +71,7 @@ U = {U_dest; U_dest_n10; U_dest_n20; U_dest_n30};
 
 dat = iddata (Y, U)
 
-[sys, x0] = ident (dat, 5, 4)    % s=5, n=4
+[sys, x0] = moen4 (dat, 's', 5, 'n', 4)    % s=5, n=4
 
 x0=x0{1};
 

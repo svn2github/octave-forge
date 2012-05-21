@@ -76,7 +76,7 @@ dat = iddata (Y, U, [], 'inname', {'a. water temperature';
    	                   'outname', {'a. dissolved oxygen';
    	                               'b. algae'})
 
-[sys, x0] = ident (dat, 5, 4)    % s=5, n=4
+[sys, x0] = moen4 (dat, 's', 5, 'n', 4)    % s=5, n=4
 
 x0=x0{1};
 

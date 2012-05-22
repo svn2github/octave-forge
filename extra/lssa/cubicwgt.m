@@ -13,10 +13,28 @@
 ## You should have received a copy of the GNU General Public License along with
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
+## -*-texinfo-*-
+## @deftypefn  {Function File} {a =} cubicwgt {series}
+## Return the series as windowed by a cubic polynomial,
+## 1 + ( x ^ 2 * ( 2 x - 3 ) ), assuming x is in [-1,1].
+## @end deftypefn
+
+%!demo
+%! h = 2;
+%! hcw = cubicwgt(h)
+%! m = 0.01;
+%! mcw = cubicwgt(m)
+%! k = [ 0 , 3 , 1.5, -1, -0.5, -0.25, 0.75 ];
+%! kcw = cubicwgt(k)
+%! kt = k';
+%! ktcw = cubicwgt(kt);
+%! ## Tests cubicwgt on two scalars and two vectors; cubicwgt will work on any array input.
+
+
 ## This function implements the windowing function on page 10 of the doc.
 ## if t is in [-1,1] then the windowed term is a = 1 + ( |t|^2 * ( 2|t| - 3 )
 ## else the windowed term is 0.
-function a = cubicwgt(t) ## where t is the set of time values
-  a = abs(t);
+function a = cubicwgt(s) ## where s is the value to be windowed
+  a = abs(s);
   a = ifelse( ( a < 1 ), 1 + ( ( a .^ 2 ) .* ( 2 .* a - 3 ) ), a = 0);
 endfunction

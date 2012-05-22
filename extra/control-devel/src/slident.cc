@@ -180,7 +180,7 @@ For internal use only.")
         else
             ctrl = 'N';
 
-
+        // m and l are equal for all experiments, checked by iddata class
         int n_exp = y_cell.nelem ();            // number of experiments
         int m = u_cell.elem(0).columns ();      // m: number of inputs
         int l = y_cell.elem(0).columns ();      // l: number of outputs
@@ -201,6 +201,7 @@ For internal use only.")
         ColumnVector sv (l*nobr);
 
 
+        // repeat for every experiment in the dataset
         for (int i = 0; i < n_exp; i++)
         {
             if (n_exp == 1)
@@ -215,13 +216,13 @@ For internal use only.")
             Matrix y = y_cell.elem(i).matrix_value ();
             Matrix u = u_cell.elem(i).matrix_value ();
 
-            //int m = u.columns ();   // m: number of inputs
-            //int l = y.columns ();   // l: number of outputs
-            int nsmp = y.rows ();   // nsmp: number of samples
-            nsmpl += nsmp;
             // y.rows == u.rows  is checked by iddata class
-            // TODO: check minimal nsmp size
-        
+            // int m = u.columns ();   // m: number of inputs
+            // int l = y.columns ();   // l: number of outputs
+            int nsmp = y.rows ();   // nsmp: number of samples in the current experiment
+            nsmpl += nsmp;          // nsmpl: total number of samples of all experiments
+
+            // minimal nsmp size checked by __slicot_identification__.m
             if (batch == 'O')
             {
                 if (nsmp < 2*(m+l+1)*nobr - 1)
@@ -255,6 +256,7 @@ For internal use only.")
             // TODO: Handle 'k' for DWORK
 
             int ldwork_a;
+            int ns = nsmp - 2*nobr + 1;
         
             if (alg == 'C')
             {
@@ -290,7 +292,7 @@ For internal use only.")
             }
             else    // (alg == 'Q')
             {
-                int ns = nsmp - 2*nobr + 1;
+                // int ns = nsmp - 2*nobr + 1;
                 
                 if (ldr >= ns && batch == 'F')
                 {
@@ -313,36 +315,31 @@ For internal use only.")
                 }
             }
 
-/*
-IB01AD.f Lines 438-445
-C     FURTHER COMMENTS
-C
-C     For ALG = 'Q', BATCH = 'O' and LDR < NS, or BATCH <> 'O', the
-C     calculations could be rather inefficient if only minimal workspace
-C     (see argument LDWORK) is provided. It is advisable to provide as
-C     much workspace as possible. Almost optimal efficiency can be
-C     obtained for  LDWORK = (NS+2)*(2*(M+L)*NOBR),  assuming that the
-C     cache size is large enough to accommodate R, U, Y, and DWORK.
-*/
+            /*
+            IB01AD.f Lines 438-445
+            C     FURTHER COMMENTS
+            C
+            C     For ALG = 'Q', BATCH = 'O' and LDR < NS, or BATCH <> 'O', the
+            C     calculations could be rather inefficient if only minimal workspace
+            C     (see argument LDWORK) is provided. It is advisable to provide as
+            C     much workspace as possible. Almost optimal efficiency can be
+            C     obtained for  LDWORK = (NS+2)*(2*(M+L)*NOBR),  assuming that the
+            C     cache size is large enough to accommodate R, U, Y, and DWORK.
+            */
 
-// warning ("==================== ldwork_a before: %d =====================", ldwork_a);
-// ldwork_a = (ns+2)*(2*(m+l)*nobr);
-//////////ldwork_a = max (ldwork_a, (ns+2)*(2*(m+l)*nobr));
-// ldwork_a *= 3;
-// warning ("==================== ldwork_a after: %d =====================", ldwork_a);
+            ldwork_a = max (ldwork_a, (ns+2)*(2*(m+l)*nobr));
 
+            /*
+            IB01AD.f Lines 291-195:
+            c             the workspace used for alg = 'q' is
+            c                       ldrwrk*2*(m+l)*nobr + 4*(m+l)*nobr,
+            c             where ldrwrk = ldwork/(2*(m+l)*nobr) - 2; recommended
+            c             value ldrwrk = ns, assuming a large enough cache size.
+            c             for good performance,  ldwork  should be larger.
 
-/*
-IB01AD.f Lines 291-195:
-c             the workspace used for alg = 'q' is
-c                       ldrwrk*2*(m+l)*nobr + 4*(m+l)*nobr,
-c             where ldrwrk = ldwork/(2*(m+l)*nobr) - 2; recommended
-c             value ldrwrk = ns, assuming a large enough cache size.
-c             for good performance,  ldwork  should be larger.
+            somehow ldrwrk and ldwork must have been mixed up here
 
-somehow ldrwrk and ldwork must have been mixed up here
-
-*/
+            */
 
 
             OCTAVE_LOCAL_BUFFER (int, iwork_a, liwork_a);
@@ -609,8 +606,10 @@ somehow ldrwrk and ldwork must have been mixed up here
         char jobbd = 'D';
         
         // arguments out
-        Cell x0_cell (n_exp, 1);
-        
+        Cell x0_cell (n_exp, 1);    // cell of initial state vectors x0
+
+        // repeat for every experiment in the dataset
+        // compute individual initial state vector x0 for every experiment        
         for (int i = 0; i < n_exp; i++)
         {
             Matrix y = y_cell.elem(i).matrix_value ();
@@ -628,7 +627,7 @@ somehow ldrwrk and ldwork must have been mixed up here
 
             int ldy = nsmp;
 
-
+            // arguments out
             ColumnVector x0 (n);
             Matrix v (ldv, n);
 
@@ -697,7 +696,7 @@ somehow ldrwrk and ldwork must have been mixed up here
             error_msg ("ident: IB01CD", info_c, 2, err_msg_c);
             warning_msg ("ident: IB01CD", iwarn_c, 6, warn_msg_c);
             
-            x0_cell.elem(i) = x0;
+            x0_cell.elem(i) = x0;       // add x0 from the current experiment to cell of initial state vectors
         }
    
         

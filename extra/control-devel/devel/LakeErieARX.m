@@ -76,13 +76,17 @@ dat = iddata (Y, U, [], 'inname', {'a. water temperature';
    	                   'outname', {'a. dissolved oxygen';
    	                               'b. algae'})
 
-[sys, x0] = ident (dat, 5, 4)    % s=5, n=4
-sys2 = arx (dat, 4, 4)
+[sys, x0] = moen4 (dat, 's', 5, 'n', 4)    % s=5, n=4
+% sys2 = arx (dat, 4, 4)
+[sys2, x02] = arx (dat, 4, 4)
 
 x0=x0{1};
+x02=x02{1};
 
 [y, t] = lsim (sys, U_erie, [], x0);
-[y2, t2] = lsim (sys2(:, 1:5), U_erie);
+% [y2, t2] = lsim (sys2(:, 1:5), U_erie);
+[y2, t2] = lsim (sys2, U_erie, [], x02);
+
 
 err = norm (Y_erie - y, 1) / norm (Y_erie, 1)
 err2 = norm (Y_erie - y2, 1) / norm (Y_erie, 1)

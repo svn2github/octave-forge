@@ -76,10 +76,13 @@ dat = iddata (Y, U, 2.0, 'inname', 'input drive voltage', \
 
 % s=15, n=7
 [sys1, x0] = moen4 (dat, 's', 15, 'n', 7)
-sys2 = arx (dat, 7, 7)       % normally na = nb
+%sys2 = arx (dat, 7, 7)       % normally na = nb
+[sys2, x02] = arx (dat, 7, 7);
 
 [y1, t1] = lsim (sys1, U, [], x0);
-[y2, t] = lsim (sys2(:, 1), U);
+%[y2, t] = lsim (sys2(:, 1), U);
+[y2, t] = lsim (sys2, U, [], x02);
+
 
 err1 = norm (Y - y1, 1) / norm (Y, 1)
 err2 = norm (Y - y2, 1) / norm (Y, 1)

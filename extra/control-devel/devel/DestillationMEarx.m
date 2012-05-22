@@ -71,13 +71,17 @@ U = {U_dest; U_dest_n10; U_dest_n20; U_dest_n30};
 
 dat = iddata (Y, U)
 
-[sys, x0] = ident (dat, 5, 4)    % s=5, n=4
+[sys, x0] = moen4 (dat, 's', 5, 'n', 4)    % s=5, n=4
 sys2 = arx (dat, 4, 4);
+[sys2, x02] = arx (dat, 4, 4);
 
 x0=x0{1};
+x02=x02{1};
 
 [y, t] = lsim (sys, U_dest, [], x0);
-[y2, t2] = lsim (sys(:, 1:5), U_dest);
+%[y2, t2] = lsim (sys2(:, 1:5), U_dest);
+[y2, t2] = lsim (sys2, U_dest, [], x02);
+
 
 % ARX has no initial conditions, therefore the bad results
 

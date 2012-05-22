@@ -287,6 +287,13 @@ endfunction
 %!          -0.014211
 %!           0.500073 ];    # X0e is not from SLICOT
 %!
+%! ## The SLICOT test for IB01CD uses COMUSE=C, not COMUSE=U.
+%! ## This means that they don't use the matrices B and D
+%! ## computed by IB01BD.  They use only A and C from IB01BD,
+%! ## while B and D are from SLICOT routine IB01CD.
+%! ## Therefore they get slightly different matrices B and D
+%! ## and finally a different initial state vector X0.
+%!
 %!assert (SYS.A, Ae, 1e-4);
 %!assert (SYS.B, Be, 1e-4);
 %!assert (SYS.C, Ce, 1e-4);

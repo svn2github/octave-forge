@@ -52,211 +52,157 @@ $language_data = array (
     'QUOTEMARKS' => array('"',"'"),
     'ESCAPE_CHAR' => '',
     'KEYWORDS' => array(
-        // Data types
-        1 => array(
-             'cell', 'char ', 'double ', 'uint8', 'uint16', 'uint32', 'uint64',
-             'int8','int16', 'int32', 'int64', 'logical ', 'single ', 'struct '
-            ),
-        //Function handle
-        2 => array(
-             GESHI_SEARCH => '(@([A-Za-z_][A-Za-z1-9_]*)?)',
-             GESHI_REPLACE => '\\1',
-             GESHI_MODIFIERS => '',
-             GESHI_BEFORE => '',
-             GESHI_AFTER => ''
-            ),
-        // Storage type
-        3 => array(
-              'global ', 'persistent ', 'static '
-             ),
-        // Boolean
-        // false and true can be used as functions too.
-        // Do not highlight as boolean if followed by parentheses.
-        4 => array(
-             GESHI_SEARCH => '([false|true])(\b(?!(\s)*\())',
-             GESHI_REPLACE => '\\1',
-             GESHI_MODIFIERS => '',
-             GESHI_BEFORE => '',
-             GESHI_AFTER => ''
-             ),
-        // Decimal
-        5 => array(
-             GESHI_SEARCH => '(\b([1-9][0-9]*|0)([Uu]([Ll]|LL|ll)?|([Ll]|LL|ll)[Uu]?)?\b)',
-             GESHI_REPLACE => '\\1',
-             GESHI_MODIFIERS => '',
-             GESHI_BEFORE => '',
-             GESHI_AFTER => ''
-             ),
-        // Floating point number
-        6 => array(
-             GESHI_SEARCH => '(\b([0-9]+[Ee][-]?[0-9]+|([0-9]*\.[0-9]+|[0-9]+\.)([Ee][-]?[0-9]+)?)[fFlL]?)',
-             GESHI_REPLACE => '\\1',
-             GESHI_MODIFIERS => '',
-             GESHI_BEFORE => '',
-             GESHI_AFTER => ''
-             ),
-        // Octal number
-        7 => array(
-             GESHI_SEARCH => '(\b0[0-7]+([Uu]([Ll]|LL|ll)?|([Ll]|LL|ll)[Uu]?)?\b)',
-             GESHI_REPLACE => '\\1',
-             GESHI_MODIFIERS => '',
-             GESHI_BEFORE => '',
-             GESHI_AFTER => ''
-             ),
-        // Hex number
-        8 => array(
-             GESHI_SEARCH => '(\b0[xX][0-9a-fA-F]+([Uu]([Ll]|LL|ll)?|([Ll]|LL|ll)[Uu]?)?\b)',
-             GESHI_REPLACE => '\\1',
-             GESHI_MODIFIERS => '',
-             GESHI_BEFORE => '',
-             GESHI_AFTER => ''
-             ),
-        // Internal variables
-        9 => array(
-              'ans'
-             ),
-        // Reserved constants
-        // Most of the constants can be used as functions too. Do not highlight
-        // as constants if followed by parentheses.
-        10 => array(
-             GESHI_SEARCH => '([e|eps|(J|j|I|i)|(Inf|inf)|(NaN|nan)|NA|ones|pi|rand|randn|zeros])(\b(?!(\s)*\())',
-             GESHI_REPLACE => '\\1',
-             GESHI_MODIFIERS => '',
-             GESHI_BEFORE => '',
-             GESHI_AFTER => ''
-             ),
-        // Package manager
-        11 => array(
-             GESHI_SEARCH => '((\b)pkg(?!(\s)*\()(\s)+(((un)?install|(un)?load|list|(global|local)_list|describe|prefix|(re)?build)(\b))?)',
-             GESHI_REPLACE => '\\1',
-             GESHI_MODIFIERS => '',
-             GESHI_BEFORE => '',
-             GESHI_AFTER => ''
-              ),
-        // Reserved words
-        12 => array(
-                    'break ', 'case ', 'catch ', 'continue ', 'do ', 'else ',
-                    'elseif ','end_try_catch ', 'end_unwind_protect ', 'endfor ',
-                    'endfunction ', 'endif ', 'endswitch ', 'endwhile ', 'for ',
-                    'function ', 'if ','otherwise ', 'return ', 'switch ', 'try ',
-                    'until ', 'unwind_protect ', 'unwind_protect_cleanup ', 'varargin ',
-                    'varargout ', 'while '
-            ),
-        // Built in
+          // Data types
+          1 => array(
+           'cell', 'char ', 'double ', 'uint8', 'uint16', 'uint32', 'uint64',
+           'int8','int16', 'int32', 'int64', 'logical ', 'single ', 'struct '
+          ),
+          //Function handle
+          2 => array("@([A-Za-z_][A-Za-z1-9_]*)?"),
+          // Storage type
+          3 => array(
+            'global ', 'persistent ', 'static '
+           ),
+          // Boolean
+          // false and true can be used as functions too.
+          // Do not highlight as boolean if followed by parentheses.
+          4 => array("[false|true](\b(?!(\s)*\()"),
+          // Decimal
+          5 => array("\b([1-9][0-9]*|0)([Uu]([Ll]|LL|ll)?|([Ll]|LL|ll)[Uu]?)?\b"),
+          // Floating point number
+          6 => array("\b([0-9]+[Ee][-]?[0-9]+|([0-9]*\.[0-9]+|[0-9]+\.)([Ee][-]?[0-9]+)?)[fFlL]?"
+           ),
+          // Octal number
+          7 => array("\b0[0-7]+([Uu]([Ll]|LL|ll)?|([Ll]|LL|ll)[Uu]?)?\b"),
+          // Hex number
+          8 => array("\b0[xX][0-9a-fA-F]+([Uu]([Ll]|LL|ll)?|([Ll]|LL|ll)[Uu]?)?\b"),
+          // Internal variables
+          9 => array(
+            'ans'
+           ),
+          // Reserved constants
+          // Most of the constants can be used as functions too. Do not highlight
+          // as constants if followed by parentheses.
+          10 => array("[e|eps|(J|j|I|i)|(Inf|inf)|(NaN|nan)|NA|ones|pi|rand|randn|zeros])(\b(?!(\s)*\()"),
+          // Package manager
+          11 => array("(\b)pkg(?!(\s)*\()(\s)+(((un)?install|(un)?load|list|(global|local)_list|describe|prefix|(re)?build)(\b))?"),
+          // Reserved words
+          12 => array(
+                  'break ', 'case ', 'catch ', 'continue ', 'do ', 'else ',
+                  'elseif ','end_try_catch ', 'end_unwind_protect ', 'endfor ',
+                  'endfunction ', 'endif ', 'endswitch ', 'endwhile ', 'for ',
+                  'function ', 'if ','otherwise ', 'return ', 'switch ', 'try ',
+                  'until ', 'unwind_protect ', 'unwind_protect_cleanup ', 'varargin ',
+                  'varargout ', 'while '
+          ),
+          // Built in
         13 => array(
-            'all','any','exist','is','logical','mislocked',
-
-            'abs','acos','acosh','acot','acoth','acsc','acsch','airy','angle',
-            'ans','area','asec','asech','asin','asinh','atan','atan2','atanh',
-            'auread','autumn','auwrite','axes','axis','balance','bar','bar3',
-            'bar3h','barh','besselh','besseli','besselj','besselk','Bessely',
-            'beta','betainc','betaln','bicg','bicgstab','bin2dec','bitand',
-            'bitcmp','bitget','bitmax','bitor','bitset','bitshift','bitxor',
-            'blkdiag','bone','box','brighten','builtin','bwcontr','calendar',
-            'camdolly','camlight','camlookat','camorbit','campan','campos',
-            'camproj','camroll','camtarget','camup','camva','camzoom','capture',
-            'cart2pol','cart2sph','cat','caxis','cdf2rdf','ceil','cell',
-            'cell2struct','celldisp','cellfun','cellplot','cellstr','cgs',
-            'char','chol','cholinc','cholupdate','cla','clabel','class','clc',
-            'clf','clg','clock','close','colmmd','colorbar','colorcube',
-            'colordef','colormap','colperm','comet','comet3','compan','compass',
-            'complex','computer','cond','condeig','condest','coneplot','conj',
-            'contour','contourc','contourf','contourslice','contrast','conv',
-            'conv2','convhull','cool','copper','copyobj','corrcoef','cos',
-            'cosh','cot','coth','cov','cplxpair','cputime','cross','csc','csch',
-            'cumprod','cumsum','cumtrapz','cylinder','daspect','date','datenum',
-            'datestr','datetick','datevec','dbclear','dbcont','dbdown',
-            'dblquad','dbmex','dbquit','dbstack','dbstatus','dbstep','dbstop',
-            'dbtype','dbup','deblank','dec2bin','dec2hex','deconv','del2',
-            'delaunay','det','diag','dialog','diff','diffuse','dlmread',
-            'dlmwrite','dmperm','double','dragrect','drawnow','dsearch','eig',
-            'eigs','ellipj','ellipke','eomday','eps','erf','erfc','erfcx',
-            'erfiny','error','errorbar','errordlg','etime','eval','evalc',
-            'evalin','exp','expint','expm','eye','ezcontour','ezcontourf',
-            'ezmesh','ezmeshc','ezplot','ezplot3','ezpolar','ezsurf','ezsurfc',
-            'factor','factorial','fclose','feather','feof','ferror','feval',
-            'fft','fft2','fftshift','fgetl','fgets','fieldnames','figure',
-            'fill','fill3','filter','filter2','find','findfigs','findobj',
-            'findstr','fix','flag','flipdim','fliplr','flipud','floor','flops',
-            'fmin','fmins','fopen','fplot','fprintf','fread','frewind','fscanf',
-            'fseek','ftell','full','funm','fwrite','fzero','gallery','gamma',
-            'gammainc','gammaln','gca','gcbo','gcd','gcf','gco','get',
-            'getfield','ginput','gmres','gradient','gray','graymon','grid',
-            'griddata','gsvd','gtext','hadamard','hankel','hdf','helpdlg',
-            'hess','hex2dec','hex2num','hidden','hilb','hist','hold','hot',
-            'hsv','hsv2rgb','i','ifft','ifft2','ifftn','ifftshift','imag',
-            'image','imfinfo','imread','imwrite','ind2sub','Inf','inferiorto',
-            'inline','inpolygon','input','inputdlg','inputname','int16',
-            'int2str','int32','int8','interp1','interp2','interp3','interpft',
-            'interpn','intersect','inv','invhilb','ipermute','isa','ishandle',
-            'ismember','isocaps','isonormals','isosurface','j','jet','keyboard',
-            'lcm','legend','legendre','light','lighting','lightingangle',
-            'lin2mu','line','lines','linspace','listdlg','loadobj','log',
-            'log10','log2','loglog','logm','logspace','lower','lscov','lu',
-            'luinc','magic','mat2str','material','max','mean','median','menu',
-            'menuedit','mesh','meshc','meshgrid','min','mod','msgbox','mu2lin',
-            'NaN','nargchk','nargin','nargout','nchoosek','ndgrid','ndims',
-            'newplot','nextpow2','nnls','nnz','nonzeros','norm','normest','now',
-            'null','num2cell','num2str','nzmax','ode113,','ode15s,','ode23s,',
-            'ode23t,','ode23tb','ode45,','odefile','odeget','odeset','ones',
-            'orient','orth','pagedlg','pareto','pascal','patch','pause',
-            'pbaspect','pcg','pcolor','peaks','perms','permute','pi','pie',
-            'pie3','pinv','plot','plot3','plotmatrix','plotyy','pol2cart',
-            'polar','poly','polyarea','polyder','polyeig','polyfit','polyval',
-            'polyvalm','pow2','primes','print','printdlg','printopt','prism',
-            'prod','propedit','qmr','qr','qrdelete','qrinsert','qrupdate',
-            'quad','questdlg','quiver','quiver3','qz','rand','randn','randperm',
-            'rank','rat','rats','rbbox','rcond','real','realmax','realmin',
-            'rectangle','reducepatch','reducevolume','refresh','rem','repmat',
-            'reset','reshape','residue','rgb2hsv','rgbplot','ribbon','rmfield',
-            'roots','rose','rot90','rotate','rotate3d','round','rref',
-            'rrefmovie','rsf2csf','saveobj','scatter','scatter3','schur',
-            'script','sec','sech','selectmoveresize','semilogx','semilogy',
-            'set','setdiff','setfield','setxor','shading','shg','shiftdim',
-            'shrinkfaces','sign','sin','single','sinh','slice','smooth3','sort',
-            'sortrows','sound','soundsc','spalloc','sparse','spconvert',
-            'spdiags','specular','speye','spfun','sph2cart','sphere','spinmap',
-            'spline','spones','spparms','sprand','sprandn','sprandsym','spring',
-            'sprintf','sqrt','sqrtm','squeeze','sscanf','stairs','std','stem',
-            'stem3','str2double','str2num','strcat','strcmp','strcmpi',
-            'stream2','stream3','streamline','strings','strjust','strmatch',
-            'strncmp','strrep','strtok','struct','struct2cell','strvcat',
-            'sub2ind','subplot','subspace','subvolume','sum','summer',
-            'superiorto','surf','surf2patch','surface','surfc','surfl',
-            'surfnorm','svd','svds','symmmd','symrcm','symvar','tan','tanh',
-            'texlabel','text Create','textread','textwrap','tic','title','toc',
-            'toeplitz','trace','trapz','tril','trimesh','trisurf','triu',
-            'tsearch','uicontext Create','uicontextmenu','uicontrol',
-            'uigetfile','uimenu','uint32','uint8','uiputfile','uiresume',
-            'uisetcolor','uisetfont','uiwait Used','union','unique','unwrap',
-            'upper','var','varargin','varargout','vectorize','view','viewmtx',
-            'voronoi','waitbar','waitforbuttonpress','warndlg','warning',
-            'waterfall','wavread','wavwrite','weekday','whitebg','wilkinson',
-            'winter','wk1read','wk1write','xlabel','xlim','ylabel','ylim',
-            'zeros','zlabel','zlim','zoom',
-
-            'addpath','cd','clear','copyfile','delete','diary','dir','disp',
-            'doc','docopt','echo','edit','fileparts','format','fullfile','help',
-            'helpdesk','helpwin','home','inmem','lasterr','lastwarn','length',
-            'load','lookfor','ls','matlabrc','matlabroot','mkdir','mlock',
-            'more','munlock','open','openvar','pack','partialpath','path',
-            'pathtool','profile','profreport','pwd','quit','rmpath','save',
-            'saveas','size','tempdir','tempname','type','ver','version','web',
-            'what','whatsnew','which','who','whos','workspace'
-            )
-        ),
-    'SYMBOLS' => array(
-             GESHI_SEARCH => "((\.)?\+{1,2}?(?!\+) | (\.)?\-{1,2}?(?!\-) |
-                               (\.)?\*{1,2}?(?!\*) | (\.)?\/(?!\^) |
-                               (\.)?\\(?!\^) | (\.)?\^(?!\^) |
-                               (?&lt;=[0-9a-zA-Z_)\]}])(\.)?' | &lt;=? |
-                               &gt;=? | != | ~= | == | &lt;&gt; |
-                               &amp;{1,2}?(?!&amp;) | \|{1,2}?(?!\|) | ! | ~ |
-                               = | : | ...)",
-             GESHI_REPLACE => '\\1',
-             GESHI_MODIFIERS => '',
-             GESHI_BEFORE => '',
-             GESHI_AFTER => ''
+        'all','any','exist','is','logical','mislocked',
+        'abs','acos','acosh','acot','acoth','acsc','acsch','airy','angle',
+        'area','asec','asech','asin','asinh','atan','atan2','atanh',
+        'auread','autumn','auwrite','axes','axis','balance','bar','bar3',
+        'bar3h','barh','besselh','besseli','besselj','besselk','Bessely',
+        'beta','betainc','betaln','bicg','bicgstab','bin2dec','bitand',
+        'bitcmp','bitget','bitmax','bitor','bitset','bitshift','bitxor',
+        'blkdiag','bone','box','brighten','builtin','bwcontr','calendar',
+        'camdolly','camlight','camlookat','camorbit','campan','campos',
+        'camproj','camroll','camtarget','camup','camva','camzoom','capture',
+        'cart2pol','cart2sph','cat','caxis','cdf2rdf','ceil',
+        'cell2struct','celldisp','cellfun','cellplot','cellstr','cgs',
+        'char','chol','cholinc','cholupdate','cla','clabel','class','clc',
+        'clf','clg','clock','close','colmmd','colorbar','colorcube',
+        'colordef','colormap','colperm','comet','comet3','compan','compass',
+        'complex','computer','cond','condeig','condest','coneplot','conj',
+        'contour','contourc','contourf','contourslice','contrast','conv',
+        'conv2','convhull','cool','copper','copyobj','corrcoef','cos',
+        'cosh','cot','coth','cov','cplxpair','cputime','cross','csc','csch',
+        'cumprod','cumsum','cumtrapz','cylinder','daspect','date','datenum',
+        'datestr','datetick','datevec','dbclear','dbcont','dbdown',
+        'dblquad','dbmex','dbquit','dbstack','dbstatus','dbstep','dbstop',
+        'dbtype','dbup','deblank','dec2bin','dec2hex','deconv','del2',
+        'delaunay','det','diag','dialog','diff','diffuse','dlmread',
+        'dlmwrite','dmperm','double','dragrect','drawnow','dsearch','eig',
+        'eigs','ellipj','ellipke','eomday','eps','erf','erfc','erfcx',
+        'erfiny','error','errorbar','errordlg','etime','eval','evalc',
+        'evalin','exp','expint','expm','eye','ezcontour','ezcontourf',
+        'ezmesh','ezmeshc','ezplot','ezplot3','ezpolar','ezsurf','ezsurfc',
+        'factor','factorial','fclose','feather','feof','ferror','feval',
+        'fft','fft2','fftshift','fgetl','fgets','fieldnames','figure',
+        'fill','fill3','filter','filter2','find','findfigs','findobj',
+        'findstr','fix','flag','flipdim','fliplr','flipud','floor','flops',
+        'fmin','fmins','fopen','fplot','fprintf','fread','frewind','fscanf',
+        'fseek','ftell','full','funm','fwrite','fzero','gallery','gamma',
+        'gammainc','gammaln','gca','gcbo','gcd','gcf','gco','get',
+        'getfield','ginput','gmres','gradient','gray','graymon','grid',
+        'griddata','gsvd','gtext','hadamard','hankel','hdf','helpdlg',
+        'hess','hex2dec','hex2num','hidden','hilb','hist','hold','hot',
+        'hsv','hsv2rgb','i','ifft','ifft2','ifftn','ifftshift','imag',
+        'image','imfinfo','imread','imwrite','ind2sub','Inf','inferiorto',
+        'inline','inpolygon','input','inputdlg','inputname',
+        'int2str','interp1','interp2','interp3','interpft',
+        'interpn','intersect','inv','invhilb','ipermute','isa','ishandle',
+        'ismember','isocaps','isonormals','isosurface','j','jet','keyboard',
+        'lcm','legend','legendre','light','lighting','lightingangle',
+        'lin2mu','line','lines','linspace','listdlg','loadobj','log',
+        'log10','log2','loglog','logm','logspace','lower','lscov','lu',
+        'luinc','magic','mat2str','material','max','mean','median','menu',
+        'menuedit','mesh','meshc','meshgrid','min','mod','msgbox','mu2lin',
+        'NaN','nargchk','nargin','nargout','nchoosek','ndgrid','ndims',
+        'newplot','nextpow2','nnls','nnz','nonzeros','norm','normest','now',
+        'null','num2cell','num2str','nzmax','ode113,','ode15s,','ode23s,',
+        'ode23t,','ode23tb','ode45,','odefile','odeget','odeset','ones',
+        'orient','orth','pagedlg','pareto','pascal','patch','pause',
+        'pbaspect','pcg','pcolor','peaks','perms','permute','pi','pie',
+        'pie3','pinv','plot','plot3','plotmatrix','plotyy','pol2cart',
+        'polar','poly','polyarea','polyder','polyeig','polyfit','polyval',
+        'polyvalm','pow2','primes','print','printdlg','printopt','prism',
+        'prod','propedit','qmr','qr','qrdelete','qrinsert','qrupdate',
+        'quad','questdlg','quiver','quiver3','qz','rand','randn','randperm',
+        'rank','rat','rats','rbbox','rcond','real','realmax','realmin',
+        'rectangle','reducepatch','reducevolume','refresh','rem','repmat',
+        'reset','reshape','residue','rgb2hsv','rgbplot','ribbon','rmfield',
+        'roots','rose','rot90','rotate','rotate3d','round','rref',
+        'rrefmovie','rsf2csf','saveobj','scatter','scatter3','schur',
+        'script','sec','sech','selectmoveresize','semilogx','semilogy',
+        'set','setdiff','setfield','setxor','shading','shg','shiftdim',
+        'shrinkfaces','sign','sin','single','sinh','slice','smooth3','sort',
+        'sortrows','sound','soundsc','spalloc','sparse','spconvert',
+        'spdiags','specular','speye','spfun','sph2cart','sphere','spinmap',
+        'spline','spones','spparms','sprand','sprandn','sprandsym','spring',
+        'sprintf','sqrt','sqrtm','squeeze','sscanf','stairs','std','stem',
+        'stem3','str2double','str2num','strcat','strcmp','strcmpi',
+        'stream2','stream3','streamline','strings','strjust','strmatch',
+        'strncmp','strrep','strtok','struct','struct2cell','strvcat',
+        'sub2ind','subplot','subspace','subvolume','sum','summer',
+        'superiorto','surf','surf2patch','surface','surfc','surfl',
+        'surfnorm','svd','svds','symmmd','symrcm','symvar','tan','tanh',
+        'texlabel','text Create','textread','textwrap','tic','title','toc',
+        'toeplitz','trace','trapz','tril','trimesh','trisurf','triu',
+        'tsearch','uicontext Create','uicontextmenu','uicontrol',
+        'uigetfile','uimenu','uiputfile','uiresume',
+        'uisetcolor','uisetfont','uiwait Used','union','unique','unwrap',
+        'upper','var','varargin','varargout','vectorize','view','viewmtx',
+        'voronoi','waitbar','waitforbuttonpress','warndlg','warning',
+        'waterfall','wavread','wavwrite','weekday','whitebg','wilkinson',
+        'winter','wk1read','wk1write','xlabel','xlim','ylabel','ylim',
+        'zeros','zlabel','zlim','zoom',
+        'addpath','cd','clear','copyfile','delete','diary','dir','disp',
+        'doc','docopt','echo','edit','fileparts','format','fullfile','help',
+        'helpdesk','helpwin','home','inmem','lasterr','lastwarn','length',
+        'load','lookfor','ls','matlabrc','matlabroot','mkdir','mlock',
+        'more','munlock','open','openvar','pack','partialpath','path',
+        'pathtool','profile','profreport','pwd','quit','rmpath','save',
+        'saveas','size','tempdir','tempname','type','ver','version','web',
+        'what','whatsnew','which','who','whos','workspace'
+          )
+    ),
+    'SYMBOLS' => array("((\.)?\+{1,2}?(?!\+) | (\.)?\-{1,2}?(?!\-) |
+                (\.)?\*{1,2}?(?!\*) | (\.)?\/(?!\^) |
+                (\.)?\\(?!\^) | (\.)?\^(?!\^) |
+                (?&lt;=[0-9a-zA-Z_)\]}])(\.)?' | &lt;=? |
+                &gt;=? | != | ~= | == | &lt;&gt; |
+                &amp;{1,2}?(?!&amp;) | \|{1,2}?(?!\|) | ! | ~ |
+                = | : | ...)"
         ),
     'CASE_SENSITIVE' => array(
         GESHI_COMMENTS => false,
@@ -281,18 +227,7 @@ $language_data = array (
             ),
         'COMMENTS' => array(
             1 => 'color: #228B22;',
-            2 => 'color:#A020F0;',
-            3 => 'color:#A020F0;'
-            4 => 'color:#A020F0;'
-            5 => 'color:#A020F0;'
-            6 => 'color:#A020F0;'
-            7 => 'color:#A020F0;'
-            8 => 'color:#A020F0;'
-            9 => 'color:#A020F0;'
-            10 => 'color:#A020F0;'
-            11 => 'color:#A020F0;'
-            12 => 'color:#A020F0;'
-            13 => 'color:#A020F0;'
+            2 => 'color:#A020F0;'
             ),
         'ESCAPE_CHAR' => array(
             0 => ''
@@ -322,22 +257,31 @@ $language_data = array (
         ),
     'URLS' => array(
         1 => '',
-        2 => ''
+        2 => '',
+        3 => '',
+        4 => '',
+        5 => '',
+        6 => '',
+        7 => '',
+        8 => '',
+        9 => '',
+        10 => '',
+        11 => '',
+        12 => '',
+        13 => ''
         ),
-//    'OOLANG' => true,
-//    'OBJECT_SPLITTERS' => array(
-//        1 => '.',
-//        2 => '::'
-//        ),
+    'OOLANG' => true,
+    'OBJECT_SPLITTERS' => array(
+        1 => '.',
+        2 => '::'
+        ),
     'REGEXPS' => array(
         //Complex numbers
         0 => '(?<![\\w\\/])[+-]?[\\d]*([\\d]\\.|\\.[\\d])?[\\d]*[ij](?![\\w]|\<DOT>html)'
         ),
     'STRICT_MODE_APPLIES' => GESHI_NEVER,
-    'SCRIPT_DELIMITERS' => array(
-        ),
-    'HIGHLIGHT_STRICT_BLOCK' => array(
-        )
+    'SCRIPT_DELIMITERS' => array(),
+    'HIGHLIGHT_STRICT_BLOCK' => array()
 );
 
 ?>

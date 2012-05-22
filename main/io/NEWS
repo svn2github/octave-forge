@@ -6,7 +6,10 @@ post-1.0.18 (in SVN only)
 --- getusedrange subfunc getusedrange_jod: str2num applied to indices rather
     than the substring. Must have been there for > 2 years, only surfaced
     with jopendocument v 1.3b1
-    
+--- oct2xls, oct2ods: cast all numeric types in input array to double as 
+    spreadsheets have only double, boolean or character string type. This bug
+    has been there from the very beginning of the spreadsheet functions  8-O
+
 ** Compatible with jOpenDocument version 1.3b1
    getUsedRange() method added (MUCH faster than the old hack)
 

@@ -64,12 +64,14 @@ function [sys, varargout] = arx (dat, na, nb)
   max_nb = max (nb, [], 2);                         # one maximum for each row/output, max_nb(p-by-1)
   n = max (na, max_nb);                             # n(p-by-1)
 
-
+  ## create empty cells for numerator and denominator polynomials
   num = cell (p, m+p);
   den = cell (p, m+p);
-  
+
+  ## MIMO (p-by-m) models are identified as p MISO (1-by-m) models
+  ## For multi-experiment data, minimize the trace of the error
   for i = 1 : p                                     # for every output
-    Phi = cell (ex, 1);
+    Phi = cell (ex, 1);                             # one regression matrix per experiment
     for e = 1 : ex                                  # for every experiment  
       ## avoid warning: toeplitz: column wins anti-diagonal conflict
       ## therefore set first row element equal to y(1)
@@ -78,19 +80,24 @@ function [sys, varargout] = arx (dat, na, nb)
       PhiU = arrayfun (@(x) toeplitz (U{e}(1:end-1, x), [U{e}(1, x); zeros(nb(i,x)-1, 1)]), 1:m, "uniformoutput", false);
       Phi{e} = (horzcat (-PhiY, PhiU{:}))(n(i):end, :);
     endfor
-  
-    Theta = __theta__ (Phi, Y, i, n);
-      
-    A = [1; Theta(1:na(i))];                        # a0 = 1, a1 = Theta(1), an = Theta(n)
-    ThetaB = Theta(na(i)+1:end);                    # b0 = 0 (leading zero required by filt)
-    B = mat2cell (ThetaB, nb(i,:));
-    B = reshape (B, 1, []);
-    B = cellfun (@(x) [0; x], B, "uniformoutput", false);
 
-    Be = repmat ({0}, 1, p);
-    Be(i) = 1;
-    num(i, :) = [B, Be];
-    den(i, :) = repmat ({A}, 1, m+p);
+    ## compute parameter vector Theta
+    Theta = __theta__ (Phi, Y, i, n);
+
+    ## extract polynomial matrices A and B from Theta
+    ## A is a scalar polynomial for output i, i=1:p
+    ## B is polynomial row vector (1-by-m) for output i
+    A = [1; Theta(1:na(i))];                                # a0 = 1, a1 = Theta(1), an = Theta(n)
+    ThetaB = Theta(na(i)+1:end);                            # all polynomials from B are in one column vector
+    B = mat2cell (ThetaB, nb(i,:));                         # now separate the polynomials, one for each input
+    B = reshape (B, 1, []);                                 # make B a row cell (1-by-m)
+    B = cellfun (@(x) [0; x], B, "uniformoutput", false);   # b0 = 0 (leading zero required by filt)
+
+    ## add error inputs
+    Be = repmat ({0}, 1, p);                                # there are as many error inputs as system outputs (p)
+    Be(i) = 1;                                              # inputs m+1:m+p are zero, except m+i which is one
+    num(i, :) = [B, Be];                                    # numerator polynomials for output i, individual for each input
+    den(i, :) = repmat ({A}, 1, m+p);                       # in a row (output i), all inputs have the same denominator polynomial
   endfor
 
   ## A(q) y(t) = B(q) u(t) + e(t)
@@ -100,8 +107,10 @@ function [sys, varargout] = arx (dat, na, nb)
   ## since A(q) is a diagonal polynomial matrix, its inverse is trivial:
   ## the corresponding transfer function has common row denominators.
 
-  sys = filt (num, den, tsam);
-  
+  sys = filt (num, den, tsam);                              # filt creates a transfer function in z^-1
+
+  ## compute initial state vector x0 if requested
+  ## this makes only sense for state-space models, therefore convert TF to SS
   if (nargout > 1)
     sys = prescale (ss (sys(:,1:m)));
     x0 = slib01cd (Y, U, sys.a, sys.b, sys.c, sys.d, 0.0)

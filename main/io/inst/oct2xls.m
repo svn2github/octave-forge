@@ -111,13 +111,15 @@
 ## 2012-02-20 Fixed range parameter to be default empty string rather than empty numeral
 ## 2012-02-27 More range param fixes
 ## 2012-03-07 Updated texinfo help text
+## 2012-05-22 Cast all numeric data in input array to double
 
 ## Last script file update (incl. subfunctions): 2012-05-21
 
 function [ xls, rstatus ] = oct2xls (obj, xls, wsh=1, crange='', spsh_opts=[])
 
 	if (nargin < 2) error ("oct2xls needs a minimum of 2 arguments."); endif
-	# Make sure input array is a cell array
+  
+	# Validate input array, make sure it is a cell array
 	if (isempty (obj))
 		warning ("Request to write empty matrix - ignored."); 
 		rstatus = 1;
@@ -131,6 +133,9 @@ function [ xls, rstatus ] = oct2xls (obj, xls, wsh=1, crange='', spsh_opts=[])
 		error ("oct2xls: input array neither cell nor numeric array");
 	endif
 	if (ndims (obj) > 2), error ("Only 2-dimensional arrays can be written to spreadsheet"); endif
+  # Cast all numerical values to double as spreadsheets only have double/boolean/text type
+  idx = cellfun (@isnumeric, obj, "UniformOutput", true);
+  obj(idx) = cellfun (@double, obj(idx), "UniformOutput", false);
 
 	# Check xls file pointer struct
 	test1 = ~isfield (xls, "xtype");
@@ -484,6 +489,7 @@ endfunction
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-02-27 Copyright strings updated
 ## 2012-05-21 "Double" cast added when writing numeric values
+## 2012-05-21 "Double" cast moved into main func oct2xls
 
 function [ xls, rstatus ] = oct2jpoi2xls (obj, xls, wsh, crange, spsh_opts)
 
@@ -576,7 +582,7 @@ function [ xls, rstatus ] = oct2jpoi2xls (obj, xls, wsh, crange, spsh_opts)
 			else
 				cell = row.createCell (kk, typearr(ii,jj));
         if (isnumeric (obj{ii, jj}))
-          cell.setCellValue (double (obj{ii, jj}));
+          cell.setCellValue (obj{ii, jj});
         else
           cell.setCellValue (obj{ii, jj});
         endif
@@ -654,6 +660,7 @@ endfunction
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-02-27 Copyright strings updated
 ## 2012-05-21 "Double" cast added when writing numeric values
+## 2012-05-21 "Double" cast moved into main func oct2xls
 
 function [ xls, rstatus ] = oct2jxla2xls (obj, xls, wsh, crange, spsh_opts)
 
@@ -735,7 +742,7 @@ function [ xls, rstatus ] = oct2jxla2xls (obj, xls, wsh, crange, spsh_opts)
 			kk = jj + lcol - 2;		# JExcelAPI's column count is also 0-based
 			switch typearr(ii, jj)
 				case 1			# Numerical
-					tmp = java_new ('jxl.write.Number', kk, ll, double (obj{ii, jj}));
+					tmp = java_new ('jxl.write.Number', kk, ll, obj{ii, jj});
 					sh.addCell (tmp);
 				case 2			# Boolean
 					tmp = java_new ('jxl.write.Boolean', kk, ll, obj{ii, jj});
@@ -931,6 +938,7 @@ endfunction
 ## 2012-02-26 Bug fix when adding sheets near L.994 (wrong if-else-end construct).
 ## 2012-02-27 Copyright strings updated
 ## 2012-05-21 "Double" cast added when writing numeric values
+## 2012-05-21 "Double" cast moved into main func oct2xls
 
 function [ xls, rstatus ] = oct2uno2xls (c_arr, xls, wsh, crange, spsh_opts)
 
@@ -1038,7 +1046,7 @@ function [ xls, rstatus ] = oct2uno2xls (c_arr, xls, wsh, crange, spsh_opts)
         XCell = sh.getCellByPosition (lcol+jj-1, trow+ii-1);
         switch typearr(ii, jj)
           case 1	# Float
-            XCell.setValue (double (c_arr{ii, jj}));
+            XCell.setValue (c_arr{ii, jj});
           case 2	# Logical. Convert to float as OOo has no Boolean type
             XCell.setValue (double (c_arr{ii, jj}));
           case 3	# String

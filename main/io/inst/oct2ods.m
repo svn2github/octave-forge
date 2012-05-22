@@ -115,6 +115,7 @@
 ## 2012-02-20 Fixed range parameter to be default empty string rather than empty numeral
 ## 2012-02-27 More range arg fixes
 ## 2012-03-07 Updated texinfo help text
+## 2012-05-22 Cast all numeric data in input array to double
 ##
 ## Last update of subfunctions below: 2012-02-26
 
@@ -136,6 +137,9 @@ function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange='', spsh_opts=[])
 		error ("oct2ods: input array neither cell nor numeric array");
 	endif
 	if (ndims (c_arr) > 2), error ("Only 2-dimensional arrays can be written to spreadsheet"); endif
+  # Cast all numerical values to double as spreadsheets only have double/boolean/text type
+  idx = cellfun (@isnumeric, obj, "UniformOutput", true);
+  obj(idx) = cellfun (@double, obj(idx), "UniformOutput", false);
 
   # Check ods file pointer struct
 	test1 = ~isfield (ods, "xtype");

@@ -224,7 +224,7 @@ $language_data = array (
         'KEYWORDS' => array(
             1 => 'color: #2E8B57; font-weight:bold;', // Data types
             2 => 'color: #2E8B57; font-weight:bold;', // Storage type
-            3 => 'color: #0000FF;', // Internal variable
+            3 => 'color: #0000FF; font-weight:bold;', // Internal variable
             4 => 'color: #FF0000; font-weight:bold;', // Reserved words
             5 => 'color: #008A8C;' // Built-in
             ),

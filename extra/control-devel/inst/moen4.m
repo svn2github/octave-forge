@@ -40,7 +40,7 @@ function [sys, x0, info] = moen4 (varargin)
 endfunction
 
 
-%!shared SYS, X0, INFO, Ae, Be, Ce, De, Ke, Qe, Rye, Se
+%!shared SYS, X0, INFO, Ae, Be, Ce, De, Ke, Qe, Rye, Se, X0e
 %!
 %! Y = [ 4.7661   5.5451   5.8503   5.3766   4.8833   5.4865   3.5378   5.3155   6.0530   4.3729
 %!       4.7637   5.1886   5.9236   5.6818   4.8858   5.1495   3.5549   5.5329   6.0799   4.7417
@@ -282,6 +282,11 @@ endfunction
 %!         0.0008
 %!        -0.0005 ];
 %!
+%! X0e = [ -11.496422
+%!          -0.718576
+%!          -0.014211
+%!           0.500073 ];    # X0e is not from SLICOT
+%!
 %!assert (SYS.A, Ae, 1e-4);
 %!assert (SYS.B, Be, 1e-4);
 %!assert (SYS.C, Ce, 1e-4);
@@ -290,3 +295,4 @@ endfunction
 %!assert (INFO.Q, Qe, 1e-4);
 %!assert (INFO.Ry, Rye, 1e-4);
 %!assert (INFO.S, Se, 1e-4);
+%!assert (X0, X0e, 1e-4);

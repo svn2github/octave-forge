@@ -445,7 +445,7 @@ $language_data = array (
             2 => ''
             ),
         'SYMBOLS' => array(
-            0 => 'color: #080;'
+            0 => 'color: #FF0000; font-weight:bold;'
             ),
         'REGEXPS' => array(
             0 => 'color: #33f;'

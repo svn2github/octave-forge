@@ -62,6 +62,8 @@ $language_data = array (
         // followed by whitespace
         4 => '/"(.|(\.\.\.|\\\)(\s)*?\n)*?(?<!\\\)"/',
     ),
+    'NUMBERS' => GESHI_NUMBER_INT_BASIC |  GESHI_NUMBER_OCT_PREFIX | GESHI_NUMBER_HEX_PREFIX |
+        GESHI_NUMBER_FLT_SCI_ZERO,
     'CASE_KEYWORDS' => GESHI_CAPS_NO_CHANGE,
     'ESCAPE_CHAR' => '',
     'KEYWORDS' => array(
@@ -74,7 +76,7 @@ $language_data = array (
         2 => array(
         'global', 'persistent', 'static'
         ),
-        // Internal variables
+        // Internal variable
         3 => array('ans'),
         // Reserved words
         4 => array(
@@ -87,7 +89,7 @@ $language_data = array (
         ),
         // Built in
         5 => array(
-        'Inf', 'NaN', 'P_tmpdir', 'abs', 'acos', 'acosh',
+        'P_tmpdir', 'abs', 'acos', 'acosh',
         'add_input_event_hook', 'addlistener', 'addpath', 'addproperty',
         'all', 'allow_noninteger_range_as_index', 'and', 'angle', 'any',
         'arg', 'argnames', 'argv', 'asin', 'asinh', 'assignin', 'atan',
@@ -145,7 +147,7 @@ $language_data = array (
         'octave_tmp_file_name', 'onCleanup', 'ones',
         'optimize_subsasgn_calls', 'or', 'output_max_field_width',
         'output_precision', 'page_output_immediately', 'page_screen_output',
-        'path', 'pathsep', 'pause', 'pclose', 'permute', 'pi', 'pipe', 'plus',
+        'path', 'pathsep', 'pause', 'pclose', 'permute', 'pipe', 'plus',
         'popen', 'popen2', 'power', 'print_empty_dimensions',
         'print_struct_array_contents', 'printf', 'prod',
         'program_invocation_name', 'program_name', 'putenv', 'puts', 'pwd',
@@ -369,7 +371,7 @@ $language_data = array (
         // Builtin Global Variables
         9 => array(
         'EDITOR', 'EXEC_PATH', 'F_DUPFD', 'F_GETFD', 'F_GETFL', 'F_SETFD',
-        'F_SETFL', 'I', 'IMAGE_PATH', 'J', 'NA', 'OCTAVE_HOME',
+        'F_SETFL', 'IMAGE_PATH', 'OCTAVE_HOME',
         'OCTAVE_VERSION', 'O_APPEND', 'O_ASYNC', 'O_CREAT', 'O_EXCL',
         'O_NONBLOCK', 'O_RDONLY', 'O_RDWR', 'O_SYNC', 'O_TRUNC', 'O_WRONLY',
         'PAGER', 'PAGER_FLAGS', 'PS1', 'PS2', 'PS4', 'SEEK_CUR', 'SEEK_END',
@@ -385,10 +387,6 @@ $language_data = array (
         14 => array("\b0[0-7]+([Uu]([Ll]|LL|ll)?|([Ll]|LL|ll)[Uu]?)?\b"),
         // Hex number
         15 => array("\b0[xX][0-9a-fA-F]+([Uu]([Ll]|LL|ll)?|([Ll]|LL|ll)[Uu]?)?\b"),
-        // Reserved constants
-        // Most of the constants can be used as functions too. Do not highlight
-        // as constants if followed by parentheses.
-        16 => array("[e|eps|(J|j|I|i)|(Inf|inf)|(NaN|nan)|NA|ones|pi|rand|randn|zeros])(\b(?!(\s)*\()"),
         // Package manager
         17 => array("(\b)pkg(?!(\s)*\()(\s)+(((un)?install|(un)?load|list|(global|local)_list|describe|prefix|(re)?build)(\b))?")
     ),
@@ -396,8 +394,8 @@ $language_data = array (
         0 => array(
             '!', '!=', '&', '&&','|', '||', '~', '~=',
             '<', '<=', '=', '==', '>', '>='),
-        1 => array('*', '**', '+', '++', '-', '--', '/', '&#92;'),
-        2 => array('.*', '.**','./', '.^', '^','.&#92;'),
+        1 => array('*', '**', '+', '++', '-', '--', '/', "\\","'"),
+        2 => array('.*', '.**','./', '.^', '^',".\\",".'"),
         3 => array(':'),
         4 => array(',', '...', ';')
      ),
@@ -415,7 +413,6 @@ $language_data = array (
         13 => false,
         14 => false,
         15 => false,
-        16 => false,
         17 => false
     ),
     'URLS' => array(
@@ -431,7 +428,6 @@ $language_data = array (
         13 => '',
         14 => '',
         15 => '',
-        16 => '',
         17 => ''
     ),
     'OOLANG' => true,
@@ -442,28 +438,33 @@ $language_data = array (
     'REGEXPS' => array(
         //Complex numbers
 //        0 => "(?<![\\w\\/])[+-]?[\\d]*([\\d]\\.|\\.[\\d])?[\\d]*[ij](?![\\w]|\<DOT>html)",
-        // Boolean
+        // Boolean functions
         // false and true can be used as functions too.
         // Do not highlight as boolean if followed by parentheses.
-//        1 => "(\b([false|true])(\\b(?!(\\s)*\())"
-        //Function handle
         1 => array(
+            GESHI_SEARCH => '(false|true)(\s*\\()',
+            GESHI_REPLACE => '\\1',
+            GESHI_MODIFIERS => '',
+            GESHI_BEFORE => '',
+            GESHI_AFTER => '\\2'
+            ),
+        //Function handle
+        2 => array(
             GESHI_SEARCH => '(@([A-Za-z_][A-Za-z1-9_]*)?)',
             GESHI_REPLACE => '\\1',
             GESHI_MODIFIERS => '',
             GESHI_BEFORE => '',
             GESHI_AFTER => ''
             ),
-        // Decimal TODO not working
-#        2 => array(
-#            GESHI_SEARCH => '(\b([1-9][0-9]*|0)([u]([l]|LL|ll)?|([l]|LL|ll)[u]?)?\b)',
-#//            GESHI_SEARCH => '(stuff)',
-#            GESHI_REPLACE => '\\1',
-#            GESHI_MODIFIERS => 'si',
-#            GESHI_BEFORE => '',
-#            GESHI_AFTER => ''
-#            )
-
+        // Most of the constants can be used as functions too. Do not highlight
+        // as constants if followed by parentheses.
+        3 => array(
+            GESHI_SEARCH => '(e|eps|inf|nan|NA|pi)(\s*\\()',
+            GESHI_REPLACE => '\\1',
+            GESHI_MODIFIERS => '',
+            GESHI_BEFORE => '',
+            GESHI_AFTER => '\\2'
+            )
     ),
     'STRICT_MODE_APPLIES' => GESHI_NEVER,
     'SCRIPT_DELIMITERS' => array(),
@@ -472,7 +473,7 @@ $language_data = array (
         'KEYWORDS' => array(
         1 => 'color: #2E8B57; font-weight:bold;', // Data types
         2 => 'color: #2E8B57;', // Storage type
-        3 => 'color: #0000FF; font-weight:bold;', // Internal variable
+//        3 => 'color: #0000FF; font-weight:bold;', // Internal variable
         4 => 'color: #990000; font-weight:bold;', // Reserved words
         5 => 'color: #008A8C; font-weight:bold;', // Built-in
         6 => 'color: #008A8C;', // Octave functions
@@ -495,7 +496,10 @@ $language_data = array (
         0 => 'color: #A020F0;'
         ),
         'NUMBERS' => array(
-        0 => 'color: #33f;'
+        0 => 'color: #cc66cc;',
+        GESHI_NUMBER_OCT_PREFIX => 'color: #208080;',
+        GESHI_NUMBER_HEX_PREFIX => 'color: #208080;',
+        GESHI_NUMBER_FLT_SCI_ZERO => 'color:#800080;'
         ),
         'METHODS' => array(
         1 => '',
@@ -509,9 +513,9 @@ $language_data = array (
         4 => 'color: #33f'
         ),
         'REGEXPS' => array(
-        0 => 'color: #33f;',
-        1 => 'color: #0000FF; font-weight:bold;', //Function handle
-        2 => 'color: #CC3399;' //Decimal
+        1 => 'color: #008A8C; font-weight:bold;', // Boolean func
+        2 => 'color: #006600; font-weight:bold;', //Function handle
+        3 => 'color: #008A8C; font-weight:bold;' // Constant used as func
         ),
         'SCRIPT' => array(
         0 => ''

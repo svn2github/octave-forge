@@ -43,13 +43,26 @@
 $language_data = array (
     'LANG_NAME' => 'GNU/Octave',
     'COMMENT_SINGLE' => array(1=> '#', 2 => '%'),
-    'COMMENT_MULTI' => array('#{' => '#}', '%{' => '%}'),
-    //Octave Strings
+    // we really can't use this since these characters need to be alone (or with
+    // whitespace) on a line. We will have to use regexp
+    //'COMMENT_MULTI' => array('#{' => '#}', '%{' => '%}'),
     'COMMENT_REGEXP' => array(
-        2 => "/(?<![\\w\\)\\]\\}\\.])('[^\\n']*?')/"
+        // Single quote strings: we really can't use QUOTEMARKS here since new
+        // lines will break the string. Plus, single quote strings do not even
+        // allow for continuation markers, only double quote strings allow it.
+        // Also, to do not misdetect the transpose operator ' as the start of a
+        // string we assert to not follow a variable name (letters, digits and
+        // underscores) or a closing bracket (round, square or curly) or a dot
+        // (to form the array transpose operator ".'" ).
+        // see the source of octave.lang of gtksourceview
+        3 => "/(?<![0-9a-zA-Z_\)\]}\.])'.*?'/",
+        // Double quote strings: we also can't use QUOTEMARKS here (see single
+        // line quotes). However, with double quote strings both \ and ... can
+        // be used to make multiline strings. Continuation markers can be
+        // followed by whitespace
+        4 => '/"(.|(\.\.\.|\\\)(\s)*?\n)*?(?<!\\\)"/',
     ),
     'CASE_KEYWORDS' => GESHI_CAPS_NO_CHANGE,
-    'QUOTEMARKS' => array('"',"'"),
     'ESCAPE_CHAR' => '',
     'KEYWORDS' => array(
         // Data types
@@ -440,15 +453,16 @@ $language_data = array (
             GESHI_MODIFIERS => '',
             GESHI_BEFORE => '',
             GESHI_AFTER => ''
-            )//,
+            ),
         // Decimal TODO not working
-//        2 => array(
-//            GESHI_SEARCH => '(\b([1-9][0-9]*|0)([Uu]([Ll]|LL|ll)?|([Ll]|LL|ll)[Uu]?)?\b)',
-//            GESHI_REPLACE => '\\1',
-//            GESHI_MODIFIERS => '',
-//            GESHI_BEFORE => '',
-//            GESHI_AFTER => ''
-//            )
+#        2 => array(
+#            GESHI_SEARCH => '(\b([1-9][0-9]*|0)([u]([l]|LL|ll)?|([l]|LL|ll)[u]?)?\b)',
+#//            GESHI_SEARCH => '(stuff)',
+#            GESHI_REPLACE => '\\1',
+#            GESHI_MODIFIERS => 'si',
+#            GESHI_BEFORE => '',
+#            GESHI_AFTER => ''
+#            )
 
     ),
     'STRICT_MODE_APPLIES' => GESHI_NEVER,
@@ -467,6 +481,8 @@ $language_data = array (
         'COMMENTS' => array(
         1 => 'color: #0000FF; font-style: italic;',
         2 => 'color: #0000FF; font-style: italic;',
+        3 => 'color: #FF00FF; font-style: italic;', // single quote strings
+        4 => 'color: #FF00FF; font-style: italic;', // double quote strings
         'MULTI' => 'color: #0000FF; font-style: italic;'
         ),
         'ESCAPE_CHAR' => array(
@@ -476,7 +492,7 @@ $language_data = array (
         0 => 'color: #080;'
         ),
         'STRINGS' => array(
-        //0 => 'color: #A020F0;'
+        0 => 'color: #A020F0;'
         ),
         'NUMBERS' => array(
         0 => 'color: #33f;'

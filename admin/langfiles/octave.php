@@ -62,9 +62,7 @@ $language_data = array (
             'global ', 'persistent ', 'static '
            ),
           // Internal variables
-          3 => array(
-            'ans'
-           ),
+          3 => array('ans'),
           // Reserved words
           4 => array(
           'break', 'case', 'catch', 'continue', 'do', 'else', 'elseif', 'end',
@@ -393,7 +391,7 @@ $language_data = array (
           '!', '!=', '"', '&', '&&', "'",
           '*', '**', '+', '++', ',', '-', '--', ".'", '.*', '.**', '...',
           './', '.^', '/', ':', ';', '<', '<=', '=', '==', '>', '>=', '^',
-           '|', '||', '~', '~='
+           '|', '||', '~', '~=', '\\'
      ),
     'CASE_SENSITIVE' => array(
         GESHI_COMMENTS => false,

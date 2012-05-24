@@ -37,7 +37,7 @@ function [p, resid, cvg, outp] = __lm_svd__ (F, pin, hook)
   df_cstr = hook.df_cstr; % function of derivatives of all constraints
   n_gencstr = hook.n_gencstr; % number of non-linear constraints
   eq_idx = hook.eq_idx; % logical index of equality constraints in all
-				% constraints
+                                % constraints
   lbound = hook.lbound; % bounds, subset of linear inequality
   ubound = hook.ubound; % constraints in mc and vc
 
@@ -86,16 +86,16 @@ function [p, resid, cvg, outp] = __lm_svd__ (F, pin, hook)
   wtl = wt(:);
 
   nz = 20 * eps; % This is arbitrary. Constraint function will be
-				% regarded as <= zero if less than nz.
+                                % regarded as <= zero if less than nz.
 
   %% backend-specific checking of options and constraints
   if (have_constraints_except_bounds)
     if (any (pin_cstr.inequ.lin_except_bounds < 0) || ...
-	(n_gencstr > 0 && any (pin_cstr.inequ.gen < 0)))
+        (n_gencstr > 0 && any (pin_cstr.inequ.gen < 0)))
       warning ('initial parameters violate inequality constraints');
     end
     if (any (abs (pin_cstr.equ.lin) >= nz) || ...
-	(n_gencstr > 0 && any (abs (pin_cstr.equ.gen) >= nz)))
+        (n_gencstr > 0 && any (abs (pin_cstr.equ.gen) >= nz)))
       warning ('initial parameters violate equality constraints');
     end
   end
@@ -128,7 +128,7 @@ function [p, resid, cvg, outp] = __lm_svd__ (F, pin, hook)
   %% fill constant fields of hook for derivative-functions; some fields
   %% may be backend-specific
   dfdp_hook.fixed = fixed; % this may be handled by the frontend, but
-				% the backend still may add to it
+                                % the backend still may add to it
 
   %% set up for iterations
   %%
@@ -156,18 +156,18 @@ function [p, resid, cvg, outp] = __lm_svd__ (F, pin, hook)
     v_cstr = f_cstr (p, ac_idx);
     %% index of active constraints
     c_act =  v_cstr < nz | eq_idx; # equality constraints might be
-				# violated at start
+                                # violated at start
     if (any (c_act))
       if (n_gencstr > 0)
-	dct = df_cstr (p, ac_idx, ...
-		       setfield (dfdp_hook, 'f', v_cstr));
-	dct(:, fixed) = 0; % for user supplied dfdp; necessary?
-	dc = dct.';
-	dcat = dct(c_act, :);
+        dct = df_cstr (p, ac_idx, ...
+                       setfield (dfdp_hook, 'f', v_cstr));
+        dct(:, fixed) = 0; % for user supplied dfdp; necessary?
+        dc = dct.';
+        dcat = dct(c_act, :);
       else
-	dcat = df_cstr (p, c_act, ...
-			setfield (dfdp_hook, 'f', v_cstr));
-	dcat(:, fixed) = 0; % for user supplied dfdp; necessary?
+        dcat = df_cstr (p, c_act, ...
+                        setfield (dfdp_hook, 'f', v_cstr));
+        dcat(:, fixed) = 0; % for user supplied dfdp; necessary?
       end
       dca = dcat.';
     end
@@ -207,46 +207,46 @@ function [p, resid, cvg, outp] = __lm_svd__ (F, pin, hook)
 %%% ser = 1 ./ sqrt((s.*s)+epsL);
       se = sqrt ((s.*s) + epsL);
       if (new_s)
-	%% for testing
-	ser = (1 / (1 + epsL^2)) * (1 ./ se + epsL * s);
+        %% for testing
+        ser = (1 / (1 + epsL^2)) * (1 ./ se + epsL * s);
       else
-	ser = 1 ./ se;
+        ser = 1 ./ se;
       end
       tp1 = (v * (g .* ser)) .* nrm;
       if (any (c_act))
-	deb_printf (testing, 'constraints are active:\n');
-	deb_printf (testing, '%i\n', c_act);
-	%% calculate chg by 'quadratic programming'
-	nrme= diag (nrm);
-	ser2 = diag (ser .* ser);
-	mfc1 = nrme * v * ser2 * v.' * nrme;
-	tp2 = mfc1 * dca;
-	a_eq_idx = eq_idx(c_act);
-	[lb, bidx, ridx, tbl] = cpiv (dcat * tp1, dcat * tp2, a_eq_idx);
-	chg = tp1 + tp2(:, bidx) * lb; % if a parameter is 'fixed',
-				% the respective component of chg should
-				% be zero too, even here (with active
-				% constraints)
-	deb_printf (testing, 'change:\n');
-	deb_printf (testing, '%e\n', chg);
-	deb_printf (testing, '\n');
-	%% indices for different types of constraints
-	c_inact = ~c_act; % inactive constraints
-	c_binding = nc_idx; 
-	c_binding(c_act) = bidx; % constraints selected binding
-	c_unbinding = nc_idx;
-	c_unbinding(c_act) = ridx; % constraints unselected binding
-	c_nonbinding = c_act & ~(c_binding | c_unbinding); % constraints
-				% selected non-binding
+        deb_printf (testing, 'constraints are active:\n');
+        deb_printf (testing, '%i\n', c_act);
+        %% calculate chg by 'quadratic programming'
+        nrme= diag (nrm);
+        ser2 = diag (ser .* ser);
+        mfc1 = nrme * v * ser2 * v.' * nrme;
+        tp2 = mfc1 * dca;
+        a_eq_idx = eq_idx(c_act);
+        [lb, bidx, ridx, tbl] = cpiv (dcat * tp1, dcat * tp2, a_eq_idx);
+        chg = tp1 + tp2(:, bidx) * lb; % if a parameter is 'fixed',
+                                % the respective component of chg should
+                                % be zero too, even here (with active
+                                % constraints)
+        deb_printf (testing, 'change:\n');
+        deb_printf (testing, '%e\n', chg);
+        deb_printf (testing, '\n');
+        %% indices for different types of constraints
+        c_inact = ~c_act; % inactive constraints
+        c_binding = nc_idx; 
+        c_binding(c_act) = bidx; % constraints selected binding
+        c_unbinding = nc_idx;
+        c_unbinding(c_act) = ridx; % constraints unselected binding
+        c_nonbinding = c_act & ~(c_binding | c_unbinding); % constraints
+                                % selected non-binding
       else
-	%% chg is the Levenberg/Marquardt step
-	chg = tp1;
-	%% indices for different types of constraints
-	c_inact = ac_idx; % inactive constraints consist of all
-				% constraints
-	c_binding = nc_idx;
-	c_unbinding = nc_idx;
-	c_nonbinding = nc_idx;
+        %% chg is the Levenberg/Marquardt step
+        chg = tp1;
+        %% indices for different types of constraints
+        c_inact = ac_idx; % inactive constraints consist of all
+                                % constraints
+        c_binding = nc_idx;
+        c_unbinding = nc_idx;
+        c_nonbinding = nc_idx;
       end
       %% apply constraints to step width (since this is a
       %% Levenberg/Marquardt algorithm, no line-search is performed
@@ -258,200 +258,200 @@ function [p, resid, cvg, outp] = __lm_svd__ (F, pin, hook)
       hstep = mcit * chg;
       idx = hstep < 0;
       if (any (idx))
-	k = min (1, min (- (vci(idx) + mcit(idx, :) * pprev) ./ ...
-			 hstep(idx)));
+        k = min (1, min (- (vci(idx) + mcit(idx, :) * pprev) ./ ...
+                         hstep(idx)));
       end
       if (k < 1)
-	deb_printf (testing, 'stepwidth: linear constraints\n');
+        deb_printf (testing, 'stepwidth: linear constraints\n');
       end
       if (n_gencstr > 0)
-	c_tp = gc_idx & (c_nonbinding | c_inact);
-	if (any (c_tp) && any (f_cstr (pprev + k * chg, c_tp) < 0))
-	  [k, fval, info] = ...
-	      fzero (@ (x) min (cat (1, ...
-				     f_cstr (pprev + x * chg, c_tp), ...
-				     k - x, ...
-				     ifelse (x < 0, -Inf, Inf))), ...
-		     0);
-	  if (info ~= 1 || abs (fval) >= nz)
-	    error ('could not find stepwidth to satisfy inactive and non-binding general inequality constraints');
-	  end
-	  deb_printf (testing, 'general constraints limit stepwidth\n');
-	end
+        c_tp = gc_idx & (c_nonbinding | c_inact);
+        if (any (c_tp) && any (f_cstr (pprev + k * chg, c_tp) < 0))
+          [k, fval, info] = ...
+              fzero (@ (x) min (cat (1, ...
+                                     f_cstr (pprev + x * chg, c_tp), ...
+                                     k - x, ...
+                                     ifelse (x < 0, -Inf, Inf))), ...
+                     0);
+          if (info ~= 1 || abs (fval) >= nz)
+            error ('could not find stepwidth to satisfy inactive and non-binding general inequality constraints');
+          end
+          deb_printf (testing, 'general constraints limit stepwidth\n');
+        end
       end
       chg = k * chg;
 
       if (any (gc_idx & c_binding)) % none selected binding =>
-				% none unselected binding
-	deb_printf (testing, 'general binding constraints must be regained:\n');
-	%% regain binding constraints and one of the possibly active
-	%% previously inactive or non-binding constraints
-	ptp1 = pprev + chg;
+                                % none unselected binding
+        deb_printf (testing, 'general binding constraints must be regained:\n');
+        %% regain binding constraints and one of the possibly active
+        %% previously inactive or non-binding constraints
+        ptp1 = pprev + chg;
 
-	tp = true;
-	nt_nosuc = true;
-	lim = 20;
-	while (nt_nosuc && lim >= 0)
-	  deb_printf (testing, 'starting from new value of p in regaining:\n');
-	  deb_printf (testing, '%e\n', ptp1);
- 	  %% we keep d_p.' * inv (mfc1) * d_p minimal in each step of
-	  %% the inner loop; this is both sensible (this metric
-	  %% considers a guess of curvature of sum of squared residuals)
-	  %% and convenient (we have useful matrices available for it)
-	  c_tp0 = c_inact | c_nonbinding;
-	  c_tp1 = c_inact | (gc_idx & c_nonbinding);
-	  btbl = tbl(bidx, bidx);
-	  c_tp2 = c_binding;
-	  if (any (tp)) % if none before, does not get true again
-	    tp = f_cstr (ptp1, c_tp1) < nz;
-	    if (any (tp)) % could be less clumsy, but ml-compatibility..
-	      %% keep only the first true entry in tp
-	      tp(tp) = logical (cat (1, 1, zeros (sum (tp) - 1, 1)));
-	      %% supplement binding index with one (the first) getting
-	      %% binding in c_tp1
-	      c_tp2(c_tp1) = tp;
-	      %% gradient of this added constraint
-	      caddt = dct(c_tp2 & ~c_binding, :);
-	      cadd = caddt.';
-	      C = dct(c_binding, :) * mfc1 * cadd;
-	      Ct = C.';
-	      G = [btbl, btbl * C; ...
-		   -Ct * btbl, caddt * mfc1 * cadd - Ct * btbl * C];
-	      btbl = gjp (G, size (G, 1));
-	    end
-	  end
-	  dcbt = dct(c_tp2, :);
-	  mfc = - mfc1 * dcbt.' * btbl;
-	  deb_printf (testing, 'constraints to regain:\n');
-	  deb_printf (testing, '%i\n', c_tp2);
+        tp = true;
+        nt_nosuc = true;
+        lim = 20;
+        while (nt_nosuc && lim >= 0)
+          deb_printf (testing, 'starting from new value of p in regaining:\n');
+          deb_printf (testing, '%e\n', ptp1);
+          %% we keep d_p.' * inv (mfc1) * d_p minimal in each step of
+          %% the inner loop; this is both sensible (this metric
+          %% considers a guess of curvature of sum of squared residuals)
+          %% and convenient (we have useful matrices available for it)
+          c_tp0 = c_inact | c_nonbinding;
+          c_tp1 = c_inact | (gc_idx & c_nonbinding);
+          btbl = tbl(bidx, bidx);
+          c_tp2 = c_binding;
+          if (any (tp)) % if none before, does not get true again
+            tp = f_cstr (ptp1, c_tp1) < nz;
+            if (any (tp)) % could be less clumsy, but ml-compatibility..
+              %% keep only the first true entry in tp
+              tp(tp) = logical (cat (1, 1, zeros (sum (tp) - 1, 1)));
+              %% supplement binding index with one (the first) getting
+              %% binding in c_tp1
+              c_tp2(c_tp1) = tp;
+              %% gradient of this added constraint
+              caddt = dct(c_tp2 & ~c_binding, :);
+              cadd = caddt.';
+              C = dct(c_binding, :) * mfc1 * cadd;
+              Ct = C.';
+              G = [btbl, btbl * C; ...
+                   -Ct * btbl, caddt * mfc1 * cadd - Ct * btbl * C];
+              btbl = gjp (G, size (G, 1));
+            end
+          end
+          dcbt = dct(c_tp2, :);
+          mfc = - mfc1 * dcbt.' * btbl;
+          deb_printf (testing, 'constraints to regain:\n');
+          deb_printf (testing, '%i\n', c_tp2);
 
-	  ptp2 = ptp1;
-	  nt_niter_start = 100;
-	  nt_niter = nt_niter_start;
-	  while (nt_nosuc && nt_niter >= 0)
-	    hv = f_cstr (ptp2, c_tp2);
-	    if (all (abs (hv) < nz))
-	      nt_nosuc = false;
-	      chg = ptp2 - pprev;
-	    else
-	      ptp2 = ptp2 + mfc * hv; % step should be zero for each
-				% component for which the parameter is
-				% 'fixed'
-	    end
-	    nt_niter = nt_niter - 1;
-	  end
-	  deb_printf (testing, 'constraints after regaining:\n');
-	  deb_printf (testing, '%e\n', hv);
-	  if (nt_nosuc || ...
-	      any (abs (chg) > abs (pprev .* maxstep)) || ...
-	      any (f_cstr (ptp2, c_tp0) < -nz))
-	    if (nt_nosuc)
-	      deb_printf (testing, 'regaining did not converge\n');
-	    else
-	      deb_printf (testing, 'regaining violated type 3 and 4\n');
-	    end
-	    nt_nosuc = true;
-	    ptp1 = (pprev + ptp1) / 2;
-	  end
-	  if (~nt_nosuc)
-	    tp = f_cstr (ptp2, c_unbinding);
-	    if (any (tp) < 0) % again ml-compatibility clumsyness..
-	      [discarded, id] = min(tp);
-	      tid = find (ridx);
-	      id = tid(id); % index within active constraints
-	      unsuccessful_exchange = false;
-	      if (abs (tbl(id, id)) < nz) % Bard: not absolute value
-		%% exchange this unselected binding constraint against a
-		%% binding constraint, but not against an equality
-		%% constraint
-		tbidx = bidx & ~a_eq_idx;
-		if (~any (tbidx))
-		  unsuccessful_exchange = true;
-		else
-		  [discarded, idm] = max (abs (tbl(tbidx, id)));
-		  tid = find (tbidx);
-		  idm = tid(idm); % -> index within active constraints
-		  tbl = gjp (tbl, idm);
-		  bidx(idm) = false;
-		  ridx(idm) = true;
-		end
-	      end
-	      if (unsuccessful_exchange)
-		%% It probably doesn't look good now; this desperate
-		%% last attempt is not in the original algortithm, since
-		%% that didn't account for equality constraints.
-		ptp1 = (pprev + ptp1) / 2;
-	      else
-		tbl = gjp (tbl, id);
-		bidx(id) = true;
-		ridx(id) = false;
-		c_binding = nc_idx;
-		c_binding(c_act) = bidx;
-		c_unbinding = nc_idx;
-		c_unbinding(c_act) = ridx;
-	      end
-	      nt_nosuc = true;
-	      deb_printf (testing, 'regaining violated type 2\n');
-	    end
-	  end
-	  if (~nt_nosuc)
-	    deb_printf (testing, 'regaining successful, converged with %i iterations:\n', ...
-	    nt_niter_start - nt_niter);
-	    deb_printf (testing, '%e\n', ptp2);
-	  end
-	  lim = lim - 1;
-	end
-	if (nt_nosuc)
-	  error ('could not regain binding constraints');
-	end
+          ptp2 = ptp1;
+          nt_niter_start = 100;
+          nt_niter = nt_niter_start;
+          while (nt_nosuc && nt_niter >= 0)
+            hv = f_cstr (ptp2, c_tp2);
+            if (all (abs (hv) < nz))
+              nt_nosuc = false;
+              chg = ptp2 - pprev;
+            else
+              ptp2 = ptp2 + mfc * hv; % step should be zero for each
+                                % component for which the parameter is
+                                % 'fixed'
+            end
+            nt_niter = nt_niter - 1;
+          end
+          deb_printf (testing, 'constraints after regaining:\n');
+          deb_printf (testing, '%e\n', hv);
+          if (nt_nosuc || ...
+              any (abs (chg) > abs (pprev .* maxstep)) || ...
+              any (f_cstr (ptp2, c_tp0) < -nz))
+            if (nt_nosuc)
+              deb_printf (testing, 'regaining did not converge\n');
+            else
+              deb_printf (testing, 'regaining violated type 3 and 4\n');
+            end
+            nt_nosuc = true;
+            ptp1 = (pprev + ptp1) / 2;
+          end
+          if (~nt_nosuc)
+            tp = f_cstr (ptp2, c_unbinding);
+            if (any (tp) < 0) % again ml-compatibility clumsyness..
+              [discarded, id] = min(tp);
+              tid = find (ridx);
+              id = tid(id); % index within active constraints
+              unsuccessful_exchange = false;
+              if (abs (tbl(id, id)) < nz) % Bard: not absolute value
+                %% exchange this unselected binding constraint against a
+                %% binding constraint, but not against an equality
+                %% constraint
+                tbidx = bidx & ~a_eq_idx;
+                if (~any (tbidx))
+                  unsuccessful_exchange = true;
+                else
+                  [discarded, idm] = max (abs (tbl(tbidx, id)));
+                  tid = find (tbidx);
+                  idm = tid(idm); % -> index within active constraints
+                  tbl = gjp (tbl, idm);
+                  bidx(idm) = false;
+                  ridx(idm) = true;
+                end
+              end
+              if (unsuccessful_exchange)
+                %% It probably doesn't look good now; this desperate
+                %% last attempt is not in the original algortithm, since
+                %% that didn't account for equality constraints.
+                ptp1 = (pprev + ptp1) / 2;
+              else
+                tbl = gjp (tbl, id);
+                bidx(id) = true;
+                ridx(id) = false;
+                c_binding = nc_idx;
+                c_binding(c_act) = bidx;
+                c_unbinding = nc_idx;
+                c_unbinding(c_act) = ridx;
+              end
+              nt_nosuc = true;
+              deb_printf (testing, 'regaining violated type 2\n');
+            end
+          end
+          if (~nt_nosuc)
+            deb_printf (testing, 'regaining successful, converged with %i iterations:\n', ...
+            nt_niter_start - nt_niter);
+            deb_printf (testing, '%e\n', ptp2);
+          end
+          lim = lim - 1;
+        end
+        if (nt_nosuc)
+          error ('could not regain binding constraints');
+        end
       else
-	%% check the maximal stepwidth and apply as necessary
-	ochg=chg;
-	idx = ~isinf(maxstep);
-	limit = abs(maxstep(idx).*pprev(idx));
-	chg(idx) = min(max(chg(idx),-limit),limit);
-	if (verbose && any(ochg ~= chg))
-	  disp(['Change in parameter(s): ', ...
-		sprintf('%d ',find(ochg ~= chg)), 'maximal fractional stepwidth enforced']);
-	end
+        %% check the maximal stepwidth and apply as necessary
+        ochg=chg;
+        idx = ~isinf(maxstep);
+        limit = abs(maxstep(idx).*pprev(idx));
+        chg(idx) = min(max(chg(idx),-limit),limit);
+        if (verbose && any(ochg ~= chg))
+          disp(['Change in parameter(s): ', ...
+                sprintf('%d ',find(ochg ~= chg)), 'maximal fractional stepwidth enforced']);
+        end
       end
       aprec=abs(pprec.*pbest);       %---
       %% ss=scalar sum of squares=sum((wt.*f)^2).
       if (any(abs(chg) > 0.1*aprec))%---  % only worth evaluating
-				% function if there is some non-miniscule
-				% change
-	p=chg+pprev;
-	%% since the projection method may have slightly violated
-	%% constraints due to inaccuracy, correct parameters to bounds
-	%% --- but only if no further constraints are given, otherwise
-	%% the inaccuracy in honoring them might increase by this
-	if (~have_constraints_except_bounds)
-	  lidx = p < lbound;
-	  uidx = p > ubound;
-	  p(lidx, 1) = lbound(lidx, 1);
-	  p(uidx, 1) = ubound(uidx, 1);
-	  chg(lidx, 1) = p(lidx, 1) - pprev(lidx, 1);
-	  chg(uidx, 1) = p(uidx, 1) - pprev(uidx, 1);
-	end
-	%%
-	f = F (p);
-	r = wt .* f;
-	r = r(:);
-	if (~isreal (r))
-	  error ('weighted residuals are not real');
-	end
-	ss = r.' * r;
-	deb_printf (testing, 'sbest: %.16e\n', sbest);
-	deb_printf (testing, 'sgoal: %.16e\n', sgoal);
-	deb_printf (testing, '   ss: %.16e\n', ss);
-	if (ss<sbest)
+                                % function if there is some non-miniscule
+                                % change
+        p=chg+pprev;
+        %% since the projection method may have slightly violated
+        %% constraints due to inaccuracy, correct parameters to bounds
+        %% --- but only if no further constraints are given, otherwise
+        %% the inaccuracy in honoring them might increase by this
+        if (~have_constraints_except_bounds)
+          lidx = p < lbound;
+          uidx = p > ubound;
+          p(lidx, 1) = lbound(lidx, 1);
+          p(uidx, 1) = ubound(uidx, 1);
+          chg(lidx, 1) = p(lidx, 1) - pprev(lidx, 1);
+          chg(uidx, 1) = p(uidx, 1) - pprev(uidx, 1);
+        end
+        %%
+        f = F (p);
+        r = wt .* f;
+        r = r(:);
+        if (~isreal (r))
+          error ('weighted residuals are not real');
+        end
+        ss = r.' * r;
+        deb_printf (testing, 'sbest: %.16e\n', sbest);
+        deb_printf (testing, 'sgoal: %.16e\n', sgoal);
+        deb_printf (testing, '   ss: %.16e\n', ss);
+        if (ss<sbest)
           pbest=p;
           fbest=f;
           sbest=ss;
-	end
-	if (ss<=sgoal)
+        end
+        if (ss<=sgoal)
           break;
-	end
+        end
       end                          %---
     end
     %% printf ('epsL no.: %i\n', jjj); % for testing
@@ -472,7 +472,7 @@ function [p, resid, cvg, outp] = __lm_svd__ (F, pin, hook)
     if (all(abs(chg) <= aprec) && all(abs(chgprev) <= aprec))
       cvg = 2;
       if (verbose)
-	fprintf('Parameter changes converged to specified precision\n');
+        fprintf('Parameter changes converged to specified precision\n');
       end
       break;
     else

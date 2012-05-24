@@ -1,4 +1,4 @@
-%% Copyright (C) 2010, 2011 Olaf Till <olaf.till@uni-jena.de>
+%% Copyright (C) 2010, 2011 Olaf Till <i7tiol@t-online.de>
 %%
 %% This program is free software; you can redistribute it and/or modify it under
 %% the terms of the GNU General Public License as published by the Free Software
@@ -50,4 +50,3 @@ function m = gjp (m, k, l)
       m([1:k-1, k+1:end], l) * m(k, [1:l-1, l+1:end]);
   m([1:k-1, k+1:end], l) = - m([1:k-1, k+1:end], l) / p; % pivot column
   m(k, l) = 1 / p;
-end

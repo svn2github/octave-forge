@@ -80,6 +80,9 @@ parameters + vc" of linear constraints,
 'vc' (required): vector (possibly empty) of the function "mc.' *
 parameters + vc" of linear constraints,
 
+If bounds have been specified, they are contained in 'mc' and 'vc'
+_before_ all other linear constraints.
+
 'n_gencstr' (required): number of general constraints (except the
 linear constraints given by 'mc' and 'vc',
 

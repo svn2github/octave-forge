@@ -31,6 +31,12 @@ function [p, resid, cvg, outp] = \
     optimget = @ __optimget__;
   endif
 
+  if (compare_versions (version (), "3.2.4", "<="))
+    ## For bug #31484; but Octave 3.6... shows bug #36288 due to this
+    ## workaround. Octave 3.7... seems to be all right.
+    __dfdp__ = @ __dfdp__;
+  endif
+
   ## some scalar defaults; some defaults are backend specific, so
   ## lacking elements in respective constructed vectors will be set to
   ## NA here in the frontend
@@ -56,7 +62,7 @@ function [p, resid, cvg, outp] = \
 		  "fract_prec", [], \
 		  "diffp", [], \
 		  "diff_onesided", [], \
-		  "complex_step_derivative", false, \
+		  "complex_step_derivative_f", false, \
 		  "complex_step_derivative_inequc", false, \
 		  "complex_step_derivative_equc", false, \
 		  "cstep", cstep_default, \
@@ -112,10 +118,10 @@ function [p, resid, cvg, outp] = \
   diffp = optimget (settings, "diffp");
   diff_onesided = optimget (settings, "diff_onesided");
   fixed = optimget (settings, "fixed");
-  do_cstep = optimget (settings, "complex_step_derivative", false);
+  do_cstep = optimget (settings, "complex_step_derivative_f", false);
   cstep = optimget (settings, "cstep", cstep_default);
   if (do_cstep && ! isempty (dfdp))
-    error ("both 'complex_step_derivative' and 'dfdp' are set");
+    error ("both 'complex_step_derivative_f' and 'dfdp' are set");
   endif
   do_cstep_inequc = \
       optimget (settings, "complex_step_derivative_inequc", false);
@@ -458,7 +464,6 @@ function [p, resid, cvg, outp] = \
     if (do_cstep)
       dfdp = @ (p, hook) jacobs (p, f, hook);
     else
-      __dfdp__ = @ __dfdp__; # for bug #31484 (Octave <= 3.2.4)
       dfdp = @ (p, hook) __dfdp__ (p, f, hook);
     endif
   endif
@@ -814,8 +819,8 @@ function [p, resid, cvg, outp] = \
   tp = eye (sum (nonfixed));
   lidx = lbound != - Inf;
   uidx = ubound != Inf;
-  mc = cat (2, mc, tp(:, lidx), - tp(:, uidx));
-  vc = cat (1, vc, - lbound(lidx, 1), ubound(uidx, 1));
+  mc = cat (2, tp(:, lidx), - tp(:, uidx), mc);
+  vc = cat (1, - lbound(lidx, 1), ubound(uidx, 1), vc);
 
   ## concatenate linear inequality and equality constraints
   mc = cat (2, mc, emc);

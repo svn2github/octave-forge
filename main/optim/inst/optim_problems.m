@@ -1,6 +1,6 @@
 %% Copyright (C) 2007 Paul Kienzle (sort-based lookup in ODE solver)
-%% Copyright (C) 2009 Thomas Treichl <thomas.treichl@gmx.net>
-%% Copyright (C) 2010 Olaf Till <olaf.till@uni-jena.de>
+%% Copyright (C) 2009 Thomas Treichl <thomas.treichl@gmx.net> (ode23 code)
+%% Copyright (C) 2010 Olaf Till <i7tiol@t-online.de>
 %%
 %% This program is free software; you can redistribute it and/or modify it under
 %% the terms of the GNU General Public License as published by the Free Software

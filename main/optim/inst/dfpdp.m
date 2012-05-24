@@ -48,5 +48,3 @@ function ret = dfpdp (varargin)
   end
 
   ret = __dfdp__ (varargin{:});
-
-end

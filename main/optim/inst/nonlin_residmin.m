@@ -90,7 +90,8 @@
 ## intervals should be used by jacobian functions performing finite
 ## differencing. Default: @code{false (size (parameters))}.
 ##
-## @code{complex_step_derivative}, @code{complex_step_derivative_inequc},
+## @code{complex_step_derivative_f},
+## @code{complex_step_derivative_inequc},
 ## @code{complex_step_derivative_equc}: logical scalars, default: false.
 ## Estimate Jacobian of model function, general inequality constraints,
 ## and general equality constraints, respectively, with complex step
@@ -176,7 +177,7 @@
 ##
 ## @code{plot_cmd}: Function enabling backend to plot results or
 ## intermediate results. Will be called with current computed
-## residualse. Default: plot nothing.
+## residuals. Default: plot nothing.
 ##
 ## @code{debug}: Logical scalar, default: @code{false}. Will be passed
 ## to the backend, which might print debugging information if true.

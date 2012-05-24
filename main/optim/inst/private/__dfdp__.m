@@ -83,7 +83,7 @@ function prt = __dfdp__ (p, func, hook)
   idxa = p == 0;
   del(idxa) = diffp(idxa);
   del(diff_onesided) = - del(diff_onesided); % keep course of
-				% optimization of previous versions
+                                % optimization of previous versions
   absdel = abs (del);
   idxd = ~(diff_onesided | fixed); % double sided interval
   p1 = zeros (n, 1);
@@ -107,9 +107,9 @@ function prt = __dfdp__ (p, func, hook)
   idxnvd = idxd & idxnv; % within bounds, double sided interval
   %% remaining single sided intervals
   p1(idxnvs) = p(idxnvs) + del(idxnvs); % don't take absdel, this could
-				% change course of optimization without
-				% bounds with respect to previous
-				% versions
+                                % change course of optimization without
+                                % bounds with respect to previous
+                                % versions
   %% remaining single sided intervals, violating a bound -> take largest
   %% possible direction of single sided interval
   idxvs(idxnvs) = p1(idxnvs, 1) < lbound(idxnvs, 1) | ...
@@ -120,14 +120,14 @@ function prt = __dfdp__ (p, func, hook)
   idx1g2w(idxvs) = idx1g2;
   idx1le2w(idxvs) = ~idx1g2;
   p1(idx1g2w) = max (p(idx1g2w, 1) - absdel(idx1g2w, 1), ...
-		     lbound(idx1g2w, 1));
+                     lbound(idx1g2w, 1));
   p1(idx1le2w) = min (p(idx1le2w, 1) + absdel(idx1le2w, 1), ...
-		      ubound(idx1le2w, 1));
+                      ubound(idx1le2w, 1));
   %% double sided interval
   p1(idxnvd) = min (p(idxnvd, 1) + absdel(idxnvd, 1), ...
-		    ubound(idxnvd, 1));
+                    ubound(idxnvd, 1));
   p2(idxnvd) = max (p(idxnvd, 1) - absdel(idxnvd, 1), ...
-		    lbound(idxnvd, 1));
+                    lbound(idxnvd, 1));
 
   del(idxs) = p1(idxs) - p(idxs);
   del(idxd) = p1(idxd) - p2(idxd);
@@ -141,16 +141,16 @@ function prt = __dfdp__ (p, func, hook)
       ps = p;
       ps(j) = p1(j);
       if (idxs(j))
-	info.side = 0; % onesided interval
-	tp1 = func (ps, info);
-	prt(:, j) = (tp1(:) - f) / del(j);
+        info.side = 0; % onesided interval
+        tp1 = func (ps, info);
+        prt(:, j) = (tp1(:) - f) / del(j);
       else
-	info.side = 1; % centered interval, side 1
-	tp1 = func (ps, info);
-	ps(j) = p2(j);
-	info.side = 2; % centered interval, side 2
-	tp2 = func (ps, info);
-	prt(:, j) = (tp1(:) - tp2(:)) / del(j);
+        info.side = 1; % centered interval, side 1
+        tp1 = func (ps, info);
+        ps(j) = p2(j);
+        info.side = 2; % centered interval, side 2
+        tp2 = func (ps, info);
+        prt(:, j) = (tp1(:) - tp2(:)) / del(j);
       end
     end
   end

@@ -210,10 +210,10 @@
 ## a way, it must return the entries (columns) of the gradient
 ## (jacobian) as fields of a structure under the respective parameter
 ## names. If the hessian function is configured in such a way, it must
-## return a structure (say @code{h}) with fields e.g. as @code{h.a.b =
-## value} for @{value} being the 2nd partial derivative with respect to
-## @code{a} and @code{b}. There is no need to also specify the field
-## @code{h.b.a} in this example.
+## return a structure (say @code{h}) with fields e.g. as
+## @code{h.a.b = value} for @code{value} being the 2nd partial derivative
+## with respect to @code{a} and @code{b}. There is no need to also
+## specify the field @code{h.b.a} in this example.
 ##
 ## Similarly, for specifying linear constraints, instead of the matrix
 ## (called @code{m} above), a structure containing the rows of the

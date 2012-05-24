@@ -3,7 +3,7 @@ Summary of important user-visible changes for optim 1.1.0:
 
  ** The following functions are new optim 1.1.0:
 
-      powell cauchy
+      powell cauchy nonlin_min
 
  ** The following functions have been deprecated since they have been
     implemented in Octave core:
@@ -23,6 +23,23 @@ Summary of important user-visible changes for optim 1.1.0:
 
       deriv   linprog
 
- ** The function `line_min' has a configurable setpesize and max evals
+ ** The function `line_min' has a configurable setpesize and max evals.
+
+ ** Added possibility to restrict a parameter to samin.
 
  ** Package is no longer automatically loaded.
+
+
+Some important changes of the last versions of optim before 1.1.0:
+------------------------------------------------------------------
+
+ ** New functions:
+
+      jacobs: complex step derivative approximation
+
+      nonlin_residmin, nonlin_curvefit: Frontends with a general
+      interface for constrained residual-based optimization. They
+      allow a.o. optimization of structure-based named parameters or
+      parameter-arrays. A backend is included, which is derived from
+      the algorithm of leasqr, but enables feasible-path optimization
+      with linear and general constraints.

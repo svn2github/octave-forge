@@ -17,13 +17,14 @@
 ## @deftypefn {Function File} {[@var{p}, @var{objf}, @var{cvg}, @var{outp}] =} nonlin_min (@var{f}, @var{pin})
 ## @deftypefnx {Function File} {[@var{p}, @var{objf}, @var{cvg}, @var{outp}] =} nonlin_min (@var{f}, @var{pin}, @var{settings})
 ##
-## Frontend for nonlinear minimization of a scalar objective function.
-## The functions supplied by the user have a minimal interface; any
-## additionally needed constants can be supplied by wrapping the user
-## functions into anonymous functions.
+## Frontend for constrained nonlinear minimization of a scalar objective
+## function. The functions supplied by the user have a minimal
+## interface; any additionally needed constants can be supplied by
+## wrapping the user functions into anonymous functions.
 ##
 ## At the moment there is only a stochastic backend implemented, so that
-## some settings in the frontend have no use.
+## some settings in the frontend have no use. A backend for
+## feasible-path sequential quadratic programming is being worked on.
 ##
 ## The following description applies to usage with vector-based
 ## parameter handling. Differences in usage for structure-based

@@ -12,6 +12,7 @@ Minimization
  fminsearch
  cg_min
  de_min
+ nonlin_min
 Data fitting
  expfit
  wpolyfit

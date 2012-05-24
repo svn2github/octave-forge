@@ -61,6 +61,11 @@ $language_data = array (
         // be used to make multiline strings. Continuation markers can be
         // followed by whitespace
         4 => '/"(.|(\.\.\.|\\\)(\s)*?\n)*?(?<!\\\)"/',
+        // Block comments: the ms modifiers treat strings as multiple lines (to
+        // be able to use ^ and $ instead of newline and thus support block
+        // comments on the first and last line of source) and make . also match
+        // a newline
+        5 => "/^\s*?[%#]{\s*?$.*?^\s*?[%#]}\s*?$/ms",
     ),
     'NUMBERS' => GESHI_NUMBER_INT_BASIC |  GESHI_NUMBER_OCT_PREFIX | GESHI_NUMBER_HEX_PREFIX |
         GESHI_NUMBER_FLT_SCI_ZERO,
@@ -120,7 +125,7 @@ $language_data = array (
         'geteuid', 'getgid', 'gethostname', 'getpgrp', 'getpid', 'getppid',
         'getuid', 'glob', 'gt', 'history', 'history_control', 'history_file',
         'history_size', 'history_timestamp_format_string', 'home', 'horzcat',
-        'hypot', 'i', 'ifelse', 'ignore_function_time_stamp', 'imag',
+        'hypot', 'ifelse', 'ignore_function_time_stamp', 'imag',
         'inferiorto', 'info_file', 'info_program', 'inline', 'input',
         'intmax', 'intmin', 'ipermute',
         'is_absolute_filename', 'is_dq_string', 'is_function_handle',
@@ -132,7 +137,7 @@ $language_data = array (
         'islower', 'ismatrix', 'ismethod', 'isna', 'isnan', 'isnull',
         'isnumeric', 'isobject', 'isprint', 'ispunct', 'isreal', 'issorted',
         'isspace', 'issparse', 'isstruct', 'isupper', 'isvarname', 'isxdigit',
-        'j', 'kbhit', 'keyboard', 'kill', 'lasterr', 'lasterror', 'lastwarn',
+        'kbhit', 'keyboard', 'kill', 'lasterr', 'lasterror', 'lastwarn',
         'ldivide', 'le', 'length', 'lgamma', 'link', 'linspace',
         'list_in_columns', 'load', 'loaded_graphics_toolkits', 'log', 'log10',
         'log1p', 'log2', 'lower', 'lstat', 'lt',
@@ -380,13 +385,8 @@ $language_data = array (
         'WEXITSTATUS', 'WIFCONTINUED', 'WIFEXITED', 'WIFSIGNALED',
         'WIFSTOPPED', 'WNOHANG', 'WSTOPSIG', 'WTERMSIG', 'WUNTRACED'
         ),
-        // Floating point number
-        13 => array("\b([0-9]+[Ee][-]?[0-9]+|([0-9]*\.[0-9]+|[0-9]+\.)([Ee][-]?[0-9]+)?)[fFlL]?"
-        ),
-        // Octal number
-        14 => array("\b0[0-7]+([Uu]([Ll]|LL|ll)?|([Ll]|LL|ll)[Uu]?)?\b"),
-        // Hex number
-        15 => array("\b0[xX][0-9a-fA-F]+([Uu]([Ll]|LL|ll)?|([Ll]|LL|ll)[Uu]?)?\b"),
+        // Constant functions
+        10 => array ('e','eps','inf','nan','NA','pi','i','j','true','false'),
         // Package manager
         17 => array("(\b)pkg(?!(\s)*\()(\s)+(((un)?install|(un)?load|list|(global|local)_list|describe|prefix|(re)?build)(\b))?")
     ),
@@ -410,10 +410,7 @@ $language_data = array (
         7 => false,
         8 => false,
         9 => false,
-        13 => false,
-        14 => false,
-        15 => false,
-        17 => false
+        10 => false
     ),
     'URLS' => array(
         1 => '',
@@ -425,10 +422,7 @@ $language_data = array (
         7 => '',
         8 => '',
         9 => '',
-        13 => '',
-        14 => '',
-        15 => '',
-        17 => ''
+        10 => ''
     ),
     'OOLANG' => true,
     'OBJECT_SPLITTERS' => array(
@@ -436,18 +430,16 @@ $language_data = array (
         2 => '::'
     ),
     'REGEXPS' => array(
-        //Complex numbers
-//        0 => "(?<![\\w\\/])[+-]?[\\d]*([\\d]\\.|\\.[\\d])?[\\d]*[ij](?![\\w]|\<DOT>html)",
         // Boolean functions
         // false and true can be used as functions too.
         // Do not highlight as boolean if followed by parentheses.
-        1 => array(
-            GESHI_SEARCH => '(false|true)(\s*\\()',
-            GESHI_REPLACE => '\\1',
-            GESHI_MODIFIERS => '',
-            GESHI_BEFORE => '',
-            GESHI_AFTER => '\\2'
-            ),
+#        1 => array(
+#            GESHI_SEARCH => '(false|true)(\s*\\()',
+#            GESHI_REPLACE => '\\1',
+#            GESHI_MODIFIERS => '',
+#            GESHI_BEFORE => '',
+#            GESHI_AFTER => '\\2'
+#            ),
         //Function handle
         2 => array(
             GESHI_SEARCH => '(@([A-Za-z_][A-Za-z1-9_]*)?)',
@@ -455,15 +447,6 @@ $language_data = array (
             GESHI_MODIFIERS => '',
             GESHI_BEFORE => '',
             GESHI_AFTER => ''
-            ),
-        // Most of the constants can be used as functions too. Do not highlight
-        // as constants if followed by parentheses.
-        3 => array(
-            GESHI_SEARCH => '(e|eps|inf|nan|NA|pi)(\s*\\()',
-            GESHI_REPLACE => '\\1',
-            GESHI_MODIFIERS => '',
-            GESHI_BEFORE => '',
-            GESHI_AFTER => '\\2'
             )
     ),
     'STRICT_MODE_APPLIES' => GESHI_NEVER,
@@ -473,17 +456,19 @@ $language_data = array (
         'KEYWORDS' => array(
         1 => 'color: #2E8B57; font-weight:bold;', // Data types
         2 => 'color: #2E8B57;', // Storage type
-//        3 => 'color: #0000FF; font-weight:bold;', // Internal variable
+        3 => 'color: #0000FF; font-weight:bold;', // Internal variable
         4 => 'color: #990000; font-weight:bold;', // Reserved words
         5 => 'color: #008A8C; font-weight:bold;', // Built-in
         6 => 'color: #008A8C;', // Octave functions
-        9 => 'color: #000000; font-weight:bold;' // Builtin Global Variables
+        9 => 'color: #000000; font-weight:bold;', // Builtin Global Variables
+        10 => 'color: #008A8C; font-weight:bold;' // Constant functions
         ),
         'COMMENTS' => array(
         1 => 'color: #0000FF; font-style: italic;',
         2 => 'color: #0000FF; font-style: italic;',
         3 => 'color: #FF00FF; font-style: italic;', // single quote strings
         4 => 'color: #FF00FF; font-style: italic;', // double quote strings
+        5 => 'color: #0000FF; font-style: italic;', // block comments
         'MULTI' => 'color: #0000FF; font-style: italic;'
         ),
         'ESCAPE_CHAR' => array(
@@ -513,9 +498,8 @@ $language_data = array (
         4 => 'color: #33f'
         ),
         'REGEXPS' => array(
-        1 => 'color: #008A8C; font-weight:bold;', // Boolean func
+#        1 => 'color: #008A8C; font-weight:bold;', // Boolean func
         2 => 'color: #006600; font-weight:bold;', //Function handle
-        3 => 'color: #008A8C; font-weight:bold;' // Constant used as func
         ),
         'SCRIPT' => array(
         0 => ''

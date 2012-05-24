@@ -58,6 +58,14 @@ function [sys, x0, info] = __slicot_identification__ (method, dat, varargin)
   endif
 
   [ns, l, m, e] = size (dat);           # dataset dimensions
+  tsam = dat.tsam
+  
+  ## multi-experiment data requires equal sampling times  
+  if (e > 1 && ! isequal (tsam{:}))
+    error ("%s: require equally sampled experiments", method);
+  else
+    tsam = tsam{1};
+  endif
   
   ## default arguments
   alg = 0;
@@ -125,7 +133,7 @@ function [sys, x0, info] = __slicot_identification__ (method, dat, varargin)
   [a, b, c, d, q, ry, s, k, x0] = slident (dat.y, dat.u, nobr, n, meth, alg, conct, ctrl, rcond, tol);
 
   ## assemble model
-  sys = ss (a, b, c, d, dat.tsam{1});
+  sys = ss (a, b, c, d, tsam);
 
   ## return x0 as vector for single-experiment data
   ## instead of a cell containing one vector

@@ -27,7 +27,7 @@
 ##
 ## returns the selected @var{p}, the estimated data scatter (variance from the smooth trend) @var{sigma2}, and the estimated uncertainty (SD) of the smoothing spline fit at each @var{x} value, @var{unc_y}.
 ##
-## Note: The current evaluation of the effective number of model parameters uses singular value decomposition of an @var{n} by @var{n} matrix and is not computation or storage efficient for large @var{n} (thousands or greater). See Hutchinson (1985) for a more efficient method.
+## The optimization uses singular value decomposition of an @var{n} by @var{n} matrix for small @var{n} in order to quickly compute the residual size and model degrees of freedom for many @var{p} values for the optimization (Craven and Wahba 1979), while for large @var{n} (currently >300) an asymptotically more computation and storage efficient method that takes advantage of the sparsity of the problem's coefficient matrices is used (Hutchinson and de Hoog 1985).
 ##
 ## References: 
 ##
@@ -82,27 +82,38 @@ function [ret,p,sigma2,unc_y]=csaps_sel(x,y,xi,w,crit)
   R = spdiags([h(1:end-1) 2*(h(1:end-1) + h(2:end)) h(2:end)], [-1 0 1], n-2, n-2);
 
   QT = spdiags([1 ./ h(1:end-1) -(1 ./ h(1:end-1) + 1 ./ h(2:end)) 1 ./ h(2:end)], [0 1 2], n-2, n);
-  
-##determine influence matrix for different p without repeated inversion
-  [U D V] = svd(diag(1 ./ sqrt(w))*QT'*sqrtm(inv(R)), 0); D = diag(D).^2;
 
+
+chol_method = (n > 300); #use a sparse Cholesky decomposition followed by solving for only the central bands of the inverse to solve for large n (faster), and singular value decomposition for small n (less prone to numerical error if data values are spaced close together)
 
 ##choose p by minimizing the penalty function
+  
+if chol_method
+  penalty_function = @(p) penalty_compute_chol(p, QT, R, y, w, n, crit);
+else
+  ##determine influence matrix for different p without repeated inversion
+  [U D V] = svd(diag(1 ./ sqrt(w))*QT'*sqrtm(inv(R)), 0); D = diag(D).^2;
   penalty_function = @(p) penalty_compute(p, U, D, y, w, n, crit);
+end
 
   p = fminbnd(penalty_function, 0, 1);
 
-
-
-  H = influence_matrix(p, U, D, n);
+## estimate the trend uncertainty
+if chol_method
+  [MSR, Ht] = penalty_terms_chol(p, QT, R, y, w, n);
+  Hd = influence_matrix_diag_chol(p, QT, R, y, w, n);
+else
+  H = influence_matrix(p, U, D, n, w);
   [MSR, Ht] = penalty_terms(H, y, w);
+  Hd = diag(H);
+end
+
   sigma2 = MSR * (n / (n-Ht)); #estimated data error variance (wahba83)
-  unc_y = sqrt(sigma2 * diag(H) ./ w); #uncertainty (SD) of fitted curve at each input x-value (hutchinson86)
-  
+  unc_y = sqrt(sigma2 * Hd ./ w); #uncertainty (SD) of fitted curve at each input x-value (hutchinson86)
 
 ## solve for the scaled second derivatives u and for the function values a at the knots (if p = 1, a = y) 
   u = (6*(1-p)*QT*diag(1 ./ w)*QT' + p*R) \ (QT*y);
-  a = y - 6*(1-p)*diag(1 ./ w)*QT'*u;
+  a = y - 6*(1-p)*diag(1 ./ w)*QT'*u; #where y is calculated
 
 ## derivatives at all but the last knot for the piecewise cubic spline
   aa = a(1:(end-1), :);
@@ -122,13 +133,36 @@ endfunction
 
 
 
-function H = influence_matrix(p, U, D, n) #returns influence matrix for given p
+function H = influence_matrix(p, U, D, n, w) #returns influence matrix for given p
 	H = speye(n) - U * diag(D ./ (D + (p / (6*(1-p))))) * U';
+	H = diag(1 ./ sqrt(w)) * H * diag(sqrt(w)); #rescale to original units	
 endfunction	
 
 function [MSR, Ht] = penalty_terms(H, y, w)
-	MSR = mean(w .* (y - H*y) .^ 2); #mean square residual
+	MSR = mean(w .* (y - (H*y)) .^ 2); #mean square residual
 	Ht = trace(H); #effective number of fitted parameters
+endfunction
+
+function Hd = influence_matrix_diag_chol(p, QT, R, y, w, n)
+	#LDL factorization of 6*(1-p)*QT*diag(1 ./ w)*QT' + p*R
+	U = chol(6*(1-p)*QT*diag(1 ./ w)*QT' + p*R, 'upper');
+	d = 1 ./ diag(U);
+	U = diag(d)*U; 
+	d = d .^ 2;
+	#5 central bands in the inverse of 6*(1-p)*QT*diag(1 ./ w)*QT' + p*R
+	Binv = banded_matrix_inverse(d, U, 2);
+	Hd = diag(speye(n) - (6*(1-p))*diag(1 ./ w)*QT'*Binv*QT);	
+endfunction
+
+function [MSR, Ht] = penalty_terms_chol(p, QT, R, y, w, n)
+	#LDL factorization of 6*(1-p)*QT*diag(1 ./ w)*QT' + p*R
+	U = chol(6*(1-p)*QT*diag(1 ./ w)*QT' + p*R, 'upper');
+	d = 1 ./ diag(U);
+	U = diag(d)*U; 
+	d = d .^ 2;
+	Binv = banded_matrix_inverse(d, U, 2); #5 central bands in the inverse of 6*(1-p)*QT*diag(1 ./ w)*QT' + p*R
+	Ht = 2 + trace(speye(n-2) - (6*(1-p))*QT*diag(1 ./ w)*QT'*Binv);
+	MSR = mean(w .* ((6*(1-p)*diag(1 ./ w)*QT'*((6*(1-p)*QT*diag(1 ./ w)*QT' + p*R) \ (QT*y)))) .^ 2);
 endfunction
 
 function J = aicc(MSR, Ht, n)
@@ -144,13 +178,38 @@ function J = gcv(MSR, Ht, n)
 endfunction
 
 function J = penalty_compute(p, U, D, y, w, n, crit) #evaluates a user-supplied penalty function at given p
-	H = influence_matrix(p, U, D, n);
+	H = influence_matrix(p, U, D, n, w);
 	[MSR, Ht] = penalty_terms(H, y, w);
 	J = feval(crit, MSR, Ht, n);
 	if ~isfinite(J)
 		J = Inf;
 	endif 	
 endfunction
+
+function J = penalty_compute_chol(p, QT, R, y, w, n, crit) #evaluates a user-supplied penalty function at given p
+	[MSR, Ht] = penalty_terms_chol(p, QT, R, y, w, n);
+	J = feval(crit, MSR, Ht, n);
+	if ~isfinite(J)
+		J = Inf;
+	endif 	
+endfunction
+
+function Binv = banded_matrix_inverse(d, U, m) #given a (2m+1)-banded, symmetric n x n matrix B = U'*inv(diag(d))*U, where U is unit upper triangular with bandwidth (m+1), returns Binv, a sparse symmetric matrix containing the central 2m+1 bands of the inverse of B
+#Reference: Hutchinson and de Hoog 1985
+	Binv = diag(d);
+	n = rows(U);
+	for i = n:(-1):1
+		p = min(m, n - i);
+		for l = 1:p
+			for k = 1:p
+				Binv(i, i+l) -= U(i, i+k)*Binv(i + k, i + l);
+			end
+			Binv(i, i) -= U(i, i+l)*Binv(i, i+l);
+		end
+		Binv(i+(1:p), i) = Binv(i, i+(1:p))'; #add the lower triangular elements
+	end
+endfunction
+			
 
 
 %!shared x,y,ret,p,sigma2,unc_y
@@ -160,4 +219,22 @@ endfunction
 %!assert (sigma2, 0, 1E-10);
 %!assert (ret-y, zeros(size(y)), 1E-4);
 %!assert (unc_y, zeros(size(unc_y)), 1E-5);
+
+%{
+# experiments with unequal weighting of points
+rand("seed", pi)
+x = [0:0.01:1]'; 
+w = 1 ./ (0.1 + rand(size(x)));
+rand("seed", pi+1)
+y = x .^ 2 +  0.05*(rand(size(x))-0.5)./ sqrt(w);
+[ret,p,sigma2,unc_y]=csaps_sel(x,y,x,w);
+
+rand("seed", pi)
+x = [0:0.01:10]'; 
+w = 1 ./ (0.1 + rand(size(x)));
+rand("seed", pi+1)
+y = x .^ 2 +  0.5*(rand(size(x))-0.5)./ sqrt(w);
+tic; [ret,p,sigma2,unc_y]=csaps_sel(x,y,x,w); toc
+
+%}
 

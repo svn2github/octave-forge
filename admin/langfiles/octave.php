@@ -2,23 +2,20 @@
 /*************************************************************************************
  * octave.php
  * -----------
- * Author: Juan Pablo Carbajal (carbajal@ifi.uzh.ch)
- * Copyright: (c) 2012 Juan Pablo Carbajal (http://www.florian-knorn.com)
+ * Author: Carnë Draug (carandraug+dev@gmail.com)
+ *         Juan Pablo Carbajal (carbajal@ifi.uzh.ch)
+ * Copyright: (c) 2012 Carnë Draug
+ *            (c) 2012 Juan Pablo Carbajal
  * Release Version: 1.0.0
  * Date Started: 2012/05/22
  *
- * Octave M-file language file for GeSHi.
- * Derived from matlab.php by Florian Knorn and octave.lang for GtkSourceView.
+ * GNU/Octave M-file language file for GeSHi.
  *
  * CHANGES
  * -------
  * 2012/05/22 (1.0.0)
  *   -  First Release
  *
- * TODO
- * -------------------------
- * Instead of keywords use groups for different type of highlight
- * http://qbnz.com/highlighter/geshi-doc.html#language-files
  *
  *************************************************************************************
  *
@@ -56,17 +53,17 @@ $language_data = array (
         // underscores) or a closing bracket (round, square or curly) or a dot
         // (to form the array transpose operator ".'" ).
         // see the source of octave.lang of gtksourceview
-        1 => "/(?<![0-9a-zA-Z_\)\]}\.])'.*?'/",
+        3 => "/(?<![0-9a-zA-Z_\)\]}\.])'.*?'/",
         // Double quote strings: we also can't use QUOTEMARKS here (see single
         // line quotes). However, with double quote strings both \ and ... can
         // be used to make multiline strings. Continuation markers can be
         // followed by whitespace
-        2 => '/"(.|(\.\.\.|\\\)(\s)*?\n)*?(?<!\\\)"/',
+        4 => '/"(.|(\.\.\.|\\\)(\s)*?\n)*?(?<!\\\)"/',
         // Block comments: the ms modifiers treat strings as multiple lines (to
         // be able to use ^ and $ instead of newline and thus support block
         // comments on the first and last line of source) and make . also match
         // a newline
-        3 => "/^\s*?[%#]{\s*?$.*?^\s*?[%#]}\s*?$/ms",
+        5 => "/^\s*?[%#]{\s*?$.*?^\s*?[%#]}\s*?$/ms",
     ),
     'NUMBERS' =>
         GESHI_NUMBER_INT_BASIC |
@@ -483,9 +480,11 @@ $language_data = array (
             10 => 'color: #008A8C; font-weight:bold;' // Constant functions
         ),
         'COMMENTS' => array(
-            1 => 'color: #FF00FF; font-style: italic;', // single quote strings
-            2 => 'color: #FF00FF; font-style: italic;', // double quote strings
-            3 => 'color: #0000FF; font-style: italic;', // block comments
+            1 => 'color: #0000FF; font-style: italic;', // single quote strings
+            2 => 'color: #0000FF; font-style: italic;', // double quote strings
+            3 => 'color: #FF00FF; font-style: italic;', // single quote strings
+            4 => 'color: #FF00FF; font-style: italic;', // double quote strings
+            5 => 'color: #0000FF; font-style: italic;', // block comments
             'MULTI' => 'color: #0000FF; font-style: italic;'
         ),
         'ESCAPE_CHAR' => array(

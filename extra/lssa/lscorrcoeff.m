@@ -14,9 +14,9 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {c =} nucorrcoeff (abc1, ord1, abc2, ord2, time, freq)
-## @deftypefnx {Function File} {c =} nucorrcoeff (abc1, ord1, abc2, ord2, time, freq, window)
-## @deftypefnx {Function File} {c =} nucorrcoeff (abc1, ord1, abc2, ord2, time, freq, window, winradius)
+## @deftypefn {Function File} {c =} lscorrcoeff (abc1, ord1, abc2, ord2, time, freq)
+## @deftypefnx {Function File} {c =} lscorrcoeff (abc1, ord1, abc2, ord2, time, freq, window)
+## @deftypefnx {Function File} {c =} lscorrcoeff (abc1, ord1, abc2, ord2, time, freq, window, winradius)
 ##
 ## Return the coefficient of the wavelet correlation of time
 ## series (@var{abc1}, @var{ord1}) and (@var{abc2}, @var{ord2}).
@@ -31,13 +31,13 @@
 %! x = 1:10;
 %! y = sin(x);
 %! z = cos(x);
-%! a = nucorrcoeff(x,y,x,z,0.5,0.9)
+%! a = lscorrcoeff(x,y,x,z,0.5,0.9)
 %! ## This generates the correlation coefficient at time 0.5 and circular freq. 0.9
 
 
 ## nucorrcoeff, computes a coefficient of the wavelet correlation of two time series
 
-function coeff = nucorrcoeff(x1, y1, x2, y2, t, o, wgt = @cubicwgt, wgtrad = 1)
+function coeff = lscorrcoeff(x1, y1, x2, y2, t, o, wgt = @cubicwgt, wgtrad = 1)
   so = 0.05 * o;
   ## This code can only, as of currently, work on vectors; I haven't figured out a way to make it work on a matrix.
   if( ( ndims(x1) == 2 ) && ! ( rows(x1) == 1 ) )

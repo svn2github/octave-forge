@@ -23,7 +23,7 @@
 ##
 ## @end deftypefn
 
-function transform = nureal( t, x, omegamax, ncoeff, noctave)
+function transform = lsreal( t, x, omegamax, ncoeff, noctave)
   ## the R function runs the following command:
   ## nureal( double X, double Y, int min(X,Y), int ncoeff, int noctave, double omegamax, complex rp)
   ## this means that in the C, *tptr is X and *xptr is Y. Yes, I know. I think I'll rename them.

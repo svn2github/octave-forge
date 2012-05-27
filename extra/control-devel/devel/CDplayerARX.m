@@ -51,8 +51,11 @@ Y=CD_player_arm_1(:,3:4);
 dat = iddata (Y, U)
 
 % [sys, x0] = ident (dat, 15, 8)     % s=15, n=8
-sys = arx (dat, 4, 4)
+[sys, x0] = arx (dat, 8, 8)
 
+[y, t] = lsim (sys, U, [], x0);
+
+%{
 %[y, t] = lsim (sys, U, [], x0);
 %[y, t] = lsim (sys(:,1:2), U);
 
@@ -65,6 +68,7 @@ y2 = filter (B{2,1}, A{2,1}, U(:,1)) + filter (B{2,2}, A{2,2}, U(:,2));
 y = [y1, y2];
 
 t = 0:length(U)-1;
+%}
 
 err = norm (Y - y, 1) / norm (Y, 1)
 

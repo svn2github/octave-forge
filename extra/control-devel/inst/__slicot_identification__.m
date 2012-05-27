@@ -58,7 +58,7 @@ function [sys, x0, info] = __slicot_identification__ (method, dat, varargin)
   endif
 
   [ns, l, m, e] = size (dat);           # dataset dimensions
-  tsam = dat.tsam
+  tsam = dat.tsam;
   
   ## multi-experiment data requires equal sampling times  
   if (e > 1 && ! isequal (tsam{:}))

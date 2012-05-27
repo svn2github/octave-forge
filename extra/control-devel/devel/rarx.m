@@ -131,16 +131,16 @@ function Theta = __theta__ (Phi, Y, i, n)
     
   if (numel (Phi) == 1)                             # single-experiment dataset
     % recursive least-squares with efficient matrix inversion
-    lambda = default 1
-    Theta = ?
-    P = ?
-    for t =
-      phi = Phi{1}(t,:);
-      y = Y{1}(t?offset n(i), :);
-      ## note phi != phi.'
+    [pr, pc] = size (Phi{1});
+    lambda = 1; % default 1
+    Theta = zeros (pc, 1);
+    P = 10 * eye (pc);
+    for t = 1 : pr
+      phi = Phi{1}(t,:);                            # note that my phi is Ljung's phi.'
+      y = Y{1}(t+n(i), :);
       den = lambda + phi*P*phi.';
-      L = P * phi / den;
-      P = (P - (P * phi.' * phi * P) / den) / lambda
+      L = P * phi.' / den;
+      P = (P - (P * phi.' * phi * P) / den) / lambda;
       Theta += L * (y - phi*Theta);
     endfor
 %{

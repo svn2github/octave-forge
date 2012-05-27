@@ -78,7 +78,7 @@ dat = iddata (Y, U, [], 'inname', {'a. water temperature';
 
 [sys, x0] = moen4 (dat, 's', 5, 'n', 4)    % s=5, n=4
 % sys2 = arx (dat, 4, 4)
-[sys2, x02] = arx (dat, 4, 4)
+[sys2, x02] = arx (dat, 4)
 
 x0=x0{1};
 x02=x02{1};

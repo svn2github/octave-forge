@@ -24,11 +24,11 @@
 ## Created: April 2012
 ## Version: 0.1
 
-function [sys, varargout] = arx (dat, na, nb)
+function [sys, varargout] = arx (dat, varargin)
 
   ## TODO: delays
 
-  if (nargin != 3)
+  if (nargin < 2)
     print_usage ();
   endif
   
@@ -36,8 +36,24 @@ function [sys, varargout] = arx (dat, na, nb)
     error ("arx: first argument must be an iddata dataset");
   endif
 
+%  if (nargin > 2)                       # arx (dat, ...)
+    if (is_real_scalar (varargin{1}))   # arx (dat, n, ...)
+      varargin = horzcat (varargin(2:end), {"na"}, varargin(1), {"nb"}, varargin(1));
+    endif
+    if (isstruct (varargin{1}))         # arx (dat, opt, ...), arx (dat, n, opt, ...)
+      varargin = horzcat (__opt2cell__ (varargin{1}), varargin(2:end));
+    endif
+%  endif
+
+  nkv = numel (varargin);               # number of keys and values
+  
+  if (rem (nkv, 2))
+    error ("arx: keys and values must come in pairs");
+  endif
+
+
   ## p: outputs,  m: inputs,  ex: experiments
-  [~, p, m, ex] = size (dat);
+  [~, p, m, ex] = size (dat);           # dataset dimensions
 
   ## extract data  
   Y = dat.y;
@@ -50,8 +66,31 @@ function [sys, varargout] = arx (dat, na, nb)
   else
     tsam = tsam{1};
   endif
-
   
+  
+  ## default arguments
+  na = [];
+  nb = [];      % ???
+  nk = [];
+
+  ## handle keys and values
+  for k = 1 : 2 : nkv
+    key = lower (varargin{k});
+    val = varargin{k+1};
+    switch (key)
+      ## TODO: proper argument checking
+      case "na"
+        na = val;
+      case "nb"
+        nb = val;
+      case "nk"
+        error ("nk");
+      otherwise
+        warning ("arx: invalid property name '%s' ignored", key);
+    endswitch
+  endfor
+
+
   if (is_real_scalar (na, nb))
     na = repmat (na, p, 1);                         # na(p-by-1)
     nb = repmat (nb, p, m);                         # nb(p-by-m)

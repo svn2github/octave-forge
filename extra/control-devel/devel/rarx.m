@@ -113,7 +113,7 @@ function [sys, varargout] = rarx (dat, na, nb)
   ## this makes only sense for state-space models, therefore convert TF to SS
   if (nargout > 1)
     sys = prescale (ss (sys(:,1:m)));
-    x0 = slib01cd (Y, U, sys.a, sys.b, sys.c, sys.d, 0.0)
+    x0 = slib01cd (Y, U, sys.a, sys.b, sys.c, sys.d, 0.0);
     ## return x0 as vector for single-experiment data
     ## instead of a cell containing one vector
     if (numel (x0) == 1)

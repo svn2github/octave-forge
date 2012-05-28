@@ -36,6 +36,7 @@ Special functions
  bessel_yl
  bessel_zero_J0
  bessel_zero_J1
+ bessel_zero_Jnu
  beta_gsl
  clausen
  conicalP_0

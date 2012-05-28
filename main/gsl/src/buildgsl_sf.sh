@@ -1183,6 +1183,17 @@ EOF
 ./replace_template.sh int_int_double_to_double.cc.template >> gsl_sf.cc
 
 
+# (double, int) to double
+
+export octave_name=bessel_zero_Jnu
+export    funcname=gsl_sf_bessel_zero_Jnu
+cat << \EOF > docstring.txt
+These routines compute the location of the n-th positive zero of the
+Bessel function J_x().
+EOF
+./replace_template.sh double_int_to_double.cc.template >> gsl_sf.cc
+
+
 export octave_name=hyperg_U
 export    funcname=gsl_sf_hyperg_U
 cat << \EOF > docstring.txt

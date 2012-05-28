@@ -30,6 +30,7 @@ autoload ("bessel_Yn", fullfile (fileparts (mfilename ("fullpath")), "gsl_sf.oct
 autoload ("bessel_Ynu", fullfile (fileparts (mfilename ("fullpath")), "gsl_sf.oct"));
 autoload ("bessel_zero_J0", fullfile (fileparts (mfilename ("fullpath")), "gsl_sf.oct"));
 autoload ("bessel_zero_J1", fullfile (fileparts (mfilename ("fullpath")), "gsl_sf.oct"));
+autoload ("bessel_zero_Jnu", fullfile (fileparts (mfilename ("fullpath")), "gsl_sf.oct"));
 autoload ("beta_gsl", fullfile (fileparts (mfilename ("fullpath")), "gsl_sf.oct"));
 autoload ("Chi", fullfile (fileparts (mfilename ("fullpath")), "gsl_sf.oct"));
 autoload ("Ci", fullfile (fileparts (mfilename ("fullpath")), "gsl_sf.oct"));

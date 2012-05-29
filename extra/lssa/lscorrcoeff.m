@@ -57,7 +57,7 @@ function coeff = lscorrcoeff(x1, y1, x2, y2, t, o, wgt = @cubicwgt, wgtrad = 1)
   rx2 = x2(mask);
   ry2 = y2(mask);
   ## I've used the same mask for all of these as it's an otherwise unimportant variable ... can this leak memory?
-  lnength(rx1) ##printing this length is probably used as a warning if 0 is returned; I inculded it
+  length(rx1) ##printing this length is probably used as a warning if 0 is returned; I included it
   ## in particular to maintain an exact duplicate of the R function.
   s = sum( wgt( ( rx1 - t ) .* so ) ) * sum( wgt( ( rx2 - t ) .* so ) );
   coeff = ifelse( s != 0 , ( sum( wgt( ( rx1 - t ) .* so ) .* exp( i .* o .* rx1 ) .* ry1 )

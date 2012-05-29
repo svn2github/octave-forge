@@ -20,6 +20,7 @@
 ## series, considering frequencies up to @var{maxfreq}, over @var{numoctaves}
 ## octaves and @var{numcoeff} coefficients.
 ##
+## @seealso{lsreal}
 ## @end deftypefn
 
 

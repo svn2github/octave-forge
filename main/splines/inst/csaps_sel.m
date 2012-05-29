@@ -108,7 +108,7 @@ else
   Hd = diag(H);
 end
 
-  sigma2 = MSR * (n / (n-Ht)); #estimated data error variance (wahba83)
+  sigma2 = mean(MSR(:)) * (n / (n-Ht)); #estimated data error variance (wahba83)
   unc_y = sqrt(sigma2 * Hd ./ w); #uncertainty (SD) of fitted curve at each input x-value (hutchinson86)
 
 ## solve for the scaled second derivatives u and for the function values a at the knots (if p = 1, a = y) 

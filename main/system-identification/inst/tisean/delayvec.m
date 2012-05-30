@@ -53,8 +53,9 @@ function delayed = delayvec (data, edim=1, dformat=[], delays=[])
   save ('-ascii',infile, 'data');
 
   %% Prepare format of the embedding vector
-  syscmd = sprintf("delay -M%d -m%d %s %s -o%s -V0 %s", ...
-                           M, edim, flag.F, flag.D, outfile, infile);
+  func = file_in_loadpath ("delay");
+  syscmd = sprintf("%s -M%d -m%d %s %s -o%s -V0 %s", ...
+                      func, M, edim, flag.F, flag.D, outfile, infile);
 
   %% Function call
   system (syscmd);

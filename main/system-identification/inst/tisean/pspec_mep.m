@@ -94,7 +94,8 @@ function [s f AR ARerr] = pspec_mep (data, varargin)
     ARerr = str2num (strsplit (ARerrtxt, "="){2});
   else
     s = load (outfile);
-    s = complex (s(:,1), s(:,2));
+    f = s(:,1);
+    s = s(:,2);
     AR    = [];
     ARerr = [];
   end

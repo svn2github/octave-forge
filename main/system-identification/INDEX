@@ -1,4 +1,7 @@
 system-identification >> System Identification
-TISEAN
+TISEAN wrapper
+ corrdim
+ delayvec
+ pspec_mep
+ pspec_bin
 Data types
-

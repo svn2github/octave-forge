@@ -24,7 +24,7 @@
 %%
 %% @end deftypefn
 
-function s = pspec_bin (data, varargin)
+function [s f] = pspec_bin (data, varargin)
 
   data = data(:);
   [nT n] = size (data);
@@ -65,6 +65,7 @@ function s = pspec_bin (data, varargin)
   system (syscmd);
 
   s = load (outfile);
-  s = complex (s(:,1), s(:,2));
+  f = s(:,1);
+  s = s(:,2);
 
 endfunction

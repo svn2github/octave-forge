@@ -2825,7 +2825,7 @@ endfunction
 %! De = [ -0.4997   0.0451
 %!        -1.0011  -0.5567 ];
 %!
-%!assert (abs (SYS.A), abs (Ae), 1e-4);
-%!assert (abs (SYS.B), abs (Be), 1e-4);
-%!assert (abs (SYS.C), abs (Ce), 1e-4);
-%!assert (abs (SYS.D), abs (De), 1e-4);
+%!assert (SYS.A, Ae, 1e-4);
+%!assert (SYS.B, Be, 1e-4);
+%!assert (SYS.C, Ce, 1e-4);
+%!assert (SYS.D, De, 1e-4);

@@ -85,6 +85,12 @@ function [W, H] = nmf_pg (V, varargin)
   maxsubiter = parser.Results.MaxSubIter;
   verbose    = parser.Results.Verbose;
 
+  # Check if text_waitbar is loaded
+  __txtwb__ = true;
+  if !exist ('text_waitbar')
+    __txtwb__ = false;
+  end
+
   clear parser
   # ------ #
 
@@ -141,7 +147,13 @@ function [W, H] = nmf_pg (V, varargin)
          r,c,Wr,Wc,Hr,Hc);
     fprintf ("Initial gradient norm = %f\n", initgrad);
     fflush (stdout);
-    text_waitbar(0,'Please wait ...');
+
+    if __txtwb__
+      text_waitbar(0,'Please wait ...');
+    else
+      printf ('Running main loop, this may take a while.\n');
+      fflush (stdout);
+    end
   end
 
   for iter = 1:maxiter
@@ -177,9 +189,10 @@ function [W, H] = nmf_pg (V, varargin)
       break
     end
 
-     if verbose
+    if verbose && __txtwb__
       text_waitbar (iter/maxiter);
-     end
+    end
+
   end
 
   if iter == maxiter

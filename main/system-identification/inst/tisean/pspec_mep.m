@@ -15,7 +15,7 @@
 
 %% -*- texinfo -*-
 %% @deftypefn {Function File} {[@var{S} @var{f} @var{AR} @var{ARerr}] = } pspec_mep (@var{data})
-%% @deftypefnx {Function File} {[@dots{}] = } pspec_mep (@dosts{},@var{property},@var{value})
+%% @deftypefnx {Function File} {[@dots{}] = } pspec_mep (@dots{},@var{property},@var{value})
 %% Estimates the power spectrum of a scalar data set on the basis of the maximum @
 %% entropy principle. This function calls @code{mem_spec} from the TISEAN package.
 %%

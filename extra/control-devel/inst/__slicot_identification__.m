@@ -76,7 +76,7 @@ function [sys, x0, info] = __slicot_identification__ (method, dat, varargin)
   s = [];
   n = [];
   conf = [];
-  noise = "n"
+  noise = "n";
   
   ## handle keys and values
   for k = 1 : 2 : nkv
@@ -98,9 +98,6 @@ function [sys, x0, info] = __slicot_identification__ (method, dat, varargin)
         conf = logical (val);
       case "noise"
         noise = val;
-        % none
-        % e
-        % v (normalized)
       otherwise
         warning ("%s: invalid property name '%s' ignored", method, key);
     endswitch
@@ -143,19 +140,19 @@ function [sys, x0, info] = __slicot_identification__ (method, dat, varargin)
 
   ## assemble model
   [inname, outname] = get (dat, "inname", "outname");
-  if (strncmpi (noise, "e", 1))
+  if (strncmpi (noise, "e", 1))         # add error inputs e, not normalized
     sys = ss (a, [b, k], c, [d, eye(p)], tsam);
     in_u = __labels__ (inname, "u");
     in_e = __labels__ (outname, "y");
     in_e = cellfun (@(x) ["e@", x], in_e, "uniformoutput", false);
     inname = [in_u; in_e];
-  elseif (strncmpi (noise, "v", 1))
+  elseif (strncmpi (noise, "v", 1))     # add error inputs v, normalized
     sys = ss (a, [b, k*l], c, [d, l], tsam);
     in_u = __labels__ (inname, "u");
     in_v = __labels__ (outname, "y");
     in_v = cellfun (@(x) ["v@", x], in_v, "uniformoutput", false);
     inname = [in_u; in_v];
-  else
+  else                                  # no error inputs, default
     sys = ss (a, b, c, d, tsam);
   endif
 

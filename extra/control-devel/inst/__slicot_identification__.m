@@ -57,7 +57,7 @@ function [sys, x0, info] = __slicot_identification__ (method, dat, varargin)
     error ("%s: keys and values must come in pairs", method);
   endif
 
-  [ns, l, m, e] = size (dat);           # dataset dimensions
+  [ns, p, m, e] = size (dat);           # dataset dimensions
   tsam = dat.tsam;
   
   ## multi-experiment data requires equal sampling times  
@@ -76,6 +76,7 @@ function [sys, x0, info] = __slicot_identification__ (method, dat, varargin)
   s = [];
   n = [];
   conf = [];
+  noise = "n"
   
   ## handle keys and values
   for k = 1 : 2 : nkv
@@ -95,6 +96,11 @@ function [sys, x0, info] = __slicot_identification__ (method, dat, varargin)
         rcond = val;
       case "confirm"
         conf = logical (val);
+      case "noise"
+        noise = val;
+        % none
+        % e
+        % v (normalized)
       otherwise
         warning ("%s: invalid property name '%s' ignored", method, key);
     endswitch
@@ -103,7 +109,7 @@ function [sys, x0, info] = __slicot_identification__ (method, dat, varargin)
 
   ## handle s/nobr and n
   nsmp = sum (ns);                      # total number of samples
-  nobr = fix ((nsmp+1)/(2*(m+l+1)));
+  nobr = fix ((nsmp+1)/(2*(m+p+1)));
   if (e > 1)
     nobr = min (nobr, fix (min (ns) / 2));
   endif
@@ -132,8 +138,28 @@ function [sys, x0, info] = __slicot_identification__ (method, dat, varargin)
   ## perform system identification
   [a, b, c, d, q, ry, s, k, x0] = slident (dat.y, dat.u, nobr, n, meth, alg, conct, ctrl, rcond, tol);
 
+  ## L L' = Ry,  e = L v,  v becomes white noise with identity covariance matrix
+  l = chol (ry, "lower");
+
   ## assemble model
-  sys = ss (a, b, c, d, tsam);
+  [inname, outname] = get (dat, "inname", "outname");
+  if (strncmpi (noise, "e", 1))
+    sys = ss (a, [b, k], c, [d, eye(p)], tsam);
+    in_u = __labels__ (inname, "u");
+    in_e = __labels__ (outname, "y");
+    in_e = cellfun (@(x) ["e@", x], in_e, "uniformoutput", false);
+    inname = [in_u; in_e];
+  elseif (strncmpi (noise, "v", 1))
+    sys = ss (a, [b, k*l], c, [d, l], tsam);
+    in_u = __labels__ (inname, "u");
+    in_v = __labels__ (outname, "y");
+    in_v = cellfun (@(x) ["v@", x], in_v, "uniformoutput", false);
+    inname = [in_u; in_v];
+  else
+    sys = ss (a, b, c, d, tsam);
+  endif
+
+  sys = set (sys, "inname", inname, "outname", outname);
 
   ## return x0 as vector for single-experiment data
   ## instead of a cell containing one vector
@@ -146,8 +172,7 @@ function [sys, x0, info] = __slicot_identification__ (method, dat, varargin)
   ## state covariance matrix Q
   ## output covariance matrix Ry
   ## state-output cross-covariance matrix S
-  ## L L' = Ry,  e = L v,  v becomes white noise with identity covariance matrix
-  info = struct ("K", k, "Q", q, "Ry", ry, "S", s, "L", chol (ry, "lower"));
+  info = struct ("K", k, "Q", q, "Ry", ry, "S", s, "L", l);
 
 endfunction
 

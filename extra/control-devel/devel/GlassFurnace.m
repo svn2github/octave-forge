@@ -48,7 +48,10 @@ Y=glassfurnace(:,5:10);
 
 dat = iddata (Y, U)
 
-[sys, x0] = moen4 (dat, 's', 10, 'n', 5)     % s=10, n=5
+[sys, x0, info] = n4sid (dat, 's', 10, 'n', 5)     % s=10, n=5
+
+L = chol (info.Ry, 'lower')
+Be = info.K * L
 
 
 [y, t] = lsim (sys, U, [], x0);

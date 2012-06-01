@@ -17,15 +17,113 @@
 #include <octave/oct.h>
 #include <complex>
 #include <string>
-#include <stdio>
+#include <iostream>
+
+typedef struct
+{   double x, t;
+} XTElem;
+
+inline double sqr(double x) 
+{   return x*x;   }
 
 #define PNUM 12;
 
-// In order to reduce memory overhead, fastlscomplex will use a reference as the last input.
+#define SETXT(p_, op_, x_, t_) (p_)->x op_ x_; (p_++)->t op_ t_;
+#define SETT(p_, op_, x_, t_)  *p_++ op_ t_;
+#define SETX(p_, op_, x_, t_) *p_++ op_ x_;
+/* h is a complex aux. variable; it is used for assignment times I everywhere */
+#define SETIX(p_, op_, x_, t_) h = x_; RE(*(p_)) op_ -IM(h); IM(*(p_)) op_ RE(h); p_++;
 
-void fastlscomplex ( RowVector tvals, ComplexRowVector xvals, int n, 
-		     double length, int ncoeff, int noctaves, double omegamax,
-		     ComplexRowVector& result ) {
+        /* Macro that sums up the power series terms into the power series
+	 * element record pointed to by p_.
+	 * By using = and += for op_, initial setting and accumulation can be selected.
+	 * t_ is the expression specifying the abscissa value. set_ can be either
+	 * SETXT to set the x and t fields of an XTElem record, or SETT/SETX to set
+	 * the elements of a Real array representing alternately real and imaginary
+	 * values.
+         */
+        // -10 points, comments don't match method.
+#define EXP_IOT_SERIES(p_, el_, t_, op_, setr_, seti_)		\
+{       Real t = t_, tt; p_ = el_;    setr_(p_, op_, x, 1)	\
+        tt  = -t;            seti_(p_, op_, x*tt, tt)		\
+        tt *= t*(1.0/2.0);   setr_(p_, op_, x*tt, tt)		\
+        tt *= t*(-1.0/3.0);  seti_(p_, op_, x*tt, tt)		\
+        tt *= t*(1.0/4.0);   setr_(p_, op_, x*tt, tt)		\
+        tt *= t*(-1.0/5.0);  seti_(p_, op_, x*tt, tt)		\
+        tt *= t*(1.0/6.0);   setr_(p_, op_, x*tt, tt)		\
+        tt *= t*(-1.0/7.0);  seti_(p_, op_, x*tt, tt)		\
+        tt *= t*(1.0/8.0);   setr_(p_, op_, x*tt, tt)		\
+        tt *= t*(-1.0/9.0);  seti_(p_, op_, x*tt, tt)		\
+        tt *= t*(1.0/10.0);  setr_(p_, op_, x*tt, tt)		\
+        tt *= t*(-1.0/11.0); seti_(p_, op_, x*tt, tt)		\
+}
+
+/* same as the above, but without alternating signs */
+#define EXPIOT_SERIES(p_, el_, t_, op_, setr_, seti_)		\
+{       Real t = t_, tt; p_ = el_;    setr_(p_, op_, x, 1)	\
+			     seti_(p_, op_, x*t,  t )		\
+        tt  = t*t*(1.0/2.0); setr_(p_, op_, x*tt, tt)		\
+        tt *= t*(1.0/3.0);   seti_(p_, op_, x*tt, tt)		\
+        tt *= t*(1.0/4.0);   setr_(p_, op_, x*tt, tt)		\
+        tt *= t*(1.0/5.0);   seti_(p_, op_, x*tt, tt)		\
+        tt *= t*(1.0/6.0);   setr_(p_, op_, x*tt, tt)		\
+        tt *= t*(1.0/7.0);   seti_(p_, op_, x*tt, tt)		\
+        tt *= t*(1.0/8.0);   setr_(p_, op_, x*tt, tt)		\
+        tt *= t*(1.0/9.0);   seti_(p_, op_, x*tt, tt)		\
+        tt *= t*(1.0/10.0);  setr_(p_, op_, x*tt, tt)		\
+        tt *= t*(1.0/11.0);  seti_(p_, op_, x*tt, tt)		\
+}
+
+#   define SRCARG   Real *tptr, Real *xptr, int n, double *lengthptr
+#   define SRCVAR   int k; Real length = *lengthptr;
+#   define SRCT     tptr[k]
+#   define SRCX     xptr[k]
+#   define SRCFIRST k = 0
+#   define SRCAVAIL (k<n)
+#   define SRCNEXT  k++
+
+#define FASTLSCOMPLEX_HELP \
+  "Takes the fast complex least-squares transform of irregularly sampled data.\n\
+When called, takes a time series with associated x-values, a number of octaves,\n\
+a number of coefficients per octave, the maximum frequency, and a length term.\n\
+It returns a complex row vector of the transformed series."
+
+DEFUN_DLD(fastlscomplex, args, nargout, FASTLSCOMPLEX_HELP ){
+  if ( args.length != 7 ) {
+    std::cout << "Improper number of arguments!" << std::endl;
+    std::cout << FASTLSCOMPLEX_HELP << std::endl;
+    return octave_value_list ();
+  }
+  RowVector tvals = args(0).row_vector_value();
+  ComplexRowVector xvals = args(1).complex_row_vector_value();
+  double length = ( tvals(tvals.numel()--) - tvals( octave_idx_type (0)));
+  int ncoeff = args(4).int_value();
+  int noctaves = args(5).int_value();
+  double omegamax = args(6).double_value();
+  
+  if ( error_state ) {
+    //print an error statement, see if error_state can be printed or interpreted.
+    return octave_value_list ();
+  }
+  if ( tvals.length() != xvals.length() ) {
+    std::cout << "Unmatched time series elements." << std::endl;
+    // return error state if possible?
+    return octave_value_list ();
+  }
+  octave_idx_type n = tvals.numel(); /* I think this will actually return octave_idx_type.
+			  * In that case I'll change the signature of fastlscomplex. */
+  if ( ( ncoeff == 0 ) || ( noctaves == 0 ) ) {
+    std::cout << "Cannot operate over either zero octaves or zero coefficients." << std::endl;
+    // return error state if possible
+    return octave_value_list ();
+  }
+  // possibly include error for when omegamax isn't right?
+  ComplexRowVector results = fastlscomplex(tvals, xvals, n, length, ncoeff, noctaves, omegamax);
+  return results;
+}
+
+ComplexRowVector fastlscomplex ( RowVector tvals, ComplexRowVector xvals, octave_idx_type n, 
+		     double length, int ncoeff, int noctaves, double omegamax ) {
   /* Singly-linked list which contains each precomputation record
    * count stores the number of samples for which power series elements
    * were added. This will be useful for accelerating computation by ignoring
@@ -33,7 +131,7 @@ void fastlscomplex ( RowVector tvals, ComplexRowVector xvals, int n,
    */
   struct SumVec {
     struct SumVec *next;
-    Complex<double> elements[PNUM];
+    std::complex<double> elements[PNUM];
     int count;  }
   *shead, *stail, *sp, *sq; //Names have been kept from the C, may change if I want to.
   double dtelems[PNUM],		/* power series elements of exp(-i dtau)  */
@@ -43,7 +141,7 @@ void fastlscomplex ( RowVector tvals, ComplexRowVector xvals, int n,
     tau0d,	                /* tau_h of first summand range at level d */
     dtau = (0.5*M_PI)/omegamax,/* initial precomputation interval radius */
     dtaud,			/* precomputation interval radius at d'th merging step */
-    n_1 = 1.0/n,		/* reciprocal of sample count */
+    n_1 = 1.0/n,		/* reciprocal of sample count */ // n is implicitly cast to double.
     ooct, o, omul,	        /* omega/mu for octave's top omega and per band, mult. factor  */
     omegaoct, omega,		/* Max. frequency of octave and current frequency */
     on_1,			/* n_1*(omega/mu)^p, n_1*(2*omega/mu)^p */
@@ -55,7 +153,7 @@ void fastlscomplex ( RowVector tvals, ComplexRowVector xvals, int n,
     *eop, *oep,
     *ep, *op,
     *p, *q, *pe;
-    
+  ComplexRowVector results (ncoeff*noctaves); //This *should* be the right size. I'll check against later sections of code.
 
   int i , j; // Counters; coefficient and octave, respectively.
   // probable doubles: zetar, zetai, zzr, zzi, er, ei, emulr, emuli,
@@ -97,6 +195,7 @@ void fastlscomplex ( RowVector tvals, ComplexRowVector xvals, int n,
   omegaoct = omegamax;
   tau0d = tau0;
   dtaud = dtau;
+  octave_idx_type iter ( 0 );
   // Looping over octaves
   for ( j = noctave ; ; ooct *= 0.5 , omegaoct *= 0.5 , tau0d += dtaud , dtaud *= 2 ) {
     // Looping over&results per frequency
@@ -107,13 +206,14 @@ void fastlscomplex ( RowVector tvals, ComplexRowVector xvals, int n,
       // sets real, imag parts of emul
       for( zeta = 0 , sp = shead; sp; sp = sp->next, e *= emul ) {
 	if ( sp->count ) {
-	  for ( zz = std::complex<double>(0.0,0.0) , p = sp->elems , pe = p + PNUM , on_1 = n_1 ; p < pe ; ) {
+	  for ( zz = std::complex<double>(0.0,0.0) , octave_idx_type i (0) , p = sp->elems , pe = p + PNUM , on_1 = n_1 ; p < pe ; i++ ) {
 	    zz += *p++ * on_1;
 	    on_1 *= 0;
 	  }
 	  zeta += e * zz;
 	}
-	*rp++ = zeta;
+	results(iter) = std::complex<double>(zeta.real(), zeta.imag());
+	iter++;
       }
       if ( --j <= 0 ) break; //Avoids excess merging
       

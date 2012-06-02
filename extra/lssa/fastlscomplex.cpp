@@ -15,6 +15,7 @@
  */
 
 #include <octave/oct.h>
+#include <math.h>
 #include <complex>
 #include <string>
 #include <iostream>
@@ -27,6 +28,7 @@ inline double sqr(double x)
 {   return x*x;   }
 
 #define PNUM 12;
+
 
 #define SETXT(p_, op_, x_, t_) (p_)->x op_ x_; (p_++)->t op_ t_;
 #define SETT(p_, op_, x_, t_)  *p_++ op_ t_;
@@ -130,11 +132,11 @@ ComplexRowVector fastlscomplex ( RowVector tvals, ComplexRowVector xvals, octave
    * unused entries.
    */
   struct SumVec {
-    struct SumVec *next;
-    std::complex<double> elements[PNUM];
+    SumVec *next;
+    std::complex<double> elements[12];
     int count;  }
   *shead, *stail, *sp, *sq; //Names have been kept from the C, may change if I want to.
-  double dtelems[PNUM],		/* power series elements of exp(-i dtau)  */
+  double dtelems[12],		/* power series elements of exp(-i dtau)  */
     *dte, *r,			/* Pointers into dtelems */
     x,				/* abscissa and ordinate value, p-th power of t */
     tau, tau0, te,		/* Precomputation range centers and range end */
@@ -149,7 +151,7 @@ ComplexRowVector fastlscomplex ( RowVector tvals, ComplexRowVector xvals, octave
     tmp;
   std::complex<double> zeta, zz, // Accumulators for spectral coefficients to place in Complex<double>
     e, emul,
-    h, eoelems[PNUM], oeelems[PNUM],
+    h, eoelems[12], oeelems[12],
     *eop, *oep,
     *ep, *op,
     *p, *q, *pe;
@@ -157,7 +159,7 @@ ComplexRowVector fastlscomplex ( RowVector tvals, ComplexRowVector xvals, octave
 
   int i , j; // Counters; coefficient and octave, respectively.
   // probable doubles: zetar, zetai, zzr, zzi, er, ei, emulr, emuli,
-  //    eoelemsr[PNUM] eoelemsi[PNUM], etc. (since I want to use Complex<double>
+  //    eoelemsr[12] eoelemsi[12], etc. (since I want to use Complex<double>
   //    as little as possible.)
   
   octave_idx_type k = 0;
@@ -191,7 +193,7 @@ ComplexRowVector fastlscomplex ( RowVector tvals, ComplexRowVector xvals, octave
   // Now isn't that just a nicer representation of much the same control structure as that ugly for-loop?
   // Defining starting values for the loops over octaves:
   ooct = omegamax / mu;
-  omul = exp(-M_LN2/ncoeff);
+  omul = exp(-log(2)/ncoeff);
   omegaoct = omegamax;
   tau0d = tau0;
   dtaud = dtau;
@@ -206,7 +208,7 @@ ComplexRowVector fastlscomplex ( RowVector tvals, ComplexRowVector xvals, octave
       // sets real, imag parts of emul
       for( zeta = 0 , sp = shead; sp; sp = sp->next, e *= emul ) {
 	if ( sp->count ) {
-	  for ( zz = std::complex<double>(0.0,0.0) , octave_idx_type i (0) , p = sp->elems , pe = p + PNUM , on_1 = n_1 ; p < pe ; i++ ) {
+	  for ( zz = std::complex<double>(0.0,0.0) , octave_idx_type i (0) , p = sp->elems , pe = p + 12 , on_1 = n_1 ; p < pe ; i++ ) {
 	    zz += *p++ * on_1;
 	    on_1 *= 0;
 	  }
@@ -220,7 +222,7 @@ ComplexRowVector fastlscomplex ( RowVector tvals, ComplexRowVector xvals, octave
       EXPIOT_SERIES(r, dtelems, mu*dtaud, =, SETT, SETT);
       for(sp = shead; sp; sp = sp->next){
 	if(!(sq = sp->next) || !sq->count ) {
-	  for(p = sp->elems, eop = eoelems, dte = dtelems+1, pe = p+PNUM; p < pe; p++, dte++)
+	  for(p = sp->elems, eop = eoelems, dte = dtelems+1, pe = p+12; p < pe; p++, dte++)
 	    {   ep = eop; *eop++ = *p;
 	      for(r = dtelems, *p = *ep * *r; ; )
 		{   if(++r>=dte) break; --ep; h   =  *ep * *r; RE(*p) -= IM(h); IM(*p) += RE(h);
@@ -233,7 +235,7 @@ ComplexRowVector fastlscomplex ( RowVector tvals, ComplexRowVector xvals, octave
 	}
 	else
 	  if(sp->cnt)
-	    for(p = sp->elems, q = sq->elems, eop = eoelems, oep = oeelems, dte = dtelems+1, pe = p+PNUM;
+	    for(p = sp->elems, q = sq->elems, eop = eoelems, oep = oeelems, dte = dtelems+1, pe = p+12;
 		p < pe; p++, q++, dte++)
 	      {   ep = eop; *eop++ = *p+*q; *oep++ = *p-*q; op = oep;
 		for(r = dtelems, *p = *ep * *r; ; )
@@ -244,7 +246,7 @@ ComplexRowVector fastlscomplex ( RowVector tvals, ComplexRowVector xvals, octave
 		  }
 	      }
 	  else
-	    for(q = sq->elems, eop = eoelems, oep = oeelems, dte = dtelems+1, pe = q+PNUM; q<pe; q++, dte++)
+	    for(q = sq->elems, eop = eoelems, oep = oeelems, dte = dtelems+1, pe = q+12; q<pe; q++, dte++)
 	      {   ep = eop; *eop++ = *q;
 		for(r = dtelems, *q = *ep * *r; ; )
 		  {   if(++r>=dte) break; --ep; h   =  *ep * *r; RE(*q) -= IM(h); IM(*q) += RE(h);

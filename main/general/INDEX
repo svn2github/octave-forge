@@ -27,6 +27,7 @@ Various Functions
  packfields
  safeprod
  SHA1
+ tablify
  unpackfields
  unresamp2
  unvech

@@ -14,8 +14,8 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{x} =} fminsearch (@var{f}, @var{x0})
-## @deftypefnx {Function File} {[@var{x}, @var{fval}] =} fminsearch (@var{f}, @var{x0}, @var{options}, @var{grad}, @var{P1}, @var{P2}, @dots{})
+## @deftypefn {Function File} {@var{x} =} fminsearch (@var{fun}, @var{x0})
+## @deftypefnx {Function File} {[@var{x}, @var{fval}] =} fminsearch (@var{fun}, @var{x0}, @var{options}, @var{grad}, @var{P1}, @var{P2}, @dots{})
 ##
 ## Find the minimum of a funtion of several variables.
 ## By default the method used is the Nelder&Mead Simplex algorithm.
@@ -24,13 +24,13 @@
 
 ## TODO: describe arguments in texinfo help string
 
-function [x, fval] = fminsearch (funfun, x0, options = [], grad = [], varargin)
+function [x, fval] = fminsearch (fun, x0, options = [], grad = [], varargin)
 
   if (nargin < 2)
     print_usage ();
   endif
 
-  x = fmins (funfun, x0, options, grad, varargin{:});
-  fval = feval (funfun, x, varargin{:});
+  x = fmins (fun, x0, options, grad, varargin{:});
+  fval = feval (fun, x, varargin{:});
 
-endfunction;
+endfunction

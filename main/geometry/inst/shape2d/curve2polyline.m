@@ -138,4 +138,4 @@ endfunction
 %! t  = linspace(0,1,100)';
 %! pc = curveval(curve,t);
 %!
-%! plot(p(:,1),p(:,2),'-o',pc(:,1),pc(:,2),'-r')
+%! plot(polyline(:,1),polyline(:,2),'-o',pc(:,1),pc(:,2),'-r')

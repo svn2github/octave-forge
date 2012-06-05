@@ -98,7 +98,7 @@ endfunction
 %! shape = shapetransform (shape,-T + [2; 0]);
 %!
 %! close
-%! shapeplot (shape,'-r','linewidth',2)
+%! shapeplot (shape,'-r','linewidth',2);
 %! hold on
 %! for i = 1:9
 %!   T = createRotation (i*pi/5)(1:2,1:2)/exp(0.3*i);

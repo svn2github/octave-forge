@@ -98,9 +98,11 @@ geometry >> Computational Geometry
  intersectLineCircle
  radicalAxis
 2D Ellipses
- ellipseAsPolygon
+ cov2ellipse
  drawEllipseArc
  drawEllipse
+ ellipseAsPolygon
+ ellipse2cov
  inertiaEllipse
 2D Transformations
  transformLine

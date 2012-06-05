@@ -1,5 +1,5 @@
 %1
-dirlist = {"tisean"};
+dirlist = {"tisean_wrapper"};
 dirname = fileparts (canonicalize_file_name (mfilename ("fullpath")));
 pp = strsplit (dirname,filesep (), true);
 

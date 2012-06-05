@@ -2,7 +2,7 @@ function pre_install (desc)
 %% Prepares for installation a package that is organized in subfolders
 
   %% List of folders with src subfolder
-  subfld = {"tisean"};
+  subfld = {"tisean_wrapper"};
 
   %% Create correct strings
   subfld_ready = strcat ({[pwd() filesep() "inst" filesep()]},

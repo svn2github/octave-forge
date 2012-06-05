@@ -20,7 +20,7 @@
 %% Calculates covariance matrix from ellipse.
 %%
 %% If only one input is given, @var{elli} must define an ellipse as described in
-%% @coomand{ellipses2d}.
+%% @command{ellipses2d}.
 %% If two inputs are given, @var{ra} and @var{rb} define the half-lenght of the
 %% axes.
 %% If a third input is given, @var{theta} must be the angle of rotation of the

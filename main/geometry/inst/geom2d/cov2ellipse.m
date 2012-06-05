@@ -19,13 +19,29 @@
 %% @deftypefnx {Function File} {@dots{} = } cov2ellipse (@dots{}, @samp{tol},@var{tol})
 %% Calculates ellipse parameters from covariance matrix.
 %%
+%% @var{K} must be symmetric positive (semi)definite. The optional argument
+%% @samp{tol} sets the tolerance for the verification of the
+%% positive-(semi)definiteness of the matrix @var{K} (see @command{isdefinite}).
+%%
+%% If only one output argument is supplied a vector defining a ellipse is returned
+%% as defined in @command{ellipses2d}. Otherwise the angle @var{theta} is given
+%% in radians.
+%%
 %% Run @code{demo cov2ellipse} to see an example.
-%% 
+%%
 %% @seealso{ellipses2d, cov2ellipse, drawEllipse}
 %% @end deftypefn
 
 function varargout = cov2ellipse (K, varargin);
 
+  parser = inputParser ();
+  parser.FunctionName = "cov2ellipse";
+  parser = addParamValue (parser,'Tol', 100*eps*norm (K, "fro"), @(x)x>0);
+  parser = parse(parser,varargin{:});
+
+  if isdefinite (K,parser.Results.Tol) == -1
+    print_usage
+  end
   [R S W] = svd (K);
   theta = atan (R(1,1)/R(2,2));
   v     = sort (diag(S), 'ascend')';

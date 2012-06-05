@@ -14,7 +14,8 @@
 %%    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 %% -*- texinfo -*-
-%% @deftypefn {Function File} {[@var{c} @var{d} @var{h} @var{stat}] = } corrdim (@var{data}, @var{edim})
+%% @deftypefn {Function File} {[@var{c} @var{d} @var{h}] = } corrdim (@var{data})
+%% @deftypefnx {Function File} {[@dots{}] = } corrdim (@dots{},@var{property},@var{value})
 %%  Correlation dimension from @var{data}. This function calls @code{d2} @
 %%  from the TISEAN package.
 %%
@@ -24,6 +25,7 @@ function [c d h] = corrdim (data, varargin)
 
 
   [nT M] = size (data);
+  amp = max(max(data)-min(data));
   # --- Parse arguments --- #
   parser = inputParser ();
   parser.FunctionName = "corrdim";
@@ -31,11 +33,11 @@ function [c d h] = corrdim (data, varargin)
   parser = addParamValue (parser,'MaxEdim', 10, @(x)x>0);
   parser = addParamValue (parser,'Delay', 1, @(x)x>0);
   parser = addParamValue (parser,'TheilerWindow', 0, @(x)x>=0);
-  parser = addParamValue (parser,'ScaleSpan', nT*[1e-3 1], @(x)all(x>0));
+  parser = addParamValue (parser,'ScaleSpan', amp*[1e-3 1], @(x)all(x>0));
   parser = addParamValue (parser,'EpsilonCount', 100, @(x)x>0);
   parser = addParamValue (parser,'PairCount', 1000, @(x)x>=0);
-  parser = addParamValue (parser,'Normalize', false);
-  parser = addParamValue (parser,'Verbose', false);
+  parser = addSwitch (parser,'Normalize');
+  parser = addSwitch (parser,'Verbose');
   parser = parse(parser,varargin{:});
 
   flag.E = "";
@@ -49,8 +51,11 @@ function [c d h] = corrdim (data, varargin)
   %% Write data to file
   save ('-ascii',infile, 'data');
 
+  %% Prepare format of system call
+  func = file_in_loadpath ("d2");
+
   %% Prepare format of the embedding vector
-  syscmd = sprintf ("d2 -d%d -M%d,%d -t%d -r%d -R%d -#%d -N%d %s -o%s -V0 %s", ...
+  syscmd = sprintf ("%s -d%d -M%d,%d -t%d -r%f -R%f -#%d -N%d %s -o%s -V0 %s", func, ...
                         parser.Results.Delay, ...
                         parser.Results.Components, ...
                         parser.Results.MaxEdim, ...

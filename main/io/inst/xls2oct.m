@@ -132,8 +132,9 @@
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-02-25 Fixed missing quotes in struct check L.149-153
 ## 2012-02-26 Updated texinfo header help text
+## 2012-06-06 Implemented "formulas_as_text" option for COM
 ##
-## Latest subfunc update: 2012-02-25
+## Latest subfunc update: 2012-06-06
 
 function [ rawarr, xls, rstatus ] = xls2oct (xls, wsh=1, datrange='', spsh_opts=[])
 
@@ -168,9 +169,8 @@ function [ rawarr, xls, rstatus ] = xls2oct (xls, wsh=1, datrange='', spsh_opts=
 
 	# Select the proper interfaces
 	if (strcmp (xls.xtype, 'COM'))
-		# Call Excel tru COM server. Excel/COM has no way of returning formulas
-		# as strings, so arg spsh_opts has no use (yet)
-		[rawarr, xls, rstatus] = xls2com2oct (xls, wsh, datrange);
+		# Call Excel tru COM / ActiveX server
+		[rawarr, xls, rstatus] = xls2com2oct (xls, wsh, datrange, spsh_opts);
 	elseif (strcmp (xls.xtype, 'POI'))
 		# Read xls file tru Java POI
 		[rawarr, xls, rstatus] = xls2jpoi2oct (xls, wsh, datrange, spsh_opts);
@@ -237,6 +237,7 @@ endfunction
 ## @deftypefn {Function File} [@var{obj}, @var{rstatus}, @var{xls} ] = xls2com2oct (@var{xls})
 ## @deftypefnx {Function File} [@var{obj}, @var{rstatus}, @var{xls} ] = xls2com2oct (@var{xls}, @var{wsh})
 ## @deftypefnx {Function File} [@var{obj}, @var{rstatus}, @var{xls} ] = xls2com2oct (@var{xls}, @var{wsh}, @var{range})
+## @deftypefnx {Function File} [@var{obj}, @var{rstatus}, @var{xls} ] = xls2com2oct (@var{xls}, @var{wsh}, @var{range}, @var{spsh_opts})
 ## Get cell contents in @var{range} in worksheet @var{wsh} in an Excel
 ## file pointed to in struct @var{xls} into the cell array @var{obj}. 
 ##
@@ -265,8 +266,9 @@ endfunction
 ## 2010-11-12 Moved ptr struct check into main func
 ## 2010-11-13 Catch empty sheets when no range was specified
 ## 2012-01-26 Fixed "seealso" help string
+## 2012-06-06 Implemented "formulas_as_text option"
 
-function [rawarr, xls, rstatus ] = xls2com2oct (xls, wsh, crange)
+function [rawarr, xls, rstatus ] = xls2com2oct (xls, wsh, crange, spsh_opts)
 
 	rstatus = 0; rawarr = {};
   
@@ -339,7 +341,11 @@ function [rawarr, xls, rstatus ] = xls2com2oct (xls, wsh, crange)
 	if (nrows >= 1) 
 		# Get object from Excel sheet, starting at cell top_left_cell
 		rr = sh.Range (crange);
-		rawarr = rr.Value;
+    if (spsh_opts.formulas_as_text)
+      rawarr = rr.Formula;
+    else
+      rawarr = rr.Value;
+    endif
 		delete (rr);
 
 		# Take care of actual singe cell range
@@ -405,14 +411,14 @@ endfunction
 ## 2010-07-28 Added option to read formulas as text strings rather than evaluated value
 ## 2010-08-01 Some bug fixes for formula reading (cvalue rather than scell)
 ## 2010-10-10 Code cleanup: -getusedrange called; - fixed typo in formula evaluation msg;
-##      "     moved cropping output array to calling function.
+##     ''     moved cropping output array to calling function.
 ## 2010-11-12 Moved ptr struct check into main func
 ## 2010-11-13 Catch empty sheets when no range was specified
 ## 2010-11-14 Fixed sheet # index (was offset by -1) in call to getusedrange() in case
 ##            of text sheet name arg
 ## 2012-01-26 Fixed "seealso" help string
 
-function [ rawarr, xls, rstatus ] = xls2jpoi2oct (xls, wsh, cellrange=[], spsh_opts)
+function [ rawarr, xls, rstatus ] = xls2jpoi2oct (xls, wsh, cellrange, spsh_opts)
 
 	persistent ctype;
 	if (isempty (ctype))
@@ -584,14 +590,14 @@ endfunction
 ##            Added check for proper xls structure
 ## 2010-07-29 Added check for too latge requested data rectangle
 ## 2010-10-10 Code cleanup: -getusedrange(); moved cropping result array to
-##      "     calling function
+##     ''     calling function
 ## 2010-11-12 Moved ptr struct check into main func
 ## 2010-11-13 Catch empty sheets when no range was specified
 ## 2011-04-11 (Ron Goldman <ron@ocean.org.il>) Fixed missing months var, wrong arg
-##      "     order in strsplit, wrong isTime condition
+##     ''     order in strsplit, wrong isTime condition
 ## 2012-01-26 Fixed "seealso" help string
 
-function [ rawarr, xls, rstatus ] = xls2jxla2oct (xls, wsh, cellrange=[], spsh_opts)
+function [ rawarr, xls, rstatus ] = xls2jxla2oct (xls, wsh, cellrange, spsh_opts)
 
 	persistent ctype; persistent months;
 	if (isempty (ctype))
@@ -788,7 +794,7 @@ endfunction
 ## Updates:
 ## 2012-02-25 Changed ctype into num array rather than cell array
 
-function [ rawarr, xls, rstatus ] = xls2oxs2oct (xls, wsh, cellrange=[], spsh_opts)
+function [ rawarr, xls, rstatus ] = xls2oxs2oct (xls, wsh, cellrange, spsh_opts)
 
 	persistent ctype;
 	if (isempty (ctype))

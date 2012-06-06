@@ -20,6 +20,7 @@
 ## Author: Philip Nienhuis
 ## Created: 2012-02-25
 ## Updates:
+## 2012-06-06 Adapted to COM implementation for "formulas_as_text" option
 
 
 printf ("\nTesting .xls interface %s ...\n", intf);
@@ -93,14 +94,14 @@ catch
   endif
 end_try_catch
 
-## Check if formulas_as_text works (doesn't with COM):
+## Check if "formulas_as_text" option works:
 printf ("\n 8. Repeat reading, now return formulas as text\n");
 opts.formulas_as_text = 1;
 xls = xlsopen ('io-test.xls', 0, intf);
 raw = xls2oct (xls, shnr, crange, opts);
 xls = xlsclose (xls);
 
-## 9. Here come the tests, part 2. Fails on COM
+## 9. Here come the tests, part 2.
 printf ("\n 9. Tests part 2 (read back formula):\n");
 
 try

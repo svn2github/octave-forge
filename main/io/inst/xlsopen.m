@@ -105,293 +105,303 @@
 ##            rediscovery of interfaces between xlsopen calls, e.g. javaclasspath changes)
 ## 2011-09-08 Minor code cleanup
 ## 2012-01-26 Fixed "seealso" help string
+## 2012-06-06 Improved interface detection logic. No more messages if same interface is
+##            requested & used consecutively
 ##
-## Latest subfunction update: 2012-03-21
+## Latest subfunction update: 2012-06-06
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
-	persistent xlsinterfaces; persistent chkintf;
-	# xlsinterfaces.<intf> = [] (not yet checked), 0 (found to be unsupported) or 1 (OK)
-	if (isempty (chkintf));
-		chkintf = 1;
-		xlsinterfaces = struct ('COM', [], 'POI', [], 'JXL', [], 'OXS', [], 'UNO', []);
-	endif
+  persistent xlsinterfaces; persistent chkintf; persistent lastintf;
+  # xlsinterfaces.<intf> = [] (not yet checked), 0 (found to be unsupported) or 1 (OK)
+  if (isempty (chkintf));
+      chkintf = 1;
+      xlsinterfaces = struct ('COM', [], 'POI', [], 'JXL', [], 'OXS', [], 'UNO', []);
+  endif
+  if (isempty (lastintf))
+    lastintf = "---";
+  endif
 
-	xlssupport = 0;
+  xlssupport = 0;
 
-	if (nargout < 1)
-		usage ("XLS = xlsopen (Xlfile [, Rw] [, reqintf]). But no return argument specified!"); 
-	endif
+  if (nargout < 1)
+      usage ("XLS = xlsopen (Xlfile [, Rw] [, reqintf]). But no return argument specified!"); 
+  endif
 
-	if (~(islogical (xwrite) || isnumeric (xwrite)))
-		usage ("Numerical or logical value expected for arg # 2")
-	endif
+  if (~(islogical (xwrite) || isnumeric (xwrite)))
+      usage ("Numerical or logical value expected for arg # 2")
+  endif
 
-	if (~isempty (reqinterface))
-		if ~(ischar (reqinterface) || iscell (reqinterface)), usage ("Arg # 3 not recognized"); endif
-		# Turn arg3 into cell array if needed
-		if (~iscell (reqinterface)), reqinterface = {reqinterface}; endif
-		xlsinterfaces.COM = 0; xlsinterfaces.POI = 0; xlsinterfaces.JXL = 0;
-		xlsinterfaces.OXS = 0; xlsinterfaces.UNO = 0;
-		for ii=1:numel (reqinterface)
-			reqintf = toupper (reqinterface {ii});
-			# Try to invoke requested interface(s) for this call. Check if it
-			# is supported anyway by emptying the corresponding var.
-			if     (strcmp (reqintf, 'COM'))
-				xlsinterfaces.COM = [];
-			elseif (strcmp (reqintf, 'POI'))
-				xlsinterfaces.POI = [];
-			elseif (strcmp (reqintf, 'JXL'))
-				xlsinterfaces.JXL = [];
-			elseif (strcmp (reqintf, 'OXS'))
-				xlsinterfaces.OXS = [];
-			elseif (strcmp (reqintf, 'UNO'))
-				xlsinterfaces.UNO = [];
-			else 
-				usage (sprintf ("Unknown .xls interface \"%s\" requested. Only COM, POI, JXL, OXS or UNO supported\n", reqinterface{}));
-			endif
-		endfor
-		printf ("Checking requested interface(s):\n");
-		xlsinterfaces = getxlsinterfaces (xlsinterfaces);
-		# Well, is/are the requested interface(s) supported on the system?
-		# FIXME check for multiple interfaces
-		xlsintf_cnt = 0;
-		for ii=1:numel (reqinterface)
-			if (~xlsinterfaces.(toupper (reqinterface{ii})))
-				# No it aint
-				printf ("%s is not supported.\n", upper (reqinterface{ii}));
-			else
-				++xlsintf_cnt;
-			endif
-		endfor
-		# Reset interface check indicator if no requested support found
-		if (~xlsintf_cnt)
-			chkintf = [];
-			xls = [];
-			return
-		endif
-	endif
-	
-	# Var xwrite is really used to avoid creating files when wanting to read, or
-	# not finding not-yet-existing files when wanting to write.
-	
-	# Check if Excel file exists. Adapt file open mode for readwrite argument
-	if (xwrite), fmode = 'r+b'; else fmode = 'rb'; endif
-	fid = fopen (filename, fmode);
-	if (fid < 0)				# File doesn't exist...
-		if (~xwrite)			# ...which obviously is fatal for reading...
-			error ( sprintf ("File %s not found\n", filename));
-		else					# ...but for writing, we need more info:
-			fid = fopen (filename, 'rb');	# Check if it exists at all...
-			if (fid < 0)		# File didn't exist yet. Simply create it
-				printf ("Creating file %s\n", filename);
-				xwrite = 3;
-			else				# File exists, but is not writable => Error
-				fclose (fid);	# Do not forget to close the handle neatly
-				error (sprintf ("Write mode requested but file %s is not writable\n", filename))
-			endif
-		endif
-	else
-		# Close file anyway to avoid COM or Java errors
-		fclose (fid);
-	endif
-	
-# Check for the various Excel interfaces. No problem if they've already
-# been checked, getxlsinterfaces (far below) just returns immediately then.
-	xlsinterfaces = getxlsinterfaces (xlsinterfaces);
+  if (~isempty (reqinterface))
+    if ~(ischar (reqinterface) || iscell (reqinterface)), usage ("Arg # 3 not recognized"); endif
+    # Turn arg3 into cell array if needed
+    if (~iscell (reqinterface)), reqinterface = {reqinterface}; endif
+    ## Check if previously used interface matches a requested interface
+    if (isempty (regexpi (reqinterface, lastintf, 'once'){1}))
+      ## New interface requested
+      xlsinterfaces.COM = 0; xlsinterfaces.POI = 0; xlsinterfaces.JXL = 0;
+      xlsinterfaces.OXS = 0; xlsinterfaces.UNO = 0;
+      for ii=1:numel (reqinterface)
+        reqintf = toupper (reqinterface {ii});
+        # Try to invoke requested interface(s) for this call. Check if it
+        # is supported anyway by emptying the corresponding var.
+        if     (strcmpi (reqintf, 'COM'))
+          xlsinterfaces.COM = [];
+        elseif (strcmpi (reqintf, 'POI'))
+          xlsinterfaces.POI = [];
+        elseif (strcmpi (reqintf, 'JXL'))
+          xlsinterfaces.JXL = [];
+        elseif (strcmpi (reqintf, 'OXS'))
+          xlsinterfaces.OXS = [];
+        elseif (strcmpi (reqintf, 'UNO'))
+          xlsinterfaces.UNO = [];
+        else 
+          usage (sprintf ("Unknown .xls interface \"%s\" requested. Only COM, POI, JXL, OXS or UNO supported\n", reqinterface{}));
+        endif
+      endfor
+      printf ("Checking requested interface(s):\n");
+      xlsinterfaces = getxlsinterfaces (xlsinterfaces);
+      # Well, is/are the requested interface(s) supported on the system?
+      # FIXME check for multiple interfaces
+      xlsintf_cnt = 0;
+      for ii=1:numel (reqinterface)
+        if (~xlsinterfaces.(toupper (reqinterface{ii})))
+          # No it aint
+          printf ("%s is not supported.\n", upper (reqinterface{ii}));
+        else
+          ++xlsintf_cnt;
+        endif
+      endfor
+      # Reset interface check indicator if no requested support found
+      if (~xlsintf_cnt)
+        chkintf = [];
+        xls = [];
+        return
+      endif
+    endif
+  endif
 
-# Supported interfaces determined; Excel file type check moved to seperate interfaces.
-	chk1 = strcmpi (filename(end-3:end), '.xls');      # Regular (binary) BIFF 
-	chk2 = strcmpi (filename(end-4:end-1), '.xls');    # Zipped XML / OOXML
-	
-	# Initialize file ptr struct
-	xls = struct ("xtype", 'NONE', "app", [], "filename", [], "workbook", [], "changed", 0, "limits", []); 
+  # Var xwrite is really used to avoid creating files when wanting to read, or
+  # not finding not-yet-existing files when wanting to write.
 
-	# Keep track of which interface is selected
-	xlssupport = 0;
+  # Check if Excel file exists. Adapt file open mode for readwrite argument
+  if (xwrite), fmode = 'r+b'; else fmode = 'rb'; endif
+  fid = fopen (filename, fmode);
+  if (fid < 0)            # File doesn't exist...
+    if (~xwrite)        # ...which obviously is fatal for reading...
+      error ( sprintf ("File %s not found\n", filename));
+    else              # ...but for writing, we need more info:
+      fid = fopen (filename, 'rb');  # Check if it exists at all...
+      if (fid < 0)      # File didn't exist yet. Simply create it
+        printf ("Creating file %s\n", filename);
+        xwrite = 3;
+      else            # File exists, but is not writable => Error
+        fclose (fid);  # Do not forget to close the handle neatly
+        error (sprintf ("Write mode requested but file %s is not writable\n", filename))
+      endif
+    endif
+  else
+    # Close file anyway to avoid COM or Java errors
+    fclose (fid);
+  endif
+  
+  # Check for the various Excel interfaces. No problem if they've already
+  # been checked, getxlsinterfaces (far below) just returns immediately then.
+  xlsinterfaces = getxlsinterfaces (xlsinterfaces);
 
-	# Interface preference order is defined below: currently COM -> POI -> JXL -> OXS -> UNO
-	if (xlsinterfaces.COM && ~xlssupport)
-		# Excel functioning has been tested above & file exists, so we just invoke it
-		app = actxserver ("Excel.Application");
-		try		# Because Excel itself can still crash on file formats etc.
-			app.Application.DisplayAlerts = 0;
-			if (xwrite < 2)
-				# Open workbook
-				wb = app.Workbooks.Open (canonicalize_file_name (filename));
-			elseif (xwrite > 2)
-				# Create a new workbook
-				wb = app.Workbooks.Add ();
-				### Uncommenting the below statement can be useful in multi-user environments.
-				### Be sure to uncomment correspondig stanza in xlsclose to avoid zombie Excels
-				# wb.SaveAs (canonicalize_file_name (filename))
-			endif
-			xls.app = app;
-			xls.xtype = 'COM';
-			xls.workbook = wb;
-			xls.filename = filename;
-			xlssupport += 1;
-		catch
-			warning ( sprintf ("ActiveX error trying to open or create file %s\n", filename));
-			app.Application.DisplayAlerts = 1;
-			app.Quit ();
-			delete (app);
-		end_try_catch
-	endif
-	
-	if (xlsinterfaces.POI && ~xlssupport)
-		if ~(chk1 || chk2)
-			error ("Unsupported file format for Apache POI.")
-		endif
-		# Get handle to workbook
-		try
-			if (xwrite > 2)
-				if (chk1)
-					wb = java_new ('org.apache.poi.hssf.usermodel.HSSFWorkbook');
-				elseif (chk2)
-					wb = java_new ('org.apache.poi.xssf.usermodel.XSSFWorkbook');
-				endif
-				xls.app = 'new_POI';
-			else
-				xlsin = java_new ('java.io.FileInputStream', filename);
-				wb = java_invoke ('org.apache.poi.ss.usermodel.WorkbookFactory', 'create', xlsin);
-				xls.app = xlsin;
-			endif
-			xls.xtype = 'POI';
-			xls.workbook = wb;
-			xls.filename = filename;
-			xlssupport += 2;
-		catch
-			clear xlsin;
-			if (xlsinterfaces.JXL)
-				printf ('Couldn''t open file %s using POI; trying Excel''95 format with JXL...\n', filename);
-			endif
-		end_try_catch
-	endif
-		
-	if (xlsinterfaces.JXL && ~xlssupport)
-		if (~chk1)
-			error ("JXL can only read reliably from .xls files")
-		endif
-		try
-			xlsin = java_new ('java.io.File', filename);
-			if (xwrite > 2)
-				# Get handle to new xls-file
-				wb = java_invoke ('jxl.Workbook', 'createWorkbook', xlsin);
-			else
-				# Open existing file
-				wb = java_invoke ('jxl.Workbook', 'getWorkbook', xlsin);
-			endif
-			xls.xtype = 'JXL';
-			xls.app = xlsin;
-			xls.workbook = wb;
-			xls.filename = filename;
-			xlssupport += 4;
-		catch
-			clear xlsin;
-			if (xlsinterfaces.POI)
-				printf ('... No luck with JXL either, unsupported file format.\n', filename);
-			endif
-		end_try_catch
-	endif
+  # Supported interfaces determined; Excel file type check moved to seperate interfaces.
+  chk1 = strcmpi (filename(end-3:end), '.xls');      # Regular (binary) BIFF 
+  chk2 = strcmpi (filename(end-4:end-1), '.xls');    # Zipped XML / OOXML
+  
+  # Initialize file ptr struct
+  xls = struct ("xtype", 'NONE', "app", [], "filename", [], "workbook", [], "changed", 0, "limits", []); 
 
-	if (xlsinterfaces.OXS && ~xlssupport)
-		if (~chk1)
-			error ("OXS can only read from .xls files")
-		endif
-		try
-			wb = javaObject ('com.extentech.ExtenXLS.WorkBookHandle', filename);
-			xls.xtype = 'OXS';
-			xls.app = 'void - OpenXLS';
-			xls.workbook = wb;
-			xls.filename = filename;
-			xlssupport += 8;
-		catch
-			printf ('Unsupported file format for OpenXLS - %s\n');
-		end_try_catch
-	endif
+  # Keep track of which interface is selected
+  xlssupport = 0;
 
-	if (xlsinterfaces.UNO && ~xlssupport)
-		# First, the file name must be transformed into a URL
-		if (~isempty (strmatch ("file:///", filename)) || ~isempty (strmatch ("http:///", filename))...
-			|| ~isempty (strmatch ("ftp:///", filename)) || ~isempty (strmatch ("www:///", filename)))
-			# Seems in proper shape for OOo (at first sight)
-		else
-			# Transform into URL form
-			fname = canonicalize_file_name (strsplit (filename, filesep){end});
-			# On Windows, change backslash file separator into forward slash
-			if (strcmp (filesep, "\\"))
-				tmp = strsplit (fname, filesep);
-				flen = numel (tmp);
-				tmp(2:2:2*flen) = tmp;
-				tmp(1:2:2*flen) = '/';
-				fname = [ tmp{:} ];
-			endif
-			filename = [ 'file://' fname ];
-		endif
-		try
-			xContext = java_invoke ("com.sun.star.comp.helper.Bootstrap", "bootstrap");
-			xMCF = xContext.getServiceManager ();
-			oDesktop = xMCF.createInstanceWithContext ("com.sun.star.frame.Desktop", xContext);
-			# Workaround for <UNOruntime>.queryInterface():
-			unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XComponentLoader');
-			aLoader = oDesktop.queryInterface (unotmp);
-			# Some trickery as Octave Java cannot create initialized arrays
-			lProps = javaArray ('com.sun.star.beans.PropertyValue', 1);
-			lProp = java_new ('com.sun.star.beans.PropertyValue', "Hidden", 0, true, []);
-			lProps(1) = lProp;
-			if (xwrite > 2)
-				xComp = aLoader.loadComponentFromURL ("private:factory/scalc", "_blank", 0, lProps);
-			else
-				xComp = aLoader.loadComponentFromURL (filename, "_blank", 0, lProps);
-			endif
-			# Workaround for <UNOruntime>.queryInterface():
-			unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.sheet.XSpreadsheetDocument');
-			xSpdoc = xComp.queryInterface (unotmp);
-			# save in ods struct:
-			xls.xtype = 'UNO';
-			xls.workbook = xSpdoc;			# Needed to be able to close soffice in odsclose()
-			xls.filename = filename;
-			xls.app.xComp = xComp;			# Needed to be able to close soffice in odsclose()
-			xls.app.aLoader = aLoader;		# Needed to be able to close soffice in odsclose()
-			xls.odfvsn = 'UNO';
-			xlssupport += 16;
-		catch
-			error ('Couldn''t open file %s using UNO', filename);
-		end_try_catch
-	endif
+  # Interface preference order is defined below: currently COM -> POI -> JXL -> OXS -> UNO
+  if (xlsinterfaces.COM && ~xlssupport)
+    # Excel functioning has been tested above & file exists, so we just invoke it
+    app = actxserver ("Excel.Application");
+    try      # Because Excel itself can still crash on file formats etc.
+      app.Application.DisplayAlerts = 0;
+      if (xwrite < 2)
+        # Open workbook
+        wb = app.Workbooks.Open (canonicalize_file_name (filename));
+      elseif (xwrite > 2)
+        # Create a new workbook
+        wb = app.Workbooks.Add ();
+        ### Uncommenting the below statement can be useful in multi-user environments.
+        ### Be sure to uncomment correspondig stanza in xlsclose to avoid zombie Excels
+        # wb.SaveAs (canonicalize_file_name (filename))
+      endif
+      xls.app = app;
+      xls.xtype = 'COM';
+      xls.workbook = wb;
+      xls.filename = filename;
+      xlssupport += 1;
+      lastintf = 'COM';
+    catch
+      warning ( sprintf ("ActiveX error trying to open or create file %s\n", filename));
+      app.Application.DisplayAlerts = 1;
+      app.Quit ();
+      delete (app);
+    end_try_catch
+  endif
+  
+  if (xlsinterfaces.POI && ~xlssupport)
+    if ~(chk1 || chk2)
+      error ("Unsupported file format for Apache POI.")
+    endif
+    # Get handle to workbook
+    try
+      if (xwrite > 2)
+        if (chk1)
+          wb = java_new ('org.apache.poi.hssf.usermodel.HSSFWorkbook');
+        elseif (chk2)
+          wb = java_new ('org.apache.poi.xssf.usermodel.XSSFWorkbook');
+        endif
+          xls.app = 'new_POI';
+      else
+        xlsin = java_new ('java.io.FileInputStream', filename);
+        wb = java_invoke ('org.apache.poi.ss.usermodel.WorkbookFactory', 'create', xlsin);
+        xls.app = xlsin;
+      endif
+      xls.xtype = 'POI';
+      xls.workbook = wb;
+      xls.filename = filename;
+      xlssupport += 2;
+      lastintf = 'JXL';
+    catch
+      clear xlsin;
+      if (xlsinterfaces.JXL)
+        printf ('Couldn''t open file %s using POI; trying Excel''95 format with JXL...\n', filename);
+      endif
+    end_try_catch
+  endif
+      
+  if (xlsinterfaces.JXL && ~xlssupport)
+    if (~chk1)
+      error ("JXL can only read reliably from .xls files")
+    endif
+    try
+      xlsin = java_new ('java.io.File', filename);
+      if (xwrite > 2)
+        # Get handle to new xls-file
+        wb = java_invoke ('jxl.Workbook', 'createWorkbook', xlsin);
+      else
+        # Open existing file
+        wb = java_invoke ('jxl.Workbook', 'getWorkbook', xlsin);
+      endif
+      xls.xtype = 'JXL';
+      xls.app = xlsin;
+      xls.workbook = wb;
+      xls.filename = filename;
+      xlssupport += 4;
+      lastintf = 'POI';
+    catch
+      clear xlsin;
+      if (xlsinterfaces.POI)
+        printf ('... No luck with JXL either, unsupported file format.\n', filename);
+      endif
+    end_try_catch
+  endif
 
-	# if 
-	#	---- other interfaces
-	# endif
+  if (xlsinterfaces.OXS && ~xlssupport)
+    if (~chk1)
+      error ("OXS can only read from .xls files")
+    endif
+    try
+      wb = javaObject ('com.extentech.ExtenXLS.WorkBookHandle', filename);
+      xls.xtype = 'OXS';
+      xls.app = 'void - OpenXLS';
+      xls.workbook = wb;
+      xls.filename = filename;
+      xlssupport += 8;
+      lastintf = 'OXS';
+    catch
+      printf ('Unsupported file format for OpenXLS - %s\n');
+    end_try_catch
+  endif
 
-	if (~xlssupport)
-		if (isempty (reqinterface))
+  if (xlsinterfaces.UNO && ~xlssupport)
+    # First, the file name must be transformed into a URL
+    if (~isempty (strmatch ("file:///", filename)) || ~isempty (strmatch ("http:///", filename))...
+      || ~isempty (strmatch ("ftp:///", filename)) || ~isempty (strmatch ("www:///", filename)))
+      # Seems in proper shape for OOo (at first sight)
+    else
+      # Transform into URL form
+      fname = canonicalize_file_name (strsplit (filename, filesep){end});
+      # On Windows, change backslash file separator into forward slash
+      if (strcmp (filesep, "\\"))
+        tmp = strsplit (fname, filesep);
+        flen = numel (tmp);
+        tmp(2:2:2*flen) = tmp;
+        tmp(1:2:2*flen) = '/';
+        fname = [ tmp{:} ];
+      endif
+      filename = [ 'file://' fname ];
+    endif
+    try
+      xContext = java_invoke ("com.sun.star.comp.helper.Bootstrap", "bootstrap");
+      xMCF = xContext.getServiceManager ();
+      oDesktop = xMCF.createInstanceWithContext ("com.sun.star.frame.Desktop", xContext);
+      # Workaround for <UNOruntime>.queryInterface():
+      unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XComponentLoader');
+      aLoader = oDesktop.queryInterface (unotmp);
+      # Some trickery as Octave Java cannot create initialized arrays
+      lProps = javaArray ('com.sun.star.beans.PropertyValue', 1);
+      lProp = java_new ('com.sun.star.beans.PropertyValue', "Hidden", 0, true, []);
+      lProps(1) = lProp;
+      if (xwrite > 2)
+        xComp = aLoader.loadComponentFromURL ("private:factory/scalc", "_blank", 0, lProps);
+      else
+        xComp = aLoader.loadComponentFromURL (filename, "_blank", 0, lProps);
+      endif
+      # Workaround for <UNOruntime>.queryInterface():
+      unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.sheet.XSpreadsheetDocument');
+      xSpdoc = xComp.queryInterface (unotmp);
+      # save in ods struct:
+      xls.xtype = 'UNO';
+      xls.workbook = xSpdoc;        # Needed to be able to close soffice in odsclose()
+      xls.filename = filename;
+      xls.app.xComp = xComp;        # Needed to be able to close soffice in odsclose()
+      xls.app.aLoader = aLoader;      # Needed to be able to close soffice in odsclose()
+      xls.odfvsn = 'UNO';
+      xlssupport += 16;
+      lastintf = 'UNO';
+    catch
+      error ('Couldn''t open file %s using UNO', filename);
+    end_try_catch
+  endif
+
+  # if 
+  #  ---- other interfaces
+  # endif
+
+  # Rounding up. If none of the xlsinterfaces is supported we're out of luck.
+  if (~xlssupport)
+    if (isempty (reqinterface))
       printf ("None.\n");
-			warning ("No support for Excel .xls I/O"); 
-		else
-			warning ("File type not supported by %s %s %s %s %s", reqinterface{:});
-		endif
-		xls = [];
-	else
-		# From here on xwrite is tracked via xls.changed in the various lower
-		# level r/w routines and it is only used to determine if an informative
-		# message is to be given when saving a newly created xls file.
-		xls.changed = xwrite;
+      warning ("No support for Excel .xls I/O"); 
+    else
+      warning ("File type not supported by %s %s %s %s %s", reqinterface{:});
+    endif
+    xls = [];
+    # Reset found interfaces for re-testing in the next call. Add interfaces if needed.
+    chkintf = [];
+  else
+    # From here on xwrite is tracked via xls.changed in the various lower
+    # level r/w routines and it is only used to determine if an informative
+    # message is to be given when saving a newly created xls file.
+    xls.changed = xwrite;
 
-		# Until something was written to existing files we keep status "unchanged".
-		# xls.changed = 0 (existing/only read from), 1 (existing/data added), 2 (new,
-		# data added) or 3 (pristine, no data added).
-		if (xls.changed == 1), xls.changed = 0; endif
-	endif
-	
-# Rounding up. If none of the xlsinterfaces is supported we're out of luck.
-	
-	if (~isempty (reqinterface) || ~xlssupport)
-		# Reset found interfaces for re-testing in the next call. Add interfaces if needed.
-		chkintf = [];
-	endif
-	
+    # Until something was written to existing files we keep status "unchanged".
+    # xls.changed = 0 (existing/only read from), 1 (existing/data added), 2 (new,
+    # data added) or 3 (pristine, no data added).
+    if (xls.changed == 1), xls.changed = 0; endif
+  endif
+  
 endfunction
 
 
@@ -456,31 +466,32 @@ endfunction
 ## 2012-03-21 Print newline if COM found but no Java support
 ##     ''     Improved logic for finding out what interfaces to check
 ##     ''     Fixed bugs with Java interface checking (tmp1 initialization)
+## 2012-06-06 Improved & simplified Java check code
 
 function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 
   # tmp1 = [] (not initialized), 0 (No Java detected), or 1 (Working Java found)
-	persistent tmp1 = []; persistent jcp;	# Java class path
+  persistent tmp1 = []; persistent jcp;  # Java class path
   persistent uno_1st_time = 0;
 
-	if (isempty (xlsinterfaces.COM) && isempty (xlsinterfaces.POI) && isempty (xlsinterfaces.JXL)
+  if (isempty (xlsinterfaces.COM) && isempty (xlsinterfaces.POI) && isempty (xlsinterfaces.JXL)
    && isempty (xlsinterfaces.OXS) && isempty (xlsinterfaces.UNO))
     # Looks like first call to xlsopen. Check Java support
-		printf ("Detected XLS interfaces: ");
+    printf ("Detected XLS interfaces: ");
     tmp1 = [];
-	elseif (isempty (xlsinterfaces.POI) || isempty (xlsinterfaces.JXL)
+  elseif (isempty (xlsinterfaces.POI) || isempty (xlsinterfaces.JXL)
        || isempty (xlsinterfaces.OXS) || isempty (xlsinterfaces.UNO))
     # Can't be first call. Here one of the Java interfaces is requested
     if (~tmp1)
       # Check Java support again
       tmp1 = [];
     endif
-	endif
-	deflt = 0;
+  endif
+  deflt = 0;
 
-	# Check if MS-Excel COM ActiveX server runs (only on Windows!)
-	if (isempty (xlsinterfaces.COM))
-		xlsinterfaces.COM = 0;
+  # Check if MS-Excel COM ActiveX server runs (only on Windows!)
+  if (isempty (xlsinterfaces.COM))
+    xlsinterfaces.COM = 0;
     if (ispc)
       try
         app = actxserver ("Excel.application");
@@ -500,130 +511,126 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
         endif
       end_try_catch
     endif
-	endif
+  endif
 
-	if (isempty (tmp1))
-		# Check Java support. First try javaclasspath
-		try
-			jcp = javaclasspath ('-all');					# For java pkg > 1.2.7
-			if (isempty (jcp)), jcp = javaclasspath; endif	# For java pkg < 1.2.8
-			# If we get here, at least Java works. Now check for proper version (>= 1.6)
-			jver = char (java_invoke ('java.lang.System', 'getProperty', 'java.version'));
-			cjver = strsplit (jver, '.');
-			if (sscanf (cjver{2}, '%d') < 6)
-				warning ("\nJava version might be too old - you need at least Java 6 (v. 1.6.x.x)\n");
-				return
-			endif
-			# Now check for proper entries in class path. Under *nix the classpath
-			# must first be split up. In java 1.2.8+ javaclasspath is already a cell array
-			if (isunix && ~iscell (jcp)); jcp = strsplit (char (jcp), ":"); endif
-			tmp1 = 1;
-		catch
-			# No Java support found
-			tmp1 = 0;
-			if ~(isempty (xlsinterfaces.POI) && isempty (xlsinterfaces.JXL)...
-			  && isempty (xlsinterfaces.OXS) && isempty (xlsinterfaces.UNO))
-				# Some Java-based interface explicitly requested but Java support is absent
-        xlsinterfaces.POI = 0;
-        xlsinterfaces.JXL = 0;
-        xlsinterfaces.OXS = 0;
-        xlsinterfaces.UNO = 0;
-				warning (' No Java support found (no Java JRE? no Java pkg installed AND loaded?');
-			else
-        # No specific Java-based interface requested (first call?)
-        xlsinterfaces.POI = 0;
-        xlsinterfaces.JXL = 0;
-        xlsinterfaces.OXS = 0;
-        xlsinterfaces.UNO = 0;
-        printf ("\n");
-				return;
-			endif
-		end_try_catch
-	endif
+  if (isempty (tmp1))
+    # Check Java support. First try javaclasspath
+    try
+      jcp = javaclasspath ('-all');              # For java pkg > 1.2.7
+      if (isempty (jcp)), jcp = javaclasspath; endif  # For java pkg < 1.2.8
+      # If we get here, at least Java works. Now check for proper version (>= 1.6)
+      jver = char (java_invoke ('java.lang.System', 'getProperty', 'java.version'));
+      cjver = strsplit (jver, '.');
+      if (sscanf (cjver{2}, '%d') < 6)
+        warning ("\nJava version might be too old - you need at least Java 6 (v. 1.6.x.x)\n");
+        return
+      endif
+      # Now check for proper entries in class path. Under *nix the classpath
+      # must first be split up. In java 1.2.8+ javaclasspath is already a cell array
+      if (isunix && ~iscell (jcp)); jcp = strsplit (char (jcp), ":"); endif
+      tmp1 = 1;
+    catch
+      # No Java support found
+      tmp1 = 0;
+      if (isempty (xlsinterfaces.POI) || isempty (xlsinterfaces.JXL)...
+        || isempty (xlsinterfaces.OXS) || isempty (xlsinterfaces.UNO))
+        # Some or all Java-based interface(s) explicitly requested but no Java support
+        warning (' No Java support found (no Java JRE? no Java pkg installed AND loaded?');
+      endif
+      # Set Java interfaces to 0 anyway as there's no Java support
+      xlsinterfaces.POI = 0;
+      xlsinterfaces.JXL = 0;
+      xlsinterfaces.OXS = 0;
+      xlsinterfaces.UNO = 0;
+      printf ("\n");
+      # No more need to try any Java interface
+      return
+    end_try_catch
+  endif
 
-	# Try Java & Apache POI
-	if (isempty (xlsinterfaces.POI))
-		xlsinterfaces.POI = 0;
-		# Check basic .xls (BIFF8) support
-		jpchk1 = 0; entries1 = {"poi-3", "poi-ooxml-3"};
-		# Only under *nix we might use brute force: e.g., strfind (classname, classpath);
-		# under Windows we need the following more subtle, platform-independent approach:
-		for ii=1:length (jcp)
-			for jj=1:length (entries1)
-				if (isempty (strfind (tolower (jcp{ii}), entries1{jj}))), ++jpchk1; endif
-			endfor
-		endfor
-		if (jpchk1 > 1)
-			xlsinterfaces.POI = 1;
-			printf ("POI");
-		endif
-		# Check OOXML support
-		jpchk2 = 0; entries2 = {"xbean", "poi-ooxml-schemas", "dom4j"};
-		for ii=1:length (jcp)
-			for jj=1:length (entries2)
-				if (isempty (strfind (lower (jcp{ii}), entries2{jj}))), ++jpchk2; endif
-			endfor
-		endfor
-		if (jpchk2 > 2), printf (" (& OOXML)"); endif
-		if (xlsinterfaces.POI)
-			if (deflt), printf ("; "); else, printf ("*; "); deflt = 1; endif
-		endif
-	endif
+  # Try Java & Apache POI
+  if (isempty (xlsinterfaces.POI))
+    xlsinterfaces.POI = 0;
+    # Check basic .xls (BIFF8) support
+    jpchk1 = 0; entries1 = {"poi-3", "poi-ooxml-3"};
+    # Only under *nix we might use brute force: e.g., strfind (classname, classpath);
+    # under Windows we need the following more subtle, platform-independent approach:
+    for ii=1:length (jcp)
+      for jj=1:length (entries1)
+        if (isempty (strfind (tolower (jcp{ii}), entries1{jj}))), ++jpchk1; endif
+      endfor
+    endfor
+    if (jpchk1 > 1)
+      xlsinterfaces.POI = 1;
+      printf ("POI");
+    endif
+    # Check OOXML support
+    jpchk2 = 0; entries2 = {"xbean", "poi-ooxml-schemas", "dom4j"};
+    for ii=1:length (jcp)
+      for jj=1:length (entries2)
+        if (isempty (strfind (lower (jcp{ii}), entries2{jj}))), ++jpchk2; endif
+      endfor
+    endfor
+    if (jpchk2 > 2), printf (" (& OOXML)"); endif
+    if (xlsinterfaces.POI)
+      if (deflt), printf ("; "); else, printf ("*; "); deflt = 1; endif
+    endif
+  endif
 
-	# Try Java & JExcelAPI
-	if (isempty (xlsinterfaces.JXL))
-		xlsinterfaces.JXL = 0;
-		jpchk = 0; entries = {"jxl"};
-		for ii=1:length (jcp)
-			for jj=1:length (entries)
-				if (isempty (strfind (lower (jcp{ii}), entries{jj}))), ++jpchk; endif
-			endfor
-		endfor
-		if (jpchk > 0)
-			xlsinterfaces.JXL = 1;
-			printf ("JXL");
-			if (deflt), printf ("; "); else, printf ("*; "); deflt = 1; endif
-		endif
-	endif
+  # Try Java & JExcelAPI
+  if (isempty (xlsinterfaces.JXL))
+    xlsinterfaces.JXL = 0;
+    jpchk = 0; entries = {"jxl"};
+    for ii=1:length (jcp)
+      for jj=1:length (entries)
+        if (isempty (strfind (lower (jcp{ii}), entries{jj}))), ++jpchk; endif
+      endfor
+    endfor
+    if (jpchk > 0)
+      xlsinterfaces.JXL = 1;
+      printf ("JXL");
+      if (deflt), printf ("; "); else, printf ("*; "); deflt = 1; endif
+    endif
+  endif
 
-	# Try Java & OpenXLS
-	if (isempty (xlsinterfaces.OXS))
-		xlsinterfaces.OXS = 0;
-		jpchk = 0; entries = {"openxls"};
-		for ii=1:length (jcp)
-			for jj=1:length (entries)
-				if (isempty (strfind (lower (jcp{ii}), entries{jj}))), ++jpchk; endif
-			endfor
-		endfor
-		if (jpchk > 0)
-			xlsinterfaces.OXS = 1;
-			printf ("OXS");
-			if (deflt), printf ("; "); else, printf ("*; "); deflt = 1; endif
-		endif
-	endif
+  # Try Java & OpenXLS
+  if (isempty (xlsinterfaces.OXS))
+    xlsinterfaces.OXS = 0;
+    jpchk = 0; entries = {"openxls"};
+    for ii=1:length (jcp)
+      for jj=1:length (entries)
+        if (isempty (strfind (lower (jcp{ii}), entries{jj}))), ++jpchk; endif
+      endfor
+    endfor
+    if (jpchk > 0)
+      xlsinterfaces.OXS = 1;
+      printf ("OXS");
+      if (deflt), printf ("; "); else, printf ("*; "); deflt = 1; endif
+    endif
+  endif
 
-	# Try Java & UNO
-	if (isempty (xlsinterfaces.UNO))
-		xlsinterfaces.UNO = 0;
-		# entries0(1) = not a jar but a directory (<00o_install_dir/program/>)
-		jpchk = 0; entries = {'program', 'unoil', 'jurt', 'juh', 'unoloader', 'ridl'};
-		for jj=1:numel (entries)
-			for ii=1:numel (jcp)
-				jcplst = strsplit (jcp{ii}, filesep);
-				jcpentry = jcplst {end};
-				if (~isempty (strfind (lower (jcpentry), lower (entries{jj})))); ++jpchk; endif
-			endfor
-		endfor
-		if (jpchk >= numel (entries))
-			xlsinterfaces.UNO = 1;
-			printf ('UNO');
-			if (deflt), printf ("; "); else, printf ("*; "); deflt = 1; uno_1st_time = min (++uno_1st_time, 2); endif
-		endif
-	endif
+  # Try Java & UNO
+  if (isempty (xlsinterfaces.UNO))
+    xlsinterfaces.UNO = 0;
+    # entries0(1) = not a jar but a directory (<00o_install_dir/program/>)
+    jpchk = 0; entries = {'program', 'unoil', 'jurt', 'juh', 'unoloader', 'ridl'};
+    for jj=1:numel (entries)
+      for ii=1:numel (jcp)
+        jcplst = strsplit (jcp{ii}, filesep);
+        jcpentry = jcplst {end};
+        if (~isempty (strfind (lower (jcpentry), lower (entries{jj})))); ++jpchk; endif
+      endfor
+    endfor
+    if (jpchk >= numel (entries))
+      xlsinterfaces.UNO = 1;
+      printf ('UNO');
+      if (deflt), printf ("; "); else, printf ("*; "); deflt = 1; uno_1st_time = min (++uno_1st_time, 2); endif
+    endif
+  endif
 
-	# ---- Other interfaces here, similar to the ones above
+  # ---- Other interfaces here, similar to the ones above
 
-	if (deflt), printf ("(* = active interface)\n"); endif
+  if (deflt), printf ("(* = active interface)\n"); endif
 
   ## FIXME the below stanza should be dropped once UNO is stable.
   # Echo a suitable warning about experimental status:

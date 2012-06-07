@@ -83,350 +83,351 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 % 2011-09-03 Small fix to better detect Basis* subdir when searching unoil.jar
 % 2011-09-18 Fixed 'Matlab style short circuit' warning in L. 152
 % 2012-12-24 Amended code stanze to find unoil.jar; now works in LibreOffice 3.5b2 as well
+% 2012-06-07 Replaced all tabs by double space
 
-	jcp = []; retval = 0;
-	if (nargin < 3); path_to_ooo= ''; end %if
+  jcp = []; retval = 0;
+  if (nargin < 3); path_to_ooo= ''; end %if
     if (nargin < 2); dbug = 0; end %if
-	isOctave = exist ('OCTAVE_VERSION', 'builtin') ~= 0;
+  isOctave = exist ('OCTAVE_VERSION', 'builtin') ~= 0;
     if (dbug); fprintf ('\n'); end %if
-	% interfaces = {'COM', 'POI', 'POI+OOXML', 'JXL', 'OXS', 'OTK', 'JOD', 'UNO'}; % Order  = vital
+  % interfaces = {'COM', 'POI', 'POI+OOXML', 'JXL', 'OXS', 'OTK', 'JOD', 'UNO'}; % Order  = vital
 
-	% Check if MS-Excel COM ActiveX server runs
-	if (dbug), fprintf ('Checking Excel/ActiveX/COM... '); end %if
-	try
-		app = actxserver ('Excel.application');
-		% If we get here, the call succeeded & COM works.
-		xlsinterfaces.COM = 1;
-		% Close Excel to avoid zombie Excel invocation
-		app.Quit();
-		delete(app);
-		if (dbug), fprintf ('OK.\n\n'); end %if
-		retval = retval + 1;
-	catch
-		% COM not supported
-		if (dbug), fprintf ('not working.\n\n'); end %if
+  % Check if MS-Excel COM ActiveX server runs
+  if (dbug), fprintf ('Checking Excel/ActiveX/COM... '); end %if
+  try
+    app = actxserver ('Excel.application');
+    % If we get here, the call succeeded & COM works.
+    xlsinterfaces.COM = 1;
+    % Close Excel to avoid zombie Excel invocation
+    app.Quit();
+    delete(app);
+    if (dbug), fprintf ('OK.\n\n'); end %if
+    retval = retval + 1;
+  catch
+    % COM not supported
+    if (dbug), fprintf ('not working.\n\n'); end %if
     end %try_catch
 
     % Check Java
-	if (dbug), fprintf ('Checking Java support...\n'); end %if
-	if (dbug > 1), fprintf ('  1. Checking Java JRE presence.... '); end %if
-	% Try if Java is installed at all
-	if (isOctave)
-		if (ispc)
-			jtst = (system ('java -version 2> nul'));
-		else
-			jtst = (system ('java -version 2> /dev/null'));
-		end %if
-	else
-		tst1 = version ('-java');
+  if (dbug), fprintf ('Checking Java support...\n'); end %if
+  if (dbug > 1), fprintf ('  1. Checking Java JRE presence.... '); end %if
+  % Try if Java is installed at all
+  if (isOctave)
+    if (ispc)
+      jtst = (system ('java -version 2> nul'));
+    else
+      jtst = (system ('java -version 2> /dev/null'));
+    end %if
+  else
+    tst1 = version ('-java');
         jtst = isempty (strfind (tst1, 'Java'));
-	end %if
-	if (jtst)
-		error ('Apparently no Java JRE installed.');
-	else
-		if (dbug > 1), fprintf ('OK, found one.\n'); end %if
-	end %if
-	if (dbug > 1 && isOctave), fprintf ('  2. Checking Octave Java support... '); end %if
-	try
-		jcp = javaclasspath ('-all');						% For Octave java pkg > 1.2.7
-		if (isempty (jcp)), jcp = javaclasspath; end %if	% For Octave java pkg < 1.2.8
-		% If we get here, at least Java works.
-		if (dbug > 1 && isOctave), fprintf ('Java package seems to work OK.\n'); end %if
-		% Now check for proper version (> 1.6.x.x)
-		jver = char (javaMethod ('getProperty', 'java.lang.System', 'java.version'));
-		cjver = strsplit (jver, '.');
-		if (sscanf (cjver{2}, '%d') < 6)
-			if (dbug)
-				fprintf ('  Java version (%s) too old - you need at least Java 6 (v. 1.6.x.x)\n', jver);
-				if (isOctave)
-					warning ('    At Octave prompt, try "!system ("java -version")"'); 
-				else
-					warning ('    At Matlab prompt, try "version -java"');
-				end %if
-			end %if
-			return
-		else
-			if (dbug > 2), fprintf ('  Java (version %s) seems OK.\n', jver); end %if
-		end %if
-		% Under *nix the classpath must first be split up.
-		% Matlab is braindead here. For ML we need a replacement for Octave's builtin strsplit()
-		% This is found on ML Central (BSD license so this is allowed) & adapted for input arg order
- 		if (isunix && ~iscell (jcp)); jcp = strsplit (char (jcp), ':'); end %if
-		if (dbug > 1)
-			% Check JVM virtual memory settings
-			jrt = javaMethod ('getRuntime', 'java.lang.Runtime');
-			jmem = jrt.maxMemory ();
+  end %if
+  if (jtst)
+    error ('Apparently no Java JRE installed.');
+  else
+    if (dbug > 1), fprintf ('OK, found one.\n'); end %if
+  end %if
+  if (dbug > 1 && isOctave), fprintf ('  2. Checking Octave Java support... '); end %if
+  try
+    jcp = javaclasspath ('-all');            % For Octave java pkg > 1.2.7
+    if (isempty (jcp)), jcp = javaclasspath; end %if  % For Octave java pkg < 1.2.8
+    % If we get here, at least Java works.
+    if (dbug > 1 && isOctave), fprintf ('Java package seems to work OK.\n'); end %if
+    % Now check for proper version (> 1.6.x.x)
+    jver = char (javaMethod ('getProperty', 'java.lang.System', 'java.version'));
+    cjver = strsplit (jver, '.');
+    if (sscanf (cjver{2}, '%d') < 6)
+      if (dbug)
+        fprintf ('  Java version (%s) too old - you need at least Java 6 (v. 1.6.x.x)\n', jver);
+        if (isOctave)
+          warning ('    At Octave prompt, try "!system ("java -version")"'); 
+        else
+          warning ('    At Matlab prompt, try "version -java"');
+        end %if
+      end %if
+      return
+    else
+      if (dbug > 2), fprintf ('  Java (version %s) seems OK.\n', jver); end %if
+    end %if
+    % Under *nix the classpath must first be split up.
+    % Matlab is braindead here. For ML we need a replacement for Octave's builtin strsplit()
+    % This is found on ML Central (BSD license so this is allowed) & adapted for input arg order
+     if (isunix && ~iscell (jcp)); jcp = strsplit (char (jcp), ':'); end %if
+    if (dbug > 1)
+      % Check JVM virtual memory settings
+      jrt = javaMethod ('getRuntime', 'java.lang.Runtime');
+      jmem = jrt.maxMemory ();
             if (isOctave), jmem = jmem.doubleValue(); end %if
-			jmem = int16 (jmem/1024/1024);
-			fprintf ('  Maximum JVM memory: %5d MiB; ', jmem);
-			if (jmem < 400)
-				fprintf ('should better be at least 400 MB!\n');
-				fprintf ('    Hint: adapt setting -Xmx in file "java.opts" (supposed to be here:)\n');
-				if (isOctave)
-					fprintf ('    %s\n', [matlabroot filesep 'share' filesep 'octave' filesep 'packages' filesep 'java-<version>' filesep 'java.opts']);
-				else
-					fprintf ('    $matlabroot/bin/<arch>]\n');
-				end %if
-			else
-				fprintf ('sufficient.\n');
-			end %if
-		end %if
-		if (dbug), fprintf ('Java support OK\n'); end %if
+      jmem = int16 (jmem/1024/1024);
+      fprintf ('  Maximum JVM memory: %5d MiB; ', jmem);
+      if (jmem < 400)
+        fprintf ('should better be at least 400 MB!\n');
+        fprintf ('    Hint: adapt setting -Xmx in file "java.opts" (supposed to be here:)\n');
+        if (isOctave)
+          fprintf ('    %s\n', [matlabroot filesep 'share' filesep 'octave' filesep 'packages' filesep 'java-<version>' filesep 'java.opts']);
+        else
+          fprintf ('    $matlabroot/bin/<arch>]\n');
+        end %if
+      else
+        fprintf ('sufficient.\n');
+      end %if
+    end %if
+    if (dbug), fprintf ('Java support OK\n'); end %if
     catch
-		error ('No Java support found: %s.', lasterr);
-	end %try_catch
+    error ('No Java support found: %s.', lasterr);
+  end %try_catch
 
-	if (dbug), fprintf ('\nChecking javaclasspath for .jar class libraries needed for spreadsheet I/O...:\n'); end %if
+  if (dbug), fprintf ('\nChecking javaclasspath for .jar class libraries needed for spreadsheet I/O...:\n'); end %if
 
-	% Try Java & Apache POI. First Check basic .xls (BIFF8) support
-	if (dbug > 1), fprintf ('\nBasic POI (.xls) <poi-3> <poi-ooxml>:\n'); end %if
-	jpchk1 = 0; entries1 = {'poi-3', 'poi-ooxml-3'}; missing1 = zeros (1, numel (entries1));
-	% Only under *nix we might use brute force: e.g., strfind (javaclasspath, classname)
-	% as javaclasspath is one long string. Under Windows however classpath is a cell array
-	% so we need the following more subtle, platform-independent approach:
-	for jj=1:length (entries1)
-		found = 0;
-		for ii=1:length (jcp)
-			jcplst = strsplit (jcp{ii}, filesep);
-			jcpentry = jcplst {end};
-			if (~isempty (strfind (lower (jcpentry), lower (entries1{jj}))))
-				jpchk1 = jpchk1 + 1; found = 1;
-				if (dbug > 2), fprintf ('  - %s OK\n', jcp{ii}); end %if
-			end %if
-		end %for
-		if (~found)
-			if (dbug > 2), fprintf ('  %s....jar missing\n', entries1{jj}); end %if 
-			missing1(jj) = 1; 
-		end %if
-	end %for
-	if (jpchk1 >= numel (entries1)), retval = retval + 2; end %if
-	if (dbug > 1)
-		if (jpchk1 >= numel (entries1))
-			fprintf ('  => Apache (POI) OK\n');
-		else
-			fprintf ('  => Not all classes (.jar) required for POI in classpath\n');
-		end %if
-	end %if
-	% Next, check OOXML support
+  % Try Java & Apache POI. First Check basic .xls (BIFF8) support
+  if (dbug > 1), fprintf ('\nBasic POI (.xls) <poi-3> <poi-ooxml>:\n'); end %if
+  jpchk1 = 0; entries1 = {'poi-3', 'poi-ooxml-3'}; missing1 = zeros (1, numel (entries1));
+  % Only under *nix we might use brute force: e.g., strfind (javaclasspath, classname)
+  % as javaclasspath is one long string. Under Windows however classpath is a cell array
+  % so we need the following more subtle, platform-independent approach:
+  for jj=1:length (entries1)
+    found = 0;
+    for ii=1:length (jcp)
+      jcplst = strsplit (jcp{ii}, filesep);
+      jcpentry = jcplst {end};
+      if (~isempty (strfind (lower (jcpentry), lower (entries1{jj}))))
+        jpchk1 = jpchk1 + 1; found = 1;
+        if (dbug > 2), fprintf ('  - %s OK\n', jcp{ii}); end %if
+      end %if
+    end %for
+    if (~found)
+      if (dbug > 2), fprintf ('  %s....jar missing\n', entries1{jj}); end %if 
+      missing1(jj) = 1; 
+    end %if
+  end %for
+  if (jpchk1 >= numel (entries1)), retval = retval + 2; end %if
+  if (dbug > 1)
+    if (jpchk1 >= numel (entries1))
+      fprintf ('  => Apache (POI) OK\n');
+    else
+      fprintf ('  => Not all classes (.jar) required for POI in classpath\n');
+    end %if
+  end %if
+  % Next, check OOXML support
     if (dbug > 1), fprintf ('\nPOI OOXML (.xlsx) <xbean> <poi-ooxml-schemas> <dom4j>:\n'); end %if
-	jpchk2 = 0; entries2 = {'xbean', 'poi-ooxml-schemas', 'dom4j-1.6.1'}; 
-	missing2 = zeros (1, numel (entries2));
-	for jj=1:length (entries2)
-		found = 0;
-		for ii=1:length (jcp)
-			jcplst = strsplit (jcp{ii}, filesep);
-			jcpentry = jcplst {end};
-			if (~isempty (strfind (lower (jcpentry), lower (entries2{jj}))))
-				jpchk2 = jpchk2 + 1; found = 1;
-				if (dbug > 2), fprintf ('  - %s OK\n', jcp{ii}); end %if
-			end %if
-		end % for
-		if (~found)
-			if (dbug > 2), fprintf ('  %s....jar missing\n', entries2{jj}); end %if
-			missing2(jj) = 1;
-		end %if
-	end % for
-	% Only update retval if all classes for basic POI have been found in javaclasspath
-	if (jpchk1 >= numel (entries1) && jpchk2 >= numel (entries2)), retval = retval + 4; end %if
-	if (dbug > 1)
-		if (jpchk2 >= numel (entries2)) 
-			fprintf ('  => POI OOXML OK\n');
-		else
-			fprintf ('  => Some classes for POI OOXML support missing\n'); 
-		end %if
-	end %if
+  jpchk2 = 0; entries2 = {'xbean', 'poi-ooxml-schemas', 'dom4j-1.6.1'}; 
+  missing2 = zeros (1, numel (entries2));
+  for jj=1:length (entries2)
+    found = 0;
+    for ii=1:length (jcp)
+      jcplst = strsplit (jcp{ii}, filesep);
+      jcpentry = jcplst {end};
+      if (~isempty (strfind (lower (jcpentry), lower (entries2{jj}))))
+        jpchk2 = jpchk2 + 1; found = 1;
+        if (dbug > 2), fprintf ('  - %s OK\n', jcp{ii}); end %if
+      end %if
+    end % for
+    if (~found)
+      if (dbug > 2), fprintf ('  %s....jar missing\n', entries2{jj}); end %if
+      missing2(jj) = 1;
+    end %if
+  end % for
+  % Only update retval if all classes for basic POI have been found in javaclasspath
+  if (jpchk1 >= numel (entries1) && jpchk2 >= numel (entries2)), retval = retval + 4; end %if
+  if (dbug > 1)
+    if (jpchk2 >= numel (entries2)) 
+      fprintf ('  => POI OOXML OK\n');
+    else
+      fprintf ('  => Some classes for POI OOXML support missing\n'); 
+    end %if
+  end %if
 
-	% Try Java & JExcelAPI
-	if (dbug > 1), fprintf ('\nJExcelAPI (.xls (incl. BIFF5 read)) <jxl>:\n'); end %if
-	jpchk = 0; entries3 = {'jxl'}; missing3 = zeros (1, numel (entries3));
-	for jj=1:length (entries3)
-		found = 0;
-		for ii=1:length (jcp)
-			jcplst = strsplit (jcp{ii}, filesep);
-			jcpentry = jcplst {end};
-			if (~isempty (strfind (lower (jcpentry), lower (entries3{jj}))))
-				jpchk = jpchk + 1; found = 1;
-				if (dbug > 2), fprintf ('  - %s OK\n', jcp{ii}); end %if
-			end % if
-		end %for
-		if (~found) 
-			if (dbug > 2), fprintf ('  %s....jar missing\n', entries3{jj}); end %if 
-			missing3(jj) = 1; 
-		end %if
-	end %for
-	if (jpchk >= numel (entries3)), retval = retval + 8; end %if
-	if (dbug > 1)
-		if (jpchk >= numel (entries3))
-			fprintf ('  => Java/JExcelAPI (JXL) OK.\n');
-		else
-			fprintf ('  => Not all classes (.jar) required for JXL in classpath\n');
-		end %if
-	end %if
+  % Try Java & JExcelAPI
+  if (dbug > 1), fprintf ('\nJExcelAPI (.xls (incl. BIFF5 read)) <jxl>:\n'); end %if
+  jpchk = 0; entries3 = {'jxl'}; missing3 = zeros (1, numel (entries3));
+  for jj=1:length (entries3)
+    found = 0;
+    for ii=1:length (jcp)
+      jcplst = strsplit (jcp{ii}, filesep);
+      jcpentry = jcplst {end};
+      if (~isempty (strfind (lower (jcpentry), lower (entries3{jj}))))
+        jpchk = jpchk + 1; found = 1;
+        if (dbug > 2), fprintf ('  - %s OK\n', jcp{ii}); end %if
+      end % if
+    end %for
+    if (~found) 
+      if (dbug > 2), fprintf ('  %s....jar missing\n', entries3{jj}); end %if 
+      missing3(jj) = 1; 
+    end %if
+  end %for
+  if (jpchk >= numel (entries3)), retval = retval + 8; end %if
+  if (dbug > 1)
+    if (jpchk >= numel (entries3))
+      fprintf ('  => Java/JExcelAPI (JXL) OK.\n');
+    else
+      fprintf ('  => Not all classes (.jar) required for JXL in classpath\n');
+    end %if
+  end %if
 
-	% Try Java & OpenXLS
-	if (dbug > 1), fprintf ('\nOpenXLS (.xls (BIFF8)) <OpenXLS>:\n'); end %if
-	jpchk = 0; entries4 = {'OpenXLS'}; missing4 = zeros (1, numel (entries4));
-	for jj=1:length (entries4)
-		found = 0;
-		for ii=1:length (jcp)
-			jcplst = strsplit (jcp{ii}, filesep);
-			jcpentry = jcplst {end};
-			if (~isempty (strfind (lower (jcpentry), lower (entries4{jj}))))
-				jpchk = jpchk + 1; found = 1;
-				if (dbug > 2), fprintf ('  - %s OK\n', jcp{ii}); end %if
-			end % if
-		end %for
-		if (~found) 
-			if (dbug > 2), fprintf ('  %s....jar missing\n', entries4{jj}); end %if 
-			missing4(jj) = 1; 
-		end %if
-	end %for
-	if (jpchk >= numel (entries4)), retval = retval + 16; end %if
-	if (dbug > 1)
-		if (jpchk >= numel (entries4))
-			fprintf ('  => Java/OpenXLS (OXS) OK.\n');
-		else
-			fprintf ('  => Not all classes (.jar) required for OXS in classpath\n');
-		end %if
-	end %if
+  % Try Java & OpenXLS
+  if (dbug > 1), fprintf ('\nOpenXLS (.xls (BIFF8)) <OpenXLS>:\n'); end %if
+  jpchk = 0; entries4 = {'OpenXLS'}; missing4 = zeros (1, numel (entries4));
+  for jj=1:length (entries4)
+    found = 0;
+    for ii=1:length (jcp)
+      jcplst = strsplit (jcp{ii}, filesep);
+      jcpentry = jcplst {end};
+      if (~isempty (strfind (lower (jcpentry), lower (entries4{jj}))))
+        jpchk = jpchk + 1; found = 1;
+        if (dbug > 2), fprintf ('  - %s OK\n', jcp{ii}); end %if
+      end % if
+    end %for
+    if (~found) 
+      if (dbug > 2), fprintf ('  %s....jar missing\n', entries4{jj}); end %if 
+      missing4(jj) = 1; 
+    end %if
+  end %for
+  if (jpchk >= numel (entries4)), retval = retval + 16; end %if
+  if (dbug > 1)
+    if (jpchk >= numel (entries4))
+      fprintf ('  => Java/OpenXLS (OXS) OK.\n');
+    else
+      fprintf ('  => Not all classes (.jar) required for OXS in classpath\n');
+    end %if
+  end %if
 
-	% Try Java & ODF toolkit
-	if (dbug > 1), fprintf ('\nODF Toolkit (.ods) <odfdom> <xercesImpl>:\n'); end %if
-	jpchk = 0; entries5 = {'odfdom', 'xercesImpl'}; missing5 = zeros (1, numel (entries5));
-	for jj=1:length (entries5)
-		found = 0;
-		for ii=1:length (jcp)
-			jcplst = strsplit (jcp{ii}, filesep);
-			jcpentry = jcplst {end};
-			if (~isempty (strfind ( lower (jcpentry), lower (entries5{jj}))))
-				jpchk = jpchk + 1; found = 1;
-				if (dbug > 2), fprintf ('  - %s OK\n', jcp{ii}); end %if
-			end %if
-		end %for
-		if (~found) 
-			if (dbug > 2), fprintf ('  %s....jar missing\n', entries5{jj}); end %if
-			missing5(jj) = 1; 
-		end %if
-	end %for
-	if (jpchk >= numel (entries5))		% Apparently all requested classes present.
-		% Only now we can check for proper odfdom version (only 0.7.5 & 0.8.6 work OK).
-		% The odfdom team deemed it necessary to change the version call so we need this:
-		odfvsn = ' ';
-		try
-			% New in 0.8.6
-			odfvsn = javaMethod ('getOdfdomVersion', 'org.odftoolkit.odfdom.JarManifest');
-		catch
-			% Worked in 0.7.5
-			odfvsn = javaMethod ('getApplicationVersion', 'org.odftoolkit.odfdom.Version');
-		end %try_catch
-		if ~(strcmp (odfvsn, '0.7.5') || strcmp (odfvsn, '0.8.6') || strcmp (odfvsn, '0.8.7'))
-			warning ('  *** odfdom version (%s) is not supported - use v. 0.8.6 or 0.8.7.\n', odfvsn);
-		else	
-			if (dbug > 1), fprintf ('  => ODFtoolkit (OTK) OK.\n'); end %if
-			retval = retval + 32;
-		end %if
+  % Try Java & ODF toolkit
+  if (dbug > 1), fprintf ('\nODF Toolkit (.ods) <odfdom> <xercesImpl>:\n'); end %if
+  jpchk = 0; entries5 = {'odfdom', 'xercesImpl'}; missing5 = zeros (1, numel (entries5));
+  for jj=1:length (entries5)
+    found = 0;
+    for ii=1:length (jcp)
+      jcplst = strsplit (jcp{ii}, filesep);
+      jcpentry = jcplst {end};
+      if (~isempty (strfind ( lower (jcpentry), lower (entries5{jj}))))
+        jpchk = jpchk + 1; found = 1;
+        if (dbug > 2), fprintf ('  - %s OK\n', jcp{ii}); end %if
+      end %if
+    end %for
+    if (~found) 
+      if (dbug > 2), fprintf ('  %s....jar missing\n', entries5{jj}); end %if
+      missing5(jj) = 1; 
+    end %if
+  end %for
+  if (jpchk >= numel (entries5))    % Apparently all requested classes present.
+    % Only now we can check for proper odfdom version (only 0.7.5 & 0.8.6 work OK).
+    % The odfdom team deemed it necessary to change the version call so we need this:
+    odfvsn = ' ';
+    try
+      % New in 0.8.6
+      odfvsn = javaMethod ('getOdfdomVersion', 'org.odftoolkit.odfdom.JarManifest');
+    catch
+      % Worked in 0.7.5
+      odfvsn = javaMethod ('getApplicationVersion', 'org.odftoolkit.odfdom.Version');
+    end %try_catch
+    if ~(strcmp (odfvsn, '0.7.5') || strcmp (odfvsn, '0.8.6') || strcmp (odfvsn, '0.8.7'))
+      warning ('  *** odfdom version (%s) is not supported - use v. 0.8.6 or 0.8.7.\n', odfvsn);
+    else  
+      if (dbug > 1), fprintf ('  => ODFtoolkit (OTK) OK.\n'); end %if
+      retval = retval + 32;
+    end %if
     elseif (dbug > 1)
-		fprintf ('  => Not all required classes (.jar) in classpath for OTK\n');
-	end %if
+    fprintf ('  => Not all required classes (.jar) in classpath for OTK\n');
+  end %if
 
-	% Try Java & jOpenDocument
-	if (dbug > 1), fprintf ('\njOpenDocument (.ods + experimental .sxc readonly) <jOpendocument>:\n'); end %if
-	jpchk = 0; entries6 = {'jOpenDocument'}; missing6 = zeros (1, numel (entries6));
-	for jj=1:length (entries6)
-		found = 0;
-		for ii=1:length (jcp)
-			jcplst = strsplit (jcp{ii}, filesep);
-			jcpentry = jcplst {end};
- 			if (~isempty (strfind (lower (jcpentry), lower (entries6{jj}))))
-				jpchk = jpchk + 1; found = 1;
-				if (dbug > 2), fprintf ('  - %s OK\n', jcp{ii}); end %if
-			end %if
-		end %for
-		if (~found) 
-			if (dbug > 2), fprintf ('  %s....jar missing\n', entries6{jj}); end %if 
-			missing6(jj) = 1; 
-		end %if
-	end %for
-	if (jpchk >= numel (entries6)), retval = retval + 64; end %if
-	if (dbug > 1)
-		if (jpchk >= numel(entries6))
-			fprintf ('  => jOpenDocument (JOD) OK.\n');
-		else
-			fprintf ('  => Not all required classes (.jar) in classpath for JOD\n');
-		end %if
-	end %if
+  % Try Java & jOpenDocument
+  if (dbug > 1), fprintf ('\njOpenDocument (.ods + experimental .sxc readonly) <jOpendocument>:\n'); end %if
+  jpchk = 0; entries6 = {'jOpenDocument'}; missing6 = zeros (1, numel (entries6));
+  for jj=1:length (entries6)
+    found = 0;
+    for ii=1:length (jcp)
+      jcplst = strsplit (jcp{ii}, filesep);
+      jcpentry = jcplst {end};
+       if (~isempty (strfind (lower (jcpentry), lower (entries6{jj}))))
+        jpchk = jpchk + 1; found = 1;
+        if (dbug > 2), fprintf ('  - %s OK\n', jcp{ii}); end %if
+      end %if
+    end %for
+    if (~found) 
+      if (dbug > 2), fprintf ('  %s....jar missing\n', entries6{jj}); end %if 
+      missing6(jj) = 1; 
+    end %if
+  end %for
+  if (jpchk >= numel (entries6)), retval = retval + 64; end %if
+  if (dbug > 1)
+    if (jpchk >= numel(entries6))
+      fprintf ('  => jOpenDocument (JOD) OK.\n');
+    else
+      fprintf ('  => Not all required classes (.jar) in classpath for JOD\n');
+    end %if
+  end %if
 
-	% Try Java & UNO
-	if (dbug > 1), fprintf ('\nUNO/Java (.ods, .xls, .xlsx, .sxc) <OpenOffice.org>:\n'); end %if
-	% entries0(1) = not a jar but a directory (<000_install_dir/program/>)
-	jpchk = 0; entries0 = {'program', 'unoil', 'jurt', 'juh', 'unoloader', 'ridl'};
-	missing0 = zeros (1, numel (entries0));
-	for jj=1:numel (entries0)
-		found = 0;
-		for ii=1:numel (jcp)
-			jcplst = strsplit (jcp{ii}, filesep);
-			jcpentry = jcplst {end};
-			if (~isempty (strfind (lower (jcpentry), lower (entries0{jj}))))
-				jpchk = jpchk + 1; found = 1;
-				if (dbug > 2), fprintf ('  - %s OK\n', jcp{ii}); end %if
-			end %if
-		end %for
-		if (~found)
-			if (dbug > 2)
-				if (jj == 1)
-					% Just a dir
-					fprintf ('  %s.... (directory) not found\n', entries0{jj}); 
-				else
-					fprintf ('  %s....jar missing\n', entries0{jj}); 
-				end %if
-			end %if 
-			missing0(jj) = 1; 
-		end %if
-	end %for
-	if (jpchk >= numel (entries0)), retval = retval + 128; end %if
-	if (dbug > 1)
-		if (jpchk >= numel (entries0))
-			fprintf ('  => UNO (OOo) OK\n');
-		else
-			fprintf ('  => One or more UNO classes (.jar) missing in javaclasspath\n');
-		end %if
-	end %if
+  % Try Java & UNO
+  if (dbug > 1), fprintf ('\nUNO/Java (.ods, .xls, .xlsx, .sxc) <OpenOffice.org>:\n'); end %if
+  % entries0(1) = not a jar but a directory (<000_install_dir/program/>)
+  jpchk = 0; entries0 = {'program', 'unoil', 'jurt', 'juh', 'unoloader', 'ridl'};
+  missing0 = zeros (1, numel (entries0));
+  for jj=1:numel (entries0)
+    found = 0;
+    for ii=1:numel (jcp)
+      jcplst = strsplit (jcp{ii}, filesep);
+      jcpentry = jcplst {end};
+      if (~isempty (strfind (lower (jcpentry), lower (entries0{jj}))))
+        jpchk = jpchk + 1; found = 1;
+        if (dbug > 2), fprintf ('  - %s OK\n', jcp{ii}); end %if
+      end %if
+    end %for
+    if (~found)
+      if (dbug > 2)
+        if (jj == 1)
+          % Just a dir
+          fprintf ('  %s.... (directory) not found\n', entries0{jj}); 
+        else
+          fprintf ('  %s....jar missing\n', entries0{jj}); 
+        end %if
+      end %if 
+      missing0(jj) = 1; 
+    end %if
+  end %for
+  if (jpchk >= numel (entries0)), retval = retval + 128; end %if
+  if (dbug > 1)
+    if (jpchk >= numel (entries0))
+      fprintf ('  => UNO (OOo) OK\n');
+    else
+      fprintf ('  => One or more UNO classes (.jar) missing in javaclasspath\n');
+    end %if
+  end %if
 
-	% If requested, try to add UNO stuff to javaclasspath
-	ujars_complete = isempty (find (missing0, 1));
+  % If requested, try to add UNO stuff to javaclasspath
+  ujars_complete = isempty (find (missing0, 1));
 
-	if (~ujars_complete && nargin > 0 && ~isempty (path_to_ooo))
-		if (dbug), fprintf ('\nTrying to add missing UNO java class libs to javaclasspath...\n'); end %if
-		if (~ischar (path_to_jars)), error ('Path expected for arg # 1'); end %if
-		% Add missing jars to javaclasspath. First combine all entries
-		targt = sum (missing0);
-		if (missing0(1))
-			% Add program dir (= where soffice or soffice.exe or ooffice resides)
-			programdir = [path_to_ooo filesep entries0{1}];
-			if (exist (programdir, 'dir'))
-				if (dbug > 2), fprintf ('  Found %s, adding it to javaclasspath ... ', programdir); end %if
-				try
-					javaaddpath (programdir);
-					targt = targt - 1;
-					if (dbug > 2), fprintf ('OK\n'); end %if
-				catch
-					if (dbug > 2), fprintf ('FAILED\n'); end %if
-				end %try_catch
-			else
-				if (dbug > 2), error ('Suggested OpenOffice.org install directory: %s not found!\n', path_to_ooo); end %if
-			end %if
-		end %if
-		% Rest of missing entries. Find where URE is located. Watch out because case of ./ure is unknown
-		uredir = get_dir_ (path_to_ooo, 'ure');
-		if (isempty (uredir)), return; end %if
-		% Now search for UNO jars
-		for ii=2:length (entries0)
-			if (missing0(ii))
-				if (ii == 2)
-					% Special case as unoil.jar usually resides in ./Basis<something>/program/classes
-					% Find out the exact name of Basis.....
-					basisdirlst = dir ([path_to_ooo filesep '?asis' '*']);
-					jj = 1;
+  if (~ujars_complete && nargin > 0 && ~isempty (path_to_ooo))
+    if (dbug), fprintf ('\nTrying to add missing UNO java class libs to javaclasspath...\n'); end %if
+    if (~ischar (path_to_jars)), error ('Path expected for arg # 1'); end %if
+    % Add missing jars to javaclasspath. First combine all entries
+    targt = sum (missing0);
+    if (missing0(1))
+      % Add program dir (= where soffice or soffice.exe or ooffice resides)
+      programdir = [path_to_ooo filesep entries0{1}];
+      if (exist (programdir, 'dir'))
+        if (dbug > 2), fprintf ('  Found %s, adding it to javaclasspath ... ', programdir); end %if
+        try
+          javaaddpath (programdir);
+          targt = targt - 1;
+          if (dbug > 2), fprintf ('OK\n'); end %if
+        catch
+          if (dbug > 2), fprintf ('FAILED\n'); end %if
+        end %try_catch
+      else
+        if (dbug > 2), error ('Suggested OpenOffice.org install directory: %s not found!\n', path_to_ooo); end %if
+      end %if
+    end %if
+    % Rest of missing entries. Find where URE is located. Watch out because case of ./ure is unknown
+    uredir = get_dir_ (path_to_ooo, 'ure');
+    if (isempty (uredir)), return; end %if
+    % Now search for UNO jars
+    for ii=2:length (entries0)
+      if (missing0(ii))
+        if (ii == 2)
+          % Special case as unoil.jar usually resides in ./Basis<something>/program/classes
+          % Find out the exact name of Basis.....
+          basisdirlst = dir ([path_to_ooo filesep '?asis' '*']);
+          jj = 1;
           if (numel (basisdirlst) > 0) 
             while (jj <= size (basisdirlst, 1) && jj > 0)
               basisdir = basisdirlst(jj).name;
@@ -441,104 +442,104 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
           else
             basisdir = path_to_ooo;
           endif
-					basisdirentries = {'program', 'classes'};
-					tmp = basisdir; jj=1;
-					while (~isempty (tmp) && jj <= numel (basisdirentries))
-						tmp = get_dir_ (tmp, basisdirentries{jj});
-						jj = jj + 1;
-					end %if
-					unojarpath = tmp;
-					file = dir ([ unojarpath filesep entries0{2} '*' ]);
-				else
-					% Rest of jars in ./ure/share/java or ./ure/java
-					unojardir = get_dir_ (uredir, 'share');
-					if (isempty (unojardir))
-						tmp = uredir;
-					else
-						tmp = unojardir;
-					end %if
-					unojarpath = get_dir_ (tmp, 'java');
-					file = dir ([unojarpath filesep entries0{ii} '*']);
-				end %if
-				% Path found, now try to add jar
-				if (isempty (file))
-					if (dbug > 2), fprintf ('  ? %s<...>.jar ?\n', entries0{ii}); end %if
-				else
-					if (dbug > 2), fprintf ('  Found %s, adding it to javaclasspath ... ', file.name); end %if
-					try
-						javaaddpath ([unojarpath filesep file.name]);
-						targt = targt - 1;
-						if (dbug > 2), fprintf ('OK\n'); end %if
-					catch
-						if (dbug > 2), fprintf ('FAILED\n'); end %if
+          basisdirentries = {'program', 'classes'};
+          tmp = basisdir; jj=1;
+          while (~isempty (tmp) && jj <= numel (basisdirentries))
+            tmp = get_dir_ (tmp, basisdirentries{jj});
+            jj = jj + 1;
+          end %if
+          unojarpath = tmp;
+          file = dir ([ unojarpath filesep entries0{2} '*' ]);
+        else
+          % Rest of jars in ./ure/share/java or ./ure/java
+          unojardir = get_dir_ (uredir, 'share');
+          if (isempty (unojardir))
+            tmp = uredir;
+          else
+            tmp = unojardir;
+          end %if
+          unojarpath = get_dir_ (tmp, 'java');
+          file = dir ([unojarpath filesep entries0{ii} '*']);
+        end %if
+        % Path found, now try to add jar
+        if (isempty (file))
+          if (dbug > 2), fprintf ('  ? %s<...>.jar ?\n', entries0{ii}); end %if
+        else
+          if (dbug > 2), fprintf ('  Found %s, adding it to javaclasspath ... ', file.name); end %if
+          try
+            javaaddpath ([unojarpath filesep file.name]);
+            targt = targt - 1;
+            if (dbug > 2), fprintf ('OK\n'); end %if
+          catch
+            if (dbug > 2), fprintf ('FAILED\n'); end %if
                     end %try_catch
-				end %if
-			end %if
-		end %for
-		if (~targt); retval = retval + 128; end %if
-		if (dbug)
-			if (targt)
-				fprintf ('Some UNO class libs still lacking...\n\n'); 
-			else
-				fprintf ('UNO interface supported now.\n\n');
-			end %if
-		end %f
-	end %if
+        end %if
+      end %if
+    end %for
+    if (~targt); retval = retval + 128; end %if
+    if (dbug)
+      if (targt)
+        fprintf ('Some UNO class libs still lacking...\n\n'); 
+      else
+        fprintf ('UNO interface supported now.\n\n');
+      end %if
+    end %f
+  end %if
 
 % ----------Rest of Java interfaces----------------------------------
 
-	missing = [missing1 missing2 missing3 missing4 missing5 missing6];
-	jars_complete = isempty (find (missing, 1));
-	if (dbug)
-		if (jars_complete)
-			fprintf ('All interfaces already fully supported.\n\n');
-		else
-			fprintf ('Some class libs lacking yet...\n\n'); 
-		end %if
-	end %if
+  missing = [missing1 missing2 missing3 missing4 missing5 missing6];
+  jars_complete = isempty (find (missing, 1));
+  if (dbug)
+    if (jars_complete)
+      fprintf ('All interfaces already fully supported.\n\n');
+    else
+      fprintf ('Some class libs lacking yet...\n\n'); 
+    end %if
+  end %if
 
-	if (~jars_complete && nargin > 0 && ~isempty (path_to_jars))
-		% Add missing jars to javaclasspath. Assume they're all in the same place
-		if (dbug), fprintf ('Trying to add missing java class libs to javaclasspath...\n'); end %if
-		if (~ischar (path_to_jars)), error ('Path expected for arg # 1'); end %if
-		% First combine all entries
-		targt = sum (missing);
-		% Search tru list of missing entries
-		for ii=1:6   % Adapt in case of future new interfaces
-			tmpe = eval ([ 'entries' char(ii) + '0' ]);
-			tmpm = eval ([ 'missing' char(ii) + '0' ]);
-			if (sum (tmpm))
-				for jj=1:numel (tmpe)
-					if (tmpm(jj))
-						file = dir ([path_to_jars filesep tmpe{jj} '*']);
-						if (isempty (file))
-							if (dbug > 2), fprintf ('  ? %s<...>.jar ?\n', tmpe{jj}); end %if
-						else
-							if (dbug > 2), fprintf ('  Found %s, adding it to javaclasspath ... ', file.name); end %if
-							try
-								javaaddpath ([path_to_jars filesep file.name]);
-								targt = targt - 1;
-								tmpm(jj) = 0;
-								if (dbug > 2), fprintf ('OK\n'); end %if
-							catch
-								if (dbug > 2), fprintf ('FAILED\n'); end %if
-							end %try_catch
-						end %if
-					end %if
-				end %for
-				if (~sum (tmpm))
-					retval = retval + 2^ii;
-				end %if
-			end %if
-		end %for
-		if (dbug)
-			if (targt)
-				fprintf ('Some other class libs still lacking...\n\n');
-			else
-				fprintf ('All interfaces fully supported.now.\n\n');
-			end %if
-		end %f
-	end %if
+  if (~jars_complete && nargin > 0 && ~isempty (path_to_jars))
+    % Add missing jars to javaclasspath. Assume they're all in the same place
+    if (dbug), fprintf ('Trying to add missing java class libs to javaclasspath...\n'); end %if
+    if (~ischar (path_to_jars)), error ('Path expected for arg # 1'); end %if
+    % First combine all entries
+    targt = sum (missing);
+    % Search tru list of missing entries
+    for ii=1:6   % Adapt in case of future new interfaces
+      tmpe = eval ([ 'entries' char(ii + '0') ]);
+      tmpm = eval ([ 'missing' char(ii + '0') ]);
+      if (sum (tmpm))
+        for jj=1:numel (tmpe)
+          if (tmpm(jj))
+            file = dir ([path_to_jars filesep tmpe{jj} '*']);
+            if (isempty (file))
+              if (dbug > 2), fprintf ('  ? %s<...>.jar ?\n', tmpe{jj}); end %if
+            else
+              if (dbug > 2), fprintf ('  Found %s, adding it to javaclasspath ... ', file(1).name); end %if
+              try
+                javaaddpath ([path_to_jars filesep file(1).name]);
+                targt = targt - 1;
+                tmpm(jj) = 0;
+                if (dbug > 2), fprintf ('OK\n'); end %if
+              catch
+                if (dbug > 2), fprintf ('FAILED\n'); end %if
+              end %try_catch
+            end %if
+          end %if
+        end %for
+        if (~sum (tmpm))
+          retval = retval + 2^ii;
+        end %if
+      end %if
+    end %for
+    if (dbug)
+      if (targt)
+        fprintf ('Some other class libs still lacking...\n\n');
+      else
+        fprintf ('All interfaces fully supported.now.\n\n');
+      end %if
+    end %f
+  end %if
 
 end %function
 
@@ -549,20 +550,20 @@ function [ ret_dir ] = get_dir_ (base_dir, req_dir)
 % at taking care of proper case (esp. for *nix) of existing subdir
 % in the result. Case of input var req_dir is ignored on purpose.
 
-	ret_dir = '';
-	% Get list of directory entries
-	ret_dir_list = dir (base_dir);
-	% Find matching entries
-	idx = find (strcmpi ({ret_dir_list.name}, req_dir));
-	% On *nix, several files and subdirs in one dir may have the same name as long as case differs
-	if (~isempty (idx))
-		ii = 1;
-		while (~ret_dir_list(idx(ii)).isdir)
-			ii = ii + 1;
-			if (ii > numel (idx)); return; end %if
-		end %while
-		% If we get here, a dir with proper name has been found. Construct path
-		ret_dir = [ base_dir filesep  ret_dir_list(idx(ii)).name ];
-	end %if
+  ret_dir = '';
+  % Get list of directory entries
+  ret_dir_list = dir (base_dir);
+  % Find matching entries
+  idx = find (strcmpi ({ret_dir_list.name}, req_dir));
+  % On *nix, several files and subdirs in one dir may have the same name as long as case differs
+  if (~isempty (idx))
+    ii = 1;
+    while (~ret_dir_list(idx(ii)).isdir)
+      ii = ii + 1;
+      if (ii > numel (idx)); return; end %if
+    end %while
+    % If we get here, a dir with proper name has been found. Construct path
+    ret_dir = [ base_dir filesep  ret_dir_list(idx(ii)).name ];
+  end %if
 
 end %function

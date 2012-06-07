@@ -102,76 +102,77 @@
 ## 2010-01-12 (Bug fix; added unwind_protect to xlsopen...xlsclose calls)
 ## 2010-01-15 Fixed typos in texinfo
 ## 2010-08-18 Added check for existence of xls after call to xlsopen to 
-##	          avoid unneeded error message clutter
+##            avoid unneeded error message clutter
 ## 2010-10-27 Changed range -> crange to unhide other range functions
 ## 2011-09-08 Minor code syntax updates
 ## 2012-01-26 Fixed "seealso" help string
+## 2012-06-07 Replaced all tabs by double space
 
 function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
 
-	rstatus = 0;
+  rstatus = 0;
 
-	# Sanity checks
-	if (nargin < 2)
-		usage ("Insufficient arguments - see 'help xlswrite'");
-	elseif (~ischar (filename))
-		error ("First argument must be a filename (incl. suffix)");
-	elseif (nargin == 2)
-		# Assume first worksheet and full worksheet starting at A1
-		wsh = 1;
-		if (strcmp (tolower (filename(end-4:end-1)), 'xls'))
-			crange = "A1:XFD1048576";	# OOXML has ridiculously large limits 
-		else
-			crange = "A1:IV65536";		# Regular xls limits
-		endif
-	elseif (nargin == 3)
-		# Find out whether 3rd argument = worksheet or range
-		if (isnumeric (arg3) || (isempty (findstr (arg3, ':')) && ~isempty (arg3)))
-			# Apparently a worksheet specified
-			wsh = arg3;
-			if (strcmp (tolower (filename(end-4:end-1)), 'xls'))
-				crange = "A1:XFD1048576";	# OOXML has ridiculously large limits 
-			else
-				crange = "A1:IV65536";		# Regular xls limits
-			endif
-		else
-			# Range specified
-			wsh = 1;
-			crange = arg3;
-		endif
-	elseif (nargin >= 4)
-		wsh = arg3;
-		crange = arg4;
-	endif
-	if (nargin == 5)
-		reqintf = arg5;
-	else
-		reqintf = [];
-	endif
-	
-	# Parse range
-	[topleft, nrows, ncols, trow, lcol] = parse_sp_range (crange);
-	
-	# Check if arr fits in range
-	[nr, nc] = size (arr);
-	if ((nr > nrows) || (nc > ncols))
-		# Array too big; truncate
-		nr = min (nrows, nr);
-		nc = min (ncols, nc);
-		warning ("xlswrite - array truncated to %d by %d to fit in range %s", ...
-				 nrows, ncols, crange);
-	endif
+  # Sanity checks
+  if (nargin < 2)
+    usage ("Insufficient arguments - see 'help xlswrite'");
+  elseif (~ischar (filename))
+    error ("First argument must be a filename (incl. suffix)");
+  elseif (nargin == 2)
+    # Assume first worksheet and full worksheet starting at A1
+    wsh = 1;
+    if (strcmp (tolower (filename(end-4:end-1)), 'xls'))
+      crange = "A1:XFD1048576";  # OOXML has ridiculously large limits 
+    else
+      crange = "A1:IV65536";    # Regular xls limits
+    endif
+  elseif (nargin == 3)
+    # Find out whether 3rd argument = worksheet or range
+    if (isnumeric (arg3) || (isempty (findstr (arg3, ':')) && ~isempty (arg3)))
+      # Apparently a worksheet specified
+      wsh = arg3;
+      if (strcmp (tolower (filename(end-4:end-1)), 'xls'))
+        crange = "A1:XFD1048576";  # OOXML has ridiculously large limits 
+      else
+        crange = "A1:IV65536";    # Regular xls limits
+      endif
+    else
+      # Range specified
+      wsh = 1;
+      crange = arg3;
+    endif
+  elseif (nargin >= 4)
+    wsh = arg3;
+    crange = arg4;
+  endif
+  if (nargin == 5)
+    reqintf = arg5;
+  else
+    reqintf = [];
+  endif
+  
+  # Parse range
+  [topleft, nrows, ncols, trow, lcol] = parse_sp_range (crange);
+  
+  # Check if arr fits in range
+  [nr, nc] = size (arr);
+  if ((nr > nrows) || (nc > ncols))
+    # Array too big; truncate
+    nr = min (nrows, nr);
+    nc = min (ncols, nc);
+    warning ("xlswrite - array truncated to %d by %d to fit in range %s", ...
+         nrows, ncols, crange);
+  endif
 
-	unwind_protect				# Needed to be sure Excel can be closed i.c.o. errors
+  unwind_protect        # Needed to be sure Excel can be closed i.c.o. errors
     xls_ok = 0;
     xls = xlsopen (filename, 1, reqintf);
     xls_ok = 1;
 
     [xls, rstatus] = oct2xls (arr(1:nr, 1:nc), xls, wsh, topleft);
 
-	unwind_protect_cleanup
+  unwind_protect_cleanup
     if (xls_ok), xls = xlsclose (xls); endif
 
-	end_unwind_protect
+  end_unwind_protect
 
 endfunction

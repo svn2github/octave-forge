@@ -107,6 +107,7 @@
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-06-06 Improved interface detection logic. No more messages if same interface is
 ##            requested & used consecutively
+## 2012-06-07 Fixed mixed-up lastintf assignments for POI and JXL
 ##
 ## Latest subfunction update: 2012-06-06
 
@@ -271,7 +272,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
       xls.workbook = wb;
       xls.filename = filename;
       xlssupport += 2;
-      lastintf = 'JXL';
+      lastintf = 'POI';
     catch
       clear xlsin;
       if (xlsinterfaces.JXL)
@@ -298,7 +299,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
       xls.workbook = wb;
       xls.filename = filename;
       xlssupport += 4;
-      lastintf = 'POI';
+      lastintf = 'JXL';
     catch
       clear xlsin;
       if (xlsinterfaces.POI)

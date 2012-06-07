@@ -1,9 +1,9 @@
 MKOCTFILE ?= mkoctfile
 
-LAPACK_LIBS := $(shell $(MKOCTFILE) -p LAPACK_LIBS)
+LAPACK_LIBS ?= $(shell $(MKOCTFILE) -p LAPACK_LIBS)
 # reported necessary for Apple's VecLib framework by Carlo de Falco
 # <carlo.defalco@gmail.com>
-BLAS_LIBS := $(shell $(MKOCTFILE) -p BLAS_LIBS)
+BLAS_LIBS ?= $(shell $(MKOCTFILE) -p BLAS_LIBS)
 
 # Passing LFLAGS, supplemented with LAPACK_LIBS and BLAS_LIBS, in the
 # environment to mkoctfile is prefered over passing LAPACK_LIBS and

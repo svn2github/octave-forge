@@ -106,7 +106,7 @@ printf ("\n 9. Tests part 2 (read back formula):\n");
 
 try
   # Just check if it contains any string
-  assert ( (ischar (raw{3, 3}) && ~isempty (raw(3, 3))), true); 
+  assert ( (ischar (raw{3, 3}) && ~isempty (raw(3, 3)) && raw{3, 3}(1) == "="), true); 
   printf ("    ...OK, formula recovered ('%s').\n", raw{3, 3});
 catch
   printf ("Hmmm.... error, see 'raw(3, 3)'");

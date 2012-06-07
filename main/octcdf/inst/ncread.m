@@ -20,7 +20,7 @@ end
 
 % end index
 
-endi = start + count.*stride;
+endi = start + (count-1).*stride;
 
 % replace inf in count
 

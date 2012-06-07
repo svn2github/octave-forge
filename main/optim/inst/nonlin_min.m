@@ -1283,12 +1283,12 @@ endfunction
 function backend = map_backend (backend)
 
   switch (backend)
-    case "bfgs_infeasible"
+    case "sqp_infeasible"
       backend = "__sqp__";
     case "sqp"
       backend = "__sqp__";
-    case "bfgs_feasible"
-      backend = "__bfgs_feasible__";
+    case "sqp_feasible"
+      backend = "__sqp_feasible__";
     case "siman"
       backend = "__siman__";
     otherwise

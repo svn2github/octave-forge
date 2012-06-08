@@ -12,26 +12,42 @@
 #include <exception>
 
 ComplexRowVector flscomplex( RowVector tvec , ComplexRowVector xvec ,
-				int coefficients, int octaves, double maxfreq );
+			     double maxfreq , int octaves , int coefficients);
 
 
-DEFUN_DLD(fastlscomplex,args,nargout, "Takes the complex fast least-squares transform of a set of data.") {
+DEFUN_DLD(fastlscomplex,args,nargout, "fastlscomplex(time,magnitude,maximum_frequency,octaves,coefficients)") {
+  if ( args.length() != 5 ) {
+    print_usage();
+    return octave_value_list ();
+  }
   RowVector tvals = args(0).row_vector_value();
   ComplexRowVector xvals = args(1).complex_row_vector_value();
-  int ncoeff = args(2).int_value();
+  double omegamax = args(2).double_value();
   int noctaves = args(3).int_value();
-  double omegamax = args(4).double_value();
+  int ncoeff = args(4).int_value();
+  if ( tvals.numel() != xvals.numel() ){
+    if ( tvals.numel() > xvals.numel() ) {
+      error("More time values than magnitude values.");
+    } else {
+      error("More magnitude values than time values.");
+    }
+  }
+  if ( ncoeff == 0 ) error("No coefficients to compute.");
+  if ( noctaves == 0 ) error("No octaves to compute over.");
+  if ( omegamax == 0 ) error("No difference between minimal and maximal frequency.");
   octave_value_list retval;  
   if ( !error_state) {
-    ComplexRowVector results = flscomplex(tvals,xvals,ncoeff,noctaves,omegamax);
+    ComplexRowVector results = flscomplex(tvals,xvals,omegamax,noctaves,ncoeff);
     retval(0) = octave_value(results);
+  } else {
+    return octave_value_list ();
   }
   return retval;
 
 }
 
 ComplexRowVector flscomplex( RowVector tvec , ComplexRowVector xvec ,
-			     int coefficients, int octaves, double maxfreq ) {
+			     double maxfreq, int octaves, int coefficients ) {
   struct Precomputation_Record {
     Precomputation_Record *next;
     std::complex<double> power_series[12]; // I'm using 12 as a matter of compatibility, only.

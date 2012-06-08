@@ -8,10 +8,14 @@ post-1.0.18 (in SVN only)
     with jopendocument v 1.3b1
 --- oct2xls, oct2ods: cast all numeric types in input array to double as 
     spreadsheets have only double, boolean or character string type. This bug
-    has been there from the very beginning of the spreadsheet functions  8-O
+    has been there from the very beginning of the spreadsheet functions  >8-O
+
+--- Support for reading back formulas from .xls spreadsheets using ActiveX/COM
 
 ** Compatible with jOpenDocument version 1.3b1
    getUsedRange() method added (MUCH faster than the old hack)
+
+** Compatible with odfdom-java-0.8.8-incubator.jar (ODF Toolkit 0.5-incubating)
 
 ** Compatible with Apache POI 3.8 final
 

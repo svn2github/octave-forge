@@ -113,7 +113,7 @@ catch
   if (isnumeric (raw{3, 3}))
     printf (" (equals %f, should be a string like '=c2+d2')\n", raw{3, 3}); 
   else
-    printf ("\n"); keyboard
+    printf ("\n");
   endif
 end_try_catch
 

@@ -51,6 +51,11 @@ ComplexRowVector flscomplex( RowVector tvec , ComplexRowVector xvec ,
   for ( int array_iter = 0 ; array_iter < 12 ; array_iter++ ) {
     temp_array[array_iter] = std::complex<double> ( 0 , 0 );
   }
+  int factorial_array[12];
+  factorial_array[0] = 1;
+  for ( int i = 1 ; i < 12 ; i++ ) {
+    factorial_array[i] = factorial_array[i-1] * i;
+  }
   n_inv = 1.0 / n;
   mu = (0.5 * M_PI)/length; // Per the article; this is in place to improve numerical accuracy if desired.
   /* Viz. the paper, in which Dtau = c / omega_max, and c is stated as pi/2 for floating point processors,
@@ -88,33 +93,29 @@ ComplexRowVector flscomplex( RowVector tvec , ComplexRowVector xvec ,
 	alpha.real() = xvec(k).real();
 	alpha.imag() = xvec(k).imag();
 	//	alpha = std::complex<double> ( xvec(k).real() , xvec(k).imag() );
-	if ( j == 0 ) {
-	  p = 1;
-	} else {
-	  p *= 1/(double)j;
 	  //	  alpha *= ( -1 * im * mu * ( tvec(k) - tau_h ) ) * p;
-	  if ( !( j % 2 ) ) {
-	    if ( ! ( j % 4 ) ) {
-	      alpha.real() = xvec(k).real() * pow(mu,j) * pow(tvec(k)-tau_h,j);
-	      alpha.imag() = xvec(k).imag() * pow(mu,j) * pow(tvec(k)-tau_h,j);
-	    } else {
-	      alpha.real() = -1 * xvec(k).real() * pow(mu,j) * pow(tvec(k)-tau_h,j);
-	      alpha.imag() = -1 * xvec(k).imag() * pow(mu,j) * pow(tvec(k)-tau_h,j);
-	    } } else {
-	    if ( ! ( j % 3 ) ) {
-	      alpha.real() = -1 * xvec(k).imag() * pow(mu,j) * pow(tvec(k)-tau_h,j);
-	      alpha.imag() = -1 * xvec(k).real() * pow(mu,j) * pow(tvec(k)-tau_h,j);
-	    } else {
-	      alpha.real() = xvec(k).imag() * pow(mu,j) * pow(tvec(k)-tau_h,j);
-	      alpha.imag() = xvec(k).real() * pow(mu,j) * pow(tvec(k)-tau_h,j);
-	    }
+	if ( !( j % 2 ) ) {
+	  if ( ! ( j % 4 ) ) {
+	    alpha.real() = xvec(k).real() * pow(mu,j) * pow(tvec(k)-tau_h,j) / factorial_array[j];
+	    alpha.imag() = xvec(k).imag() * pow(mu,j) * pow(tvec(k)-tau_h,j) / factorial_array[j];
+	  } else {
+	    alpha.real() = -1 * xvec(k).real() * pow(mu,j) * pow(tvec(k)-tau_h,j) / factorial_array[j];
+	    alpha.imag() = -1 * xvec(k).imag() * pow(mu,j) * pow(tvec(k)-tau_h,j) / factorial_array[j];
+	  } 
+	} else {
+	  if ( ! ( j % 3 ) ) {
+	    alpha.real() = -1 * xvec(k).imag() * pow(mu,j) * pow(tvec(k)-tau_h,j) / factorial_array[j];
+	    alpha.imag() = -1 * xvec(k).real() * pow(mu,j) * pow(tvec(k)-tau_h,j) / factorial_array[j];
+	  } else {
+	    alpha.real() = xvec(k).imag() * pow(mu,j) * pow(tvec(k)-tau_h,j) / factorial_array[j];
+	    alpha.imag() = xvec(k).real() * pow(mu,j) * pow(tvec(k)-tau_h,j) / factorial_array[j];
 	  }
 	}
 	record_current->power_series[j].real() += alpha.real();
 	record_current->power_series[j].imag() += alpha.imag();
-	// Computes each next step of the power series for the given power series element.
-	// j was reused since it was a handy inner-loop variable, even though I used it twice here.
       }
+      // Computes each next step of the power series for the given power series element.
+      // j was reused since it was a handy inner-loop variable, even though I used it twice here.
       record_current->stored_data = true;
       k++;
     }
@@ -167,8 +168,9 @@ ComplexRowVector flscomplex( RowVector tvec , ComplexRowVector xvec ,
      * Otherwise, merge with the next computation range.
      */
     double exp_power_series_elements[12];
-    for ( int r_iter = 0 ; r_iter < 12 ; r_iter++ ) {
-      exp_power_series_elements[r_iter] = ( r_iter == 0 ) ? 1 : exp_power_series_elements[r_iter-1]
+    exp_power_series_elements[0] = 1;
+    for ( int r_iter = 1 ; r_iter < 12 ; r_iter++ ) {
+      exp_power_series_elements[r_iter] = exp_power_series_elements[r_iter-1]
 	* ( mu * loop_delta_tau) * ( 1.0 / ( (double) r_iter ) );
     }
     try{ 

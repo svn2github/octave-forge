@@ -1,3 +1,7 @@
+/* Copyright (C) 2012 Benjamin Lewis <benjf5@gmail.com>
+ * GNU GPLv2
+ */
+
 
 #include <octave/oct.h>
 #include <octave/unwind-prot.h>
@@ -5,6 +9,7 @@
 #include <string>
 #include <math.h>
 #include <iostream>
+#include <exception>
 
 ComplexRowVector flscomplex( RowVector tvec , ComplexRowVector xvec ,
 				int coefficients, int octaves, double maxfreq );
@@ -18,7 +23,6 @@ DEFUN_DLD(fastlscomplex,args,nargout, "Takes the complex fast least-squares tran
   double omegamax = args(4).double_value();
   octave_value_list retval;  
   if ( !error_state) {
-    std::cout << "All values loaded safely! Your problem is in flscomplex." << std::endl;
     ComplexRowVector results = flscomplex(tvals,xvals,ncoeff,noctaves,omegamax);
     retval(0) = octave_value(results);
   }
@@ -47,7 +51,6 @@ ComplexRowVector flscomplex( RowVector tvec , ComplexRowVector xvec ,
   for ( int array_iter = 0 ; array_iter < 12 ; array_iter++ ) {
     temp_array[array_iter] = std::complex<double> ( 0 , 0 );
   }
-  std::cout << "temp_array built." << std::endl; //errcheckline
   n_inv = 1.0 / n;
   mu = (0.5 * M_PI)/length; // Per the article; this is in place to improve numerical accuracy if desired.
   /* Viz. the paper, in which Dtau = c / omega_max, and c is stated as pi/2 for floating point processors,
@@ -73,14 +76,14 @@ ComplexRowVector flscomplex( RowVector tvec , ComplexRowVector xvec ,
   record_tail->next = 0;
   /* A test needs to be included for if there was a failure, but since
    * precomp_subset_count is of type size_t, it should be okay. */
-
-  for( ; record_current ; record_current = record_current->next ) {
+  for( ; record_current != 0 ; record_current = record_current->next ) {
     for ( int j = 0 ; j < 12 ; j++ ) { 
       record_current->power_series[j] = std::complex<double> ( 0 , 0 );
     } // To avoid any trouble down the line, although it is an annoyance.
-    while ( ( k < n ) &&  ( ( - delta_tau ) <= ( tvec(k) - tau_h ) ) && ( ( tvec(k) - tau_h ) < delta_tau ) ) {
+    // Error is traced this far. Time to see if it's in this loop.
+    while ( (k < n) && (abs(tvec(k)-tau_h) <= delta_tau) ) {
       double p;
-      alpha = std::complex<double> ( 0 , 0 );
+      //      alpha = std::complex<double> ( 0 , 0 );
       for ( int j = 0 ; j < 12 ; j++ ) {
 	alpha.real() = xvec(k).real();
 	alpha.imag() = xvec(k).imag();
@@ -117,7 +120,6 @@ ComplexRowVector flscomplex( RowVector tvec , ComplexRowVector xvec ,
     }
     tau_h += ( 2 * delta_tau );
   }
-  std::cout << "all records computed." << std::endl;
   // At this point all precomputation records have been exhausted; short-circuit is abused to avoid overflow errors.
   
   /* Summation of coefficients for each frequency. As we have ncoeffs * noctaves elements,
@@ -138,19 +140,17 @@ ComplexRowVector flscomplex( RowVector tvec , ComplexRowVector xvec ,
   
   for ( octave_iter = octaves ; ; omega_oct *= 0.5 , octavemax *= 0.5 , loop_tau_0 += loop_delta_tau , loop_delta_tau *= 2 ) {
     omega_working = omega_oct;
+    exp_term = std::complex<double> ( cos( - omega_working * loop_tau_0 ) ,
+				      sin ( - omega_working * loop_tau_0 ) );
+    exp_multiplier = std::complex<double> ( cos ( - 2 * omega_working * loop_delta_tau ) ,
+					    sin ( - 2 * omega_working * loop_delta_tau ) );
     for ( coeff_iter = 0 ; coeff_iter < coefficients ; coeff_iter++, omega_working *= omega_multiplier){
-      exp_term = std::complex<double> ( cos( - omega_working * loop_tau_0 ) ,
-					sin ( - omega_working * loop_tau_0 ) );
-      exp_multiplier = std::complex<double> ( cos ( - 2 * omega_working * loop_delta_tau ) ,
-					      sin ( - 2 * omega_working * loop_delta_tau ) );
-      //      zeta = std::complex<double> (0,0);
       real_part_accumulator = 0;
       imag_part_accumulator = 0;
       real_part = 0;
       imag_part = 0;
       for ( record_current = precomp_records_head ; record_current ;
 	    record_current = record_current->next, exp_term *= exp_multiplier ) {
-	//	z_accumulator = std::complex<double> ( 0 , 0 );
 	for ( int array_iter = 0 ; array_iter < 12 ; array_iter++ ) {
 	  z_accumulator = ( pow(omega_working,array_iter) * record_current->power_series[array_iter] );
 	  real_part_accumulator += z_accumulator.real();
@@ -158,47 +158,23 @@ ComplexRowVector flscomplex( RowVector tvec , ComplexRowVector xvec ,
 	}
 	real_part = real_part + ( exp_term.real() * real_part_accumulator - ( exp_term.imag() * imag_part_accumulator ) );
 	imag_part = imag_part + ( exp_term.imag() * real_part_accumulator + exp_term.real() * imag_part_accumulator );
-	//	zeta += ( exp_term * z_accumulator );
       }
       results(iter) = std::complex<double> ( n_inv * real_part , n_inv * imag_part );
-      std::cout << iter << std::endl;
       iter++;
     }
     if ( !(--octave_iter) ) break;
     /* If we've already reached the lowest value, stop.
      * Otherwise, merge with the next computation range.
      */
-    std::cout << "100 terms precomputed" << std::endl;
     double exp_power_series_elements[12];
     for ( int r_iter = 0 ; r_iter < 12 ; r_iter++ ) {
       exp_power_series_elements[r_iter] = ( r_iter == 0 ) ? 1 : exp_power_series_elements[r_iter-1]
 	* ( mu * loop_delta_tau) * ( 1.0 / ( (double) r_iter ) );
     }
-    std::cout << "Exponential series computed" << std::endl;
-    for ( record_current = precomp_records_head ; record_current ;
-	  record_current = record_current->next ) {
-      if ( ! ( record_ref = record_current->next ) || ! record_ref->stored_data ) {
-	if ( record_current->stored_data ) {
-	  std::complex<double> temp[12];
-	  for( int array_init = 0 ; array_init < 12 ; array_init++ ) { temp[array_init] = std::complex<double>(0,0); }
-	  for( int p = 0 ; p < 12 ; p ++ ) {
-	    double step_floor_r = floor( ( (double) p ) / 2.0 );
-	    double step_floor_i = floor( ( (double) ( p - 1 ) ) / 2.0 );
-	    for( int q = 0 ; q < step_floor_r ; q++ ) {
-	      temp[p] += exp_power_series_elements[2*q] * pow((double)-1,q) * record_current->power_series[p - ( 2 * q )];
-	    }
-	    for( int q = 0 ; q <= step_floor_i ; q++ ) {
-	      temp[p] += im * exp_power_series_elements[2 * q + 1] * pow((double)-1,q) * record_current->power_series[p - ( 2 * q ) - 1];
-	    }
-	  }
-	  for ( int array_iter = 0 ; array_iter < 12 ; array_iter++ ) {
-	    record_current->power_series[array_iter].real() = temp[array_iter].real();
-	    record_current->power_series[array_iter].imag() = temp[array_iter].imag();
-	  }
-	  if ( ! record_ref ) break; // Last record was reached
-	}
-	else {
-	  record_next = record_ref;
+    try{ 
+      for ( record_current = precomp_records_head ; record_current ;
+	    record_current = record_current->next ) {
+	if ( ! ( record_ref = record_current->next ) || ! record_ref->stored_data ) {
 	  if ( record_current->stored_data ) {
 	    std::complex<double> temp[12];
 	    for( int array_init = 0 ; array_init < 12 ; array_init++ ) { temp[array_init] = std::complex<double>(0,0); }
@@ -206,40 +182,67 @@ ComplexRowVector flscomplex( RowVector tvec , ComplexRowVector xvec ,
 	      double step_floor_r = floor( ( (double) p ) / 2.0 );
 	      double step_floor_i = floor( ( (double) ( p - 1 ) ) / 2.0 );
 	      for( int q = 0 ; q < step_floor_r ; q++ ) {
-		temp[p] += exp_power_series_elements[2*q] * pow((double)-1,q) * ( record_current->power_series[p - ( 2 * q )] - record_next->power_series[p - (2*q)] );
+		temp[p] += exp_power_series_elements[2*q] * pow((double)-1,q) * record_current->power_series[p - ( 2 * q )];
 	      }
 	      for( int q = 0 ; q <= step_floor_i ; q++ ) {
-		temp[p] += im * exp_power_series_elements[2 * q + 1] * pow((double)-1,q) * ( record_current->power_series[p - ( 2 * q ) - 1] - record_next->power_series[p - ( 2 * q ) - 1 ] );
+		temp[p] += im * exp_power_series_elements[2 * q + 1] * pow((double)-1,q) * record_current->power_series[p - ( 2 * q ) - 1];
 	      }
 	    }
 	    for ( int array_iter = 0 ; array_iter < 12 ; array_iter++ ) {
 	      record_current->power_series[array_iter].real() = temp[array_iter].real();
 	      record_current->power_series[array_iter].imag() = temp[array_iter].imag();
 	    }
-	  } else {
-	    std::complex<double> temp[12];
-	    for( int array_init = 0 ; array_init < 12 ; array_init++ ) { temp[array_init] = std::complex<double>(0,0); }
-	    for( int p = 0 ; p < 12 ; p ++ ) {
-	      double step_floor_r = floor( ( (double) p ) / 2.0 );
-	      double step_floor_i = floor( ( (double) ( p - 1 ) ) / 2.0 );
-	      for( int q = 0 ; q < step_floor_r ; q++ ) {
-		temp[p] += exp_power_series_elements[2*q] * pow((double)-1,q) * record_next->power_series[p - ( 2 * q )];
-	      }
-	      for( int q = 0 ; q <= step_floor_i ; q++ ) {
-		temp[p] += im * exp_power_series_elements[2 * q + 1] * pow((double)-1,(q+1)) * record_next->power_series[p - ( 2 * q ) - 1];
-	      }
-	    }
-	    for ( int array_iter = 0 ; array_iter < 12 ; array_iter++ ) {
-	      record_current->power_series[array_iter].real() = temp[array_iter].real();
-	      record_current->power_series[array_iter].imag() = temp[array_iter].imag();
-	    }
+	    if ( ! record_ref ) break; // Last record was reached
 	  }
-	  record_current->stored_data = true;
-	  record_ref = record_next;
-	  record_current->next = record_ref->next;
-	  delete record_ref;
+	  else {
+	    record_next = record_ref;
+	    if ( record_current->stored_data ) {
+	      std::complex<double> temp[12];
+	      for( int array_init = 0 ; array_init < 12 ; array_init++ ) { temp[array_init] = std::complex<double>(0,0); }
+	      for( int p = 0 ; p < 12 ; p ++ ) {
+		double step_floor_r = floor( ( (double) p ) / 2.0 );
+		double step_floor_i = floor( ( (double) ( p - 1 ) ) / 2.0 );
+		for( int q = 0 ; q < step_floor_r ; q++ ) {
+		  temp[p] += exp_power_series_elements[2*q] * pow((double)-1,q) * ( record_current->power_series[p - ( 2 * q )] - record_next->power_series[p - (2*q)] );
+		}
+		for( int q = 0 ; q <= step_floor_i ; q++ ) {
+		  temp[p] += im * exp_power_series_elements[2 * q + 1] * pow((double)-1,q) * ( record_current->power_series[p - ( 2 * q ) - 1] - record_next->power_series[p - ( 2 * q ) - 1 ] );
+		}
+	      }
+	      for ( int array_iter = 0 ; array_iter < 12 ; array_iter++ ) {
+		record_current->power_series[array_iter].real() = temp[array_iter].real();
+		record_current->power_series[array_iter].imag() = temp[array_iter].imag();
+	      }
+	    } else {
+	      std::complex<double> temp[12];
+	      for( int array_init = 0 ; array_init < 12 ; array_init++ ) { temp[array_init] = std::complex<double>(0,0); }
+	      for( int p = 0 ; p < 12 ; p ++ ) {
+		double step_floor_r = floor( ( (double) p ) / 2.0 );
+		double step_floor_i = floor( ( (double) ( p - 1 ) ) / 2.0 );
+		for( int q = 0 ; q < step_floor_r ; q++ ) {
+		  temp[p] += exp_power_series_elements[2*q] * pow((double)-1,q) * record_next->power_series[p - ( 2 * q )];
+		}
+		for( int q = 0 ; q <= step_floor_i ; q++ ) {
+		  temp[p] += im * exp_power_series_elements[2 * q + 1] * pow((double)-1,(q+1)) * record_next->power_series[p - ( 2 * q ) - 1];
+		}
+	      }
+	      for ( int array_iter = 0 ; array_iter < 12 ; array_iter++ ) {
+		record_current->power_series[array_iter].real() = temp[array_iter].real();
+		record_current->power_series[array_iter].imag() = temp[array_iter].imag();
+	      }
+	    }
+	    record_current->stored_data = true;
+	    record_ref = record_next;
+	    record_current->next = record_ref->next;
+	    delete record_ref;
+	  }
 	}
       }
+    } catch (std::exception& e) { //This section was part of my debugging, and may be removed.
+      std::cout << "Exception thrown: " << e.what() << std::endl;
+      ComplexRowVector exception_result (1);
+      exception_result(0) = std::complex<double> ( 0,0);
+      return exception_result;
     }
   }
   return results;

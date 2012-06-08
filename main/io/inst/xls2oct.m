@@ -36,7 +36,7 @@
 ## or "" (empty string, indicating all data in a worksheet).
 ## If no range is specified the occupied cell range will have to be
 ## determined behind the scenes first; this can take some time for the
-## Java-based interfaces. Be aware that in Excel/ActiveX interface the
+## Java-based interfaces. Be aware that in COM/ActiveX interface the
 ## used range can be outdated. The Java-based interfaces are more 
 ## reliable in this respect albeit much slower.
 ##
@@ -48,8 +48,7 @@
 ## @item "formulas_as_text"
 ## If set to TRUE or 1, spreadsheet formulas (if at all present)
 ## are read as formula strings rather than the evaluated formula
-## result values. This only works for the Java based interfaces
-## POI, JXL and UNO. The default value is 0 (FALSE).
+## result values. The default value is 0 (FALSE).
 ##
 ## @item 'strip_array'
 ## Set the value of this field set to TRUE or 1 to strip the returned

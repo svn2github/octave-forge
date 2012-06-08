@@ -777,7 +777,7 @@ function [ rawarr, ods] = ods2jod2oct (ods, wsh, crange)
 
 endfunction
 
-## Copyright (C) 2011 Philip Nienhuis <prnienhuis@users.sf.net>
+## Copyright (C) 2011,2012 Philip Nienhuis <prnienhuis@users.sf.net>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software

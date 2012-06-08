@@ -94,7 +94,7 @@
 ## 2012-06-06 Made interface checking routine less verbose when same requested interface
 ##            was used consecutively
 ##
-## Latest change on subfunctions below: 2012-06-06
+## Latest change on subfunctions below: 2012-06-08
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
@@ -335,7 +335,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 endfunction
 
 
-## Copyright (C) 2009,2010,2011 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -399,6 +399,7 @@ endfunction
 ## 2011-09-18 Added temporary warning about UNO interface
 ## 2012-03-22 Improved Java checks (analogous to xlsopen)
 ## 2012-06-06 Again improved & simplified Java-based interface checking support
+## 2012-06-08 Support for odfdom-0.8.8 (-incubator)
 
 function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 
@@ -472,8 +473,11 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
       catch
         odfvsn = java_invoke ('org.odftoolkit.odfdom.Version', 'getApplicationVersion');
       end_try_catch
-      if ~(strcmp (odfvsn, '0.7.5') || strcmp (odfvsn, '0.8.6') || strcmp (odfvsn, '0.8.7'))
-        warning ("\nodfdom version %s is not supported - use v. 0.8.6 or 0.8.7.\n", odfvsn);
+      # For odfdom-incubator, strip extra info
+      odfvsn = regexp (odfvsn, '\d\.\d\.\d', "match"){1};
+      if ~(strcmp  (odfvsn, "0.7.5") || strcmp (odfvsn, "0.8.6") || strcmp (odfvsn, "0.8.7")
+        || strfind (odfvsn, "0.8.8"))
+        warning ("\nodfdom version %s is not supported - use v. 0.8.6 or later\n", odfvsn);
       else
         if (strcmp (odfvsn, '0.7.5'))
           warning ("odfdom v. 0.7.5 support won't be maintained - please upgrade to 0.8.6 or higher."); 

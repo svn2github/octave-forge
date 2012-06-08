@@ -94,29 +94,30 @@
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-02-20 Fixed range parameter to be default empty string rather than empty numeral
 ## 2010-03-07 Updated texinfo help text
+## 2012-06-08 Tabs replaced by double space
 
 function [ rstatus ] = odswrite (filename, data, wsh=1, crange='', reqintf=[])
 
-	# Input validity checks
-	if (nargin < 2)
-		usage ("Insufficient arguments - see 'help odswrite'");
-	elseif (~ischar (filename) || isempty (findstr ('.ods', tolower (filename))))
-		error ("First argument must be a filename (incl. .ods suffix for OTK & JOD)");
-	endif
+  # Input validity checks
+  if (nargin < 2)
+    usage ("Insufficient arguments - see 'help odswrite'");
+  elseif (~ischar (filename) || isempty (findstr ('.ods', tolower (filename))))
+    error ("First argument must be a filename (incl. .ods suffix for OTK & JOD)");
+  endif
 
-	ods = odsopen (filename, 1, reqintf);
+  ods = odsopen (filename, 1, reqintf);
 
-	if (~isempty (ods)) 
-		[ods, rstatus] = oct2ods (data, ods, wsh, crange);
+  if (~isempty (ods)) 
+    [ods, rstatus] = oct2ods (data, ods, wsh, crange);
 
-		# If rstatus was not OK, reset change indicator in ods pointer
-		if (~rstatus)
-			ods.changed = rstatus;
-			warning ("odswrite: data transfer errors, file not rewritten");
-		endif
+    # If rstatus was not OK, reset change indicator in ods pointer
+    if (~rstatus)
+      ods.changed = rstatus;
+      warning ("odswrite: data transfer errors, file not rewritten");
+    endif
 
-		ods = odsclose (ods);
+    ods = odsclose (ods);
 
-	endif
+  endif
 
 endfunction

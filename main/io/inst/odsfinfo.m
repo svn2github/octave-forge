@@ -76,6 +76,7 @@
 ## 2012-02-25 Return occupied sheet ranges in output args
 ##     ''     Improve echo of sheet names & ranges if interactive
 ## 2012-03-01 Fix wrong cell refs in UNO section ("(..)" rather than "{..}"
+## 2012-06-08 Support for odfdom-0.8.8-incubator
 
 function [ filetype, sheetnames ] = odsfinfo (filename, reqintf=[])
 
@@ -95,7 +96,7 @@ function [ filetype, sheetnames ] = odsfinfo (filename, reqintf=[])
     if (strcmp (ods.xtype, 'OTK'))
       # Get contents and table (= sheet) stuff from the workbook
       odfcont = ods.workbook;    # Local copy just in case
-      if (strcmp (ods.odfvsn, '0.8.7'))
+      if (strcmp (ods.odfvsn, '0.8.7') || strfind (ods.odfvsn, "0.8.8"))
         xpath = ods.workbook.getXPath;
       else
         xpath = ods.app.getXPath;

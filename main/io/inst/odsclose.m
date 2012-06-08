@@ -58,128 +58,129 @@
 ## 2010-10-17 Fixed typo in error message about unknown interface
 ## 2010-10-27 Improved file change tracking tru ods.changed
 ## 2010-11-12 Keep ods file pointer when write errors occur.
-##      "     Added optional filename arg to change filename to be written to
+##     ''     Added optional filename arg to change filename to be written to
 ## 2011-05-06 Experimental UNO support
 ## 2011-05-07 In case of UNO, soffice now properly closed using xDesk
 ## 2011-05-18 Saving newly created files using UNO supported now
 ## 2011-09-08 FIXME - closing OOo kills all other OOo invocations (known Java-UNO issue)
 ## 2012-01-26 Fixed "seealso" help string
+## 2012-06-08 tabs replaced by double space
 
 function [ ods ] = odsclose (ods, varargs)
 
-	# If needed warn that dangling spreadsheet pointers may be left
-	if (nargout < 1) warning ("return argument missing - ods invocation not reset."); endif
+  # If needed warn that dangling spreadsheet pointers may be left
+  if (nargout < 1) warning ("return argument missing - ods invocation not reset."); endif
 
-	force = 0;
+  force = 0;
 
-	if (nargin > 1)
-		for ii=2:nargin
-			if (strcmp (lower (varargin{ii}), "force"))
-				# Close .ods anyway even if write errors occur
-				force = 1;
-			elseif (~isempty (strfind (tolower (varargin{ii}), '.ods')) || ...
-					~isempty (strfind (tolower (varargin{ii}), '.sxc')))
-				# Apparently a file name
-				if (ods.changed == 0 || ods.changed > 2)
-					warning ("File %s wasn't changed, new filename ignored.", ods.filename);
-				else
-					if (strfind (tolower (filename), '.sxc') || strfind (tolower (filename), '.ods'))
-						ods.filename = filename;
-					else
-						error ('No .sxc or .ods filename extension specified');
-					endif
-				endif
-			endif
-		endfor
-	endif
+  if (nargin > 1)
+    for ii=2:nargin
+      if (strcmp (lower (varargin{ii}), "force"))
+        # Close .ods anyway even if write errors occur
+        force = 1;
+      elseif (~isempty (strfind (tolower (varargin{ii}), '.ods')) || ...
+          ~isempty (strfind (tolower (varargin{ii}), '.sxc')))
+        # Apparently a file name
+        if (ods.changed == 0 || ods.changed > 2)
+          warning ("File %s wasn't changed, new filename ignored.", ods.filename);
+        else
+          if (strfind (tolower (filename), '.sxc') || strfind (tolower (filename), '.ods'))
+            ods.filename = filename;
+          else
+            error ('No .sxc or .ods filename extension specified');
+          endif
+        endif
+      endif
+    endfor
+  endif
 
-	if (strcmp (ods.xtype, 'OTK'))
-		# Java & ODF toolkit
-		try
-			if (ods.changed && ods.changed < 3)
-				ods.app.save (ods.filename);
-				ods.changed = 0;
-			endif
-			ods.app.close ();
-		catch
-			if (force)
-				ods.app.close ();
-			endif
-		end_try_catch
+  if (strcmp (ods.xtype, 'OTK'))
+    # Java & ODF toolkit
+    try
+      if (ods.changed && ods.changed < 3)
+        ods.app.save (ods.filename);
+        ods.changed = 0;
+      endif
+      ods.app.close ();
+    catch
+      if (force)
+        ods.app.close ();
+      endif
+    end_try_catch
 
-	elseif (strcmp (ods.xtype, 'JOD'))
-		# Java & jOpenDocument
-		try
-			if (ods.changed && ods.changed < 3)
-				ofile = java_new ('java.io.File', ods.filename);
-				ods.workbook.saveAs (ofile);
-				ods.changed = 0;
-			endif
-		catch
-		end_try_catch
+  elseif (strcmp (ods.xtype, 'JOD'))
+    # Java & jOpenDocument
+    try
+      if (ods.changed && ods.changed < 3)
+        ofile = java_new ('java.io.File', ods.filename);
+        ods.workbook.saveAs (ofile);
+        ods.changed = 0;
+      endif
+    catch
+    end_try_catch
 
-	elseif (strcmp (ods.xtype, 'UNO'))
-		# Java & UNO bridge
-		try
-			if (ods.changed && ods.changed < 3)
-				# Workaround:
-				unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XModel');
-				xModel = ods.workbook.queryInterface (unotmp);
-				unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.util.XModifiable');
-				xModified = xModel.queryInterface (unotmp);
-				if (xModified.isModified ())
-					unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XStorable');	# isReadonly() ?  	
-					xStore = ods.app.xComp.queryInterface (unotmp);
-					if (ods.changed == 2)
-						# Some trickery as Octave Java cannot create non-numeric arrays
-						lProps = javaArray ('com.sun.star.beans.PropertyValue', 1);
-						lProp = java_new ('com.sun.star.beans.PropertyValue', "Overwrite", 0, true, []);
-						lProps(1) = lProp;
-						# OK, save file to disk
-						xStore.storeAsURL (ods.filename, lProps);
-					else
-						xStore.store ();
-					endif
-				endif
-			endif
-			ods.changed = -1;		# Needed for check op properly shutting down OOo
-			# Workaround:
-			unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XModel');
-			xModel = ods.app.xComp.queryInterface (unotmp);
-			unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.util.XCloseable');
-			xClosbl = xModel.queryInterface (unotmp);
-			xClosbl.close (true);
-			unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XDesktop');
-			xDesk = ods.app.aLoader.queryInterface (unotmp);
-			xDesk.terminate();
-			ods.changed = 0;
-		catch
-			if (force)
-				# Force closing OOo
-				unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XDesktop');
-				xDesk = ods.app.aLoader.queryInterface (unotmp);
-				xDesk.terminate();
-			else
-				warning ("Error dbclosing ods pointer (UNO)");
-			endif
-			return
-		end_try_catch
+  elseif (strcmp (ods.xtype, 'UNO'))
+    # Java & UNO bridge
+    try
+      if (ods.changed && ods.changed < 3)
+        # Workaround:
+        unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XModel');
+        xModel = ods.workbook.queryInterface (unotmp);
+        unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.util.XModifiable');
+        xModified = xModel.queryInterface (unotmp);
+        if (xModified.isModified ())
+          unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XStorable');  # isReadonly() ?    
+          xStore = ods.app.xComp.queryInterface (unotmp);
+          if (ods.changed == 2)
+            # Some trickery as Octave Java cannot create non-numeric arrays
+            lProps = javaArray ('com.sun.star.beans.PropertyValue', 1);
+            lProp = java_new ('com.sun.star.beans.PropertyValue', "Overwrite", 0, true, []);
+            lProps(1) = lProp;
+            # OK, save file to disk
+            xStore.storeAsURL (ods.filename, lProps);
+          else
+            xStore.store ();
+          endif
+        endif
+      endif
+      ods.changed = -1;    # Needed for check op properly shutting down OOo
+      # Workaround:
+      unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XModel');
+      xModel = ods.app.xComp.queryInterface (unotmp);
+      unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.util.XCloseable');
+      xClosbl = xModel.queryInterface (unotmp);
+      xClosbl.close (true);
+      unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XDesktop');
+      xDesk = ods.app.aLoader.queryInterface (unotmp);
+      xDesk.terminate();
+      ods.changed = 0;
+    catch
+      if (force)
+        # Force closing OOo
+        unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XDesktop');
+        xDesk = ods.app.aLoader.queryInterface (unotmp);
+        xDesk.terminate();
+      else
+        warning ("Error dbclosing ods pointer (UNO)");
+      endif
+      return
+    end_try_catch
 
-#	elseif ---- < Other interfaces here >
+#  elseif ---- < Other interfaces here >
 
-	else
-		error (sprintf ("ods2close: unknown OpenOffice.org .ods interface - %s.", ods.xtype));
+  else
+    error (sprintf ("ods2close: unknown OpenOffice.org .ods interface - %s.", ods.xtype));
 
-	endif
+  endif
 
-	if (ods.changed && ods.changed < 3)
-		error ( sprintf ("Could not save file %s - read-only or in use elsewhere?\nFile pointer preserved", ods.filename));
-		if (force)
-			ods = [];
-		endif
-	else
-		# Reset file pointer
-		ods = [];
-	endif
+  if (ods.changed && ods.changed < 3)
+    error ( sprintf ("Could not save file %s - read-only or in use elsewhere?\nFile pointer preserved", ods.filename));
+    if (force)
+      ods = [];
+    endif
+  else
+    # Reset file pointer
+    ods = [];
+  endif
 
 endfunction

@@ -118,30 +118,31 @@
 ## 2011-09-18 Return empty output arg in case of empty rawarr
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-03-07 Updated texinfo help text
+## 2012-06-08 Tabs replaced by double space
 
 function [ numarr, txtarr, rawarr, lim ] = odsread (filename, wsh=1, datrange=[], reqintf=[])
 
-	if (nargin < 1 || isempty (findstr ('.ods', tolower (filename))))
-		usage ("odsread: at least a filename incl. suffix is needed");
-	endif
-	if (nargout < 1)
-		usage ("odsread: no output argument(s) specified");
-	endif
+  if (nargin < 1 || isempty (findstr ('.ods', tolower (filename))))
+    usage ("odsread: at least a filename incl. suffix is needed");
+  endif
+  if (nargout < 1)
+    usage ("odsread: no output argument(s) specified");
+  endif
 
-	ods = odsopen (filename, 0, reqintf);
+  ods = odsopen (filename, 0, reqintf);
   
   if (~isempty (ods))
 
-  	[rawarr, ods, rstatus] = ods2oct (ods, wsh, datrange);
+    [rawarr, ods, rstatus] = ods2oct (ods, wsh, datrange);
 
-	  if (rstatus)
-		  [numarr, txtarr, lim] = parsecell (rawarr, ods.limits);
-	  else
-		  warning (sprintf ("No data read from %s.", filename));
+    if (rstatus)
+      [numarr, txtarr, lim] = parsecell (rawarr, ods.limits);
+    else
+      warning (sprintf ("No data read from %s.", filename));
       numarr = [];
-  	endif
-	
-	  ods = odsclose (ods);
+    endif
+  
+    ods = odsclose (ods);
 
   endif
 

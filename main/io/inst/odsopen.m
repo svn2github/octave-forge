@@ -24,7 +24,7 @@
 ## Calling odsopen without specifying a return argument is fairly useless!
 ##
 ## To make this function work at all, you need the Java package >= 1.2.5 plus
-## ODFtoolkit (version 0.7.5 or 0.8.6) & xercesImpl, and/or jOpenDocument, and/or
+## ODFtoolkit (version 0.7.5 or 0.8.6+) & xercesImpl, and/or jOpenDocument, and/or
 ## OpenOffice.org (or clones) installed on your computer + proper javaclasspath
 ## set. These interfaces are referred to as OTK, JOD, and UNO resp., and are
 ## preferred in that order by default (depending on their presence).
@@ -59,7 +59,7 @@
 ##    the jOpenDocument interface is requested)
 ## @end example
 ##
-## @seealso {odsclose, odsread, ods2oct, odsfinfo, chk_spreadsheet_support}
+## @seealso {odsclose, odsread, oct2ods, ods2oct, odsfinfo, chk_spreadsheet_support}
 ##
 ## @end deftypefn
 

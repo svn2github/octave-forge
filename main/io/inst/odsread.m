@@ -24,7 +24,7 @@
 ##
 ## You need the octave-forge java package (> 1.2.6) and one or both of
 ## jopendocument-<version>.jar or preferrably: (odfdom.jar (versions
-## 0.7.5, 0.8.6 or 0.8.7) & xercesImpl.jar v. 2.9.1) in your javaclasspath.
+## 0.7.5 or 0.8.6+) & xercesImpl.jar v. 2.9.1) in your javaclasspath.
 ## There is also experimental support invoking OpenOffice.org or clones
 ## through Java/UNO bridge.
 ##

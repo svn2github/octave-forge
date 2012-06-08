@@ -1,6 +1,8 @@
 Summary of important user-visible changes for releases of the io package
 
-post-1.0.18 (in SVN only)
+===============================================================================
+io-1.0.19   Release Date: 2012-06-08   Release Manager: Philip Nienhuis
+===============================================================================
 
 ** Bug fixes:
 --- getusedrange subfunc getusedrange_jod: str2num applied to indices rather

@@ -18,7 +18,7 @@
 	Copyright © 2009 - 2012 Philip Nienhuis &lt;prnienhuis at users.sf.net&gt;</font></font>
 </p>
 	<p align="center"><font face="Arial, sans-serif"><font size="2">
-	This version June 07, 2012</font></font>
+	This version June 08, 2012</font></font>
 </p>
 <p><font face="Arial, sans-serif"><font size="2">
 	<i>(ODS = Open Document Format spreadsheet data format, used by e.g., OpenOffice.org.)</i></font></font>
@@ -89,12 +89,12 @@ SUPPORT SOFTWARE</b></u></font></font></p><dl>
 	<li>
 		<p align="left"><font face="Arial, sans-serif"><font size="2">
 		(currently the preferred option) <b>odfdom.jar</b> (<u>only</u> versions <b>0.7.5</b>,
-	<b>0.8.6</b>, and <b>0.8.7</b> work OK!) &amp; <b>xercesImpl.jar</b> (watch out here too! only version 2.9.1 (2007-sep-14) works OK with odfdom). Get them here:
+	<b>0.8.6</b>, <b>0.8.7</b> and <b>0.8.8</b>(-incubator) work OK!) &amp; <b>xercesImpl.jar</b> (watch out here too! only version 2.9.1 (2007-sep-14) works OK with odfdom). Get them here:
 	</font></font></p>
 	</li><li><p align="left">
-	<a href="http://odftoolkit.org/projects/odfdom/pages/Home "><font face="Arial, sans-serif"><font size="2">http://odftoolkit.org/projects/odfdom/pages/Home </font></font></a></p></li>
+	<a href="http://odftoolkit.org/projects/odfdom/pages/Home"><font face="Arial, sans-serif"><font size="2">http://odftoolkit.org/projects/odfdom/pages/Home</font></font></a></p></li>
   <li><p align="left" lang="zxx">
-	<font color="#000080"><font face="Arial, sans-serif"><font size="2"><u>http://odftoolkit.org/projects/odfdom/downloads/directory/current-version</u></font></font></font></p></li><li><p align="left">
+	<font color="#000080"><font face="Arial, sans-serif"><font size="2"><a href="http://incubator.apache.org/odftoolkit/downloads.html"><font face="Arial, sans-serif"><font size="2">http://incubator.apache.org/odftoolkit/downloads.html</font></font></a></font></font></font></p></li><li><p align="left">
 	<a href="http://www.google.com/search?ie=UTF-8&oe=utf-8&q=xerces-2.9.1+download"><font face="Arial, sans-serif"><font size="2">Google for xerces-2.9.1 download </font></font></a></p></li>
 </ul>
 <dl><dt><p>
@@ -347,7 +347,10 @@ OF INTERFACES</b></u></font></font></p>
 	primarily driven by requests from customers who pay for support. I
 	do sympathize with this business model but for octave needs this may
 	hamper progress for a while.<br>
-  In addition, jOpenDocument 1.2 has bugs here and there. For one, it doesn't write appropriate OfficeValueType attributes to the cells, so there's no way to reliably read and distinguish boolean, string amnd integer values.</font></font></p></dt>
+  In addition, jOpenDocument 1.2 and 1.3b1 still have bugs here and there. For
+  one, it doesn't write appropriate OfficeValueType attributes to the cells, so
+  there's no way to reliably read and distinguish boolean, string and integer
+  values.</font></font></p></dt>
 <dt><p><font face="Arial, sans-serif"><font size="2">The (still experimental)
 	<b>UNO interface</b>, based on a Java/UNO bridge linking a hidden OpenOffice.org
 	invocation to Octave, is the most promising:
@@ -540,10 +543,10 @@ OF INTERFACES</b></u></font></font></p>
 	too - this needed a few adjustments; clearly the odfdom API (currently at main
 	version 0) is not stable yet.</font></font></dt><dt>
 	<font face="Arial, sans-serif"><font size="2">So at the moment
-	(May 2011 = last I looked) only odfdom versions <b>0.7.5</b>,
-	<b>0.8.6</b> and <b>0.8.7</b> are supported.</font></font></dt><dt>
-	<br>
-	</dt><dt><font face="Arial, sans-serif"><font size="2">If you want to
+	(June 2012 = last I looked) only odfdom versions <b>0.7.5</b>,
+	<b>0.8.6</b>, <b>0.8.7</b> and <b>0.8.8</b>(-incubator) are supported.
+  </font></font></dt><dt><br></dt>
+  <dt><font face="Arial, sans-serif"><font size="2">If you want to
 	experiment with odfdom 0.8 &amp; 0.8.5, you can try:</font></font></dt></dl>
 <ul>
 	<li>
@@ -554,7 +557,7 @@ OF INTERFACES</b></u></font></font></p>
 	<font face="Arial, sans-serif"><font size="2">oct2ods.m (revision
 	7159)</font></font></li></ul>
 	<p><font face="Arial, sans-serif"><font size="2">Enjoy!</font></font></p><p align="center"><font face="Arial, sans-serif"><font size="2">Philip
-	Nienhuis, June 07, 2012</font></font></p><dl><dd><p align="center">
+	Nienhuis, June 08, 2012</font></font></p><dl><dd><p align="center">
 	<br>
 </p></dd></dl>
 </body></html>

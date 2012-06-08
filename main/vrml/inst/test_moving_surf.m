@@ -33,8 +33,7 @@ if 1
 
   s2 = vrml_anim ("Coordinate",[a,b,a],"foo.set_point",[0 0.5 1],5);
 
-  s3 = vrml_faces ([-1 -1 1 1;-1 1 1 -1;0.1 0.1 0.1 0.1],\
-		   list ([1 2 3 4]),"tran",0.4,"col",[0.3 0.9 0.4]);
+  s3 = vrml_faces ([-1 -1 1 1;-1 1 1 -1;0.1 0.1 0.1 0.1], {[1 2 3 4]}, "tran",0.4,"col",[0.3 0.9 0.4]);
 
   vrml_browse ([s1,s2,s3])
 
@@ -57,7 +56,7 @@ if 1
   s4 = vrml_anim ("Coordinate",[a,b,a],"foo.set_point",[0 0.5 1],tn);
 
   s3 = vrml_faces ([-1 -1 1 1;-1 1 1 -1;0.1 0.1 0.1 0.1],\
-		 list ([1 2 3 4]),"tran",0.4,"col",[0.9 0.4 0.4]);
+				   {[1 2 3 4]},"tran",0.4,"col",[0.9 0.4 0.4]);
 
   vrml_browse ([s1,s2,s3,s4])
   printf ("Press a key. \n"); pause ();

@@ -75,10 +75,9 @@ while i <= length (varargin) && \
   end
 end
 
+DEF = 0;
 
 if rem (length (varargin), 2), error ("vrml_TimeSensor : Odd n. of arguments"); end
-
-DEF = 0;
 
 l = {"TimeSensor {\n"};
 i = 1;
@@ -102,8 +101,7 @@ while i < length (varargin)
     if verbose, printf ("vrml_TimeSensor : Defining node '%s'\n",v); end
 
     if DEF, error ("vrml_TimeSensor : Multiple DEFs found"); end
-    ##l = splice (l,1,0,{"DEF ",v," "});
-    varargin = {"DEF ",v," ",l};
+    l = {sprintf("DEF %s ", v), l{:}};
     DEF = 1;
 
   else				# Add data field
@@ -151,7 +149,14 @@ while i < length (varargin)
   end
   
 end
+
 l{end+1} = "}\n";
-s = feval ("strcat", l{:});
+
+s = "";
+for i=1:numel(l)
+  s = [s, sprintf(l{i})];
+endfor
+### Stupid strcat removes trailing spaces in l's elements
+### s = strcat (l{:});
 endfunction
 

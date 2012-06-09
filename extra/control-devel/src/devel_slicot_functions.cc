@@ -1,6 +1,6 @@
-// #include "slib01ad.cc"   // preprocess the input-output data
 #include "slident.cc"       // system identification
 #include "slib01cd.cc"      // compute initial state vector
+#include "slib01ad.cc"      // compute singular values
 
 #include "slident_a.cc"
 #include "slident_b.cc"

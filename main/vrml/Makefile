@@ -15,5 +15,10 @@ pre-pkg::
 
 clean:
 	@for _dir in $(SUBDIRS); do \
-	  $(MAKE) -C $$_dir $(MAKECMDGOALS); \
+	  $(MAKE) -C $$_dir clean ; \
 	done
+	find . \( -name \*~ -o -name \*.bak -o -name \#\* -o -name \.\#\* -\) -exec rm -f {} \;
+
+documentation:
+	make -C ./doc all
+

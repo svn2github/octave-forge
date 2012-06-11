@@ -21,6 +21,7 @@ Create 3D objects
  vrml_lines
  vrml_group
 Support Functions
+ data2vrml
  save_vrml
  best_dir
  best_dir_cov

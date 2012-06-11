@@ -7,7 +7,10 @@ function x = ncread(filename,varname,start,count,stride)
 nc = netcdf(filename,'r');
 nv = nc{varname};
 sz = size(nv); sz = sz(end:-1:1);
-nd = ndims(nv);
+
+% number of dimenions
+%nd = length(sz);
+nd = length(dim(nv));
 
 if nargin == 2
   start = ones(1,nd);
@@ -36,7 +39,7 @@ subsr.subs = cell(1,nd);
 for i=1:nd
   subsr.subs{nd-i+1} = start(i):stride(i):endi(i);
 end
-start,endi
+%start,endi
 
 x = subsref(nv,subsr);
 

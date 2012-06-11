@@ -135,7 +135,9 @@ function [sys, x0, info] = __slicot_identification__ (method, dat, varargin)
   ## perform system identification
   [a, b, c, d, q, ry, s, k, x0] = slident (dat.y, dat.u, nobr, n, meth, alg, conct, ctrl, rcond, tol);
 
-  ## L L' = Ry,  e = L v,  v becomes white noise with identity covariance matrix
+  ## compute noise variance matrix factor L
+  ## L L' = Ry,  e = L v
+  ## v becomes white noise with identity covariance matrix
   l = chol (ry, "lower");
 
   ## assemble model
@@ -169,6 +171,7 @@ function [sys, x0, info] = __slicot_identification__ (method, dat, varargin)
   ## state covariance matrix Q
   ## output covariance matrix Ry
   ## state-output cross-covariance matrix S
+  ## noise variance matrix factor L
   info = struct ("K", k, "Q", q, "Ry", ry, "S", s, "L", l);
 
 endfunction

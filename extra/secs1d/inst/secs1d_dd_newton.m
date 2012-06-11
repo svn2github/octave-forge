@@ -128,12 +128,12 @@ function [res, jac] = residual_jacobian (x, D, V, n, p, l2, er, un, up, theta, t
   A21 = - bim1a_laplacian (x, un .* nm, 1);
   A22 = bim1a_advection_diffusion (x, un, 1, 1, V) + bim1a_reaction (x, 1, p .* fact);
   A23 = bim1a_reaction (x, 1, n .* fact);
-  R2  = A22 * n + bim1a_rhs (x, 1, (p .* n - theta .^ 2) .* fact);
+  R2  = A22 * n + bim1a_rhs (x, 1, (- theta .^ 2) .* fact);
 
   A31 = bim1a_laplacian (x, up .* pm, 1);
   A32 = bim1a_reaction (x, 1, p .* fact);
   A33 = bim1a_advection_diffusion (x, up, 1, 1, -V) + bim1a_reaction (x, 1, n .* fact);
-  R3  = A33 * p + bim1a_rhs (x, 1, (p .* n - theta .^ 2) .* fact);
+  R3  = A33 * p + bim1a_rhs (x, 1, (- theta .^ 2) .* fact);
 
   res = [R1(2:end-1); R2(2:end-1); R3(2:end-1)];
 

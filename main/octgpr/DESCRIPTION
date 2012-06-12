@@ -1,6 +1,6 @@
 Name: OctGPR
-Version: 1.2.0
-Date: 2009-08-06
+Version: 1.2.1
+Date: 2012-06-12
 Author: Jaroslav Hajek <highegg@gmail.com>
 Title: Package for full dense Gaussian Process Regression
 Maintainer: Jaroslav Hajek <highegg@gmail.com>

@@ -1,0 +1,5 @@
+Summary of important user-visible changes for octgpr 1.2.1:
+-------------------------------------------------------------------
+
+ ** Makefile fixed to work with non-standard linker options e.g on
+    Apple.

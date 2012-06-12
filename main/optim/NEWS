@@ -20,6 +20,9 @@ Summary of important user-visible changes for optim 1.2.0:
     honour an index of constraints has been removed, the respective
     feature is still available by setting some options.
 
+ ** Makefile fixed to work with non-standard linker options e.g on
+    Apple.
+
 
 Summary of important user-visible changes for optim 1.1.0:
 -------------------------------------------------------------------

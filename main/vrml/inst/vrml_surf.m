@@ -180,7 +180,7 @@ if bars
   C = C4;
 
   if numel (size (col)) == 2 && all (size (col) == size (defaultCol)) && all (col == defaultCol)
-    col = [col, 0.8*col, 0.9*col]
+    col = [col, 0.8*col, 0.9*col];
   end
   if numel (col) == 3
     col = col(:);
@@ -194,9 +194,9 @@ if bars
     sideCol = col(4:6)*ones(1,4);
   elseif numel (col) == 9
     col = col(:);
-    topCol = col(1:3)
-    botCol = col(7:9)
-    sideCol = col(4:6)*ones(1,4)
+    topCol = col(1:3);
+    botCol = col(7:9);
+    sideCol = col(4:6)*ones(1,4);
   end
   col = ones(3, R-1, C-1);
   for i=1:3

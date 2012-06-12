@@ -54,8 +54,8 @@
 ## @var{settings}:
 ##
 ## @code{Algorithm}: String specifying the backend. Currently available
-## are @{"lm_feasible"} (default) and @code{"siman"}. They are described
-## in separate sections below.
+## are @code{"lm_feasible"} (default) and @code{"siman"}. They are
+## described in separate sections below.
 ##
 ## @code{objf_grad}: Function computing the gradient of the objective
 ## function with respect to the parameters, assuming residuals are

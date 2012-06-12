@@ -69,6 +69,10 @@ function [p, resid, cvg, outp] = \
 		  "fixed", [], \
 		  "inequc", [], \
 		  "equc", [], \
+                  "inequc_f_idx", false, \
+                  "inequc_df_idx", false, \
+                  "equc_f_idx", false, \
+                  "equc_df_idx", false, \
 		  "weights", [], \
 		  "TolFun", stol_default, \
 		  "MaxIter", [], \
@@ -142,12 +146,35 @@ function [p, resid, cvg, outp] = \
   mc_struct = isstruct (mc);
   emc_struct = isstruct (emc);
 
-  ## correct "_pstruct" settings if functions are not supplied
+  ## correct "_pstruct" settings if functions are not supplied, handle
+  ## constraint functions not honoring indices
   if (isempty (dfdp)) dfdp_pstruct = false; endif
-  if (isempty (f_genicstr)) f_inequc_pstruct = false; endif
-  if (isempty (f_genecstr)) f_equc_pstruct = false; endif
-  if (! user_df_gencstr) df_inequc_pstruct = false; endif
-  if (! user_df_genecstr) df_equc_pstruct = false; endif
+  if (isempty (f_genicstr))
+    f_inequc_pstruct = false;
+  elseif (! optimget (settings, "inequc_f_idx", false))
+    f_genicstr = @ (p, varargin) apply_idx_if_given \
+        (f_genicstr (p, varargin{:}), varargin{:});
+  endif
+  if (isempty (f_genecstr))
+    f_equc_pstruct = false;
+  elseif (! optimget (settings, "equc_f_idx", false))
+    f_genecstr = @ (p, varargin) apply_idx_if_given \
+        (f_genecstr (p, varargin{:}), varargin{:});
+  endif
+  if (user_df_gencstr)
+    if (! optimget (settings, "inequc_df_idx", false))
+      df_gencstr = @ (varargin) df_gencstr (varargin{:})(varargin{2}, :);
+    endif
+  else
+    df_inequc_pstruct = false;
+  endif
+  if (user_df_genecstr)
+    if (! optimget (settings, "equc_df_idx", false))
+      df_genecstr = @ (varargin) df_genecstr (varargin{:})(varargin{2}, :);
+    endif
+  else
+    df_equc_pstruct = false;
+  endif
 
   ## some settings require a parameter order
   if (pin_struct || ! isempty (pconf) || f_inequc_pstruct || \
@@ -992,6 +1019,14 @@ function ret = __optimget__ (s, name, default)
     ret = default;
   else
     ret = [];
+  endif
+
+endfunction
+
+function ret = apply_idx_if_given  (ret, varargin)
+
+  if (nargin > 1)
+    ret = ret(varargin{1});
   endif
 
 endfunction

@@ -1,3 +1,26 @@
+Summary of important user-visible changes for optim 1.2.0:
+-------------------------------------------------------------------
+
+ ** Together with the new backend "lm_feasible" there is now a
+    complete suite of backends for optimization with linear and
+    general equality and inequality constraints, for scalar valued
+    objective functions and for array valued model function, which
+    features, a.o., honouring of constraints throughout optimization
+    and handling of structure-based parameters. The respective user
+    functions (frontends) are
+
+      nonlin_min nonlin_residmin nonlin_curvefit
+
+    together with a user function for statistics
+
+      residmin_stat
+
+ ** The requirement of nonlin_min, nonlin_residmin, and
+    nonlin_curvefit for the general constraint functions being able to
+    honour an index of constraints has been removed, the respective
+    feature is still available by setting some options.
+
+
 Summary of important user-visible changes for optim 1.1.0:
 -------------------------------------------------------------------
 

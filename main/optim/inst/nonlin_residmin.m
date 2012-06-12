@@ -129,21 +129,25 @@
 ## @code{h (p[, idx]) >= 0}; @code{p} is the column vector of optimized
 ## paraters and the optional argument @code{idx} is a logical index.
 ## @code{h} has to return the values of all constraints if @code{idx} is
-## not given, and has to return only the indexed constraints if
+## not given. It may choose to return only the indexed constraints if
 ## @code{idx} is given (so computation of the other constraints can be
-## spared). In gradient determination, this function may be called with
-## an informational third argument, whose content depends on the
-## function for gradient determination. If a second entry for general
-## inequality constraints is given, it must be a function computing the
-## jacobian of the constraints with respect to the parameters. For this
-## function, the description of @code{dfdp} above applies, except that
-## it is called with 3 arguments since it has an additional argument
-## @code{idx} --- a logical index --- at second position, indicating
-## which rows of the jacobian must be returned, and except that the
-## default function calls @code{h} with 3 arguments, since the argument
-## @code{idx} is also supplied. Note that specifying linear constraints
-## as general constraints will generally waste performance, even if
-## further, non-linear, general constraints are also specified.
+## spared); in this case, the additional setting @code{inequc_f_idx} has
+## to be set to @code{true}. In gradient determination, this function
+## may be called with an informational third argument, whose content
+## depends on the function for gradient determination. If a second entry
+## for general inequality constraints is given, it must be a function
+## computing the jacobian of the constraints with respect to the
+## parameters. For this function, the description of @code{dfdp} above
+## applies, with 2 exceptions: 1) it is called with 3 arguments since it
+## has an additional argument @code{idx} --- a logical index --- at
+## second position, indicating which rows of the jacobian must be
+## returned (if the function chooses to return only indexed rows, the
+## additional setting @code{inequc_df_idx} has to be set to
+## @code{true}). 2) the default jacobian function calls @code{h} with 3
+## arguments, since the argument @code{idx} is also supplied. Note that
+## specifying linear constraints as general constraints will generally
+## waste performance, even if further, non-linear, general constraints
+## are also specified.
 ##
 ## @code{equc}: Equality constraints. Specified the same way as
 ## inequality constraints (see @code{inequc}).
@@ -281,3 +285,20 @@ function [p, resid, cvg, outp] = nonlin_residmin (varargin)
   [p, resid, cvg, outp] = __nonlin_residmin__ (varargin{:});
 
 endfunction
+
+%!demo
+%!  ## Example for linear inequality constraints
+%!  ## (see also the same example in 'demo nonlin_curvefit')
+%!
+%!  ## independents
+%!  indep = 1:5;
+%!  ## residual function:
+%!  f = @ (p) p(1) * exp (p(2) * indep) - [1, 2, 4, 7, 14];
+%!  ## initial values:
+%!  init = [.25; .25];
+%!  ## linear constraints, A.' * parametervector + B >= 0
+%!  A = [1; -1]; B = 0; # p(1) >= p(2);
+%!  settings = optimset ("inequc", {A, B});
+%!
+%!  ## start optimization
+%!  [p, residuals, cvg, outp] = nonlin_residmin (f, init, settings)

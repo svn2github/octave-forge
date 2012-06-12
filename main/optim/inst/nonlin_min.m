@@ -22,10 +22,6 @@
 ## interface; any additionally needed constants can be supplied by
 ## wrapping the user functions into anonymous functions.
 ##
-## At the moment there is only a stochastic backend implemented, so that
-## some settings in the frontend have no use. A backend for
-## feasible-path sequential quadratic programming is being worked on.
-##
 ## The following description applies to usage with vector-based
 ## parameter handling. Differences in usage for structure-based
 ## parameter handling will be explained in a separate section below.
@@ -52,14 +48,14 @@
 ## currently can be @code{0} (maximum number of iterations exceeded),
 ## @code{1} (fixed number of iterations completed, e.g. in stochastic
 ## optimizers), @code{2} (parameter change less than specified precision
-## in two consecutive iterations), or @code{3} (improvement in objective
-## function less than specified).
+## in two consecutive iterations), @code{3} (improvement in objective
+## function less than specified), or @code{-4} (algorithm got stuck).
 ##
 ## @var{settings}:
 ##
-## @code{Algorithm}: String specifying the backend. Currently there is
-## no default, since only a stochastic backend is implemented
-## (@code{"siman"}). It is described in a separate section below.
+## @code{Algorithm}: String specifying the backend. Currently available
+## are @{"lm_feasible"} (default) and @code{"siman"}. They are described
+## in separate sections below.
 ##
 ## @code{objf_grad}: Function computing the gradient of the objective
 ## function with respect to the parameters, assuming residuals are
@@ -138,24 +134,29 @@
 ## @code{h (p[, idx]) >= 0}; @code{p} is the column vector of optimized
 ## paraters and the optional argument @code{idx} is a logical index.
 ## @code{h} has to return the values of all constraints if @code{idx} is
-## not given, and has to return only the indexed constraints if
+## not given. It may choose to return only the indexed constraints if
 ## @code{idx} is given (so computation of the other constraints can be
-## spared). In gradient determination, this function may be called with
-## an informational third argument, whose content depends on the
-## function for gradient determination. If a second entry for general
-## inequality constraints is given, it must be a function computing the
-## jacobian of the constraints with respect to the parameters. For this
-## function, the description of @code{dfdp} above applies, except that
-## it is called with 3 arguments since it has an additional argument
-## @code{idx} --- a logical index --- at second position, indicating
-## which rows of the jacobian must be returned, and except that the
-## default function calls @code{h} with 3 arguments, since the argument
-## @code{idx} is also supplied. Note that specifying linear constraints
-## as general constraints will generally waste performance, even if
-## further, non-linear, general constraints are also specified.
+## spared); in this case, the additional setting @code{inequc_f_idx} has
+## to be set to @code{true}. In gradient determination, this function
+## may be called with an informational third argument, whose content
+## depends on the function for gradient determination. If a second entry
+## for general inequality constraints is given, it must be a function
+## computing the jacobian of the constraints with respect to the
+## parameters. For this function, the description of @code{dfdp} above
+## applies, with 2 exceptions: 1) it is called with 3 arguments since it
+## has an additional argument @code{idx} --- a logical index --- at
+## second position, indicating which rows of the jacobian must be
+## returned (if the function chooses to return only indexed rows, the
+## additional setting @code{inequc_df_idx} has to be set to
+## @code{true}). 2) the default jacobian function calls @code{h} with 3
+## arguments, since the argument @code{idx} is also supplied. Note that
+## specifying linear constraints as general constraints will generally
+## waste performance, even if further, non-linear, general constraints
+## are also specified.
 ##
 ## @code{equc}: Equality constraints. Specified the same way as
-## inequality constraints (see @code{inequc}).
+## inequality constraints (see @code{inequc}). The respective additional
+## settings are named @code{equc_f_idx} and @code{equc_df_idx}.
 ##
 ## @code{cpiv}: Function for complementary pivoting, usable in
 ## algorithms for constraints. Default: @ cpiv_bard. Only the default
@@ -242,7 +243,29 @@
 ## parameters must contain arrays with dimensions reshapable to those of
 ## the respective parameters.
 ##
-## Description of backends (currently only one)
+## Description of backends
+##
+## "lm_feasible"
+##
+## A Levenberg/Marquardt-like optimizer, attempting to honour
+## constraints throughout the course of optimization. This means that
+## the initial parameters must not violate constraints (to find an
+## initial feasible set of parameters, e.g. Octaves @code{sqp} can be
+## used, by specifying an objective function which is constant or which
+## returns the quadratic distance to the initial values). If the
+## constraints need only be honoured in the result of the optimization,
+## Octaves @code{sqp} may be preferable. The Hessian is either supplied
+## by the user or is approximated by the BFGS algorithm.
+##
+## Returned value @var{cvg} will be @code{2} or @code{3} for success and
+## @code{0} or @code{-4} for failure (see above for meaning).
+##
+## Backend-specific defaults are: @code{MaxIter}: 20, @code{fract_prec}:
+## @code{zeros (size (parameters))}, @code{max_fract_change}: @code{Inf}
+## for all parameters.
+##
+## Interpretation of @code{Display}: if set to @code{"iter"}, currently
+## only information on applying @code{max_fract_change} is printed.
 ##
 ## "siman"
 ##
@@ -335,10 +358,14 @@ function [p, objf, cvg, outp] = nonlin_min (f, pin, settings)
 		  "fixed", [], \
 		  "inequc", [], \
 		  "equc", [], \
+                  "inequc_f_idx", false, \
+                  "inequc_df_idx", false, \
+                  "equc_f_idx", false, \
+                  "equc_df_idx", false, \
 		  "TolFun", stol_default, \
 		  "MaxIter", [], \
 		  "Display", "off", \
-		  "Algorithm", [], \ # set reasonable default, once available
+		  "Algorithm", "lm_feasible", \
 		  "T_init", .01, \
 		  "T_min", 1.0e-5, \
 		  "mu_T", 1.005, \
@@ -351,10 +378,12 @@ function [p, objf, cvg, outp] = nonlin_min (f, pin, settings)
     return;
   endif
 
-  assign = @ assign; # Is this faster in repeated calls?
+  if (nargin < 2 || nargin > 3)
+    print_usage ();
+  endif
 
-  if (nargin != 3)
-    error ("incorrect number of arguments");
+  if (nargin == 2)
+    settings = struct ();
   endif
 
   if (ischar (f))
@@ -418,13 +447,36 @@ function [p, objf, cvg, outp] = nonlin_min (f, pin, settings)
   mc_struct = isstruct (mc);
   emc_struct = isstruct (emc);
 
-  ## correct "_pstruct" settings if functions are not supplied
+  ## correct "_pstruct" settings if functions are not supplied, handle
+  ## constraint functions not honoring indices
   if (isempty (dfdp)) dfdp_pstruct = false; endif
   if (isempty (hessian)) hessian_pstruct = false; endif
-  if (isempty (f_genicstr)) f_inequc_pstruct = false; endif
-  if (isempty (f_genecstr)) f_equc_pstruct = false; endif
-  if (! user_df_gencstr) df_inequc_pstruct = false; endif
-  if (! user_df_genecstr) df_equc_pstruct = false; endif
+  if (isempty (f_genicstr))
+    f_inequc_pstruct = false;
+  elseif (! optimget (settings, "inequc_f_idx", false))
+    f_genicstr = @ (p, varargin) apply_idx_if_given \
+        (f_genicstr (p, varargin{:}), varargin{:});
+  endif
+  if (isempty (f_genecstr))
+    f_equc_pstruct = false;
+  elseif (! optimget (settings, "equc_f_idx", false))
+    f_genecstr = @ (p, varargin) apply_idx_if_given \
+        (f_genecstr (p, varargin{:}), varargin{:});
+  endif
+  if (user_df_gencstr)
+    if (! optimget (settings, "inequc_df_idx", false))
+      df_gencstr = @ (varargin) df_gencstr (varargin{:})(varargin{2}, :);
+    endif
+  else
+    df_inequc_pstruct = false;
+  endif
+  if (user_df_genecstr)
+    if (! optimget (settings, "equc_df_idx", false))
+      df_genecstr = @ (varargin) df_genecstr (varargin{:})(varargin{2}, :);
+    endif
+  else
+    df_equc_pstruct = false;
+  endif
 
   ## some settings require a parameter order
   if (pin_struct || ! isempty (pconf) || f_inequc_pstruct || \
@@ -988,7 +1040,6 @@ function [p, objf, cvg, outp] = nonlin_min (f, pin, settings)
   endif
   hook.Display = optimget (settings, "Display", "off");
   hook.testing = optimget (settings, "debug", false);
-  hook.new_s = optimget (settings, "lm_svd_feasible_alt_s", false);
   hook.siman.T_init = optimget (settings, "T_init", .01);
   hook.siman.T_min = optimget (settings, "T_min", 1.0e-5);
   hook.siman.mu_T = optimget (settings, "mu_T", 1.005);
@@ -999,10 +1050,7 @@ function [p, objf, cvg, outp] = nonlin_min (f, pin, settings)
       optimget (settings, "trace_steps", false);
   hook.siman_log = \
       optimget (settings, "siman_log", false);
-  backend = optimget (settings, "Algorithm");
-  if (isempty (backend))
-    error ("At the moment, there is no default algorithm, it must be specified.");
-  endif
+  backend = optimget (settings, "Algorithm", "lm_feasible");
   backend = map_matlab_algorithm_names (backend);
   backend = map_backend (backend);
 
@@ -1246,7 +1294,7 @@ function [p, objf, cvg, outp] = nonlin_min (f, pin, settings)
   ## passed function for complementary pivoting
   ## hook.cpiv = cpiv; # set before
 
-  ## passed value of residual function for initial parameters
+  ## passed value of objective function for initial parameters
   hook.f_pin = f_pin;
 
   ## passed options
@@ -1283,12 +1331,12 @@ endfunction
 function backend = map_backend (backend)
 
   switch (backend)
-    case "sqp_infeasible"
-      backend = "__sqp__";
-    case "sqp"
-      backend = "__sqp__";
-    case "sqp_feasible"
-      backend = "__sqp_feasible__";
+      ##    case "sqp_infeasible"
+      ##      backend = "__sqp__";
+      ##    case "sqp"
+      ##      backend = "__sqp__";
+    case "lm_feasible"
+      backend = "__lm_feasible__";
     case "siman"
       backend = "__siman__";
     otherwise
@@ -1335,6 +1383,23 @@ function ret = __optimget__ (s, name, default)
   endif
 
 endfunction
+
+function ret = apply_idx_if_given  (ret, varargin)
+
+  if (nargin > 1)
+    ret = ret(varargin{1});
+  endif
+
+endfunction
+
+%!demo
+%! ## Example for default optimization (Levenberg/Marquardt with
+%! ## BFGS), one non-linear equality constraint. Constrained optimum is
+%! ## at p = [0; 1].
+%! objective_function = @ (p) p(1)^2 + p(2)^2;
+%! pin = [-2; 5];
+%! constraint_function = @ (p) p(1)^2 + 1 - p(2);
+%! [p, objf, cvg, outp] = nonlin_min (objective_function, pin, optimset ("equc", {constraint_function}))
 
 %!demo
 %! ## Example for simulated annealing, two parameters, "trace_steps"

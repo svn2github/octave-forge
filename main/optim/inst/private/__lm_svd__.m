@@ -145,7 +145,7 @@ function [p, resid, cvg, outp] = __lm_svd__ (F, pin, hook)
   epsLlast=1;
   epstab=[.1, 1, 1e2, 1e4, 1e6];
   ac_idx = true (n_lcstr + n_gencstr, 1); % all constraints
-  nc_idx = false (n_lcstr + n_gencstr, 1); % non of all constraints
+  nc_idx = false (n_lcstr + n_gencstr, 1); % none of all constraints
   gc_idx = cat (1, false (n_lcstr, 1), true (n_gencstr, 1)); % gen. constr.
   lc_idx = ~gc_idx;
 
@@ -159,10 +159,10 @@ function [p, resid, cvg, outp] = __lm_svd__ (F, pin, hook)
                                 # violated at start
     if (any (c_act))
       if (n_gencstr > 0)
+        %% full gradient is needed later
         dct = df_cstr (p, ac_idx, ...
                        setfield (dfdp_hook, 'f', v_cstr));
         dct(:, fixed) = 0; % for user supplied dfdp; necessary?
-        dc = dct.';
         dcat = dct(c_act, :);
       else
         dcat = df_cstr (p, c_act, ...
@@ -420,6 +420,12 @@ function [p, resid, cvg, outp] = __lm_svd__ (F, pin, hook)
       if (any(abs(chg) > 0.1*aprec))%---  % only worth evaluating
                                 % function if there is some non-miniscule
                                 % change
+        %% In the code of the outer loop before the inner loop pbest is
+        %% actually identical to p, since once they deviate, the outer
+        %% loop will not be repeated. Though the inner loop can still be
+        %% repeated in this case, pbest is not used in it. Since pprev
+        %% is set from pbest in the outer loop before the inner loop, it
+        %% is also identical to p up to here.
         p=chg+pprev;
         %% since the projection method may have slightly violated
         %% constraints due to inaccuracy, correct parameters to bounds

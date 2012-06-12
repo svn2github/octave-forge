@@ -81,3 +81,21 @@ function ret = __optimget__ (s, name, default)
   endif
 
 endfunction
+
+%!demo
+%!  ## Example for linear inequality constraints
+%!  ## (see also the same example in 'demo nonlin_residmin')
+%!
+%!  ## independents and observations
+%!  indep = 1:5;
+%!  obs = [1, 2, 4, 7, 14];
+%!  ## model function:
+%!  f = @ (p, x) p(1) * exp (p(2) * x);
+%!  ## initial values:
+%!  init = [.25; .25];
+%!  ## linear constraints, A.' * parametervector + B >= 0
+%!  A = [1; -1]; B = 0; # p(1) >= p(2);
+%!  settings = optimset ("inequc", {A, B});
+%!
+%!  ## start optimization
+%!  [p, model_values, cvg, outp] = nonlin_curvefit (f, init, indep, obs, settings)

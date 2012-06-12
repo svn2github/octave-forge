@@ -4,7 +4,14 @@ ifndef OCTAVE_FORGE
 MKOCTFILE = mkoctfile
 endif
 
-LAPACK_LIBS := $(shell mkoctfile -p LAPACK_LIBS)
+ifndef LAPACK_LIBS
+LAPACK_LIBS := $(shell $(MKOCTFILE) -p LAPACK_LIBS)
+endif
+ifndef BLAS_LIBS
+BLAS_LIBS := $(shell $(MKOCTFILE) -p BLAS_LIBS)
+endif
+LFLAGS := $(shell $(MKOCTFILE) -p LFLAGS) $(LAPACK_LIBS) $(BLAS_LIBS)
+export LFLAGS
 
 DEFINES = -DHAVE_CONFIG_H -Wall
 GSVD_OBJECTS = gsvd.o dbleGSVD.o CmplxGSVD.o 

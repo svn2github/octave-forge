@@ -24,7 +24,8 @@ MKOCTFILE=@MKOCTFILE@
 FFLAGS=@FFLAGS@ @FPICFLAG@
 CC=@CC@ @CPICFLAG@
 CFLAGS=@CFLAGS@ -I.
-LIBS=@LIBS@
+LFLAGS=@LIBS@
+export LFLAGS
 
 OBJS_GPR_TRAIN=dsdacc.o dwdis2.o dtr2tp.o corrf.o stheta.o \
 	       nllgpr.o nldgpr.o nl0gpr.o pakgpr.o \
@@ -55,14 +56,14 @@ pgp_predict.o: pgp_predict.cc gprmod.h forsubs.h
 	$(MKOCTFILE) -c $<
 
 gpr_train.oct: gpr_train.o $(OBJS_GPR_TRAIN)
-	$(MKOCTFILE) -o $@ gpr_train.o $(OBJS_GPR_TRAIN) $(LIBS)
+	$(MKOCTFILE) -o $@ gpr_train.o $(OBJS_GPR_TRAIN)
 gpr_predict.oct: gpr_predict.o $(OBJS_GPR_PRED) 
-	$(MKOCTFILE) -o $@ gpr_predict.o $(OBJS_GPR_PRED) $(LIBS)
+	$(MKOCTFILE) -o $@ gpr_predict.o $(OBJS_GPR_PRED)
 
 pgp_train.oct: pgp_train.o $(OBJS_GPR_TRAIN)
-	$(MKOCTFILE) -o $@ pgp_train.o $(OBJS_GPR_TRAIN) $(LIBS)
+	$(MKOCTFILE) -o $@ pgp_train.o $(OBJS_GPR_TRAIN)
 pgp_predict.oct: pgp_predict.o $(OBJS_GPR_PRED) 
-	$(MKOCTFILE) -o $@ pgp_predict.o $(OBJS_GPR_PRED) $(LIBS)
+	$(MKOCTFILE) -o $@ pgp_predict.o $(OBJS_GPR_PRED)
 
 pdist2_mw.oct: pdist2_mw.cc
 	$(MKOCTFILE) -o $@ $<

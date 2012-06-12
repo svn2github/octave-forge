@@ -13,6 +13,10 @@
 ## You should have received a copy of the GNU General Public License along with
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
+###key test_moving_surf
+##
+## Test vmesh.m
+
 R = 15;
 C = 23;
 

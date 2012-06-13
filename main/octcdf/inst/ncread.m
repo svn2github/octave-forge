@@ -69,3 +69,4 @@ end
 
 x = permute(x,[ndims(x):-1:1]);
 
+close(nc)

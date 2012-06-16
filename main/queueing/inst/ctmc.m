@@ -28,13 +28,12 @@
 ## Compute stationary or transient state occupancy probabilities
 ## for a continuous-time Markov chain.
 ##
-## With a single argument, compute the stationary state occupancy
-## probability vector @var{p}(1), @dots{}, @var{p}(N) for a
-## continuous-time Markov chain with @math{N \times N} infinitesimal
-## generator matrix @var{Q}. With three arguments, compute the state
-## occupancy probabilities @var{p}(1), @dots{}, @var{p}(N) at time
-## @var{t}, given initial state occupancy probabilities @var{p0} at time
-## 0.
+## With a single argument, compute the stationary probability vector
+## @var{p}(1), @dots{}, @var{p}(N) for a continuous-time Markov chain
+## with @math{N \times N} infinitesimal generator matrix @var{Q}. With
+## three arguments, compute the state occupancy probabilities
+## @var{p}(1), @dots{}, @var{p}(N) at time @var{t}, given initial state
+## occupancy probabilities @var{p0}(1), @dots{}, @var{p0}(N) at time 0.
 ##
 ## @strong{INPUTS}
 ##
@@ -44,10 +43,12 @@
 ## Infinitesimal generator matrix. @var{Q} is a @math{N \times N} square
 ## matrix where @code{@var{Q}(i,j)} is the transition rate from state
 ## @math{i} to state @math{j}, for @math{1 @leq{} i \neq j @leq{} N}.
-## Transition rates must be nonnegative, and @math{\sum_{j=1}^N Q_{i, j} = 0}
+## #var{Q} must satisfy the property that @math{\sum_{j=1}^N Q_{i, j} =
+## 0}
 ##
 ## @item t
-## Time at which to compute the transient probability
+## Time at which to compute the transient probability. If omitted,
+## compute the steady state occupancy probability.
 ##
 ## @item p0
 ## @code{@var{p0}(i)} is the probability that the system
@@ -66,7 +67,7 @@
 ## satisfies the equation @math{p{\bf Q} = 0} and @math{\sum_{i=1}^N p_i = 1}.
 ## If this function is invoked with three arguments, @code{@var{p}(i)}
 ## is the probability that the system is in state @math{i} at time @var{t},
-## given the initial occupancy probabilities @var{p0}.
+## given the initial occupancy probabilities @var{p0}(1), @dots{}, @var{p0}(N).
 ##
 ## @end table
 ##

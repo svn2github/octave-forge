@@ -27,13 +27,14 @@
 ## @cindex Markov chain, transient probabilities
 ## @cindex Transient probabilities
 ##
-## Compute steady-state or transient state occupancy probabilities for a
-## Discrete-Time Markov Chain. With a single argument, compute the
-## steady-state occupancy probability vector @code{@var{p}(1), @dots{},
-## @var{p}(N)} given the @math{N \times N} transition probability matrix
-## @var{P}. With three arguments, compute the state occupancy
-## probabilities @code{@var{p}(1), @dots{}, @var{p}(N)} after @var{n}
-## steps, given initial occupancy probability vector @var{p0}.
+## With a single argument, compute the steady-state occupancy
+## probability vector @code{@var{p}(1), @dots{}, @var{p}(N)} for a
+## discrete-time Markov chain described by the @math{N \times N}
+## transition probability matrix @var{P}. With three arguments, compute
+## the state occupancy probabilities @code{@var{p}(1), @dots{},
+## @var{p}(N)} that the system is in state @math{i} after @var{n} steps,
+## given initial occupancy probability vector @var{p0}(1), @dots{},
+## @var{p0}(N).
 ##
 ## @strong{INPUTS}
 ##
@@ -42,8 +43,9 @@
 ## @item P
 ## @code{@var{P}(i,j)} is the transition probability from state @math{i}
 ## to state @math{j}. @var{P} must be an irreducible stochastic matrix,
-## which means that the sum of each row must be 1 (@math{\sum_{j=1}^N P_{i, j} = 1}), and the rank of
-## @var{P} must be equal to its dimension.
+## which means that the sum of each row must be 1 (@math{\sum_{j=1}^N
+## P_{i, j} = 1}), and the rank of @var{P} must be equal to its
+## dimension.
 ##
 ## @item n
 ## Number of transitions after which compute the state occupancy probabilities

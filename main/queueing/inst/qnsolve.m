@@ -22,8 +22,7 @@
 ## @deftypefnx {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qnsolve (@var{"open"}, @var{lambda}, @var{QQ}, @var{V})
 ## @deftypefnx {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qnsolve (@var{"mixed"}, @var{lambda}, @var{N}, @var{QQ}, @var{V})
 ##
-## General evaluator of QN models. Networks can be open,
-## closed or mixed; single as well as multiclass networks are supported.
+## High-level function for analyzing QN models.
 ##
 ## @itemize
 ##

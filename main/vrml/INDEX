@@ -36,10 +36,3 @@ Support Functions
  vrml_newname
  vrml_parallelogram
  vrml_thick_surf
-Demos
- test_vmesh
- test_vrml_faces
- vrml_demo_tutorial_1
- vrml_demo_tutorial_2
- vrml_demo_tutorial_3
- vrml_demo_tutorial_4

@@ -61,8 +61,8 @@ ComplexRowVector flsreal( RowVector tvec , ComplexRowVector xvec ,
     loop_tau_0, loop_delta_tau;
   double length = ( tvec((tvec.numel()-1)) - tvec( octave_idx_type (0)));
   int octave_iter, coeff_iter;
-  std::complex<double> zeta, z_accumulator, exp_term, exp_multiplier, alpha,
-    iota, i_accumulator;
+  std::complex<double> zeta, z_accumulator, zeta_exp_term, zeta_exp_multiplier, alpha,
+    iota, i_accumulator, iota_exp_term, iota_exp_multiplier;
   octave_idx_type n = tvec.numel();
   std::complex<double> temp_array[12];
   for ( int array_iter = 0 ; array_iter < 12 ; array_iter++ ) {
@@ -116,6 +116,7 @@ ComplexRowVector flsreal( RowVector tvec , ComplexRowVector xvec ,
       for ( int j = 0 ; j < 12 ; j++ ) {
 	alpha.real() = xvec(k).real();
 	alpha.imag() = xvec(k).imag();
+	// Change to switches for easier manipulation, fewer tests. This is two tests where one will do.
 	if ( !( j % 2 ) ) {
 	  if ( ! ( j % 4 ) ) {
 	    alpha.real() = xvec(k).real() * pow(mu,j) * pow(tvec(k)-tau_h,j) / factorial_array[j];
@@ -196,40 +197,57 @@ ComplexRowVector flsreal( RowVector tvec , ComplexRowVector xvec ,
   
   octave_idx_type iter ( 0 );
   
-  double real_part = 0, imag_part = 0, real_part_accumulator = 0, imag_part_accumulator = 0;
+  double zeta_real_part = 0, zeta_imag_part = 0, zeta_real_part_accumulator = 0, zeta_imag_part_accumulator = 0,
+    iota_real_part = 0, iota_imag_part = 0, iota_real_part_accumulator = 0, iota_imag_part_accumulator = 0;
 
   // Loops need to first travel over octaves, then coefficients;
   
   for ( octave_iter = octaves ; ; omega_oct *= 0.5 , octavemax *= 0.5 , loop_tau_0 += loop_delta_tau , loop_delta_tau *= 2 ) {
     omega_working = omega_oct;
-    exp_term = std::complex<double> ( cos ( - omega_working * loop_tau_0 ) ,
+    zeta_exp_term = std::complex<double> ( cos ( - omega_working * loop_tau_0 ) ,
 				      sin ( - omega_working * loop_tau_0 ) );
-    exp_multiplier = std::complex<double> ( cos ( - 2 * omega_working * loop_delta_tau ) ,
+    zeta_exp_multiplier = std::complex<double> ( cos ( - 2 * omega_working * loop_delta_tau ) ,
 					    sin ( - 2 * omega_working * loop_delta_tau ) );
     iota_exp_term = std::complex<double> ( cos ( - 2 * omega_working * loop_tau_0 ) ,
 					   sin ( - 2 * omega_working * loop_tau_0 ) );
     iota_exp_multiplier = std::complex<double> ( cos ( - 2 * omega_working * loop_delta_tau ) ,
 						 sin ( - 2 * omega_working * loop_delta_tau ) );
     for ( coeff_iter = 0 ; coeff_iter < coefficients ; coeff_iter++, omega_working *= omega_multiplier){
-      real_part_accumulator = 0;
-      imag_part_accumulator = 0;
-      real_part = 0;
-      imag_part = 0;
+      zeta_real_part_accumulator = 0;
+      zeta_imag_part_accumulator = 0;
+      zeta_real_part = 0;
+      zeta_imag_part = 0;
       for ( complex_record_current = complex_precomp_records_head ; complex_record_current ;
-	    complex_record_current = complex_record_current->next, exp_term *= exp_multiplier ) {
+	    complex_record_current = complex_record_current->next, zeta_exp_term *= zeta_exp_multiplier ) {
 	for ( int array_iter = 0 ; array_iter < 12 ; array_iter++ ) {
 	  z_accumulator = ( pow(omega_working,array_iter) * complex_record_current->power_series[array_iter] );
-	  real_part_accumulator += z_accumulator.real();
-	  imag_part_accumulator += z_accumulator.imag();
+	  zeta_real_part_accumulator += z_accumulator.real();
+	  zeta_imag_part_accumulator += z_accumulator.imag();
 	}
-	real_part = real_part + ( exp_term.real() * real_part_accumulator - ( exp_term.imag() * imag_part_accumulator ) );
-	imag_part = imag_part + ( exp_term.imag() * real_part_accumulator + exp_term.real() * imag_part_accumulator );
+	zeta_real_part = zeta_real_part + ( zeta_exp_term.real() * zeta_real_part_accumulator - zeta_exp_term.imag() * zeta_imag_part_accumulator ) );
+	zeta_imag_part = zeta_imag_part + ( zeta_exp_term.imag() * zeta_real_part_accumulator + zeta_exp_term.real() * zeta_imag_part_accumulator );
       }
       for ( iota_record_current = iota_precomp_records_head; iota_record_current ;
 	    iota_record_current = iota_record_current->next, iota_exp_term = iota_exp_term_multiplier ) {
-	
+	for ( int array_iter = 0 ; array_iter < 12 ; array_iter++ ) {
+	  i_accumulator = ( pow(omega_working,array_iter) * iota_record_current->power_series[array_iter] );
+	  iota_real_part_accumulator += i_accumulator.real();
+	  iota_imag_part_accumulator += i_accumulator.imag();
+	}
+	iota_real_part = iota_real_part + ( iota_exp_term.real() * iota_real_part_accumulator - iota_exp_term.imag() * iota_imag_part_accumulator );
+	iota_imag_part = iota_imag_part + ( iota_exp_term.imag() * iota_real_part_accumulator + iota_exp_term.real() * iota_imag_part_accumulator );
       }
-      results(iter) = std::complex<double> ( n_inv * real_part , n_inv * imag_part );
+      // c + i s = 2 * ( zeta-omega-conjugate - iota-2omega-conjuage * zeta-omega ) / ( 1 - abs(iota-2omega) ^ 2 )
+      // (is what the results will be.)
+      zeta_real_part *= n_inv;
+      zeta_imag_part *= n_inv;
+      iota_real_part *= n_inv;
+      iota_imag_part *= n_inv;
+      double result_real_part = 2 * ( zeta_real_part - iota_real_part * zeta_real_part - iota_imag_part * zeta_imag_part )
+	/ ( 1 - iota_real_part * iota_real_part - iota_imag_part * iota_imag_part );
+      double result_imag_part = 2 * ( - zeta_imag_part + iota_imag_part * zeta_real_part - iota_real_part * zeta_imag_part )
+	/ ( 1 - iota_real_part * iota_real_part - iota_imag_part * iota_imag_part );
+      results(iter) = std::complex<double> ( result_real_part , result_imag_part );
       iter++;
     }
     if ( !(--octave_iter) ) break;

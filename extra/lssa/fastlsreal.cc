@@ -15,7 +15,16 @@ ComplexRowVector flsreal( RowVector tvec , ComplexRowVector xvec ,
 			     double maxfreq , int octaves , int coefficients);
 
 
-DEFUN_DLD(fastlsreal,args,nargout, "fastlsreal(time,magnitude,maximum_frequency,octaves,coefficients)") {
+DEFUN_DLD(fastlsreal,args,nargout,
+	  "-*- texinfo -*-\n\
+@deftypefn {Function File} { C = } fastlsreal(@var{time},@var{magnitude},@var{maximum_frequency},@var{octaves},@var{coefficients})\n\
+\n\
+Return the real least-sqaures spectral fit to the (@var{time},@var{magnitude})\n\
+data supplied, using the fast algorithm.\n\
+\n\
+@seealso{fastlscomplex}\n\
+@seealso{lsreal}\n\
+@end deftypefn") {
   if ( args.length() != 5 ) {
     print_usage();
     return octave_value_list ();
@@ -37,7 +46,7 @@ DEFUN_DLD(fastlsreal,args,nargout, "fastlsreal(time,magnitude,maximum_frequency,
   if ( omegamax == 0 ) error("No difference between minimal and maximal frequency.");
   octave_value_list retval;  
   if ( !error_state) {
-    ComplexRowVector results = flscomplex(tvals,xvals,omegamax,noctaves,ncoeff);
+    ComplexRowVector results = flsreal(tvals,xvals,omegamax,noctaves,ncoeff);
     retval(0) = octave_value(results);
   } else {
     return octave_value_list ();
@@ -224,11 +233,11 @@ ComplexRowVector flsreal( RowVector tvec , ComplexRowVector xvec ,
 	  zeta_real_part_accumulator += z_accumulator.real();
 	  zeta_imag_part_accumulator += z_accumulator.imag();
 	}
-	zeta_real_part = zeta_real_part + ( zeta_exp_term.real() * zeta_real_part_accumulator - zeta_exp_term.imag() * zeta_imag_part_accumulator ) );
+	zeta_real_part = zeta_real_part + ( zeta_exp_term.real() * zeta_real_part_accumulator - zeta_exp_term.imag() * zeta_imag_part_accumulator );
 	zeta_imag_part = zeta_imag_part + ( zeta_exp_term.imag() * zeta_real_part_accumulator + zeta_exp_term.real() * zeta_imag_part_accumulator );
       }
       for ( iota_record_current = iota_precomp_records_head; iota_record_current ;
-	    iota_record_current = iota_record_current->next, iota_exp_term = iota_exp_term_multiplier ) {
+	    iota_record_current = iota_record_current->next, iota_exp_term = iota_exp_multiplier ) {
 	for ( int array_iter = 0 ; array_iter < 12 ; array_iter++ ) {
 	  i_accumulator = ( pow(omega_working,array_iter) * iota_record_current->power_series[array_iter] );
 	  iota_real_part_accumulator += i_accumulator.real();

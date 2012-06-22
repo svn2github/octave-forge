@@ -56,7 +56,7 @@ end
 arrays = cell(1,length(filenames));
 
 for i=1:length(filenames)
-    arrays{i} = ncArray(filenames{i},varname);
+    arrays{i} = ncBaseArray(filenames{i},varname);
 end
 
 

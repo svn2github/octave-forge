@@ -1,5 +1,5 @@
 function test_ncarray()
-% test ncArray, ncCatArray, ncData and ncCatData
+% test ncBaseArray, ncCatArray, ncData and ncCatData
 
 varname = 'SST';
 
@@ -30,12 +30,12 @@ test = ncread(tmpfname,'SST');
 assert(isequalwithequalnans(test,SST_ref))
 
 
-%%% test ncArray
+%%% test ncBaseArray
 
 % reading
 
 copyfile(files{2},tmpfname);
-SST = ncArray(tmpfname,varname);
+SST = ncBaseArray(tmpfname,varname);
 test = SST(:,:,:);
 SST_ref = ncread(tmpfname,varname);
 
@@ -63,9 +63,9 @@ assert(isequalwithequalnans(3 * r,SST_ref));
 % reading
 
 CA = CatArray(3,{...
-    ncArray(filename,varname),...
-    ncArray(files{2},varname),...
-    ncArray(files{3},varname)...
+    ncBaseArray(filename,varname),...
+    ncBaseArray(files{2},varname),...
+    ncBaseArray(files{3},varname)...
     });
 
 assert(isequalwithequalnans(size(CA),[220   144     3]))
@@ -84,9 +84,9 @@ SST_ref = ncread(files{2},'SST');
 assert(isequalwithequalnans(SST_test,SST_ref))
 
 CA2 = CatArray(4,{...
-    ncArray(files{1},varname),...
-    ncArray(files{2},varname),...
-    ncArray(files{3},varname)...
+    ncBaseArray(files{1},varname),...
+    ncBaseArray(files{2},varname),...
+    ncBaseArray(files{3},varname)...
     });
 
 SST_test = CA2(:,:,:,2);
@@ -164,17 +164,17 @@ assert(isequalwithequalnans(CA2(:,:,:),r))
 if 1
     % test ncData (constructor: ncData(var,dims,coord)
     
-    SST = ncArray(filename,varname);
+    SST = ncBaseArray(filename,varname);
     SST_ref = ncread(filename,varname);
     lon_ref = ncread(filename,'lon');
     
-    coord(1).val = ncArray(filename,'lon');
+    coord(1).val = ncBaseArray(filename,'lon');
     coord(1).dims = {'x','y'};
     
-    coord(2).val = ncArray(filename,'lat');
+    coord(2).val = ncBaseArray(filename,'lat');
     coord(2).dims = {'x','y'};
     
-    coord(3).val = ncArray(filename,'time');
+    coord(3).val = ncBaseArray(filename,'time');
     coord(3).dims = {'time'};
     
     data = ncData(SST,{'x','y','time'},coord);

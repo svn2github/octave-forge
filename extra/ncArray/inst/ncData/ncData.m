@@ -7,11 +7,11 @@ function retval = ncData(varargin)
 if ischar(varargin{1})
     filename = varargin{1};
     varname = varargin{2};
-    var = ncArray(filename,varname);    
+    var = ncBaseArray(filename,varname);    
     [dims,coord] = nccoord(cached_decompress(filename),varname);
     
     for i=1:length(coord)
-        coord(i).val = ncArray(filename,coord(i).name);
+        coord(i).val = ncBaseArray(filename,coord(i).name);
     end
 else
     var = varargin{1};    

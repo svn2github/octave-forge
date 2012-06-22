@@ -27,6 +27,6 @@ if length(idx) == 2 && strcmp(idx(2).type,'.') && strcmp(idx(2).subs,'coord')
         varargout{i} = subsref(self.coord(i).val,idx_c);
     end       
 else
-    % pass subsref to underlying ncArray
+    % pass subsref to underlying ncBaseArray
     varargout{1} = subsref(self.var,idx);
 end

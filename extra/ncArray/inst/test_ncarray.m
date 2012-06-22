@@ -1,5 +1,5 @@
 function test_ncarray()
-% test ncBaseArray, ncCatArray, ncArray and ncCatArray
+% test ncBaseArray, ncCatArray and ncArray
 
 varname = 'SST';
 
@@ -58,14 +58,44 @@ SST_ref = ncread(tmpfname,varname);
 assert(isequalwithequalnans(3 * r,SST_ref));
 
 
+
+%%% test ncArray
+
+% reading
+
+copyfile(files{2},tmpfname);
+SST = ncArray(tmpfname,varname);
+test = SST(:,:,:);
+SST_ref = ncread(tmpfname,varname);
+
+assert(isequalwithequalnans(test,SST_ref))
+assert(isempty(SST(:,:,:,[])));
+assert(isequalwithequalnans(SST_ref, SST(:,:,:,1)))
+
+ind = floor(numel(SST_ref) * rand(100,1))+1;
+assert(isequalwithequalnans(SST(ind),SST_ref(ind)))
+
+% writing
+
+r = round(randn(size(SST)));
+SST(:,:,:) = r;
+SST_ref = ncread(tmpfname,varname);
+assert(isequalwithequalnans(r,SST_ref));
+
+SST(:,:,:) = 3 * r;
+SST_ref = ncread(tmpfname,varname);
+assert(isequalwithequalnans(3 * r,SST_ref));
+
+
+
 %%% CatArray
 
 % reading
 
 CA = CatArray(3,{...
-    ncBaseArray(filename,varname),...
-    ncBaseArray(files{2},varname),...
-    ncBaseArray(files{3},varname)...
+    ncArray(filename,varname),...
+    ncArray(files{2},varname),...
+    ncArray(files{3},varname)...
     });
 
 assert(isequalwithequalnans(size(CA),[220   144     3]))
@@ -84,9 +114,9 @@ SST_ref = ncread(files{2},'SST');
 assert(isequalwithequalnans(SST_test,SST_ref))
 
 CA2 = CatArray(4,{...
-    ncBaseArray(files{1},varname),...
-    ncBaseArray(files{2},varname),...
-    ncBaseArray(files{3},varname)...
+    ncArray(files{1},varname),...
+    ncArray(files{2},varname),...
+    ncArray(files{3},varname)...
     });
 
 SST_test = CA2(:,:,:,2);
@@ -162,7 +192,7 @@ assert(isequalwithequalnans(CA2(:,:,:),r))
 
 
 if 1
-    % test ncArray (constructor: ncData(var,dims,coord)
+    % test ncArray (constructor: ncArray(var,dims,coord)
     
     SST = ncBaseArray(filename,varname);
     SST_ref = ncread(filename,varname);
@@ -229,5 +259,6 @@ SST_test = CA2(:,:,2);
 SST_ref = ncread(files{2},'SST');
 assert(isequalwithequalnans(SST_test,SST_ref))
 
-disp('All tests passed.')
+assert(strcmp(CA2.units,'degC'));
 
+disp('All tests passed.')

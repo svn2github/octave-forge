@@ -52,7 +52,9 @@ if strcmp(idx.type,'()') && length(idx.subs) == 1
         end
         
     end
-    
+elseif strcmp(idx.type,'.')
+  % load attributes from first array
+    B = subsref(self.arrays{1},idx);
 else
     B = subsref_canonical(self,idx);
 end

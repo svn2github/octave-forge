@@ -82,7 +82,8 @@ function dat = cat (dim, varargin)
 
   ## store all datasets in a single struct 'tmp'
   ## tmp is not a valid iddata set anymore,
-  ## but it doesn't matter, we want just a struct
+  ## but it doesn't matter, we want just a
+  ## temporary struct containing all the data
   tmp = cellfun (@iddata, varargin);
   [n, p, m, e] = cellfun (@size, varargin, "uniformoutput", false);
   
@@ -91,6 +92,7 @@ function dat = cat (dim, varargin)
 
   ## default values for metadata
   ## some of them are overwritten in the switch statement below
+  tsam = tmp(1).tsam;
   expname = tmp(1).expname;
   outname = tmp(1).outname;
   outunit = tmp(1).outunit;
@@ -128,13 +130,14 @@ function dat = cat (dim, varargin)
       y = vertcat (tmp.y);
       u = vertcat (tmp.u);
 
+      tsam = vertcat (tmp.tsam);
       expname = vertcat (tmp.expname);
 
     otherwise
       error ("iddata: cat: '%d' is an invalid dimension", dim);
   endswitch
   
-  dat = iddata (y, u);
+  dat = iddata (y, u, tsam);
 
   ## copy metadata
   dat.expname = expname;  
@@ -143,7 +146,7 @@ function dat = cat (dim, varargin)
   dat.inname = inname;
   dat.inunit = inunit;
   
-  % TODO: handle tsam, w
+  % TODO: handle w
 
 endfunction
 

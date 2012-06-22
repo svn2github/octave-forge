@@ -1,8 +1,8 @@
-% data = ncData(filename,varname)
-% data = ncData(var,dims,coord)
+% data = ncArray(filename,varname)
+% data = ncArray(var,dims,coord)
 % data with coordinate values
 
-function retval = ncData(varargin)
+function retval = ncArray(varargin)
 
 if ischar(varargin{1})
     filename = varargin{1};
@@ -24,7 +24,7 @@ self.dims = dims;
 self.nd = length(self.dims);
 self.coord = coord;
 
-retval = class(self,'ncData',BaseArray(size(self.var)));
+retval = class(self,'ncArray',BaseArray(size(self.var)));
 
 
 

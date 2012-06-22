@@ -1,5 +1,5 @@
 function test_ncarray()
-% test ncBaseArray, ncCatArray, ncData and ncCatData
+% test ncBaseArray, ncCatArray, ncArray and ncCatData
 
 varname = 'SST';
 
@@ -162,7 +162,7 @@ assert(isequalwithequalnans(CA2(:,:,:),r))
 
 
 if 1
-    % test ncData (constructor: ncData(var,dims,coord)
+    % test ncArray (constructor: ncData(var,dims,coord)
     
     SST = ncBaseArray(filename,varname);
     SST_ref = ncread(filename,varname);
@@ -177,7 +177,7 @@ if 1
     coord(3).val = ncBaseArray(filename,'time');
     coord(3).dims = {'time'};
     
-    data = ncData(SST,{'x','y','time'},coord);
+    data = ncArray(SST,{'x','y','time'},coord);
     
     [x,y,t] = data(:,:,:).coord;
     
@@ -192,8 +192,8 @@ if 1
     [x,y,t] = data(1:3:end,:,:).coord;
     assert(isequalwithequalnans(x,lon_ref(1:3:end,:)))
     
-    % test ncData (constructor: ncData(filename,varname)
-    SST = ncData(filename,varname);
+    % test ncArray (constructor: ncData(filename,varname)
+    SST = ncArray(filename,varname);
     [x,y,t] = data(:,:,:).coord;
     
     assert(isequalwithequalnans(data(:,:,:),SST_ref))
@@ -218,7 +218,7 @@ end
 zname = [tmpfname '.gz'];
 system(['gzip --stdout ' tmpfname ' > ' zname]);
 
-SST = ncData(zname,'SST');
+SST = ncArray(zname,'SST');
 SST_ref = ncread(tmpfname,'SST');
 assert(isequalwithequalnans(SST(),SST_ref))
 

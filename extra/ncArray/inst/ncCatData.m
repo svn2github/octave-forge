@@ -79,7 +79,7 @@ for i=1:length(coord)
     end
 end
 
-data = ncData(var,dims,coord);
+data = ncArray(var,dims,coord);
 
 end
 

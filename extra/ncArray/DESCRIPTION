@@ -1,0 +1,11 @@
+Name: ncArray
+Version: 1.0.0
+Date: 2012-06-22
+Author: Alexander Barth <barth.alexander@gmail.com>
+Maintainer: Alexander Barth <barth.alexander@gmail.com>
+Title: ncArray
+Description: Subsetting and concatenating of NetCDF files
+Depends: octave (>= 3.4.0)
+Autoload: yes
+License: GPL version 2 or later
+Url: http://octave.sf.net

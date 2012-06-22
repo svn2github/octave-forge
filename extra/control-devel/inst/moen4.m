@@ -23,6 +23,52 @@
 ## Combined method:  MOESP  algorithm for finding the
 ## matrices A and C, and  N4SID  algorithm for
 ## finding the matrices B and D.
+##
+## @strong{Inputs}
+## @table @var
+## @item dat
+## iddata set containing the measurements.
+## @item n
+## The desired order of the resulting state-space system @var{sys}.
+## If not specified, @var{n} is chosen automatically according
+## to the singular values and tolerances.
+## @item @dots{}
+## Optional pairs of keys and values.  @code{'key1', value1, 'key2', value2}.
+## @item opt
+## Optional struct with keys as field names.
+## Struct @var{opt} can be created directly or
+## by command @command{options}.  @code{opt.key1 = value1, opt.key2 = value2}.
+## @end table
+##
+##
+## @strong{Outputs}
+## @table @var
+## @item sys
+## Discrete-time state-space model.
+## @item x0
+## Initial state vector.  If @var{dat} is a multi-experiment dataset,
+## @var{x0} becomes a cell vector containing an initial state vector
+## for each experiment.
+## @item info
+## Struct containing additional information.
+## @table @var
+## @item info.K
+## Kalman gain matrix.
+## @item info.Q
+## State covariance matrix.
+## @item info.Ry
+## Output covariance matrix.
+## @item info.S
+## State-output cross-covariance matrix.
+## @item info.L
+## Noise variance matrix factor. LL'=Ry.
+## @end table
+## @end table
+##
+## @strong{Algorithm}@*
+## Uses SLICOT IB01AD, IB01BD and IB01CD by courtesy of
+## @uref{http://www.slicot.org, NICONET e.V.}
+##
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>

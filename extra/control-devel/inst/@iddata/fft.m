@@ -17,11 +17,35 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{dat} =} fft (@var{dat})
-## @deftypefnx {Function File} {@var{dat} =} fft (@var{dat}, @var{ord})
-## Detrend outputs and inputs of dataset @var{dat} by
-## removing the best fit of a polynomial of order @var{ord}.
-## If @var{ord} is not specified, default value 0 is taken.
-## This corresponds to removing a constant.
+## @deftypefnx {Function File} {@var{dat} =} fft (@var{dat}, @var{n})
+## Compute the discrete Fourier transform of @var{dat} using a Fast Fourier
+## Transform (FFT) algorithm.
+##
+## @strong{Inputs}
+## @table @var
+## @item dat
+## iddata set containing signals in time-domain.
+## @item n
+## Length of the FFT transformations.  If @var{n} does not match
+## the signal length, the signals in @var{dat} are shortened or
+## padded with zeros.  @var{n} is a vector with as many elements
+## as there are experiments in @var{dat} or a scalar with a common
+## length for all experiments.
+## If not specified, the signal lengths are taken as default values.
+## @end table
+##
+## @strong{Outputs}
+## @table @var
+## @item dat
+## iddata identification dataset in frequency-domain.
+## In order to preserve signal power and noise level,
+## the FFTs are normalized by dividing each transform
+## by the square root of the signal length.
+## The frequency values are distributed equally from 0
+## to the Nyquist frequency.  The Nyquist frequency is
+## only included for even signal lengths.
+## @end table
+##
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>

@@ -16,9 +16,10 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} get (@var{sys})
+## @deftypefn {Function File} get (@var{dat})
 ## @deftypefnx {Function File} {@var{value} =} get (@var{dat}, @var{"property"})
 ## Access property values of iddata objects.
+## Type @command{get(dat)} to display a list of available properties.
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>

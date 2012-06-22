@@ -17,11 +17,26 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{dat} =} ifft (@var{dat})
-## @deftypefnx {Function File} {@var{dat} =} ifft (@var{dat}, @var{ord})
-## Detrend outputs and inputs of dataset @var{dat} by
-## removing the best fit of a polynomial of order @var{ord}.
-## If @var{ord} is not specified, default value 0 is taken.
-## This corresponds to removing a constant.
+## Transform iddata objects from frequency to time domain.
+##
+## @strong{Inputs}
+## @table @var
+## @item dat
+## iddata set containing signals in frequency domain.
+## The frequency values must be distributed equally from 0
+## to the Nyquist frequency.  The Nyquist frequency is
+## only included for even signal lengths.
+## @end table
+##
+## @strong{Outputs}
+## @table @var
+## @item dat
+## iddata identification dataset in time domain.
+## In order to preserve signal power and noise level,
+## the FFTs are normalized by multiplying each transform
+## by the square root of the signal length.
+## @end table
+##
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>

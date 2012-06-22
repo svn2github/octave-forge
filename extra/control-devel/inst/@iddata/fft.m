@@ -18,8 +18,8 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{dat} =} fft (@var{dat})
 ## @deftypefnx {Function File} {@var{dat} =} fft (@var{dat}, @var{n})
-## Compute the discrete Fourier transform of @var{dat} using a Fast Fourier
-## Transform (FFT) algorithm.
+## Transform iddata objects from time to frequency domain
+## using a Fast Fourier Transform (FFT) algorithm.
 ##
 ## @strong{Inputs}
 ## @table @var

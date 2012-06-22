@@ -16,15 +16,15 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{nvec} =} size (@var{sys})
-## @deftypefnx {Function File} {@var{n} =} size (@var{sys}, @var{dim})
-## @deftypefnx {Function File} {[@var{n}, @var{p}, @var{m}, @var{ne}] =} size (@var{sys})
-## LTI model size, i.e. number of outputs and inputs.
+## @deftypefn {Function File} {@var{nvec} =} size (@var{dat})
+## @deftypefnx {Function File} {@var{ndim} =} size (@var{dat}, @var{dim})
+## @deftypefnx {Function File} {[@var{n}, @var{p}, @var{m}, @var{e}] =} size (@var{dat})
+## Return dimensions of iddata set @var{dat}.
 ##
 ## @strong{Inputs}
 ## @table @var
-## @item sys
-## LTI system.
+## @item dat
+## iddata set.
 ## @item dim
 ## If given a second argument, @command{size} will return the size of the
 ## corresponding dimension.
@@ -33,14 +33,19 @@
 ## @strong{Outputs}
 ## @table @var
 ## @item nvec
-## Row vector.  The first element is the number of outputs (rows) and the second
-## element the number of inputs (columns).
-## @item n
+## Row vector.  The first element is the total number of samples (rows of dat.y and dat.u).
+## The second element is the number of outputs (columns of dat.y) and the third element
+## the number of inputs (columns of dat.u).  The fourth element is the number of experiments.
+## @item ndim
 ## Scalar value.  The size of the dimension @var{dim}.
+## @item n
+## Row vector containing the number of samples of each experiment.
 ## @item p
 ## Number of outputs.
 ## @item m
 ## Number of inputs.
+## @item e
+## Number of experiments.
 ## @end table
 ## @end deftypefn
 

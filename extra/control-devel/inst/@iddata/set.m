@@ -17,10 +17,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} set (@var{dat})
-## @deftypefnx {Function File} set (@var{retdat}, @var{"property"}, @var{value}, @dots{})
+## @deftypefnx {Function File} set (@var{dat}, @var{"property"}, @var{value}, @dots{})
 ## @deftypefnx {Function File} {@var{dat} =} set (@var{dat}, @var{"property"}, @var{value}, @dots{})
 ## Set or modify properties of iddata objects.
-## If no return argument @var{retdat} is specified, the modified LTI object is stored
+## If no return argument @var{dat} is specified, the modified LTI object is stored
 ## in input argument @var{dat}.  @command{set} can handle multiple properties in one call:
 ## @code{set (dat, 'prop1', val1, 'prop2', val2, 'prop3', val3)}.
 ## @code{set (dat)} prints a list of the object's property names.

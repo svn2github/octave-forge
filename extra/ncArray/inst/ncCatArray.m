@@ -5,7 +5,7 @@
 % create a concatenated array from variables (varname) in a list of
 % netcdf files along dimension dim.Individual elements can be accessed by
 % subscribs, e.g. C(2,3) and the corrsponding subset of the appropriate file is loaded
-%
+
 % This list of netcdf files can be specified as a cell array (filenames),
 % shell wildcard pattern (e.g. file_*.nc) or a function handle
 % filenamefun. In this later case, this i-th filename is
@@ -27,7 +27,9 @@
 
 % Author: Alexander Barth (barth.alexander@gmail.com)
 %
-function ncCA = ncCatArray(dim,pattern,varname,range)
+function data = ncCatArray(dim,pattern,varname,range)
+
+catdimname = '_cat_dim';
 
 if iscell(pattern)
     filenames = pattern;
@@ -53,15 +55,43 @@ elseif isa(pattern, 'function_handle')
     end
 end
 
-arrays = cell(1,length(filenames));
+if nargin == 3
+    range = 1:length(filenames);
+end
 
+var = arr(dim,filenames,varname);
+
+[dims,coord] = nccoord(cached_decompress(filenames{1}),varname);
+
+if dim > length(dims)
+    % concatenate is new dimension
+    dims{dim} = catdimname;
+    coord(dim).dims = {catdimname};
+    coord(dim).val = range;
+end
+
+
+for i=1:length(coord)
+    % coordinates do also depend on the dimension only which we concatenate
+    coord(i).val = arr(dim,filenames,coord(i).name);
+    if dim > length(coord(i).dims)
+        coord(i).dims{dim} = catdimname;
+    end
+end
+
+data = ncArray(var,dims,coord);
+
+end
+
+
+function CA = arr(dim,filenames,varname)
+arrays = cell(1,length(filenames));
 for i=1:length(filenames)
     arrays{i} = ncBaseArray(filenames{i},varname);
 end
 
-
-ncCA = CatArray(dim,arrays);
-
+CA = CatArray(dim,arrays);
+end
 % Copyright (C) 2012 Alexander Barth <barth.alexander@gmail.com>
 %
 % This program is free software; you can redistribute it and/or modify

@@ -1,5 +1,5 @@
 function test_ncarray()
-% test ncBaseArray, ncCatArray, ncArray and ncCatData
+% test ncBaseArray, ncCatArray, ncArray and ncCatArray
 
 varname = 'SST';
 
@@ -224,7 +224,7 @@ assert(isequalwithequalnans(SST(),SST_ref))
 
 
 
-CA2 = ncCatData(3,fullfile(tmpdir,'file*nc'),varname);
+CA2 = ncCatArray(3,fullfile(tmpdir,'file*nc'),varname);
 SST_test = CA2(:,:,2);
 SST_ref = ncread(files{2},'SST');
 assert(isequalwithequalnans(SST_test,SST_ref))

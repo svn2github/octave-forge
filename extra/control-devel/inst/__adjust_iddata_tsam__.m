@@ -40,9 +40,13 @@ function tsam = __adjust_iddata_tsam__ (tsam, e)
     error ("iddata: invalid sampling time");
   endif
 
-  if (numel (tsam) != e)
+  nt = numel (tsam);
+
+  if (nt == 1 && e > 1)
+    tsam = repmat (tsam, e, 1);
+  elseif (nt != e)
     error ("iddata: there are %d experiments, but only %d sampling times", \
-           e, numel (tsam));
+           e, nt);
   endif
 
 endfunction

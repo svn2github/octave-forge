@@ -42,6 +42,10 @@
 ## and n(i) the individual number of samples for each experiment.
 ## @item tsam
 ## Sampling time.  If not specified, default value -1 (unspecified) is taken.
+## For multi-experiment data, @var{tsam} becomes a
+## e-by-1 or 1-by-e cell vector containing individual
+## sampling times for each experiment.  If a scalar @var{tsam}
+## is provided, then all experiments have the same sampling time.
 ## @item @dots{}
 ## Optional pairs of properties and values.
 ## @end table

@@ -7,13 +7,11 @@ Experimental Data Handling
   @iddata/diff
   @iddata/fft
   @iddata/get
-  @iddata/horzcat
   @iddata/ifft
   @iddata/merge
   @iddata/plot
   @iddata/set
   @iddata/size
-  @iddata/vertcat
 System Identification
   arx
   fitfrd

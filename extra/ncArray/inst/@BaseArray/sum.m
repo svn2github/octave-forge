@@ -1,4 +1,4 @@
-% s = sum (X, DIM)
+% s = sum (x, dim)
 % compute the sum along dimension dim
 % See also
 %   sum

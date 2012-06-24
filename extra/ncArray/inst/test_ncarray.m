@@ -132,6 +132,14 @@ stdSST = std(SST,[],2);
 stdSSTref = std(SST_ref,[],2);
 assert(isequalwithequalnans(stdSST, stdSSTref))
 
+maxSST = max(SST,[],2);
+maxSSTref = max(SST_ref,[],2);
+assert(isequalwithequalnans(maxSST, maxSSTref))
+
+minSST = min(SST,[],2);
+minSSTref = min(SST_ref,[],2);
+assert(isequalwithequalnans(minSST, minSSTref))
+
 
 % writing
 

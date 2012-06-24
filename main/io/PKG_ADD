@@ -7,6 +7,7 @@ if ~isempty (javapkgind)
   if javapkg.loaded
     # Assume jar files are in /lib/java and let chk_spreadsheet_support sort it out
     libdir = octave_config_info("libdir");
+    pause (0.5);
     spr_status = chk_spreadsheet_support ([libdir "/java"]);
   endif
 endif

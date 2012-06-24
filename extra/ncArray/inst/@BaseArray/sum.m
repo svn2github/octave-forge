@@ -1,3 +1,8 @@
+% s = sum (X, DIM)
+% compute the sum along dimension dim
+% See also
+%   sum
+
 function s = sum(self,varargin)
 
 funred = @plus;

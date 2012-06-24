@@ -95,6 +95,43 @@ sumSST = sum(SST);
 sumSSTref = sum(SST_ref);
 assert(isequalwithequalnans(sumSST, sumSSTref))
 
+prodSST = prod(SST);
+prodSSTref = prod(SST_ref);
+assert(isequalwithequalnans(prodSST, prodSSTref))
+
+
+sumsqSST = sumsq(SST);
+sumsqSSTref = sumsq(SST_ref);
+assert(isequalwithequalnans(sumsqSST, sumsqSSTref))
+
+meanSST = mean(SST);
+meanSSTref = mean(SST_ref);
+assert(isequalwithequalnans(meanSST, meanSSTref))
+
+varSST = var(SST);
+varSSTref = var(SST_ref);
+assert(isequalwithequalnans(varSST, varSSTref))
+
+varSST = var(SST,1);
+varSSTref = var(SST_ref,1);
+assert(isequalwithequalnans(varSST, varSSTref))
+
+varSST = var(SST,[],2);
+varSSTref = var(SST_ref,[],2);
+assert(isequalwithequalnans(varSST, varSSTref))
+
+stdSST = std(SST);
+stdSSTref = std(SST_ref);
+assert(isequalwithequalnans(stdSST, stdSSTref))
+
+stdSST = std(SST,1);
+stdSSTref = std(SST_ref,1);
+assert(isequalwithequalnans(stdSST, stdSSTref))
+
+stdSST = std(SST,[],2);
+stdSSTref = std(SST_ref,[],2);
+assert(isequalwithequalnans(stdSST, stdSSTref))
+
 
 % writing
 

@@ -84,6 +84,9 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 % 2011-09-18 Fixed 'Matlab style short circuit' warning in L. 152
 % 2012-12-24 Amended code stanze to find unoil.jar; now works in LibreOffice 3.5b2 as well
 % 2012-06-07 Replaced all tabs by double space
+% 2012-06-24 Replaced error msg by printf & return
+%     ''     Added Java pkg inquiry (Octave) before attempting javaclasspath()
+%     ''     Updated check for odfdom version (now supports 0.8.8)
 
   jcp = []; retval = 0;
   if (nargin < 3); path_to_ooo= ''; end %if
@@ -106,7 +109,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
   catch
     % COM not supported
     if (dbug), fprintf ('not working.\n\n'); end %if
-    end %try_catch
+  end %try_catch
 
     % Check Java
   if (dbug), fprintf ('Checking Java support...\n'); end %if
@@ -120,15 +123,25 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
     end %if
   else
     tst1 = version ('-java');
-        jtst = isempty (strfind (tst1, 'Java'));
+    jtst = isempty (strfind (tst1, 'Java'));
   end %if
   if (jtst)
-    error ('Apparently no Java JRE installed.');
+    printf ('Apparently no Java JRE installed.\n');
+    return;
   else
     if (dbug > 1), fprintf ('OK, found one.\n'); end %if
   end %if
   if (dbug > 1 && isOctave), fprintf ('  2. Checking Octave Java support... '); end %if
   try
+    if (isOctave)
+      % Check Java package
+      [~, b] = pkg ('describe', 'java');
+      if    (strcmpi (b{:}, 'Not loaded'))
+        if (dbug > 1); printf ('Java package not loaded. First do: "pkg load java"\n'); end %if
+      elseif strcmpi (b{:}, 'Not installed')
+        if (dbug > 1); printf ('Java package is not installed.\n'); end %if
+      endif
+    end %if
     jcp = javaclasspath ('-all');            % For Octave java pkg > 1.2.7
     if (isempty (jcp)), jcp = javaclasspath; end %if  % For Octave java pkg < 1.2.8
     % If we get here, at least Java works.
@@ -152,7 +165,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
     % Under *nix the classpath must first be split up.
     % Matlab is braindead here. For ML we need a replacement for Octave's builtin strsplit()
     % This is found on ML Central (BSD license so this is allowed) & adapted for input arg order
-     if (isunix && ~iscell (jcp)); jcp = strsplit (char (jcp), ':'); end %if
+    if (isunix && ~iscell (jcp)); jcp = strsplit (char (jcp), ':'); end %if
     if (dbug > 1)
       % Check JVM virtual memory settings
       jrt = javaMethod ('getRuntime', 'java.lang.Runtime');
@@ -173,8 +186,9 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
       end %if
     end %if
     if (dbug), fprintf ('Java support OK\n'); end %if
-    catch
-    error ('No Java support found: %s.', lasterr);
+  catch
+    printf ('No Java support found.\n');
+    return
   end %try_catch
 
   if (dbug), fprintf ('\nChecking javaclasspath for .jar class libraries needed for spreadsheet I/O...:\n'); end %if
@@ -320,8 +334,9 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
       % Worked in 0.7.5
       odfvsn = javaMethod ('getApplicationVersion', 'org.odftoolkit.odfdom.Version');
     end %try_catch
-    if ~(strcmp (odfvsn, '0.7.5') || strcmp (odfvsn, '0.8.6') || strcmp (odfvsn, '0.8.7'))
-      warning ('  *** odfdom version (%s) is not supported - use v. 0.8.6 or 0.8.7.\n', odfvsn);
+    if ~(strcmp (odfvsn, '0.7.5') || strcmp (odfvsn, '0.8.6') || strcmp (odfvsn, '0.8.7')
+      || ~isempty (strfind (odfvsn, '0.8.8')))
+      warning ('  *** odfdom version (%s) is not supported - use v. 0.8.6 or newer\n', odfvsn);
     else  
       if (dbug > 1), fprintf ('  => ODFtoolkit (OTK) OK.\n'); end %if
       retval = retval + 32;
@@ -398,7 +413,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 
   if (~ujars_complete && nargin > 0 && ~isempty (path_to_ooo))
     if (dbug), fprintf ('\nTrying to add missing UNO java class libs to javaclasspath...\n'); end %if
-    if (~ischar (path_to_jars)), error ('Path expected for arg # 1'); end %if
+    if (~ischar (path_to_jars)), printf ('Path expected for arg # 1\n'); return; end %if
     % Add missing jars to javaclasspath. First combine all entries
     targt = sum (missing0);
     if (missing0(1))
@@ -414,7 +429,10 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
           if (dbug > 2), fprintf ('FAILED\n'); end %if
         end %try_catch
       else
-        if (dbug > 2), error ('Suggested OpenOffice.org install directory: %s not found!\n', path_to_ooo); end %if
+        if (dbug > 2)
+          printf ('Suggested OpenOffice.org install directory: %s not found!\n', path_to_ooo); 
+          return
+        end %if
       end %if
     end %if
     % Rest of missing entries. Find where URE is located. Watch out because case of ./ure is unknown
@@ -492,7 +510,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
   jars_complete = isempty (find (missing, 1));
   if (dbug)
     if (jars_complete)
-      fprintf ('All interfaces already fully supported.\n\n');
+      fprintf ('All Java-based interfaces (save UNO) fully supported.\n\n');
     else
       fprintf ('Some class libs lacking yet...\n\n'); 
     end %if
@@ -501,7 +519,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
   if (~jars_complete && nargin > 0 && ~isempty (path_to_jars))
     % Add missing jars to javaclasspath. Assume they're all in the same place
     if (dbug), fprintf ('Trying to add missing java class libs to javaclasspath...\n'); end %if
-    if (~ischar (path_to_jars)), error ('Path expected for arg # 1'); end %if
+    if (~ischar (path_to_jars)), printf ('Path expected for arg # 1\n'); return; end %if
     % First combine all entries
     targt = sum (missing);
     % Search tru list of missing entries
@@ -536,7 +554,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
       if (targt)
         fprintf ('Some other class libs still lacking...\n\n');
       else
-        fprintf ('All interfaces fully supported.now.\n\n');
+        fprintf ('All Java-based interfaces fully supported.now.\n\n');
       end %if
     end %f
   end %if

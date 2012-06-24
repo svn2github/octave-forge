@@ -56,7 +56,7 @@ self.vinfo = ncinfo(cached_decompress(filename),varname);
 self.sz = self.vinfo.Size;
 
 self.dims = self.vinfo.Dimensions;
-self.nd = length(self.dims);
+self.nd = length(self.dims); % number of netcdf dimensions
 
 retval = class(self,'ncBaseArray',BaseArray(self.sz));
 end

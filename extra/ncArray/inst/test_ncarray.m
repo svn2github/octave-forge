@@ -1,4 +1,4 @@
-function test_ncarray()
+%function test_ncarray()
 % test ncBaseArray, ncCatArray and ncArray
 
 varname = 'SST';
@@ -74,6 +74,27 @@ assert(isequalwithequalnans(SST_ref, SST(:,:,:,1)))
 
 ind = floor(numel(SST_ref) * rand(100,1))+1;
 assert(isequalwithequalnans(SST(ind),SST_ref(ind)))
+
+assert(isequalwithequalnans(SST_ref(1,:,:), SST(1,:,:)))
+
+% sum
+
+sumSST = sum(SST,1);
+sumSSTref = sum(SST_ref,1);
+assert(isequalwithequalnans(sumSST, sumSSTref))
+
+sumSST = sum(SST,2);
+sumSSTref = sum(SST_ref,2);
+assert(isequalwithequalnans(sumSST, sumSSTref))
+
+sumSST = sum(SST,3);
+sumSSTref = sum(SST_ref,3);
+assert(isequalwithequalnans(sumSST, sumSSTref))
+
+sumSST = sum(SST);
+sumSSTref = sum(SST_ref);
+assert(isequalwithequalnans(sumSST, sumSSTref))
+
 
 % writing
 

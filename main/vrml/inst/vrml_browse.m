@@ -32,7 +32,7 @@
 ## 's'   : Save a snapshot in files 'octave.snapshot.NNNN.ppm'
 ## 'q'   : Quit
 ## 
-## WARNING : FreeWRL >0.25 (http://www.crc.ca/FreeWRL/) must be installed.
+## WARNING: vrml_browse() only works if a vrml browser is available. See vrml_set_browser().
 ##
 ## BUG     : The vrml browser is not killed when octave exits. Sometimes the
 ##           vrml browser does not get raised or gets raised improperly
@@ -85,9 +85,11 @@ if ! index (s, "Background")
   s = [s, vrml_Background("skyColor",[.7 .7 .9])];
 end
 
+if isempty (vrml_b_name)
+  vrml_set_browser();
+endif
 
-vrml_b_name = "freewrl" ;
-##vrml_b_name = "/home/etienne/bin/my_freewrl.sh";
+## vrml_b_name = "freewrl" ;
 
 ##b_opt = [out_option," ",bop," ",best_option," --server --snapb octave.snap "]
 ##;
@@ -165,7 +167,7 @@ save_vrml (b_temp, s); # "nobg", s) ;
 				# ####################################
 
 				# ####################################
-				# Eventually start browser ###########
+				# If needed, start browser ###########
 if vrml_b_pid <= 0
   new_browser = 1 ;
   if verbose, 

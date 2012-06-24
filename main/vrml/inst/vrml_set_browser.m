@@ -35,7 +35,7 @@
 ##
 function full_path = vrml_set_browser (proposed_browser_name)
 
-global vrml_b_name;
+global vrml_b_name = [];
 
 full_path = vrml_b_name;
 
@@ -46,8 +46,11 @@ if nargin < 1 || isempty (proposed_browser_name)
   for i = 1:numel(browser_list)
 
     ## TODO: Test this under windows
-    [status, full_path] = system (sprintf ("which %s", b{i}));
+    [status, full_path] = system (sprintf ("which %s", browser_list{i}));
     if status != 1
+      if full_path(length(full_path)) == "\n",
+	full_path = full_path(1:end-1);
+      end
       vrml_b_name = full_path;
       return;
     endif
@@ -61,4 +64,7 @@ endif
 if status == 1
   error (sprintf ("VRML browser `%s' is not available", proposed_browser_name));
 endif
+if full_path(length(full_path)) == "\n",
+  full_path = full_path(1:end-1);
+end
 vrml_b_name = full_path;

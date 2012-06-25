@@ -13,12 +13,14 @@
 ## You should have received a copy of the GNU General Public License along with
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
-## -*-texinfo-*-
+## -*- texinfo -*-
 ## @deftypefn {Function File} {c =} lombnormcoeff (time, mag, freq)
 ##
 ## Return the coefficient of the Lomb Normalised Periodogram at the
 ## specified @var{frequency} of the periodogram applied to the
 ## (@var{time}, @var{mag}) series.
+##
+## @end deftypefn
 
 function coeff = lombnormcoeff(T,X,omega)
 tau = atan2( sum( sin( 2.*omega.*T)), sum(cos(2.*omega.*T))) / 2;

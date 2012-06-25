@@ -107,6 +107,7 @@ ComplexRowVector flsreal( RowVector tvec , ComplexRowVector xvec ,
     complex_record_current = complex_record_current->next;
     iota_record_current = iota_record_current->next;
   }
+  // Error's past this point
   complex_record_tail = complex_record_current;
   iota_record_tail = iota_record_current;
   complex_record_current = complex_precomp_records_head;
@@ -119,7 +120,6 @@ ComplexRowVector flsreal( RowVector tvec , ComplexRowVector xvec ,
     for ( int j = 0 ; j < 12 ; j++ ) { 
       complex_record_current->power_series[j] = std::complex<double> ( 0 , 0 );
     } // To avoid any trouble down the line, although it is an annoyance.
-    // Error is traced this far. Time to see if it's in this loop.
     while ( (k < n) && (abs(tvec(k)-tau_h) <= delta_tau) ) {
       double p;
       for ( int j = 0 ; j < 12 ; j++ ) {
@@ -164,7 +164,7 @@ ComplexRowVector flsreal( RowVector tvec , ComplexRowVector xvec ,
   tau_h = tau_0;
   for( ; iota_record_current != 0 ; iota_record_current = iota_record_current->next ) {
     for ( int j = 0 ; j < 12 ; j++ ) { 
-      complex_record_current->power_series[j] = std::complex<double> ( 0 , 0 );
+      iota_record_current->power_series[j] = std::complex<double> ( 0 , 0 );
     }
     while( ( k < n ) && (abs(tvec(k)-tau_h) <= delta_tau) ) {
       double comps[12];
@@ -188,6 +188,7 @@ ComplexRowVector flsreal( RowVector tvec , ComplexRowVector xvec ,
 	}
       }
       iota_record_current->stored_data = true;
+      std::cout << "Precomputed " << iota_record_current << std::endl;
       k++;
     }
     tau_h += ( 2 * delta_tau );
@@ -237,7 +238,7 @@ ComplexRowVector flsreal( RowVector tvec , ComplexRowVector xvec ,
 	zeta_imag_part = zeta_imag_part + ( zeta_exp_term.imag() * zeta_real_part_accumulator + zeta_exp_term.real() * zeta_imag_part_accumulator );
       }
       for ( iota_record_current = iota_precomp_records_head; iota_record_current ;
-	    iota_record_current = iota_record_current->next, iota_exp_term = iota_exp_multiplier ) {
+	    iota_record_current = iota_record_current->next, iota_exp_term *= iota_exp_multiplier ) {
 	for ( int array_iter = 0 ; array_iter < 12 ; array_iter++ ) {
 	  i_accumulator = ( pow(omega_working,array_iter) * iota_record_current->power_series[array_iter] );
 	  iota_real_part_accumulator += i_accumulator.real();

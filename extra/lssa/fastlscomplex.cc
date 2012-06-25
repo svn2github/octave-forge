@@ -15,7 +15,18 @@ ComplexRowVector flscomplex( RowVector tvec , ComplexRowVector xvec ,
 			     double maxfreq , int octaves , int coefficients);
 
 
-DEFUN_DLD(fastlscomplex,args,nargout, "fastlscomplex(time,magnitude,maximum_frequency,octaves,coefficients)") {
+DEFUN_DLD(fastlscomplex,args,nargout, 
+	  "-*- texinfo -*-\n"
+"@deftypefn {Function File} { C = } fastlscomplex"
+	  "(@var{time},@var{magnitude},@var{maximum_frequency},@var{octaves},@var{coefficients})\n"
+"\n"
+"Return the complex least squares transform of the (@var{time},@var{magnitude}) series\n\
+supplied, using the fast algorithm.\n"
+"\n"
+"@seealso{lscomplex}\n"
+"@seealso{fastlsreal}\n"
+"\n"
+"@end deftypefn") {
   if ( args.length() != 5 ) {
     print_usage();
     return octave_value_list ();

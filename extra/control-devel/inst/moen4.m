@@ -106,10 +106,12 @@
 ##
 ##
 ## @item 'noise'
-## The desired order of the resulting reduced order system @var{Gr}.
+## The desired type of noise input channels.
 ## @table @var
 ## @item 'e'
-## Use the inverse free descriptor system approach.
+## Return @var{sys} as a (p-by-m+p) state-space model with
+## both measured input channels u and noise channels e
+## with covariance matrix @var{Ry}.
 ## @iftex
 ## @tex
 ## $$ x[k+1] = A x[k] + B u[k] + K e[k] $$
@@ -124,7 +126,9 @@
 ## @end ifnottex
 ##
 ## @item 'v'
-## Use the inversion based standard approach.
+## Return @var{sys} as a (p-by-m+p) state-space model with
+## both measured input channels u and white noise channels v
+## with identity covariance matrix.
 ## @iftex
 ## @tex
 ## $$ x[k+1] = A x[k] + B u[k] + K L v[k] $$
@@ -141,9 +145,7 @@
 ## @end ifnottex
 ##
 ## @item 'n'
-## Switch automatically to the inverse free
-## descriptor approach in case of badly conditioned
-## feedthrough matrices in V or W.  Default method.
+## No error inputs.  Default value.
 ## @iftex
 ## @tex
 ## $$ x[k+1] = A x[k] + B u[k] $$

@@ -65,6 +65,118 @@
 ## @end table
 ## @end table
 ##
+##
+##
+## @strong{Option Keys and Values}
+## @table @var
+## @item 'n'
+## The desired order of the resulting state-space system @var{sys}.
+##
+## @item 's'
+## The number of block rows @var{s} in the input and output
+## block Hankel matrices to be processed.  @var{s} > 0.
+## In the MOESP theory, @var{s} should be larger than @var{n},
+## the estimated dimension of state vector.
+##
+## @item 'alg', 'algorithm'
+## Specifies the algorithm for computing the triangular
+## factor R, as follows:
+## @table @var
+## @item 'C'
+## Cholesky algorithm applied to the correlation
+## matrix of the input-output data.  Default method.
+## @item 'F'
+## Fast QR algorithm.
+## @item 'Q'
+## QR algorithm applied to the concatenated block
+## Hankel matrices.
+## @end table
+##
+##
+## @item 'tol'
+## The desired order of the resulting reduced order system @var{Gr}.
+##
+##
+## @item 'rcond'
+## The desired order of the resulting reduced order system @var{Gr}.
+##
+##
+## @item 'confirm'
+## The desired order of the resulting reduced order system @var{Gr}.
+##
+##
+## @item 'noise'
+## The desired order of the resulting reduced order system @var{Gr}.
+## @table @var
+## @item 'e'
+## Use the inverse free descriptor system approach.
+## @iftex
+## @tex
+## $$ x[k+1] = A x[k] + B u[k] + K e[k] $$
+## $$ y[k] = C x[k] + D u[k] + e[k] $$
+## @end tex
+## @end iftex
+## @ifnottex
+## @example
+## x[k+1] = A x[k] + B u[k] + K e[k]
+## y[k]   = C x[k] + D u[k] +   e[k]
+## @end example
+## @end ifnottex
+##
+## @item 'v'
+## Use the inversion based standard approach.
+## @iftex
+## @tex
+## $$ x[k+1] = A x[k] + B u[k] + K L v[k] $$
+## $$ y[k] = C x[k] + D u[k] + L v[k] $$
+## $$ e = L v, \\ L L^T = Ry $$
+## @end tex
+## @end iftex
+## @ifnottex
+## @example
+## x[k+1] = A x[k] + B u[k] + K L v[k]
+## y[k]   = C x[k] + D u[k] +   L v[k]
+## e = L v,  L L' = Ry
+## @end example
+## @end ifnottex
+##
+## @item 'n'
+## Switch automatically to the inverse free
+## descriptor approach in case of badly conditioned
+## feedthrough matrices in V or W.  Default method.
+## @iftex
+## @tex
+## $$ x[k+1] = A x[k] + B u[k] $$
+## $$ y[k] = C x[k] + D u[k] $$
+## @end tex
+## @end iftex
+## @ifnottex
+## @example
+## x[k+1] = A x[k] + B u[k]
+## y[k]   = C x[k] + D u[k]
+## @end example
+## @end ifnottex
+## @end table
+##
+##
+## @item 'method'
+## Specifies the computational approach to be used.
+## Valid values corresponding to this key are:
+## @table @var
+## @item 'descriptor'
+## Use the inverse free descriptor system approach.
+## @item 'standard'
+## Use the inversion based standard approach.
+## @item 'auto'
+## Switch automatically to the inverse free
+## descriptor approach in case of badly conditioned
+## feedthrough matrices in V or W.  Default method.
+## @end table
+##
+##
+## @end table
+##
+##
 ## @strong{Algorithm}@*
 ## Uses SLICOT IB01AD, IB01BD and IB01CD by courtesy of
 ## @uref{http://www.slicot.org, NICONET e.V.}

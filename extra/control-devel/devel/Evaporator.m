@@ -51,10 +51,10 @@ Y=evaporator(:,4:6);
 
 dat = iddata (Y, U)
 
-[sys, x0] = moen4 (dat, 's', 10, 'n', 4)     % s=10, n=4
+[sys, x0] = moen4 (dat, 's', 10, 'n', 4, 'noise', 'k')     % s=10, n=4
 
 
-[y, t] = lsim (sys, U, [], x0);
+[y, t] = lsim (sys, [U, Y], [], x0);
 
 err = norm (Y - y, 1) / norm (Y, 1)
 

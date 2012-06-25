@@ -48,10 +48,10 @@ Y=glassfurnace(:,5:10);
 
 dat = iddata (Y, U)
 
-[sys, x0, info] = moen4 (dat, 's', 10, 'n', 5)     % s=10, n=5
+[sys, x0, info] = moen4 (dat, 's', 10, 'n', 5, 'noise', 'k')     % s=10, n=5
 
 
-[y, t] = lsim (sys, U, [], x0);
+[y, t] = lsim (sys, [U, Y], [], x0);
 
 err = norm (Y - y, 1) / norm (Y, 1)
 

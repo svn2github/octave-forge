@@ -66,13 +66,16 @@ Y_dest_n10=Y(:,4:6);
 Y_dest_n20=Y(:,7:9);
 Y_dest_n30=Y(:,10:12);
 
+Y = {Y_dest; Y_dest_n10; Y_dest_n20; Y_dest_n30};
+U = {U_dest; U_dest_n10; U_dest_n20; U_dest_n30};
 
-dat = iddata (Y_dest, U_dest)
+dat = iddata (Y, U)
 
-[sys, x0] = moen4 (dat, 's', 5, 'n', 4)    % s=5, n=4
+[sys, x0] = moen4 (dat, 's', 5, 'n', 4, 'noise', 'k')    % s=5, n=4
 
+x0=x0{1};
 
-[y, t] = lsim (sys, U_dest, [], x0);
+[y, t] = lsim (sys, [U_dest, Y_dest], [], x0);
 %[y, t] = lsim (sys, U_dest);
 
 err = norm (Y_dest - y, 1) / norm (Y_dest, 1)

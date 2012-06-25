@@ -71,6 +71,7 @@
 ## @table @var
 ## @item 'n'
 ## The desired order of the resulting state-space system @var{sys}.
+## @var{s} > @var{n} > 0.
 ##
 ## @item 's'
 ## The number of block rows @var{s} in the input and output

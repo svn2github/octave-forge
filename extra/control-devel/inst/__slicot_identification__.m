@@ -154,6 +154,11 @@ function [sys, x0, info] = __slicot_identification__ (method, dat, varargin)
     in_v = __labels__ (outname, "y");
     in_v = cellfun (@(x) ["v@", x], in_v, "uniformoutput", false);
     inname = [in_u; in_v];
+  elseif (strncmpi (noise, "k", 1))     # Kalman predictor
+    sys = ss ([a-k*c], [b-k*d, k], c, [d, zeros(p)], tsam);
+    in_u = __labels__ (inname, "u");
+    in_y = __labels__ (outname, "y");
+    inname = [in_u; in_y];
   else                                  # no error inputs, default
     sys = ss (a, b, c, d, tsam);
   endif

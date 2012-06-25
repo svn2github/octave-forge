@@ -51,10 +51,10 @@ Y=pHdata(:,4);
 
 dat = iddata (Y, U)
 
-[sys, x0] = moen4 (dat, 's', 15, 'n', 6)     % s=15, n=6
+[sys, x0] = moen4 (dat, 's', 15, 'n', 6, 'noise', 'k')     % s=15, n=6
 
 
-[y, t] = lsim (sys, U, [], x0);
+[y, t] = lsim (sys, [U, Y], [], x0);
 
 err = norm (Y - y, 1) / norm (Y, 1)
 st = isstable (sys)

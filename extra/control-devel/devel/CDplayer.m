@@ -50,10 +50,14 @@ Y=CD_player_arm_1(:,3:4);
 
 dat = iddata (Y, U)
 
-[sys, x0] = moen4 (dat, 8, 's', 15)     % s=15, n=8
+% [sys, x0] = moen4 (dat, 8, 's', 15)     % s=15, n=8
+[sys, x0] = moen4 (dat, 8, 's', 15, 'noise', 'k')     % s=15, n=8
 
 
-[y, t] = lsim (sys, U, [], x0);
+
+%[y, t] = lsim (sys, U, [], x0);
+[y, t] = lsim (sys, [U, Y], [], x0);
+
 
 err = norm (Y - y, 1) / norm (Y, 1)
 

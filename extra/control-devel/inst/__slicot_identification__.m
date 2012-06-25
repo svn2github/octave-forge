@@ -97,6 +97,7 @@ function [sys, x0, info] = __slicot_identification__ (method, dat, varargin)
       case "confirm"
         conf = logical (val);
       case "noise"
+        ## FIXME: find a more speaking name than 'noise' for this option
         noise = val;
       otherwise
         warning ("%s: invalid property name '%s' ignored", method, key);

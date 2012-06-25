@@ -61,6 +61,8 @@ st = isstable (sys)
 
 figure (1)
 plot (t, Y(:,1), 'b', t, y(:,1), 'r')
-
+ylim ([0, 15])
+title ('DaISy [96-014]: pH neutralization process in a stirring tank - highly non-linear')
+legend ('y measured', 'y simulated', 'location', 'southeast')
 
 

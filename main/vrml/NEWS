@@ -1,3 +1,15 @@
+Summary of important user-visible changes for vrml 1.X.X:
+-------------------------------------------------------------------
+
+ ** The following functions are new:
+
+      vrml_Shape
+      vrml_set_browser
+
+ ** Alternative vrml browsers are now supported with `vrml_set_browser'.
+    Default support for whitedune is now included in addition to freewrl.
+
+
 Summary of important user-visible changes for vrml 1.0.13:
 -------------------------------------------------------------------
 

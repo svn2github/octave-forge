@@ -35,6 +35,6 @@ function transform = lscomplex( t , x , omegamax , ncoeff , noctave )
     transform(iter) = sum( ( cos(ot) .- ( sin(ot) .* i ) ) .* x ); ## See the paper for the expression
     o *= omul; ## To advance the transform to the next coefficient in the octave
   endfor
-  transform .* n1;
+  transform ./ n;
 
 endfunction 

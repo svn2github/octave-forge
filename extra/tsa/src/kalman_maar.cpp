@@ -13,13 +13,11 @@
 // this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 // Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#include "mex.h"
-#include "memory.h"
+#include <mex.h>
+#include <memory.h>
 
-#ifndef WIN32
-#include "blas.h"
-#include "lapack.h"
-#endif
+#include <blas.h>
+#include <lapack.h>
 
 #include "kalman_maar.h"
 

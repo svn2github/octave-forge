@@ -109,14 +109,29 @@
 ## @item 'noise'
 ## The desired type of noise input channels.
 ## @table @var
+## @item 'n'
+## No error inputs.  Default value.
+## @iftex
+## @tex
+## $$ x_{k+1} = A x_k + B u_k $$
+## $$ y_k = C x_k + D u_k $$
+## @end tex
+## @end iftex
+## @ifnottex
+## @example
+## x[k+1] = A x[k] + B u[k]
+## y[k]   = C x[k] + D u[k]
+## @end example
+## @end ifnottex
+##
 ## @item 'e'
 ## Return @var{sys} as a (p-by-m+p) state-space model with
 ## both measured input channels u and noise channels e
 ## with covariance matrix @var{Ry}.
 ## @iftex
 ## @tex
-## $$ x[k+1] = A x[k] + B u[k] + K e[k] $$
-## $$ y[k] = C x[k] + D u[k] + e[k] $$
+## $$ x_{k+1} = A x_k + B u_k + K e_k $$
+## $$ y_k = C x_k + D u_k + e_k $$
 ## @end tex
 ## @end iftex
 ## @ifnottex
@@ -132,9 +147,9 @@
 ## with identity covariance matrix.
 ## @iftex
 ## @tex
-## $$ x[k+1] = A x[k] + B u[k] + K L v[k] $$
-## $$ y[k] = C x[k] + D u[k] + L v[k] $$
-## $$ e = L v, \\ L L^T = Ry $$
+## $$ x_{k+1} = A x_k + B u_k + K L v_k $$
+## $$ y_k = C x_k + D u_k + L v_k $$
+## $$ e = L v, \\ L L^T = R_y $$
 ## @end tex
 ## @end iftex
 ## @ifnottex
@@ -145,12 +160,12 @@
 ## @end example
 ## @end ifnottex
 ##
-## @item 'n'
-## No error inputs.  Default value.
+## @item 'k'
+## Return @var{sys} as a Kalman predictor for simulation.
 ## @iftex
 ## @tex
-## $$ x[k+1] = A x[k] + B u[k] $$
-## $$ y[k] = C x[k] + D u[k] $$
+## $$ \\widehat{x}_{k+1} = A \\widehat{x}_k + B u_k + K (y_k - \\widehat{y}_k) $$
+## $$ \\widehat{y}_k = C \\widehat{x}_k + D u_k $$
 ## @end tex
 ## @end iftex
 ## @ifnottex

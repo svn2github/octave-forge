@@ -31,14 +31,22 @@ function display (dat)
   
   [n, p, m, e] = size (dat);
   
-  str = ["Time domain dataset '", datname, "' containing ", num2str(sum(n)), " samples"];
+  if (dat.timedomain)
+    domain = "Time";
+    sf = "Samples";
+  else
+    domain = "Frequency";
+    sf = "Frequencies";
+  endif
+  
+  str = [domain, " domain dataset '", datname, "' containing ", num2str(sum(n)), " ", lower(sf)];
 
   disp ("");
   disp (str);
   disp ("");
   
   disp (__horzcat__ (__col2str__ (expname, "Experiment"), \
-                     __vec2str__ (n, "Samples"), \
+                     __vec2str__ (n, sf), \
                      __vec2str__ (cell2mat (dat.tsam), "Sampling Interval")));
   disp ("");
   disp (__horzcat__ (__col2str__ (outname, "Outputs"), \

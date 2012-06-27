@@ -58,6 +58,53 @@
 ## iddata identification dataset.
 ## @end table
 ##
+## @strong{Option Keys and Values}
+## @table @var
+## @item 'expname'
+## The name of the experiments in @var{dat}.
+## Cell vector of length e containing strings.
+## Default names are @code{@{'exp1', 'exp2', ...@}}
+##
+## @item 'y'
+## Output signals.  See 'Inputs' for details.
+##
+## @item 'outname'
+## The name of the output channels in @var{dat}.
+## Cell vector of length p containing strings.
+## Default names are @code{@{'y1', 'y2', ...@}}
+##
+## @item 'outunit'
+## The units of the output channels in @var{dat}.
+## Cell vector of length p containing strings.
+##
+## @item 'u'
+## Input signals.  See 'Inputs' for details.
+##
+## @item 'inname'
+## The name of the input channels in @var{dat}.
+## Cell vector of length m containing strings.
+## Default names are @code{@{'u1', 'u2', ...@}}
+##
+## @item 'inunit'
+## The units of the input channels in @var{dat}.
+## Cell vector of length m containing strings.
+##
+## @item 'tsam'
+## Sampling time.  See 'Inputs' for details.
+##
+## @item 'timeunit'
+## The units of the sampling times in @var{dat}.
+## Cell vector of length e containing strings.
+##
+## @item 'name'
+## String containing the name of the dataset.
+##
+## @item 'notes'
+## String or cell of string containing comments.
+##
+## @item 'userdata'
+## Any data type.
+## @end table
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>

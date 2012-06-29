@@ -75,7 +75,7 @@ function dat = ifft (dat)
   ## ifft (x, n, dim=1) because x could be a row vector (n=1)
   
   % dat.w = cellfun (@(n, tsam) (0:fix(n/2)).' * (2*pi/abs(tsam)/n), n, dat.tsam, "uniformoutput", false);
-  dat.w = {};
+  dat.w = {};   % dat.w = repmat ({[]}, e, 1); ???
   ## abs(tsam) because of -1 for undefined sampling times
   dat.timedomain = true;
 

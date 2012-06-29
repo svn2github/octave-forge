@@ -95,9 +95,13 @@ function retdat = set (dat, varargin)
         case {"tsam", "ts"}
           dat.tsam = __adjust_iddata_tsam__ (val, e);
         case {"w", "frequency"}
-          if (! isempty (val) && (! is_real_vector (val) || any (val < 0) \
-                                  || ! issorted (val) || val(1) > val(end) \
-                                  || length (unique (val)) != length (val)))
+          if (! iscell (val))
+            val = {val};
+          endif
+          
+          if (any (cellfun (@(w) ! isempty (w) && (! is_real_vector (w) || any (w < 0) \
+                                                   || ! issorted (w) || w(1) > w(end) \
+                                                   || length (unique (w)) != length (w)), val)))
             error ("iddata: set: w must be a vector of positive real values in ascending order");
           endif
           dat.w = val;

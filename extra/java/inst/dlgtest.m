@@ -29,7 +29,7 @@ function dlgtest ( reinstall )
       return
    end
 
-  if ! exist (java_home, "dir")
+  if (reinstall && (! exist (java_home, "dir")))
     disp(['Java JDK home directory ', java_home,' does not exist.']);
     disp('Please adapt java_home in dlgtest.m.');
     return;

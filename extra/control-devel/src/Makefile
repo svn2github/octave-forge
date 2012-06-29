@@ -2,7 +2,8 @@
 # BLAS_LIBS := $(shell mkoctfile -p BLAS_LIBS)
 FLIBS := $(shell mkoctfile -p FLIBS)
 
-all: devel_slicot_functions.oct
+all: devel_slicot_functions.oct \
+     is_matrix.oct
 
 # unpack and compile SLICOT library
 slicotlibrary.a: slicot.tar.gz
@@ -26,6 +27,10 @@ lapacklibrary.a: lapack-3.4.1.tgz
 devel_slicot_functions.oct: devel_slicot_functions.cc slicotlibrary.a lapacklibrary.a
 	mkoctfile devel_slicot_functions.cc common.cc slicotlibrary.a lapacklibrary.a \
               ${FLIBS}
+
+# helpers
+is_matrix.oct: is_matrix.cc
+	mkoctfile is_matrix.cc
 
 clean:
 	rm -rf *.o core octave-core *.oct *~ *.f slicot lapack-3.4.1

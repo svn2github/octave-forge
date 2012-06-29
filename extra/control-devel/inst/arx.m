@@ -16,8 +16,65 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{sys} =} arx (@var{dat}, @var{na}, @var{nb})
+## @deftypefn {Function File} {[@var{sys}, @var{x0}] =} arx (@var{dat}, @var{n}, @dots{})
+## @deftypefnx {Function File} {[@var{sys}, @var{x0}] =} arx (@var{dat}, @var{n}, @var{opt}, @dots{})
+## @deftypefnx {Function File} {[@var{sys}, @var{x0}] =} arx (@var{dat}, @var{opt}, @dots{})
+## @deftypefnx {Function File} {[@var{sys}, @var{x0}] =} arx (@var{dat}, @var{'na'}, @var{na}, @var{'nb'}, @var{nb})
 ## ARX
+##
+## @strong{Inputs}
+## @table @var
+## @item dat
+## iddata set containing the measurements.
+## @item n
+## The desired order of the resulting model @var{sys}.
+## @item @dots{}
+## Optional pairs of keys and values.  @code{'key1', value1, 'key2', value2}.
+## @item opt
+## Optional struct with keys as field names.
+## Struct @var{opt} can be created directly or
+## by command @command{options}.  @code{opt.key1 = value1, opt.key2 = value2}.
+## @end table
+##
+##
+## @strong{Outputs}
+## @table @var
+## @item sys
+## Discrete-time transfer function model.
+## If the second output argument @var{x0} is returned,
+## @var{sys} becomes a state-space model.
+## @item x0
+## Initial state vector.  If @var{dat} is a multi-experiment dataset,
+## @var{x0} becomes a cell vector containing an initial state vector
+## for each experiment.
+## @end table
+##
+##
+##
+## @strong{Option Keys and Values}
+## @table @var
+## @item 'na'
+## The desired order of the resulting state-space system @var{sys}.
+## @var{s} > @var{n} > 0.
+##
+## @item 'nb'
+## The desired order of the resulting state-space system @var{sys}.
+## @var{s} > @var{n} > 0.
+## @end table
+##
+##
+## @strong{Algorithm}@*
+## Uses the formulae given in [1] on pages 318-319,
+## 'Solving for the LS Estimate by QR Factorization'.
+## For the initial conditions, SLICOT IB01CD is used by courtesy of
+## @uref{http://www.slicot.org, NICONET e.V.}
+##
+## @strong{References}@*
+## [1] Ljung, L. (1999)
+## System Identification - Theory for the User
+## Second Edition
+## Prentice Hall, New Jersey.
+##
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
@@ -36,14 +93,13 @@ function [sys, varargout] = arx (dat, varargin)
     error ("arx: first argument must be an iddata dataset");
   endif
 
-%  if (nargin > 2)                       # arx (dat, ...)
-    if (is_real_scalar (varargin{1}))   # arx (dat, n, ...)
-      varargin = horzcat (varargin(2:end), {"na"}, varargin(1), {"nb"}, varargin(1));
-    endif
-    if (isstruct (varargin{1}))         # arx (dat, opt, ...), arx (dat, n, opt, ...)
-      varargin = horzcat (__opt2cell__ (varargin{1}), varargin(2:end));
-    endif
-%  endif
+  if (is_real_scalar (varargin{1}))   # arx (dat, n, ...)
+    varargin = horzcat (varargin(2:end), {"na"}, varargin(1), {"nb"}, varargin(1));
+  endif
+
+  if (isstruct (varargin{1}))         # arx (dat, opt, ...), arx (dat, n, opt, ...)
+    varargin = horzcat (__opt2cell__ (varargin{1}), varargin(2:end));
+  endif
 
   nkv = numel (varargin);               # number of keys and values
   

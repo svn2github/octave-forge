@@ -53,6 +53,14 @@ function dat = ifft (dat)
     return;
   endif
 
+  if (any (cellfun (@(w) w(1) >= eps, dat.w)))
+    error ("iddata: ifft: first frequency must be zero");
+  endif
+  
+  if (any (cellfun (@(w) any (abs (diff (w, 2)) > 1e-4*w(2:end-1)), dat.w)))
+    error ("iddata: ifft: require linearly spaced frequency vectors");
+  endif
+
   [x, ~, ~, e] = size (dat);
 
   x = x(:);

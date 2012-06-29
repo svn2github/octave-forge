@@ -25,7 +25,7 @@
 ## @strong{Inputs}
 ## @table @var
 ## @item dat
-## iddata set containing the measurements.
+## iddata set containing the measurements, i.e. time-domain signals.
 ## @item n
 ## The desired order of the resulting model @var{sys}.
 ## @item @dots{}
@@ -89,8 +89,8 @@ function [sys, varargout] = arx (dat, varargin)
     print_usage ();
   endif
   
-  if (! isa (dat, "iddata"))
-    error ("arx: first argument must be an iddata dataset");
+  if (! isa (dat, "iddata") || ! dat.timedomain)
+    error ("arx: first argument must be a time-domain iddata dataset");
   endif
 
   if (is_real_scalar (varargin{1}))   # arx (dat, n, ...)

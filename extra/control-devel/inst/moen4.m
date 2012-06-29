@@ -27,7 +27,7 @@
 ## @strong{Inputs}
 ## @table @var
 ## @item dat
-## iddata set containing the measurements.
+## iddata set containing the measurements, i.e. time-domain signals.
 ## @item n
 ## The desired order of the resulting state-space system @var{sys}.
 ## If not specified, @var{n} is chosen automatically according

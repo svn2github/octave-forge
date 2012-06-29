@@ -38,8 +38,8 @@ function [sys, x0, info] = __slicot_identification__ (method, dat, varargin)
       error ("ident: invalid method");  # should never happen
   endswitch
 
-  if (! isa (dat, "iddata"))
-    error ("%s: first argument must be an 'iddata' dataset", method);
+  if (! isa (dat, "iddata") || ! dat.timedomain)
+    error ("%s: first argument must be a time-domain 'iddata' dataset", method);
   endif
   
   if (nargin > 2)                       # ident (dat, ...)

@@ -141,6 +141,10 @@ function dat = iddata (y = {}, u = {}, tsam = {}, varargin)
     dat = set (dat, varargin{:});
   endif
 
+  if (dat.timedomain && ! is_real_matrix (dat.y{:}, dat.u{:}))
+    error ("iddata: require real-valued input and output signals for time domain datasets");
+  endif
+
 endfunction
 
 

@@ -94,6 +94,14 @@ function retdat = set (dat, varargin)
           dat.expname = __adjust_labels__ (val, e);
         case {"tsam", "ts"}
           dat.tsam = __adjust_iddata_tsam__ (val, e);
+        case {"w", "frequency"}
+          if (! isempty (val) && (! is_real_vector (val) || any (val < 0) \
+                                  || ! issorted (val) || val(1) > val(end) \
+                                  || length (unique (val)) != length (val)))
+            error ("iddata: set: w must be a vector of positive real values in ascending order");
+          endif
+          dat.w = val;
+          dat.timedomain = false;
         case "name"
           if (ischar (val))
             sys.name = val;

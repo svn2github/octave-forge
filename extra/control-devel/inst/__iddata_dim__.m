@@ -30,8 +30,8 @@ endfunction
 
 function [p, m] = __experiment_dim__ (y, u = [])
 
-  if (! is_real_matrix (y, u))
-    error ("iddata: inputs and outputs must be real");
+  if (! is_matrix (y, u))
+    error ("iddata: inputs and outputs must be real or complex matrices");
   endif
   
   [ly, p] = size (y);

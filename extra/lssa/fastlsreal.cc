@@ -188,7 +188,6 @@ ComplexRowVector flsreal( RowVector tvec , ComplexRowVector xvec ,
 	}
       }
       iota_record_current->stored_data = true;
-      std::cout << "Precomputed " << iota_record_current << std::endl;
       k++;
     }
     tau_h += ( 2 * delta_tau );

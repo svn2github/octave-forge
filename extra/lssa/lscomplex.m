@@ -26,15 +26,13 @@
 
 function transform = lscomplex( t , x , omegamax , ncoeff , noctave )
   n = length(t); ## VECTOR ONLY, and since t and x have the same number of entries, there's no problem.
-  n1 = 1 / n;
   transform = zeros(1,ncoeff*noctave);
   o = omegamax;
   omul = 2 ^ ( - 1 / ncoeff );
   for iter = 1:ncoeff*noctave
     ot = o .* t;
-    transform(iter) = sum( ( cos(ot) .- ( sin(ot) .* i ) ) .* x ); ## See the paper for the expression
+    transform(iter) = sum( ( cos(ot) - ( sin(ot) .* i ) ) .* x ) / n; ## See the paper for the expression
     o *= omul; ## To advance the transform to the next coefficient in the octave
   endfor
-  transform ./ n;
 
 endfunction 

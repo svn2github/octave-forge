@@ -9,6 +9,7 @@ Experimental Data Handling
   @iddata/get
   @iddata/ifft
   @iddata/merge
+  @iddata/nkshift
   @iddata/plot
   @iddata/set
   @iddata/size

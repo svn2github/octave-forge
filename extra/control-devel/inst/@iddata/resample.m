@@ -16,8 +16,8 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{dat} =} diff (@var{dat})
-## @deftypefnx {Function File} {@var{dat} =} diff (@var{dat}, @var{k})
+## @deftypefn {Function File} {@var{dat} =} resample (@var{dat}, @var{p}, @var{q})
+## @deftypefnx {Function File} {@var{dat} =} resample (@var{dat}, @var{p}, @var{q}, @var{n})
 ## Return @var{k}-th difference of outputs and inputs of dataset @var{dat}.
 ## If @var{k} is not specified, default value 1 is taken.
 ## @end deftypefn
@@ -31,6 +31,8 @@ function dat = resample (dat, p, q, n = 0)
   if (nargin < 3 || nargin > 4)
     print_usage ();
   endif
+  
+  ## requires signal package
   
   h = fir1 (n, 1/q);
 

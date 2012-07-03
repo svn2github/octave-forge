@@ -36,18 +36,18 @@ AWK = @AWK@
 # cannot use mkoctfile directly can request the flags that mkoctfile 
 # would use as follows:
 #    FLAG = $(shell $(MKOCTFILE) -p FLAG)
-# The following flags are for compiling programs that are independent
-# of Octave.  How confusing.
-CC = @CC@
-CFLAGS = @CFLAGS@
-CPPFLAGS = @CPPFLAGS@
-CPICFLAG = @CPICFLAG@
-CXX = @CXX@
-CXXFLAGS = @CXXFLAGS@
-CXXPICFLAG = @CXXPICFLAG@
-F77 = @F77@
-FFLAGS = @FFLAGS@
-FPICFLAG = @FPICFLAG@
+# # The following flags are for compiling programs that are independent
+# # of Octave.  How confusing.
+# CC = @CC@
+# CFLAGS = @CFLAGS@
+# CPPFLAGS = @CPPFLAGS@
+# CPICFLAG = @CPICFLAG@
+# CXX = @CXX@
+# CXXFLAGS = @CXXFLAGS@
+# CXXPICFLAG = @CXXPICFLAG@
+# F77 = @F77@
+# FFLAGS = @FFLAGS@
+# FPICFLAG = @FPICFLAG@
 
 OCTAVE = @OCTAVE@
 OCTAVE_VERSION = @OCTAVE_VERSION@

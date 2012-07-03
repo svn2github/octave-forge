@@ -70,5 +70,4 @@ $(NCTARGET) : $(OBJECTS)
 $(MFILES): nctype.m4
 	m4 --define=TYPE=$(patsubst nc%.m,%,$@) nctype.m4 > $@
 
-clean: ; -$(RM) *.o core* octave-core *.oct *~ *.nc 
-
+clean: ; -$(RM) -R *.o core* octave-core *.oct *~ *.nc autom4te.cache

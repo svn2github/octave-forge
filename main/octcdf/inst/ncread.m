@@ -21,14 +21,18 @@ if nargin < 5
   stride = ones(1,nd);
 end
 
+% replace inf in count
+i = count == inf;
+count(i) = (sz(i)-start(i))./stride(i) + 1;
+
 % end index
 
 endi = start + (count-1).*stride;
 
 % replace inf in count
 
-i = endi == inf;
-endi(i) = sz(i);
+%i = endi == inf;
+%endi(i) = sz(i);
 
 
 % load data
@@ -68,5 +72,5 @@ if ~isempty(offset)
 end
 
 x = permute(x,[ndims(x):-1:1]);
-
+x = reshape(x,count);
 close(nc)

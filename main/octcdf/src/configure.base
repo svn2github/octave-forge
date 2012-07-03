@@ -152,40 +152,50 @@ fi
 
 dnl *******************************************************************
 
+dnl Get LDFLAGS and CPPFLAGS set by user
+dnl These flags will be added to the mkoctfile command line
+OCTCDF_LIBS="$LDFLAGS"
+OCTCDF_CFLAGS="$CPPFLAGS"
+
+
 dnl XXX FIXME XXX Should we allow the user to override these?
 dnl Do we even need them?  The individual makefiles can call mkoctfile -p
 dnl themselves, so the only reason to keep them is for configure, and
 dnl for those things which are not built using mkoctfile (e.g., aurecord)
 dnl but it is not clear we should be using octave compile flags for those.
 
-dnl C compiler and flags
-AC_MSG_RESULT([retrieving compile and link flags from $MKOCTFILE])
-CC=`$MKOCTFILE -p CC`
-CFLAGS=`$MKOCTFILE -p CFLAGS`
-CPPFLAGS=`$MKOCTFILE -p CPPFLAGS`
-CPICFLAG=`$MKOCTFILE -p CPICFLAG`
-LDFLAGS=`$MKOCTFILE -p LDFLAGS`
-LIBS=`$MKOCTFILE -p LIBS`
-AC_SUBST(CC)
-AC_SUBST(CFLAGS)
-AC_SUBST(CPPFLAGS)
-AC_SUBST(CPICFLAG)
+dnl octcdf does not need CFLAGS, CPPFLAGS,... from mkoctfile
+dnl -> comment corresponding lines
 
-dnl Fortran compiler and flags
-F77=`$MKOCTFILE -p F77`
-FFLAGS=`$MKOCTFILE -p FFLAGS`
-FPICFLAG=`$MKOCTFILE -p FPICFLAG`
-AC_SUBST(F77)
-AC_SUBST(FFLAGS)
-AC_SUBST(FPICFLAG)
+# dnl C compiler and flags
+# AC_MSG_RESULT([retrieving compile and link flags from $MKOCTFILE])
+# CC=`$MKOCTFILE -p CC`
+# CFLAGS=`$MKOCTFILE -p CFLAGS`
+# CPPFLAGS=`$MKOCTFILE -p CPPFLAGS`
+# CPPFLAGS="not used"
+# CPICFLAG=`$MKOCTFILE -p CPICFLAG`
+# LDFLAGS=`$MKOCTFILE -p LDFLAGS`
+# LIBS=`$MKOCTFILE -p LIBS`
+# AC_SUBST(CC)
+# AC_SUBST(CFLAGS)
+# AC_SUBST(CPPFLAGS)
+# AC_SUBST(CPICFLAG)
 
-dnl C++ compiler and flags
-CXX=`$MKOCTFILE -p CXX`
-CXXFLAGS=`$MKOCTFILE -p CXXFLAGS`
-CXXPICFLAG=`$MKOCTFILE -p CXXPICFLAG`
-AC_SUBST(CXX)
-AC_SUBST(CXXFLAGS)
-AC_SUBST(CXXPICFLAG)
+# dnl Fortran compiler and flags
+# F77=`$MKOCTFILE -p F77`
+# FFLAGS=`$MKOCTFILE -p FFLAGS`
+# FPICFLAG=`$MKOCTFILE -p FPICFLAG`
+# AC_SUBST(F77)
+# AC_SUBST(FFLAGS)
+# AC_SUBST(FPICFLAG)
+
+# dnl C++ compiler and flags
+# CXX=`$MKOCTFILE -p CXX`
+# CXXFLAGS=`$MKOCTFILE -p CXXFLAGS`
+# CXXPICFLAG=`$MKOCTFILE -p CXXPICFLAG`
+# AC_SUBST(CXX)
+# AC_SUBST(CXXFLAGS)
+# AC_SUBST(CXXPICFLAG)
 
 dnl *******************************************************************
 
@@ -298,13 +308,6 @@ case "$canonical_host_type" in
     ;;
 esac
 
-AC_SUBST(HAVE_NETCDF)
-AC_SUBST(OCTCDF_LIBS)
-AC_SUBST(OCTCDF_CFLAGS)
-
-OCTCDF_LIBS="$LDFLAGS"
-OCTCDF_CFLAGS="$CPPFLAGS"
-
 dnl first checking for nc-config, then nc-dap 
 
 AC_MSG_CHECKING([for nc-config])
@@ -328,6 +331,7 @@ else
             AC_MSG_RESULT([no])          
 
             dnl if no opendap, checking if the NetCDF library exists. 
+	    dnl AC_CHECK_LIB takes the value of LDFLAGS into account
 
             AC_CHECK_LIB(netcdf,nc_open, HAVE_NETCDF=yes, HAVE_NETCDF=no,)
 
@@ -335,10 +339,16 @@ else
               OCTCDF_LIBS="$OCTCDF_LIBS -lnetcdf"
 
               dnl we have the libraries, no we have also the headers?
+	      dnl AC_CHECK_HEADER takes the value of CPPFLAGS into account
+
               AC_CHECK_HEADER(netcdf.h, HAVE_NETCDF=yes, HAVE_NETCDF=no)
             fi
       fi
 fi
+
+AC_SUBST(HAVE_NETCDF)
+AC_SUBST(OCTCDF_LIBS)
+AC_SUBST(OCTCDF_CFLAGS)
 
 if test $HAVE_NETCDF = yes ; then
     OCTCDFSTATUS=yes

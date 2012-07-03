@@ -92,6 +92,10 @@ end
 
 CA = CatArray(dim,arrays);
 end
+
+
+
+
 % Copyright (C) 2012 Alexander Barth <barth.alexander@gmail.com>
 %
 % This program is free software; you can redistribute it and/or modify
@@ -106,6 +110,4 @@ end
 %
 % You should have received a copy of the GNU General Public License
 % along with this program; If not, see <http://www.gnu.org/licenses/>.
-
-
 

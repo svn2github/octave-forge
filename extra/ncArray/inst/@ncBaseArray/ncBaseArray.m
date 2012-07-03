@@ -44,7 +44,7 @@ self.tooBigToLoad = false;
 prop = varargin;
 
 for i=1:2:length(prop)
-    if strcmp(prop{i},'tooBigToLoad ')
+    if strcmp(prop{i},'tooBigToLoad')
         self.tooBigToLoad = prop{i+1};
     end
 end

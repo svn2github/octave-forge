@@ -1,7 +1,7 @@
 % finfo = ncinfo(filename)
 % vinfo = ncinfo(filename,varname)
-% return information about variable varname in netCDF
-% file filename
+% return information about complete netCDF file (filename) or about
+% the specific variable varname.
 
 function info = ncinfo(filename,varname)
 

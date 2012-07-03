@@ -1,6 +1,9 @@
 % ncwrite(filename,varname,x)
 % ncwrite(filename,varname,x,start,stride)
 % write the variable varname to file filename.
+% The parameter start contains the starting indices 
+% and stride the increment between
+% two successive elements (default 1).
 
 function ncwrite(filename,varname,x,start,stride)
 

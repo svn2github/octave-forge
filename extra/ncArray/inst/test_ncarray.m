@@ -79,6 +79,12 @@ assert(isequalwithequalnans(SST_ref(1,:,:), SST(1,:,:)))
 
 % sum
 
+
+momentSST = moment(SST,2,1);
+momentSSTref = moment(SST_ref,2,1);
+assert(isequalwithequalnans(momentSST, momentSSTref))
+
+
 sumSST = sum(SST,1);
 sumSSTref = sum(SST_ref,1);
 assert(isequalwithequalnans(sumSST, sumSSTref))
@@ -99,10 +105,10 @@ prodSST = prod(SST);
 prodSSTref = prod(SST_ref);
 assert(isequalwithequalnans(prodSST, prodSSTref))
 
-
-sumsqSST = sumsq(SST);
-sumsqSSTref = sumsq(SST_ref);
-assert(isequalwithequalnans(sumsqSST, sumsqSSTref))
+% only for octave
+%sumsqSST = sumsq(SST);
+%sumsqSSTref = sumsq(SST_ref); % does not work in matlab
+%assert(isequalwithequalnans(sumsqSST, sumsqSSTref))
 
 meanSST = mean(SST);
 meanSSTref = mean(SST_ref);
@@ -230,6 +236,10 @@ assert(isequalwithequalnans(CA2(3:5:50,3:5:end,1:2:3),SST_ref(3:5:50,3:5:end,1:2
 assert(isequalwithequalnans(CA2(3:5:50,3:5:end,:),SST_ref(3:5:50,3:5:end,:)))
 ind = floor(numel(SST_ref) * rand(100,1))+1;
 assert(isequalwithequalnans(CA2(ind),SST_ref(ind)))
+
+meanSST = mean(CA2,3);
+meanSSTref = mean(SST_ref,3);
+assert(isequalwithequalnans(meanSST, meanSSTref))
 
 % writing
 

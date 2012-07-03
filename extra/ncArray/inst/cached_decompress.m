@@ -8,9 +8,7 @@
 % Output:
 %  fname: the filename of the uncompressed file
 %
-% Example:
-%
-%
+
 % Alexander Barth, 2012-06-13
 %
 

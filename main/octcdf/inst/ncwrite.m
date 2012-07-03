@@ -1,3 +1,5 @@
+% Write a NetCDF variable.
+%
 % ncwrite(filename,varname,x)
 % ncwrite(filename,varname,x,start,stride)
 % write the variable varname to file filename.

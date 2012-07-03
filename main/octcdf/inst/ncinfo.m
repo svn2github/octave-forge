@@ -1,3 +1,5 @@
+% Information about complete netCDF file or variable.
+%
 % finfo = ncinfo(filename)
 % vinfo = ncinfo(filename,varname)
 % return information about complete netCDF file (filename) or about

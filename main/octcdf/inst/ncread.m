@@ -1,3 +1,5 @@
+% Read a NetCDF variable.
+%
 % x = ncread(filename,varname)
 % x = ncread(filename,varname,start,count,stride)
 % read the variable varname from file filename.

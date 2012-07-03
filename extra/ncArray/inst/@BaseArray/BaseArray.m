@@ -1,4 +1,5 @@
-% sz size of the array (with at least two elements)
+% create a BaseArray of size size sz
+% sz has at least two elements.
 
 function retval = BaseArray(sz)
 

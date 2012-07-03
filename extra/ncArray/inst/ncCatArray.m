@@ -1,3 +1,5 @@
+% Create an array that represent a concatenated NetCDF variables.
+%
 % C = ncCatArray(dim,filenames,varname)
 % C = ncCatArray(dim,pattern,varname)
 % C = ncCatArray(dim,filenamefun,varname,range)

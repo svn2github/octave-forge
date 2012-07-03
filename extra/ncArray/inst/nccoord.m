@@ -1,5 +1,13 @@
+% Coordinate of a NetCDF variable
 % coord = nccoord(filename,varname)
-% get coordinates of a variables using CF convention
+% get coordinates of the variable varname in the
+% netcdf file called filename. The netcdf is assumed to 
+% follow the CF convention.
+% coord is an array of structures with the field 'name'
+% for the variable name and 'dims' with a cell-array of the
+% netcdf dimensions.
+
+% Author: Alexander Barth (barth.alexander@gmail.com)
 
 function [dims,coord] = nccoord(filename,varname)
 

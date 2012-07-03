@@ -1,3 +1,4 @@
+
 function s = prod(self,varargin)
 
 funred = @times;

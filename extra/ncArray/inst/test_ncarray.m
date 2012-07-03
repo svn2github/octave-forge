@@ -1,5 +1,5 @@
-%function test_ncarray()
 % test ncBaseArray, ncCatArray and ncArray
+function test_ncarray()
 
 varname = 'SST';
 

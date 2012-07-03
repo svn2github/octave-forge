@@ -1,3 +1,5 @@
+% make full (dense) array
+
 function F = full(self);
 
 n = length(self.sz);

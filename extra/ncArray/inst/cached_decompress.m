@@ -1,19 +1,17 @@
+% Decompress a file using a cache.
 % [fname,success]=cached_decompress(filename)
-%
-% Decompress a file if it is not already in cache
 %
 % Input:
 %  filename: name of the file which is possibly compressed
 %
 % Output:
 %  fname: the filename of the uncompressed file
-%
 
 % Alexander Barth, 2012-06-13
 %
-
-
 function [fname]=cached_decompress(url)
+
+
 global CASHED_GUNZIP_DIR
 global CASHED_GUNZIP_LOG_FID
 

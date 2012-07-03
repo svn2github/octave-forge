@@ -1,6 +1,15 @@
-# LAPACK_LIBS := $(shell mkoctfile -p LAPACK_LIBS)
-# BLAS_LIBS := $(shell mkoctfile -p BLAS_LIBS)
-FLIBS := $(shell mkoctfile -p FLIBS)
+MKOCTFILE ?= mkoctfile
+
+ifndef LAPACK_LIBS
+LAPACK_LIBS := $(shell $(MKOCTFILE) -p LAPACK_LIBS)
+endif
+ifndef BLAS_LIBS
+BLAS_LIBS := $(shell $(MKOCTFILE) -p BLAS_LIBS)
+endif
+ifndef FLIBS
+FLIBS := $(shell $(MKOCTFILE) -p FLIBS)
+endif
+LFLAGS := $(shell $(MKOCTFILE) -p LFLAGS) $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
 
 all: devel_slicot_functions.oct \
      is_matrix.oct
@@ -10,30 +19,21 @@ slicotlibrary.a: slicot.tar.gz
 	tar -xzf slicot.tar.gz
 	mv slicot/src/*.f .
 	mv slicot/src_aux/*.f .
-	mkoctfile -c *.f
+	$(MKOCTFILE) -c *.f
 	ar -rc slicotlibrary.a *.o
 	rm -rf *.o *.f slicot
 
-lapacklibrary.a: lapack-3.4.1.tgz
-	tar -xzf lapack-3.4.1.tgz
-	mv lapack-3.4.1/BLAS/SRC/*.f .
-	mv lapack-3.4.1/INSTALL/*.f .
-	mv lapack-3.4.1/SRC/*.f .
-	mkoctfile -c *.f
-	ar -rc lapacklibrary.a *.o
-	rm -rf *.o *.f lapack-3.4.1
-
 # slicot functions
-devel_slicot_functions.oct: devel_slicot_functions.cc slicotlibrary.a lapacklibrary.a
-	mkoctfile devel_slicot_functions.cc common.cc slicotlibrary.a lapacklibrary.a \
-              ${FLIBS}
+devel_slicot_functions.oct: devel_slicot_functions.cc slicotlibrary.a
+	LFLAGS="$(LFLAGS)" \
+    $(MKOCTFILE) devel_slicot_functions.cc common.cc slicotlibrary.a
 
 # helpers
 is_matrix.oct: is_matrix.cc
-	mkoctfile is_matrix.cc
+	$(MKOCTFILE) is_matrix.cc
 
 clean:
-	rm -rf *.o core octave-core *.oct *~ *.f slicot lapack-3.4.1
+	rm -rf *.o core octave-core *.oct *~ *.f slicot
 
 realclean: clean
 	rm -rf *.a

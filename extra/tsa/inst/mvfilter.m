@@ -1,4 +1,3 @@
-
 function [x,z]=mvfilter(B,A,x,z)
 % Multi-variate filter function
 %
@@ -30,7 +29,7 @@ function [x,z]=mvfilter(B,A,x,z)
 % see also: MVAR, FILTER
 
 %	$Id$
-%	Copyright (C) 1996-2003 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 1996-2003,2010,2012 by Alois Schloegl <alois.schloegl@ist.ac.at>	
 %
 %    This program is free software: you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
@@ -84,18 +83,13 @@ else
 end;
 
 %%%%% normalization to A{1}=I;
-if p<=q, 
-        for k=1:p,
-                %A{k}=A{k}/A{1};
-                A(:,k*M+(1:M)) = A(:,k*M+(1:M)) / A(:,1:M);
+	for k=1:p,
+                A(:,k*M+(1:M)) = A(:,1:M) \ A(:,k*M+(1:M));
+        end;
+        for k=0:q,
+                B(:,k*M+(1:M)) = A(:,1:M) \ B(:,k*M+(1:M));
         end;
 	A(:,1:M) = eye(M);
-else
-        for k=0:q,
-                %B{k}=B{k}/A{1};
-                B(:,k*M+(1:M)) = B(:,k*M+(1:M)) / A(:,1:M);
-        end;
-end; 
 
 for k = 1:N,
         acc = B(:,1:M) * x(:,k) + z(:,1);  % / A{1};

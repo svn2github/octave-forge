@@ -20,9 +20,9 @@
 ## @deftypefnx {Function File} {[@var{sys}, @var{x0}, @var{info}] =} moen4 (@var{dat}, @var{n}, @dots{})
 ## @deftypefnx {Function File} {[@var{sys}, @var{x0}, @var{info}] =} moen4 (@var{dat}, @var{opt}, @dots{})
 ## @deftypefnx {Function File} {[@var{sys}, @var{x0}, @var{info}] =} moen4 (@var{dat}, @var{n}, @var{opt}, @dots{})
-## Combined method:  MOESP  algorithm for finding the
-## matrices A and C, and  N4SID  algorithm for
-## finding the matrices B and D.
+## Estimate state-space model using combined subspace method:
+## MOESP  algorithm for finding the matrices A and C,
+## and  N4SID  algorithm for finding the matrices B and D.
 ##
 ## @strong{Inputs}
 ## @table @var
@@ -93,18 +93,39 @@
 ## Hankel matrices.
 ## @end table
 ##
-##
 ## @item 'tol'
-## The desired order of the resulting reduced order system @var{Gr}.
-##
+## Absolute tolerance used for determining an estimate of
+## the system order.  If  @var{tol} >= 0,  the estimate is
+## indicated by the index of the last singular value greater
+## than or equal to @var{tol}.  (Singular values less than @var{tol}
+## are considered as zero.)  When  @var{tol} = 0,  an internally
+## computed default value,  @var{tol} = @var{s}*@var{eps}*SV(1),  is used,
+## where  SV(1)  is the maximal singular value, and @var{eps} is
+## the relative machine precision.
+## When @var{tol} < 0,  the estimate is indicated by the
+## index of the singular value that has the largest
+## logarithmic gap to its successor.
 ##
 ## @item 'rcond'
-## The desired order of the resulting reduced order system @var{Gr}.
-##
+## The tolerance to be used for estimating the rank of
+## matrices. If the user sets @var{rcond} > 0,  the given value
+## of @var{rcond} is used as a lower bound for the reciprocal
+## condition number;  an m-by-n matrix whose estimated
+## condition number is less than  1/@var{rcond}  is considered to
+## be of full rank.  If the user sets @var{rcond} <= 0,  then an
+## implicitly computed, default tolerance, defined by
+## @var{rcond} = m*n*@var{eps},  is used instead, where @var{eps} is the
+## relative machine precision.
 ##
 ## @item 'confirm'
-## The desired order of the resulting reduced order system @var{Gr}.
-##
+## Specifies whether or not the user's confirmation of the
+## system order estimate is desired, as follows:
+## @table @var
+## @item true
+## User's confirmation.
+## @item false
+## No confirmation.  Default value.
+## @end table
 ##
 ## @item 'noise'
 ## The desired type of noise input channels.
@@ -170,28 +191,28 @@
 ## @end iftex
 ## @ifnottex
 ## @example
-## x[k+1] = A x[k] + B u[k]
+## ^          ^                        ^
+## x[k+1] = A x[k] + B u[k] + K(y[k] - y[k])
+## ^          ^
 ## y[k]   = C x[k] + D u[k]
 ## @end example
 ## @end ifnottex
+##
+## @iftex
+## @tex
+## $$ \\widehat{x}_{k+1} = (A-KC) \\widehat{x}_k + (B-KD) u_k + K y_k $$
+## $$ \\widehat{y}_k = C \\widehat{x}_k + D u_k + 0 y_k $$
+## @end tex
+## @end iftex
+## @ifnottex
+## @example
+## ^               ^
+## x[k+1] = (A-KC) x[k] + (B-KD) u[k] + K y[k]
+## ^          ^
+## y[k]   = C x[k] + D u[k] + 0 y[k]
+## @end example
+## @end ifnottex
 ## @end table
-##
-##
-## @item 'method'
-## Specifies the computational approach to be used.
-## Valid values corresponding to this key are:
-## @table @var
-## @item 'descriptor'
-## Use the inverse free descriptor system approach.
-## @item 'standard'
-## Use the inversion based standard approach.
-## @item 'auto'
-## Switch automatically to the inverse free
-## descriptor approach in case of badly conditioned
-## feedthrough matrices in V or W.  Default method.
-## @end table
-##
-##
 ## @end table
 ##
 ##

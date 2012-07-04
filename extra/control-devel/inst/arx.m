@@ -20,7 +20,7 @@
 ## @deftypefnx {Function File} {[@var{sys}, @var{x0}] =} arx (@var{dat}, @var{n}, @var{opt}, @dots{})
 ## @deftypefnx {Function File} {[@var{sys}, @var{x0}] =} arx (@var{dat}, @var{opt}, @dots{})
 ## @deftypefnx {Function File} {[@var{sys}, @var{x0}] =} arx (@var{dat}, @var{'na'}, @var{na}, @var{'nb'}, @var{nb})
-## ARX
+## Estimate ARX model using QR factorization.
 ##
 ## @strong{Inputs}
 ## @table @var
@@ -50,16 +50,14 @@
 ## @end table
 ##
 ##
-##
 ## @strong{Option Keys and Values}
 ## @table @var
 ## @item 'na'
-## The desired order of the resulting state-space system @var{sys}.
-## @var{s} > @var{n} > 0.
+## Order of the polynomial A(q) and number of poles.
 ##
 ## @item 'nb'
-## The desired order of the resulting state-space system @var{sys}.
-## @var{s} > @var{n} > 0.
+## Order of the polynomial B(q)+1 and number of zeros+1.
+## @var{nb} <= @var{na}.
 ## @end table
 ##
 ##

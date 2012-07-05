@@ -1,16 +1,8 @@
-% Compute the maximum.
-% S = max (X, [], DIM)
-% Compute the maximum along dimension DIM.
+% Test if array is numeric.
+% isn = isnumeric(self)
 
-function s = max(self,B,varargin)
-
-assert(isempty(B))
-
-funred = @max;
-funelem = @(x) x;
-
-s = reduce(self,funred,funelem,varargin{:});
-
+function isn = isnumeric(self)
+isn = true;
 
 
 % Copyright (C) 2012 Alexander Barth <barth.alexander@gmail.com>

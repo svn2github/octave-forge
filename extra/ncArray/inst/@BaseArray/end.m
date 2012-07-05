@@ -1,3 +1,5 @@
+% Return last index along a dimension.
+
 function e = end(self,k,n)
 
 e = size(self,k);

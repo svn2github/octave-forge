@@ -1,3 +1,6 @@
+% Size of array.
+% sz = size(self,dim)
+
 function sz = size(self,dim)
 
 sz = self.sz;

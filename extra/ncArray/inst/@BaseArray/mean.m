@@ -1,7 +1,7 @@
+% Compute the mean.
 % s = mean (X, DIM)
-% compute the mean along dimension dim
-% See also
-%   mean
+% Compute the mean along dimension DIM.
+
 function s = mean(self,varargin)
 
 funred = @plus;

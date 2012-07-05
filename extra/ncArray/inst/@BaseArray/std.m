@@ -1,7 +1,6 @@
-% s = std (X, OPT, DIM)
-% compute the standard deviation
-% See also
-%   std
+% Compute the standard deviation.
+% S = std (X, OPT, DIM)
+
 function s = std(self,varargin)
 
 s = sqrt(var(self,varargin{:}));

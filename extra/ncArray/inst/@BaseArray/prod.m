@@ -1,3 +1,6 @@
+% Compute the product.
+% P = prod (X, DIM)
+% Compute the product of all elements along dimension DIM.
 
 function s = prod(self,varargin)
 

@@ -1,7 +1,6 @@
-% s = sum (x, dim)
-% compute the sum along dimension dim
-% See also
-%   sum
+% Compute the sum.
+% S = sum (X, DIM)
+% Compute the sum along dimension DIM.
 
 function s = sum(self,varargin)
 

@@ -1,15 +1,21 @@
-% Compute the maximum.
-% S = max (X, [], DIM)
-% Compute the maximum along dimension DIM.
+% Compute the central moment.
+% M = moment (X, ORDER, DIM)
+% compute the central moment of the given order along dimension DIM.
 
-function s = max(self,B,varargin)
+function s = moment(self,order,varargin)
 
-assert(isempty(B))
+m = mean(self,varargin{:});
 
-funred = @max;
-funelem = @(x) x;
+funred = @plus;
+funelem = @(x) (x-m).^order;
 
-s = reduce(self,funred,funelem,varargin{:});
+[s,n] = reduce(self,funred,funelem,varargin{:});
+
+if isempty(s)
+  s = NaN;
+else
+  s = s/n;
+end
 
 
 

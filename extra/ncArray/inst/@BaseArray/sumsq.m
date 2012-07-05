@@ -1,7 +1,6 @@
-% s = sumsq (x, dim)
-% compute the sum squared along dimension dim
-% See also
-%   sum
+% Compute the sum squared.
+% S = sumsq (X, DIM)
+% Compute the sum squared along dimension DIM.
 
 function s = sumsq(self,varargin)
 

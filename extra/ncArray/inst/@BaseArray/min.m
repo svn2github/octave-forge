@@ -1,7 +1,6 @@
-% s = min (x, [], dim)
-% compute the minimum along dimension dim
-% See also
-%   min
+% Compute the minimum.
+% S = min (X, [], DIM)
+% Compute the minimum along dimension DIM.
 
 function s = min(self,B,varargin)
 

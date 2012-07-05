@@ -1,7 +1,7 @@
-% s = var (x, opt, dim)
-% compute the variance along dimension dim
-% See also
-%   var
+% Compute the variance.
+% V = var (X, OPT, DIM)
+% Compute the variance along dimension DIM.
+% If OPT is equal to 1, then the variance is bias-corrected.
 
 function s = var(self,opt,varargin)
 

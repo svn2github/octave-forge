@@ -26,6 +26,9 @@
 % shell wildcard pattern, while in Matlab rdir is used. The function rdir
 % is available from Matlab exchange under BSD license
 % (http://www.mathworks.com/matlabcentral/fileexchange/19550).
+%
+% see also cache_decompress, ncArray
+% Web: http://modb.oce.ulg.ac.be/mediawiki/index.php/ncArray
 
 % Author: Alexander Barth (barth.alexander@gmail.com)
 %

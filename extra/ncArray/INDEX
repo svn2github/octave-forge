@@ -1,5 +1,8 @@
 ncarray >> ncArray
 ncArray
+  ncArray  
   ncCatArray
-  ncArray
   nccoord
+  cached_decompress
+Test script
+  test_ncarray

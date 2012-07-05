@@ -1,4 +1,4 @@
-% test ncBaseArray, ncCatArray and ncArray
+% Test ncBaseArray, ncCatArray and ncArray.
 function test_ncarray()
 
 varname = 'SST';

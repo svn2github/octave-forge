@@ -1,6 +1,8 @@
-% V = ncBaseArray(filename,varname)
-% V = ncBaseArray(filename,varname,'property',value,...)
-% create a ncBaseArray that can be accessed as a normal matlab array.
+% Create an array representing a NetCDF variable.
+%
+% V = ncArray(filename,varname)
+% V = ncArray(filename,varname,'property',value,...)
+% create a ncArray that can be accessed as a normal array.
 %
 % For read access filename can be compressed if it has the extensions
 % ".gz" or ".bz2". It use the function cache_decompress to cache to
@@ -32,7 +34,8 @@
 %
 % V.('_someStrangeAttribute') = 123;
 %
-% see also cache_decompress 
+% see also cache_decompress, ncCatArray
+% Web: http://modb.oce.ulg.ac.be/mediawiki/index.php/ncArray
 
 % hidded constructor signature:
 % data = ncArray(filename,varname)

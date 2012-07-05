@@ -1,4 +1,5 @@
-% Coordinate of a NetCDF variable
+% Coordinate of a NetCDF variable.
+%
 % coord = nccoord(filename,varname)
 % get coordinates of the variable varname in the
 % netcdf file called filename. The netcdf is assumed to 

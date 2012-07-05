@@ -1,4 +1,5 @@
 % Decompress a file using a cache.
+%
 % [fname,success]=cached_decompress(filename)
 %
 % Input:
@@ -12,11 +13,11 @@
 function [fname]=cached_decompress(url)
 
 
-global CASHED_GUNZIP_DIR
-global CASHED_GUNZIP_LOG_FID
+global CACHED_DECOMPRESS_DIR
+global CACHED_DECOMPRESS_LOG_FID
 
 
-cache_dir = CASHED_GUNZIP_DIR;
+cache_dir = CACHED_DECOMPRESS_DIR;
 if isempty(cache_dir)
 %    cache_dir = fullfile(getenv('HOME'),'tmp','Cache');
     cache_dir = fullfile(getenv('HOME'),'tmp','Cache');
@@ -27,7 +28,7 @@ if endswith(url,'.gz') || endswith(url,'.bz2')
     if exist(cache_dir,'dir') ~= 7
         error(['cache directory for compressed files does not exist. '...
             'Please create the directory %s or change le value of the '...
-            'global variable CASHED_GUNZIP_DIR'],cache_dir);
+            'global variable CACHED_DECOMPRESS_DIR'],cache_dir);
     end
 else
     fname = url;
@@ -36,7 +37,7 @@ end
     
 % where to print logs? default to screen
 
-fid=CASHED_GUNZIP_LOG_FID;
+fid=CACHED_DECOMPRESS_LOG_FID;
 
 if (isempty(fid))
     fid=1;

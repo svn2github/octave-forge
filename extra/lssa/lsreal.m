@@ -23,6 +23,12 @@
 ##
 ## @end deftypefn
 
+%!shared t, x, o, maxfreq
+%! maxfreq = 4 / ( 2 * pi );
+%! t = linspace(0,8); x = ( 2.*sin(maxfreq.*t) + 3.*sin((3/4)*maxfreq.*t)
+%! - 0.5 .* sin((1/4)*maxfreq.*t) - 0.2 .* cos(maxfreq .* t)
+%! + cos((1/4)*maxfreq.*t)); o = [ maxfreq , 3 / 4 * maxfreq , 1 / 4 * maxfreq ];
+
 function transform = lsreal( t, x, omegamax, ncoeff, noctave)
   ## the R function runs the following command:
   ## nureal( double X, double Y, int min(X,Y), int ncoeff, int noctave, double omegamax, complex rp)

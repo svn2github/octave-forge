@@ -22,6 +22,15 @@
 ## @seealso{lombnormcoeff}
 ## @end deftypefn
 
+%!shared t, x, o, maxfreq
+%! maxfreq = 4 / ( 2 * pi );
+%! t = linspace(0,8); x = ( 2.*sin(maxfreq.*t) + 3.*sin((3/4)*maxfreq.*t)
+%! - 0.5 .* sin((1/4)*maxfreq.*t) - 0.2 .* cos(maxfreq .* t)
+%! + cos((1/4)*maxfreq.*t)); o = [ maxfreq , 3 / 4 * maxfreq , 1 / 4 * maxfreq ];
+%! assert( lombcoeff(t,x,o(1)) = );
+%! assert( lombcoeff(t,x,o(2)) = );
+%! assert( lombcoeff(t,x,o(3)) = );
+
 
 function coeff = lombcoeff(T, X, o)
   theta = atan2(sum(sin(2 .* o .* T )), sum(cos(2.*o.*T)))/ (2 * o );

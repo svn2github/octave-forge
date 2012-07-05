@@ -1,7 +1,9 @@
+% Get coordinate.
+% c = coord(A)
+% Get a array of structures with the coordinate of ncArray A.
+
 function c = coord(self)
 c = self.coord;
-%'her'
-
 
 % Copyright (C) 2012 Alexander Barth <barth.alexander@gmail.com>
 %

@@ -1,3 +1,8 @@
+% Subscripted assignment.
+% subsasgn (A, idx, rhs)
+% Perform the subscripted assignment operation according to the subscript specified by idx.
+% A slice of the NetCDF variable can be saved by using A(index1,index2,...) = rhs;
+
 function self = subsasgn(self,idx,x)
 
 self = subsasgn(self.var,idx,x);

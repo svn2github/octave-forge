@@ -1,3 +1,13 @@
+% Subscripted element selection operation.
+% out = subsref (A, idx)
+% Perform the subscripted element selection operation according to the subscript specified by idx. 
+% A slice of the NetCDF variable can be load by using A(index1,index2,...) and attributes 
+% can be loaded by A.attribute_name or A.('attribute_name')
+% If index selection is followed by struct selection 'coord', then the coordinates corresponding to the
+% slice are loaded:
+% For example, the coordinate of element A(4,3) are:
+% [lon,lat] = A(4,3).coord;
+
 function varargout = subsref(self,idx)
 
 if strcmp(idx(1).type,'()')

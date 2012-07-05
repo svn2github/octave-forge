@@ -7,7 +7,7 @@
 % create a concatenated array from variables (varname) in a list of
 % netcdf files along dimension dim.Individual elements can be accessed by
 % subscribs, e.g. C(2,3) and the corrsponding subset of the appropriate file is loaded
-
+%
 % This list of netcdf files can be specified as a cell array (filenames),
 % shell wildcard pattern (e.g. file_*.nc) or a function handle
 % filenamefun. In this later case, this i-th filename is

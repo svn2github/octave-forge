@@ -1,4 +1,4 @@
-% make full (dense) array
+% Make full (dense) array.
 
 function F = full(self);
 

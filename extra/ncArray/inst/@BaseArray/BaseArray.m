@@ -1,6 +1,10 @@
-% Create a BaseArray of size sz.
-% sz has at least two elements.
-
+% Create a BaseArray.
+% BA = BaseArray(SZ)
+% Create a BaseArray of size SZ. BaseArray is an abstract class. 
+% Derived classes should implement the methods subsref and subsasgn.
+% BaseArray implements several reduction methods such as sum, prod and mean.
+% SZ should have least two elements.
+% 
 function retval = BaseArray(sz)
 
 self.sz = sz;

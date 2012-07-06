@@ -1,6 +1,6 @@
 % Reduce array using callback fundtions.
 % [S,N] = reduce(SELF,FUNRED,FUNELEM,DIM)
-% reduce array using the function FUNRED applied to all elements 
+% Reduce array using the function FUNRED applied to all elements 
 % after the function FUNELEM was applied along dimension DIM.
 
 function [s,n] = reduce(self,funred,funelem,dim)

@@ -62,7 +62,7 @@ function ret = msgbox (message, varargin)
   endswitch
 
   if (! ischar (title))
-    error ("questdlg: character string expected for title");
+    error ("msgbox: character string expected for title");
   endif
 
   ret = java_invoke ('org.octave.JDialogBox', dlg, message, title );

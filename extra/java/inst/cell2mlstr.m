@@ -18,6 +18,8 @@
 ## separated by EOL
 
 ## Author: Philip <Philip@DESKPRN>
+## Based on a suggestion by D. Bateman,
+## https://savannah.gnu.org/bugs/?func=detailitem&item_id=31468#comment4
 ## Created: 2012-06-29
 
 function [ ret ] = cell2mlstr (cstr)

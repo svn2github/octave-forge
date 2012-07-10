@@ -24,7 +24,9 @@
 ## @deftypefnx {Function File} {[@var{cluster_centers}, @var{soft_partition}, @var{obj_fcn_history}] =} fcm (@var{input_data}, @var{num_clusters}, @var{options})
 ## @deftypefnx {Function File} {[@var{cluster_centers}, @var{soft_partition}, @var{obj_fcn_history}] =} fcm (@var{input_data}, @var{num_clusters}, [@var{m}, @var{max_iterations}, @var{epsilon}, @var{display_intermediate_results}])
 ##
-## Return the soft partition of a set of unlabeled data points. 
+## Using the Fuzzy C-Means algorithm, calculate and return the soft partition
+## of a set of unlabeled data points. 
+##
 ## Also, if @var{display_intermediate_results} is true, display intermediate 
 ## results after each iteration.
 ##
@@ -112,7 +114,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy partition clustering fcm
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      fcm.m
-## Last-Modified: 8 July 2012
+## Last-Modified: 10 July 2012
 
 function [cluster_centers, soft_partition, obj_fcn_history] = ...
            fcm (input_data, num_clusters, options = [2.0, 100, 1e-5, 1])

@@ -18,8 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Script File} {} fcm_demo_2
-## Use the Fuzzy C-Means algorithm to classify unlabeled data points and
-## evaluate the quality of the resulting clusters.
+## Use the Fuzzy C-Means algorithm to classify three-dimensional unlabeled
+## data points and evaluate the quality of the resulting clusters.
 ##
 ## The demo:
 ## @itemize @minus
@@ -45,7 +45,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy partition clustering fcm demo
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      fcm_demo_2.m
-## Last-Modified: 8 July 2012
+## Last-Modified: 10 July 2012
 
 ##------------------------------------------------------------------------------
 ## Note: The input_data was selected to form three areas of different shapes.

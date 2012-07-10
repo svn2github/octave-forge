@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{vxb} =} xie_beni_index (@var{input_data}, @var{cluster_centers}, @var{soft_partition})
 ##
-## Return the partition coefficient for a given soft partition.
+## Return the Xie-Beni validity index for a given soft partition.
 ##
 ## The arguments to xie_beni_index are:
 ## @itemize @w
@@ -49,7 +49,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy xie beni index cluster validity
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      xie_beni_index.m
-## Last-Modified: 8 July 2012
+## Last-Modified: 10 July 2012
 
 function vxb = xie_beni_index (input_data, cluster_centers, soft_partition)
 

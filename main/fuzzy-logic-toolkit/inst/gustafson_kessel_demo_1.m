@@ -18,8 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Script File} {} gustafson_kessel_demo_1
-## Use the Gustafson-Kessel algorithm to classify unlabeled data points and
-## evaluate the quality of the resulting clusters.
+## Use the Gustafson-Kessel algorithm to classify a small set of unlabeled
+## data points and evaluate the quality of the resulting clusters.
 ##
 ## The demo:
 ## @itemize @minus
@@ -45,7 +45,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy partition clustering gustafson_kessel demo
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      gustafson_kessel_demo_1.m
-## Last-Modified: 8 July 2012
+## Last-Modified: 10 July 2012
 
 ##------------------------------------------------------------------------------
 ## Note: The input_data is taken from Chapter 13, Example 17 in

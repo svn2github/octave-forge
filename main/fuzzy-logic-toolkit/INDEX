@@ -61,3 +61,13 @@ Complete Fuzzy Inference System Demos
  mamdani_tip_demo
  sugeno_tip_demo
 
+Fuzzy Clustering Functions and Demos
+ fcm
+ fcm_demo_1
+ fcm_demo_2
+ gustafson_kessel
+ gustafson_kessel_demo_1
+ gustafson_kessel_demo_2
+ partition_coeff
+ partition_entropy
+ xie_beni_index

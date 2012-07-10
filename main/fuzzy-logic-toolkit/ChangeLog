@@ -1,5 +1,32 @@
-2011-11-12  Version 0.3.0
+2012-07-10 L. Markowsky <lmarkov@users.sourceforge.net>
 
+  * Version 0.4.0 released.
+  * ChangeLog: Updated file.
+  * DESCRIPTION: Updated file.
+  * INDEX: Updated file.
+  * NEWS: New file.
+  * inst/fcm.m: New file. Addition of the Fuzzy C-Means clustering algorithm
+      to the toolkit.
+  * inst/fcm_demo_1.m: New file. Addition of demo script.
+  * inst/fcm_demo_2.m: New file. Addition of demo script.
+  * inst/gustafson_kessel.m: New file. Addition of the Gustafson-Kessel
+      clustering algorithm to the toolkit.
+  * inst/gustafson_kessel_demo_1.m: New file. Addition of demo script.
+  * inst/gustafson_kessel_demo_2.m: New file. Addition of demo script.
+  * inst/partition_coeff.m: New file. Addition of a measure of cluster validity.
+  * inst/partition_entropy.m: New file. Addition of a measure of cluster validity.
+  * inst/xie_beni_index.m: New file. Addition of a measure of cluster validity.
+  * inst/private/fcm_compute_convergence_criterion.m: New file.
+  * inst/private/fcm_compute_objective_fcn.m: New file.
+  * inst/private/fcm_init_prototype.m: New file.
+  * inst/private/fcm_update_cluster_centers.m: New file.
+  * inst/private/fcm_update_membership_fcn.m: New file.
+  * inst/private/square_dist_matrix.m: New file.
+  * New demos tested under: Fedora 16/Octave 3.4.3
+
+2011-11-12 L. Markowsky <lmarkov@users.sourceforge.net>
+
+  * Version 0.3.0 released.
   * ChangeLog: Updated file.
   * DESCRIPTION: Updated file.
   * inst/*.m: Many trivial changes to comments and spacing in parameter lists.
@@ -56,8 +83,9 @@
   * Demos tested under: Fedora 15/Octave 3.4.2
   * Demos tested under: Windows 7/Octave 3.2.4
 
-2011-09-01  Version 0.2.4
+2011-09-01 L. Markowsky <lmarkov@users.sourceforge.net>
 
+  * Version 0.2.4 released.
   * ChangeLog: Updated file.
   * DESCRIPTION: Updated file.
   * INDEX: Updated file.
@@ -102,8 +130,9 @@
   * Demos tested under: Fedora 15/Octave 3.2.4
   * Demos tested under: Windows 7/Octave 3.2.4
 
-2011-07-19  Version 0.2.3
+2011-07-19 L. Markowsky <lmarkov@users.sourceforge.net>
 
+  * Version 0.2.3 released.
   * ChangeLog: Updated file.
   * DESCRIPTION: Updated file.
   * INDEX: Updated file.
@@ -123,8 +152,9 @@
   * Demos tested under: Fedora 15/Octave 3.4.0
   * Demos tested under: Fedora 15/Octave 3.2.4
 
-2011-06-21  Version 0.2.2
+2011-06-21 L. Markowsky <lmarkov@users.sourceforge.net>
 
+  * Version 0.2.2 released.
   * ChangeLog: New file.
   * DESCRIPTION: Updated file.
   * inst/addmf.m: Modified to workaround a bug in Octave 3.4.0.
@@ -140,23 +170,26 @@
   * Demos tested under: Fedora 15/Octave 3.4.0
   * Demos tested under: Fedora 15/Octave 3.2.4
 
-2011-06-08  Version 0.2.1
+2011-06-08 L. Markowsky <lmarkov@users.sourceforge.net>
 
+  * Version 0.2.1 released.
   * Initial release on Octave-Forge.
   * Merged membership function demos into related function files.
   * Created documentation for Octave-Forge website.
   * DESCRIPTION: Updated file.
   * Demos tested under: Fedora 13/Octave 3.2.4
 
-2011-05-25  Version 0.2
+2011-05-25 L. Markowsky <lmarkov@users.sourceforge.net>
 
+  * Version 0.2 released.
   * Moved tests/demos/* and tests/fis/* to inst/*.
   * Changed indentation and spacing to conform to Octave style.
   * Converted comments to texinfo.
   * DESCRIPTION: Update file.
   * Demos tested under: Fedora 13/Octave 3.2.4
 
-2011-04-19  Version 0.1
+2011-04-19 L. Markowsky <lmarkov@users.sourceforge.net>
 
+  * Version 0.1 released.
   * Initial release on SourceForge.
   * Demos tested under: Fedora 13/Octave 3.2.4

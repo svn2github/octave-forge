@@ -1,0 +1,53 @@
+## Copyright (C) 2012 Benjamin Lewis
+## Licensed under the GNU GPL v2
+
+## This is just a sample script to introduce the purpose and usage of
+## the Lomb-Scargle Least Squares method with experimental data, here
+## using the Vostok ice core data collected and measured by J.R. Petit
+## et. al. and published in Nature; also available from the NOAA's
+## Paleoclimatology pages here:
+## <http://www.ncdc.noaa.gov/paleo/icecore/antarctica/vostok/vostok_data.html>.
+
+co2 = csvread("./data/co2.csv")(2:end,2:end);
+ch4 = csvread("./data/ch4.csv")(2:end,2:end);
+o18 = csvread("./data/o18.csv")(2:end,2:end);
+deut = csvread("./data/deut.csv")(2:end,2:end);
+dust = csvread("./data/dust.csv")(2:end,2:end);
+## The limited ranges are to deal with artifacts from the extraction of
+## the R data, notably that it leaves an extra column on the front of 0s
+## and the first row is text that Octave refuses to process.
+
+## Columns in co2 are Depth, Ice Age, Gas Age, and CO2 Concentration.
+## Columns in ch4 are Depth, Ice Age, Gas Age, and CH4 Concentration.
+## Columns in o18 are Depth, Ice Age, Gas Age, and Atmospheric O18.
+## Columns in dust are Depth, Ice Age, Dust Concentration.
+## Columns in deut are Depth, Ice Age, D concentration, and DeltaTS.
+
+co2_fig = figure("visible","off","name","CO2");
+ch4_fig = figure("visible","off","name","CH4");
+o18_fig = figure("visible","off","name","O18");
+deut_fig = figure("visible","off","name","Deuterium");
+dust_fig = figure("visible","off","name","Dust");
+## Generates figures and attaches handles to them for easy access. 
+
+## Now we need some data to display; I'll run a few functions.
+ls_complex_co2_ice_age = lscomplex(co2(:,2),co2(:,4),1,100,20);
+ls_complex_co2_gas_age = lscomplex(co2(:,3),co2(:,4),1,100,20);
+ls_real_co2_ice_age = lsreal(co2(:,2),co2(:,4),1,100,20);
+ls_real_co2_gas_age = lsreal(co2(:,3),co2(:,4),1,100,20);
+
+figure(co2_fig);
+subplot(4,2,1);
+plot(-(co2(:,2)),co2(:,4));
+title("Gas levels over ice age");
+subplot(4,2,2);
+plot(-(co2(:,3),co2(:,4));
+title("Gas levels over gas age");
+subplot(4,2,3);
+
+
+## to implement:
+## - displays of all the data and flaws in trying to model with just
+     ## using L-S data
+## - correlations of every data set with every other data set
+## - Comparing ls* results to periodogram results

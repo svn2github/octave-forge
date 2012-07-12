@@ -25,9 +25,10 @@
 
 %!shared t, x, o, maxfreq
 %! maxfreq = 4 / ( 2 * pi );
-%! t = linspace(0,8); x = ( 2.*sin(maxfreq.*t) + 3.*sin((3/4)*maxfreq.*t)
-%! - 0.5 .* sin((1/4)*maxfreq.*t) - 0.2 .* cos(maxfreq .* t)
-%! + cos((1/4)*maxfreq.*t)); o = [ maxfreq , 3 / 4 * maxfreq , 1 / 4 * maxfreq ];
+%! t = linspace(0,8);
+%! x = ( 2.*sin(maxfreq.*t) + 3.*sin((3/4)*maxfreq.*t) - 0.5 .* sin((1/4)*maxfreq.*t) - 0.2 .* cos(maxfreq .* t) + cos((1/4)*maxfreq.*t));
+%! assert(lsreal(t,x,maxfreq,2,2),[-1.68275915310663 + 4.70126183846743i, 1.93821553170889 + 4.95660209883437i, 4.38145452686697 + 2.14403733658600i, 5.27425332281147 - 0.73933440226597i],6e-14)
+%! #In the assert here, I've got an error bound large enough to catch individual system errors which would present no real issue.
 
 function transform = lsreal( t, x, omegamax, ncoeff, noctave)
   ## the R function runs the following command:
@@ -38,7 +39,7 @@ function transform = lsreal( t, x, omegamax, ncoeff, noctave)
   ## where rp = complex(noctave*ncoeff) so ... I can just store that as noctave*ncoeff and have no
   ## problems, I guess.
   ## Possibly throw an error if ncoeff <= 0.
-  k = n = min(length(x),length(t)); ## THIS IS VECTOR-ONLY. I'd need to add another bit of code to
+  k = n = length(t); ## THIS IS VECTOR-ONLY. I'd need to add another bit of code to
   ## make it array-safe, and that's not knowing right now what else will be necessary.
   transform = zeros(1,(noctave * ncoeff)); ## In the C code, this is rendered as a Complex, but Octave doesn't care.
   od = 2 ^ ( - 1 / ncoeff ); ## this will cause a crash if ncoeff=0; prefer error & quit?

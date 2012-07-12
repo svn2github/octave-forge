@@ -22,19 +22,19 @@
 ## @seealso{lombnormcoeff}
 ## @end deftypefn
 
-%!shared t, x, o, maxfreq
+%!test
+%! shared t, x, o, maxfreq
 %! maxfreq = 4 / ( 2 * pi );
 %! t = linspace(0,8); x = ( 2.*sin(maxfreq.*t) + 3.*sin((3/4)*maxfreq.*t)
 %! - 0.5 .* sin((1/4)*maxfreq.*t) - 0.2 .* cos(maxfreq .* t)
 %! + cos((1/4)*maxfreq.*t)); o = [ maxfreq , 3 / 4 * maxfreq , 1 / 4 * maxfreq ];
-%! assert( lombcoeff(t,x,o(1)) = );
-%! assert( lombcoeff(t,x,o(2)) = );
-%! assert( lombcoeff(t,x,o(3)) = );
+%!assert( lombcoeff(t,x,o(1)),10788.9848389923,5e-10 );
+%!assert( lombcoeff(t,x,o(2)),12352.6413413457,5e-10 );
+%!assert( lombcoeff(t,x,o(3)),13673.4098969780,5e-10 );
 
 
 function coeff = lombcoeff(T, X, o)
   theta = atan2(sum(sin(2 .* o .* T )), sum(cos(2.*o.*T)))/ (2 * o );
-  coeff = ( sum(X .* cos(o .* T - tau))**2)/(sum(cos(o.*T-tau).**2)) +
-          ( sum(X .* sin(o .* T - tau))**2)/(sum(sin(o.*T-tau).**2));
+  coeff = ( sum(X .* cos(o .* T - theta))**2)/(sum(cos(o.*T-theta).**2)) + ( sum(X .* sin(o .* T - theta))**2)/(sum(sin(o.*T-theta).**2));
 end function
 

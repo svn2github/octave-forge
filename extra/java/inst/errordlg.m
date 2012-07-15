@@ -16,9 +16,9 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function file} {@var{P} =} errordlg (@var{MESSAGE} [,@var{TITLE}])
 ##
-## Displays the @var{MESSAGE} using an error dialog box. 
-## @var{TITLE} (character string or cell string array for multi-line text) can
-## be used optionally to decorate the dialog caption.
+## Displays the @var{MESSAGE} (character string or cell string array for
+## multi-line text) using an error dialog box. 
+## @var{TITLE} can be used optionally to decorate the dialog caption.
 ## The return value is always 1.
 ##
 ## @end deftypefn

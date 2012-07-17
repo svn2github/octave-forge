@@ -35,15 +35,188 @@ ls_complex_co2_ice_age = lscomplex(co2(:,2),co2(:,4),1,100,20);
 ls_complex_co2_gas_age = lscomplex(co2(:,3),co2(:,4),1,100,20);
 ls_real_co2_ice_age = lsreal(co2(:,2),co2(:,4),1,100,20);
 ls_real_co2_gas_age = lsreal(co2(:,3),co2(:,4),1,100,20);
+ls_complex_ch4_ice_age = lscomplex(ch4(:,2),ch4(:,4),1,100,20);
+ls_complex_ch4_gas_age = lscomplex(ch4(:,3),ch4(:,4),1,100,20);
+ls_real_ch4_ice_age = lsreal(ch4(:,2),ch4(:,4),1,100,20);
+ls_real_ch4_gas_age = lsreal(ch4(:,3),ch4(:,4),1,100,20);
+ls_complex_o18_ice_age = lscomplex(o18(:,2),o18(:,4),1,100,20);
+ls_complex_o18_gas_age = lscomplex(o18(:,3),o18(:,4),1,100,20);
+ls_real_o18_ice_age = lsreal(o18(:,2),o18(:,4),1,100,20);
+ls_real_o18_gas_age = lsreal(o18(:,3),o18(:,4),1,100,20);
+ls_complex_deut = lscomplex(deut(:,2),deut(:,3),1,100,20);
+ls_real_deut = lsreal(deut(:,2),deut(:,3),1,100,20);
+ls_complex_dust = lscomplex(dust(:,2),dust(:,3),1,100,20);
+ls_real_dust = lsreal(dust(:,2),dust(:,3),1,100,20);
 
+x_data_axis_vector = [ -430000, 0 ];
+## Useful because all of the data extends over 430 000 years up to the
+## present.
+
+## Setting up the CO2 plots:
 figure(co2_fig);
 subplot(4,2,1);
+axis(x_data_axis_vector);
 plot(-(co2(:,2)),co2(:,4));
 title("Gas levels over ice age");
 subplot(4,2,2);
+axis(x_data_axis_vector);
 plot(-(co2(:,3),co2(:,4));
 title("Gas levels over gas age");
 subplot(4,2,3);
+plot(real(ls_complex_co2_ice_age));
+hold on;
+plot(imag(ls_complex_co2_ice_age),'r');
+title("Complex L-S transform of Gas/ice age data");
+legend("Real part","Imaginary part");
+subplot(4,2,4);
+plot(real(ls_complex_co2_gas_age));
+hold on;
+plot(imag(ls_complex_co2_gas_age),'r');
+title("Complex L-S transform of Gas/gas age data");
+legend("Real part","Imaginary part");
+subplot(4,2,5);
+plot(real(ls_real_co2_ice_age));
+hold on;
+plot(imag(ls_real_co2_ice_age),'r');
+title("Real L-S transform of Gas/ice age data");
+legend("Real part","Imaginary part");
+subplot(4,2,6);
+plot(real(ls_real_co2_gas_age));
+hold on;
+plot(imag(ls_real_co2_gas_age));
+title("Real L-S transform of Gas/gas age data");
+legend("Real part","Imaginary part");
+## At this point, we have transforms of both datasets, real and complex,
+## and just need to figure out what cool thing to do with the remaining slot.
+
+## Setting up the CH4 plots
+figure(ch4_fig);
+subplot(4,2,1);
+axis(x_data_axis_vector);
+plot(-(ch4(:,2)),ch4(:,4));
+title("Gas levels over ice age");
+subplot(4,2,2);
+axis(x_data_axis_vector);
+plot(-(ch4(:,3),ch4(:,4));
+title("Gas levels over gas age");
+subplot(4,2,3);
+plot(real(ls_complex_ch4_ice_age));
+hold on;
+plot(imag(ls_complex_ch4_ice_age),'r');
+title("Complex L-S transform of Gas/ice age data");
+legend("Real part","Imaginary part");
+subplot(4,2,4);
+plot(real(ls_complex_ch4_gas_age));
+hold on;
+plot(imag(ls_complex_ch4_gas_age),'r');
+title("Complex L-S transform of Gas/gas age data");
+legend("Real part","Imaginary part");
+subplot(4,2,5);
+plot(real(ls_real_ch4_ice_age));
+hold on;
+plot(imag(ls_real_ch4_ice_age),'r');
+title("Real L-S transform of Gas/ice age data");
+legend("Real part","Imaginary part");
+subplot(4,2,6);
+plot(real(ls_real_ch4_gas_age));
+hold on;
+plot(imag(ls_real_ch4_gas_age));
+title("Real L-S transform of Gas/gas age data");
+legend("Real part","Imaginary part");
+
+## Setting up the O18 plots:
+figure(o18_fig);
+subplot(4,2,1);
+axis(x_data_axis_vector);
+plot(-(o18(:,2)),o18(:,4));
+title("Gas levels over ice age");
+subplot(4,2,2);
+axis(x_data_axis_vector);
+plot(-(o18(:,3),o18(:,4));
+title("Gas levels over gas age");
+subplot(4,2,3);
+plot(real(ls_complex_o18_ice_age));
+hold on;
+plot(imag(ls_complex_o18_ice_age),'r');
+title("Complex L-S transform of Gas/ice age data");
+legend("Real part","Imaginary part");
+subplot(4,2,4);
+plot(real(ls_complex_o18_gas_age));
+hold on;
+plot(imag(ls_complex_o18_gas_age),'r');
+title("Complex L-S transform of Gas/gas age data");
+legend("Real part","Imaginary part");
+subplot(4,2,5);
+plot(real(ls_real_o18_ice_age));
+hold on;
+plot(imag(ls_real_o18_ice_age),'r');
+title("Real L-S transform of Gas/ice age data");
+legend("Real part","Imaginary part");
+subplot(4,2,6);
+plot(real(ls_real_o18_gas_age));
+hold on;
+plot(imag(ls_real_o18_gas_age));
+title("Real L-S transform of Gas/gas age data");
+legend("Real part","Imaginary part");
+
+## Setting up Dust plots:
+figure(dust_fig);
+subplot(4,1,1);
+axis(x_data_axis_vector);
+plot(-(dust(:,2)),dust(:,3));
+title("Dust levels over ice age");
+subplot(4,1,2);
+plot(real(ls_complex_dust_ice_age));
+hold on;
+plot(imag(ls_complex_dust_ice_age),'r');
+title("Complex L-S transform of Dust/ice age data");
+legend("Real part","Imaginary part");
+subplot(4,1,3);
+plot(real(ls_real_dust_ice_age));
+hold on;
+plot(imag(ls_real_dust_ice_age),'r');
+title("Real L-S transform of Dust/ice age data");
+legend("Real part","Imaginary part");
+
+## Setting up Deuterium plots:
+figure(deut_fig);
+subplot(4,1,1);
+axis(x_data_axis_vector);
+plot(-(deut(:,2)),deut(:,3));
+title("Deuterium levels over ice age");
+subplot(4,1,2);
+plot(real(ls_complex_deut_ice_age));
+hold on;
+plot(imag(ls_complex_deut_ice_age),'r');
+title("Complex L-S transform of Deuterium/ice age data");
+legend("Real part","Imaginary part");
+subplot(4,1,3);
+plot(real(ls_real_deut_ice_age));
+hold on;
+plot(imag(ls_real_deut_ice_age),'r');
+title("Real L-S transform of Deuterium/ice age data");
+legend("Real part","Imaginary part");
+
+co2_ch4_comparison_figure = figure("visible","off","name","CO2/CH4
+comparison");
+subplot(4,1,1);
+axes(x_data_axis_vector);
+plot(-(co2(:,2)),co2(:,4));
+hold on;
+plot(-(ch4(:,2)),ch4(:,4),'g');
+title("CO2 and CH4 data");
+legend("CO2","CH4");
+
+subplot(4,1,2);
+plot(abs(ls_complex_co2_ice_age));
+hold on;
+plot(abs(ls_complex_ch4_gas_age),'g');
+title("Abs. values of CO2 and CH4 L-S complex transforms");
+legend("CO2,CH4");
+
+
+
+
 
 
 ## to implement:

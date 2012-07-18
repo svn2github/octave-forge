@@ -1,3 +1,3 @@
 function n = name(self)
- n = ncname(self)
+ n = ncname(self);
 end

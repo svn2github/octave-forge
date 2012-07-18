@@ -23,16 +23,16 @@ if isempty(cache_dir)
     cache_dir = fullfile(getenv('HOME'),'tmp','Cache');
 end
 
+if beginswith(url,'http:') || ~endswith(url,'.gz') || ~endswith(url,'.bz2')
+  % opendap url or not compressed file
+  fname = url;
+  return
+end
 
-if endswith(url,'.gz') || endswith(url,'.bz2')
-    if exist(cache_dir,'dir') ~= 7
-        error(['cache directory for compressed files does not exist. '...
-            'Please create the directory %s or change le value of the '...
-            'global variable CACHED_DECOMPRESS_DIR'],cache_dir);
-    end
-else
-    fname = url;
-    return    
+if exist(cache_dir,'dir') ~= 7
+  error(['cache directory for compressed files does not exist. '...
+         'Please create the directory %s or change le value of the '...
+         'global variable CACHED_DECOMPRESS_DIR'],cache_dir);
 end
     
 % where to print logs? default to screen
@@ -90,6 +90,16 @@ if (cashe_size > max_cache_size)
     end
 end
 end
+
+function t = beginswith(s,pre)
+
+if length(pre) <= length(s)
+    t = strcmp(s(1:length(pre)),pre);
+else
+    t = 0;
+end
+end
+
 
 function t = endswith(s,ext)
 

@@ -89,7 +89,6 @@ function [ ret ] = pre_install ()
           endif
           if (! jtst)
             setenv ("PATH", [ jpth pathsep getenv("PATH") ]);
-            ## Do we need EXPORT on *nix?
           endif
         endif
       endif

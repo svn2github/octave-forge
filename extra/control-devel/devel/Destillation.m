@@ -85,4 +85,12 @@ figure (1)
 plot (t, Y_dest, 'b', t, y, 'r')
 legend ('y measured', 'y simulated', 'location', 'southeast')
 
+figure (2)
+p = columns (Y_dest);
+for k = 1 : 3
+  subplot (3, 1, k)
+  plot (t, Y_dest(:,k), 'b', t, y(:,k), 'r')
+  xlim ([0, 90])
+endfor
+legend ('y measured', 'y simulated', 'location', 'southeast')
 

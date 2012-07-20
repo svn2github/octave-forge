@@ -25,7 +25,7 @@ This file describes the data in the erie.dat file.
    	d. NO3
    	e. total hardness
 6. Outputs:
-	a. dissolved oxigen
+	a. dissolved oxygen
    	b. algae
 7. References:
 	R.P. Guidorzi, M.P. Losito, T. Muratori, On the last eigenvalue
@@ -76,7 +76,7 @@ dat = iddata (Y, U, [], 'inname', {'a. water temperature';
    	                   'outname', {'a. dissolved oxygen';
    	                               'b. algae'})
 
-[sys, x0] = moen4 (dat, 's', 5, 'n', 4)    % s=5, n=4
+[sys, x0, info] = moen4 (dat, 's', 5, 'n', 4)    % s=5, n=4
 % sys2 = arx (dat, 4, 4)
 [sys2, x02] = arx (dat, 4)
 
@@ -97,8 +97,59 @@ p = columns (Y_erie);
 for k = 1 : p
   subplot (2, 1, k)
   plot (t, Y_erie(:,k), t, y(:,k), t, y2(:,k))
+  grid on
 endfor
 
-legend ('y measured', 'y MOEN4', 'y ARX', 'location', 'southeast')
+subplot (2, 1, 1)
+title ('DaISy: Lake Erie [96-005]')
+ylabel ('Dissolved Oxygen [n.s.]')
+xlim ([0, 56])
+
+subplot (2, 1, 2)
+ylabel ('Algae [n.s.]')
+xlabel ('Time [months]')
+xlim ([0, 56])
+
+legend ('measurement DaISy', 'simulation MOEN4', 'simulation ARX', 'location', 'northeast')
+
+
+
+
+
+l = lqe (sys, info.Q, 100*info.Ry)
+
+
+
+[a, b, c, d] = ssdata (sys);
+
+sys2 = ss ([a-l*c], [b-l*d, l], c, [d, zeros(2)], -1)
+
+[sys, ~, info] = moen4 (dat, 's', 5, 'n', 4, 'noise', 'k')
+
+[y, t] = lsim (sys, [U_erie, Y_erie], [], x0);
+[y2, t2] = lsim (sys2, [U_erie, Y_erie], [], x0);
+
+errkp = norm (Y_erie - y, 1) / norm (Y_erie, 1)
+err2kp = norm (Y_erie - y2, 1) / norm (Y_erie, 1)
+
+figure (2)
+p = columns (Y_erie);
+for k = 1 : p
+  subplot (2, 1, k)
+  plot (t, Y_erie(:,k), t, y(:,k), t, y2(:,k))
+  grid on
+endfor
+
+subplot (2, 1, 1)
+title ('DaISy: Lake Erie [96-005]')
+ylabel ('Dissolved Oxygen [n.s.]')
+xlim ([0, 56])
+
+subplot (2, 1, 2)
+ylabel ('Algae [n.s.]')
+xlabel ('Time [months]')
+xlim ([0, 56])
+
+legend ('measurement DaISy', 'Kalman Predictor', 'Kalman Predictor weak', 'location', 'northeast')
 
 

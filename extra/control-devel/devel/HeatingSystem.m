@@ -93,7 +93,7 @@ title ('DaISy: Heating System [99-001]')
 xlim ([t(1), t(end)])
 xlabel ('Time [s]')
 ylabel ('Temperature [Degree Celsius]')
-legend ('measured', 'simulated subspace', 'simulated ARX', 'location', 'southeast')
+legend ('measurement DaISy', 'simulation MOEN4', 'simulation ARX', 'location', 'northeast')
 
 
 

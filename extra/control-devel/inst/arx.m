@@ -91,11 +91,11 @@ function [sys, varargout] = arx (dat, varargin)
     error ("arx: first argument must be a time-domain iddata dataset");
   endif
 
-  if (is_real_scalar (varargin{1}))   # arx (dat, n, ...)
+  if (is_real_scalar (varargin{1}))     # arx (dat, n, ...)
     varargin = horzcat (varargin(2:end), {"na"}, varargin(1), {"nb"}, varargin(1));
   endif
 
-  if (isstruct (varargin{1}))         # arx (dat, opt, ...), arx (dat, n, opt, ...)
+  if (isstruct (varargin{1}))           # arx (dat, opt, ...), arx (dat, n, opt, ...)
     varargin = horzcat (__opt2cell__ (varargin{1}), varargin(2:end));
   endif
 
@@ -232,7 +232,7 @@ function theta = __theta__ (phi, y, i, n)
     ## theta = __ls_svd__ (phi{1}, y{1}(n(i)+1:end, i));
   else                                              # multi-experiment dataset
     ## TODO: find more sophisticated formula than
-    ## Theta = (Phi1' Phi + Phi2' Phi2 + ...) \ (Phi1' Y1 + Phi2' Y2 + ...)
+    ## Theta = (Phi1' Phi1 + Phi2' Phi2 + ...) \ (Phi1' Y1 + Phi2' Y2 + ...)
     
     ## covariance matrix C = (Phi1' Phi + Phi2' Phi2 + ...)
     tmp = cellfun (@(Phi) Phi.' * Phi, phi, "uniformoutput", false);

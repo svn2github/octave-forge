@@ -50,7 +50,7 @@ function [ ret ] = pre_install ()
         ## subdir client/ (*nix) or a file jvm.cfg (Windows)
         ijhd = find (cell2mat ({jhd.isdir}));
         ii = 3;                    # Ignore current and parent dirs
-        while ii < numel (ijhd)
+        while ii <= numel (ijhd)
           jhsd = dir ([jh filesep "jre" filesep "lib" filesep jhd(ijhd(ii)).name]);
           ## Check if client is a subdir (hopefully of <arch>/)
           id = strmatch ("client", {jhsd.name});
@@ -75,7 +75,7 @@ function [ ret ] = pre_install ()
         else
           jtst = (system ('javac -version 2> /dev/null'));
         endif
-        if (jtst)         ## Should be zero if command returned normally
+        if (! jtst)         ## Should be zero if command returned normally
           ## OK, found Java compiler & it works.
         elseif (jdk_ok)
           ## Apparently javac is not in the PATH (as usual on e.g., Windows).
@@ -87,6 +87,7 @@ function [ ret ] = pre_install ()
           else
             jtst = (system ([ jpth filesep 'javac -version 2> /dev/null' ]));
           endif
+          ## If javac now works, amend JAVA_HOME/bin to the PATH
           if (! jtst)
             setenv ("PATH", [ jpth pathsep getenv("PATH") ]);
           endif

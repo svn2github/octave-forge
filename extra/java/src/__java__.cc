@@ -34,6 +34,8 @@
 #include <iostream>
 #include <fstream>
 
+#include <clocale>
+
 typedef jint (JNICALL *JNI_CreateJavaVM_t) (JavaVM **pvm, JNIEnv **penv, void *args);
 typedef jint (JNICALL *JNI_GetCreatedJavaVMs_t) (JavaVM **pvm, jsize bufLen, jsize *nVMs);
 
@@ -385,6 +387,9 @@ static void initialize_jvm ()
 
   if (jvm) return;
 
+  const char *static_locale = setlocale(LC_ALL, NULL);
+  const std::string locale(static_locale);
+
 #if defined (__WIN32__)
 
   HMODULE hMod = GetModuleHandle("jvm.dll");
@@ -534,6 +539,8 @@ static void initialize_jvm ()
   }
 
 #endif
+
+  setlocale(LC_ALL, locale.c_str());
 }
 
 static void terminate_jvm(void)

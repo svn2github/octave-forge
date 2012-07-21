@@ -116,7 +116,7 @@ legend ('measurement DaISy', 'simulation MOEN4', 'simulation ARX', 'location', '
 
 
 
-l = lqe (sys, info.Q, 100*info.Ry)
+l = lqe (sys, info.Q, 100*info.Ry, info.S)
 
 
 

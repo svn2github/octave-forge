@@ -374,18 +374,18 @@ if test -n "$JAVAC" -a -n "$JAR"; then
           elif test -d "${JAVA_HOME}/jre/lib/solarisv9"; then
             JAVA_ARCH="solarisv9"
           fi
-          if test -n "$JAVA_ARCH"; then
-            HAVE_JAVA=yes
-            case "$canonical_host_type" in
-              *-mingw* | *-cygwin*)
-                JAVA_LIBS=-ladvapi32
-                JAVA_INCS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/win32"
-                ;;
-              *)
-                JAVA_INCS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux"
-                ;;
-            esac
-          fi
+        fi
+        if test -n "$JAVA_ARCH"; then
+          HAVE_JAVA=yes
+          case "$canonical_host_type" in
+            *-mingw* | *-cygwin*)
+              JAVA_LIBS=-ladvapi32
+              JAVA_INCS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/win32"
+              ;;
+            *)
+              JAVA_INCS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux"
+              ;;
+          esac
         fi
         ;;
     esac

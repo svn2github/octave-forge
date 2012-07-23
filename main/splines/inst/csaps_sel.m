@@ -18,14 +18,14 @@
 ## @deftypefnx{Function File}{[@var{pp} @var{p} @var{sigma2},@var{unc_y}] =} csaps_sel(@var{x}, @var{y}, [], @var{w}=[], @var{crit}=[])
 ##
 ## Cubic spline approximation with smoothing parameter estimation @*
-## approximate [@var{x},@var{y}], weighted by @var{w} (inverse variance; if not given, equal weighting is assumed), at @var{xi}.
+## Approximates [@var{x},@var{y}], weighted by @var{w} (inverse variance; if not given, equal weighting is assumed), at @var{xi}.
 ##
 ## The chosen cubic spline with natural boundary conditions @var{pp}(@var{x}) minimizes @var{p} Sum_i @var{w}_i*(@var{y}_i - @var{pp}(@var{x}_i))^2  +  (1-@var{p}) Int @var{pp}''(@var{x}) d@var{x}.
-## A selection criterion @var{crit} is used to find a suitable value for @var{p} (between 0 and 1); possible values for @var{crit} are `aicc' (corrected Akaike information criterion, the default); `aic' (original Akaike information criterion); `gcv' (generalized cross validation)  
+## A selection criterion @var{crit} is used to find a suitable value for @var{p} (between 0 and 1); possible values for @var{crit} are `aicc' (corrected Akaike information criterion, the default); `aic' (original Akaike information criterion); `gcv' (generalized cross validation). If @var{crit} is a scalar instead of a string, then @{p} is chosen to so that the mean square scaled residual Mean_i (@var{w}_i*(@var{y}_i - @var{pp}(@var{x}_i))^2) is approximately equal to @var{crit}.
 ##
 ## @var{x} and @var{w} should be @var{n} by 1 in size; @var{y} should be @var{n} by @var{m}; @var{xi} should be @var{k} by 1; the values in @var{x} should be distinct; the values in @var{w} should be nonzero.
 ##
-## returns the selected @var{p}, the estimated data scatter (variance from the smooth trend) @var{sigma2}, and the estimated uncertainty (SD) of the smoothing spline fit at each @var{x} value, @var{unc_y}.
+## Returns the selected @var{p}, the estimated data scatter (variance from the smooth trend) @var{sigma2}, and the estimated uncertainty (SD) of the smoothing spline fit at each @var{x} value, @var{unc_y}.
 ##
 ## The optimization uses singular value decomposition of an @var{n} by @var{n} matrix for small @var{n} in order to quickly compute the residual size and model degrees of freedom for many @var{p} values for the optimization (Craven and Wahba 1979), while for large @var{n} (currently >300) an asymptotically more computation and storage efficient method that takes advantage of the sparsity of the problem's coefficient matrices is used (Hutchinson and de Hoog 1985).
 ##
@@ -72,6 +72,16 @@ function [ret,p,sigma2,unc_y]=csaps_sel(x,y,xi,w,crit)
   if isempty(w)
     w = ones(n, 1);
   end
+
+  if isscalar(crit)
+    if crit <= 0 #return an exact cubic spline interpolation
+        [ret,p]=csaps(x,y,1,xi,w);
+        sigma2 = 0; unc_y = zeros(size(x));
+        return
+      end
+    w = w ./ crit; #adjust the sample weights so that the target mean square scaled residual is 1
+    crit = 'msr_bound';
+  end	
 
   if isempty(crit)
     crit = 'aicc';
@@ -177,7 +187,11 @@ function J = gcv(MSR, Ht, n)
 	J = mean(log(MSR)(:)) - 2 * log(1 - Ht / n);
 endfunction
 
-function J = penalty_compute(p, U, D, y, w, n, crit) #evaluates a user-supplied penalty function at given p
+function J = msr_bound(MSR, Ht, n)
+	J = mean(MSR(:) - 1) .^ 2;
+endfunction
+
+function J = penalty_compute(p, U, D, y, w, n, crit) #evaluates a user-supplied penalty function crit at given p
 	H = influence_matrix(p, U, D, n, w);
 	[MSR, Ht] = penalty_terms(H, y, w);
 	J = feval(crit, MSR, Ht, n);
@@ -186,7 +200,7 @@ function J = penalty_compute(p, U, D, y, w, n, crit) #evaluates a user-supplied 
 	endif 	
 endfunction
 
-function J = penalty_compute_chol(p, QT, R, y, w, n, crit) #evaluates a user-supplied penalty function at given p
+function J = penalty_compute_chol(p, QT, R, y, w, n, crit) #evaluates a user-supplied penalty function crit at given p
 	[MSR, Ht] = penalty_terms_chol(p, QT, R, y, w, n);
 	J = feval(crit, MSR, Ht, n);
 	if ~isfinite(J)

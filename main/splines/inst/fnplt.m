@@ -31,7 +31,7 @@
 function [x, y] = fnplt (pp, plt)
 
   if (nargin < 1 || nargin > 2)
-    usage ("[x, y] = fnplt (pp [, plotstring])");
+    print_usage;
   endif
   if (nargin < 2)
     plt = "r;;";

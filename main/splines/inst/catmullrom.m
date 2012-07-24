@@ -53,7 +53,7 @@ function pp = catmullrom(x,f,v)
     
   for ii = 1:4
     coeff(:,ii) =  ((h00(ii)*p0 + h10(ii)*h.*m0 +...
-		     h01(ii)*p1 + h11(ii)*h.*m1 )./h.^(4-ii))' ;
+                     h01(ii)*p1 + h11(ii)*h.*m1 )./h.^(4-ii))' ;
   end
 
   pp = mkpp (x, coeff);

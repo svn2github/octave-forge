@@ -85,7 +85,7 @@ function [ret,p,sigma2,unc_y]=csaps_sel(x,y,xi,w,crit)
 
   if isempty(crit)
     crit = 'aicc';
-  end  
+  end
 
   h = diff(x);
 
@@ -144,87 +144,85 @@ endfunction
 
 
 function H = influence_matrix(p, U, D, n, w) #returns influence matrix for given p
-	H = speye(n) - U * diag(D ./ (D + (p / (6*(1-p))))) * U';
-	H = diag(1 ./ sqrt(w)) * H * diag(sqrt(w)); #rescale to original units	
+  H = speye(n) - U * diag(D ./ (D + (p / (6*(1-p))))) * U';
+  H = diag(1 ./ sqrt(w)) * H * diag(sqrt(w)); #rescale to original units	
 endfunction	
 
 function [MSR, Ht] = penalty_terms(H, y, w)
-	MSR = mean(w .* (y - (H*y)) .^ 2); #mean square residual
-	Ht = trace(H); #effective number of fitted parameters
+  MSR = mean(w .* (y - (H*y)) .^ 2); #mean square residual
+  Ht = trace(H); #effective number of fitted parameters
 endfunction
 
 function Hd = influence_matrix_diag_chol(p, QT, R, y, w, n)
-	#LDL factorization of 6*(1-p)*QT*diag(1 ./ w)*QT' + p*R
-	U = chol(6*(1-p)*QT*diag(1 ./ w)*QT' + p*R, 'upper');
-	d = 1 ./ diag(U);
-	U = diag(d)*U; 
-	d = d .^ 2;
-	#5 central bands in the inverse of 6*(1-p)*QT*diag(1 ./ w)*QT' + p*R
-	Binv = banded_matrix_inverse(d, U, 2);
-	Hd = diag(speye(n) - (6*(1-p))*diag(1 ./ w)*QT'*Binv*QT);	
+  #LDL factorization of 6*(1-p)*QT*diag(1 ./ w)*QT' + p*R
+  U = chol(6*(1-p)*QT*diag(1 ./ w)*QT' + p*R, 'upper');
+  d = 1 ./ diag(U);
+  U = diag(d)*U; 
+  d = d .^ 2;
+  #5 central bands in the inverse of 6*(1-p)*QT*diag(1 ./ w)*QT' + p*R
+  Binv = banded_matrix_inverse(d, U, 2);
+  Hd = diag(speye(n) - (6*(1-p))*diag(1 ./ w)*QT'*Binv*QT);	
 endfunction
 
 function [MSR, Ht] = penalty_terms_chol(p, QT, R, y, w, n)
-	#LDL factorization of 6*(1-p)*QT*diag(1 ./ w)*QT' + p*R
-	U = chol(6*(1-p)*QT*diag(1 ./ w)*QT' + p*R, 'upper');
-	d = 1 ./ diag(U);
-	U = diag(d)*U; 
-	d = d .^ 2;
-	Binv = banded_matrix_inverse(d, U, 2); #5 central bands in the inverse of 6*(1-p)*QT*diag(1 ./ w)*QT' + p*R
-	Ht = 2 + trace(speye(n-2) - (6*(1-p))*QT*diag(1 ./ w)*QT'*Binv);
-	MSR = mean(w .* ((6*(1-p)*diag(1 ./ w)*QT'*((6*(1-p)*QT*diag(1 ./ w)*QT' + p*R) \ (QT*y)))) .^ 2);
+  #LDL factorization of 6*(1-p)*QT*diag(1 ./ w)*QT' + p*R
+  U = chol(6*(1-p)*QT*diag(1 ./ w)*QT' + p*R, 'upper');
+  d = 1 ./ diag(U);
+  U = diag(d)*U; 
+  d = d .^ 2;
+  Binv = banded_matrix_inverse(d, U, 2); #5 central bands in the inverse of 6*(1-p)*QT*diag(1 ./ w)*QT' + p*R
+  Ht = 2 + trace(speye(n-2) - (6*(1-p))*QT*diag(1 ./ w)*QT'*Binv);
+  MSR = mean(w .* ((6*(1-p)*diag(1 ./ w)*QT'*((6*(1-p)*QT*diag(1 ./ w)*QT' + p*R) \ (QT*y)))) .^ 2);
 endfunction
 
 function J = aicc(MSR, Ht, n)
-	J = mean(log(MSR)(:)) + 2 * (Ht + 1) / max(n - Ht - 2, 0); #hurvich98, taking the average if there are multiple data sets as in woltring86 
+  J = mean(log(MSR)(:)) + 2 * (Ht + 1) / max(n - Ht - 2, 0); #hurvich98, taking the average if there are multiple data sets as in woltring86 
 endfunction
 
 function J = aic(MSR, Ht, n)
-	J = mean(log(MSR)(:)) + 2 * Ht / n;
+  J = mean(log(MSR)(:)) + 2 * Ht / n;
 endfunction
 
 function J = gcv(MSR, Ht, n)
-	J = mean(log(MSR)(:)) - 2 * log(1 - Ht / n);
+  J = mean(log(MSR)(:)) - 2 * log(1 - Ht / n);
 endfunction
 
 function J = msr_bound(MSR, Ht, n)
-	J = mean(MSR(:) - 1) .^ 2;
+  J = mean(MSR(:) - 1) .^ 2;
 endfunction
 
 function J = penalty_compute(p, U, D, y, w, n, crit) #evaluates a user-supplied penalty function crit at given p
-	H = influence_matrix(p, U, D, n, w);
-	[MSR, Ht] = penalty_terms(H, y, w);
-	J = feval(crit, MSR, Ht, n);
-	if ~isfinite(J)
-		J = Inf;
-	endif 	
+  H = influence_matrix(p, U, D, n, w);
+  [MSR, Ht] = penalty_terms(H, y, w);
+  J = feval(crit, MSR, Ht, n);
+  if ~isfinite(J)
+    J = Inf;
+  endif
 endfunction
 
 function J = penalty_compute_chol(p, QT, R, y, w, n, crit) #evaluates a user-supplied penalty function crit at given p
-	[MSR, Ht] = penalty_terms_chol(p, QT, R, y, w, n);
-	J = feval(crit, MSR, Ht, n);
-	if ~isfinite(J)
-		J = Inf;
-	endif 	
+  [MSR, Ht] = penalty_terms_chol(p, QT, R, y, w, n);
+  J = feval(crit, MSR, Ht, n);
+  if ~isfinite(J)
+    J = Inf;
+  endif
 endfunction
 
 function Binv = banded_matrix_inverse(d, U, m) #given a (2m+1)-banded, symmetric n x n matrix B = U'*inv(diag(d))*U, where U is unit upper triangular with bandwidth (m+1), returns Binv, a sparse symmetric matrix containing the central 2m+1 bands of the inverse of B
 #Reference: Hutchinson and de Hoog 1985
-	Binv = diag(d);
-	n = rows(U);
-	for i = n:(-1):1
-		p = min(m, n - i);
-		for l = 1:p
-			for k = 1:p
-				Binv(i, i+l) -= U(i, i+k)*Binv(i + k, i + l);
-			end
-			Binv(i, i) -= U(i, i+l)*Binv(i, i+l);
-		end
-		Binv(i+(1:p), i) = Binv(i, i+(1:p))'; #add the lower triangular elements
-	end
+  Binv = diag(d);
+  n = rows(U);
+  for i = n:(-1):1
+    p = min(m, n - i);
+    for l = 1:p
+      for k = 1:p
+        Binv(i, i+l) -= U(i, i+k)*Binv(i + k, i + l);
+      end
+      Binv(i, i) -= U(i, i+l)*Binv(i, i+l);
+    end
+    Binv(i+(1:p), i) = Binv(i, i+(1:p))'; #add the lower triangular elements
+  end
 endfunction
-			
-
 
 %!shared x,y,ret,p,sigma2,unc_y
 %! x = [0:0.01:1]'; y = sin(x);
@@ -251,4 +249,3 @@ y = x .^ 2 +  0.5*(rand(size(x))-0.5)./ sqrt(w);
 tic; [ret,p,sigma2,unc_y]=csaps_sel(x,y,x,w); toc
 
 %}
-

@@ -9,7 +9,7 @@ function r = fnval(a,b,left)
     # XXX FIXME XXX ignoring left continuous vs. right continuous option
     if isstruct(a), r=ppval(a,b); else r=ppval(b,a); end
   else
-    usage("r=fnval(pp,x) || r=fnval(x,pp)");
+    print_usage;
   end
 end
 

@@ -97,10 +97,10 @@ function pp = csape (x, y, cond, valc)
     end
 
     c(1,:) = (3 / h(1) * (a(2,:) - a(1,:)) - 3 * valc(1) 
-	      - c(2,:) * h(1)) / (2 * h(1)); 
+              - c(2,:) * h(1)) / (2 * h(1)); 
     c(n,:) = - (3 / h(n - 1) * (a(n,:) - a(n - 1,:)) - 3 * valc(2) 
 
-		+ c(n - 1,:) * h(n - 1)) / (2 * h(n - 1));
+                + c(n - 1,:) * h(n - 1)) / (2 * h(n - 1));
     b(1:n - 1,:) = diff (a) ./ h(1:n - 1, idx)\
       - h(1:n - 1,idx) / 3 .* (c(2:n,:) + 2 * c(1:n - 1,:));
     d = diff (c) ./ (3 * h(1:n - 1, idx));
@@ -156,9 +156,9 @@ function pp = csape (x, y, cond, valc)
       dg(1) -=  gamma;
       dg(end) -= h(1) * h(1) / gamma; 
       z = spdiags([[e(:);0],dg,[0;e(:)]],[-1,0,1],n-1,n-1) \ ...
-	  [[gamma; zeros(n-3,1); h(1)],g];
+          [[gamma; zeros(n-3,1); h(1)],g];
       fact = (z(1,2:end) + h(1) * z(end,2:end) / gamma) / ...
-	  (1.0 + z(1,1) + h(1) * z(end,1) / gamma);
+          (1.0 + z(1,1) + h(1) * z(end,1) / gamma);
 
       c(2:n,idx) = z(:,2:end) - z(:,1) * fact;
     endif
@@ -176,8 +176,8 @@ function pp = csape (x, y, cond, valc)
     g(1,:) = 3 / (h(1) + h(2)) * (a(3,:) - a(2,:)\
           - h(2) / h(1) * (a(2,:) - a(1,:)));
     g(n - 2,:) = 3 / (h(n - 1) + h(n - 2)) *\
- 	(h(n - 2) / h(n - 1) * (a(n,:) - a(n - 1,:)) -\
-	 (a(n - 1,:) - a(n - 2,:)));
+        (h(n - 2) / h(n - 1) * (a(n,:) - a(n - 1,:)) -\
+         (a(n - 1,:) - a(n - 2,:)));
 
     if (n > 4)
 
@@ -201,7 +201,7 @@ function pp = csape (x, y, cond, valc)
       c(2:n - 1,:) = spdiags([[ldg(:);0],dg,[0;udg(:)]],[-1,0,1],n-2,n-2) \ g;
       
     else # n == 3
-	    
+            
       dg= [h(1) + 2 * h(2)];
       c(2:n - 1,:) = g/dg(1);
 
@@ -232,7 +232,7 @@ endfunction
 %!assert (ppval(csape(x',y'),x'), y', 10*eps);
 %!assert (ppval(csape(x',y'),x), y, 10*eps);
 %!assert (ppval(csape(x,[y;y]),x), \
-%!	  [ppval(csape(x,y),x);ppval(csape(x,y),x)], 10*eps)
+%!        [ppval(csape(x,y),x);ppval(csape(x,y),x)], 10*eps)
 
 %!test cond='complete';
 %!assert (ppval(csape(x,y,cond),x), y, 10*eps);
@@ -240,7 +240,7 @@ endfunction
 %!assert (ppval(csape(x',y',cond),x'), y', 10*eps);
 %!assert (ppval(csape(x',y',cond),x), y, 10*eps);
 %!assert (ppval(csape(x,[y;y],cond),x), \
-%!	  [ppval(csape(x,y,cond),x);ppval(csape(x,y,cond),x)], 10*eps)
+%!        [ppval(csape(x,y,cond),x);ppval(csape(x,y,cond),x)], 10*eps)
 
 %!test cond='variational';
 %!assert (ppval(csape(x,y,cond),x), y, 10*eps);
@@ -248,7 +248,7 @@ endfunction
 %!assert (ppval(csape(x',y',cond),x'), y', 10*eps);
 %!assert (ppval(csape(x',y',cond),x), y, 10*eps);
 %!assert (ppval(csape(x,[y;y],cond),x), \
-%!	  [ppval(csape(x,y,cond),x);ppval(csape(x,y,cond),x)], 10*eps)
+%!        [ppval(csape(x,y,cond),x);ppval(csape(x,y,cond),x)], 10*eps)
 
 %!test cond='second';
 %!assert (ppval(csape(x,y,cond),x), y, 10*eps);
@@ -256,7 +256,7 @@ endfunction
 %!assert (ppval(csape(x',y',cond),x'), y', 10*eps);
 %!assert (ppval(csape(x',y',cond),x), y, 10*eps);
 %!assert (ppval(csape(x,[y;y],cond),x), \
-%!	  [ppval(csape(x,y,cond),x);ppval(csape(x,y,cond),x)], 10*eps)
+%!        [ppval(csape(x,y,cond),x);ppval(csape(x,y,cond),x)], 10*eps)
 
 %!test cond='periodic';
 %!assert (ppval(csape(x,y,cond),x), y, 10*eps);
@@ -264,7 +264,7 @@ endfunction
 %!assert (ppval(csape(x',y',cond),x'), y', 10*eps);
 %!assert (ppval(csape(x',y',cond),x), y, 10*eps);
 %!assert (ppval(csape(x,[y;y],cond),x), \
-%!	  [ppval(csape(x,y,cond),x);ppval(csape(x,y,cond),x)], 10*eps)
+%!        [ppval(csape(x,y,cond),x);ppval(csape(x,y,cond),x)], 10*eps)
 
 %!test cond='not-a-knot';
 %!assert (ppval(csape(x,y,cond),x), y, 10*eps);
@@ -272,4 +272,4 @@ endfunction
 %!assert (ppval(csape(x',y',cond),x'), y', 10*eps);
 %!assert (ppval(csape(x',y',cond),x), y, 10*eps);
 %!assert (ppval(csape(x,[y;y],cond),x), \
-%!	  [ppval(csape(x,y,cond),x);ppval(csape(x,y,cond),x)], 10*eps)
+%!        [ppval(csape(x,y,cond),x);ppval(csape(x,y,cond),x)], 10*eps)

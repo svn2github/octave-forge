@@ -26,7 +26,7 @@
 function dpp = fnder (pp, o)
 
   if (nargin < 1 || nargin > 2)
-    usage ("fnder (pp [, order])");
+    print_usage;
   endif
   if (nargin < 2)
     o = 1;

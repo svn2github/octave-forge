@@ -1,8 +1,8 @@
 Name: splines
-Version: 1.0.7
-Date: 2009-05-06
+Version: 1.0.8
+Date: 2012-24-07
 Author: Kai Habel <kai.habel@gmx.de> and Paul Kienzle <pkienzle@users.sf.net>
-Maintainer: Kai Habel <kai.habel@gmx.de> and Paul Kienzle <pkienzle@users.sf.net>
+Maintainer: Nir Krakauer <nkrakauer@ccny.cuny.edu>
 Title: Splines.
 Description: Additional Cubic spline functions.
 Categories: Splines

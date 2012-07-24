@@ -1,5 +1,5 @@
 Name: splines
-Version: 1.0.8
+Version: 1.1.0
 Date: 2012-24-07
 Author: Kai Habel <kai.habel@gmx.de> and Paul Kienzle <pkienzle@users.sf.net>
 Maintainer: Nir Krakauer <nkrakauer@ccny.cuny.edu>
@@ -7,6 +7,6 @@ Title: Splines.
 Description: Additional Cubic spline functions.
 Categories: Splines
 Depends: octave (>= 2.9.7)
-Autoload: yes
+Autoload: no
 License: GPLv3+, public domain
 Url: http://octave.sf.net

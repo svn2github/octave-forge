@@ -1,8 +1,10 @@
-Summary of important user-visible changes for splines 1.0.8:
+Summary of important user-visible changes for splines 1.1.0:
 -------------------------------------------------------------------
 
  ** The following functions are new:
 
       csaps      csaps_sel
 
- ** Calls to mkpp in fnder and csape and were modified to reflect changes in its syntax
+ ** Bug fixes in fnder and csape for compatibility with new octave versions
+ 
+ ** Turned off autoload

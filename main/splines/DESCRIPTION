@@ -6,7 +6,7 @@ Maintainer: Nir Krakauer <nkrakauer@ccny.cuny.edu>
 Title: Splines.
 Description: Additional Cubic spline functions.
 Categories: Splines
-Depends: octave (>= 2.9.7)
+Depends: octave (>= 3.6)
 Autoload: no
 License: GPLv3+, public domain
 Url: http://octave.sf.net

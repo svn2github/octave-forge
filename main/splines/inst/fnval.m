@@ -1,8 +1,9 @@
+## Author: Paul Kienzle <pkienzle@users.sf.net>
+## This program is granted to the public domain.
+
 ## r = fnval(pp,x) or r = fnval(x,pp)
 ## Compute the value of the piece-wise polynomial pp at points x.
 
-## This program is public domain.
-## Paul Kienzle, 2004-02-22
 function r = fnval(a,b,left)
   if nargin == 2 || (nargin == 3 && left == 'l' && left == 'r')
     # XXX FIXME XXX ignoring left continuous vs. right continuous option

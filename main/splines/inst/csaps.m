@@ -1,17 +1,17 @@
 ## Copyright (C) 2012 Nir Krakauer
 ##
-## This program is free software; you can redistribute it and/or modify it under
-## the terms of the GNU General Public License as published by the Free Software
-## Foundation; either version 3 of the License, or (at your option) any later
-## version.
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
 ##
-## This program is distributed in the hope that it will be useful, but WITHOUT
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-## FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
-## details.
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
-## You should have received a copy of the GNU General Public License along with
-## this program; if not, see <http://www.gnu.org/licenses/>.
+## You should have received a copy of the GNU General Public License
+## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn{Function File}{[@var{yi} @var{p}] =} csaps(@var{x}, @var{y}, @var{p}, @var{xi}, @var{w}=[])
@@ -94,8 +94,14 @@ function [ret,p]=csaps(x,y,p,xi,w)
   aa = bb = cc = dd = zeros (n+1, m);
   aa(2:end, :) = a;
   cc(3:n, :) = 6*p*u; #second derivative at endpoints is 0 [natural spline]
+ warn_state = warning ("query", "Octave:broadcast").state;
+ warning ("off", "Octave:broadcast"); #turn off warning message for automatic broadcasting
+ unwind_protect
   dd(2:n, :) = diff(cc(2:(n+1), :)) ./ h;
   bb(2:n, :) = diff(a) ./ h - (cc(2:n, :)/2).*h - (dd(2:n, :)/6).*(h.^2);
+ unwind_protect_cleanup
+ warning (warn_state, "Octave:broadcast");
+ end_unwind_protect  
   bb(1, :) = bb(2, :); #linear extension of splines
   bb(n + 1, :) = bb(n, :);
   aa(1, :) = a(1, :) - eps(x(1))*bb(1, :);

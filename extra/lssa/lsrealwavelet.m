@@ -10,7 +10,6 @@
 
 function transform = lsrealwavelet(T, X, maxfreq, ncoeff, noctave, t_min, t_max, minimum_window_number )
 
-len_tx = length (T)
 omegamult = 2 ^ ( - 1/ ncoeff )
 omegamult_inv = 1 / omegamult
 
@@ -63,7 +62,7 @@ for iter = 1:(noctave*ncoeff)
     window_min += 2 * current_radius;
     ## I remain hesitant about this value, since it is entirely possible necessary precision will be lost. Should I try to reduce that?
   endfor
-  
+  o *= omegamult;
 endfor
   
 

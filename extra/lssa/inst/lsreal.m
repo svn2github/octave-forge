@@ -19,7 +19,9 @@
 ## Return the real least-squares transform of the time series
 ## defined, based on the maximal frequency @var{maxfreq}, the
 ## number of coefficients @var{numcoeff}, and the number of 
-## octaves @var{numoctaves}. It works only for vectors currently.
+## octaves @var{numoctaves}. Each complex-valued result is the
+## pair (c_o, s_o) defining the coefficients which best fit the
+## function y = c_o * cos(ot) + s_o * sin(ot) to the (@var{time}, @var{mag}) data.
 ##
 ## @end deftypefn
 

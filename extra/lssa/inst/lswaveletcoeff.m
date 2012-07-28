@@ -19,7 +19,7 @@
 ## @deftypefnx {Function File} {c =} lswaveletcoeff (abc, ord, time, freq, window, winradius)
 ##
 ## Return the coefficient of the wavelet transform of the
-## time series (@var{abc}, @var{ord}) at time @var{time}
+## complex time series (@var{abc}, @var{ord}) at time @var{time}
 ## and frequency @var{freq}; optional variable @var{window}
 ## provides a windowing function and defaults to cubicwgt,
 ## while @var{winradius} is the windowing radius, and defaults
@@ -43,10 +43,8 @@ function coeff = lswaveletcoeff( x , y , t , o , wgt = @cubicwgt , wgtrad = 1 )
     x = reshape(x,1,length(x));
     y = reshape(y,1,length(y));
   endif
-  mask = abs( x - t ) * so < wgtrad;
-  mask = mask .* [ 1 : length(mask) ];
+  mask = find( abs( x - t ) * so < wgtrad );
   rx = x(mask);
-  ## This was the fastest way to extract a matching subset that I could think of, but it has a complexity O(2n).
   ry = y(mask);
   ## Going by the R code, this can use the same mask.
   s = sum( wgt( ( x - t ) .* so ) );

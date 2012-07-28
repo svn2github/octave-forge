@@ -48,10 +48,4 @@ ssh = squeeze(ssh);
 
 close(nc);
 
-colormap(hsv);
-axis xy
-iamgesc(ssh); 
-
-% or with yapso
-% pcolor(ssh);
-
+pcolor(x,y,ssh), shading flat,colorbar

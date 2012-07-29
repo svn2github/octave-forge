@@ -72,7 +72,7 @@ Y=heating_system(:,3);
 dat = iddata (Y, U, 2.0, 'inname', 'input drive voltage', \
                          'inunit', 'Volt', \
                          'outname', 'temperature', \
-                         'outunit', '°C')
+                         'outunit', 'Degree Celsius')
 
 % s=15, n=7
 [sys1, x0] = moen4 (dat, 's', 15, 'n', 7)

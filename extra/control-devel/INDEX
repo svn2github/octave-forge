@@ -26,4 +26,5 @@ Overloaded Operators
   @iddata/subsref
   @iddata/vertcat
 Miscellaneous
+  options
   test_devel

@@ -30,7 +30,7 @@ nv = nc{varname};
 
 vinfo.Size = fliplr(size(nv));
 vinfo.Filename = filename;
-vinfo.Dimensions = {};
+vinfo.Dimensions = [];
 vinfo.Name = varname;
 
 dims = fliplr(dim(nv));
@@ -39,8 +39,9 @@ for i=1:length(dims)
     tmp = struct();
     tmp.Name = name(dims{i});
     tmp.Length = dims{i}(:);
-    tmp.Unlimited = isrecord(dims{i});
-    vinfo.Dimensions(i) = tmp;
+    % requires octcdf 1.1.6
+    %tmp.Unlimited = isrecdim(dims{i});
+    vinfo.Dimensions = [vinfo.Dimensions; tmp];
 end
 
 
@@ -54,7 +55,7 @@ for j=1:length(na)
     
     tmp.Name = nm;
     tmp.Value = na{j}(:);
-    vinfo.Attributes(j) = tmp;
+    vinfo.Attributes = [vinfo.Attributes; tmp];
 end
 
 vinfo.FillValue = fillval(nv);

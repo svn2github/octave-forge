@@ -19,7 +19,6 @@ global CACHED_DECOMPRESS_LOG_FID
 
 cache_dir = CACHED_DECOMPRESS_DIR;
 if isempty(cache_dir)
-%    cache_dir = fullfile(getenv('HOME'),'tmp','Cache');
     cache_dir = fullfile(getenv('HOME'),'tmp','Cache');
 end
 

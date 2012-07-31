@@ -38,7 +38,7 @@ end
 % check for coordinate dimensions
 for i=1:length(dims)
     % check if variable with the same name than the dimension exist
-    index = find(strcmp(dims{i},{finfo.Variables(:).Name}));
+    index = find(strcmp(dims{i},{finfo.Variables(:).Name}),1);
     if ~isempty(index)
         coord = addcoord(coord,dims{i},finfo);
     end
@@ -50,7 +50,7 @@ end
 function coord = addcoord(coord,name,finfo)
 
 % check if coordinate is aleady in the list
-if isempty(find(strcmp(name,{coord(:).name})))
+if isempty(find(strcmp(name,{coord(:).name}),1))
     
     % check if name is variable
     index = find(strcmp(name,{finfo.Variables(:).Name}));

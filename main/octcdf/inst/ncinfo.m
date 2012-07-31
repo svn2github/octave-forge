@@ -5,6 +5,7 @@
 % return information about complete NetCDF file (filename) or about
 % the specific variable varname.
 
+%
 function info = ncinfo(filename,varname)
 
 nc = netcdf(filename,'r');
@@ -35,13 +36,17 @@ vinfo.Name = varname;
 dims = fliplr(dim(nv));
 
 for i=1:length(dims)
-    vinfo.Dimensions{i} = name(dims{i});
+    tmp = struct();
+    tmp.Name = name(dims{i});
+    tmp.Length = dims{i}(:);
+    tmp.Unlimited = isrecord(dims{i});
+    vinfo.Dimensions(i) = tmp;
 end
 
 
 na = att(nv);
 
-%vinfo.Attributes = [];
+vinfo.Attributes = [];
 
 for j=1:length(na)
     tmp = struct();

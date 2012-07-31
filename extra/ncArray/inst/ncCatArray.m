@@ -77,7 +77,7 @@ end
 
 
 for i=1:length(coord)
-    % coordinates do also depend on the dimension only which we concatenate
+    % coordinates do also depend on the dimension on which we concatenate
     coord(i).val = arr(dim,filenames,coord(i).name);
     if dim > length(coord(i).dims)
         coord(i).dims{dim} = catdimname;

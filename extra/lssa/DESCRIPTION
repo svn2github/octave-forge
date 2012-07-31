@@ -1,5 +1,5 @@
 Name: lssa
-Version: 
+Version: 0.1.0
 Date: 2012-07-28
 Author: Ben Lewis
 Maintainer: Ben Lewis
@@ -10,5 +10,6 @@ Lomb-Scargle periodogram and Adolf Mathias' implementation for R and C (see
 URLs).
 Url: http://www.jstatsoft.org/v11/i02
 Problems: fast implementations, wavelet functions are currently not functional.
-Depends:
-License: GPL version 2 or later
+Depends: octave (>= 3.4.3)
+Autoload: no
+License: GPLv2+

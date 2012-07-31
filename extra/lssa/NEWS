@@ -1,0 +1,20 @@
+Welcome to the first release of lssa, 0.1.0
+
+Current status:
+ 
+ ** lscomplex and lsreal both produce accurate results; they can be slow for
+    very large datasets.
+
+ ** fastlscomplex is accurate for the first octave of results; there is still an
+    error I need to pin down in the merging for additional octaves. fastlsreal
+    is disabled at the moment as I move to an implementation based on the new
+    fastlscomplex.
+
+ ** lscorrcoeff works, although I'm still attempting to understand the initial
+    author's reasoning. Its generated results are relevant to any given data
+    set, but it does not appear to be normalized to any great extent.
+
+ ** lsrealwavelet and lscomplexwavelet are not currently correct or even really
+    functional; this is an ongoing struggle for me, and if anyone can suggest
+    what I might do to improve them, please! By all means, send me an email.
+

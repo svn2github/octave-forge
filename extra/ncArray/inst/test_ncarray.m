@@ -314,7 +314,7 @@ if 1
     assert(isequalwithequalnans(x,lon_ref(1:3:end,:)))
     
     
-    assert(strcmp(SST.units,'degC'))
+    %assert(strcmp(SST.units,'degC'))
     assert(strcmp(SST.('units'),'degC'))
     
 end
@@ -335,7 +335,7 @@ SST_test = CA2(:,:,2);
 SST_ref = ncread(files{2},'SST');
 assert(isequalwithequalnans(SST_test,SST_ref))
 
-assert(strcmp(CA2.units,'degC'));
+assert(strcmp(CA2.('units'),'degC'));
 
 disp('All tests passed.')
 

@@ -10,7 +10,7 @@
 
 % Alexander Barth, 2012-06-13
 %
-function [fname]=cached_decompress(url)
+function [fname] = cached_decompress(url)
 
 
 global CACHED_DECOMPRESS_DIR
@@ -23,7 +23,11 @@ if isempty(cache_dir)
     cache_dir = fullfile(getenv('HOME'),'tmp','Cache');
 end
 
-if beginswith(url,'http:') || ~endswith(url,'.gz') || ~endswith(url,'.bz2')
+% do nothing if
+% file is a a remote url (begins with http:)
+% or file does not end with .gz or .bz2
+
+if beginswith(url,'http:') || ~(endswith(url,'.gz') || endswith(url,'.bz2'))
   % opendap url or not compressed file
   fname = url;
   return

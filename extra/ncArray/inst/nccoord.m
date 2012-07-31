@@ -18,7 +18,7 @@ vinfo = ncinfo(filename,varname);
 % determine coordinates
 % using CF convention
 
-dims = vinfo.Dimensions;
+dims = {vinfo.Dimensions(:).Name};
 
 % create empty coord array with the fields name and dims
 coord = struct('name',{},'dims',{});
@@ -54,7 +54,7 @@ if isempty(strmatch(name,{coord(:).name}))
     index = strmatch(name,{finfo.Variables(:).Name});
     if ~isempty(index)
         c.name = name;
-        c.dims = finfo.Variables(index).Dimensions;
+        c.dims = {finfo.Variables(index).Dimensions(:).Name};
         
         coord(end+1) = c;
     end

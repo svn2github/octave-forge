@@ -41,7 +41,12 @@ for i=1:length(dims)
     tmp.Length = dims{i}(:);
     % requires octcdf 1.1.6
     %tmp.Unlimited = isrecdim(dims{i});
-    vinfo.Dimensions = [vinfo.Dimensions; tmp];
+    
+    if isempty(vinfo.Dimensions)
+      vinfo.Dimensions = [tmp];
+    else
+      vinfo.Dimensions(i) = tmp;
+    end
 end
 
 
@@ -55,7 +60,12 @@ for j=1:length(na)
     
     tmp.Name = nm;
     tmp.Value = na{j}(:);
-    vinfo.Attributes = [vinfo.Attributes; tmp];
+    
+    if isempty(vinfo.Attributes)      
+      vinfo.Attributes = [tmp];
+    else
+      vinfo.Attributes(j) = tmp;
+    end
 end
 
 vinfo.FillValue = fillval(nv);

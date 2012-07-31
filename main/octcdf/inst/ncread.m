@@ -77,6 +77,11 @@ if ~isempty(offset)
 end
 
 x = permute(x,[ndims(x):-1:1]);
+
+if length(count) < 2
+    count(2) = 1; 
+end
+
 x = reshape(x,count);
 close(nc)
 

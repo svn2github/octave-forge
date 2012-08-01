@@ -27,4 +27,4 @@ tau = atan2( sum( sin( 2.*omega.*T)), sum(cos(2.*omega.*T))) / 2;
 coeff = ( ( sum ( X .* cos( omega .* T - tau ) ) .^ 2 ./ sum ( cos ( omega .* T - tau ) .^ 2 )
 	   + sum ( X .* sin ( omega .* T - tau ) ) .^ 2 / sum ( sin ( omega .* T - tau ) .^ 2 ) )
 	 / ( 2 * var(X) ) );
-end
+endfunction

@@ -25,6 +25,8 @@
 ## while @var{winradius} is the windowing radius, and defaults
 ## to 1 (the radius of cubicwgt.)
 ##
+## @seealso lscorrcoeff lscomplexwavelet lsrealwavelet
+## 
 ## @end deftypefn
 
 %!demo

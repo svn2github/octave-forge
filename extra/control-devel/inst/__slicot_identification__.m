@@ -72,7 +72,7 @@ function [sys, x0, info] = __slicot_identification__ (method, dat, varargin)
   conct = 1;                            # no connection between experiments
   ctrl = 1;                             # don't confirm order n
   rcond = 0.0;
-  tol = -1.0; % 0;
+  tol = -1.0;
   s = [];
   n = [];
   conf = [];
@@ -83,16 +83,27 @@ function [sys, x0, info] = __slicot_identification__ (method, dat, varargin)
     key = lower (varargin{k});
     val = varargin{k+1};
     switch (key)
-      ## TODO: proper argument checking
       case {"n", "order"}
+        if (! issample (val, 0) || val != round (val))
+          error ("%s: 'n' must be a positive integer", method);
+        endif
         n = val;
       case "s"
+        if (! issample (val, 0) || val != round (val))
+          error ("%s: 's' must be a positive integer", method);
+        endif
         s = val;
       case {"alg", "algorithm"}
         error ("alg");
       case "tol"
+        if (! is_real_scalar (val))
+          error ("%s: tolerance 'tol' must be a real scalar", method);
+        endif
         tol = val;
       case "rcond"
+        if (! is_real_scalar (val))
+          error ("%s: 'rcond' must be a real scalar", method);
+        endif
         rcond = val;
       case "confirm"
         conf = logical (val);

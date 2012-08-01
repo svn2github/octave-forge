@@ -232,7 +232,11 @@ function [sys, x0, info] = moen4 (varargin)
     print_usage ();
   endif
 
-  [sys, x0, info] = __slicot_identification__ ("moen4", varargin{:});
+  if (nargout == 0)
+    __slicot_identification__ ("moen4", nargout, varargin{:});
+  else
+    [sys, x0, info] = __slicot_identification__ ("moen4", nargout, varargin{:});
+  endif
 
 endfunction
 

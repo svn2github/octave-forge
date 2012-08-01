@@ -24,7 +24,7 @@
 ## Created: May 2012
 ## Version: 0.1
 
-function [sys, x0, info] = __slicot_identification__ (method, dat, varargin)
+function [sys, x0, info] = __slicot_identification__ (method, nout, dat, varargin)
 
   ## determine identification method
   switch (method)
@@ -42,7 +42,7 @@ function [sys, x0, info] = __slicot_identification__ (method, dat, varargin)
     error ("%s: first argument must be a time-domain 'iddata' dataset", method);
   endif
   
-  if (nargin > 2)                       # ident (dat, ...)
+  if (nargin > 3)                       # ident (dat, ...)
     if (is_real_scalar (varargin{1}))   # ident (dat, n, ...)
       varargin = horzcat (varargin(2:end), {"order"}, varargin(1));
     endif
@@ -143,53 +143,72 @@ function [sys, x0, info] = __slicot_identification__ (method, dat, varargin)
   if (! isempty (conf))
     ctrl = ! conf;
   endif
-  
-  ## perform system identification
-  [a, b, c, d, q, ry, s, k, x0] = slident (dat.y, dat.u, nobr, n, meth, alg, conct, ctrl, rcond, tol);
 
-  ## compute noise variance matrix factor L
-  ## L L' = Ry,  e = L v
-  ## v becomes white noise with identity covariance matrix
-  l = chol (ry, "lower");
+  if (nout == 0)
+    ## compute singular values
+    [sv, nrec] = slib01ad (dat.y, dat.u, nobr, n, meth, alg, conct, ctrl, rcond, tol);
 
-  ## assemble model
-  [inname, outname] = get (dat, "inname", "outname");
-  if (strncmpi (noise, "e", 1))         # add error inputs e, not normalized
-    sys = ss (a, [b, k], c, [d, eye(p)], tsam);
-    in_u = __labels__ (inname, "u");
-    in_e = __labels__ (outname, "y");
-    in_e = cellfun (@(x) ["e@", x], in_e, "uniformoutput", false);
-    inname = [in_u; in_e];
-  elseif (strncmpi (noise, "v", 1))     # add error inputs v, normalized
-    sys = ss (a, [b, k*l], c, [d, l], tsam);
-    in_u = __labels__ (inname, "u");
-    in_v = __labels__ (outname, "y");
-    in_v = cellfun (@(x) ["v@", x], in_v, "uniformoutput", false);
-    inname = [in_u; in_v];
-  elseif (strncmpi (noise, "k", 1))     # Kalman predictor
-    sys = ss ([a-k*c], [b-k*d, k], c, [d, zeros(p)], tsam);
-    in_u = __labels__ (inname, "u");
-    in_y = __labels__ (outname, "y");
-    inname = [in_u; in_y];
-  else                                  # no error inputs, default
-    sys = ss (a, b, c, d, tsam);
+    ## there is no 'logbar' function
+    svl = log10 (sv);
+    base = floor (min (svl));
+
+    clf
+    bar (svl, "basevalue", base)
+    xlim ([0, length(sv)+1])
+    yl = ylim;
+    ylim ([base, yl(2)])
+    title ("Singular Values")
+    ylabel ("Logarithm of Singular Values")
+    xlabel (sprintf ("Estimated System Order with current Tolerance: %d", nrec))
+    grid on
+  else
+    ## perform system identification
+    [a, b, c, d, q, ry, s, k, x0] = slident (dat.y, dat.u, nobr, n, meth, alg, conct, ctrl, rcond, tol);
+
+    ## compute noise variance matrix factor L
+    ## L L' = Ry,  e = L v
+    ## v becomes white noise with identity covariance matrix
+    l = chol (ry, "lower");
+
+    ## assemble model
+    [inname, outname] = get (dat, "inname", "outname");
+    if (strncmpi (noise, "e", 1))         # add error inputs e, not normalized
+      sys = ss (a, [b, k], c, [d, eye(p)], tsam);
+      in_u = __labels__ (inname, "u");
+      in_e = __labels__ (outname, "y");
+      in_e = cellfun (@(x) ["e@", x], in_e, "uniformoutput", false);
+      inname = [in_u; in_e];
+    elseif (strncmpi (noise, "v", 1))     # add error inputs v, normalized
+      sys = ss (a, [b, k*l], c, [d, l], tsam);
+      in_u = __labels__ (inname, "u");
+      in_v = __labels__ (outname, "y");
+      in_v = cellfun (@(x) ["v@", x], in_v, "uniformoutput", false);
+      inname = [in_u; in_v];
+    elseif (strncmpi (noise, "k", 1))     # Kalman predictor
+      sys = ss ([a-k*c], [b-k*d, k], c, [d, zeros(p)], tsam);
+      in_u = __labels__ (inname, "u");
+      in_y = __labels__ (outname, "y");
+      inname = [in_u; in_y];
+    else                                  # no error inputs, default
+      sys = ss (a, b, c, d, tsam);
+    endif
+
+    sys = set (sys, "inname", inname, "outname", outname);
+
+    ## return x0 as vector for single-experiment data
+    ## instead of a cell containing one vector
+    if (numel (x0) == 1)
+      x0 = x0{1};
+    endif
+
+    ## assemble info struct
+    ## Kalman gain matrix K
+    ## state covariance matrix Q
+    ## output covariance matrix Ry
+    ## state-output cross-covariance matrix S
+    ## noise variance matrix factor L
+    info = struct ("K", k, "Q", q, "Ry", ry, "S", s, "L", l);
   endif
-
-  sys = set (sys, "inname", inname, "outname", outname);
-
-  ## return x0 as vector for single-experiment data
-  ## instead of a cell containing one vector
-  if (numel (x0) == 1)
-    x0 = x0{1};
-  endif
-  
-  ## assemble info struct
-  ## Kalman gain matrix K
-  ## state covariance matrix Q
-  ## output covariance matrix Ry
-  ## state-output cross-covariance matrix S
-  ## noise variance matrix factor L
-  info = struct ("K", k, "Q", q, "Ry", ry, "S", s, "L", l);
 
 endfunction
 

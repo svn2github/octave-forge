@@ -34,6 +34,10 @@ function [sys, x0, info] = moesp (varargin)
     print_usage ();
   endif
 
-  [sys, x0, info] = __slicot_identification__ ("moesp", varargin{:});
+  if (nargout == 0)
+    __slicot_identification__ ("moesp", nargout, varargin{:});
+  else
+    [sys, x0, info] = __slicot_identification__ ("moesp", nargout, varargin{:});
+  endif
 
 endfunction

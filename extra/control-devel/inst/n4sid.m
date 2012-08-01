@@ -34,6 +34,10 @@ function [sys, x0, info] = n4sid (varargin)
     print_usage ();
   endif
 
-  [sys, x0, info] = __slicot_identification__ ("n4sid", varargin{:});
+  if (nargout == 0)
+    __slicot_identification__ ("n4sid", nargout, varargin{:});
+  else
+    [sys, x0, info] = __slicot_identification__ ("n4sid", nargout, varargin{:});
+  endif
 
 endfunction

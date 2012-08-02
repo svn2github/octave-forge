@@ -72,7 +72,7 @@ function [sys, x0, info] = __slicot_identification__ (method, nout, dat, varargi
   conct = 1;                            # no connection between experiments
   ctrl = 1;                             # don't confirm order n
   rcond = 0.0;
-  tol = -1.0;
+  tol = 0.0;                            # -1.0;
   s = [];
   n = [];
   conf = [];
@@ -94,7 +94,15 @@ function [sys, x0, info] = __slicot_identification__ (method, nout, dat, varargi
         endif
         s = val;
       case {"alg", "algorithm"}
-        error ("alg");
+        if (strncmpi (val, "c", 1))
+          alg = 0;                      # Cholesky algorithm applied to correlation matrix
+        elseif (strncmpi (val, "f", 1))
+          alg = 1;                      # fast QR algorithm
+        elseif (strncmpi (val, "q", 1))
+          alg = 2;                      # QR algorithm applied to block Hankel matrices
+        else
+          error ("%s: invalid algorithm", method);
+        endif
       case "tol"
         if (! is_real_scalar (val))
           error ("%s: tolerance 'tol' must be a real scalar", method);

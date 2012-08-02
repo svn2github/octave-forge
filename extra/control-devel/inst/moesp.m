@@ -20,8 +20,8 @@
 ## @deftypefnx {Function File} {[@var{sys}, @var{x0}, @var{info}] =} moesp (@var{dat}, @var{n}, @dots{})
 ## @deftypefnx {Function File} {[@var{sys}, @var{x0}, @var{info}] =} moesp (@var{dat}, @var{opt}, @dots{})
 ## @deftypefnx {Function File} {[@var{sys}, @var{x0}, @var{info}] =} moesp (@var{dat}, @var{n}, @var{opt}, @dots{})
-## Estimate state-space model using MOESP algorithm.
-## MOESP: Multivariable Output Error State sPace.
+## Estimate state-space model using @acronym{MOESP} algorithm.
+## @acronym{MOESP}: Multivariable Output Error State sPace.
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>

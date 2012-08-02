@@ -21,8 +21,10 @@
 ## @deftypefnx {Function File} {[@var{sys}, @var{x0}, @var{info}] =} moen4 (@var{dat}, @var{opt}, @dots{})
 ## @deftypefnx {Function File} {[@var{sys}, @var{x0}, @var{info}] =} moen4 (@var{dat}, @var{n}, @var{opt}, @dots{})
 ## Estimate state-space model using combined subspace method:
-## MOESP  algorithm for finding the matrices A and C,
-## and  N4SID  algorithm for finding the matrices B and D.
+## @acronym{MOESP} algorithm for finding the matrices A and C,
+## and @acronym{N4SID} algorithm for finding the matrices B and D.
+## If no output arguments are given, the singular values are
+## plotted on the screen in order to estimate the system order.
 ##
 ## @strong{Inputs}
 ## @table @var
@@ -104,7 +106,7 @@
 ## the relative machine precision.
 ## When @var{tol} < 0,  the estimate is indicated by the
 ## index of the singular value that has the largest
-## logarithmic gap to its successor.
+## logarithmic gap to its successor.  Default value is 0.
 ##
 ## @item 'rcond'
 ## The tolerance to be used for estimating the rank of
@@ -115,7 +117,7 @@
 ## be of full rank.  If the user sets @var{rcond} <= 0,  then an
 ## implicitly computed, default tolerance, defined by
 ## @var{rcond} = m*n*@var{eps},  is used instead, where @var{eps} is the
-## relative machine precision.
+## relative machine precision.  Default value is 0.
 ##
 ## @item 'confirm'
 ## Specifies whether or not the user's confirmation of the

@@ -20,8 +20,8 @@
 ## @deftypefnx {Function File} {[@var{sys}, @var{x0}, @var{info}] =} n4sid (@var{dat}, @var{n}, @dots{})
 ## @deftypefnx {Function File} {[@var{sys}, @var{x0}, @var{info}] =} n4sid (@var{dat}, @var{opt}, @dots{})
 ## @deftypefnx {Function File} {[@var{sys}, @var{x0}, @var{info}] =} n4sid (@var{dat}, @var{n}, @var{opt}, @dots{})
-## Estimate state-space model using N4SID algorithm.
-## N4SID: Numerical algorithm for Subspace State Space System IDentification.
+## Estimate state-space model using @acronym{N4SID} algorithm.
+## @acronym{N4SID}: Numerical algorithm for Subspace State Space System IDentification.
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>

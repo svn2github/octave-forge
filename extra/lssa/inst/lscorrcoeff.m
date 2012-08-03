@@ -50,7 +50,6 @@ function coeff = lscorrcoeff(x1, y1, x2, y2, t, o, wgt = @cubicwgt, wgtrad = 1)
   endif
   ## The first solution that comes to mind is admittedly slightly ugly and has a data footprint of O(2n)
   ## but it is vectorised.
-  mask = ;
   mask = find( ( abs( x1 - t ) * so ) < wgtrad );
   rx1 = x1(mask); ## I've kept the variable names from the R function here
   ry1 = y1(mask); ## Needs to have a noisy error if length(y1) != length(x1) -- add this!
@@ -62,8 +61,7 @@ function coeff = lscorrcoeff(x1, y1, x2, y2, t, o, wgt = @cubicwgt, wgtrad = 1)
   ## in particular to maintain an exact duplicate of the R function.
   s = sum( wgt( ( rx1 - t ) .* so ) ) * sum( wgt( ( rx2 - t ) .* so ) );
   if s != 0
-    coeff = sum( wgt((rx1-t).*so).*exp(i*o.*rx1).*ry1) *
-    sum(wgt((rx2-t).*so).*exp(i*o.*rx2).*conj(ry2)) / s;
+    coeff = sum( wgt((rx1-t).*so).*exp(i*o.*rx1).*ry1) * sum(wgt((rx2-t).*so).*exp(i*o.*rx2).*conj(ry2)) / s;
   else
     coeff = 0;
   endif

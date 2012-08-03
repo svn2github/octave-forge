@@ -23,14 +23,14 @@
 ## @end deftypefn
 
 %!test
-%! shared t, x, o, maxfreq
+%!shared t, x, o, maxfreq;
 %! maxfreq = 4 / ( 2 * pi );
-%! t = linspace(0,8); x = ( 2.*sin(maxfreq.*t) + 3.*sin((3/4)*maxfreq.*t)
-%! - 0.5 .* sin((1/4)*maxfreq.*t) - 0.2 .* cos(maxfreq .* t)
-%! + cos((1/4)*maxfreq.*t)); o = [ maxfreq , 3 / 4 * maxfreq , 1 / 4 * maxfreq ];
-%!assert( lombcoeff(t,x,o(1)),10788.9848389923,5e-10 );
-%!assert( lombcoeff(t,x,o(2)),12352.6413413457,5e-10 );
-%!assert( lombcoeff(t,x,o(3)),13673.4098969780,5e-10 );
+%! t = linspace(0,8);
+%! x = ( 2.*sin(maxfreq.*t) + 3.*sin((3/4)*maxfreq.*t) - 0.5 .* sin((1/4)*maxfreq.*t) - 0.2 .* cos(maxfreq .* t) + cos((1/4)*maxfreq.*t));
+%! o = [ maxfreq , 3 / 4 * maxfreq , 1 / 4 * maxfreq ];
+%!assert( lombcoeff(t,x,maxfreq),10788.9848389923,5e-10 );
+%!assert( lombcoeff(t,x,3/4*maxfreq),12352.6413413457,5e-10 );
+%!assert( lombcoeff(t,x,1/4*maxfreq),13673.4098969780,5e-10 );
 
 
 function coeff = lombcoeff(T, X, o)

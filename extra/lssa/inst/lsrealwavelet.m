@@ -14,7 +14,7 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ##-*- texinfo -*-
-## @deffun {Function File} {t =} lsrealwavelet( @var{time}, @var{mag},
+## @deftypefn {Function File} {t =} lsrealwavelet( @var{time}, @var{mag},
 ## @var{maxfreq}, @var{coefficients}, @var{octaves}, @var{time_min},
 ## @var{time_max}, @var{min_window_count} )
 ## 
@@ -26,7 +26,7 @@
 ##
 ## @seealso lscomplexwavelet lswaveletcoeff lscorrcoeff
 ##
-## @end deffun
+## @end deftypefn
 
 
 function transform = lsrealwavelet(T, X, maxfreq, ncoeff, noctave, t_min, t_max, minimum_window_number )

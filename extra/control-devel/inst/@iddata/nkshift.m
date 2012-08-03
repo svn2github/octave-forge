@@ -17,11 +17,14 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{dat} =} nkshift (@var{dat}, @var{nk})
-## @deftypefnx {Function File} {@var{dat} =} detrend (@var{dat}, @var{nk} @var{'append'})
-## Detrend outputs and inputs of dataset @var{dat} by
-## removing the best fit of a polynomial of order @var{ord}.
-## If @var{ord} is not specified, default value 0 is taken.
-## This corresponds to removing a constant.
+## @deftypefnx {Function File} {@var{dat} =} nkshift (@var{dat}, @var{nk}, @var{'append'})
+## Shift input channels of dataset @var{dat} according to integer @var{nk}.
+## A positive value of @var{nk} means that the input channels are delayed
+## @var{nk} samples.  By default, both input and output signals are shortened
+## by @var{nk} samples.
+## If a third argument @var{'append'} is passed, the output signals are left
+## untouched while @var{nk} zeros are appended to the (shortened) input signals
+## such that the number of samples in @var{dat} remains constant.
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
@@ -30,26 +33,35 @@
 
 function dat = nkshift (dat, nk = 0)
 
-  if (nargin != 2)
+  if (nargin > 3)
     print_usage ();
   endif
 
   if (! is_real_scalar (nk))
-    error ("iddata: nkshift: ");
+    error ("iddata: nkshift: 'nk' must be a scalar integer");
   endif
 
   ## TODO: - nk per inputs
-  ##       - padding with zeros
+  ##       - frequency-domain data
   
   snk = sign (nk);
   nk = abs (nk);
 
-  if (snk >= 0)
-    dat.y = cellfun (@(y) y(nk+1:end, :), dat.y, "uniformoutput", false);
-    dat.u = cellfun (@(u) u(1:end-nk, :), dat.u, "uniformoutput", false);
-  else
-    dat.y = cellfun (@(y) y(1:end-nk, :), dat.y, "uniformoutput", false);
-    dat.u = cellfun (@(u) u(nk+1:end, :), dat.u, "uniformoutput", false);
+  if (nargin == 2)      # default: shortening y and u by nk
+    if (snk >= 0)
+      dat.y = cellfun (@(y) y(nk+1:end, :), dat.y, "uniformoutput", false);
+      dat.u = cellfun (@(u) u(1:end-nk, :), dat.u, "uniformoutput", false);
+    else
+      dat.y = cellfun (@(y) y(1:end-nk, :), dat.y, "uniformoutput", false);
+      dat.u = cellfun (@(u) u(nk+1:end, :), dat.u, "uniformoutput", false);
+    endif
+  else                  # append: keep y, padding u with nk zeros
+    [~, ~, m] = size (dat);
+    if (snk >= 0)
+      dat.u = cellfun (@(u) [zeros(nk, m), u(1:end-nk, :)], dat.u, "uniformoutput", false);
+    else
+      dat.u = cellfun (@(u) [u(nk+1:end, :), zeros(nk, m)], dat.u, "uniformoutput", false);
+    endif
   endif
 
 endfunction

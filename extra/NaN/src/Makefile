@@ -41,7 +41,7 @@ PROGS = histo_mex.mex covm_mex.mex kth_element.mex sumskipnan_mex.mex str2array.
 
 mex4o octave: $(PROGS)
 
-ifneq ( , $(ls -1 $(MATLABDIR) ) )
+ifneq (,$(ls -1 $(MATLABDIR)))
 MEX_EXT = $(shell $(MATLABDIR)/bin/mexext)
 mex4m matlab: $(patsubst %.mex, %.$(MEX_EXT), $(PROGS))
 endif
@@ -52,7 +52,7 @@ all:    octave win32 win64 mex4m
 clean:
 	-$(RM) *.o *.obj *.o64 core octave-core *.oct *~ *.mex* 
 
-$(PROGS): Makefile
+#$(PROGS): Makefile
 
 #########################################################
 #	Octave, MATLAB on Linux 

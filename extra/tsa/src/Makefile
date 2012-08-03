@@ -51,10 +51,11 @@ PROGS = covm_mex.mex sumskipnan_mex.mex kalman_maar.mex
 
 mex4o octave: $(PROGS)
 
-ifneq ( , $(ls -1 $(MATLABDIR) ) )
+ifneq (,$(ls -1 $(MATLABDIR)))
 MEX_EXT = $(shell $(MATLABDIR)/bin/mexext)
 mex4m matlab: $(patsubst %.mex, %.$(MEX_EXT), $(PROGS))
 endif
+
 mexw32 win32:  $(patsubst %.mex, %.mexw32, $(PROGS))
 mexw64 win64:  $(patsubst %.mex, %.mexw64, $(PROGS))
 all:    octave win32 win64 mex4m

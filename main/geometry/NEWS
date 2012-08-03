@@ -1,4 +1,10 @@
 Summary of important user-visible changes for releases of the geometry package
+===============================================================================
+geometry-1.5.1   Release Date: 2012-xx-xx  Release Manager: Juan Pablo Carbajal
+===============================================================================
+
+* Bug Fixes:
+  - drawArrow.m was not working due to porting errors.
 
 ===============================================================================
 geometry-1.5.0   Release Date: 2012-06-05  Release Manager: Juan Pablo Carbajal

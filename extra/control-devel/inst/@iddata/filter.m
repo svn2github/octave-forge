@@ -22,6 +22,35 @@
 ## removing the best fit of a polynomial of order @var{ord}.
 ## If @var{ord} is not specified, default value 0 is taken.
 ## This corresponds to removing a constant.
+##
+## @strong{Inputs}
+## @table @var
+## @item dat
+## iddata identification dataset containing signals in time-domain.
+## @item sys
+## LTI object containing the discrete-time filter.
+## @item b
+## Numerator polynomial of the discrete-time filter.
+## Must be a row vector containing the coefficients
+## of the polynomial in ascending powers of z^-1.
+## @item a
+## Denominator polynomial of the discrete-time filter.
+## Must be a row vector containing the coefficients
+## of the polynomial in ascending powers of z^-1.
+## @end table
+##
+## @strong{Outputs}
+## @table @var
+## @item dat
+## iddata identification dataset in frequency-domain.
+## In order to preserve signal power and noise level,
+## the FFTs are normalized by dividing each transform
+## by the square root of the signal length.
+## The frequency values are distributed equally from 0
+## to the Nyquist frequency.  The Nyquist frequency is
+## only included for even signal lengths.
+## @end table
+##
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
@@ -36,6 +65,10 @@ function dat = filter (dat, b, a = [], si = [])
   
   if (! isa (dat, "iddata"))        # there's at least one iddata set, but not as the first argument
     error ("iddata: filter: first argument must be an iddata set");
+  endif
+
+  if (! dat.timedomain)
+    error ("iddata: filter: require iddata set in time-domain");
   endif
 
   if (isa (b, "lti"))               # filter (dat, sys)

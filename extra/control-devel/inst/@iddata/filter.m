@@ -25,22 +25,33 @@
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
-## Created: April 2012
+## Created: August 2012
 ## Version: 0.1
 
 function dat = filter (dat, b, a = [], si = [])
 
-  if (nargin < 2 || nargin > 4 || ! isa (dat, "iddata"))
+  if (nargin < 2 || nargin > 4)
     print_usage ();
   endif
+  
+  if (! isa (dat, "iddata"))        # there's at least one iddata set, but not as the first argument
+    error ("iddata: filter: first argument must be an iddata set");
+  endif
 
-  if (isa (b, "lti") && issiso (b))
-    si = a;
-    if (isct (b))
-      tsam = dat.tsam;
-      b = c2d (b, tsam{1});         # does this make sense?
+  if (isa (b, "lti"))               # filter (dat, sys)
+    if (nargin > 3)
+      print_usage ();
+    endif
+    if (! issiso (b))
+      error ("iddata: filter: second argument must be a SISO LTI system");
+    endif
+    si = a;                         # filter (dat, sys, si)
+    if (isct (b))                   # sys is continuous-time
+      b = c2d (b, dat.tsam{1});     # does this discretization/tsam make sense?
     endif
     [b, a] = filtdata (b, "vector");
+  elseif (nargin < 3)
+    print_usage ();
   endif
 
   dat.y = cellfun (@(y) filter (b, a, y, si, 1), dat.y, "uniformoutput", false);
@@ -49,6 +60,7 @@ function dat = filter (dat, b, a = [], si = [])
 endfunction
 
 
+## TODO: adapt test
 %!shared DATD, Z
 %! DAT = iddata ({[(1:10).', (1:2:20).'], [(10:-1:1).', (20:-2:1).']}, {[(41:50).', (46:55).'], [(61:70).', (-66:-1:-75).']});
 %! DATD = detrend (DAT, "linear");

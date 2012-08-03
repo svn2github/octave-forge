@@ -1,6 +1,6 @@
 %% Copyright (c) 2011, INRA
 %% 2004-2011, David Legland <david.legland@grignon.inra.fr>
-%% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
+%% 2011-2012 Modified and adapted to GNU Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 %%
 %% All rights reserved.
 %% (simplified BSD License)
@@ -121,22 +121,48 @@ function varargout = drawArrow(varargin)
   ya3 = y2 - l.*sin(theta).*h;
 
   % draw main edge
-  line([x1'; x2'], [y1'; y2'], 'color', [0 0 1]);
+  tmp = line([x1'; x2'], [y1'; y2'], 'color', [0 0 1]);
+  handle.body = tmp;
 
   % draw only 2 wings
   ind = find(h==0);
-  line([xa1(ind)'; x2(ind)'], [ya1(ind)'; y2(ind)'], 'color', [0 0 1]);
-  line([xa2(ind)'; x2(ind)'], [ya2(ind)'; y2(ind)'], 'color', [0 0 1]);
+  if !isempty (ind)
+    tmp = line([xa1(ind)'; x2(ind)'], [ya1(ind)'; y2(ind)'], 'color', [0 0 1]);
+    handle.wing(:,1) = tmp;
+
+    tmp = line([xa2(ind)'; x2(ind)'], [ya2(ind)'; y2(ind)'], 'color', [0 0 1]);
+    handle.wing(:,2) = tmp;
+  end
+
 
   % draw a full arrow
   ind = find(h~=0);
-  patch([x2(ind) xa1(ind) xa3(ind) xa2(ind) x2(ind)]', ...
-      [y2(ind) ya1(ind) ya3(ind) ya2(ind) y2(ind)]', [0 0 1]);
-
+  if !isempty (ind)
+    tmp = patch([x2(ind) xa1(ind) xa3(ind) xa2(ind) x2(ind)]', ...
+        [y2(ind) ya1(ind) ya3(ind) ya2(ind) y2(ind)]', [0 0 1]);
+    handle.head = tmp;
+  end
 
   if nargout>0
-      varargout{1}=h;
+      varargout{1} = handle;
   end
 
 endfunction
+
+%!demo
+%! # Orthogonal projection respect to vector b
+%! dim = 2;
+%! b   = 2*rand(dim,1);
+%! P   = eye(dim) - (b*b')/(b'*b);
+%! v   = 2*rand(dim,1)-1;
+%! Pv  = P*v;
+%!
+%! # Draw the vectors
+%! clf;
+%! h = drawArrow ([zeros(3,dim) [b'; v'; Pv']],0.1,0.1);
+%!
+%! # Color them
+%! arrayfun(@(x,y)set(x,'color',y), [h.body; h.wing(:)],repmat(['rgb']',3,1));
+%! # Name them
+%! legend (h.body, {'b','v','Pv'},'location','northoutside','orientation','horizontal');
 

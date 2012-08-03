@@ -6,6 +6,7 @@ Experimental Data Handling
   @iddata/detrend
   @iddata/diff
   @iddata/fft
+  @iddata/filter
   @iddata/get
   @iddata/ifft
   @iddata/merge

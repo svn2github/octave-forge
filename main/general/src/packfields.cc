@@ -25,9 +25,11 @@ Inserts the named variables @var{var1}, @var{var2}, @dots{} as fields into @var{
 @var{struct} can be a scalar structure or user class.\n\
 This is equivalent to the code:\n\
 @example\n\
+@group\n\
   struct.var1 = var1;\n\
   struct.var2 = var2;\n\
           :          \n\
+@end group\n\
 @end example\n\
 but more efficient and more concise.\n\
 @seealso{unpackfields, struct}\n\

@@ -25,9 +25,11 @@ Inserts the named fields of a struct as variables into the current scope.\n\
 @var{struct} can be a scalar structure or user class.\n\
 This is equivalent to the code:\n\
 @example\n\
+@group\n\
   var1 = struct.var1;\n\
   var2 = struct.var2;\n\
           :          \n\
+@end group\n\
 @end example\n\
 but more efficient and more concise.\n\
 @seealso{packfields, struct}\n\
@@ -111,4 +113,3 @@ but more efficient and more concise.\n\
 
   return octave_value_list ();
 }
-

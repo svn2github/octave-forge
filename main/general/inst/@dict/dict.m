@@ -31,9 +31,11 @@
 ## strings, like this:
 ##
 ## @example
+## @group
 ##   d = dict (keys, values);
 ##   d(str) # result is a single value
 ##   d(cellstr) # result is a cell array
+## @end group
 ## @end example
 ##
 ## In the first case, the stored value is returned directly; in the second case,
@@ -42,10 +44,12 @@
 ## Similarly, indexed assignment works like this:
 ##
 ## @example
+## @group
 ##   d = dict (keys, values);
 ##   d(str) = val; # store a single value
 ##   d(cellstr) = vals; # store a cell array
 ##   d(cellstr) = []; # delete a range of keys
+## @end group
 ## @end example
 ##
 ## Any keys that are not present in the dictionary are added. The values of

@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Robert T. Short
+## Copyright (C) 2012 Robert T. Short <octave@phaselockedsystems.com>
 ##
 ## This is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free

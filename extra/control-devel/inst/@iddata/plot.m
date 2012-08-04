@@ -17,7 +17,13 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} plot (@var{dat})
-## Plot iddata sets.
+## Plot signals of iddata identification datasets on the screen.
+## The signals are plotted experiment-wise, either in time- or
+## frequency-domain.  For multi-experiment datasets,
+## press any key to switch to the next experiment.
+## If the plot of a single experiment should be saved by the
+## @command{print} command, use @code{plot(dat(:,:,:,exp))},
+## where @var{exp} denotes the desired experiment.
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
@@ -38,7 +44,8 @@ function plot (dat)
         plot (dat.y{k})
         title (expname{k})
         legend (__labels__ (dat.outname, "y"){:})
-        % hold on
+        xlabel ("Time")
+        ylabel ("Output Signal")
       endfor
     else                # inputs present
       for k = 1 : e
@@ -49,11 +56,12 @@ function plot (dat)
         plot (dat.y{k})
         title (expname{k})
         legend (__labels__ (dat.outname, "y"){:})
-        % hold on
+        ylabel ("Output Signal")
         subplot (2, 1, 2)
         stairs (dat.u{k})
         legend (__labels__ (dat.inname, "u"){:})
-        % hold on
+        xlabel ("Time")
+        ylabel ("Input Signal")
       endfor
     endif
   else                  # frequency domain
@@ -66,6 +74,8 @@ function plot (dat)
         xlim ([dat.w{k}(1), dat.w{k}(end)])
         title (expname{k})
         legend (__labels__ (dat.outname, "y"){:})
+        xlabel ("Frequency")
+        ylabel ("Output Magnitude [dB]")
       endfor
     else                # inputs present
       for k = 1 : e
@@ -77,16 +87,17 @@ function plot (dat)
         xlim ([dat.w{k}(1), dat.w{k}(end)])
         title (expname{k})
         legend (__labels__ (dat.outname, "y"){:})
+        ylabel ("Output Magnitude [dB]")
         subplot (2, 1, 2)
         bar (dat.w{k}, 20*log10(abs (dat.u{k})))
         xlim ([dat.w{k}(1), dat.w{k}(end)])
         legend (__labels__ (dat.inname, "u"){:})
+        xlabel ("Frequency")
+        ylabel ("Input Magnitude [dB]")
       endfor
     endif
   endif
 
   ## TODO: think about the 20*log10 and the bars in general
-
-  % hold off
 
 endfunction

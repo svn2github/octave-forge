@@ -18,6 +18,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} get (@var{dat})
 ## @deftypefnx {Function File} {@var{value} =} get (@var{dat}, @var{"property"})
+## @deftypefnx {Function File} {[@var{val1}, @var{val2}, @dots{}] =} get (@var{dat}, @var{"prop1"}, @var{"prop2"}, @dots{})
 ## Access property values of iddata objects.
 ## Type @command{get(dat)} to display a list of available properties.
 ## @end deftypefn

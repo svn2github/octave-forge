@@ -18,8 +18,27 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{dat} =} resample (@var{dat}, @var{p}, @var{q})
 ## @deftypefnx {Function File} {@var{dat} =} resample (@var{dat}, @var{p}, @var{q}, @var{n})
-## Return @var{k}-th difference of outputs and inputs of dataset @var{dat}.
-## If @var{k} is not specified, default value 1 is taken.
+## @deftypefnx {Function File} {@var{dat} =} resample (@var{dat}, @var{p}, @var{q}, @var{h})
+## Change the sample rate of the output and input signals in dataset @var{dat}
+## by a factor of @code{p/q}.  This is performed using a polyphase algorithm.
+## The anti-aliasing @acronym{FIR} filter can be specified as follows:
+## Either by order @var{n} (scalar) with default value 0.  The band edges
+## are then chosen automatically.  Or by impulse response @var{h} (vector).
+## Requires the signal package to be installed.
+##
+## @strong{Algorithm}@*
+## Uses commands @command{fir1} and @command{resample}
+## from the signal package.
+##
+## @strong{References}@*
+## [1] J. G. Proakis and D. G. Manolakis,
+## Digital Signal Processing: Principles, Algorithms, and Applications,
+## 4th ed., Prentice Hall, 2007. Chap. 6
+##
+## [2] A. V. Oppenheim, R. W. Schafer and J. R. Buck,
+## Discrete-time signal processing, Signal processing series,
+## Prentice-Hall, 1999
+##
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
@@ -31,10 +50,21 @@ function dat = resample (dat, p, q, n = 0)
   if (nargin < 3 || nargin > 4)
     print_usage ();
   endif
-  
+
   ## requires signal package
-  
-  h = fir1 (n, 1/q);
+  try
+    pkg load signal;
+  catch
+    error ("iddata: resample: please install signal package to proceed");
+  end_try_catch
+
+  if (is_real_scalar (n))      # fourth scalar argument n is the order of the anti-aliasing filter
+    h = fir1 (n, 1/q);
+  elseif (is_real_vector (n))  # fourth vector argument is the (impulse response of the) anti-aliasing filter
+    h = n;
+  else
+    error ("iddata: resample: fourth argument invalid");
+  endif
 
   dat.y = cellfun (@(y) resample (y, p, q, h), dat.y, "uniformoutput", false);
   dat.u = cellfun (@(u) resample (u, p, q, h), dat.u, "uniformoutput", false);

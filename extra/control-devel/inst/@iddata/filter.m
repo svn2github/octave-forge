@@ -18,17 +18,18 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{dat} =} filter (@var{dat}, @var{sys})
 ## @deftypefnx {Function File} {@var{dat} =} filter (@var{dat}, @var{b}, @var{a})
-## Detrend outputs and inputs of dataset @var{dat} by
-## removing the best fit of a polynomial of order @var{ord}.
-## If @var{ord} is not specified, default value 0 is taken.
-## This corresponds to removing a constant.
+## Filter output and input signals of dataset @var{dat}.
+## The filter is specified either by @acronym{LTI} system @var{sys}
+## or by transfer function polynomials @var{b} and @var{a} as described
+## in the help text of the built-in filter command.  Type @code{help filter}
+## for more information.
 ##
 ## @strong{Inputs}
 ## @table @var
 ## @item dat
 ## iddata identification dataset containing signals in time-domain.
 ## @item sys
-## LTI object containing the discrete-time filter.
+## @acronym{LTI} object containing the discrete-time filter.
 ## @item b
 ## Numerator polynomial of the discrete-time filter.
 ## Must be a row vector containing the coefficients
@@ -42,13 +43,8 @@
 ## @strong{Outputs}
 ## @table @var
 ## @item dat
-## iddata identification dataset in frequency-domain.
-## In order to preserve signal power and noise level,
-## the FFTs are normalized by dividing each transform
-## by the square root of the signal length.
-## The frequency values are distributed equally from 0
-## to the Nyquist frequency.  The Nyquist frequency is
-## only included for even signal lengths.
+## iddata identification dataset with filtered 
+## output and input signals.
 ## @end table
 ##
 ## @end deftypefn
@@ -63,7 +59,7 @@ function dat = filter (dat, b, a = [], si = [])
     print_usage ();
   endif
   
-  if (! isa (dat, "iddata"))        # there's at least one iddata set, but not as the first argument
+  if (! isa (dat, "iddata"))          # there's at least one iddata set, but not as the first argument
     error ("iddata: filter: first argument must be an iddata set");
   endif
 
@@ -71,22 +67,24 @@ function dat = filter (dat, b, a = [], si = [])
     error ("iddata: filter: require iddata set in time-domain");
   endif
 
-  if (isa (b, "lti"))               # filter (dat, sys)
-    if (nargin > 3)
+  if (isa (b, "lti"))                 # filter (dat, sys)
+    if (nargin > 3)                   # filter (dat, sys, si) has at most 3 inputs
       print_usage ();
     endif
     if (! issiso (b))
       error ("iddata: filter: second argument must be a SISO LTI system");
     endif
-    si = a;                         # filter (dat, sys, si)
-    if (isct (b))                   # sys is continuous-time
-      b = c2d (b, dat.tsam{1});     # does this discretization/tsam make sense?
+    si = a;                           # filter (dat, sys, si)
+    if (isct (b))                     # sys is continuous-time
+      b = c2d (b, dat.tsam{1});       # does this discretization/tsam make sense?
     endif
-    [b, a] = filtdata (b, "vector");
+    [b, a] = filtdata (b, "vector");  # convert LTI system to transfer function
   elseif (nargin < 3)
     print_usage ();
   endif
 
+  ## use Octave's filter function for each experiment
+  ## the fifth argument '1' specifies the dimension in case of datasets with only 1 sample
   dat.y = cellfun (@(y) filter (b, a, y, si, 1), dat.y, "uniformoutput", false);
   dat.u = cellfun (@(u) filter (b, a, u, si, 1), dat.u, "uniformoutput", false);
 

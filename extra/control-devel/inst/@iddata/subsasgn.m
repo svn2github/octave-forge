@@ -16,8 +16,8 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## Subscripted assignment for LTI objects.
-## Used by Octave for "sys.property = value".
+## Subscripted assignment for iddata objects.
+## Used by Octave for "dat.property = value".
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: February 2012

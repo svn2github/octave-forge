@@ -16,8 +16,8 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## Subscripted reference for LTI objects.
-## Used by Octave for "sys = sys(2:4, :)" or "val = sys.prop".
+## Subscripted reference for iddata objects.
+## Used by Octave for "dat = dat(2:4, :)" or "val = dat.prop".
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: February 2012

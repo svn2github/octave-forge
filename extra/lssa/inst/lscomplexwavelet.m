@@ -2,7 +2,7 @@
 ##
 ## This software is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
-## Foundation; either version 2 of the License, or (at your option) any later
+## Foundation; either version 3 of the License, or (at your option) any later
 ## version.
 ##
 ## This program is distributed in the hope that it will be useful, but WITHOUT
@@ -15,7 +15,7 @@
 
 
 
-function transform = lscomplexwavelet( t , x, omegamax, ncoeff, noctave, minimum_window_count, sigma)
+function transform = lscomplexwavelet( t , x, omegamax, ncoeff, noctave, minimum_window_count, sigma = 0.05)
 
 ## This is a transform based entirely on the simplified complex-valued transform
 ## in the Mathias paper, page 10. My problem with the code as it stands is, it
@@ -37,21 +37,14 @@ for octave_iter = 1:noctave
     window_min = t_min;
     ## Although that will vary depending on the window. This is just an
     ## implementation for the first window.
-    o = current_frequency = maxfreq * 2 ^ ( - octave_iter*coeff_iter / ncoeff );
+    omega = current_frequency = maxfreq * 2 ^ ( - octave_iter*coeff_iter / ncoeff );
     current_radius = 1 / ( current_octave * sigma );
     
     transform{iter} = zeros(1,current_window_number);
     win_t = window_min + ( window_step / 2);
     for iter_window = 1:current_window_number
-      ## the beautiful part of this code is that if parts end up falling outside the
-      ## vector, it won't matter (although it's wasted computations.)
-      ## I may add a trap to avoid too many wasted cycles.
-      windowed_t = ((abs (T-win_t) < current_radius) .* T);
-      ## this will of course involve an additional large memory allocation, at least in the short term,
-      ## but it's faster to do the operation once on the time series, then multiply it by the data series.
-      zeta = sum( cubicwgt ((windowed_t - win_t) ./ current_radius) .* exp( - i *
-									      o .* windowed_t ) .* X ) / sum( cubicwgt ((windowed_t - win_t ) ./
-															current_radius) .* exp ( -i * o .* windowed_t ));
+      ## Computes the transform as stated in the paper for each given frequency.
+      zeta = sum ( cubicwgt ( sigma .* omega .* ( T - win_t ) ) .* exp ( -i .* omega .* ( T - win_t ) ) .* X ) / sum ( cubicwgt ( sigma .* omega .* ( T - win_t ) ) .* exp ( -i .* omega .* ( T - win_t ) ) );
       transform{iter}(iter_window) = zeta;
       window_min += window_step ;
     ## I remain hesitant about this value, since it is entirely possible necessary precision will be lost. Should I try to reduce that?

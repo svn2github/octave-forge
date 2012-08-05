@@ -2,7 +2,7 @@
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
-## Foundation; either version 2 of the License, or (at your option) any later
+## Foundation; either version 3 of the License, or (at your option) any later
 ## version.
 ##
 ## This program is distributed in the hope that it will be useful, but WITHOUT
@@ -14,7 +14,7 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {transform =} nureal ( time, mag, maxfreq, numcoeff, numoctaves)
+## @deftypefn {Function File} {transform =} lsreal ( time, mag, maxfreq, numcoeff, numoctaves)
 ##
 ## Return the real least-squares transform of the time series
 ## defined, based on the maximal frequency @var{maxfreq}, the
@@ -23,6 +23,7 @@
 ## pair (c_o, s_o) defining the coefficients which best fit the
 ## function y = c_o * cos(ot) + s_o * sin(ot) to the (@var{time}, @var{mag}) data.
 ##
+## @seealso{lscomplex}
 ## @end deftypefn
 
 %!shared t, x, o, maxfreq

@@ -2,7 +2,7 @@
 ## 
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
-## Foundation; either version 2 of the License, or (at your option) any later
+## Foundation; either version 3 of the License, or (at your option) any later
 ## version.
 ##
 ## This program is distributed in the hope that it will be useful, but WITHOUT
@@ -24,7 +24,7 @@
 ## default is cubicwgt if left blank, and its radius is 1,
 ## as defined as the default for @var{winradius}.
 ##
-## @seealso lswaveletcoeff lscomplexwavelet lsrealwavelet
+## @seealso{lswaveletcoeff, lscomplexwavelet, lsrealwavelet}
 ## 
 ## @end deftypefn
 

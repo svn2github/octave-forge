@@ -13,14 +13,12 @@ MKOCTFILE ?= mkoctfile
 
 FFLAGS := $(shell $(MKOCTFILE) -p FFLAGS)
 ifeq (gfortran,$(findstring gfortran,$(F77)))
-  MKF77FILE = FFLAGS="-fno-automatic $(FFLAGS)" $(MKOCTFILE)
+  FFLAGS := "-fno-automatic $(FFLAGS)"
 endif
 ifeq (g95,$(findstring g95,$(F77)))
-  MKF77FILE = FFLAGS="-fstatic $(FFLAGS)" $(MKOCTFILE)
-else
-  # eg. the combination f2c with fort77
-  MKF77FILE = FFLAGS="$(FFLAGS)" $(MKOCTFILE)
+  FFLAGS := "-fstatic $(FFLAGS)"
 endif
+MKF77FILE = FFLAGS=$(FFLAGS) $(MKOCTFILE)
 
 ifndef LAPACK_LIBS
 LAPACK_LIBS := $(shell $(MKOCTFILE) -p BLAS_LIBS) $(shell $(MKOCTFILE) -p LAPACK_LIBS)

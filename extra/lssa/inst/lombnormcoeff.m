@@ -22,16 +22,6 @@
 ##
 ## @end deftypefn
 
-%!test
-%!shared t, x, o, maxfreq;
-%! maxfreq = 4 / ( 2 * pi );
-%! t = linspace(0,8);
-%! x = ( 2.*sin(maxfreq.*t) + 3.*sin((3/4)*maxfreq.*t) - 0.5 .* sin((1/4)*maxfreq.*t) - 0.2 .* cos(maxfreq .* t) + cos((1/4)*maxfreq.*t));
-%! o = [ maxfreq , 3 / 4 * maxfreq , 1 / 4 * maxfreq ];
-%!assert( lombnormcoeff(t,x,o(1)),63.3294946603949,5e-10 );
-%!assert( lombnormcoeff(t,x,o(2)),73.2601360674868,5e-10 );
-%!assert( lombnormcoeff(t,x,o(3)),53.0799752083903,5e-10 );
-
 
 function coeff = lombnormcoeff(T,X,omega)
 tau = atan2( sum( sin( 2.*omega.*T)), sum(cos(2.*omega.*T))) / 2;
@@ -39,3 +29,12 @@ coeff = ( ( sum ( X .* cos( omega .* T - tau ) ) .^ 2 ./ sum ( cos ( omega .* T 
 	   + sum ( X .* sin ( omega .* T - tau ) ) .^ 2 / sum ( sin ( omega .* T - tau ) .^ 2 ) )
 	 / ( 2 * var(X) ) );
 endfunction
+
+%!shared t, x, o, maxfreq
+%! t = linspace(0,8);
+%! maxfreq = 4 / ( 2 * pi );
+%! o = [ maxfreq , 3 / 4 * maxfreq , 1 / 4 * maxfreq ];
+%! x = ( 2.*sin(maxfreq.*t) + 3.*sin((3/4)*maxfreq.*t) - 0.5 .* sin((1/4)*maxfreq.*t) - 0.2 .* cos(maxfreq .* t) + cos((1/4)*maxfreq.*t));
+%!assert( lombnormcoeff(t,x,o(1)),63.3294946603949,5e-10 );
+%!assert( lombnormcoeff(t,x,o(2)),73.2601360674868,5e-10 );
+%!assert( lombnormcoeff(t,x,o(3)),53.0799752083903,5e-10 );

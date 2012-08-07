@@ -25,13 +25,15 @@
 
 function coeff = lombcoeff (T, X, o)
 
-  theta = atan2 (sum (sin (2 .* o .* T )), 
-                 sum (cos (2 .* o .* T))) / (2 * o);
+  oT = o .* T;
 
-  coeff = (sum (X .* cos (o .* T - theta)) ^2 / 
-           sum (cos (o .* T - theta) .^2) + 
-           sum (X .* sin (o .* T - theta)) ^2 / 
-           sum (sin (o .* T - theta) .^2));
+  theta = atan2 (sum (sin (2 * oT)), 
+                 sum (cos (2 * oT))) ./ (2 * o);
+
+  coeff = (sum (X .* cos (oT - theta)) ^2 / 
+           sum (cos (oT - theta) .^2) + 
+           sum (X .* sin (oT - theta)) ^2 / 
+           sum (sin (oT - theta) .^2));
 
 endfunction
 

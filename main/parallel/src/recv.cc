@@ -27,6 +27,9 @@
 #include <netinet/in.h>
 #include <netdb.h>
 
+#if HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 DEFUN_DLD (recv, args, nargout, "recv (socket)\n\
 \n\

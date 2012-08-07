@@ -26,6 +26,9 @@
 #include <netinet/in.h>
 #include <netdb.h>
 
+#if HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 DEFUN_DLD (send, args, , "send (X, sockets)\n\
 \n\

@@ -30,6 +30,10 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 #include <netdb.h>
 #include <netinet/in.h> // reported necessary for FreeBSD-8
 
+#if HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
 #include "sock-stream.h"
 
 static

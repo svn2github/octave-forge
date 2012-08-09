@@ -70,10 +70,7 @@ endfunction
 %!       0.2 .* cos ( maxfreq .* t ) +
 %!       cos ( (1/4) * maxfreq .* t ) );
 %!assert (lsreal (t,x,maxfreq,2,2),
-%!  [-1.68275915310663 + 4.70126183846743i,
-%!    1.93821553170889 + 4.95660209883437i,
-%!    4.38145452686697 + 2.14403733658600i,
-%!    5.27425332281147 - 0.73933440226597i ],
+%!  [-1.68275915310663 + 4.70126183846743i, 1.93821553170889 + 4.95660209883437i, 4.38145452686697 + 2.14403733658600i, 5.27425332281147 - 0.73933440226597i ],
 %!  5e-10)
 %! # In the assert here, I've got an error bound large enough to catch
 %! # individual system errors which would present no real issue. 

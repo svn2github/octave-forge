@@ -15,7 +15,7 @@
 
 
 
-function transform = lscomplexwavelet( t , x, omegamax, ncoeff, noctave, tmin, tmax, tstep, sigma = 0.05)
+function transform = lscomplexwavelet( T, X, omegamax, ncoeff, noctave, tmin, tmax, tstep, sigma = 0.05)
 
   ## This is a transform based entirely on the simplified complex-valued transform
   ## in the Mathias paper, page 10. My problem with the code as it stands is, it
@@ -42,8 +42,8 @@ function transform = lscomplexwavelet( t , x, omegamax, ncoeff, noctave, tmin, t
 	
       current_iteration = (octave_iter-1)*ncoeff+coeff_iter;
       window_radius = pi / ( sigma * omegamax * ( 2 ^ ( current_iteration - 1 ) ) );
-      window_count = 2 * ceil ( ( tmax - tmin ) / window_step ) - 1;
-      omega = current_frequency = maxfreq * 2 ^ ( - octave_iter*coeff_iter / ncoeff );
+      window_count = 2 * ceil ( ( tmax - tmin ) / window_radius ) - 1;
+      omega = current_frequency = omegamax * 2 ^ ( - octave_iter*coeff_iter / ncoeff );
       
       
       

@@ -34,7 +34,6 @@ endfunction
 %! k = [ 0 , 3 , 1.5, -1, -0.5, -0.25, 0.75 ];
 %!assert( cubicwgt(h), 0 );
 %!assert( cubicwgt(m), 1 + m ^ 2 * ( 2 * m - 3 ));
-%!assert( cubicwgt(k), [ 1.00000, 0.00000, 0.00000, 0.00000, 0.50000,
-%! 0.84375, 0.15625], 1e-6); 
+%!assert( cubicwgt(k), [ 1.00000, 0.00000, 0.00000, 0.00000, 0.50000, 0.84375, 0.15625], 1e-6); 
 %! ## Tests cubicwgt on two scalars and two vectors; cubicwgt will work
 %! ## on any array input. 

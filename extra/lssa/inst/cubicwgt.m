@@ -14,8 +14,8 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*-texinfo-*-
-## @deftypefn  {Function File} {a =} cubicwgt {series}
-## Return the series as windowed by a cubic polynomial,
+## @deftypefn  {Function File} {@var{a} =} cubicwgt (@var{series})
+## Return @var{series} as windowed by a cubic polynomial,
 ## 1 + ( x ^ 2 * ( 2 x - 3 ) ), assuming x is in [-1,1].
 ## @end deftypefn
 

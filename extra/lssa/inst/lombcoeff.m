@@ -14,7 +14,7 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {c =} lombcoeff (time, mag, freq)
+## @deftypefn {Function File} {@var{c} =} lombcoeff (@var{time}, @var{mag}, @var{freq})
 ##
 ## Return the coefficient of the Lomb periodogram (unnormalized) for the
 ## (@var{time},@var{mag}) series for the @var{freq} provided.

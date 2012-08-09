@@ -14,12 +14,15 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {c =} lscorrcoeff (abc1, ord1, abc2, ord2, time, freq)
-## @deftypefnx {Function File} {c =} lscorrcoeff (abc1, ord1, abc2, ord2, time, freq, window)
-## @deftypefnx {Function File} {c =} lscorrcoeff (abc1, ord1, abc2, ord2, time, freq, window, winradius)
+## @deftypefn {Function File} {@var{c} =} lscorrcoeff (@var{time1}, @var{mag1}, @var{time2}, @var{mag2}, @var{time}, @var{freq})
+## @deftypefnx {Function File} {@var{c} =} lscorrcoeff (@var{time1}, @var{mag1},
+## @var{time2}, @var{mag2}, @var{time}, @var{freq}, @var{window} = @var{cubicwgt})
+## @deftypefnx {Function File} {@var{c} =} lscorrcoeff (@var{time1}, @var{mag1},
+## @var{time2}, @var{mag2}, @var{time}, @var{freq}, @var{window} =
+## @var{cubicwgt}, @var{winradius} = 1)
 ##
 ## Return the coefficient of the wavelet correlation of time
-## series (@var{abc1}, @var{ord1}) and (@var{abc2}, @var{ord2}).
+## series (@var{time1}, @var{mag1}) and (@var{time2}, @var{mag2}).
 ## @var{window} is used to apply a windowing function, its
 ## default is cubicwgt if left blank, and its radius is 1,
 ## as defined as the default for @var{winradius}.

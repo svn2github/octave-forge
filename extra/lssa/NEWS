@@ -14,9 +14,13 @@ Current status:
     author's reasoning. Its generated results are relevant to any given data
     set, but it does not appear to be normalized to any great extent.
 
- ** lsrealwavelet and lscomplexwavelet are not currently correct or even really
-    functional; this is an ongoing struggle for me, and if anyone can suggest
-    what I might do to improve them, please! By all means, send me an email.
+ ** There are two wavelet functions under development, but they are not included
+    in this release as they are currently not functional. For all your wavelet
+    needs, the specific transformation used is available in the lswaveletcoeff
+    function, and will generate a single cosine/sine magnitude pair (as a
+    complex number) for a complex-valued series (this function may be joined by
+    a companion for real-valued series) and can be looped to simulate a full
+    wavelet transform.
 
  ** For all the working functions, tests have been written and formatted to
     Octave coding standards. These tests should pass on any given architecture

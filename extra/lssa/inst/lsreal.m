@@ -14,7 +14,7 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {transform =} lsreal ( time, mag, maxfreq, numcoeff, numoctaves)
+## @deftypefn {Function File} {@var{transform} =} lsreal (@var{time}, @var{mag}, @var{maxfreq}, @var{numcoeff}, @var{numoctaves})
 ##
 ## Return the real least-squares transform of the time series
 ## defined, based on the maximal frequency @var{maxfreq}, the
@@ -26,35 +26,39 @@
 ## @seealso{lscomplex}
 ## @end deftypefn
 
-function transform = lsreal( t, x, omegamax, ncoeff, noctave)
-  ## the R function runs the following command:
-  ## nureal( double X, double Y, int min(X,Y), int ncoeff, int noctave, double omegamax, complex rp)
-  ## this means that in the C, *tptr is X and *xptr is Y. Yes, I know. I think I'll rename them.
-  ## n is the min of X and Y ... (as is k) and ncoeff is ... ncoeff, while noctave is noctave and
-  ## o is omegamax.
-  ## where rp = complex(noctave*ncoeff) so ... I can just store that as noctave*ncoeff and have no
-  ## problems, I guess.
-  ## Possibly throw an error if ncoeff <= 0.
+function transform = lsreal (t, x, omegamax, ncoeff, noctave)
+
   k = n = length(t); ## THIS IS VECTOR-ONLY. I'd need to add another bit of code to
   ## make it array-safe, and that's not knowing right now what else will be necessary.
-  transform = zeros(1,(noctave * ncoeff)); ## In the C code, this is rendered as a Complex, but Octave doesn't care.
-  od = 2 ^ ( - 1 / ncoeff ); ## this will cause a crash if ncoeff=0; prefer error & quit?
+  transform = zeros(1,(noctave * ncoeff));
+
+  od = 2 ^ (- 1 / ncoeff);
+
   o = omegamax;
-  ## ot is just defined as a Real here, I'm leaving it until it needs to be called.
-  n1 = 1 / n; ## written n_1 in the C, but I'd prefer to not get into underscores here.
-  ## zeta and iota are defined as Complex here, leaving them until they need to be defined.
-  ## I'm not convinced I won't want ncoeff again, so ...
+
+  n1 = 1 / n;
+
   ncoeffp = ncoeff;
+
   ncoeffp *= noctave;
+
   for iter = 1:ncoeffp
     ## This method is an application of Eq. 8 on page 6 of the text, as well as Eq. 7
     ot = o .* t;
-    zeta = sum( ( cos(ot) .* x ) - ( sin(ot) .* x .* i ) );
+
+    zeta = sum ((cos (ot) .* x) -
+		(sin (ot) .* x .* i));
+
     ot = ot .* 2;
-    iota = sum( cos(ot) - ( sin(ot) .* i ) );
+
+    iota = sum (cos (ot) -
+		(sin (ot) .* i));
+
     zeta = zeta .* n1;
+
     iota = iota .* n1;
-    transform(iter) = 2 / ( 1 - ( real(iota) ^ 2 ) - ( imag(iota) ^ 2 ) ) * ( conj(zeta) - (conj(iota) * zeta ));
+
+    transform(iter) = (2 / (1 -(real (iota) ^ 2) - (imag(iota) ^ 2)) * (conj(zeta) - (conj(iota) * zeta)));
     o = o .* od;
   endfor
   

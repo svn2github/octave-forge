@@ -14,12 +14,12 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {c =} lswaveletcoeff (abc, ord, time, freq)
-## @deftypefnx {Function File} {c =} lswaveletcoeff (abc, ord, time, freq, window)
-## @deftypefnx {Function File} {c =} lswaveletcoeff (abc, ord, time, freq, window, winradius)
+## @deftypefn {Function File} {@var{c} =} lswaveletcoeff (@var{t}, @var{x}, @var{time}, @var{freq})
+## @deftypefnx {Function File} {@var{c} =} lswaveletcoeff (@var{t}, @var{x}, @var{time}, @var{freq}, @var{window}=cubicwgt)
+## @deftypefnx {Function File} {@var{c} =} lswaveletcoeff (@var{t}, @var{x}, @var{time}, @var{freq}, @var{window}=cubicwgt, @var{winradius}=1)
 ##
 ## Return the coefficient of the wavelet transform of the
-## complex time series (@var{abc}, @var{ord}) at time @var{time}
+## complex time series (@var{t}, @var{x}) at time @var{time}
 ## and frequency @var{freq}; optional variable @var{window}
 ## provides a windowing function and defaults to cubicwgt,
 ## while @var{winradius} is the windowing radius, and defaults

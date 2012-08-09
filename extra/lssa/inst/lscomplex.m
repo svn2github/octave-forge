@@ -14,7 +14,7 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {t =} lscomplex ( time, mag, maxfreq, numcoeff, numoctaves)
+## @deftypefn {Function File} {@var{t} =} lscomplex (@var{time}, @var{mag}, @var{maxfreq}, @var{numcoeff}, @var{numoctaves})
 ## 
 ## Return the complex least-squares transform of the (@var{time},@var{mag})
 ## series, considering frequencies up to @var{maxfreq}, over @var{numoctaves}
@@ -25,14 +25,25 @@
 
 
 function transform = lscomplex( t , x , omegamax , ncoeff , noctave )
-  n = length(t); ## VECTOR ONLY, and since t and x have the same number of entries, there's no problem.
+
+  n = length(t); ## VECTOR ONLY, and since t and x have the same number of
+  ## entries, there's no problem.
+
   transform = zeros(1,ncoeff*noctave);
+
   o = omegamax;
-  omul = 2 ^ ( - 1 / ncoeff );
+
+  omul = 2 ^ (- 1 / ncoeff);
+
   for iter = 1:ncoeff*noctave
+
     ot = o .* t;
-    transform(iter) = sum( ( cos(ot) - ( sin(ot) .* i ) ) .* x ) / n; ## See the paper for the expression
+
+    transform(iter) = sum ((cos (ot) - (sin (ot) .* i)) .* x) / n; ## See the
+    ## paper for the expression
+
     o *= omul; ## To advance the transform to the next coefficient in the octave
+
   endfor
 
 endfunction 

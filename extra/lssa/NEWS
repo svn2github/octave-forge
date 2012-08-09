@@ -1,4 +1,4 @@
-Welcome to the first release of lssa, 0.1.0
+Welcome to the first release of lssa, 0.1.1
 
 Current status:
  
@@ -18,3 +18,7 @@ Current status:
     functional; this is an ongoing struggle for me, and if anyone can suggest
     what I might do to improve them, please! By all means, send me an email.
 
+ ** For all the working functions, tests have been written and formatted to
+    Octave coding standards. These tests should pass on any given architecture
+    (there was some question about that previously) and often provide examples
+    of how the function operates. For a few functions, there are demo scripts.

@@ -47,6 +47,6 @@ endfunction
 %!      0.2 .* cos (maxfreq .* t) + 
 %!      cos ((1/4) * maxfreq .* t));
 %! o = [maxfreq , (3/4 * maxfreq) , (1/4 * maxfreq)];
-%!assert (lombcoeff (t, x, maxfreq), 10788.9848389923, 5e-10);
-%!assert (lombcoeff (t, x, 3/4*maxfreq), 12352.6413413457, 5e-10);
-%!assert (lombcoeff (t, x, 1/4*maxfreq), 13673.4098969780, 5e-10);
+%!assert (lombcoeff (t, x, maxfreq), 1076.77574184435, 5e-10);
+%!assert (lombcoeff (t, x, 3/4*maxfreq), 1226.53572492183, 5e-10);
+%!assert (lombcoeff (t, x, 1/4*maxfreq), 1341.63962181896, 5e-10);

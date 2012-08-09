@@ -53,3 +53,25 @@ function coeff = lswaveletcoeff( x , y , t , o , wgt = @cubicwgt , wgtrad = 1 )
   coeff = ifelse( s != 0 , sum( wgt( ( rx - t ) .* so) .* exp( i .* o .* ( rx - t ) ) .* ry ) ./ s , 0 );
   
 endfunction
+
+%!test
+%!shared t, p, x, y, z, o, maxfreq
+%! maxfreq = 4 / (2 * pi);
+%! t = linspace (0, 8);
+%! x = (2 .* sin (maxfreq .* t) + 
+%!      3 .* sin ((3/4) * maxfreq .* t) - 
+%!      0.5 .* sin ((1/4) * maxfreq .* t) - 
+%!      0.2 .* cos (maxfreq .* t) + 
+%!      cos ((1/4) * maxfreq .* t));
+%! y = - x;
+%! p = linspace (0, 8, 500);
+%! z = (2 .* sin (maxfreq .* p) + 
+%!      3 .* sin ((3/4) * maxfreq .* p) - 
+%!      0.5 .* sin ((1/4) * maxfreq .* p) - 
+%!      0.2 .* cos (maxfreq .* p) + 
+%!      cos ((1/4) * maxfreq .* p));
+%! o = [maxfreq , (3/4 * maxfreq) , (1/4 * maxfreq)];
+%!assert (lswaveletcoeff (t, x, 0.5, maxfreq), 0.383340407638780 +
+%!  2.385251997545446i , 5e-10);
+%!assert (lswaveletcoeff (t, y, 3.3, 3/4 * maxfreq), -2.35465091096084 +
+%!  1.01892561714824i, 5e-10);

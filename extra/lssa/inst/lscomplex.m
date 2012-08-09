@@ -23,15 +23,6 @@
 ## @seealso{lsreal}
 ## @end deftypefn
 
-%!test
-%!shared t, x, o, maxfreq
-%! maxfreq = 4 / ( 2 * pi );
-%! t = [0:0.008:8];
-%! x = ( 2.*sin(maxfreq.*t) + 3.*sin((3/4)*maxfreq.*t)- 0.5 .* sin((1/4)*maxfreq.*t) - 0.2 .* cos(maxfreq .* t) + cos((1/4)*maxfreq.*t));
-%! o = [ maxfreq , 3 / 4 * maxfreq , 1 / 4 * maxfreq ];
-%!assert( lscomplex(t,x,maxfreq,2,2), [-0.400754376933531 - 2.366871097665244i, 1.226663545950135 - 2.243899314661490i, 1.936433327880238 - 1.515538553198501i, 2.125045509991203 - 0.954100898917708i ], 6e-14 );
-
-
 
 function transform = lscomplex( t , x , omegamax , ncoeff , noctave )
   n = length(t); ## VECTOR ONLY, and since t and x have the same number of entries, there's no problem.
@@ -45,3 +36,19 @@ function transform = lscomplex( t , x , omegamax , ncoeff , noctave )
   endfor
 
 endfunction 
+
+%!test
+%!shared t, x, o, maxfreq
+%! maxfreq = 4 / ( 2 * pi );
+%! t = [0:0.008:8];
+%! x = ( 2 .* sin (maxfreq .* t) +
+%!       3 .* sin ( (3 / 4) * maxfreq .* t)-
+%!       0.5 .* sin ((1/4) * maxfreq .* t) -
+%!       0.2 .* cos (maxfreq .* t) + 
+%!       cos ((1/4)*maxfreq.*t));
+%! o = [ maxfreq , 3 / 4 * maxfreq , 1 / 4 * maxfreq ];
+%!assert( lscomplex(t,x,maxfreq,2,2), 
+%!  [-0.400924546169395 - 2.371555305867469i,
+%!    1.218065147708429 - 2.256125004156890i,
+%!    1.935428592212907 - 1.539488163739336i,
+%!    2.136692292751917 - 0.980532175174563i ], 5e-10 );

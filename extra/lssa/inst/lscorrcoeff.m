@@ -68,7 +68,7 @@ function coeff = lscorrcoeff(x1, y1, x2, y2, t, o, wgt = @cubicwgt, wgtrad = 1)
 
 endfunction
 
-
+%!test
 %!shared t, p, x, y, z, o, maxfreq
 %! maxfreq = 4 / (2 * pi);
 %! t = linspace (0, 8);

@@ -59,11 +59,38 @@ function coeff = lscorrcoeff(x1, y1, x2, y2, t, o, wgt = @cubicwgt, wgtrad = 1)
   ## I've used the same mask for all of these as it's an otherwise unimportant variable ... can this leak memory?
   length(rx1) ##printing this length is probably used as a warning if 0 is returned; I included it
   ## in particular to maintain an exact duplicate of the R function.
-  s = sum( wgt( ( rx1 - t ) .* so ) ) * sum( wgt( ( rx2 - t ) .* so ) );
+  s = sum ( wgt ( ( rx1 - t ) .* so ) ) * sum ( wgt ( ( rx2 - t ) .* so ) );
   if s != 0
-    coeff = sum( wgt((rx1-t).*so).*exp(i*o.*rx1).*ry1) * sum(wgt((rx2-t).*so).*exp(i*o.*rx2).*conj(ry2)) / s;
+    coeff = sum ( wgt ((rx1-t).*so).*exp(i*o.*rx1).*ry1) * sum(wgt((rx2-t).*so).*exp(i*o.*rx2).*conj(ry2)) / s;
   else
     coeff = 0;
   endif
 
 endfunction
+
+
+%!shared t, p, x, y, z, o, maxfreq
+%! maxfreq = 4 / (2 * pi);
+%! t = linspace (0, 8);
+%! x = (2 .* sin (maxfreq .* t) + 
+%!      3 .* sin ((3/4) * maxfreq .* t) - 
+%!      0.5 .* sin ((1/4) * maxfreq .* t) - 
+%!      0.2 .* cos (maxfreq .* t) + 
+%!      cos ((1/4) * maxfreq .* t));
+%! y = - x;
+%! p = linspace (0, 8, 500);
+%! z = (2 .* sin (maxfreq .* p) + 
+%!      3 .* sin ((3/4) * maxfreq .* p) - 
+%!      0.5 .* sin ((1/4) * maxfreq .* p) - 
+%!      0.2 .* cos (maxfreq .* p) + 
+%!      cos ((1/4) * maxfreq .* p));
+%! o = [maxfreq , (3/4 * maxfreq) , (1/4 * maxfreq)];
+%!assert (lscorrcoeff (t, x, t, x, 0.5, maxfreq), -5.54390340863576 -
+%! 1.82439880893383i, 5e-10);
+%!assert (lscorrcoeff (t, x, t, y, 0.5, maxfreq), 5.54390340863576 +
+%! 1.82439880893383i, 5e-10);
+%!assert (lscorrcoeff (t, x, p, z, 0.5, maxfreq), -5.55636741054624 -
+%! 1.82803733863170i, 5e-10);
+
+
+

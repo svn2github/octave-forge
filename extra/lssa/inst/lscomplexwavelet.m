@@ -15,39 +15,47 @@
 
 
 
-function transform = lscomplexwavelet( t , x, omegamax, ncoeff, noctave, minimum_window_count, sigma = 0.05)
+function transform = lscomplexwavelet( t , x, omegamax, ncoeff, noctave, tmin, tmax, tstep, sigma = 0.05)
 
-## This is a transform based entirely on the simplified complex-valued transform
-## in the Mathias paper, page 10. My problem with the code as it stands is, it
-## doesn't have a good way of determining the window size. Sigma is currently up
-## to the user, and sigma determines the window width (but that might be best.)
-##
-## Currently the code does not apply a time-shift, which needs to be fixed so
-## that it will work correctly over given frequencies.
-##
-## Additionally, each octave up adds one to the number of frequencies.
-
-transform = cell(ncoeff*noctave,1);
-for octave_iter = 1:noctave
-  current_octave = maxfreq * 2 ^ ( - octave_iter );
-  current_window_number = minimum_window_count + noctave - octave_iter;
-  window_step = ( tmax - tmin ) / current_window_number;
-  for coeff_iter = 1:ncoeff
-    ## in this, win_t is the centre of the window in question
-    window_min = t_min;
-    ## Although that will vary depending on the window. This is just an
-    ## implementation for the first window.
-    omega = current_frequency = maxfreq * 2 ^ ( - octave_iter*coeff_iter / ncoeff );
-    current_radius = 1 / ( current_octave * sigma );
+  ## This is a transform based entirely on the simplified complex-valued transform
+  ## in the Mathias paper, page 10. My problem with the code as it stands is, it
+  ## doesn't have a good way of determining the window size. Sigma is currently up
+  ## to the user, and sigma determines the window width (but that might be best.)
+  ##
+  ## Currently the code does not apply a time-shift, which needs to be fixed so
+  ## that it will work correctly over given frequencies.
+	 
+  transform = cell(noctave*ncoeff,1);
+  
+  for octave_iter = 1:noctave
+    ## In fastnu.c, winrad is set as π/(sigma*omegaoct); I suppose this is
+    ## ... feasible, although it will need to be noted that if sigma is set too
+    ## large, the windows will exclude data. I can work with that.
+    ##
+    ## An additional consideration is that 
     
-    transform{iter} = zeros(1,current_window_number);
-    win_t = window_min + ( window_step / 2);
-    for iter_window = 1:current_window_number
-      ## Computes the transform as stated in the paper for each given frequency.
-      zeta = sum ( cubicwgt ( sigma .* omega .* ( T - win_t ) ) .* exp ( -i .* omega .* ( T - win_t ) ) .* X ) / sum ( cubicwgt ( sigma .* omega .* ( T - win_t ) ) .* exp ( -i .* omega .* ( T - win_t ) ) );
-      transform{iter}(iter_window) = zeta;
-      window_min += window_step ;
-    ## I remain hesitant about this value, since it is entirely possible necessary precision will be lost. Should I try to reduce that?
+    for coeff_iter = 1:ncoeff
+	
+      ## in this, win_t is the centre of the window in question
+      ## Although that will vary depending on the window. This is just an
+      ## implementation for the first window.
+	
+      current_iteration = (octave_iter-1)*ncoeff+coeff_iter;
+      window_radius = pi / ( sigma * omegamax * ( 2 ^ ( current_iteration - 1 ) ) );
+      window_count = 2 * ceil ( ( tmax - tmin ) / window_step ) - 1;
+      omega = current_frequency = maxfreq * 2 ^ ( - octave_iter*coeff_iter / ncoeff );
+      
+      
+      
+      transform{current_iteration}=zeros(1,window_count);
+
+      ## win_t is the centre of the current window.
+      win_t = tmin + window_radius;
+      for iter_window = 1:window_count
+	## Computes the transform as stated in the paper for each given frequency.
+	zeta = sum ( cubicwgt ( sigma .* omega .* ( T - win_t ) ) .* exp ( -i .* omega .* ( T - win_t ) ) .* X ) / sum ( cubicwgt ( sigma .* omega .* ( T - win_t ) ) .* exp ( -i .* omega .* ( T - win_t ) ) );
+	transform{current_iteration}(iter_window) = zeta;
+	window_min += window_radius ;
     endfor
   endfor
   

@@ -24,39 +24,45 @@
 ## @end deftypefn
 
 
-function transform = lscomplex( t , x , omegamax , ncoeff , noctave )
+function transform = lscomplex (t, x, omegamax, ncoeff, noctave)
 
-  n = length(t); ## VECTOR ONLY, and since t and x have the same number of
+  ## VECTOR ONLY, and since t and x have the same number of
   ## entries, there's no problem.
+  n = length (t); 
+   
 
-  transform = zeros(1,ncoeff*noctave);
+  transform = zeros (1, ncoeff * noctave);
 
   o = omegamax;
 
   omul = 2 ^ (- 1 / ncoeff);
 
-  for iter = 1:ncoeff*noctave
+  for iter = 1:ncoeff * noctave
 
     ot = o .* t;
 
-    transform(iter) = sum ((cos (ot) - (sin (ot) .* i)) .* x) / n; ## See the
-    ## paper for the expression
+    ## See the paper for the expression below
+    transform(iter) = sum ((cos (ot) - (sin (ot) .* i)) .* x) / n; 
+             
 
-    o *= omul; ## To advance the transform to the next coefficient in the octave
+    ## Advance the transform to the next coefficient in the octave
+    o *= omul; 
 
   endfor
 
 endfunction 
 
 %!test
-%!shared t, x, o, maxfreq
 %! maxfreq = 4 / ( 2 * pi );
 %! t = [0:0.008:8];
 %! x = ( 2 .* sin (maxfreq .* t) +
 %!       3 .* sin ( (3 / 4) * maxfreq .* t)-
 %!       0.5 .* sin ((1/4) * maxfreq .* t) -
 %!       0.2 .* cos (maxfreq .* t) + 
-%!       cos ((1/4)*maxfreq.*t));
+%!       cos ((1/4) * maxfreq .* t));
 %! o = [ maxfreq , 3 / 4 * maxfreq , 1 / 4 * maxfreq ];
-%!assert( lscomplex(t,x,maxfreq,2,2), 
-%!  [-0.400924546169395 - 2.371555305867469i, 1.218065147708429 - 2.256125004156890i, 1.935428592212907 - 1.539488163739336i, 2.136692292751917 - 0.980532175174563i ], 5e-10 );
+%! assert (lscomplex (t, x, maxfreq, 2, 2), 
+%!       [(-0.400924546169395 - 2.371555305867469i), ...
+%!        (1.218065147708429 - 2.256125004156890i), ... 
+%!        (1.935428592212907 - 1.539488163739336i), ...
+%!        (2.136692292751917 - 0.980532175174563i)], 5e-10);

@@ -28,44 +28,40 @@
 
 function transform = lsreal (t, x, omegamax, ncoeff, noctave)
 
-  k = n = length(t); ## THIS IS VECTOR-ONLY. I'd need to add another bit of code to
-  ## make it array-safe, and that's not knowing right now what else will be necessary.
-  transform = zeros(1,(noctave * ncoeff));
+  ## FIXME : THIS IS VECTOR-ONLY. I'd need to add another bit of code to
+  ## make it array-safe, and that's not knowing right now what else 
+  ## will be necessary.
+  k = n = length (t); 
+
+  transform = zeros (1, (noctave * ncoeff));
 
   od = 2 ^ (- 1 / ncoeff);
-
   o = omegamax;
-
   n1 = 1 / n;
 
-  ncoeffp = ncoeff;
-
-  ncoeffp *= noctave;
+  ncoeffp = ncoeff * noctave;
 
   for iter = 1:ncoeffp
-    ## This method is an application of Eq. 8 on page 6 of the text, as well as Eq. 7
+    ## This method is an application of Eq. 8 on 
+    ## page 6 of the text, as well as Eq. 7
     ot = o .* t;
 
-    zeta = sum ((cos (ot) .* x) -
-		(sin (ot) .* x .* i));
+    zeta = n1 * sum ((cos (ot) - i * sin (ot)) .* x);
 
-    ot = ot .* 2;
+    ot *= 2;
 
-    iota = sum (cos (ot) -
-		(sin (ot) .* i));
+    iota = n1 * sum (cos (ot) - i * sin (ot));
 
-    zeta = zeta .* n1;
 
-    iota = iota .* n1;
+    transform(iter) = (2 * (conj (zeta) - (conj (iota) * zeta)) / 
+                       (1 - (real (iota) ^ 2) - (imag (iota) ^ 2)));
 
-    transform(iter) = (2 / (1 -(real (iota) ^ 2) - (imag(iota) ^ 2)) * (conj(zeta) - (conj(iota) * zeta)));
-    o = o .* od;
+    o *= od;
   endfor
   
 endfunction
 
 %!test
-%!shared t, x, o, maxfreq
 %! maxfreq = 4 / ( 2 * pi );
 %! t = linspace(0,8);
 %! x = ( 2 .* sin ( maxfreq .* t ) +
@@ -73,8 +69,11 @@ endfunction
 %!       0.5 .* sin ( (1/4) * maxfreq .* t ) -
 %!       0.2 .* cos ( maxfreq .* t ) +
 %!       cos ( (1/4) * maxfreq .* t ) );
-%!assert (lsreal (t,x,maxfreq,2,2),
-%!  [-1.68275915310663 + 4.70126183846743i, 1.93821553170889 + 4.95660209883437i, 4.38145452686697 + 2.14403733658600i, 5.27425332281147 - 0.73933440226597i ],
-%!  5e-10)
 %! # In the assert here, I've got an error bound large enough to catch
 %! # individual system errors which would present no real issue. 
+%! assert (lsreal (t,x,maxfreq,2,2),
+%!       [(-1.68275915310663 + 4.70126183846743i), ...
+%!        (1.93821553170889 + 4.95660209883437i), ...
+%!        (4.38145452686697 + 2.14403733658600i), ...
+%!        (5.27425332281147 - 0.73933440226597i)],
+%!         5e-10)

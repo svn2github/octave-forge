@@ -29,33 +29,31 @@
 ## 
 ## @end deftypefn
 
-%!demo
-%! x = 1:10;
-%! y = sin(x);
-%! xt = x';
-%! yt = y';
-%! a = lswaveletcoeff(x,y,0.5,0.9)
-%! b = lswaveletcoeff(xt,yt,0.5,0.9)
-%! ## Generates the wavelet transform coefficient for time 0.5 and circ. freq. 0.9, for row & column vectors.
 
+function coeff = lswaveletcoeff (x, y, t, o, wgt = @cubicwgt, wgtrad = 1)
 
-function coeff = lswaveletcoeff( x , y , t , o , wgt = @cubicwgt , wgtrad = 1 )
   so = 0.05 .* o;
-  if ( ( ndims(x) == 2 ) && ! ( rows(x) == 1 ) )
-    x = reshape(x,1,length(x));
-    y = reshape(y,1,length(y));
+
+  if ((ndims (x) == 2) && ! (rows (x) == 1))
+    x = reshape (x, 1, length (x));
+    y = reshape (y, 1, length (y));
   endif
-  mask = find( abs( x - t ) * so < wgtrad );
+
+  mask = (abs (x - t) * so < wgtrad);
   rx = x(mask);
   ry = y(mask);
+
   ## Going by the R code, this can use the same mask.
-  s = sum( wgt( ( x - t ) .* so ) );
-  coeff = ifelse( s != 0 , sum( wgt( ( rx - t ) .* so) .* exp( i .* o .* ( rx - t ) ) .* ry ) ./ s , 0 );
+  s = sum (wgt ((x - t) .* so));
+  coeff = ifelse (s != 0, 
+                  sum (wgt ((rx - t) .* so) .* 
+                       exp (i .* o .* (rx - t)) .* ry) ./ s, 
+                  0);
   
 endfunction
 
-%!test
-%!shared t, p, x, y, z, o, maxfreq
+
+%!shared t, p, x, y, maxfreq
 %! maxfreq = 4 / (2 * pi);
 %! t = linspace (0, 8);
 %! x = (2 .* sin (maxfreq .* t) + 
@@ -65,13 +63,18 @@ endfunction
 %!      cos ((1/4) * maxfreq .* t));
 %! y = - x;
 %! p = linspace (0, 8, 500);
-%! z = (2 .* sin (maxfreq .* p) + 
-%!      3 .* sin ((3/4) * maxfreq .* p) - 
-%!      0.5 .* sin ((1/4) * maxfreq .* p) - 
-%!      0.2 .* cos (maxfreq .* p) + 
-%!      cos ((1/4) * maxfreq .* p));
-%! o = [maxfreq , (3/4 * maxfreq) , (1/4 * maxfreq)];
-%!assert (lswaveletcoeff (t, x, 0.5, maxfreq), 0.383340407638780 +
-%!  2.385251997545446i , 5e-10);
-%!assert (lswaveletcoeff (t, y, 3.3, 3/4 * maxfreq), -2.35465091096084 +
-%!  1.01892561714824i, 5e-10);
+%!assert (lswaveletcoeff (t, x, 0.5, maxfreq), 
+%!        0.383340407638780 + 2.385251997545446i, 5e-10);
+%!assert (lswaveletcoeff (t, y, 3.3, 3/4 * maxfreq), 
+%!        -2.35465091096084 + 1.01892561714824i, 5e-10);
+
+
+%!demo
+%! ## Generates the wavelet transform coefficient for time 0.5 and circ. freq. 0.9, for row & column vectors.
+%! x = 1:10;
+%! y = sin (x);
+%! xt = x';
+%! yt = y';
+%! a = lswaveletcoeff (x, y, 0.5, 0.9)
+%! b = lswaveletcoeff (xt, yt, 0.5, 0.9)
+

@@ -25,7 +25,7 @@
 #include <exception>
 
 bool flscomplex (const RowVector & tvec, const ComplexRowVector & xvec,
-                 double maxfreq, int octaves, int coefficients, ComplexRowVector & result) 
+                 double maxfreq, int octaves, int coefficients, ComplexRowVector & result);
 
 DEFUN_DLD(fastlscomplex,args,nargout, 
 "-*- texinfo -*-\n\
@@ -72,7 +72,7 @@ supplied, using the fast algorithm.\n\
           if (flscomplex (tvals, xvals, omegamax, noctaves, ncoeff, results))
             retval(0) = octave_value (results);
           else
-            error ("fastlscomplex: error in the underlying flscomplex function")
+            error ("fastlscomplex: error in the underlying flscomplex function");
         } 
     
     }
@@ -84,6 +84,7 @@ bool flscomplex (const RowVector & tvec, const ComplexRowVector & xvec,
                  double maxfreq, int octaves, int coefficients, 
                  ComplexRowVector & results) 
 {
+  
   struct Precomputation_Record 
   {
     Precomputation_Record *next;
@@ -91,13 +92,17 @@ bool flscomplex (const RowVector & tvec, const ComplexRowVector & xvec,
     bool stored_data;
   };
 
+  const std::complex<double> *xvec_ptr = xvec.data ();
+  const double *tvec_ptr = tvec.data ();
+
   results.resize (coefficients * octaves);
+  const std::complex<double> *results_ptr = results.fortran_vec ();
 
   double tau, delta_tau, tau_0, tau_h, n_inv, mu, te,
     omega_oct, omega_multiplier, octavemax, omega_working,
     loop_tau_0, loop_delta_tau, on_1, n_1, o;
 
-  double length = tvec(tvec.numel () - 1) - tvec(0);
+  double length = tvec_ptr[tvec.numel () - 1] - tvec_ptr[0];
 
   int octave_iter, coeff_iter;
 
@@ -123,7 +128,7 @@ bool flscomplex (const RowVector & tvec, const ComplexRowVector & xvec,
    */
 
   delta_tau = M_PI / (2 * maxfreq);
-  tau_0 = tvec(0) + delta_tau;
+  tau_0 = tvec_ptr[0] + delta_tau;
   tau_h = tau_0;
   te = tau_h + delta_tau;
 
@@ -132,32 +137,32 @@ bool flscomplex (const RowVector & tvec, const ComplexRowVector & xvec,
   Precomputation_Record * precomp_records_head, *record_current, *record_tail, *record_ref, *record_next;
   record_current = precomp_records_head = new  Precomputation_Record;
 
-  for (te = tvec(k) + (2 * delta_tau) ; ;) 
+  for (te = tvec_ptr[k] + (2 * delta_tau) ; ;) 
     {
-      x = std::complex<double>(xvec(k));
+      x = xvec_ptr[k];
       {
-        double t = mu*(tvec(k)-tau_h), tt;
+        double t = mu *(tvec_ptr[k] - tau_h), tt;
         p = record_current->power_series;
         // p = 0
-        *p++ = std::complex<double>(x);
+        *p++ = x;
         // p = 1
         tt = -t;
         h = x * tt;
-        *p++ = std::complex<double>(-h.imag(),h.real());
+        *p++ = std::complex<double> (-h.imag (), h.real ());
         // p = 2
         tt *= t*(1.0/2.0);
         *p++ = x*tt;
         // p = 3
         tt *= t*(-1.0/3.0);
         h = x * tt;
-        *p++ = std::complex<double>(-h.imag(),h.real());
+        *p++ = std::complex<double> (-h.imag (), h.real ());
         // p = 4
         tt *= t*(1.0/4.0);
         *p++ = x*tt;
         // p = 5
         tt *= t*(-1.0/5.0);
         h = x * tt;
-        *p++ = std::complex<double>(-h.imag(),h.real());
+        *p++ = std::complex<double>(-h.imag () ,h.real ());
         // p = 6
         tt *= t*(1.0/6.0);
         *p++ = x*tt;
@@ -182,11 +187,11 @@ bool flscomplex (const RowVector & tvec, const ComplexRowVector & xvec,
       }
 
       record_current->stored_data = true;
-      for(k++; k < n && tvec(k) < te; k++)
+      for(k++; k < n && tvec_ptr[k] < te; k++)
         {
-          x = std::complex<double> (xvec(k));
+          x = std::complex<double> (xvec_ptr[k]);
           {
-            double t = mu*(tvec(k)-tau_h), tt;
+            double t = mu * (tvec_ptr[k] - tau_h), tt;
             p = record_current->power_series;
             // p = 0
             *p++ += std::complex<double>(x);
@@ -267,9 +272,10 @@ bool flscomplex (const RowVector & tvec, const ComplexRowVector & xvec,
       omega_working = octavemax;
       for (coeff_iter = 0; 
            coeff_iter < coefficients; 
-           coeff_iter++, o *= omega_multiplier, omega_working *= omega_multiplier)
+           coeff_iter++, o *= omega_multiplier, 
+             omega_working *= omega_multiplier)
         {
-          exp_term = std::complex<double> (cos (- omega_working * loop_tau_0) ,
+          exp_term = std::complex<double> (cos (- omega_working * loop_tau_0),
                                            sin (- omega_working * loop_tau_0));
 
           exp_multiplier = std::complex<double> (cos (- 2 * omega_working * loop_delta_tau) ,
@@ -471,14 +477,28 @@ bool flscomplex (const RowVector & tvec, const ComplexRowVector & xvec,
                 }
             }
         } 
-      catch (std::exception& e) 
+      catch (std::exception & e) 
         {//This section was part of my debugging, and may be removed.
           std::cout << "Exception thrown: " << e.what() << std::endl;
-          ComplexRowVector exception_result (1);
-          exception_result(0) = false;
-          return exception_result;
+          return (false);
         }
     }
 
   return true;
 }
+
+/*
+%!test
+%! maxfreq = 4 / ( 2 * pi );
+%! t = [0:0.008:8];
+%! x = ( 2 .* sin (maxfreq .* t) +
+%!       3 .* sin ( (3 / 4) * maxfreq .* t)-
+%!       0.5 .* sin ((1/4) * maxfreq .* t) -
+%!       0.2 .* cos (maxfreq .* t) + 
+%!       cos ((1/4) * maxfreq .* t));
+%! assert (fastlscomplex (t, x, maxfreq, 2, 2), 
+%!       [(-0.400924546169395 - 2.371555305867469i), ...
+%!        (1.218065147708429 - 2.256125004156890i), ... 
+%!        (1.935428592212907 - 1.539488163739336i), ...
+%!        (2.136692292751917 - 0.980532175174563i)], 5e-10);
+*/

@@ -25,15 +25,21 @@
 #include <exception>
 
 bool flscomplex (const RowVector & tvec, const ComplexRowVector & xvec,
-                 double maxfreq, int octaves, int coefficients, ComplexRowVector & result);
+                 double maxfreq, int coefficients, int octaves, ComplexRowVector & result);
 
 DEFUN_DLD(fastlscomplex,args,nargout, 
 "-*- texinfo -*-\n\
 @deftypefn {Function File} { C = } fastlscomplex                        \
-(@var{time},@var{magnitude},@var{maximum_frequency},@var{octaves},@var{coefficients})\n \
+(@var{time},@var{magnitude},@var{maxfreq},@var{ncoeff},@var{noctave})\n \
 \n\
-Return the complex least squares transform of the (@var{time},@var{magnitude}) series\n\
-supplied, using the fast algorithm.\n\
+Return a series of least-squares transforms of a complex time series via a divide and\n\
+conquer algorithm.  Each transform is minimized independently at each frequency,\n\
+starting from @var{maxfreq} and descending over @var{ncoeff} frequencies for\n\
+each of @var{noctave} octaves.\n\
+\n\
+For each result, the complex result for a given frequency o defines the real and\n\
+imaginary sinusoids which have the least distance to the data set: for a + bi,\n\
+the matching sinusoids are a cos (ot) + b i sin (ot).\n\
 \n\
 @seealso{lscomplex, fastlsreal}\n\
 \n\

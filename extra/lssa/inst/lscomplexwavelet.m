@@ -13,7 +13,10 @@
 ## You should have received a copy of the GNU General Public License along with
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
-
+## -*- texinfo -*-
+##
+## @deftypefn {Function File} {@var{t} =} lscomplexwavelet (@var{time},
+##@var{mag}, @var{maxfreq}, @var{numcoeff}, @var{numoctave}, 
 
 function transform = lscomplexwavelet( T, X, omegamax, ncoeff, noctave, tmin, tmax, tstep, sigma = 0.05)
 

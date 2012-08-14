@@ -10,6 +10,6 @@ Description: A package implementing tools to compute spectral decompositions of
  URLs). 
 Url: http://www.jstatsoft.org/v11/i02
 Problems: fast implementations, wavelet functions are currently not functional.
-Depends: octave (>= 3.4.3)
+Depends: octave (>= 3.6.0)
 Autoload: no
 License: GPLv3+

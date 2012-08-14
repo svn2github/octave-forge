@@ -27,10 +27,6 @@ devel_slicot_functions.oct: devel_slicot_functions.cc slicotlibrary.a
 	LFLAGS="$(LFLAGS)" \
     $(MKOCTFILE) devel_slicot_functions.cc common.cc slicotlibrary.a
 
-# helpers
-is_matrix.oct: is_matrix.cc
-	$(MKOCTFILE) is_matrix.cc
-
 clean:
 	rm -rf *.o core octave-core *.oct *~ *.f slicot
 

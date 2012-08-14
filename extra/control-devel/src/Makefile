@@ -11,8 +11,7 @@ FLIBS := $(shell $(MKOCTFILE) -p FLIBS)
 endif
 LFLAGS := $(shell $(MKOCTFILE) -p LFLAGS) $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
 
-all: devel_slicot_functions.oct \
-     is_matrix.oct
+all: devel_slicot_functions.oct
 
 # unpack and compile SLICOT library
 slicotlibrary.a: slicot.tar.gz

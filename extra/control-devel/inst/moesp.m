@@ -128,7 +128,7 @@
 ## No confirmation.  Default value.
 ## @end table
 ##
-## @item 'noise'
+## @item 'input'
 ## The desired type of noise input channels.
 ## @table @var
 ## @item 'n'

@@ -18,14 +18,15 @@
 ## @deftypefnx {Function File} {@var{c} =} lscorrcoeff (@var{time1}, @var{mag1}, @var{time2}, @var{mag2}, @var{time}, @var{freq}, @var{window} = @var{cubicwgt})
 ## @deftypefnx {Function File} {@var{c} =} lscorrcoeff (@var{time1}, @var{mag1}, @var{time2}, @var{mag2}, @var{time}, @var{freq}, @var{window} = @var{cubicwgt}, @var{winradius} = 1)
 ##
-## Return the coefficient of the wavelet correlation of two complex-valued time
-## series at a given time and frequency.  The windowing function applied by
-## default is cubicwgt, this can be changed by passing a different function
-## handle to @var{window}, while the radius applied is set by @var{winradius}.
-## Note that this will be most effective when both series have had their mean
-## value (if it is not zero) subtracted (and stored separately); this reduces
-## the constant-offset error further, and allows the functions to be compared on
-## their periodic features rather than their constant features.
+## Return the coefficient of the wavelet correlation of two complex time
+## series.  The correlation is only effective at a given time and frequency.
+## The windowing function applied by default is cubicwgt, this can be changed by
+## passing a different function handle to @var{window}, while the radius applied
+## is set by @var{winradius}.  Note that this will be most effective when both
+## series have had their mean value (if it is not zero) subtracted (and stored
+## separately); this reduces the constant-offset error further, and allows the
+## functions to be compared on their periodic features rather than their
+## constant features.
 ##
 ## @seealso{lswaveletcoeff, lscomplexwavelet, lsrealwavelet}
 ## 

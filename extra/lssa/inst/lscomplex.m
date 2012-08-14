@@ -16,9 +16,15 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{t} =} lscomplex (@var{time}, @var{mag}, @var{maxfreq}, @var{numcoeff}, @var{numoctaves})
 ## 
-## Return the complex least-squares transform of the (@var{time},@var{mag})
-## series, considering frequencies up to @var{maxfreq}, over @var{numoctaves}
-## octaves and @var{numcoeff} coefficients.
+## Return a series of least-squares transforms of a complex-valued time series.
+## Each transform is minimized independently at each frequency. @var{numcoeff}
+## frequencies are tested for each of @var{numoctaves} octaves, starting from
+## @var{maxfreq}.
+##
+## Each result (a + bi) at a given frequency, o, defines the real and imaginary
+## coefficients for a sum of cosine and sine functions: a cos(ot) + b i
+## sin(ot).  The specific frequency can be determined by its index in @var{t},
+## @var{ind}, as @var{maxfreq} * 2 ^ (- (@var{ind} - 1) / @var{numcoeff}).
 ##
 ## @seealso{lsreal}
 ## @end deftypefn
@@ -26,30 +32,18 @@
 
 function transform = lscomplex (t, x, omegamax, ncoeff, noctave)
 
-  ## VECTOR ONLY, and since t and x have the same number of
-  ## entries, there's no problem.
-  n = length (t); 
+  ## t will be unrolled to a column vector below
+  ## no metter what its original shape is
+  n = numel (t); 
    
+  iter = 0 : (ncoeff * noctave - 1);
+  omul = (2 .^ (- iter / ncoeff));
 
-  transform = zeros (1, ncoeff * noctave);
+  ot = t(:) * (omul * omegamax);
 
-  o = omegamax;
-
-  omul = 2 ^ (- 1 / ncoeff);
-
-  for iter = 1:ncoeff * noctave
-
-    ot = o .* t;
-
-    ## See the paper for the expression below
-    transform(iter) = sum ((cos (ot) - (sin (ot) .* i)) .* x) / n; 
-             
-
-    ## Advance the transform to the next coefficient in the octave
-    o *= omul; 
-
-  endfor
-
+  ## See the paper for the expression below
+  transform = sum ((cos (ot) - (sin (ot) .* i)) .* x(:), 1) / n; 
+  
 endfunction 
 
 %!test
@@ -60,8 +54,7 @@ endfunction
 %!       0.5 .* sin ((1/4) * maxfreq .* t) -
 %!       0.2 .* cos (maxfreq .* t) + 
 %!       cos ((1/4) * maxfreq .* t));
-%! o = [ maxfreq , 3 / 4 * maxfreq , 1 / 4 * maxfreq ];
-%! assert (lscomplex (t, x, maxfreq, 2, 2), 
+%! assert (fastlscomplex (t, x, maxfreq, 2, 2), 
 %!       [(-0.400924546169395 - 2.371555305867469i), ...
 %!        (1.218065147708429 - 2.256125004156890i), ... 
 %!        (1.935428592212907 - 1.539488163739336i), ...

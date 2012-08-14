@@ -18,12 +18,16 @@
 ## @deftypefnx {Function File} {@var{c} =} lswaveletcoeff (@var{t}, @var{x}, @var{time}, @var{freq}, @var{window}=cubicwgt)
 ## @deftypefnx {Function File} {@var{c} =} lswaveletcoeff (@var{t}, @var{x}, @var{time}, @var{freq}, @var{window}=cubicwgt, @var{winradius}=1)
 ##
-## Return the coefficient of the wavelet transform of the
-## complex time series (@var{t}, @var{x}) at time @var{time}
-## and frequency @var{freq}; optional variable @var{window}
-## provides a windowing function and defaults to cubicwgt,
-## while @var{winradius} is the windowing radius, and defaults
-## to 1 (the radius of cubicwgt.)
+## Return the wavelet transform of a complex time series in a given window.  The
+## transform takes a complex time series (@var{t}, @var{x}) at time @var{time}
+## and frequency @var{freq}, then applies a windowing function to it; the
+## default is cubicwgt, however by providing a function handle for the optional
+## variable @var{window}, the user may select their own function; to determine
+## the radius of the interval around the @var{time} selected, set
+## @var{winradius} to some value other than 1.
+##
+## This transform operates identically to the transform at the heart of
+## lscomplexwavelet, however for one window only.
 ##
 ## @seealso{lscorrcoeff, lscomplexwavelet, lsrealwavelet}
 ## 

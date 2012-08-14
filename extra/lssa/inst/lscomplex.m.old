@@ -24,20 +24,32 @@
 ## @end deftypefn
 
 
-function transform = fastlscomplex (t, x, omegamax, ncoeff, noctave)
+function transform = lscomplex (t, x, omegamax, ncoeff, noctave)
 
-  ## t will be unrolled to a column vector below
-  ## no metter what its original shape is
-  n = numel (t); 
+  ## VECTOR ONLY, and since t and x have the same number of
+  ## entries, there's no problem.
+  n = length (t); 
    
-  iter = 0 : (ncoeff * noctave - 1);
-  omul = (2 .^ (- iter / ncoeff));
 
-  ot = t(:) * (omul * omegamax);
+  transform = zeros (1, ncoeff * noctave);
 
-  ## See the paper for the expression below
-  transform = sum ((cos (ot) - (sin (ot) .* i)) .* x(:), 1) / n; 
-  
+  o = omegamax;
+
+  omul = 2 ^ (- 1 / ncoeff);
+
+  for iter = 1:ncoeff * noctave
+
+    ot = o .* t;
+
+    ## See the paper for the expression below
+    transform(iter) = sum ((cos (ot) - (sin (ot) .* i)) .* x) / n; 
+             
+
+    ## Advance the transform to the next coefficient in the octave
+    o *= omul; 
+
+  endfor
+
 endfunction 
 
 %!test
@@ -48,7 +60,8 @@ endfunction
 %!       0.5 .* sin ((1/4) * maxfreq .* t) -
 %!       0.2 .* cos (maxfreq .* t) + 
 %!       cos ((1/4) * maxfreq .* t));
-%! assert (fastlscomplex (t, x, maxfreq, 2, 2), 
+%! o = [ maxfreq , 3 / 4 * maxfreq , 1 / 4 * maxfreq ];
+%! assert (lscomplex (t, x, maxfreq, 2, 2), 
 %!       [(-0.400924546169395 - 2.371555305867469i), ...
 %!        (1.218065147708429 - 2.256125004156890i), ... 
 %!        (1.935428592212907 - 1.539488163739336i), ...

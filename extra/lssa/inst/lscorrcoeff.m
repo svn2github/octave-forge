@@ -15,23 +15,21 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{c} =} lscorrcoeff (@var{time1}, @var{mag1}, @var{time2}, @var{mag2}, @var{time}, @var{freq})
-## @deftypefnx {Function File} {@var{c} =} lscorrcoeff (@var{time1}, @var{mag1},
-## @var{time2}, @var{mag2}, @var{time}, @var{freq}, @var{window} = @var{cubicwgt})
-## @deftypefnx {Function File} {@var{c} =} lscorrcoeff (@var{time1}, @var{mag1},
-## @var{time2}, @var{mag2}, @var{time}, @var{freq}, @var{window} =
-## @var{cubicwgt}, @var{winradius} = 1)
+## @deftypefnx {Function File} {@var{c} =} lscorrcoeff (@var{time1}, @var{mag1}, @var{time2}, @var{mag2}, @var{time}, @var{freq}, @var{window} = @var{cubicwgt})
+## @deftypefnx {Function File} {@var{c} =} lscorrcoeff (@var{time1}, @var{mag1}, @var{time2}, @var{mag2}, @var{time}, @var{freq}, @var{window} = @var{cubicwgt}, @var{winradius} = 1)
 ##
-## Return the coefficient of the wavelet correlation of time
-## series (@var{time1}, @var{mag1}) and (@var{time2}, @var{mag2}).
-## @var{window} is used to apply a windowing function, its
-## default is cubicwgt if left blank, and its radius is 1,
-## as defined as the default for @var{winradius}.
+## Return the coefficient of the wavelet correlation of two complex-valued time
+## series at a given time and frequency.  The windowing function applied by
+## default is cubicwgt, this can be changed by passing a different function
+## handle to @var{window}, while the radius applied is set by @var{winradius}.
+## Note that this will be most effective when both series have had their mean
+## value (if it is not zero) subtracted (and stored separately); this reduces
+## the constant-offset error further, and allows the functions to be compared on
+## their periodic features rather than their constant features.
 ##
 ## @seealso{lswaveletcoeff, lscomplexwavelet, lsrealwavelet}
 ## 
 ## @end deftypefn
-
-## nucorrcoeff, computes a coefficient of the wavelet correlation of two time series
 
 function coeff = lscorrcoeff (x1, y1, x2, y2, t, o, wgt = @cubicwgt, wgtrad = 1)
 

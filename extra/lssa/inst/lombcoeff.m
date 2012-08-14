@@ -16,8 +16,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{c} =} lombcoeff (@var{time}, @var{mag}, @var{freq})
 ##
-## Return the coefficient of the Lomb periodogram (unnormalized) for the
-## (@var{time},@var{mag}) series for the @var{freq} provided.
+## Return the Lomb Periodogram value at one frequency for a time series.
 ##
 ## @seealso{lombnormcoeff}
 ## @end deftypefn

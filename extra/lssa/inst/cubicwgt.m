@@ -15,11 +15,19 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{a} =} cubicwgt (@var{series})
-## Return @var{series} as windowed by a cubic polynomial,
-## 1 + ( x ^ 2 * ( 2 x - 3 ) ), assuming x is in [-1,1].
+##
+## Returns the input series, windowed by a polynomial similar to a Hanning
+## window.  To window an arbitrary section of the series, subtract or add an
+## offset to it to adjust the centre of the window; for an offset of k, the call
+## would be cubicwgt (@var{s} - k).  Similarly, the radius of the window is 1;
+## if an arbitrary radius r is desired, dividing the series by the radius after
+## centering is the best way to adjust to fit the window: cubicwgt ((@var{s} -
+## k) / r).
+##
+## The windowing function itself is:
+## w = 1 + ( x ^ 2 * ( 2 x - 3 ) ), x in [-1,1], else w = 0.
 ## This function implements the windowing function on page 10 of the paper.
-## if t is in [-1,1] then the windowed term is a = 1 + ( |t|^2 * ( 2|t| - 3 )
-## else the windowed term is 0.
+##
 ## @end deftypefn
 
 function a = cubicwgt (s) 

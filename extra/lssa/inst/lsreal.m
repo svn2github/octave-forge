@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Benjamin Lewis
+## Copyright (C) 2012 Benjamin Lewis <benjf5@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -14,51 +14,44 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{transform} =} lsreal (@var{time}, @var{mag}, @var{maxfreq}, @var{numcoeff}, @var{numoctaves})
+## @deftypefn {Function File} {@var{t} =} lsreal (@var{time}, @var{mag}, @var{maxfreq}, @var{numcoeff}, @var{numoctaves})
 ##
-## Return the real least-squares transform of the time series
-## defined, based on the maximal frequency @var{maxfreq}, the
-## number of coefficients @var{numcoeff}, and the number of 
-## octaves @var{numoctaves}. Each complex-valued result is the
-## pair (c_o, s_o) defining the coefficients which best fit the
-## function y = c_o * cos(ot) + s_o * sin(ot) to the (@var{time}, @var{mag}) data.
+## Return a series of least-squares transforms of a real-valued time series.
+## Each transform is minimized independently for each frequency.  The method
+## used is a Lomb-Scargle transform of the real-valued (@var{time}, @var{mag})
+## series, starting from frequency @var{maxfreq} and descending @var{numoctaves}
+## octaves with @var{numcoeff} coefficients per octave.
+##
+## The result of the transform for each frequency is the coefficient of a sum of
+## sine and cosine functions modified by that frequency, in the form of a
+## complex number—where the cosine coefficient is encoded in the real term, and
+## the sine coefficient is encoded in the imaginary term. Each frequency is fit
+## independently from the others, and to minimize very low frequency error,
+## consider storing the mean of a dataset with a constant or near-constant
+## offset separately, and subtracting it from the dataset.
 ##
 ## @seealso{lscomplex}
-## @end deftypefn
+## @end deftypefn 
+
+
 
 function transform = lsreal (t, x, omegamax, ncoeff, noctave)
 
-  ## FIXME : THIS IS VECTOR-ONLY. I'd need to add another bit of code to
-  ## make it array-safe, and that's not knowing right now what else 
-  ## will be necessary.
-  k = n = length (t); 
-
-  transform = zeros (1, (noctave * ncoeff));
-
-  od = 2 ^ (- 1 / ncoeff);
-  o = omegamax;
-  n1 = 1 / n;
-
-  ncoeffp = ncoeff * noctave;
-
-  for iter = 1:ncoeffp
-    ## This method is an application of Eq. 8 on 
-    ## page 6 of the text, as well as Eq. 7
-    ot = o .* t;
-
-    zeta = n1 * sum ((cos (ot) - i * sin (ot)) .* x);
-
-    ot *= 2;
-
-    iota = n1 * sum (cos (ot) - i * sin (ot));
-
-
-    transform(iter) = (2 * (conj (zeta) - (conj (iota) * zeta)) / 
-                       (1 - (real (iota) ^ 2) - (imag (iota) ^ 2)));
-
-    o *= od;
-  endfor
+  n = numel (t);
   
+  iter = 0 : (ncoeff * noctave - 1);
+  omul = (2 .^ (- iter / ncoeff));
+
+  ## For a given frequency, the iota term is taken at twice the frequency of the
+  ## zeta term.
+  ot = t(:) * (omul * omegamax);
+  oit = t(:) * (omul * omegamax * 2);
+  
+  zeta = sum ((cos (ot) - (sin (ot) .* i)) .* x(:), 1) / n;
+  iota = sum ((cos (oit) - (sin (oit) .* i)), 1) / n;
+
+  transform = 2 .* (conj (zeta) - conj (iota) .* zeta) ./ (1 - abs (iota) .^ 2);
+
 endfunction
 
 %!test
@@ -77,3 +70,4 @@ endfunction
 %!        (4.38145452686697 + 2.14403733658600i), ...
 %!        (5.27425332281147 - 0.73933440226597i)],
 %!         5e-10)
+

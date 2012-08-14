@@ -25,11 +25,11 @@
 #include <exception>
 
 ComplexRowVector flsreal( RowVector tvec , ComplexRowVector xvec ,
-			     double maxfreq , int octaves , int coefficients);
+                             double maxfreq , int octaves , int coefficients);
 
 
 DEFUN_DLD(fastlsreal,args,nargout,
-	  "-*- texinfo -*-\n\
+          "-*- texinfo -*-\n\
 @deftypefn {Function File} { C = } fastlsreal(@var{time},@var{magnitude},@var{maximum_frequency},@var{octaves},@var{coefficients})\n\
 \n\
 Return the real least-sqaures spectral fit to the (@var{time},@var{magnitude})\n\
@@ -68,7 +68,7 @@ data supplied, using the fast algorithm.\n\
 }
 
 ComplexRowVector flsreal( RowVector tvec , RowVector xvec ,
-			  double maxfreq, int octaves, int coefficients ) {
+                          double maxfreq, int octaves, int coefficients ) {
   struct XTElem {
     double x, t;
   };
@@ -169,55 +169,55 @@ ComplexRowVector flsreal( RowVector tvec , RowVector xvec ,
     for(k++; ( k < n ) && tvec(k) < te ; k++ ) {
       x = xvec(k);
       {
-	double t = mu*(tvec(k)-tau_h), tt;
-	p = record_current->power_series;
-	// p = 0
-	p->x += x;
-	(p++)->t += 1;
-	// p = 1
-	tt = -t;
-	p->x += x * tt;
-	(p++)->t += tt;
-	// p = 2
-	tt *= t*(1.0/2.0);
-	p->x += x * tt;
-	(p++)->t += tt;
-	// p = 3
-	tt *= t*(-1.0/3.0);
-	p->x += x * tt;
-	(p++)->t += tt;
-	// p = 4
-	tt *= t*(1.0/4.0);
-	p->x += x * tt;
-	(p++)->t += tt;
-	// p = 5
-	tt *= t*(-1.0/5.0);
-	p->x += x * tt;
-	(p++)->t += tt;
-	// p = 6
-	tt *= t*(1.0/6.0);
-	p->x += x * tt;
-	(p++)->t += tt;
-	// p = 7
-	tt *= t*(-1.0/7.0);
-	p->x += x * tt;
-	(p++)->t += tt;
-	// p = 8
-	tt *= t*(1.0/8.0);
-	p->x += x * tt;
-	(p++)->t += tt;
-	// p = 9
-	tt *= t*(-1.0/9.0);
-	p->x += x * tt;
-	(p++)->t += tt;
-	// p = 10
-	tt *= t*(1.0/10.0);
-	p->x += x * tt;
-	(p++)->t += tt;
-	// p = 11
-	tt *= t*(-1.0/11.0);
-	p->x += x * tt;
-	(p++)->t += tt;
+        double t = mu*(tvec(k)-tau_h), tt;
+        p = record_current->power_series;
+        // p = 0
+        p->x += x;
+        (p++)->t += 1;
+        // p = 1
+        tt = -t;
+        p->x += x * tt;
+        (p++)->t += tt;
+        // p = 2
+        tt *= t*(1.0/2.0);
+        p->x += x * tt;
+        (p++)->t += tt;
+        // p = 3
+        tt *= t*(-1.0/3.0);
+        p->x += x * tt;
+        (p++)->t += tt;
+        // p = 4
+        tt *= t*(1.0/4.0);
+        p->x += x * tt;
+        (p++)->t += tt;
+        // p = 5
+        tt *= t*(-1.0/5.0);
+        p->x += x * tt;
+        (p++)->t += tt;
+        // p = 6
+        tt *= t*(1.0/6.0);
+        p->x += x * tt;
+        (p++)->t += tt;
+        // p = 7
+        tt *= t*(-1.0/7.0);
+        p->x += x * tt;
+        (p++)->t += tt;
+        // p = 8
+        tt *= t*(1.0/8.0);
+        p->x += x * tt;
+        (p++)->t += tt;
+        // p = 9
+        tt *= t*(-1.0/9.0);
+        p->x += x * tt;
+        (p++)->t += tt;
+        // p = 10
+        tt *= t*(1.0/10.0);
+        p->x += x * tt;
+        (p++)->t += tt;
+        // p = 11
+        tt *= t*(-1.0/11.0);
+        p->x += x * tt;
+        (p++)->t += tt;
       }
       record_current->stored_data = true;
     }
@@ -250,33 +250,33 @@ ComplexRowVector flsreal( RowVector tvec , RowVector xvec ,
     omega_working = octavemax;
     for ( coeff_iter = 0 ; coeff_iter < coefficients ; coeff_iter++, o *= omega_multiplier, omega_working *= omega_multiplier){
       exp_term = std::complex<double> ( cos( - omega_working * loop_tau_0 ) ,
-					sin ( - omega_working * loop_tau_0 ) );
+                                        sin ( - omega_working * loop_tau_0 ) );
       exp_squared = exp_term * exp_term;
       exp_multiplier = std::complex<double> ( cos ( - 2 * omega_working * loop_delta_tau ) ,
-					      sin ( - 2 * omega_working * loop_delta_tau ) );
+                                              sin ( - 2 * omega_working * loop_delta_tau ) );
       exp_squared_multiplier = exp_multiplier * exp_multiplier;
       for ( zeta = iota = 0, record_current = precomp_records_head ; record_current ;
-	    record_current = record_current->next, exp_term *= exp_multiplier,
+            record_current = record_current->next, exp_term *= exp_multiplier,
     exp_squared *= exp_squared_multiplier ) {
-	if ( record_current->stored_data ) {
-	  int p;
-	  for ( zz = ii = 0 , p = 0, on_1 = n_1 ; p < 12 ; ) {
-	    zz.real() += record_current->power_series[p]->x * on_1;
-	    ii.real() += record_current->power_series[p++]-> t * o2n_1;
-	    on_1 *= o;
-	    o2n_1 *= o2;
-	    zz.imag() += record_current->power_series[p]->x * on_1;
-	    ii.imag() += record_current->power_series[p++]-> t * o2n_1;
-	    on_1 *= o;
-	    o2n_1 *= o2;
-	  }
-	  zeta += exp_term * zz;
-	  iota += exp_squared * ii;
-	}
+        if ( record_current->stored_data ) {
+          int p;
+          for ( zz = ii = 0 , p = 0, on_1 = n_1 ; p < 12 ; ) {
+            zz.real() += record_current->power_series[p]->x * on_1;
+            ii.real() += record_current->power_series[p++]-> t * o2n_1;
+            on_1 *= o;
+            o2n_1 *= o2;
+            zz.imag() += record_current->power_series[p]->x * on_1;
+            ii.imag() += record_current->power_series[p++]-> t * o2n_1;
+            on_1 *= o;
+            o2n_1 *= o2;
+          }
+          zeta += exp_term * zz;
+          iota += exp_squared * ii;
+        }
       }
       results(iter) = 2 / ( 1 - ( iota.real() * iota.real() ) - (iota.imag() *
-								 iota.imag() )
-			    * ( conj(zeta) - conj(iota) * zeta );
+                                                                 iota.imag() )
+                            * ( conj(zeta) - conj(iota) * zeta );
       iter++;
     }
     if ( !(--octave_iter) ) break;
@@ -288,104 +288,104 @@ ComplexRowVector flsreal( RowVector tvec , RowVector xvec ,
     exp_pse_ptr = exp_ptr = exp_power_series_elements;
     for ( int r_iter = 1 ; r_iter < 12 ; r_iter++ ) {
       exp_power_series_elements[r_iter] = exp_power_series_elements[r_iter-1]
-	* ( mu * loop_delta_tau) * ( 1.0 / ( (double) r_iter ) );
+        * ( mu * loop_delta_tau) * ( 1.0 / ( (double) r_iter ) );
     }
     try{ 
       for ( record_current = precomp_records_head ; record_current ;
-	    record_current = record_current->next ) {
-	if ( ! ( record_ref = record_current->next ) || ! record_ref->stored_data ) {
-	  // In this case, there is no next record, but this record has data.
-	  if ( record_current->stored_data ) {
-	    int p = 0;
-	    for(  exp_pse_ptr = exp_power_series_elements , temp_ptr_alpha = temp_alpha ; ; ) {
-	      tpra = temp_ptr_alpha;
-	      temp_ptr_alpha->x = record_current->power_series[p]->x;
-	      (temp_ptr_alpha++)->t = record_current->power_series[p]->t;
-	      temp_ptr_beta->x = -record_current->power_series[p]->x;
-	      (temp_ptr_beta++)->t = -record_current->power_series[p]->t;
-	      for( exp_ptr = exp_pse_ptr++, record_current->power_series[p]->x = tpra->x * *exp_ptr, record_current->power_series[p]->t = tpra->t * *exp_ptr ; ; ) {
-		/* This next block is from Mathias' code, and it does a few
-		 *  ... unsavoury things.  First off, it uses conditionals with
-		 *  break in order to avoid potentially accessing null regions
-		 *  of memory, and then it does ... painful things with a few
-		 *  numbers.  However, remembering that most of these will not
-		 *  actually be accessed for the first iterations, it's easier.
-		 */
-		if ( --exp_ptr < exp_power_series_elements ) break;
-		++tpra;
-		record_current->power_series[p]->x -= tpra->x * *exp_ptr;
-		record_current->power_series[p]->t -= tpra->t * *exp_ptr;
-		if ( --exp_ptr < exp_power_series_elements ) break;
-		++tpra;
-		record_current->power_series[p]->x += tpra->x * *exp_ptr;
-		record_current->power_series[p]->t += tpra->x * *exp_ptr;
-	      }
-	      if ( ++p >= 12 ) break;
-	      temp_ptr_alpha->x = -record_current->power_series[p]->x;
-	      (temp_ptr_alpha++)->t = -record_current->power_series[p]->t;
-	      temp_ptr_beta->x = record_current->power_series[p]->x;
-	      (temp_ptr_beta++)->t = record_current->power_series[p]->t;
-	      for( tprb = temp_beta, exp_ptr = exp_pse_ptr++, record_current->power_series[p]->t = tprb->t * *exp_ptr; exp_ptr > exp_power_series_elements ; ) {
-		++tprb;
-		--exp_ptr;
-		record_current->power_series[p]->t += tprb->t * *exp_ptr;
-	      }
-	      if ( ++p >= 12 ) break;
-	    }
-	  }
-	  if ( ! record_ref ) break; // Last record was reached
-	}
-	else {
-	  record_next = record_ref;
-	  if ( record_current->stored_data ) {
-	    int p = 0;
-	    for( exp_pse_ptr = exp_power_series_elements, temp_ptr_alpha = temp_alpha, temp_ptr_beta = temp_beta; ; ) {
-	      temp_ptr_alpha->x = record_current->power_series[p]->x + record_next->power_series[p]->x;
-	      (temp_ptr_alpha++)->t = record_current->power_series[p]->t + record_next->power_series[p]->t;
-	      temp_ptr_beta->x = record_ref->power_series[p]->x - record_current->power_series[p]->x;
-	      (temp_ptr_beta++)->t = record_ref->power_series[p]->t - record_current->power_series[p]->t;
-	      for( tpra = temp_alpha, exp_ptr = exp_pse_ptr++, record_current->power_series[p]->x = tpra->x * *exp_ptr, record_current->power_series[p]->t = tpra->x * *exp_ptr; ; ) {
-		if ( --exp_ptr < exp_pse_ptr ) break;
-		++tpra;
-		record_current->power_series[p]->x -= tpra->x * *exp_ptr;
-		record_current->power_series[p]->t -= tpra->t * *exp_ptr;
-		if ( --exp_ptr < exp_pse_ptr ) break;
-		++tpra;
-		record_current->power_series[p]->x += tpra->x * *exp_ptr;
-		record_current->power_series[p]->t += tpra->t * *exp_ptr;
-	      }
-	      if ( ++p >= 12 ) break;
-	      temp_ptr_alpha->x = record_next->power_series[p]->x - record_current->power_series[p]->x;
-	      (temp_ptr_alpha++)->t = record_next->power_series[p]->t - record_current->power_series[p]->t;
-	      temp_ptr_beta->x = record_current->power_series[p]->x + record_next->power_series[p]->x;
-	      (temp_ptr_beta++)->t = record_current->power_series[p]->t + record_next->power_series[p]->t;
-	      for(tprb = temp_beta, exp_ptr = exp_pse_ptr++, record_current->power_series[p]->x = tprb->x * *exp_ptr, record_current->power_series[p]->t = tprb->x * *exp_ptr; exp_ptr > exp_power_series_elements; ) {
-		++tprb;
-		--exp_ptr;
-		record_current->power_series[p]->x += tprb->x * *exp_ptr;
-		record_current->power_series[p]->t += tprb->t * *exp_ptr;
-	      }
-	      if ( ++p >= 12 ) break;
-	    }
-	  } else {
-	    int q = 0;
-	    for( exp_pse_ptr = exp_power_series_elements, temp_ptr_alpha = temp_alpha, temp_ptr_beta = temp_beta; ; ) {
-	      temp_ptr_alpha->x = record_next->power_series[q]->x;
-	      temp_ptr_alpha->t = record_next->power_series[q]->t;
-	      for(tpra = temp_alpha, exp_ptr = exp_pse_ptr++, record_next->power_series[q]->x = tpra->x * *exp_ptr, record_next->power_series[q]->t = tpra->t * *exp_ptr; exp_ptr > exp_power_series_elements; ) {
-		++tpra;
-		--exp_ptr;
-		record_next->power_series[q]->x += tpra->x * *exp_ptr;
-		record_next->power_series[q]->t += tpra->t * *exp_ptr;
-	      }
-	      if ( ++q >= 12 ) break;
-	    }
-	  record_current->stored_data = true;
-	  record_ref = record_next;
-	  record_current->next = record_ref->next;
-	  record_next = 0;
-	  delete record_ref;
-	}
+            record_current = record_current->next ) {
+        if ( ! ( record_ref = record_current->next ) || ! record_ref->stored_data ) {
+          // In this case, there is no next record, but this record has data.
+          if ( record_current->stored_data ) {
+            int p = 0;
+            for(  exp_pse_ptr = exp_power_series_elements , temp_ptr_alpha = temp_alpha ; ; ) {
+              tpra = temp_ptr_alpha;
+              temp_ptr_alpha->x = record_current->power_series[p]->x;
+              (temp_ptr_alpha++)->t = record_current->power_series[p]->t;
+              temp_ptr_beta->x = -record_current->power_series[p]->x;
+              (temp_ptr_beta++)->t = -record_current->power_series[p]->t;
+              for( exp_ptr = exp_pse_ptr++, record_current->power_series[p]->x = tpra->x * *exp_ptr, record_current->power_series[p]->t = tpra->t * *exp_ptr ; ; ) {
+                /* This next block is from Mathias' code, and it does a few
+                 *  ... unsavoury things.  First off, it uses conditionals with
+                 *  break in order to avoid potentially accessing null regions
+                 *  of memory, and then it does ... painful things with a few
+                 *  numbers.  However, remembering that most of these will not
+                 *  actually be accessed for the first iterations, it's easier.
+                 */
+                if ( --exp_ptr < exp_power_series_elements ) break;
+                ++tpra;
+                record_current->power_series[p]->x -= tpra->x * *exp_ptr;
+                record_current->power_series[p]->t -= tpra->t * *exp_ptr;
+                if ( --exp_ptr < exp_power_series_elements ) break;
+                ++tpra;
+                record_current->power_series[p]->x += tpra->x * *exp_ptr;
+                record_current->power_series[p]->t += tpra->x * *exp_ptr;
+              }
+              if ( ++p >= 12 ) break;
+              temp_ptr_alpha->x = -record_current->power_series[p]->x;
+              (temp_ptr_alpha++)->t = -record_current->power_series[p]->t;
+              temp_ptr_beta->x = record_current->power_series[p]->x;
+              (temp_ptr_beta++)->t = record_current->power_series[p]->t;
+              for( tprb = temp_beta, exp_ptr = exp_pse_ptr++, record_current->power_series[p]->t = tprb->t * *exp_ptr; exp_ptr > exp_power_series_elements ; ) {
+                ++tprb;
+                --exp_ptr;
+                record_current->power_series[p]->t += tprb->t * *exp_ptr;
+              }
+              if ( ++p >= 12 ) break;
+            }
+          }
+          if ( ! record_ref ) break; // Last record was reached
+        }
+        else {
+          record_next = record_ref;
+          if ( record_current->stored_data ) {
+            int p = 0;
+            for( exp_pse_ptr = exp_power_series_elements, temp_ptr_alpha = temp_alpha, temp_ptr_beta = temp_beta; ; ) {
+              temp_ptr_alpha->x = record_current->power_series[p]->x + record_next->power_series[p]->x;
+              (temp_ptr_alpha++)->t = record_current->power_series[p]->t + record_next->power_series[p]->t;
+              temp_ptr_beta->x = record_ref->power_series[p]->x - record_current->power_series[p]->x;
+              (temp_ptr_beta++)->t = record_ref->power_series[p]->t - record_current->power_series[p]->t;
+              for( tpra = temp_alpha, exp_ptr = exp_pse_ptr++, record_current->power_series[p]->x = tpra->x * *exp_ptr, record_current->power_series[p]->t = tpra->x * *exp_ptr; ; ) {
+                if ( --exp_ptr < exp_pse_ptr ) break;
+                ++tpra;
+                record_current->power_series[p]->x -= tpra->x * *exp_ptr;
+                record_current->power_series[p]->t -= tpra->t * *exp_ptr;
+                if ( --exp_ptr < exp_pse_ptr ) break;
+                ++tpra;
+                record_current->power_series[p]->x += tpra->x * *exp_ptr;
+                record_current->power_series[p]->t += tpra->t * *exp_ptr;
+              }
+              if ( ++p >= 12 ) break;
+              temp_ptr_alpha->x = record_next->power_series[p]->x - record_current->power_series[p]->x;
+              (temp_ptr_alpha++)->t = record_next->power_series[p]->t - record_current->power_series[p]->t;
+              temp_ptr_beta->x = record_current->power_series[p]->x + record_next->power_series[p]->x;
+              (temp_ptr_beta++)->t = record_current->power_series[p]->t + record_next->power_series[p]->t;
+              for(tprb = temp_beta, exp_ptr = exp_pse_ptr++, record_current->power_series[p]->x = tprb->x * *exp_ptr, record_current->power_series[p]->t = tprb->x * *exp_ptr; exp_ptr > exp_power_series_elements; ) {
+                ++tprb;
+                --exp_ptr;
+                record_current->power_series[p]->x += tprb->x * *exp_ptr;
+                record_current->power_series[p]->t += tprb->t * *exp_ptr;
+              }
+              if ( ++p >= 12 ) break;
+            }
+          } else {
+            int q = 0;
+            for( exp_pse_ptr = exp_power_series_elements, temp_ptr_alpha = temp_alpha, temp_ptr_beta = temp_beta; ; ) {
+              temp_ptr_alpha->x = record_next->power_series[q]->x;
+              temp_ptr_alpha->t = record_next->power_series[q]->t;
+              for(tpra = temp_alpha, exp_ptr = exp_pse_ptr++, record_next->power_series[q]->x = tpra->x * *exp_ptr, record_next->power_series[q]->t = tpra->t * *exp_ptr; exp_ptr > exp_power_series_elements; ) {
+                ++tpra;
+                --exp_ptr;
+                record_next->power_series[q]->x += tpra->x * *exp_ptr;
+                record_next->power_series[q]->t += tpra->t * *exp_ptr;
+              }
+              if ( ++q >= 12 ) break;
+            }
+          record_current->stored_data = true;
+          record_ref = record_next;
+          record_current->next = record_ref->next;
+          record_next = 0;
+          delete record_ref;
+        }
       }
     }
   return results;

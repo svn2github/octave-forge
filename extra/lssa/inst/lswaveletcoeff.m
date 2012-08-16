@@ -36,7 +36,7 @@
 
 function coeff = lswaveletcoeff (x, y, t, o, wgt = @cubicwgt, wgtrad = 1)
 
-  if (! (ncoeff >= 4) && (ncoeff <= 6))
+  if (! (nargin >= 4) && (nargin <= 6))
      print_usage ();
   endif
   if (! isvector (x))

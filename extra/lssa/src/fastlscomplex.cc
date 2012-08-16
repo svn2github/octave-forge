@@ -312,7 +312,7 @@ bool flscomplex (const RowVector & tvec, const ComplexRowVector & xvec,
        */
       double *exp_pse_ptr, *exp_ptr, exp_power_series_elements[12];
       {
-	double t = mu * dtaud, tt;
+	double t = mu * loop_delta_tau, tt;
 	exp_ptr = exp_power_series_elements;
 	*exp_ptr++ = 1;
 	*exp_ptr++ = t;

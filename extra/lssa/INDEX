@@ -6,11 +6,9 @@ Periodogram
 Accelerated time-series functions
  fastlscomplex
 Complex time-series functions
- lscomplex fastlscomplex lswaveletcoeff
-# lscomplexwavelet 
+ lscomplex
 Real time-series functions
  lsreal
-# lsrealwavelet
 Correlation
  lscorrcoeff
 Wavelet Transform

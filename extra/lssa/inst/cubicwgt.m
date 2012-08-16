@@ -26,14 +26,19 @@
 ##
 ## The windowing function itself is:
 ## w = 1 + ( x ^ 2 * ( 2 x - 3 ) ), x in [-1,1], else w = 0.
-## This function implements the windowing function on page 10 of the paper.
 ##
 ## @end deftypefn
 
 function a = cubicwgt (s) 
-  ## s is the value to be windowed
+
+  if (nargin != 1)
+     print_usage ();
+  endif
+
+  ## s is the value/vector/matrix to be windowed
   a = abs (s);
   a = ifelse ((a < 1), 1 + ((a .^ 2) .* (2 .* a - 3)), 0);
+
 endfunction
 
 

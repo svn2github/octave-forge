@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Benjamin Lewis  <benjf5@gmail.com>
-## 
+##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
 ## Foundation; either version 3 of the License, or (at your option) any later
@@ -29,41 +29,69 @@
 ## constant features.
 ##
 ## @seealso{lswaveletcoeff, lscomplexwavelet, lsrealwavelet}
-## 
+##
 ## @end deftypefn
 
 function coeff = lscorrcoeff (x1, y1, x2, y2, t, o, wgt = @cubicwgt, wgtrad = 1)
 
-  so = 0.05 * o;
+  ## Input checking is absolutely necessary.
 
-  ## This code can only, as of currently, work on vectors; 
-  ## I haven't figured out a way to make it work on a matrix.
-  if ((ndims (x1) == 2) && !(rows (x1) == 1))
-    x1 = reshape (x1, 1, length (x1));
-    y1 = reshape (y1, 1, length (y1));
-    x2 = reshape (x2, 1, length (x2));
-    y2 = reshape (y2, 1, length (y2));
+  if (!((nargin >= 6) && (nargin <= 8)))
+     print_usage ();
   endif
 
-  ## The first solution that comes to mind is admittedly slightly 
+  ## Test to be sure x1, y1, x2, y2 are all vectors, and that t and o are
+  ## scalars.
+  if (! isvector (x1))
+     error ("lscorrcoeff: First time series time values are not a vector.\n");
+  endif
+  if (! isvector (y1))
+     error ("lscorrcoeff: First time series magnitude values are not a vector.\n");
+  endif
+  if (! isvector (x2))
+     error ("lscorrcoeff: Second time series time values are not a vector.\n");
+  endif
+  if (! isvector (y2))
+     error ("lscorrcoeff: Second time series magnitude values are not a vector.\n");
+  endif
+  if (! isscalar (t))
+     error ("lscorrcoeff: Window centre is not a scalar.\n");
+  endif
+  if (! isscalar (o))
+     error ("lscorrcoeff: Specified frequency is not a scalar.\n");
+  endif
+  if (! isscalar (wgtrad))
+     error ("lscorrcoeff: Window radius is not a scalar.\n");
+  endif
+  if (! all (size (x1) == size (y1)))
+     error ("lscorrcoeff: First time series vectors not of matching size.\n");
+  endif
+  if (! all (size (x2) == size (y2)))
+     error ("lscorrcoeff: Second time series vectors not of matching size.\n");
+  endif
+
+  ## How to determine if a weight function has been assigned or not? (Possible
+  ## to get name of function?)
+
+  so = 0.05 * o;
+
+  ## The first solution that comes to mind is admittedly slightly
   ## ugly and has a data footprint of O(2n) but it is vectorised.
   mask = (abs (x1 - t) * so) < wgtrad;
-  ## I've kept the variable names from the R function here
-  rx1 = x1(mask); 
-  ## FIXME : Needs to have a noisy error if length(y1) != length(x1) -- add this!
-  ry1 = y1(mask); 
 
-  ## I've used the same mask for all of these as it's an 
-  ## otherwise unimportant variable ... can this leak memory?
+  rx1 = x1(mask);
+  ## FIXME : Needs to have a noisy error if length(y1) != length(x1) -- add this!
+  ry1 = y1(mask);
+
   mask = (abs (x2 - t) * so ) < wgtrad;
   rx2 = x2(mask);
   ry2 = y2(mask);
 
-  ## printing this length is probably used as a warning if 0 is returned; 
-  ## I included it
-  length (rx1) 
+  windowed_element_count = length (rx1);
+  if (windowed_element_count = 0)
+     error("lscorrcoeff: No time-series elements contained in window.\n");
+  endif
 
-  ## in particular to maintain an exact duplicate of the R function.
   s = sum (wgt ((rx1 - t) .* so)) * sum (wgt ((rx2 - t ) .* so ));
   if (s != 0)
     coeff = sum (wgt ((rx1 - t) .* so) .* exp (i * o .* rx1) .* ry1) * ...
@@ -78,17 +106,17 @@ endfunction
 %!shared t, p, x, y, z, o, maxfreq
 %! maxfreq = 4 / (2 * pi);
 %! t = linspace (0, 8);
-%! x = (2 .* sin (maxfreq .* t) + 
-%!      3 .* sin ((3/4) * maxfreq .* t) - 
-%!      0.5 .* sin ((1/4) * maxfreq .* t) - 
-%!      0.2 .* cos (maxfreq .* t) + 
+%! x = (2 .* sin (maxfreq .* t) +
+%!      3 .* sin ((3/4) * maxfreq .* t) -
+%!      0.5 .* sin ((1/4) * maxfreq .* t) -
+%!      0.2 .* cos (maxfreq .* t) +
 %!      cos ((1/4) * maxfreq .* t));
 %! y = - x;
 %! p = linspace (0, 8, 500);
-%! z = (2 .* sin (maxfreq .* p) + 
-%!      3 .* sin ((3/4) * maxfreq .* p) - 
-%!      0.5 .* sin ((1/4) * maxfreq .* p) - 
-%!      0.2 .* cos (maxfreq .* p) + 
+%! z = (2 .* sin (maxfreq .* p) +
+%!      3 .* sin ((3/4) * maxfreq .* p) -
+%!      0.5 .* sin ((1/4) * maxfreq .* p) -
+%!      0.2 .* cos (maxfreq .* p) +
 %!      cos ((1/4) * maxfreq .* p));
 %! o = [maxfreq , (3/4 * maxfreq) , (1/4 * maxfreq)];
 %!assert (lscorrcoeff (t, x, t, x, 0.5, maxfreq), 

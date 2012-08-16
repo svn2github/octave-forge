@@ -37,6 +37,44 @@
 
 function transform = lsreal (t, x, omegamax, ncoeff, noctave)
 
+  ## Sanity checks to make sure that the user can get meaningful errors.
+  if (nargin != 5)
+     print_usage ();
+  endif
+  if (! isvector (t))
+     error ("lsreal: Time values are not a vector.\n");
+  endif
+  if (! isvector (x))
+     error ("lsreal: Magnitude values are not a vector.\n");
+  endif
+  if (! all (size (t) == size (x)))
+     error ("lsreal: Size of time vector, magnitude vector unequal.\n");
+  endif
+  if (! isscalar (omegamax))
+     error ("lsreal: More than one value for maximum frequency specified.\n");
+  endif
+  if (! isscalar (ncoeff))
+     error ("lsreal: More than one number of frequencies per octave specified.\n");
+  endif
+  if (! isscalar (noctave))
+     error ("lsreal: More than one number of octaves to traverse specified.\n");
+  endif
+  if (omegamax == 0)
+     error ("lsreal: Specified maximum frequency is not a frequency.\n");
+  endif
+  if (noctave == 0)
+     error ("lsreal: No octaves of results requested.\n");
+  endif
+  if (ncoeff == 0)
+     error ("lsreal: No frequencies per octave requested.\n");
+  endif
+  if (ncoeff != floor (ncoeff))
+     error ("lsreal: Specified number of frequencies per octave is not integral.\n");
+  endif
+  if (noctave != floor (noctave))
+     error ("lsreal: Specified number of octaves of results is not integral.\n");
+  endif
+
   n = numel (t);
   
   iter = 0 : (ncoeff * noctave - 1);

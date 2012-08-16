@@ -16,17 +16,42 @@
 ## -*- texinfo -*-
 ##
 ## @deftypefn {Function File} {@var{t} =} lscomplexwavelet (@var{time},
-##@var{mag}, @var{maxfreq}, @var{numcoeff}, @var{numoctave}, 
+##@var{mag}, @var{maxfreq}, @var{numcoeff}, @var{numoctave}, @var{min_time},
+##@var{max_time}, @var{step_time}, @var{sigma}
+##
+##
+## @end deftypefn
 
 function transform = lscomplexwavelet( T, X, omegamax, ncoeff, noctave, tmin, tmax, tstep, sigma = 0.05)
 
-  ## This is a transform based entirely on the simplified complex-valued transform
-  ## in the Mathias paper, page 10. My problem with the code as it stands is, it
-  ## doesn't have a good way of determining the window size. Sigma is currently up
-  ## to the user, and sigma determines the window width (but that might be best.)
+  ## This function applies a wavelet version of the lscomplex transform; the
+  ## transform is applied for each of multiple windows centred on different time
+  ## values, depending on how many windows are required, since the number of
+  ## windows required for each frequency decreases as the size of the windows
+  ## increases.  A higher frequency requires a smaller window to accurately
+  ## capture its details, while a low frequency requires a larger window to
+  ## accomodate its commensurately slower rate of change.  For each window, the
+  ## time series is weighted against the cubicwgt function, whose shape is near
+  ## coincident with the Hanning window; unlike the Hanning window, however, the
+  ## cubicwgt window does not involve trigonometric functions—thus it is faster
+  ## to apply to large sets.  (Well, testing on my system suggests that for very
+  ## large data sets it actually slows down as it needs to allocate more
+  ## memory.  In this instance, a loop may be more effective than a vectorized
+  ## function; more study is needed.)  After the window is found, the transform
+  ## is taken at the given frequency, wherein each term is also multiplied by
+  ## the value of the window at its position in the time series. This reduces
+  ## the size of the time series under consideration and improves the local
+  ## accuracy of the transform to the frequency in question.
   ##
-  ## Currently the code does not apply a time-shift, which needs to be fixed so
-  ## that it will work correctly over given frequencies.
+  ## My problem with the code as it stands is, it doesn't have a good way of
+  ## determining the window size. Sigma is currently up to the user, and sigma
+  ## determines the window width (but that might be best.) Moreover, the method
+  ## of windowing involved (from the source code provided with the paper,
+  ## Mathias, A. et. al. "Algorithms for Spectral Analysis of Irregularly
+  ## Sampled Time Series". Journal of Statistical Software, vol. 11 issue 2, May
+  ## 2004.) does not seem to always cover all values in the data set, and makes
+  ## me suspicious of its ability to accurately transform a data set.
+  ##
 	 
   transform = cell(noctave*ncoeff,1);
   

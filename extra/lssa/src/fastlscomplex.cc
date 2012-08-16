@@ -132,7 +132,7 @@ bool flscomplex (const RowVector & tvec, const ComplexRowVector & xvec,
    * In the case of this computation, I'll go by the recommendation.
    */
 
-  delta_tau = M_PI / (2 * maxfreq);
+  delta_tau = (0.5 * M_PI) / maxfreq;
   tau_0 = tvec_ptr[0] + delta_tau;
   tau_h = tau_0;
   te = tau_h + delta_tau;
@@ -311,12 +311,33 @@ bool flscomplex (const RowVector & tvec, const ComplexRowVector & xvec,
        * Otherwise, merge with the next computation range.
        */
       double *exp_pse_ptr, *exp_ptr, exp_power_series_elements[12];
-      exp_power_series_elements[0] = 1;
+      {
+	double t = mu * dtaud, tt;
+	exp_ptr = exp_power_series_elements;
+	*exp_ptr++ = 1;
+	*exp_ptr++ = t;
+	tt = t * t * ( 1.0 / 2.0 );
+	*exp_ptr++ = tt;
+	tt *= t * ( 1.0 / 3.0 );
+	*exp_ptr++ = tt;
+	tt *= t * ( 1.0 / 4.0 );
+	*exp_ptr++ = tt;
+	tt *= t * ( 1.0 / 5.0 );
+	*exp_ptr++ = tt;
+	tt *= t * ( 1.0 / 6.0 );
+	*exp_ptr++ = tt;
+	tt *= t * ( 1.0 / 7.0 );
+	*exp_ptr++ = tt;
+	tt *= t * ( 1.0 / 8.0 );
+	*exp_ptr++ = tt;
+	tt *= t * ( 1.0 / 9.0 );
+	*exp_ptr++ = tt;
+	tt *= t * ( 1.0 / 10.0 );
+	*exp_ptr++ = tt;
+	tt *= t * ( 1.0 / 11.0 );
+	*exp_ptr++ = tt;
+      }
       exp_pse_ptr = exp_ptr = exp_power_series_elements;
-
-      for (int r_iter = 1; r_iter < 12; r_iter++)
-        exp_power_series_elements[r_iter] = exp_power_series_elements[r_iter-1] * 
-          (mu * loop_delta_tau) * (1.0 / ((double) r_iter));
 
       try
         {
@@ -391,7 +412,7 @@ bool flscomplex (const RowVector & tvec, const ComplexRowVector & xvec,
                             {
                               tpra = temp_ptr_alpha;
                               *temp_ptr_alpha++ = record_current->power_series[p] + record_next->power_series[q];
-                              *temp_ptr_beta++ = record_current->power_series[p] - record_next->power_series[1];
+                              *temp_ptr_beta++ = record_current->power_series[p] - record_next->power_series[q];
                               tprb = temp_ptr_beta;
 
                               for (exp_ptr = exp_power_series_elements, record_current->power_series[p] = *tpra * *exp_ptr; ;) 

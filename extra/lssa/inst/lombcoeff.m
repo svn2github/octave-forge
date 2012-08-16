@@ -24,6 +24,19 @@
 
 function coeff = lombcoeff (T, X, o)
 
+  if (nargin != 3)
+     print_usage ();
+  endif
+  if (! all (size (T) == size (X)))
+     error ("lombcoeff: Time series vectors of uneven size.\n");
+  endif
+  if (! isscalar (o))
+     error ("lombcoeff: Supplied frequency is not a scalar.\n");
+  endif
+  if (o == 0)
+     error ("lombcoeff: Supplied frequency is not a frequency.\n");
+  endif
+
   oT = o .* T;
 
   theta = atan2 (sum (sin (2 * oT)), 

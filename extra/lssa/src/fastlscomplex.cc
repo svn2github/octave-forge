@@ -312,30 +312,30 @@ bool flscomplex (const RowVector & tvec, const ComplexRowVector & xvec,
        */
       double *exp_pse_ptr, *exp_ptr, exp_power_series_elements[12];
       {
-	double t = mu * loop_delta_tau, tt;
-	exp_ptr = exp_power_series_elements;
-	*exp_ptr++ = 1;
-	*exp_ptr++ = t;
-	tt = t * t * ( 1.0 / 2.0 );
-	*exp_ptr++ = tt;
-	tt *= t * ( 1.0 / 3.0 );
-	*exp_ptr++ = tt;
-	tt *= t * ( 1.0 / 4.0 );
-	*exp_ptr++ = tt;
-	tt *= t * ( 1.0 / 5.0 );
-	*exp_ptr++ = tt;
-	tt *= t * ( 1.0 / 6.0 );
-	*exp_ptr++ = tt;
-	tt *= t * ( 1.0 / 7.0 );
-	*exp_ptr++ = tt;
-	tt *= t * ( 1.0 / 8.0 );
-	*exp_ptr++ = tt;
-	tt *= t * ( 1.0 / 9.0 );
-	*exp_ptr++ = tt;
-	tt *= t * ( 1.0 / 10.0 );
-	*exp_ptr++ = tt;
-	tt *= t * ( 1.0 / 11.0 );
-	*exp_ptr++ = tt;
+        double t = mu * loop_delta_tau, tt;
+        exp_ptr = exp_power_series_elements;
+        *exp_ptr++ = 1;
+        *exp_ptr++ = t;
+        tt = t * t * ( 1.0 / 2.0 );
+        *exp_ptr++ = tt;
+        tt *= t * ( 1.0 / 3.0 );
+        *exp_ptr++ = tt;
+        tt *= t * ( 1.0 / 4.0 );
+        *exp_ptr++ = tt;
+        tt *= t * ( 1.0 / 5.0 );
+        *exp_ptr++ = tt;
+        tt *= t * ( 1.0 / 6.0 );
+        *exp_ptr++ = tt;
+        tt *= t * ( 1.0 / 7.0 );
+        *exp_ptr++ = tt;
+        tt *= t * ( 1.0 / 8.0 );
+        *exp_ptr++ = tt;
+        tt *= t * ( 1.0 / 9.0 );
+        *exp_ptr++ = tt;
+        tt *= t * ( 1.0 / 10.0 );
+        *exp_ptr++ = tt;
+        tt *= t * ( 1.0 / 11.0 );
+        *exp_ptr++ = tt;
       }
       exp_pse_ptr = exp_ptr = exp_power_series_elements;
 

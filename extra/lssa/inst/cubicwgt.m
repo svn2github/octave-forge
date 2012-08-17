@@ -32,7 +32,7 @@
 function a = cubicwgt (s) 
 
   if (nargin != 1)
-     print_usage ();
+    print_usage ();
   endif
 
   ## s is the value/vector/matrix to be windowed

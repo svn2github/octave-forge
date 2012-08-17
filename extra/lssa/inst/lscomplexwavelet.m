@@ -52,7 +52,7 @@ function transform = lscomplexwavelet( T, X, omegamax, ncoeff, noctave, tmin, tm
   ## 2004.) does not seem to always cover all values in the data set, and makes
   ## me suspicious of its ability to accurately transform a data set.
   ##
-	 
+   
   transform = cell(noctave*ncoeff,1);
   
   for octave_iter = 1:noctave
@@ -63,11 +63,11 @@ function transform = lscomplexwavelet( T, X, omegamax, ncoeff, noctave, tmin, tm
     ## An additional consideration is that 
     
     for coeff_iter = 1:ncoeff
-	
+      
       ## in this, win_t is the centre of the window in question
       ## Although that will vary depending on the window. This is just an
       ## implementation for the first window.
-	
+      
       current_iteration = (octave_iter-1)*ncoeff+coeff_iter;
       window_radius = pi / ( sigma * omegamax * ( 2 ^ ( current_iteration - 1 ) ) );
       window_count = 2 * ceil ( ( tmax - tmin ) / window_radius ) - 1;
@@ -80,14 +80,14 @@ function transform = lscomplexwavelet( T, X, omegamax, ncoeff, noctave, tmin, tm
       ## win_t is the centre of the current window.
       win_t = tmin + window_radius;
       for iter_window = 1:window_count
-	## Computes the transform as stated in the paper for each given frequency.
-	zeta = sum ( cubicwgt ( sigma .* omega .* ( T - win_t ) ) .* exp ( -i .* omega .* ( T - win_t ) ) .* X ) / sum ( cubicwgt ( sigma .* omega .* ( T - win_t ) ) .* exp ( -i .* omega .* ( T - win_t ) ) );
-	transform{current_iteration}(iter_window) = zeta;
-	window_min += window_radius ;
+        ## Computes the transform as stated in the paper for each given frequency.
+        zeta = sum ( cubicwgt ( sigma .* omega .* ( T - win_t ) ) .* exp ( -i .* omega .* ( T - win_t ) ) .* X ) / sum ( cubicwgt ( sigma .* omega .* ( T - win_t ) ) .* exp ( -i .* omega .* ( T - win_t ) ) );
+        transform{current_iteration}(iter_window) = zeta;
+        window_min += window_radius ;
+      endfor
     endfor
-  endfor
   
-endfor
+  endfor
 
 endfunction
 

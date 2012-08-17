@@ -37,37 +37,28 @@ function coeff = lscorrcoeff (x1, y1, x2, y2, t, o, wgt = @cubicwgt, wgtrad = 1)
   ## Input checking is absolutely necessary.
 
   if (!((nargin >= 6) && (nargin <= 8)))
-     print_usage ();
-  endif
+    print_usage ();
 
   ## Test to be sure x1, y1, x2, y2 are all vectors, and that t and o are
   ## scalars.
-  if (! isvector (x1))
-     error ("lscorrcoeff: First time series time values are not a vector.\n");
-  endif
-  if (! isvector (y1))
-     error ("lscorrcoeff: First time series magnitude values are not a vector.\n");
-  endif
-  if (! isvector (x2))
-     error ("lscorrcoeff: Second time series time values are not a vector.\n");
-  endif
-  if (! isvector (y2))
-     error ("lscorrcoeff: Second time series magnitude values are not a vector.\n");
-  endif
-  if (! isscalar (t))
-     error ("lscorrcoeff: Window centre is not a scalar.\n");
-  endif
-  if (! isscalar (o))
-     error ("lscorrcoeff: Specified frequency is not a scalar.\n");
-  endif
-  if (! isscalar (wgtrad))
-     error ("lscorrcoeff: Window radius is not a scalar.\n");
-  endif
-  if (! all (size (x1) == size (y1)))
-     error ("lscorrcoeff: First time series vectors not of matching size.\n");
-  endif
-  if (! all (size (x2) == size (y2)))
-     error ("lscorrcoeff: Second time series vectors not of matching size.\n");
+  elseif (! isvector (x1))
+    error ("lscorrcoeff: First time series time values are not a vector");
+  elseif (! isvector (y1))
+    error ("lscorrcoeff: First time series magnitude values are not a vector");
+  elseif (! isvector (x2))
+    error ("lscorrcoeff: Second time series time values are not a vector");
+  elseif (! isvector (y2))
+    error ("lscorrcoeff: Second time series magnitude values are not a vector");
+  elseif (! isscalar (t))
+    error ("lscorrcoeff: Window centre is not a scalar");
+  elseif (! isscalar (o))
+    error ("lscorrcoeff: Specified frequency is not a scalar");
+  elseif (! isscalar (wgtrad))
+    error ("lscorrcoeff: Window radius is not a scalar");
+  elseif (! all (size (x1) == size (y1)))
+    error ("lscorrcoeff: First time series vectors not of matching size");
+  elseif (! all (size (x2) == size (y2)))
+    error ("lscorrcoeff: Second time series vectors not of matching size");
   endif
 
   ## How to determine if a weight function has been assigned or not? (Possible
@@ -89,7 +80,7 @@ function coeff = lscorrcoeff (x1, y1, x2, y2, t, o, wgt = @cubicwgt, wgtrad = 1)
 
   windowed_element_count = length (rx1);
   if (windowed_element_count == 0)
-     error("lscorrcoeff: No time-series elements contained in window.\n");
+     error("lscorrcoeff: No time-series elements contained in window");
   endif
 
   s = sum (wgt ((rx1 - t) .* so)) * sum (wgt ((rx2 - t ) .* so ));

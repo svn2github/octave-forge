@@ -33,43 +33,32 @@
 function transform = lscomplex (t, x, omegamax, ncoeff, noctave)
 
   if (nargin != 5)
-     print_usage ();
-  endif
-  if (! isvector (t))
-     error ("lscomplex: Time values are not a vector.\n");
-  endif
-  if (! isvector (x))
-     error ("lscomplex: Magnitude values are not a vector.\n");
-  endif
-  if (! all (size (t) == size (x)))
-     error ("lscomplex: Size of time vector, magnitude vector unequal.\n");
-  endif
-  if (! isscalar (omegamax))
-     error ("lscomplex: More than one value for maximum frequency specified.\n");
-  endif
-  if (! isscalar (ncoeff))
-     error ("lscomplex: More than one number of frequencies per octave specified.\n");
-  endif
-  if (! isscalar (noctave))
-     error ("lscomplex: More than one number of octaves to traverse specified.\n");
-  endif
-  if (omegamax == 0)
-     error ("lscomplex: Specified maximum frequency is not a frequency.\n");
-  endif
-  if (noctave == 0)
-     error ("lscomplex: No octaves of results requested.\n");
-  endif
-  if (ncoeff == 0)
-     error ("lscomplex: No frequencies per octave requested.\n");
-  endif
-  if (ncoeff != floor (ncoeff))
-     error ("lscomplex: Specified number of frequencies per octave is not integral.\n");
-  endif
-  if (noctave != floor (noctave))
-     error ("lscomplex: Specified number of octaves of results is not integral.\n");
+    print_usage ();
+  elseif (! isvector (t))
+    error ("lscomplex: Time values are not a vector");
+  elseif (! isvector (x))
+    error ("lscomplex: Magnitude values are not a vector");
+  elseif (! all (size (t) == size (x)))
+    error ("lscomplex: Size of time vector, magnitude vector unequal");
+  elseif (! isscalar (omegamax))
+    error ("lscomplex: More than one value for maximum frequency specified");
+  elseif (! isscalar (ncoeff))
+    error ("lscomplex: More than one number of frequencies per octave specified");
+  elseif (! isscalar (noctave))
+    error ("lscomplex: More than one number of octaves to traverse specified");
+  elseif (omegamax == 0)
+    error ("lscomplex: Specified maximum frequency is not a frequency");
+  elseif (noctave == 0)
+    error ("lscomplex: No octaves of results requested");
+  elseif (ncoeff == 0)
+    error ("lscomplex: No frequencies per octave requested");
+  elseif (ncoeff != floor (ncoeff))
+    error ("lscomplex: Specified number of frequencies per octave is not integral");
+  elseif (noctave != floor (noctave))
+    error ("lscomplex: Specified number of octaves of results is not integral");
   endif
 
-  n = numel (t); 
+  n = numel (t);
    
   iter = 0 : (ncoeff * noctave - 1);
   omul = (2 .^ (- iter / ncoeff));

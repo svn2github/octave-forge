@@ -27,28 +27,25 @@
 function coeff = lombnormcoeff (T, X, omega)
 
   if (nargin != 3)
-     print_usage ();
-  endif
-  if (! all (size (T) == size (X)))
-     error ("lombnormcoeff: Time series vectors of uneven size.\n");
-  endif
-  if (! isscalar (omega))
-     error ("lombnormcoeff: Supplied frequency is not a scalar.\n");
-  endif
-  if (omega == 0)
-     error ("lombnormcoeff: Supplied frequency is not a frequency.\n");
+    print_usage ();
+  elseif (! all (size (T) == size (X)))
+    error ("lombnormcoeff: Time series vectors of uneven size");
+  elseif (! isscalar (omega))
+    error ("lombnormcoeff: Supplied frequency is not a scalar");
+  elseif (omega == 0)
+    error ("lombnormcoeff: Supplied frequency is not a frequency");
   endif
 
 
   xmean = mean (X);
 
   theta = atan2 (sum (sin (2 .* omega .*T)),
-		 sum (cos (2 .* omega .* T))) / (2*omega);
+                 sum (cos (2 .* omega .* T))) / (2*omega);
 
   coeff = ((sum ((X-xmean) .* cos (omega .* T - theta)) .^ 2 /
-	    sum (cos (omega .* T - theta) .^ 2) + 
+            sum (cos (omega .* T - theta) .^ 2) + 
             sum ((X-xmean) .* sin (omega .* T - theta)) .^ 2 /
-	    sum (sin (omega .* T - theta) .^ 2 )) / 
+            sum (sin (omega .* T - theta) .^ 2 )) / 
            (2 * var(X)));
 
 endfunction

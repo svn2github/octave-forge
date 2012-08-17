@@ -37,25 +37,19 @@
 function coeff = lswaveletcoeff (x, y, t, o, wgt = @cubicwgt, wgtrad = 1)
 
   if (! (nargin >= 4) && (nargin <= 6))
-     print_usage ();
-  endif
-  if (! isvector (x))
-     error ("lswaveletcoeff: Time values are not a vector.\n");
-  endif
-  if (! isvector (y))
-     error ("lswaveletcoeff: Magnitude values are not a vector.\n");
-  endif
-  if (! all (size (x) == size (y)))
-     error ("lswaveletcoeff: Time series vectors of uneven size.\n");
-  endif
-  if (! isscalar (t))
-     error ("lswaveletcoeff: Window centre specified is not scalar.\n");
-  endif
-  if (! isscalar (o))
-     error ("lswaveletcoeff: Frequency specified is not scalar.\n");
-  endif
-  if (! isscalar (wgtrad))
-     error ("lswaveletcoeff: Window radius specified is not scalar.\n");
+    print_usage ();
+  elseif (! isvector (x))
+    error ("lswaveletcoeff: Time values are not a vector");
+  elseif (! isvector (y))
+    error ("lswaveletcoeff: Magnitude values are not a vector");
+  elseif (! all (size (x) == size (y)))
+    error ("lswaveletcoeff: Time series vectors of uneven size");
+  elseif (! isscalar (t))
+    error ("lswaveletcoeff: Window centre specified is not scalar");
+  elseif (! isscalar (o))
+    error ("lswaveletcoeff: Frequency specified is not scalar");
+  elseif (! isscalar (wgtrad))
+    error ("lswaveletcoeff: Window radius specified is not scalar");
   endif
 
   so = 0.05 .* o;

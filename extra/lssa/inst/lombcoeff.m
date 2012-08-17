@@ -25,16 +25,13 @@
 function coeff = lombcoeff (T, X, o)
 
   if (nargin != 3)
-     print_usage ();
-  endif
-  if (! all (size (T) == size (X)))
-     error ("lombcoeff: Time series vectors of uneven size.\n");
-  endif
-  if (! isscalar (o))
-     error ("lombcoeff: Supplied frequency is not a scalar.\n");
-  endif
-  if (o == 0)
-     error ("lombcoeff: Supplied frequency is not a frequency.\n");
+    print_usage ();
+  elseif (! all (size (T) == size (X)))
+    error ("lombcoeff: Time series vectors of uneven size");
+  elseif (! isscalar (o))
+    error ("lombcoeff: Supplied frequency is not a scalar");
+  elseif (o == 0)
+    error ("lombcoeff: Supplied frequency is not a frequency");
   endif
 
   oT = o .* T;

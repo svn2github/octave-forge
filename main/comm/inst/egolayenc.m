@@ -14,57 +14,51 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {}  egolayenc (@var{M})
+## @deftypefn {Function File} {@var{C} =} egolayenc (@var{M})
+## Encode with Extended Golay code.
 ## 
-## 
-## Given @var{M}, encode M using the Extended Golay code.
-##
 ## The message @var{M}, needs to be of size Nx12, for encoding.
 ## We can encode several messages, into codes at once, if they 
 ## are stacked in the order suggested.
 ##
-## The generator G used in here is same as obtained from the
-## function egolaygen. Extended Golay code (24,12) which can correct
+## The generator used in here is same as obtained from the
+## function @code{egolaygen}. Extended Golay code (24,12) which can correct
 ## upto 3 errors.
 ##
 ## @example
 ## @group
 ## M=(rand(10,12)>0.5);
 ## C=egolayenc(M)
-##
 ## @end group
 ## @end example
 ##
-## @end deftypefn
 ## @seealso{egolaygen,egolaydec}
+## @end deftypefn
 
-function C=egolayenc(M)
-  if ( nargin < 1 )
-    error('usage: C=egolayenc(M)');
-  elseif ( columns(M) ~= 12 )
-    error('extended golay code is (24,12), use message  of column size 12');
-  end
+function C = egolayenc (M)
 
-  I=eye(12);
-  P=[1 0 0 0 1 1 1 0 1 1 0 1;
-     0 0 0 1 1 1 0 1 1 0 1 1;
-     0 0 1 1 1 0 1 1 0 1 0 1;
-     0 1 1 1 0 1 1 0 1 0 0 1;
-     1 1 1 0 1 1 0 1 0 0 0 1;
-     1 1 0 1 1 0 1 0 0 0 1 1;
-     1 0 1 1 0 1 0 0 0 1 1 1;
-     0 1 1 0 1 0 0 0 1 1 1 1;
-     1 1 0 1 0 0 0 1 1 1 0 1;
-     1 0 1 0 0 0 1 1 1 0 1 1;
-     0 1 0 0 0 1 1 1 0 1 1 1;
-     1 1 1 1 1 1 1 1 1 1 1 0;];
-  G=[P I]; %generator.
+  if (nargin < 1)
+    print_usage;
+  elseif (columns (M) != 12)
+    error("extended golay code is (24,12), use message  of column size 12");
+  endif
 
-  ##for rowi=1:rows(M)
-  ##   C(rowi,:)=mod(M(rowi,:)*G,2); %code.
-  ##end
+  I = eye (12);
+  P = [1 0 0 0 1 1 1 0 1 1 0 1;
+       0 0 0 1 1 1 0 1 1 0 1 1;
+       0 0 1 1 1 0 1 1 0 1 0 1;
+       0 1 1 1 0 1 1 0 1 0 0 1;
+       1 1 1 0 1 1 0 1 0 0 0 1;
+       1 1 0 1 1 0 1 0 0 0 1 1;
+       1 0 1 1 0 1 0 0 0 1 1 1;
+       0 1 1 0 1 0 0 0 1 1 1 1;
+       1 1 0 1 0 0 0 1 1 1 0 1;
+       1 0 1 0 0 0 1 1 1 0 1 1;
+       0 1 0 0 0 1 1 1 0 1 1 1;
+       1 1 1 1 1 1 1 1 1 1 1 0;];
+  G = [P I]; %generator.
 
-  C=mod(M*repmat(G,[1,rows(M)]),2);
-  C=C(:,1:24);
+  C = mod (M * repmat (G, [1, rows(M)]), 2);
+  C = C(:, 1:24);
 
-end
+endfunction

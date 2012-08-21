@@ -14,28 +14,34 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {}  egolaygen ()
+## @deftypefn {Function File} {[@var{G}, @var{P}]} = egolaygen ()
+## Extended Golay code generator matrix.
 ## 
-## Returns the Extended Golay code (24,12) generator matrix,
-## which can correct upto 3 errors. The second argument is the partiy
+## Returns @var{G}, the Extended Golay code (24,12) generator matrix,
+## which can correct up to 3 errors. @var{P} is the partiy
 ## check matrix, for this code.
 ##
-## @end deftypefn
 ## @seealso{egolaydec,egolayenc}
+## @end deftypefn
 
-function [G,P]=egolaygen()
-  I=eye(12);
-  P=[1 0 0 0 1 1 1 0 1 1 0 1;
-     0 0 0 1 1 1 0 1 1 0 1 1;
-     0 0 1 1 1 0 1 1 0 1 0 1;
-     0 1 1 1 0 1 1 0 1 0 0 1;
-     1 1 1 0 1 1 0 1 0 0 0 1;
-     1 1 0 1 1 0 1 0 0 0 1 1;
-     1 0 1 1 0 1 0 0 0 1 1 1;
-     0 1 1 0 1 0 0 0 1 1 1 1;
-     1 1 0 1 0 0 0 1 1 1 0 1;
-     1 0 1 0 0 0 1 1 1 0 1 1;
-     0 1 0 0 0 1 1 1 0 1 1 1;
-     1 1 1 1 1 1 1 1 1 1 1 0;];
-  G=[P I]; %generator.
-end
+function [G, P] = egolaygen ()
+
+  if (nargin != 0)
+    print_usage;
+  endif
+
+  I = eye (12);
+  P = [1 0 0 0 1 1 1 0 1 1 0 1;
+       0 0 0 1 1 1 0 1 1 0 1 1;
+       0 0 1 1 1 0 1 1 0 1 0 1;
+       0 1 1 1 0 1 1 0 1 0 0 1;
+       1 1 1 0 1 1 0 1 0 0 0 1;
+       1 1 0 1 1 0 1 0 0 0 1 1;
+       1 0 1 1 0 1 0 0 0 1 1 1;
+       0 1 1 0 1 0 0 0 1 1 1 1;
+       1 1 0 1 0 0 0 1 1 1 0 1;
+       1 0 1 0 0 0 1 1 1 0 1 1;
+       0 1 0 0 0 1 1 1 0 1 1 1;
+       1 1 1 1 1 1 1 1 1 1 1 0;];
+  G = [P I]; %generator.
+endfunction

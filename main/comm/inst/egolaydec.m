@@ -56,25 +56,10 @@ function [C, dec_error] = egolaydec (R)
     error ("extended golay code is (24,12), use rx codeword of 24 bit column size");
   endif
 
-  I = eye (12);
-                                %P is 12x12 matrix
-  P = [1 0 0 0 1 1 1 0 1 1 0 1;
-       0 0 0 1 1 1 0 1 1 0 1 1;
-       0 0 1 1 1 0 1 1 0 1 0 1;
-       0 1 1 1 0 1 1 0 1 0 0 1;
-       1 1 1 0 1 1 0 1 0 0 0 1;
-       1 1 0 1 1 0 1 0 0 0 1 1;
-       1 0 1 1 0 1 0 0 0 1 1 1;
-       0 1 1 0 1 0 0 0 1 1 1 1;
-       1 1 0 1 0 0 0 1 1 1 0 1;
-       1 0 1 0 0 0 1 1 1 0 1 1;
-       0 1 0 0 0 1 1 1 0 1 1 1;
-       1 1 1 1 1 1 1 1 1 1 1 0;];
-
-  H = [I; P]; %partiy check matrix transpose.
-
   dec_error = [];
-  C         = zeros (size (R));
+  [~, P] = egolaygen ();
+  H      = [eye(12); P]; # parity check matrix transpose
+  C      = zeros (size (R));
 
   for rspn = 1:rows (R)
     RR   = R(rspn,:);

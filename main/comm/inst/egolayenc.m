@@ -43,20 +43,7 @@ function C = egolayenc (M)
     error("extended golay code is (24,12), use message  of column size 12");
   endif
 
-  I = eye (12);
-  P = [1 0 0 0 1 1 1 0 1 1 0 1;
-       0 0 0 1 1 1 0 1 1 0 1 1;
-       0 0 1 1 1 0 1 1 0 1 0 1;
-       0 1 1 1 0 1 1 0 1 0 0 1;
-       1 1 1 0 1 1 0 1 0 0 0 1;
-       1 1 0 1 1 0 1 0 0 0 1 1;
-       1 0 1 1 0 1 0 0 0 1 1 1;
-       0 1 1 0 1 0 0 0 1 1 1 1;
-       1 1 0 1 0 0 0 1 1 1 0 1;
-       1 0 1 0 0 0 1 1 1 0 1 1;
-       0 1 0 0 0 1 1 1 0 1 1 1;
-       1 1 1 1 1 1 1 1 1 1 1 0;];
-  G = [P I]; %generator.
+  G = egolaygen (); # generator
 
   C = mod (M * repmat (G, [1, rows(M)]), 2);
   C = C(:, 1:24);

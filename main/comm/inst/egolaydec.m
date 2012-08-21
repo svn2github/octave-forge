@@ -14,7 +14,7 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {}  egolaydec (@var{R})
+## @deftypefn {Function File} {} egolaydec (@var{R})
 ## 
 ## Given @var{R}, the received Extended Golay code, this function tries to
 ## decode @var{R} using the Extended Golay code parity check matrix.
@@ -37,7 +37,7 @@
 ##
 ## @example
 ## @group
-##  M=[rand(10,12)>0.5]; 
+##  M=[rand(10,12)>0.5];
 ##  C1=egolayenc(M); 
 ##  C1(:,1)=mod(C1(:,1)+1,2)
 ##  C2=egolaydec(C1)
@@ -80,12 +80,13 @@ function [C,dec_error]=egolaydec(R)
     S=mod(RR*H,2);
     wt=sum(S);
     done=0;
+    E=[S, zeros(1,12)];
     if (wt <= 3)
       E=[S, zeros(1,12)];
       done=1;
     else
       SP = mod(repmat(S,[12, 1])+P,2);
-      idx = find( sum(SP,2) <= 2 );    
+      idx = find( sum(SP,2) <= 2 );
       if ( idx )
         idx=idx(1); %pick first of matches.
         Ui=zeros(1,12); Ui(idx)=1;
@@ -118,9 +119,5 @@ function [C,dec_error]=egolaydec(R)
 
   return;
 end
-%!
 %!assert(egolaydec([1 1 1 zeros(1,21)]),zeros(1,24))
 %!assert(egolaydec([1 0 1 zeros(1,20) 1]),zeros(1,24))
-%!
-
-

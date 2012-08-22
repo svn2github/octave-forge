@@ -14,37 +14,37 @@
 // You should have received a copy of the GNU General Public License along with
 // this program; if not, see <http://www.gnu.org/licenses/>.
 
-#define   NAME  MPI_Iprobe
+#define NAME MPI_Iprobe
 /*
  * ----------------------------------------------------
  * Nonblocking test for a message
  * [info flag stat] = MPI_Iprobe (src, tag, comm)
  * ----------------------------------------------------
  */
+
 #include "simple.h"	
 #include <octave/ov-struct.h>
 
-Octave_map put_MPI_Stat (const MPI_Status &stat){
-/*---------------------------------------------*/
-    Octave_map map;
-    octave_value tmp = stat.MPI_SOURCE;
-    map.assign("src", tmp);
-    tmp = stat.MPI_TAG;
-    map.assign("tag", tmp );
-    tmp = stat.MPI_ERROR;
-    map.assign("err", tmp );
-    tmp = stat._count;
-    map.assign("cnt", tmp);
-    tmp = stat._cancelled;
-    map.assign("can", tmp);
+Octave_map put_MPI_Stat (const MPI_Status &stat)
+{
+  /*---------------------------------------------*/
+  Octave_map map;
+  octave_value tmp = stat.MPI_SOURCE;
+  map.assign ("src", tmp);
+  tmp = stat.MPI_TAG;
+  map.assign ("tag", tmp );
+  tmp = stat.MPI_ERROR;
+  map.assign ("err", tmp );
+  tmp = stat._count;
+  map.assign ("cnt", tmp);
+  tmp = stat._cancelled;
+  map.assign ("can", tmp);
 
-    return map;
+  return map;
 }
 
-
-
 DEFUN_DLD(NAME, args, nargout,"-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} [@var{FLAG} @var{STAT} @var{INFO}] = MPI_Iprobe(@var{SRCRANK}, @var{TAG}, @var{COMM})\n\
+@deftypefn {Loadable Function} {} [@var{FLAG} @var{STAT} @var{INFO}] = MPI_Iprobe(@var{SRCRANK}, @var{TAG}, @var{COMM})\n \
            Nonblocking test for a message\n\
  @example\n\
  @group\n\
@@ -70,58 +70,47 @@ DEFUN_DLD(NAME, args, nargout,"-*- texinfo -*-\n\
   SEE ALSO: MPI_Probe, MPI_Recv, MPI documentation for examples\n\
 @end deftypefn")
 {
-   octave_value_list results;
-   int nargin = args.length ();
-   if (nargin != 3)
-     {
-       error ("expecting  3 input arguments");
-       return results;
-     }
-
-
-
-
-  if (!simple_type_loaded)
+  octave_value_list results;
+  int nargin = args.length ();
+  if (nargin != 3)
+    print_usage ();
+  else 
     {
-      simple::register_type ();
-      simple_type_loaded = true;
-      mlock ();
+      if (! simple_type_loaded)
+        {
+          simple::register_type ();
+          simple_type_loaded = true;
+          mlock ();
+        }
+
+	if (args(2).type_id() != simple::static_type_id ())
+          {
+            error ("MPI_Iprobe: Please enter octave comunicator object");
+            results = octave_value (-1);
+          }
+        else
+          {
+            const octave_base_value& rep = args(2).get_rep();
+            const simple& B = ((const simple &)rep);
+            MPI_Comm comm = ((const simple&) B).comunicator_value ();
+            int src = args(0).int_value();
+            int tag = args(1).int_value();
+            if (! error_state)
+              {
+                int flag;
+                MPI_Status stat = {0, 0, 0, 0};    
+                int info = MPI_Iprobe (src, tag, comm, &flag, &stat);
+                comm = NULL;
+                results(0) = flag;
+                results(1) = put_MPI_Stat (stat);
+                results(2) = info;
+              }
+            else
+              print_usage ();
+          }
     }
-
-	if( args(2).type_id()!=simple::static_type_id()){
-		
-		error("Please enter octave comunicator object!");
-		return octave_value(-1);
-	}
-
-	const octave_base_value& rep = args(2).get_rep();
-        const simple& B = ((const simple &)rep);
-        MPI_Comm comm = ((const simple&) B).comunicator_value ();
-   if (error_state)
-     return results;
-
-    int src = args(0).int_value();    
-  if (error_state)
-    {
-      error ("expecting first argument to be an integer");
-      return results;
-    }
-
-    int tag = args(1).int_value();    
-  if (error_state)
-    {
-      error ("expecting second argument to be an integer");
-      return results;
-    }	
-    int flag;
-    MPI_Status stat = {0,0,0,0};    
-    int info = MPI_Iprobe(src,tag,comm,&flag,&stat);
-    comm= NULL;
-    results(0) = flag;
-    results(1) = put_MPI_Stat(stat);
-    results(2) = info;
-    return results;
-	/* [flag stat info] = MPI_Iprobe (src, tag, comm) */
+  return results;
+  /* [flag stat info] = MPI_Iprobe (src, tag, comm) */
 }
 
 	

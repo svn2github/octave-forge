@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License along with
 // this program; if not, see <http://www.gnu.org/licenses/>.
 
-#define   NAME  MPI_Finalized
+#define NAME MPI_Finalized
 /*
  * ----------------------------------------------------
  * Indicates whether MPI_Finalize has completed
@@ -39,14 +39,15 @@ SEE ALSO: MPI_Init, MPI_Finalize\n\
 @end example\n\
 @end deftypefn")
 {
-   octave_value_list results;
-   int flag;           
+  octave_value_list results;
+  int flag;        
+  
+  int info = MPI_Finalized (&flag);
+  if (nargout > 1)
+    results(1) = info;
 
-    int info = MPI_Finalized(&flag);
-    if (nargout > 1)
-      results(1) = info;
-    results(0) = flag != 0;
-    return results;
+  results(0) = flag != 0;
+  return results;
 
-    /* [flag info] = MPI_Finalized */
+  /* [flag info] = MPI_Finalized */
 }

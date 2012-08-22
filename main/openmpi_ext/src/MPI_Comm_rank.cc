@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License along with
 // this program; if not, see <http://www.gnu.org/licenses/>.
 
-#define   NAME  MPI_Comm_rank
+#define NAME MPI_Comm_rank
 /*
  * ----------------------------------------------------
  * Determines the rank of the calling process in the communicator
@@ -40,46 +40,40 @@ SEE ALSO: MPI_Comm_size\n\
 @end group\n\
 @end example\n\
 @end deftypefn")
-
 {
-    octave_value_list results;
-    int nargin = args.length ();
-   if (nargin != 1)
-     {
-       error ("expecting  1 input argument");
-       return results;
-     }
+  octave_value_list results;
+  int nargin = args.length ();
 
-  if (!simple_type_loaded)
+  if (nargin != 1)
+    print_usage ();
+  else
     {
-      simple::register_type ();
-      simple_type_loaded = true;
-      mlock ();
+      if (! simple_type_loaded)
+        {
+          simple::register_type ();
+          simple_type_loaded = true;
+          mlock ();
+        }
+
+      if (args(0).type_id () == simple::static_type_id ())
+        {
+          const octave_base_value& rep = args(0).get_rep ();
+          const simple& B = ((const simple &)rep);
+          MPI_Comm comm = ((const simple&) B).comunicator_value ();	
+          if (! error_state)
+            {
+              int my_rank;
+              int info = MPI_Comm_rank (comm, &my_rank);
+              if (nargout > 1)
+                results(1) = info;
+
+              results(0) = my_rank;
+            }
+          else
+            print_usage ();
+        }
+      else
+        error ("MPI_Comm_rank: Please enter octave comunicator object");
     }
-
-	if((args.length() != 1 )
-	   || args(0).type_id()!=simple::static_type_id()){
-		
-		error("Please enter octave comunicator object!");
-		return octave_value(-1);
-	}
-
-	const octave_base_value& rep = args(0).get_rep();
-        const simple& B = ((const simple &)rep);
-        MPI_Comm comm = ((const simple&) B).comunicator_value ();	
-        if (! error_state)
-          {
-            int my_rank;
-            int info = MPI_Comm_rank (comm, &my_rank);
-            if (nargout > 1)
-              results(1) = info;
-            results(0) = my_rank;
-          }
-    else
-      print_usage ();
-    comm= NULL;
-    /* [rank info] = MPI_Comm_rank (comm) */
-   
-    return results;
-
+  return results;
 }

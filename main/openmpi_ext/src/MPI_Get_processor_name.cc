@@ -17,6 +17,7 @@
 
 #include "mpi.h"
 #include <octave/oct.h>
+
 DEFUN_DLD(MPI_Get_processor_name, args, nargout,"-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} @var{name,resultlen,INFO} = MPI_Get_processor_name()\n\
            Get the name of the processor that is using MPI\n\
@@ -33,24 +34,26 @@ SEE ALSO: MPI_Finalize, MPI_Initialized, MPI_Finalized\n\
 @end example\n\
 @end deftypefn")
 {
-    int info; 	
-    int nargin = args.length();            
-    for (int i=0; i<nargin; i++){
-    if(  nargin != 0 ) {
-        error("MPI_Get_processor_name: please do not enter arguments");
-        return octave_value (MPI_ERR_ARG);    // error returns nothing
+  int info; 	
+  int nargin = args.length (); 
+  octave_value_list results;
+  if (nargin != 0) 
+    {
+      print_usage ();
+      results(0) = octave_value (MPI_ERR_ARG);
     }
-    }
-    octave_value_list results;	
-    std::string cpp_string;
-    char argv[MPI_MAX_PROCESSOR_NAME];
-    int resultlen=0;
+  else 
+    {
+      std::string cpp_string;
+      char argv[MPI_MAX_PROCESSOR_NAME];
+      int resultlen = 0;
 
-    info = MPI_Get_processor_name(argv, &resultlen);
-    cpp_string = argv;	
-    results(0) = cpp_string;
-    results(1) = resultlen;
-    results(2) = info;				
-    return results;
+      info = MPI_Get_processor_name (argv, &resultlen);
+      cpp_string = argv;
+      results(0) = cpp_string;
+      results(1) = resultlen;
+      results(2) = info;
+    }
+  return results;
 }
  

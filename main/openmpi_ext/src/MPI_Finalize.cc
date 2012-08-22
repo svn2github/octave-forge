@@ -14,13 +14,15 @@
 // You should have received a copy of the GNU General Public License along with
 // this program; if not, see <http://www.gnu.org/licenses/>.
 
-#define   NAME    MPI_Finalize
+#define NAME MPI_Finalize
+
 /*
  * ----------------------------------------------------
  * Terminates MPI execution environment
  * info = MPI_Finalize
  * ----------------------------------------------------
  */
+
 #include "mpi.h"       
 #include <octave/oct.h>
 
@@ -39,8 +41,6 @@ SEE ALSO: MPI_Init\n\
 @end example\n\
 @end deftypefn")
 {
-
-    int info = MPI_Finalize();
-   
-    return octave_value(info);
+  int info = MPI_Finalize ();   
+  return octave_value (info);
 }

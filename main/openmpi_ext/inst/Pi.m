@@ -18,7 +18,7 @@
 # For instance addpath("../src");
 # mpirun -np 5 octave -q --eval "Pi(2E7,'s')"
 
-function Pi(N,mod)
+function results = Pi(N,mod)
 addpath("../src");
 # Pi:	Classic PI computation by numeric integration of arctan'(x) in [0..1]
 #

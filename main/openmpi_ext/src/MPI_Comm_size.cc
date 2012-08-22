@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License along with
 // this program; if not, see <http://www.gnu.org/licenses/>.
 
-#define   NAME  MPI_Comm_size
+#define NAME MPI_Comm_size
 /*
  * ----------------------------------------------------
  * Determines the size of the calling process in the communicator
@@ -42,46 +42,45 @@ SEE ALSO: MPI_Comm_rank\n\
 @end deftypefn")
 
 {
-    octave_value_list results;
-    int nargin = args.length ();
-   if (nargin != 1)
-     {
-       error ("expecting  1 input argument");
-       return results;
-     }
-
-  if (!simple_type_loaded)
+  octave_value_list results;
+  int nargin = args.length ();
+  if (nargin != 1)
+    print_usage ();
+  else
     {
-      simple::register_type ();
-      simple_type_loaded = true;
-      mlock ();
-    }
+      if (! simple_type_loaded)
+        {
+          simple::register_type ();
+          simple_type_loaded = true;
+          mlock ();
+        }
 
-	if((args.length() != 1 )
-	   || args(0).type_id()!=simple::static_type_id()){
-		
-		error("Please enter octave comunicator object!");
-		return octave_value(-1);
+      if ((args.length() != 1 )
+          || args(0).type_id () != simple::static_type_id ())
+        {		
+          error("MPI_Comm_size: Please enter octave comunicator object");
+          results(0) = octave_value(-1);
 	}
-
-	const octave_base_value& rep = args(0).get_rep();
-        const simple& B = ((const simple &)rep);
-        MPI_Comm comm = ((const simple&) B).comunicator_value ();
-
-
-        if (! error_state)
-          {
-            int my_size;
-            int info = MPI_Comm_size (comm, &my_size);
-            if (nargout > 1)
-              results(1) = info;
-            results(0) = my_size;
-          }
-    else
-      print_usage ();
-    comm= NULL;
-    /* [size info] = MPI_Comm_size (comm) */
-   
-    return results;
+      else
+        {
+          const octave_base_value& rep = args(0).get_rep ();
+          const simple& B = ((const simple &)rep);
+          MPI_Comm comm = ((const simple&) B).comunicator_value ();
+          
+          if (! error_state)
+            {
+              int my_size;
+              int info = MPI_Comm_size (comm, &my_size);
+              if (nargout > 1)
+                results(1) = info;
+              results(0) = my_size;
+            }
+          else
+            print_usage ();
+        }
+      comm = NULL;
+      /* [size info] = MPI_Comm_size (comm) */   
+    }
+  return results;
 }
 

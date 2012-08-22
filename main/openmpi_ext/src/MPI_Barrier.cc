@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License along with
 // this program; if not, see <http://www.gnu.org/licenses/>.
 
-#define   NAME  MPI_Barrier
+#define NAME MPI_Barrier
 /*
  * ----------------------------------------------------
  * Blocks until all processes in the communicator have reached this routine
@@ -23,61 +23,64 @@
  * ----------------------------------------------------
  */
 
-
 #include "simple.h"    
-DEFUN_DLD(NAME, args, ,"-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} @var{INFO} = MPI_Barrier (@var{COMM})\n\
-Blocks until all processes in the communicator have reached this routine.\n\
-If @var{COMM} octave comunicator object loaded with MPI_Comm_Load is omitted \n\
-returns an error. \n\
- @example\n\
- @group\n\
-    @var{INFO} (int) return code\n\
-       0 MPI_SUCCESS    No error\n\
-       5 MPI_ERR_COMM   Invalid communicator (NULL?)\n\
-      13 MPI_ERR_ARG    Invalid argument (typically a NULL pointer?)\n\
-@end group\n\
-@end example\n\
+
+DEFUN_DLD (NAME, args, ,
+"-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} @var{INFO} = MPI_Barrier (@var{COMM})\n \
+Blocks until all processes in the communicator have reached this routine.\n \
+If @var{COMM} octave comunicator object loaded with MPI_Comm_Load is omitted \n \
+returns an error. \n                                                    \
+ @example\n                                                             \
+ @group\n                                                               \
+    @var{INFO} (int) return code\n                                      \
+       0 MPI_SUCCESS    No error\n                                      \
+       5 MPI_ERR_COMM   Invalid communicator (NULL?)\n                  \
+      13 MPI_ERR_ARG    Invalid argument (typically a NULL pointer?)\n  \
+@end group\n                                                            \
+@end example\n                                                          \
 @end deftypefn")
 {
 
-    octave_value results;
-    int nargin = args.length ();
-   if (nargin != 1)
-     {
-       error ("expecting  1 input argument");
-       return results;
-     }
+  octave_value results;
+  int nargin = args.length ();
 
-  if (!simple_type_loaded)
+  if (nargin != 1)
+    print_usage ();
+  else
     {
-      simple::register_type ();
-      simple_type_loaded = true;
-      mlock ();
-    }
-
-	if((args.length() != 1 )
-	   || args(0).type_id()!=simple::static_type_id()){
-		
-		error("Please enter octave comunicator object!");
-		return octave_value(-1);
-	}
-
-	const octave_base_value& rep = args(0).get_rep();
-        const simple& B = ((const simple &)rep);
-        MPI_Comm comm = ((const simple&) B).comunicator_value ();
-        if (! error_state)
-          {
-            int my_size;
-            int info = MPI_Barrier (comm);
-
+      if((args.length () != 1)
+         || args(0).type_id () != simple::static_type_id ())
+        {
+          error ("MPI_Barrier: Please enter octave comunicator object");
+          results(0) = octave_value(-1);
+        }
+      else
+        {
+          if (! simple_type_loaded)
+            {
+              simple::register_type ();
+              simple_type_loaded = true;
+              mlock ();
+            }
+	       
+          const octave_base_value& rep = args(0).get_rep();
+          const simple& B = ((const simple &)rep);
+          MPI_Comm comm = ((const simple&) B).comunicator_value ();
+          if (! error_state)
+            {
+              int my_size;
+              int info = MPI_Barrier (comm);
+              
               results = info;
-	  }
-    else
-      print_usage ();
-   comm= NULL;
-    /* [info] = MPI_Barrier (comm) */
+            }
+          else
+            print_usage ();
+        }
+    }
+  comm= NULL;
+  /* [info] = MPI_Barrier (comm) */
    
-    return results;
+  return results;
 }
 

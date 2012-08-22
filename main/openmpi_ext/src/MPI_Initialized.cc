@@ -14,15 +14,17 @@
 // You should have received a copy of the GNU General Public License along with
 // this program; if not, see <http://www.gnu.org/licenses/>.
 
-#define   NAME  MPI_Initialized
+#define NAME MPI_Initialized
 /*
  * ----------------------------------------------------
  * Indicates whether MPI_Initialize has been called
  * [info flag] = MPI_Initialized
  * ----------------------------------------------------
  */
+
 #include "mpi.h"
 #include <octave/oct.h>
+
 DEFUN_DLD(NAME, args, nargout,"-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} [@var{FLAG} @var{INFO}] = MPI_Initialized\n\
            Indicates whether MPI_Init has been called\n\
@@ -41,12 +43,12 @@ SEE ALSO: MPI_Init, MPI_Finalize\n\
 {
   octave_value_list results;
    int flag;
-
-   int info = MPI_Initialized(&flag);
+   int info = MPI_Initialized (&flag);
     if (nargout > 1)
-      results(1) = info;
-    results(0) = flag != 0;
-   return results;
+      results (1) = info;
 
+    results(0) = octave_value (flag != 0);
+
+   return results;
    /* [flag info] = MPI_Initialized */
 }

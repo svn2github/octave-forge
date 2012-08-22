@@ -1,9 +1,9 @@
-MPICC := mpiCC
+MPICC := mpic++
 JUNK := $(shell $(MPICC) -showme:compile)
 MPIINC := $(shell echo $(JUNK) | sed -e "s/-pthread/-lpthread/g")
 JUNK := $(shell $(MPICC) -showme:link)
 MPILIBS := $(shell echo $(JUNK) | sed -e "s/-pthread/ /g")
-
+MKOCTFILE ?= mkoctfile
 
 all: MPI_Init.oct \
      MPI_Initialized.oct \
@@ -21,7 +21,7 @@ all: MPI_Init.oct \
      MPI_Get_processor_name.oct \
 
 %.oct: %.cc
-	mkoctfile -s $(MPIINC) $(MPILIBS) $<
+	$(MKOCTFILE) $(MPIINC) $(MPILIBS) $<
 clean:
-	-rm *.o  *.oct *~
+	$(RM) *.o  *.oct *~
 

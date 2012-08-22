@@ -35,22 +35,19 @@ MPI_Finalize();\n\
 @end example\n\
 @end deftypefn")
 {
-  if (!simple_type_loaded)
-    {
-      simple::register_type ();
-      simple_type_loaded = true;
-      mlock ();
-    }
-
   octave_value retval;
-  if (args.length () != 1 || !args (0).is_string ())
+  if (args.length () != 1 || ! args (0).is_string ())
+    print_usage ();
+  else
     {
-      error ("MPI_Comm_Load: first argument must be a string");
-      return retval;
-    }
-   
-  const std::string name = args (0).string_value ();
-  retval = new simple (name,MPI_COMM_WORLD);
- 
+      if (!simple_type_loaded)
+        {
+          simple::register_type ();
+          simple_type_loaded = true;
+          mlock ();
+        }
+      const std::string name = args (0).string_value ();
+      retval = new simple (name,MPI_COMM_WORLD);
+    }  
   return retval;
 }

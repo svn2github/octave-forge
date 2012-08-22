@@ -21,10 +21,11 @@
  * ----------------------------------------------------
  */
 
-#define   NAME  MPI_Init
+#define NAME MPI_Init
 
 #include "mpi.h"        // mpi.h, oct.h
 #include <octave/oct.h>
+
 DEFUN_DLD(NAME, args, nargout,"-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} @var{INFO} = MPI_Init()\n\
            Initialize the MPI execution environment\n\
@@ -41,22 +42,21 @@ SEE ALSO: MPI_Finalize, MPI_Initialized, MPI_Finalized\n\
 @end example\n\
 @end deftypefn")
 {
-    int nargin = args.length();            
-    for (int i=0; i<nargin; i++){
-    if( ! args(i).is_string() ) {
-        error("MPI_Init: args must be strings");
-        return octave_value (MPI_ERR_ARG);    // error returns nothing
+  int nargin = args.length();            
+  for (int i = 0; i < nargin; i++)
+    {
+      if (! args(i).is_string ()) 
+        {
+          error ("MPI_Init: args must be strings");
+          return octave_value (MPI_ERR_ARG);    // error returns nothing
+        }
     }
-    }
 
-    string_vector argvec = args.make_argv("MPI_Init");
-    char **argve= argvec.c_str_vec();
-    char **argv =&argve[1];
-
-//  printf("args: "); for (int i=0; i<nargin; i++) printf("%s ",argv[i]);
-//  printf("\n");
-
-    int info = MPI_Init(&nargin, &argv);
+    string_vector argvec = args.make_argv ("MPI_Init");
+    char **argve= argvec.c_str_vec ();
+    char **argv = &argve[1];
+    
+    int info = MPI_Init (&nargin, &argv);
     free(argve);
     return octave_value (info);
 }

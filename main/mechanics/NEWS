@@ -1,12 +1,17 @@
 Summary of important user-visible changes for releases of the mechanics package
 
 ===============================================================================
-mechanics-1.2.X   Release Date: XX   Release Manager: Juan Pablo Carbajal
+mechanics-1.3.0   Release Date: 2012-24-08   Release Manager: Juan Pablo Carbajal
 ===============================================================================
 
-* Bug fixes
- - masscenter.m
+* Functions with bug fixes
+  masscenter
 
+* Added functions
+  rodmassmatrix
+
+* Removed functions
+  drawAxes3D is now a private function.
 
 ===============================================================================
 mechanics-1.2.0   Release Date: 2011-10-16   Release Manager: Juan Pablo Carbajal

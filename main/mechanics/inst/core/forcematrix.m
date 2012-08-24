@@ -1,5 +1,5 @@
 %% Copyright (c) 2010 Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
-%% 
+%%
 %%    This program is free software: you can redistribute it and/or modify
 %%    it under the terms of the GNU General Public License as published by
 %%    the Free Software Foundation, either version 3 of the License, or
@@ -26,7 +26,7 @@
 %%
 %% @item
 %% @var{A} is the a connectivity (adjacency) matrix expressed as a vector. That is, if
-%% @var{M} is the complete NxN symmetric connectivity matrix, then 
+%% @var{M} is the complete NxN symmetric connectivity matrix, then
 %% @code{@var{A}= vech(@var{M})}. The diagonal of @var{M} is not used. The elements
 %% of A are indexes to the corresponding interaction force in @var{funcs}. For
 %% example, there are 3 points and points 2 and 3 interact with a force
@@ -45,7 +45,7 @@
 %% @itemize
 %% @item
 %% @var{F} is a Nxdim array of forces acting on each point.
-%% 
+%%
 %% @item
 %% @var{D} is an array in the same format as @var{A} containing the euclidean
 %% distances between the points.
@@ -57,17 +57,18 @@
 %% @seealso{pointmassmesh, polyval, vech, sub2ind}
 %% @end deftypefn
 
-function [F D] = forcematrix (pos, A, funcs)
+function [F D dr] = forcematrix (pos, A, funcs)
 
   %% Argument parsing
   [N dim] = size(pos);
-  nA = numel(A);
-  
+  nA      = numel(A);
+
   % Relative position matrix
   dr = zeros (nA,dim);
   for ic = 1:dim
     dr(:,ic) = vech (bsxfun (@minus, pos(:,ic)', pos(:,ic)));
   end
+
   % Distance vector
   D = sqrt (sum (dr.^2, 2));
   % Versor
@@ -77,15 +78,14 @@ function [F D] = forcematrix (pos, A, funcs)
   funcs{end+1} = 0;
   nf = numel(funcs);
   A(A==0) = nf;
-  
+
   %% pair to pair forces
   f = cellfun (@handleOpoly, {funcs{A}}.', mat2cell (D, ones(nA,1), 1));
   f = repmat(f,1,dim) .* drhat;
-  
+
   %% net force on p1
   F = zeros (N,dim);
-  
-  %% FIXME avoid looping
+
   aux = ones(1,N-1);
   p2 = sub2ind_tril (N, 2:N, aux);
   F(1,:) = sum (f(p2,:));
@@ -99,7 +99,7 @@ function [F D] = forcematrix (pos, A, funcs)
     ndhalf = idx((p1+1):N);
     F(p1,:) = sum (f(ndhalf,:)) - sum (f(sthalf,:));
   end
-  
+
 endfunction
 
 function f = handleOpoly (y,x)
@@ -154,7 +154,7 @@ end
 % 3D
 %!test % Cube
 %! pos = [0 0 0; 1 0 0; 1 1 0; 0 1 0; ...
-%!        0 0 1; 1 0 1; 1 1 1; 0 1 1;]; 
+%!        0 0 1; 1 0 1; 1 1 1; 0 1 1;];
 %! A= [0;1;0;1;1;0;0;0; ...
 %!       0;1;0;0;1;0;0; ...
 %!         0;1;0;0;1;0; ...
@@ -162,7 +162,7 @@ end
 %!             0;1;0;1; ...
 %!               0;1;0; ...
 %!                 0;1; ...
-%!                   0; ]; 
+%!                   0; ];
 %! funcs={[-1 1]};
 %! [F D] = forcematrix (pos, A, funcs);
 %! assert (F, zeros(8,3), 1e-8);
@@ -178,7 +178,7 @@ end
 
 %!test % Cube 2 funcs
 %! pos = [0 0 0; 1 0 0; 1 1 0; 0 1 0; ...
-%!        0 0 1; 1 0 1; 1 1 1; 0 1 1;]; 
+%!        0 0 1; 1 0 1; 1 1 1; 0 1 1;];
 %! A= [0;1;0;1;2;0;0;0; ...
 %!       0;1;0;0;2;0;0; ...
 %!         0;1;0;0;2;0; ...
@@ -186,7 +186,7 @@ end
 %!             0;1;0;1; ...
 %!               0;1;0; ...
 %!                 0;1; ...
-%!                   0; ]; 
+%!                   0; ];
 %! funcs={[-1 1], @(x)-x};
 %! [F D] = forcematrix (pos, A, funcs);
 %! F_sb = [zeros(4,2) ones(4,1); ...
@@ -201,4 +201,3 @@ end
 %!                     0;sqrt(1); ...
 %!                       0];
 %! assert (D, D_sb, 1e-8);
-

@@ -21,6 +21,8 @@
 ## axes of the shape. @var{l} is the second moment of area around the correspoding
 ## principal axis. @var{axes} is order from lower to higher @var{l}.
 ##
+## @var{shape} can be defined by a polygon or by a piece-wise smooth shape.
+##
 ## @seealso{inertiamoment, masscenter}
 ## @end deftypefn
 
@@ -68,7 +70,7 @@ end
 %! h = 1; b = 2;
 %! rectangle = [-b/2 -h/2; b/2 -h/2; b/2 h/2; -b/2 h/2];
 %! [PA l] = principalaxes(rectangle);
-%! assert ( [0 1; 1 0], PA, 1e-6);
+%! assert ( [1 0; 0 1], PA, 1e-6);
 %! assert ([b*h^3; h*b^3]/12, l);
 
 %!demo
@@ -78,7 +80,8 @@ end
 %! [PAr l] = principalaxes(shapeR);
 %! [PA l] = principalaxes(shape);
 %!
-%! cla
+%! figure (1)
+%! clf
 %! plot(shape(:,1),shape(:,2),'-k');
 %! line([0 PA(1,1)],[0 PA(1,2)],'color','r');
 %! line([0 PA(2,1)],[0 PA(2,2)],'color','b');

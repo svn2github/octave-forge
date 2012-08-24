@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -32,7 +32,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy private parameter-test
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      are_mf_params.m
-## Last-Modified: 19 May 2011
+## Last-Modified: 20 Aug 2012
 
 function y = are_mf_params (type, params)
 
@@ -55,11 +55,12 @@ function y = are_mf_params (type, params)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Usage: y = real_vector (params)
 ##
-## Return 1 if params is a vector of real numbers, and return 0 otherwise.
-##------------------------------------------------------------------------------
+## Return 1 if params is a vector of real numbers, and
+## return 0 otherwise.
+##----------------------------------------------------------------------
 
 function y = real_vector (params)
 
@@ -67,11 +68,12 @@ function y = real_vector (params)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Usage: y = two_reals (params)
 ##
-## Return 1 if params is a vector of 2 real numbers, and return 0 otherwise.
-##------------------------------------------------------------------------------
+## Return 1 if params is a vector of 2 real numbers, and
+## return 0 otherwise.
+##----------------------------------------------------------------------
 
 function y = two_reals (params)
 
@@ -79,11 +81,12 @@ function y = two_reals (params)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Usage: y = three_reals (params)
 ##
-## Return 1 if params is a vector of 3 real numbers, and return 0 otherwise.
-##------------------------------------------------------------------------------
+## Return 1 if params is a vector of 3 real numbers, and
+## return 0 otherwise.
+##----------------------------------------------------------------------
 
 function y = three_reals (params)
 
@@ -91,11 +94,12 @@ function y = three_reals (params)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Usage: y = four_reals (params)
 ##
-## Return 1 if params is a vector of 4 real numbers, and return 0 otherwise.
-##------------------------------------------------------------------------------
+## Return 1 if params is a vector of 4 real numbers, and
+## return 0 otherwise.
+##----------------------------------------------------------------------
 
 function y = four_reals (params)
 
@@ -103,13 +107,13 @@ function y = four_reals (params)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Usage: y = gbellmf_params (params)
 ##        y = gbellmf_params ([a b c])
 ##
-## Return 1 if params is a vector of 3 real numbers, [a b c], with a != 0 and
-## integral-valued b, and return 0 otherwise.
-##------------------------------------------------------------------------------
+## Return 1 if params is a vector of 3 real numbers, [a b c], with
+## a != 0 and integral-valued b, and return 0 otherwise.
+##----------------------------------------------------------------------
 
 function y = gbellmf_params (params)
 
@@ -117,13 +121,13 @@ function y = gbellmf_params (params)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Usage: y = pimf_params (params)
 ##        y = pimf_params ([a b c d])
 ##
 ## Return 1 if params is a vector of 4 real numbers, [a b c d], with
 ## a < b <= c < d, and return 0 otherwise.
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 
 function y = pimf_params (params)
 
@@ -134,13 +138,13 @@ function y = pimf_params (params)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Usage: y = smf_params (params)
 ##        y = smf_params ([a b])
 ##
 ## Return 1 if params is a vector of 2 real numbers, [a b], with a < b,
 ## and return 0 otherwise.
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 
 function y = smf_params (params)
 
@@ -148,13 +152,13 @@ function y = smf_params (params)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Usage: y = trapmf_params (params)
 ##        y = trapmf_params ([a b c d])
 ##
 ## Return 1 if params is a vector of 4 real numbers, [a b c d], with
 ## a < b <= c < d, and return 0 otherwise.
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 
 function y = trapmf_params (params)
 
@@ -165,13 +169,13 @@ function y = trapmf_params (params)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Usage: y = trimf_params (params)
 ##        y = trimf_params ([a b c])
 ##
-## Return 1 if params is a vector of 3 real numbers, [a b c], with a < b < c,
-## and return 0 otherwise.
-##------------------------------------------------------------------------------
+## Return 1 if params is a vector of 3 real numbers, [a b c], with
+## a < b < c, and return 0 otherwise.
+##----------------------------------------------------------------------
 
 function y = trimf_params (params)
 
@@ -181,13 +185,13 @@ function y = trimf_params (params)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Usage: y = zmf_params (params)
 ##        y = zmf_params ([a b])
 ##
-## Return 1 if params is a vector of 2 real numbers, [a b], with a < b, and
-## return 0 otherwise.
-##------------------------------------------------------------------------------
+## Return 1 if params is a vector of 2 real numbers, [a b], with a < b,
+## and return 0 otherwise.
+##----------------------------------------------------------------------
 
 function y = zmf_params (params)
 

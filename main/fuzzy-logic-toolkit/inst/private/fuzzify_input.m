@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -62,18 +62,19 @@
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
+## Keywords:      fuzzy-logic-toolkit fuzzy inference system fis
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      fuzzify_input.m
-## Last-Modified: 1 Nov 2011
+## Last-Modified: 20 Aug 2012
 
 function rule_input = fuzzify_input (fis, user_input)
 
-  num_rules = columns (fis.rule);                 ## num_rules  == Q (above)
-  num_inputs = columns (fis.input);               ## num_inputs == N
-  rule_input = zeros (num_rules, num_inputs);     ## init to prevent resizing
+  num_rules = columns (fis.rule);             ## num_rules  == Q (above)
+  num_inputs = columns (fis.input);           ## num_inputs == N
+  rule_input = zeros (num_rules, num_inputs); ## to prevent resizing
 
-  ## For each rule i and each input j, compute the value of mu in the result.
+  ## For each rule i and each input j, compute the value of mu
+  ## in the result.
 
   for i = 1 : num_rules
     antecedent = fis.rule(i).antecedent;
@@ -81,9 +82,11 @@ function rule_input = fuzzify_input (fis, user_input)
       mu = 0;
       crisp_x = user_input(j);
 
-      ## Get the value of mu (with adjustment for the hedge and not_flag).
+      ## Get the value of mu (with adjustment for the hedge
+      ## and not_flag).
 
-      [mf_index hedge not_flag] = get_mf_index_and_hedge (antecedent(j));
+      [mf_index hedge not_flag] = ...
+        get_mf_index_and_hedge (antecedent(j));
       if (mf_index != 0)
         mf = fis.input(j).mf(mf_index);
         mu = evalmf (crisp_x, mf.params, mf.type, hedge, not_flag);

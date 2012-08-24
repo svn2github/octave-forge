@@ -1,4 +1,4 @@
-## Copyright (C) 2012 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -27,16 +27,17 @@
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy partition clustering fcm private
+## Keywords:      fuzzy-logic-toolkit fuzzy partition clustering fcm
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      fcm_update_cluster_centers.m
-## Last-Modified: 7 July 2012
+## Last-Modified: 20 Aug 2012
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Note:     This function is an implementation of Equation 13.5 in
-##           Fuzzy Logic: Intelligence, Control and Information, by J. Yen and
-##           R. Langari, Prentice Hall, 1999, page 380 (International Edition). 
-##------------------------------------------------------------------------------
+##           Fuzzy Logic: Intelligence, Control and Information, by
+##           J. Yen and R. Langari, Prentice Hall, 1999, page 380
+##           (International Edition). 
+##----------------------------------------------------------------------
 
 function V = fcm_update_cluster_centers (Mu_m, X, k)
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -34,14 +34,16 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy membership-function evaluate
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      evalmf_private.m
-## Last-Modified: 2 Nov 2011
+## Last-Modified: 20 Aug 2012
 
-function y = evalmf_private (x, params, mf_type, hedge = 0, not_flag = false)
+function y = evalmf_private (x, params, mf_type, hedge = 0, ...
+                             not_flag = false)
 
   ## Calculate and return the y values of the membership function on
-  ## the domain x. First, get the value of the membership function without
-  ## correcting for the hedge and not_flag. Then, for non-linear functions,
-  ## adjust the function values for non-zero hedge and not_flag.
+  ## the domain x. First, get the value of the membership function
+  ## without correcting for the hedge and not_flag. Then, for non-linear
+  ## functions, adjust the function values for non-zero hedge and
+  ## not_flag.
 
   switch (mf_type)
     case 'constant'
@@ -65,11 +67,12 @@ function y = evalmf_private (x, params, mf_type, hedge = 0, not_flag = false)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: eval_constant
-## Purpose:  Return the y-values corresponding to the x-values in the domain
-##           for the constant function specified by the parameter c.
-##------------------------------------------------------------------------------
+## Purpose:  Return the y-values corresponding to the x-values in
+##           the domain for the constant function specified by the
+##           parameter c.
+##----------------------------------------------------------------------
 
 function y = eval_constant (x, c)
   y = zeros (length (x));
@@ -78,16 +81,17 @@ function y = eval_constant (x, c)
   y = arrayfun (y_val, x);
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: eval_linear
-## Purpose:  For the parameters [a ... c]), return the y-values corresponding
-##           to the linear function y = a*x + c, where x takes on the the
-##           x-values in the domain. The remaining coefficients in the parameter
-##           list are not used -- this creates a two-dimensional intersection of
-##           the linear output membership function suitable for display together
-##           with other membership functions, but does not fully represent the
-##           output membership function.
-##------------------------------------------------------------------------------
+## Purpose:  For the parameters [a ... c]), return the y-values
+##           corresponding to the linear function y = a*x + c, where x
+##           takes on the the x-values in the domain. The remaining
+##           coefficients in the parameter list are not used -- this
+##           creates a two-dimensional intersection of the linear output
+##           membership function suitable for display together with
+##           other membership functions, but does not fully represent
+##           the output membership function.
+##----------------------------------------------------------------------
 
 function y = eval_linear (x, params)
   if (length (params) == 1)

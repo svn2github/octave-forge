@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -61,29 +61,30 @@
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
+## Keywords:      fuzzy-logic-toolkit fuzzy inference system fis
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      eval_rules_sugeno.m
-## Last-Modified: 1 Nov 2011
+## Last-Modified: 20 Aug 2012
 
-function rule_output = eval_rules_sugeno (fis, firing_strength, user_input)
+function rule_output = eval_rules_sugeno (fis, firing_strength, ...
+                                          user_input)
 
-  num_rules = columns (fis.rule);                 ## num_rules   == Q (above)
-  num_outputs = columns (fis.output);             ## num_outputs == L
+  num_rules = columns (fis.rule);            ## num_rules   == Q (above)
+  num_outputs = columns (fis.output);        ## num_outputs == L
 
   ## Initialize output matrix to prevent inefficient resizing.
   rule_output = zeros (2, num_rules * num_outputs);
 
   ## Compute the (location, height) of the singleton output by each
   ## (rule, output) pair:
-  ##   1. The height is given by the firing strength of the rule, and by
-  ##      the hedge and the not flag for the (rule, output) pair.
+  ##   1. The height is given by the firing strength of the rule, and
+  ##      by the hedge and the not flag for the (rule, output) pair.
   ##   2. If the consequent membership function is constant, then the
-  ##      membership function's parameter gives the location of the singleton.
-  ##      If the consequent membership function is linear, then the
-  ##      location is the inner product of the the membership function's
-  ##      parameters and the vector formed by appending a 1 to the user input
-  ##      vector.
+  ##      membership function's parameter gives the location of the
+  ##      singleton. If the consequent membership function is linear,
+  ##      then the location is the inner product of the the membership
+  ##      function's parameters and the vector formed by appending a 1
+  ##      to the user input vector.
 
   for i = 1 : num_rules
     rule = fis.rule(i);
@@ -93,10 +94,12 @@ function rule_output = eval_rules_sugeno (fis, firing_strength, user_input)
       for j = 1 : num_outputs
 
         ## Compute the singleton height for this (rule, output) pair.
-        ## Note that for Sugeno FISs, the hedge and not flag are handled by
-        ## adjusting the height of the singletons for each (rule, output) pair.
+        ## Note that for Sugeno FISs, the hedge and not flag are handled
+        ## by adjusting the height of the singletons for each
+        ## (rule, output) pair.
 
-        [mf_index hedge not_flag] = get_mf_index_and_hedge (rule.consequent(j));
+        [mf_index hedge not_flag] = ...
+          get_mf_index_and_hedge (rule.consequent(j));
         height = rule_firing_strength;
         if (hedge != 0)
           height = height ^ (1 / hedge);

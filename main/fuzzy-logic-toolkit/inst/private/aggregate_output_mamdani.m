@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -73,15 +73,15 @@
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
+## Keywords:      fuzzy-logic-toolkit fuzzy inference system fis
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      aggregate_output_mamdani.m
-## Last-Modified: 3 Nov 2011
+## Last-Modified: 20 Aug 2012
 
 function fuzzy_output = aggregate_output_mamdani (fis, rule_output)
 
-  num_rules = columns (fis.rule);                 ## num_rules   == Q (above)
-  num_outputs = columns (fis.output);             ## num_outputs == L
+  num_rules = columns (fis.rule);            ## num_rules   == Q (above)
+  num_outputs = columns (fis.output);        ## num_outputs == L
   num_points = rows (rule_output);
 
   ## Initialize output matrix to prevent inefficient resizing.
@@ -90,7 +90,8 @@ function fuzzy_output = aggregate_output_mamdani (fis, rule_output)
   ## Compute the ith fuzzy output values, then store the values in the
   ## ith column of the fuzzy_output matrix.
   for i = 1 : num_outputs
-    indiv_fuzzy_out = rule_output(:, (i - 1) * num_rules + 1 : i * num_rules);
+    indiv_fuzzy_out = ...
+      rule_output(:, (i - 1) * num_rules + 1 : i * num_rules);
     agg_fuzzy_out = (str2func (fis.aggMethod) (indiv_fuzzy_out'))';
     fuzzy_output(:, i) = agg_fuzzy_out;
   endfor

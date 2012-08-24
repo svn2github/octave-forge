@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -57,27 +57,27 @@
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
+## Keywords:      fuzzy-logic-toolkit fuzzy inference system fis
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      eval_firing_strength.m
-## Last-Modified: 3 Nov 2011
+## Last-Modified: 20 Aug 2012
 
 function firing_strength = eval_firing_strength (fis, rule_input)
 
-  num_rules = columns (fis.rule);                 ## num_rules   == Q (above)
-  num_inputs = columns (fis.input);               ## num_inputs  == N
+  num_rules = columns (fis.rule);            ## num_rules   == Q (above)
+  num_inputs = columns (fis.input);          ## num_inputs  == N
 
   ## Initialize output matrix to prevent inefficient resizing.
   firing_strength = zeros (1, num_rules);
 
   ## For each rule
-  ##    1. Apply connection to find matching degree of the rule antecedent.
+  ##    1. Apply connection to find matching degree of the antecedent.
   ##    2. Multiply by weight of the rule to find degree of the rule.
 
   for i = 1 : num_rules
     rule = fis.rule(i);
 
-    ## Collect mu values for all input variables in the rule's antecedent.
+    ## Collect mu values for all input variables in the antecedent.
     antecedent_mus = [];
     for j = 1 : num_inputs
       if (rule.antecedent(j) != 0)
@@ -94,33 +94,47 @@ function firing_strength = eval_firing_strength (fis, rule_input)
     endif
     switch (connect)
       case 'min'
-        firing_strength(i) = rule.weight * min (antecedent_mus);
+        firing_strength(i) = rule.weight * ...
+                             min (antecedent_mus);
       case 'max'
-        firing_strength(i) = rule.weight * max (antecedent_mus);
+        firing_strength(i) = rule.weight * ...
+                             max (antecedent_mus);
       case 'prod'
-        firing_strength(i) = rule.weight * prod (antecedent_mus);
+        firing_strength(i) = rule.weight * ...
+                             prod (antecedent_mus);
       case 'sum'
-        firing_strength(i) = rule.weight * sum (antecedent_mus);
+        firing_strength(i) = rule.weight * ...
+                             sum (antecedent_mus);
       case 'algebraic_product'
-        firing_strength(i) = rule.weight * prod (antecedent_mus);
+        firing_strength(i) = rule.weight * ...
+                             prod (antecedent_mus);
       case 'algebraic_sum'
-        firing_strength(i) = rule.weight * algebraic_sum (antecedent_mus);
+        firing_strength(i) = rule.weight * ...
+                             algebraic_sum (antecedent_mus);
       case 'bounded_difference'
-        firing_strength(i) = rule.weight * bounded_difference (antecedent_mus);
+        firing_strength(i) = rule.weight * ...
+                             bounded_difference (antecedent_mus);
       case 'bounded_sum'
-        firing_strength(i) = rule.weight * bounded_sum (antecedent_mus);
+        firing_strength(i) = rule.weight * ...
+                             bounded_sum (antecedent_mus);
       case 'einstein_product'
-        firing_strength(i) = rule.weight * einstein_product (antecedent_mus);
+        firing_strength(i) = rule.weight * ...
+                             einstein_product (antecedent_mus);
       case 'einstein_sum'
-        firing_strength(i) = rule.weight * einstein_sum (antecedent_mus);
+        firing_strength(i) = rule.weight * ...
+                             einstein_sum (antecedent_mus);
       case 'hamacher_product'
-        firing_strength(i) = rule.weight * hamacher_product (antecedent_mus);
+        firing_strength(i) = rule.weight * ...
+                             hamacher_product (antecedent_mus);
       case 'hamacher_sum'
-        firing_strength(i) = rule.weight * hamacher_sum (antecedent_mus);
+        firing_strength(i) = rule.weight * ...
+                             hamacher_sum (antecedent_mus);
       case 'drastic_product'
-        firing_strength(i) = rule.weight * drastic_product (antecedent_mus);
+        firing_strength(i) = rule.weight * ...
+                             drastic_product (antecedent_mus);
       case 'drastic_sum'
-        firing_strength(i) = rule.weight * drastic_sum (antecedent_mus);
+        firing_strength(i) = rule.weight * ...
+                             drastic_sum (antecedent_mus);
       otherwise
         firing_strength(i) = rule.weight * ...
                              str2func (connect) (antecedent_mus);

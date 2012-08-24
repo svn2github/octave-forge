@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -33,14 +33,16 @@
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
+## Keywords:      fuzzy-logic-toolkit fuzzy inference system fis
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      get_mf_index_and_hedge.m
-## Last-Modified: 12 Nov 2011
+## Last-Modified: 20 Aug 2012
 
-function [mf_index hedge not_flag] = get_mf_index_and_hedge (mf_index_and_hedge)
+function [mf_index hedge not_flag] = ...
+  get_mf_index_and_hedge (mf_index_and_hedge)
 
-  ## Set flag to handle "not", indicated by a minus sign in the antecedent.
+  ## Set flag to handle "not", indicated by a minus sign in the
+  ## antecedent.
 
   if (mf_index_and_hedge < 0)
     not_flag = true;
@@ -55,9 +57,10 @@ function [mf_index hedge not_flag] = get_mf_index_and_hedge (mf_index_and_hedge)
   mf_index = fix (mf_index_and_hedge);
 
   ## For custom hedges and the four built-in hedges "somewhat", "very",
-  ## "extremely", and "very very", return the power to which the membership
-  ## value should be raised. The hedges are indicated by the fractional
-  ## part of the corresponding rule_matrix entry (rounded to 2 digits). 
+  ## "extremely", and "very very", return the power to which the
+  ## membership value should be raised. The hedges are indicated by the
+  ## fractional part of the corresponding rule_matrix entry (rounded to
+  ## 2 digits). 
 
   if (mf_index != 0)
     hedge = round (100 * (mf_index_and_hedge - mf_index)) / 10;

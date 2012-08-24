@@ -1,4 +1,4 @@
-## Copyright (C) 2012 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -27,12 +27,13 @@
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy partition clustering fcm private
+## Keywords:      fuzzy-logic-toolkit fuzzy partition clustering fcm
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      fcm_compute_convergence_criterion.m
-## Last-Modified: 7 July 2012
+## Last-Modified: 20 Aug 2012
 
-function convergence_criterion = fcm_compute_convergence_criterion (V, V_previous)
+function convergence_criterion = ...
+  fcm_compute_convergence_criterion (V, V_previous)
 
   V_delta = V - V_previous;
   convergence_criterion = sum (sqrt (sum (V_delta .* V_delta)'));

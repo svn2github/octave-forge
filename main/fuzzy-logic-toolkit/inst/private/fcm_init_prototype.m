@@ -1,4 +1,4 @@
-## Copyright (C) 2012 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -27,10 +27,10 @@
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy partition clustering fcm private
+## Keywords:      fuzzy-logic-toolkit fuzzy partition clustering fcm
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      fcm_init_prototype.m
-## Last-Modified: 7 July 2012
+## Last-Modified: 20 Aug 2012
 
 function V = fcm_init_prototype (X, k)
 
@@ -40,8 +40,8 @@ function V = fcm_init_prototype (X, k)
   V = rand (k, num_features);
 
   for i = 1 : num_features
-    V(:, i) = (max_feature_value(i) - min_feature_value(i)) * V(:, i) + ...
-                min_feature_value(i);
+    V(:, i) = (max_feature_value(i) - min_feature_value(i)) * ...
+                V(:, i) + min_feature_value(i);
   endfor
 
 endfunction

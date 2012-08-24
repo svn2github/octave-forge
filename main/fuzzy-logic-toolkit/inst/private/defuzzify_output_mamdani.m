@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -64,14 +64,14 @@
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
+## Keywords:      fuzzy-logic-toolkit fuzzy inference system fis
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      defuzzify_output_mamdani.m
-## Last-Modified: 30 Aug 2011
+## Last-Modified: 20 Aug 2012
 
 function output = defuzzify_output_mamdani (fis, fuzzy_output)
 
-  num_outputs = columns (fis.output);             ## num_outputs == L (above)
+  num_outputs = columns (fis.output);        ## num_outputs == L (above)
   num_points = rows (fuzzy_output);
   output = zeros (1, num_outputs);
 

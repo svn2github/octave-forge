@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -71,12 +71,12 @@
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
+## Keywords:      fuzzy-logic-toolkit fuzzy inference system fis
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      aggregate_output_sugeno.m
-## Last-Modified: 10 Nov 2011
+## Last-Modified: 20 Aug 2012
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 
 function fuzzy_output = aggregate_output_sugeno (fis, rule_output)
 
@@ -84,12 +84,13 @@ function fuzzy_output = aggregate_output_sugeno (fis, rule_output)
   num_outputs = columns (fis.output);
   num_rules = columns (fis.rule);
 
-  ## For each FIS output, aggregate the slice of the rule_output matrix, 
+  ## For each FIS output, aggregate the slice of the rule_output matrix,
   ## then store the result as a structure in fuzzy_output.
 
   for i = 1 : num_outputs
     unagg_output = rule_output(:, (i-1)*num_rules+1 : i*num_rules);
-    aggregated_output = aggregate_fis_output (fis.aggMethod, unagg_output);
+    aggregated_output = aggregate_fis_output (fis.aggMethod, ...
+                                              unagg_output);
     next_agg_output = struct ('index', i, ...
                               'aggregated_output', aggregated_output);
     if (i == 1)
@@ -100,19 +101,20 @@ function fuzzy_output = aggregate_output_sugeno (fis, rule_output)
   endfor
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: aggregate_fis_output
 ## Purpose:  Aggregate the multiple singletons for one FIS output.
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 
-function mult_singletons = aggregate_fis_output (fis_aggmethod, rule_output)
+function mult_singletons = aggregate_fis_output (fis_aggmethod, ...
+                                                 rule_output)
 
   ## Initialize output matrix (multiple_singletons).
 
   mult_singletons = sortrows (rule_output', 1);
 
-  ## If adjacent rows represent singletons at the same location, then combine
-  ## them using the FIS aggregation method.
+  ## If adjacent rows represent singletons at the same location, then
+  ## combine them using the FIS aggregation method.
 
   for i = 1 : rows (mult_singletons) - 1
     if (mult_singletons(i, 1) == mult_singletons(i+1, 1))
@@ -129,16 +131,18 @@ function mult_singletons = aggregate_fis_output (fis_aggmethod, rule_output)
     endif
   endfor
 
-  ## Return the transpose of the matrix after removing 0-height singletons.
+  ## Return the transpose of the matrix after removing 0-height
+  ## singletons.
 
   mult_singletons = (remove_null_rows (mult_singletons))';
     
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: remove_null_rows
-## Purpose:  Return the argument without the rows with a 0 in the second column.
-##------------------------------------------------------------------------------
+## Purpose:  Return the argument without the rows with a 0 in the
+##           second column.
+##----------------------------------------------------------------------
 
 function y = remove_null_rows (x)
   y = [];

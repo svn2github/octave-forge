@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -64,15 +64,16 @@
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
+## Keywords:      fuzzy-logic-toolkit fuzzy inference system fis
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      eval_rules_mamdani.m
-## Last-Modified: 1 Nov 2011
+## Last-Modified: 20 Aug 2012
 
-function rule_output = eval_rules_mamdani (fis, firing_strength, num_points)
+function rule_output = eval_rules_mamdani (fis, firing_strength, ...
+                                           num_points)
 
-  num_rules = columns (fis.rule);                 ## num_rules   == Q (above)
-  num_outputs = columns (fis.output);             ## num_outputs == L
+  num_rules = columns (fis.rule);            ## num_rules   == Q (above)
+  num_outputs = columns (fis.output);        ## num_outputs == L
 
   ## Initialize output matrix to prevent inefficient resizing.
   rule_output = zeros (num_points, num_rules*num_outputs);
@@ -91,11 +92,12 @@ function rule_output = eval_rules_mamdani (fis, firing_strength, num_points)
 
         ## Compute the fuzzy output for this (rule, output) pair.
 
-        [mf_index hedge not_flag] = get_mf_index_and_hedge (rule.consequent(j));
+        [mf_index hedge not_flag] = ...
+          get_mf_index_and_hedge (rule.consequent(j));
         if (mf_index != 0)
 
-          ## First, get the fuzzy output, adjusting for the hedge and not_flag,
-          ## but not for the rule matching degree.
+          ## First, get the fuzzy output, adjusting for the hedge and
+          ## not_flag, but not for the rule matching degree.
 
           range = fis.output(j).range;
           mf = fis.output(j).mf(mf_index);
@@ -110,8 +112,8 @@ function rule_output = eval_rules_mamdani (fis, firing_strength, num_points)
             case 'prod'
               fuzzy_out *= rule_matching_degree;
             otherwise
-              fuzzy_out = str2func (fis.impMethod) (rule_matching_degree, ...
-                                                    fuzzy_out);
+              fuzzy_out = str2func (fis.impMethod) ...
+                            (rule_matching_degree, fuzzy_out);
           endswitch
 
           ## Store result in column of rule_output corresponding

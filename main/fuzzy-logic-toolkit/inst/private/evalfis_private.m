@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -31,10 +31,10 @@
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
+## Keywords:      fuzzy-logic-toolkit fuzzy inference system fis
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      evalfis_private.m
-## Last-Modified: 19 May 2011
+## Last-Modified: 20 Aug 2012
 
 function [output, rule_input, rule_output, fuzzy_output] = ...
            evalfis_private (user_input, fis, num_points = 101)
@@ -51,11 +51,13 @@ function [output, rule_input, rule_output, fuzzy_output] = ...
     rule_input = fuzzify_input (fis, user_input(i, :));
     firing_strength = eval_firing_strength (fis, rule_input);
     if (strcmp (fis.type, 'mamdani'))
-      rule_output = eval_rules_mamdani (fis, firing_strength, num_points);
+      rule_output = eval_rules_mamdani (fis, firing_strength, ...
+                                        num_points);
       fuzzy_output = aggregate_output_mamdani (fis, rule_output);
       output(i, :) = defuzzify_output_mamdani (fis, fuzzy_output);
     else
-      rule_output = eval_rules_sugeno (fis, firing_strength, user_input(i, :));
+      rule_output = eval_rules_sugeno (fis, firing_strength, ...
+                                       user_input(i, :));
       fuzzy_output = aggregate_output_sugeno (fis, rule_output);
       output(i, :) = defuzzify_output_sugeno (fis, fuzzy_output);
     endif

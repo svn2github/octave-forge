@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -29,11 +29,12 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy private parameter-test
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      is_input_matrix.m
-## Last-Modified: 20 May 2011
+## Last-Modified: 20 Aug 2012
 
 function y = is_input_matrix (x, fis)
 
-  if (!(ismatrix (x) && isreal (x) && (columns (x) == columns (fis.input))))
+  if (!(ismatrix (x) && isreal (x) && ...
+        (columns (x) == columns (fis.input))))
     y = 0;
   else
     y = 1;

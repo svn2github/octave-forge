@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -57,15 +57,15 @@
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy membership-function sigmoidal
+## Keywords:      fuzzy-logic-toolkit fuzzy membership sigmoidal
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      sigmf.m
-## Last-Modified: 28 Oct 2011
+## Last-Modified: 19 Aug 2012
 
 function y = sigmf (x, params)
 
-  ## If the caller did not supply 2 argument values with the correct types,
-  ## print an error message and halt.
+  ## If the caller did not supply 2 argument values with the correct
+  ## types, print an error message and halt.
 
   if (nargin != 2)
     puts ("Type 'help sigmf' for more information.\n");

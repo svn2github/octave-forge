@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -64,15 +64,15 @@
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy membership-function gaussian
+## Keywords:      fuzzy-logic-toolkit fuzzy membership gaussian
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      gauss2mf.m
-## Last-Modified: 28 Oct 2011
+## Last-Modified: 19 Aug 2012
 
 function y = gauss2mf (x, params)
 
-  ## If the caller did not supply 2 argument values with the correct types,
-  ## print an error message and halt.
+  ## If the caller did not supply 2 argument values with the correct
+  ## types, print an error message and halt.
 
   if (nargin != 2)
     puts ("Type 'help gauss2mf' for more information.\n");
@@ -85,16 +85,17 @@ function y = gauss2mf (x, params)
     error ("gauss2mf's second argument must be a parameter vector\n");
   endif
 
-  ## Calculate and return the y values of the membership function on the
-  ## domain x according to the definition of gauss2mf given in the comment
-  ## above.
+  ## Calculate and return the y values of the membership function on
+  ## the domain x according to the definition of gauss2mf given in the
+  ## comment above.
 
   sig1 = params(1);
   c1 = params(2);
   sig2 = params(3);
   c2 = params(4);
 
-  f1_val = @(x_val) (x_val <= c1) * exp ((-(x_val - c1)^2)/(2 * sig1^2)) + ...
+  f1_val = @(x_val) (x_val <= c1) * ...
+                    exp ((-(x_val - c1)^2)/(2 * sig1^2)) + ...
                     (x_val > c1);
 
   f2_val = @(x_val) (x_val <= c2) + ... 

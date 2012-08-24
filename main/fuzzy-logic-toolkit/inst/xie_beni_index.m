@@ -1,4 +1,4 @@
-## Copyright (C) 2012 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -46,31 +46,37 @@
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy xie beni index cluster validity
+## Keywords:      fuzzy-logic-toolkit fuzzy xie beni cluster validity
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      xie_beni_index.m
-## Last-Modified: 10 July 2012
+## Last-Modified: 19 Aug 2012
 
-function vxb = xie_beni_index (input_data, cluster_centers, soft_partition)
+function vxb = xie_beni_index (input_data, cluster_centers, ...
+                               soft_partition)
 
-  ## If xie_beni_index was called with an incorrect number of arguments, or the
-  ## argument does not have the correct type, print an error message and halt.
+  ## If xie_beni_index was called with an incorrect number of arguments,
+  ## or the argument does not have the correct type, print an error
+  ## message and halt.
 
   if (nargin != 3)
     puts ("Type 'help xie_beni_index' for more information.\n");
     error ("xie_beni_index requires 3 arguments\n");
   elseif (!is_real_matrix (input_data))
     puts ("Type 'help xie_beni_index' for more information.\n");
-    error ("xie_beni_index's first argument must be matrix of real numbers\n");
+    error ("xie_beni_index's first argument must be matrix of reals\n");
   elseif (!(is_real_matrix (cluster_centers) &&
             (columns (cluster_centers) == columns (input_data))))
     puts ("Type 'help xie_beni_index' for more information.\n");
-    error ("xie_beni_index's second argument must be matrix of real numbers with the same number of columns as the input_data\n");
+    puts ("xie_beni_index's second argument must be matrix of reals\n");
+    puts ("with the same number of columns as the input_data\n");
+    error ("invalid second argument to xie_beni_index\n");
   elseif (!(is_real_matrix (soft_partition) &&
             (min (min (soft_partition)) >= 0) &&
             (max (max (soft_partition)) <= 1)))
     puts ("Type 'help xie_beni_index' for more information.\n");
-    error ("xie_beni_index's third argument must be a matrix of real numbers mu, with 0 <= mu <= 1\n");
+    puts ("xie_beni_index's third argument must be a matrix of\n");
+    puts ("real numbers mu, with 0 <= mu <= 1\n");
+    error ("invalid third argument to xie_beni_index\n");
   endif
 
   ## Compute and return the Xie-Beni index.
@@ -79,14 +85,14 @@ function vxb = xie_beni_index (input_data, cluster_centers, soft_partition)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: xie_beni_private
 ## Purpose:  Return the Xie-Beni index for the given soft partition.
-## Note:     The following is an implementation of Equations 13.11, 13.12, and
-##           13.13 in Fuzzy Logic: Intelligence, Control and Information, by
-##           J. Yen and R. Langari, Prentice Hall, 1999, page 384 (International
-##           Edition). 
-##------------------------------------------------------------------------------
+## Note:     The following is an implementation of Equations 13.11,
+##           13.12, and 13.13 in Fuzzy Logic: Intelligence, Control and
+##           Information, by J. Yen and R. Langari, Prentice Hall, 1999,
+##           page 384 (International Edition). 
+##----------------------------------------------------------------------
 
 function vxb = xie_beni_private (X, V, Mu)
 
@@ -98,10 +104,11 @@ function vxb = xie_beni_private (X, V, Mu)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: min_sqr_dist_between_centers
-## Purpose:  Return the square of the minimum distance between cluster centers.
-##------------------------------------------------------------------------------
+## Purpose:  Return the square of the minimum distance between
+##           cluster centers.
+##----------------------------------------------------------------------
 
 function d_sqr_min = min_sqr_dist_between_centers (V)
 

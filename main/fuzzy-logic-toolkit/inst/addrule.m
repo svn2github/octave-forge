@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -84,12 +84,12 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy rule
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      addrule.m
-## Last-Modified: 11 Nov 2011
+## Last-Modified: 18 Aug 2012
 
 function fis = addrule (fis, rule_matrix) 
 
-  ## If the caller did not supply 2 argument values with the correct types,
-  ## print an error message and halt.
+  ## If the caller did not supply 2 argument values with the correct
+  ## types, print an error message and halt.
 
   if (nargin != 2)
     puts ("Type 'help addrule' for more information.\n");
@@ -98,19 +98,20 @@ function fis = addrule (fis, rule_matrix)
     puts ("Type 'help addrule' for more information.\n");
     error ("addrule's first argument must be an FIS structure\n");
   elseif (!is_real_matrix (rule_matrix))
-    puts ("Type 'help addrule' for more information.\n");
-    error ("addrule's second argument must be a matrix of real numbers\n");
+    puts ("Type 'help addrule' for more information. addrule's \n");
+    error ("second argument must be a matrix of real numbers\n");
   endif
 
-  ## For each row in the rule_matrix, create a new rule struct and update
-  ## the FIS structure.
+  ## For each row in the rule_matrix, create a new rule struct and
+  ## update the FIS structure.
 
   num_inputs = columns (fis.input);
   num_outputs = columns (fis.output);
 
   for i = 1 : rows (rule_matrix)
     antecedent = rule_matrix(i, 1 : num_inputs);
-    consequent = rule_matrix(i, (num_inputs+1) : (num_inputs+num_outputs));
+    consequent = rule_matrix(i, ...
+                             (num_inputs+1) : (num_inputs+num_outputs));
     weight = rule_matrix(i, num_inputs + num_outputs + 1);
     connection = rule_matrix(i, num_inputs + num_outputs + 2);
     new_rules(i) = struct ('antecedent', antecedent, ...

@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -37,14 +37,17 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy algebraic_product
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      algebraic_product.m
-## Last-Modified: 12 Nov 2011
+## Last-Modified: 18 Aug 2012
 
 function retval = algebraic_product (x, y = 0)
   if (!(isreal (x) && isreal (y)))
+    puts ("Arguments to algebraic_product must be real scalars ");
+    puts ("or matrices.\n");
     puts ("Type 'help algebraic_product' for more information.\n");
-    error ("algebraic_product requires real scalar or matrix arguments\n");
+    error ("invalid arguments to function algebraic_product\n");
   elseif (nargin == 2 && ...
-          (isscalar (x) || isscalar (y) || isequal (size (x), size (y))))
+          (isscalar (x) || isscalar (y) || ...
+           isequal (size (x), size (y))))
     retval = x .* y;
   elseif (nargin == 1 && ndims (x) <= 2)
     retval = prod (x);

@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -53,14 +53,14 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy defuzzification
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      defuzz.m
-## Last-Modified: 16 Jul 2011
+## Last-Modified: 18 Aug 2012
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 
 function crisp_x = defuzz (x, y, defuzz_method)
 
-  ## If the caller did not supply 3 argument values with the correct types,
-  ## print an error message and halt.
+  ## If the caller did not supply 3 argument values with the correct
+  ## types, print an error message and halt.
 
   if (nargin != 3)
     puts ("Type 'help defuzz' for more information.\n");
@@ -70,31 +70,31 @@ function crisp_x = defuzz (x, y, defuzz_method)
     error ("defuzz's first argument must be a valid domain\n");
   elseif (!(isvector (y) && isreal (y) && length (x) == length (y)))
     puts ("Type 'help defuzz' for more information.\n");
-    error ("defuzz's second argument must be a real number or vector\n");
+    error ("defuzz's 2nd argument must be a real number or vector\n");
   elseif (!is_string (defuzz_method))
     puts ("Type 'help defuzz' for more information.\n");
     error ("defuzz's third argument must be a string\n");
   endif
 
-  ## Calculate and return the defuzzified (crisp_x) value using the method
-  ## specified by the argument defuzz_method.
+  ## Calculate and return the defuzzified (crisp_x) value using the
+  ## method specified by the argument defuzz_method.
 
   crisp_x = str2func (defuzz_method) (x, y);
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Usage: crisp_x = centroid (x, y)
 ##        crisp_x = centroid ([x1 x2 ... xn], [y1 y2 ... yn])
 ##
 ## For a given domain (x or [x1 x2 ... xn]) and corresponding y-values
-## (y or [y1 y2 ... yn]), return the x-value of the centroid of the region
-## described by the points (xi, yi).
+## (y or [y1 y2 ... yn]), return the x-value of the centroid of the
+## region described by the points (xi, yi).
 ##
 ## Both arguments are assumed to be reals or non-empty vectors of reals.
-## In addition, x is assumed to be strictly increasing, and x and y are assumed
-## to be of equal length.
-##------------------------------------------------------------------------------
+## In addition, x is assumed to be strictly increasing, and x and y are
+## assumed to be of equal length.
+##----------------------------------------------------------------------
 
 function crisp_x = centroid (x, y)
 
@@ -102,7 +102,7 @@ function crisp_x = centroid (x, y)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Usage: crisp_x = bisector (x, y)
 ##        crisp_x = bisector ([x1 x2 ... xn], [y1 y2 ... yn])
 ##
@@ -111,15 +111,15 @@ endfunction
 ## described by the points (xi, yi).
 ##
 ## Both arguments are assumed to be reals or non-empty vectors of reals.
-## In addition, x is assumed to be strictly increasing, and x and y are assumed
-## to be of equal length.
-##------------------------------------------------------------------------------
+## In addition, x is assumed to be strictly increasing, and x and y are
+## assumed to be of equal length.
+##----------------------------------------------------------------------
 
 function crisp_x = bisector (x, y)
 
-  ## Find the bisector using a binary search. To ensure that the function
-  ## terminates, add a counter to limit the iterations to the length of the
-  ## vectors x and y.
+  ## Find the bisector using a binary search. To ensure that the
+  ## function terminates, add a counter to limit the iterations to the
+  ## length of the vectors x and y.
 
   half_area = trapz (x, y) / 2;
   x_len = length (x);
@@ -145,18 +145,19 @@ function crisp_x = bisector (x, y)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Usage: crisp_x = mom (x, y)
 ##        crisp_x = mom ([x1 x2 ... xn], [y1 y2 ... yn])
 ##
 ## For a given domain (x or [x1 x2 ... xn]) and corresponding y-values
-## (y or [y1 y2 ... yn]), return the "Mean of Maximum"; that is, return the
-## average of the x-values corresponding to the maximum y-value in y. 
+## (y or [y1 y2 ... yn]), return the "Mean of Maximum"; that is, return
+## the average of the x-values corresponding to the maximum y-value
+## in y. 
 ##
 ## Both arguments are assumed to be reals or non-empty vectors of reals.
-## In addition, x is assumed to be strictly increasing, and x and y are assumed
-## to be of equal length.
-##------------------------------------------------------------------------------
+## In addition, x is assumed to be strictly increasing, and x and y are
+## assumed to be of equal length.
+##----------------------------------------------------------------------
 
 function crisp_x = mom (x, y)
 
@@ -167,18 +168,19 @@ function crisp_x = mom (x, y)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Usage: crisp_x = som (x, y)
 ##        crisp_x = som ([x1 x2 ... xn], [y1 y2 ... yn])
 ##
 ## For a given domain (x or [x1 x2 ... xn]) and corresponding y-values
-## (y or [y1 y2 ... yn]), return the "Smallest of Maximum"; that is, return the
-## smallest x-value corresponding to the maximum y-value in y. 
+## (y or [y1 y2 ... yn]), return the "Smallest of Maximum"; that is,
+## return the smallest x-value corresponding to the maximum y-value
+## in y. 
 ##
 ## Both arguments are assumed to be reals or non-empty vectors of reals.
-## In addition, x is assumed to be strictly increasing, and x and y are assumed
-## to be of equal length.
-##------------------------------------------------------------------------------
+## In addition, x is assumed to be strictly increasing, and x and y are
+## assumed to be of equal length.
+##----------------------------------------------------------------------
 
 function crisp_x = som (x, y)
 
@@ -189,18 +191,18 @@ function crisp_x = som (x, y)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Usage: crisp_x = lom (x, y)
 ##        crisp_x = lom ([x1 x2 ... xn], [y1 y2 ... yn])
 ##
 ## For a given domain (x or [x1 x2 ... xn]) and corresponding y-values
-## (y or [y1 y2 ... yn]), return the "Largest of Maximum"; that is, return the
-## largest x-value corresponding to the maximum y-value in y. 
+## (y or [y1 y2 ... yn]), return the "Largest of Maximum"; that is,
+## return the largest x-value corresponding to the maximum y-value in y.
 ##
 ## Both arguments are assumed to be reals or non-empty vectors of reals.
-## In addition, x is assumed to be strictly increasing, and x and y are assumed
-## to be of equal length.
-##------------------------------------------------------------------------------
+## In addition, x is assumed to be strictly increasing, and x and y are
+## assumed to be of equal length.
+##----------------------------------------------------------------------
 
 function crisp_x = lom (x, y)
 
@@ -211,17 +213,17 @@ function crisp_x = lom (x, y)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Usage: retval = wtaver (values, weights)
 ##
-## Return the weighted average of the values. The parameters are assumed to be
-## equal-length vectors of real numbers.
+## Return the weighted average of the values. The parameters are assumed
+## to be equal-length vectors of real numbers.
 ##
 ## Examples:
 ##    wtaver ([1 2 3 4], [1 1 1 1])  ==> 2.5
 ##    wtaver ([1 2 3 4], [1 2 3 4])  ==> 3
 ##    wtaver ([1 2 3 4], [0 0 1 1])  ==> 3.5
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 
 function retval = wtaver (values, weights)
 
@@ -229,17 +231,17 @@ function retval = wtaver (values, weights)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Usage: retval = wtsum (values, weights)
 ##
-## Return the weighted sum of the values. The parameters are assumed to be
-## equal-length vectors of real numbers.
+## Return the weighted sum of the values. The parameters are assumed to
+## be equal-length vectors of real numbers.
 ##
 ## Examples:
 ##    wtsum ([1 2 3 4], [1 1 1 1])  ==> 10
 ##    wtsum ([1 2 3 4], [1 2 3 4])  ==> 30
 ##    wtsum ([1 2 3 4], [0 0 1 1])  ==> 7
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 
 function retval = wtsum (values, weights)
 

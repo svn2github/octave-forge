@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -42,12 +42,12 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy variable
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      rmvar.m
-## Last-Modified: 16 Jul 2011
+## Last-Modified: 20 Aug 2012
 
 function fis = rmvar (fis, in_or_out, var_index)
 
-  ## If the caller did not supply 3 argument values with the correct types,
-  ## print an error message and halt.
+  ## If the caller did not supply 3 argument values with the correct
+  ## types, print an error message and halt.
 
   if (nargin != 3)
     puts ("Type 'help rmvar' for more information.\n");

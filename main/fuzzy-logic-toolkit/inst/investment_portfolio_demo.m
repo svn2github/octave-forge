@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -48,7 +48,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy tests demos
 ## Directory:     fuzzy-logic-toolkit/inst
 ## Filename:      investment_portfolio_demo.m
-## Last-Modified: 12 Nov 2011
+## Last-Modified: 19 Aug 2012
 
 ## Read the FIS structure from a file.
 fis=readfis ('investment_portfolio');
@@ -61,15 +61,18 @@ plotmf (fis, 'output', 1);
 ## Plot the Percentage-In-Stocks a function of Age and Risk-Tolerance.
 gensurf (fis, [1 2], 1);
 
-## Calculate the Percentage-In-Stocks using (Age, Risk-Tolerance) = (40, 7).
-[output, rule_input, rule_output, fuzzy_output] = evalfis ([40 7], fis, 1001);
+## Calculate the Percentage-In-Stocks using
+## (Age, Risk-Tolerance) = (40, 7).
+[output, rule_input, rule_output, fuzzy_output] = ...
+  evalfis ([40 7], fis, 1001);
 
 ## Plot the output (Percentage-In-Stocks) of the individual fuzzy rules
 ## on one set of axes.
-x_axis = linspace (fis.output(1).range(1), fis.output(1).range(2), 1001);
+x_axis = linspace (fis.output(1).range(1), ...
+                   fis.output(1).range(2), 1001);
 colors = ['r' 'b' 'm' 'g'];
 figure ('NumberTitle', 'off', 'Name', ...
-        'Output of Fuzzy Rules 1-4 for (Age, Risk Tolerance) = (40, 7)');
+       'Output of Fuzzy Rules 1-4 for (Age, Risk Tolerance) = (40, 7)');
 
 for i = 1 : 4
     y_label = [colors(i) ";Rule " num2str(i) ";"];
@@ -82,10 +85,12 @@ xlabel ('Percentage in Stocks', 'FontWeight', 'bold');
 grid;
 hold;
 
-## Plot the first aggregated fuzzy output and the crisp output (Percentage-In-Stocks)
-## on one set of axes.
-figure('NumberTitle', 'off', 'Name', 'Aggregation and Defuzzification for (Age, Risk Tolerace) = (40, 7)');
-plot (x_axis, fuzzy_output(:, 1), "b;Aggregated Fuzzy Output;", 'LineWidth', 2);
+## Plot the first aggregated fuzzy output and the crisp output
+## (Percentage-In-Stocks) on one set of axes.
+figure('NumberTitle', 'off', 'Name', ...
+  'Aggregation and Defuzzification for (Age, Risk Tolerace) = (40, 7)');
+plot (x_axis, fuzzy_output(:, 1), "b;Aggregated Fuzzy Output;", ...
+      'LineWidth', 2);
 hold on;
 crisp_output = evalmf(x_axis, output(1), 'constant');
 y_label = ["r;Crisp Output = " num2str(output(1)) "%;"];

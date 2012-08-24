@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -56,15 +56,15 @@
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
+## Keywords:      fuzzy-logic-toolkit fuzzy inference system fis
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      readfis.m
-## Last-Modified: 11 Nov 2011
+## Last-Modified: 20 Aug 2012
 
 function fis = readfis (filename = '')
 
-  ## If readfis was not called with 0 or 1 arguments, or if the argument is
-  ## not a string, print an error message and halt.
+  ## If readfis was not called with 0 or 1 arguments, or if the argument
+  ## is not a string, print an error message and halt.
 
   if (nargin > 1)
     puts ("Type 'help readfis' for more information.\n");
@@ -85,7 +85,8 @@ function fis = readfis (filename = '')
     init_fis_struct (fid);
   [fis, line_num] = read_fis_inputs (fid, fis, num_inputs, line_num);
   [fis, line_num] = read_fis_outputs (fid, fis, num_outputs, line_num);
-  fis = read_rules (fid, fis, num_inputs, num_outputs, num_rules, line_num);
+  fis = read_rules (fid, fis, num_inputs, num_outputs, num_rules, ...
+                    line_num);
 
   ## Close the input file.
 
@@ -93,21 +94,21 @@ function fis = readfis (filename = '')
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: open_input_file
-## Purpose:  Open the input file specified by the filename. If the filename does
-##           not end with ".fis", then append ".fis" to the filename before
-##           opening. Return an fid if successful. Otherwise, print an error
-##           message and halt.
-##------------------------------------------------------------------------------
+## Purpose:  Open the input file specified by the filename. If the
+##           filename does not end with ".fis", then append ".fis" to
+##           the filename before opening. Return an fid if successful.
+##           Otherwise, print an error message and halt.
+##----------------------------------------------------------------------
 
 function fid = open_input_file (filename)
 
-  ##--------------------------------------------------------------------------
-  ## If the filename is not empty, and if the last four characters of the
-  ## filename are not '.fis', append '.fis' to the filename. If the filename
-  ## is empty, use a dialog to select the input file.
-  ##--------------------------------------------------------------------------
+  ##--------------------------------------------------------------------
+  ## If the filename is not empty, and if the last four characters of
+  ## the filename are not '.fis', append '.fis' to the filename. If the
+  ## filename is empty, use a dialog to select the input file.
+  ##--------------------------------------------------------------------
 
   fn_len = length (filename);
   if (fn_len == 0)
@@ -115,7 +116,8 @@ function fid = open_input_file (filename)
   else
     dialog = 0;
   endif
-  if (((fn_len >= 4) && !strcmp(".fis",filename(fn_len-3:fn_len))) || ...
+  if (((fn_len >= 4) && ...
+       !strcmp(".fis",filename(fn_len-3:fn_len))) || ...
       ((fn_len > 0) && (fn_len < 4)))
     filename = [filename ".fis"];
   elseif (dialog)
@@ -129,9 +131,9 @@ function fid = open_input_file (filename)
     filename = strtrim (filename);
   endif
 
-  ##--------------------------------------------------------------------------
+  ##--------------------------------------------------------------------
   ## Open input file.
-  ##--------------------------------------------------------------------------
+  ##--------------------------------------------------------------------
 
   [fid, msg] = fopen (filename, "r");
   if (fid == -1)
@@ -145,19 +147,20 @@ function fid = open_input_file (filename)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: init_fis_struct
-## Purpose:  Read the [System] section of the input file. Using the strings read
-##           from the input file, create a new FIS. If an error in the format of
-##           the input file is found, print an error message and halt.
-##------------------------------------------------------------------------------
+## Purpose:  Read the [System] section of the input file. Using the
+##           strings read from the input file, create a new FIS. If an
+##           error in the format of the input file is found, print an
+##           error message and halt.
+##----------------------------------------------------------------------
 
 function [fis, num_inputs, num_outputs, num_rules, line_num] = ...
             init_fis_struct (fid)
 
-  ##--------------------------------------------------------------------------
+  ##--------------------------------------------------------------------
   ## Read the [System] section.
-  ##--------------------------------------------------------------------------
+  ##--------------------------------------------------------------------
 
   line_num = 1;
   [line, line_num] = get_line (fid, line_num);
@@ -234,9 +237,10 @@ function [fis, num_inputs, num_outputs, num_rules, line_num] = ...
   endif
   defuzz_method = trim_last_char (defuzz_method);
 
-  ##--------------------------------------------------------------------------
-  ## Create a new FIS structure using the strings read from the input file.
-  ##--------------------------------------------------------------------------
+  ##--------------------------------------------------------------------
+  ## Create a new FIS structure using the strings read from the
+  ## input file.
+  ##--------------------------------------------------------------------
 
   fis = struct ('name', fis_name, ...
                 'type', fis_type, ...
@@ -252,14 +256,15 @@ function [fis, num_inputs, num_outputs, num_rules, line_num] = ...
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: read_fis_inputs
-## Purpose:  For each FIS input, read the [Input<number>] section from file.
-##           Add each new input and its membership functions to the FIS
-##           structure.
-##------------------------------------------------------------------------------
+## Purpose:  For each FIS input, read the [Input<number>] section from
+##           file. Add each new input and its membership functions to
+##           the FIS structure.
+##----------------------------------------------------------------------
 
-function [fis, line_num] = read_fis_inputs (fid, fis, num_inputs, line_num)
+function [fis, line_num] = read_fis_inputs (fid, fis, num_inputs, ...
+                                            line_num)
 
   for i = 1 : num_inputs
     [next_fis_input, num_mfs, line_num] = ...
@@ -270,10 +275,10 @@ function [fis, line_num] = read_fis_inputs (fid, fis, num_inputs, line_num)
       fis.input = [fis.input, next_fis_input];
     endif
 
-    ##----------------------------------------------------------------------
-    ## Read membership function info for the current FIS input from file.
-    ## Add each new membership function to the FIS struct.
-    ##----------------------------------------------------------------------
+    ##------------------------------------------------------------------
+    ## Read membership function info for the current FIS input from
+    ## file. Add each new membership function to the FIS struct.
+    ##------------------------------------------------------------------
 
     for j = 1 : num_mfs
       [next_mf, line_num] = get_next_mf (fid, line_num, i, j, 'input');
@@ -287,14 +292,15 @@ function [fis, line_num] = read_fis_inputs (fid, fis, num_inputs, line_num)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: read_fis_outputs
-## Purpose:  For each FIS output, read the [Output<number>] section from file.
-##           Add each new output and its membership functions to the FIS
-##           structure.
-##------------------------------------------------------------------------------
+## Purpose:  For each FIS output, read the [Output<number>] section from
+##           file. Add each new output and its membership functions to
+##           the FIS structure.
+##----------------------------------------------------------------------
 
-function [fis, line_num] = read_fis_outputs (fid, fis, num_outputs, line_num)
+function [fis, line_num] = read_fis_outputs (fid, fis, num_outputs, ...
+                                             line_num)
 
   for i = 1 : num_outputs
     [next_fis_output, num_mfs, line_num] = ...
@@ -305,10 +311,10 @@ function [fis, line_num] = read_fis_outputs (fid, fis, num_outputs, line_num)
       fis.output = [fis.output, next_fis_output];
     endif
 
-    ##----------------------------------------------------------------------
-    ## Read membership function info for the current FIS output from file.
-    ## Add each new membership function to the FIS struct.
-    ##----------------------------------------------------------------------
+    ##------------------------------------------------------------------
+    ## Read membership function info for the current FIS output from
+    ## file. Add each new membership function to the FIS struct.
+    ##------------------------------------------------------------------
 
     for j = 1 : num_mfs
       [next_mf, line_num] = get_next_mf (fid, line_num, i, j, 'output');
@@ -322,10 +328,11 @@ function [fis, line_num] = read_fis_outputs (fid, fis, num_outputs, line_num)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: read_rules
-## Purpose:  Read the [Rules] section from file, and add the rules to the FIS.
-##------------------------------------------------------------------------------
+## Purpose:  Read the [Rules] section from file, and add the rules to
+##           the FIS.
+##----------------------------------------------------------------------
 
 function fis = read_rules (fid, fis, num_inputs, num_outputs, ...
                            num_rules, line_num)
@@ -343,20 +350,21 @@ function fis = read_rules (fid, fis, num_inputs, num_outputs, ...
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: get_next_fis_io
-## Purpose:  Read the next [Input<i>] or [Output<i>] section of the input file.
-##           Using the info read from the input file, create a new FIS input or
-##           output structure. If an error in the format of the input file is
-##           found, print an error message and halt.
-##------------------------------------------------------------------------------
+## Purpose:  Read the next [Input<i>] or [Output<i>] section of the
+##           input file. Using the info read from the input file, create
+##           a new FIS input or output structure. If an error in the
+##           format of the input file is found, print an error message
+##           and halt.
+##----------------------------------------------------------------------
 
 function [next_fis_io, num_mfs, line_num] = ...
              get_next_fis_io (fid, line_num, i, in_or_out)
 
-  ##--------------------------------------------------------------------------
+  ##--------------------------------------------------------------------
   ## Read [Input<i>] or [Output<i>] section from file.
-  ##--------------------------------------------------------------------------
+  ##--------------------------------------------------------------------
 
   [line, line_num] = get_line (fid, line_num);
   if (strcmp ('input', in_or_out))
@@ -371,46 +379,52 @@ function [next_fis_io, num_mfs, line_num] = ...
   [line, line_num] = get_line (fid, line_num);
   [var_name, count] = sscanf (line, "Name = '%s", "C");
   if (count != 1)
-    error ("line %d: name of %s %d expected\n", --line_num, in_or_out, i);
+    error ("line %d: name of %s %d expected\n", --line_num, ...
+           in_or_out, i);
   endif
   var_name = trim_last_char (var_name);
 
   [line, line_num] = get_line (fid, line_num);
-  [range_low, range_high, count] = sscanf (line, "Range = [ %f %f ]", "C");
+  [range_low, range_high, count] = sscanf (line, ...
+                                           "Range = [ %f %f ]", "C");
   if ((count != 2) || (range_low > range_high))
-    error ("line %d: range for %s %d expected\n", --line_num, in_or_out, i);
+    error ("line %d: range for %s %d expected\n", --line_num, ...
+           in_or_out, i);
   endif
 
   [line, line_num] = get_line (fid, line_num);
   [num_mfs, count] = sscanf (line, "NumMFs = %d", "C");
   if (count != 1)
-    error ("line %d: number of MFs for %s %d expected\n", --line_num, ...
-           in_or_out, i);
+    error ("line %d: number of MFs for %s %d expected\n", ...
+           --line_num, in_or_out, i);
   endif
 
-  ##--------------------------------------------------------------------------
+  ##--------------------------------------------------------------------
   ## Create a new FIS input or output structure.
-  ##--------------------------------------------------------------------------
+  ##--------------------------------------------------------------------
 
-  next_fis_io = struct ('name', var_name, 'range', [range_low, range_high], ...
-                        'mf', []);
+  next_fis_io = struct ('name', var_name, 'range', ...
+                        [range_low, range_high], 'mf', []);
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: get_next_mf
-## Purpose:  Read information specifying the jth membership function for 
+## Purpose:  Read information specifying the jth membership function for
 ##           Input<i> or Output<i> (if in_or_out is 'input' or 'output',
 ##           respectively) from the input file. Create a new membership
-##           function structure using the info read. If an error in the format
-##           of the input file is found, print an error message and halt.
-##------------------------------------------------------------------------------
+##           function structure using the info read. If an error in the
+##           format of the input file is found, print an error message
+##           and halt.
+##----------------------------------------------------------------------
 
-function [next_mf, line_num] = get_next_mf (fid, line_num, i, j, in_or_out)
+function [next_mf, line_num] = get_next_mf (fid, line_num, i, j, ...
+                                            in_or_out)
             
-  ##--------------------------------------------------------------------------
-  ## Read membership function info for the new FIS input or output from file.
-  ##--------------------------------------------------------------------------
+  ##--------------------------------------------------------------------
+  ## Read membership function info for the new FIS input or output
+  ## from file.
+  ##--------------------------------------------------------------------
 
   [line, line_num] = get_line (fid, line_num);
   line_vec = discard_empty_strings (strsplit (line, "=':,[] \t", true));
@@ -431,70 +445,73 @@ function [next_mf, line_num] = get_next_mf (fid, line_num, i, j, in_or_out)
     endif
   endfor
 
-  ##--------------------------------------------------------------------------
+  ##--------------------------------------------------------------------
   ## Create a new membership function structure.
-  ##--------------------------------------------------------------------------
+  ##--------------------------------------------------------------------
 
-  next_mf = struct ('name', mf_name, 'type', mf_type, 'params', mf_params);
+  next_mf = struct ('name', mf_name, 'type', mf_type, 'params', ...
+                    mf_params);
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: get_next_rule
-## Purpose:  Read the next rule from the input file. Create a struct for the new
-##           rule. If an error in the format of the input file is found, print
-##           an error message and halt.
-##------------------------------------------------------------------------------
+## Purpose:  Read the next rule from the input file. Create a struct for
+##           the new rule. If an error in the format of the input file
+##           is found, print an error message and halt.
+##----------------------------------------------------------------------
 
-function [next_rule, line_num] = get_next_rule (fid, line_num, num_inputs, ...
-                                                num_outputs)
+function [next_rule, line_num] = get_next_rule (fid, line_num, ...
+                                                num_inputs, num_outputs)
 
   [line, line_num] = get_line (fid, line_num);
   line_vec = strsplit (line, ",():", true);
 
-  ##--------------------------------------------------------------------------
+  ##--------------------------------------------------------------------
   ## Read antecedent.
-  ##--------------------------------------------------------------------------
+  ##--------------------------------------------------------------------
   format_str = "";
   for j = 1 : num_inputs
     format_str = [format_str " %f"];
   endfor
-  [antecedent, count] = sscanf (line_vec{1}, format_str, [1, num_inputs]);
+  [antecedent, count] = sscanf (line_vec{1}, format_str, ...
+                                [1, num_inputs]);
   if (length (antecedent) != num_inputs)
     error ("Line %d: Rule antecedent expected.\n", line_num);
   endif
 
-  ##--------------------------------------------------------------------------
+  ##--------------------------------------------------------------------
   ## Read consequent.
-  ##--------------------------------------------------------------------------
+  ##--------------------------------------------------------------------
   format_str = "";
   for j = 1 : num_outputs
     format_str = [format_str " %f"];
   endfor
-  [consequent, count] = sscanf (line_vec{2}, format_str, [1, num_outputs]);
+  [consequent, count] = sscanf (line_vec{2}, format_str, ...
+                                [1, num_outputs]);
   if (length (consequent) != num_outputs)
     error ("Line %d: Rule consequent expected.\n", line_num);
   endif
 
-  ##--------------------------------------------------------------------------
+  ##--------------------------------------------------------------------
   ## Read weight.
-  ##--------------------------------------------------------------------------
+  ##--------------------------------------------------------------------
   [weight, count] = sscanf (line_vec{3}, "%f", "C");
   if (count != 1)
     error ("Line %d: Rule weight expected.\n", line_num);
   endif
 
-  ##--------------------------------------------------------------------------
+  ##--------------------------------------------------------------------
   ## Read connection.
-  ##--------------------------------------------------------------------------
+  ##--------------------------------------------------------------------
   [connection, count] = sscanf (line_vec{5}, "%d", "C");
   if ((count != 1) || (connection < 1) || (connection > 2))
     error ("Line %d: Antecedent connection expected.\n", line_num);
   endif
 
-  ##--------------------------------------------------------------------------
+  ##--------------------------------------------------------------------
   ## Create a new rule struct.
-  ##--------------------------------------------------------------------------
+  ##--------------------------------------------------------------------
   next_rule = struct ('antecedent', antecedent, ...
                       'consequent', consequent, ...
                       'weight', weight, ...
@@ -502,11 +519,11 @@ function [next_rule, line_num] = get_next_rule (fid, line_num, num_inputs, ...
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: get_line
-## Purpose:  Read the next line of the input file (without the newline) into
-##           line. Print an error message and halt on eof.
-##------------------------------------------------------------------------------
+## Purpose:  Read the next line of the input file (without the newline)
+##           into line. Print an error message and halt on eof.
+##----------------------------------------------------------------------
 
 function [line, line_num] = get_line (fid, line_num)
 
@@ -521,11 +538,11 @@ function [line, line_num] = get_line (fid, line_num)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: discard_empty_strings
 ## Purpose:  Return a copy of the input cell array without any 
 ##           empty string elements.
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 
 function ret_val =  discard_empty_strings (cell_array)
 
@@ -539,10 +556,11 @@ function ret_val =  discard_empty_strings (cell_array)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: trim_last_char
-## Purpose:  Return a copy of the input string without its final character.
-##------------------------------------------------------------------------------
+## Purpose:  Return a copy of the input string without its final
+##           character.
+##----------------------------------------------------------------------
 
 function str = trim_last_char (str)
 
@@ -550,10 +568,11 @@ function str = trim_last_char (str)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: trim_leading_whitespace
-## Purpose:  Return a copy of the input string without leading whitespace.
-##------------------------------------------------------------------------------
+## Purpose:  Return a copy of the input string without leading
+##           whitespace.
+##----------------------------------------------------------------------
 
 function str = trim_leading_whitespace (str)
   str_length = length (str);
@@ -570,14 +589,15 @@ function str = trim_leading_whitespace (str)
   endif
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: comment_or_empty
-## Purpose:  Return true if the line is a comment (that is, it begins with
-##           '#' or '%') or an empty line, and return false otherwise.
-##           It is assumed that leading whitespace has been removed from the
-##           input line.
-##------------------------------------------------------------------------------
+## Purpose:  Return true if the line is a comment (that is, it begins
+##           with '#' or '%') or an empty line, and return false
+##           otherwise. It is assumed that leading whitespace has been
+##           removed from the input line.
+##----------------------------------------------------------------------
 
 function ret_val = comment_or_empty (line)
-  ret_val = (length (line) == 0) || (line (1) == '#') || (line (1) == '%');
+  ret_val = (length (line) == 0) || (line (1) == '#') || ...
+            (line (1) == '%');
 endfunction

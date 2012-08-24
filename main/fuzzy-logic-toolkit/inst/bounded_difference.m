@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -38,14 +38,17 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy bounded_difference
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      bounded_difference.m
-## Last-Modified: 12 Nov 2011
+## Last-Modified: 18 Aug 2012
 
 function retval = bounded_difference (x, y = 0)
   if (!(isreal (x) && isreal (y)))
+    puts ("Function 'bounded_difference' requires real scalar ");
+    puts ("or matrix arguments.\n");
     puts ("Type 'help bounded_difference' for more information.\n");
-    error ("bounded_difference requires real scalar or matrix arguments\n");
+    error ("invalid arguments to function bounded_difference\n");
   elseif (nargin == 2 && ...
-          (isscalar (x) || isscalar (y) || isequal (size (x), size (y))))
+          (isscalar (x) || isscalar (y) || ...
+           isequal (size (x), size (y))))
     retval = max (0, (x .+ y - 1));
   elseif (nargin == 1 && isvector (x))
     retval = bounded_difference_of_vector (x);

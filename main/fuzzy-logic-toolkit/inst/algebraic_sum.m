@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -37,14 +37,15 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy algebraic_sum
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      algebraic_sum.m
-## Last-Modified: 12 Nov 2011
+## Last-Modified: 18 Aug 2012
 
 function retval = algebraic_sum (x, y = 0)
   if (!(isreal (x) && isreal (y)))
     puts ("Type 'help algebraic_sum' for more information.\n");
     error ("algebraic_sum requires real scalar or matrix arguments\n");
   elseif (nargin == 2 && ...
-          (isscalar (x) || isscalar (y) || isequal (size (x), size (y))))
+          (isscalar (x) || isscalar (y) || ...
+           isequal (size (x), size (y))))
     retval = x .+ y .- x .* y;
   elseif (nargin == 1 && isvector (x))
     retval = algebraic_sum_of_vector (x);

@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -45,15 +45,15 @@
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy membership-function s-shaped
+## Keywords:      fuzzy-logic-toolkit fuzzy membership s-shaped
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      smf.m
-## Last-Modified: 28 Oct 2011
+## Last-Modified: 19 Aug 2012
 
 function y = smf (x, params)
 
-  ## If the caller did not supply 2 argument values with the correct types,
-  ## print an error message and halt.
+  ## If the caller did not supply 2 argument values with the correct
+  ## types, print an error message and halt.
 
   if (nargin != 2)
     puts ("Type 'help smf' for more information.\n");
@@ -79,26 +79,27 @@ function y = smf (x, params)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Usage: y = smf_val (x_val, a, b, a_b_ave, b_minus_a)
 ##
 ## smf_val returns one value of the S-shaped membership function, which
 ## satisfies:
-##                0                                if x <= a
-##        f(x) =  2 * ((x - a)/(b - a))^2          if a < x <= (a + b)/2
-##                1 - 2 * ((x - b)/(b - a))^2      if (a + b)/2 < x < b
-##                1                                if x >= b
+##             0                                if x <= a
+##     f(x) =  2 * ((x - a)/(b - a))^2          if a < x <= (a + b)/2
+##             1 - 2 * ((x - b)/(b - a))^2      if (a + b)/2 < x < b
+##             1                                if x >= b
 ##
-## smf_val is a private function, called only by smf. Because smf_val is not
-## intended for general use -- and because the parameters a and b are checked
-## for errors in the function smf (defined above), the parameters are not
-## checked for errors again here.
-##------------------------------------------------------------------------------
+## smf_val is a private function, called only by smf. Because smf_val
+## is not intended for general use -- and because the parameters a and b
+## are checked for errors in the function smf (defined above), the
+## parameters are not checked for errors again here.
+##----------------------------------------------------------------------
 
 function y_val = smf_val (x_val, a, b, a_b_ave, b_minus_a)
 
-  ## Calculate and return a single y value of the S-shaped membership function
-  ## for the given x value and parameters specified by the arguments.
+  ## Calculate and return a single y value of the S-shaped membership
+  ## function for the given x value and parameters specified by the
+  ## arguments.
 
   if (x_val <= a)
     y_val = 0;

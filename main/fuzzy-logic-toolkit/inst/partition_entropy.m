@@ -1,4 +1,4 @@
-## Copyright (C) 2012 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -43,21 +43,23 @@
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy partition entropy cluster validity
+## Keywords:      fuzzy-logic-toolkit partition entropy cluster
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      partition_entropy.m
-## Last-Modified: 8 July 2012
+## Last-Modified: 19 Aug 2012
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Note: This function is an implementation of Equation 13.10 in
-##       Fuzzy Logic: Intelligence, Control and Information, by J. Yen and
-##       R. Langari, Prentice Hall, 1999, page 384 (International Edition). 
-##------------------------------------------------------------------------------
+##       Fuzzy Logic: Intelligence, Control and Information, by J. Yen
+##       and R. Langari, Prentice Hall, 1999, page 384 (International
+##       Edition). 
+##----------------------------------------------------------------------
 
 function vpe = partition_entropy (soft_partition, a)
 
-  ## If partition_entropy was called with an incorrect number of arguments, or the
-  ## argument does not have the correct type, print an error message and halt.
+  ## If partition_entropy was called with an incorrect number of
+  ## arguments, or the argument does not have the correct type, print an
+  ## error message and halt.
 
   if (nargin != 2)
     puts ("Type 'help partition_entropy' for more information.\n");
@@ -66,10 +68,14 @@ function vpe = partition_entropy (soft_partition, a)
             (min (min (soft_partition)) >= 0) &&
             (max (max (soft_partition)) <= 1)))
     puts ("Type 'help partition_entropy' for more information.\n");
-    error ("partition_entropy's first argument must be a matrix of real numbers mu, with 0 <= mu <= 1\n");
+    puts ("partition_entropy's first argument must be a matrix of ");
+    puts ("real numbers mu, with 0 <= mu <= 1\n");
+    error ("invalid first argument to partition_entropy\n");
   elseif (!(is_real (a) && a > 1))
     puts ("Type 'help partition_entropy' for more information.\n");
-    error ("partition_entropy's second argument argument must be a real number a > 1\n");
+    puts ("partition_entropy's second argument argument must be a ");
+    puts ("real number a > 1\n");
+    error ("invalid second argument to partition_entropy\n");
   endif
 
   ## Compute and return the partition entropy.

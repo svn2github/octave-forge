@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -59,17 +59,18 @@
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy membership-function membership
+## Keywords:      fuzzy-logic-toolkit fuzzy membership
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      addmf.m
 ## Note:          The demo code is based on an assignment written by
 ##                Dr. Bruce Segee (University of Maine Dept. of ECE).
-## Last-Modified: 28 Oct 2011
+## Last-Modified: 18 Aug 2012
 
-function fis = addmf (fis, in_or_out, var_index, mf_name, mf_type, mf_params)
+function fis = addmf (fis, in_or_out, var_index, mf_name, mf_type, ...
+                      mf_params)
 
-  ## If the caller did not supply 6 argument values with the correct types,
-  ## print an error message and halt.
+  ## If the caller did not supply 6 argument values with the correct
+  ## types, print an error message and halt.
 
   if (nargin != 6)
     puts ("Type 'help addmf' for more information.\n");
@@ -92,9 +93,11 @@ function fis = addmf (fis, in_or_out, var_index, mf_name, mf_type, mf_params)
     error ("addmf's sixth argument must be a vector of parameters\n");
   endif
 
-  ## Create a new membership function struct and update the FIS structure.
+  ## Create a new membership function struct and update the
+  ## FIS structure.
 
-  new_mf = struct ('name', mf_name, 'type', mf_type, 'params', mf_params);
+  new_mf = struct ('name', mf_name, 'type', mf_type, 'params', ...
+                   mf_params);
   if (strcmp (tolower (in_or_out), 'input'))
     if (length (fis.input(var_index).mf) == 0)
       fis.input(var_index).mf = new_mf;
@@ -119,9 +122,12 @@ endfunction
 %! ## Add two inputs and their membership functions.
 %! a = addvar (a, 'input', 'LDL-Level', [0 300]);
 %! a = addmf (a, 'input', 1, 'Low', 'trapmf', [-1 0 90 110]);
-%! a = addmf (a, 'input', 1, 'Low-Borderline', 'trapmf', [90 110 120 140]);
-%! a = addmf (a, 'input', 1, 'Borderline', 'trapmf', [120 140 150 170]);
-%! a = addmf (a, 'input', 1, 'High-Borderline', 'trapmf', [150 170 180 200]);
+%! a = addmf (a, 'input', 1, 'Low-Borderline', 'trapmf', ...
+%!            [90 110 120 140]);
+%! a = addmf (a, 'input', 1, 'Borderline', 'trapmf', ...
+%!            [120 140 150 170]);
+%! a = addmf (a, 'input', 1, 'High-Borderline', 'trapmf', ...
+%!            [150 170 180 200]);
 %! a = addmf (a, 'input', 1, 'High', 'trapmf', [180 200 300 301]);
 %! 
 %! a = addvar (a, 'input', 'HDL-Level', [0 100]);

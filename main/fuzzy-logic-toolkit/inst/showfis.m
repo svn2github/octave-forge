@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -26,15 +26,16 @@
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
+## Keywords:      fuzzy-logic-toolkit fuzzy inference system fis
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      showfis.m
-## Last-Modified: 11 Nov 2011
+## Last-Modified: 20 Aug 2012
 
 function showfis (fis)
 
-  ## If getfis was called with an incorrect number of arguments, or the
-  ## argument does not have the correct type, print an error message and halt.
+  ## If getfis was called with an incorrect number of arguments,
+  ## or the argument does not have the correct type, print an error
+  ## message and halt.
 
   if (nargin != 1)
     puts ("Type 'help showfis' for more information.\n");
@@ -96,7 +97,8 @@ function showfis (fis)
   line = 1;
   printf ("%d.  Name             %s\n", line++, fis.name);
   printf ("%d.  Type             %s\n", line++, fis.type);
-  printf ("%d.  Inputs/Outputs   [%d %d]\n", line++, num_inputs, num_outputs);
+  printf ("%d.  Inputs/Outputs   [%d %d]\n", line++, num_inputs, ...
+          num_outputs);
 
   ## Print the number of input membership functions.
 
@@ -308,7 +310,8 @@ function showfis (fis)
   else
     printf ("%d\n", fis.rule(1).connection);
     for i = 2 : num_rules
-      printf ("%d.                  %d\n", line++, fis.rule(i).connection);
+      printf ("%d.                  %d\n", line++, ...
+              fis.rule(i).connection);
     endfor
   endif
 

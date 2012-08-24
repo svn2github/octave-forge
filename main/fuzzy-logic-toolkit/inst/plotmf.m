@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -75,16 +75,16 @@
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy membership-function plot
+## Keywords:      fuzzy-logic-toolkit fuzzy membership plot
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      plotmf.m
-## Last-Modified: 11 Nov 2011
+## Last-Modified: 19 Aug 2012
 
 function plotmf (fis, in_or_out, var_index, ...
                  y_lower_limit = -0.1, y_upper_limit = 1.1)
 
-  ## If the caller did not supply 3 argument values with the correct types,
-  ## print an error message and halt.
+  ## If the caller did not supply 3 argument values with the correct
+  ## types, print an error message and halt.
 
   if ((nargin < 3) || (nargin > 5))
     puts ("Type 'help plotmf' for more information.\n");
@@ -101,7 +101,7 @@ function plotmf (fis, in_or_out, var_index, ...
     error ("plotmf's third argument must be a variable index\n");
   elseif (!(is_real (y_lower_limit) && is_real (y_upper_limit)))
     puts ("Type 'help plotmf' for more information.\n");
-    error ("plotmf's fourth and fifth arguments must be real scalars\n");
+    error ("plotmf's 4th and 5th arguments must be real scalars\n");
   endif
 
   ## Select specified variable and construct the window title.
@@ -132,7 +132,8 @@ function plotmf (fis, in_or_out, var_index, ...
   endfor
   fuzzy_and_constant_mfs = 1 - linear_mfs;
 
-  ## Plot the fuzzy or constant membership functions together on a set of axes.
+  ## Plot the fuzzy or constant membership functions together on a set
+  ## of axes.
 
   if (sum (fuzzy_and_constant_mfs))
     figure ('NumberTitle', 'off', 'Name', window_title);
@@ -155,7 +156,8 @@ function plotmf (fis, in_or_out, var_index, ...
     hold;
   endif
 
-  ## Plot the linear membership functions together on a separate set of axes.
+  ## Plot the linear membership functions together on a separate set
+  ## of axes.
 
   if (sum (linear_mfs))
     figure ('NumberTitle', 'off', 'Name', window_title);

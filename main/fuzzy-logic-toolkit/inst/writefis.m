@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -53,11 +53,11 @@
 ## @end table
 ##
 ## @noindent
-## NOTE:
+## Note:
 ## The GUI dialog requires zenity to be installed on the system.
 ##
 ## @noindent
-## KNOWN ERROR:
+## Known error:
 ## When using the file dialog, if the user clicks "Cancel" instead of
 ## saving the file, an error message is generated.
 ##
@@ -65,15 +65,16 @@
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
+## Keywords:      fuzzy-logic-toolkit fuzzy inference system fis
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      writefis.m
-## Last-Modified: 31 Oct 2011
+## Last-Modified: 20 Aug 2012
 
 function writefis (fis, filename = 'filename.fis', dialog = 'dummy')
 
-  ## If writefis was not called with between 1 and 3 arguments, or if the
-  ## argument values were of the wrong type, print an error message and halt.
+  ## If writefis was not called with between 1 and 3 arguments, or if
+  ## the argument values were of the wrong type, print an error message
+  ## and halt.
 
   if (!(nargin >= 1 && nargin <= 3))
     puts ("Type 'help writefis' for more information.\n");
@@ -84,7 +85,8 @@ function writefis (fis, filename = 'filename.fis', dialog = 'dummy')
   elseif ((nargin >= 2) && !is_string (filename))
     puts ("Type 'help writefis' for more information.\n");
     error ("writefis's second argument must be a string\n");
-  elseif ((nargin == 3) && !(is_string (dialog) && strcmpi (dialog, 'dialog')))
+  elseif ((nargin == 3) && ...
+          !(is_string (dialog) && strcmpi (dialog, 'dialog')))
     puts ("Type 'help writefis' for more information.\n");
     error ("writefis's third argument must the string 'dialog'\n");
   endif
@@ -108,30 +110,31 @@ function writefis (fis, filename = 'filename.fis', dialog = 'dummy')
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: open_output_file
-## Purpose:  Open the output file. Return the fid if successful. Otherwise,
-##           print an error message and halt.
-##------------------------------------------------------------------------------
+## Purpose:  Open the output file. Return the fid if successful.
+##           Otherwise, print an error message and halt.
+##----------------------------------------------------------------------
 
 function fid = open_output_file (filename, use_gui)
 
-  ## If the filename is not empty, and if the last four characters of the
-  ## filename are not '.fis', append '.fis' to the filename.
+  ## If the filename is not empty, and if the last four characters of
+  ## the filename are not '.fis', append '.fis' to the filename.
 
   fn_len = length (filename);
-  if (((fn_len >= 4) && !strcmp(".fis",filename(fn_len-3:fn_len))) || ...
+  if (((fn_len >= 4) && ...
+       !strcmp(".fis",filename(fn_len-3:fn_len))) || ...
       ((fn_len > 0) && (fn_len < 4)))
     filename = [filename ".fis"];
   endif
 
-  ## If writefis was called with 1 or 3 arguments, use a dialog to choose
-  ## an output filename.
+  ## If writefis was called with 1 or 3 arguments, use a dialog to
+  ## choose an output filename.
 
   if (use_gui)
     system_command = sprintf ("zenity --file-selection --filename=%s ...
-                              --save --confirm-overwrite; echo $file", ...
-                              filename);
+                              --save --confirm-overwrite; ...
+                              echo $file", filename);
     [dialog_error, filename] = system (file=system_command);
     if (dialog_error)
       puts ("Type 'help writefis' for more information.\n");
@@ -153,10 +156,10 @@ function fid = open_output_file (filename, use_gui)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: write_system_section
 ## Purpose:  Write [System] section of the output file.
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 
 function write_system_section (fid, fis)
 
@@ -175,10 +178,11 @@ function write_system_section (fid, fis)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: write_input_sections
-## Purpose:  For each FIS input, write [Input<number>] section to output file.
-##------------------------------------------------------------------------------
+## Purpose:  For each FIS input, write [Input<number>] section to
+##           output file.
+##----------------------------------------------------------------------
 
 function write_input_sections (fid, fis)
 
@@ -189,7 +193,8 @@ function write_input_sections (fid, fis)
 
     fprintf (fid, "\n[Input%d]\n", i);
     fprintf (fid, "Name='%s'\n", fis.input(i).name);
-    fprintf (fid, "Range=%s\n", strrep (mat2str (fis.input(i).range),","," "));
+    fprintf (fid, "Range=%s\n", ...
+             strrep (mat2str (fis.input(i).range),","," "));
     fprintf (fid, "NumMFs=%d\n", num_mfs);
     for j = 1 : num_mfs
       fprintf (fid, "MF%d='%s':'%s',%s\n", j, ...
@@ -200,10 +205,11 @@ function write_input_sections (fid, fis)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: write_output_sections
-## Purpose:  For each FIS output, write [Output<number>] section to output file.
-##------------------------------------------------------------------------------
+## Purpose:  For each FIS output, write [Output<number>] section to
+##           output file.
+##----------------------------------------------------------------------
 
 function write_output_sections (fid, fis)
 
@@ -214,7 +220,8 @@ function write_output_sections (fid, fis)
 
     fprintf (fid, "\n[Output%d]\n", i);
     fprintf (fid, "Name='%s'\n", fis.output(i).name);
-    fprintf (fid, "Range=%s\n",strrep(mat2str(fis.output(i).range),","," "));
+    fprintf (fid, "Range=%s\n", ...
+             strrep(mat2str(fis.output(i).range),","," "));
     fprintf (fid, "NumMFs=%d\n", num_mfs);
     for j = 1 : num_mfs
       fprintf (fid, "MF%d='%s':'%s',%s\n", j, ...
@@ -225,10 +232,10 @@ function write_output_sections (fid, fis)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: write_rules_section
 ## Purpose:  Write [Rules] section to output file.
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 
 function write_rules_section (fid, fis)
 
@@ -283,10 +290,11 @@ function write_rules_section (fid, fis)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: params2str
-## Purpose:  Convert membership function parameters to string representation.
-##------------------------------------------------------------------------------
+## Purpose:  Convert membership function parameters to string
+##           representation.
+##----------------------------------------------------------------------
 
 function str = params2str (params)
   if (length (params) < 2)

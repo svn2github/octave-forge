@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -50,19 +50,19 @@
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
+## Keywords:      fuzzy-logic-toolkit fuzzy inference system fis
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      newfis.m
-## Last-Modified: 31 Oct 2011
+## Last-Modified: 20 Aug 2012
 
-function fis = newfis (fis_name, fis_type = 'mamdani', and_method = 'min', ...
-                       or_method = 'max', imp_method = 'min', ...
-                       agg_method = 'max', defuzz_method = 'centroid', ...
-                       fis_version = 1.0)
+function fis = newfis (fis_name, fis_type = 'mamdani', ...
+                       and_method = 'min', or_method = 'max', ...
+                       imp_method = 'min', agg_method = 'max', ...
+                       defuzz_method = 'centroid', fis_version = 1.0)
 
-  ## If the caller did not supply the between 1 and 8 argument values, or if
-  ## any of the argument values were not strings, print an error message and
-  ## halt.
+  ## If the caller did not supply the between 1 and 8 argument values,
+  ## or if any of the argument values were not strings, print an error
+  ## message and halt.
 
   if (!(nargin >= 1 && nargin <= 8))
     puts ("Type 'help newfis' for more information.\n");

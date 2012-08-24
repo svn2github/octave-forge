@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -47,17 +47,18 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy rule
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      showrule.m
-## Last-Modified: 13 Nov 2011
+## Last-Modified: 20 Aug 2012
 
 function showrule (fis, index_list = [], format = 'verbose', ...
                    language = 'english', ...
-                   verbose_strings = {"and" "or" "If" "then" "is" "isn't" ...
-                                      "somewhat" "very" "extremely" "very very"})
+                   verbose_strings = {"and" "or" "If" "then" "is" ...
+                                      "isn't" "somewhat" "very" ...
+                                      "extremely" "very very"})
 
-  ##--------------------------------------------------------------------------
-  ## If the caller did not supply between 1 and 5 arguments with the correct
-  ## types, print an error message and halt.
-  ##--------------------------------------------------------------------------
+  ##--------------------------------------------------------------------
+  ## If the caller did not supply between 1 and 5 arguments with the
+  ## correct types, print an error message and halt.
+  ##--------------------------------------------------------------------
 
   if (!(nargin >= 1 && nargin <= 5))
     puts ("Type 'help showrule' for more information.\n");
@@ -65,35 +66,36 @@ function showrule (fis, index_list = [], format = 'verbose', ...
   elseif (!is_fis (fis))
     puts ("Type 'help showrule' for more information.\n");
     error ("showrule's first argument must be an FIS structure\n");
-  elseif ((nargin >= 2) && !is_rule_index_list (index_list, length (fis.rule)))
+  elseif ((nargin >= 2) && ...
+          !is_rule_index_list (index_list, length (fis.rule)))
     puts ("Type 'help showrule' for more information.\n");
-    error ("showrule's second argument must be a vector of rule indices\n");
+    error ("showrule's second arg must be a vector of rule indices\n");
   elseif ((nargin >= 3) && !is_format (format))
     puts ("Type 'help showrule' for more information.\n");
     error ("showrule's third argument must specify the format\n");
   elseif ((nargin == 4) && isequal (tolower (language), "custom"))
     puts ("Type 'help showrule' for more information.\n");
-    error ("please specify custom verbose strings in the fifth argument\n");
+    error ("please specify custom verbose strings in the fifth arg\n");
   elseif ((nargin == 4) && !is_builtin_language (language))
     puts ("Type 'help showrule' for more information.\n");
-    error ("showrule's fourth argument must specify a built-in language\n");
+    error ("showrule's fourth arg must specify a built-in language\n");
   elseif ((nargin == 5) && !isequal (tolower (language), "custom"))
     puts ("Type 'help showrule' for more information.\n");
-    error ("use 'custom' for the 4th argument to specify custom strings\n");
+    error ("use 'custom' for the 4th arg to specify custom strings\n");
   endif
 
-  ##--------------------------------------------------------------------------
+  ##--------------------------------------------------------------------
   ## If showrule was called with only one argument, create the default
   ## index list (all rule indices, in ascending order).
-  ##--------------------------------------------------------------------------
+  ##--------------------------------------------------------------------
 
   if (nargin == 1)
     index_list = 1 : length (fis.rule);
   endif
 
-  ##--------------------------------------------------------------------------
+  ##--------------------------------------------------------------------
   ## Show the rules in indexed, symbolic, or verbose format.
-  ##--------------------------------------------------------------------------
+  ##--------------------------------------------------------------------
 
   switch (tolower (format))
     case 'indexed'
@@ -101,19 +103,21 @@ function showrule (fis, index_list = [], format = 'verbose', ...
     case 'symbolic'
       showrule_symbolic_format (fis, index_list);
     case 'verbose'
-      showrule_verbose_format (fis, index_list, language, verbose_strings);
+      showrule_verbose_format (fis, index_list, language, ...
+                               verbose_strings);
   endswitch
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: get_verbose_hedge
 ## Purpose:  For no hedge, return the empty string.
-##           For the built-in hedges, return the verbose string in the language
-##           used in the cell array verbose_strings (the second parameter).
-##           For custom hedges, return the power (rounded to two digits) to
-##           which the membership function matching value will be raised.
-##------------------------------------------------------------------------------
+##           For the built-in hedges, return the verbose string in the
+##           language used in the cell array verbose_strings (the second
+##           parameter). For custom hedges, return the power (rounded to
+##           two digits) to which the membership function matching value
+##           will be raised.
+##----------------------------------------------------------------------
 
 function hedge = get_verbose_hedge (mf_index_and_hedge, verbose_strings)
 
@@ -132,18 +136,18 @@ function hedge = get_verbose_hedge (mf_index_and_hedge, verbose_strings)
       hedge = verbose_strings{9};
     case 40                        ## .40 <=> very very x <=> mu(x)^4
       hedge = verbose_strings{10};
-    otherwise                      ## .dd <=> <custom hedge> x <=> mu(x)^(dd/10)
-      hedge = hedge_num / 10;      ## For custom hedge, return the power dd/10.
-  endswitch
-
+    otherwise                      ## For custom hedge, return the
+      hedge = hedge_num / 10;      ## power dd/10. That is:
+  endswitch                        ##   .dd <=> <custom hedge> x
+                                   ##       <=> mu(x)^(dd/10)
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: get_is_or_isnt
 ## Purpose:  Return the verbose string for "is" or "isn't" for the given 
-##           membership function value. If the membership function value is 0,
-##           return the empty string.
-##------------------------------------------------------------------------------
+##           membership function value. If the membership function value
+##           is 0, return the empty string.
+##----------------------------------------------------------------------
 
 function is_or_isnt = get_is_or_isnt (mem_fcn_value, verbose_strings)
 
@@ -157,10 +161,10 @@ function is_or_isnt = get_is_or_isnt (mem_fcn_value, verbose_strings)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: get_mf_name
 ## Purpose:  Return the specified membership function name.
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 
 function mf_name = get_mf_name (mem_fcn_value, fis_input_or_output)
 
@@ -168,7 +172,7 @@ function mf_name = get_mf_name (mem_fcn_value, fis_input_or_output)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: get_verbose_strings
 ## Purpose:  Return a cell array of ten strings corresponding to:
 ##              {"and" "or" "If" "then" "is" "isn't" ...
@@ -176,7 +180,7 @@ endfunction
 ##           for the (built-in) language specified by the argument.
 ##           Custom verbose strings are specified by an argument to
 ##           showrule -- they are not handled by this function.
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 
 function str = get_verbose_strings (language)
 
@@ -203,10 +207,10 @@ function str = get_verbose_strings (language)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: showrule_indexed_format
 ## Purpose:  Show the rules in indexed format.
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 
 function showrule_indexed_format (fis, index_list)
 
@@ -265,33 +269,36 @@ function showrule_indexed_format (fis, index_list)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: showrule_symbolic_format
 ## Purpose:  Show the rules in symbolic format.
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 
 function showrule_symbolic_format (fis, index_list)
 
-  verbose_strings = {"&&"  "||"  ""  "=>"  "=="  "!="  0.5  2.0  3.0  4.0};
-  showrule_verbose_format (fis, index_list, "custom", verbose_strings, true);
+  verbose_strings = {"&&"  "||"  ""  "=>"  "=="  "!="  ...
+                     0.5  2.0  3.0  4.0};
+  showrule_verbose_format (fis, index_list, "custom", ...
+                           verbose_strings, true);
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: showrule_verbose_format
 ## Purpose:  Show the rules in verbose format.
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 
 function showrule_verbose_format (fis, index_list, language, ...
-                                  verbose_strings, suppress_comma = false)
+                                  verbose_strings, ...
+                                  suppress_comma = false)
 
   num_inputs = columns (fis.input);
   num_outputs = columns (fis.output);
 
-  ##----------------------------------------------------------------------
-  ## Get verbose strings in the (built-in) language specified.
-  ## Note that the strings for custom languages are supplied by the user.
-  ##----------------------------------------------------------------------
+  ##--------------------------------------------------------------------
+  ## Get verbose strings in the (built-in) language specified. Note
+  ## that the strings for custom languages are supplied by the user.
+  ##--------------------------------------------------------------------
 
   language = tolower (language);
   if (isequal ("custom", language))
@@ -304,10 +311,10 @@ function showrule_verbose_format (fis, index_list, language, ...
   if_str = str{3};
   then_str = str{4};
 
-  ##----------------------------------------------------------------------
+  ##--------------------------------------------------------------------
   ## For each index in the index_list, print the index number, the rule,
   ## and the weight.
-  ##----------------------------------------------------------------------
+  ##--------------------------------------------------------------------
 
   for i = 1 : length (index_list)
 
@@ -318,11 +325,11 @@ function showrule_verbose_format (fis, index_list, language, ...
 
     ##------------------------------------------------------------------
     ## For j = 1, print:
-    ##     "<rule num>. If (<var name> <is or isn't> [<hedge>] <mem func name>) "
+    ##     <rule num>. If (<var name> <is or isn't> [<hedge>] <mf name>)
     ## and for 2 <= j <= num_inputs, print:
-    ##     "<connection> (<var name> <is or isn't> [<hedge>] <mem func name>) "
+    ##     <connection> (<var name> <is or isn't> [<hedge>] <mf name>)
     ## in the specified language. Custom hedges are printed in the form:
-    ##     "<connection> (<var name> <is or isn't> <mem func name>^<hedge>) "
+    ##     <connection> (<var name> <is or isn't> <mf name>^<hedge>)
     ##------------------------------------------------------------------
 
     first_input_printed = true;
@@ -349,9 +356,11 @@ function showrule_verbose_format (fis, index_list, language, ...
         if (isempty (hedge))
           printf (" (%s %s %s)", input_name, is_or_isnt, mf_name);
         elseif (ischar (hedge))
-          printf (" (%s %s %s %s)", input_name, is_or_isnt, hedge, mf_name);
+          printf (" (%s %s %s %s)", input_name, is_or_isnt, hedge, ...
+                  mf_name);
         else
-          printf (" (%s %s %s^%3.1f)", input_name, is_or_isnt, mf_name, hedge);
+          printf (" (%s %s %s^%3.1f)", input_name, is_or_isnt, ...
+                  mf_name, hedge);
         endif
       endif
 
@@ -365,15 +374,16 @@ function showrule_verbose_format (fis, index_list, language, ...
     ##             (output-name is [hedge] mem-fcn-name)"
     ##
     ## Only the outputs for which the membership function index is
-    ## non-zero are printed. Negative membership function indices indicate
-    ## "isn't" instead of "is", and the fractional part of the membership
-    ## function index indicates a hedge, which is also printed.
+    ## non-zero are printed. Negative membership function indices
+    ## indicate "isn't" instead of "is", and the fractional part of
+    ## the membership function index indicates a hedge, which is also
+    ## printed.
     ##
     ## For non-numeric and empty hedges, print each of the outputs
     ## using the form:
-    ##     "<and> (<var name> <is or isn't> [<hedge>] <mem func name>)"
+    ##     <and> (<var name> <is or isn't> [<hedge>] <mf name>)
     ## For custom and numeric hedges, use the form:
-    ##     "<and> (<var name> <is or isn't> <mem func name>^<hedge>)"
+    ##     <and> (<var name> <is or isn't> <mf name>^<hedge>)
     ##
     ## The comma may be suppressed (as it is for symbolic output) by
     ## calling the function with suppress_comma == true.
@@ -403,9 +413,11 @@ function showrule_verbose_format (fis, index_list, language, ...
         if (isempty (hedge))
           printf (" (%s %s %s)", output_name, is_or_isnt, mf_name);
         elseif (ischar (hedge))
-          printf (" (%s %s %s %s)", output_name, is_or_isnt, hedge, mf_name);
+          printf (" (%s %s %s %s)", output_name, is_or_isnt, hedge, ...
+                  mf_name);
         else
-          printf (" (%s %s %s^%3.1f)", output_name, is_or_isnt, mf_name, hedge);
+          printf (" (%s %s %s^%3.1f)", output_name, is_or_isnt, ...
+                  mf_name, hedge);
         endif
       endif
 
@@ -425,9 +437,9 @@ function showrule_verbose_format (fis, index_list, language, ...
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Embedded Demos
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 
 %!demo
 %! fis = readfis ('sugeno_tip_calculator.fis');

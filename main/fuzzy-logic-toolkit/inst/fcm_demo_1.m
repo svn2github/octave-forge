@@ -1,4 +1,4 @@
-## Copyright (C) 2012 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -42,16 +42,17 @@
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy partition clustering fcm demo
+## Keywords:      fuzzy-logic-toolkit fuzzy partition clustering fcm
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      fcm_demo_1.m
-## Last-Modified: 10 July 2012
+## Last-Modified: 19 Aug 2012
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Note: The input_data is taken from Chapter 13, Example 17 in
-##       Fuzzy Logic: Intelligence, Control and Information, by J. Yen and
-##       R. Langari, Prentice Hall, 1999, page 381 (International Edition). 
-##------------------------------------------------------------------------------
+##       Fuzzy Logic: Intelligence, Control and Information, by J. Yen
+##       and R. Langari, Prentice Hall, 1999, page 381 (International
+##       Edition). 
+##----------------------------------------------------------------------
 
 ## Use fcm to classify the data in matrix x.
 input_data = [2 12; 4 9; 7 13; 11 5; 12 7; 14 4]
@@ -60,22 +61,25 @@ number_of_clusters = 2
   fcm (input_data, number_of_clusters)
 
 ## Calculate and print the three validity measures.
-printf ("Partition Coefficient: %f\n", partition_coeff (soft_partition));
-printf ("Partition Entropy (with a = 2): %f\n", partition_entropy (soft_partition, 2));
-printf ("Xie-Beni Index: %f\n\n", xie_beni_index (input_data, cluster_centers, soft_partition));
+printf ("Partition Coefficient: %f\n", ...
+        partition_coeff (soft_partition));
+printf ("Partition Entropy (with a = 2): %f\n", ...
+        partition_entropy (soft_partition, 2));
+printf ("Xie-Beni Index: %f\n\n", ...
+        xie_beni_index (input_data, cluster_centers, soft_partition));
  
 ## Plot the data points as small blue x's.
 figure ('NumberTitle', 'off', 'Name', 'FCM Demo 1');
 for i = 1 : rows (input_data)
-  plot (input_data(i, 1), input_data(i, 2), 'LineWidth', 2, 'marker', 'x', ...
-        'color', 'b');
+  plot (input_data(i, 1), input_data(i, 2), 'LineWidth', 2, ...
+        'marker', 'x', 'color', 'b');
   hold on;
 endfor
 
 ## Plot the cluster centers as larger red *'s.
 for i = 1 : number_of_clusters
-  plot (cluster_centers(i, 1), cluster_centers(i, 2), 'LineWidth', 4, ...
-        'marker', '*', 'color', 'r');
+  plot (cluster_centers(i, 1), cluster_centers(i, 2), 'LineWidth', ...
+        4, 'marker', '*', 'color', 'r');
   hold on;
 endfor
 

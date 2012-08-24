@@ -1,4 +1,4 @@
-## Copyright (C) 2012 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -116,50 +116,54 @@
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy partition clustering gustafson_kessel
+## Keywords:      fuzzy-logic-toolkit fuzzy partition clustering
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      gustafson_kessel.m
-## Last-Modified: 10 July 2012
+## Last-Modified: 20 Aug 2012
 
 function [cluster_centers, soft_partition, obj_fcn_history] = ...
-           gustafson_kessel (input_data, num_clusters, cluster_volume = [], options = [2.0, 100, 1e-5, 1])
+           gustafson_kessel (input_data, num_clusters, ...
+           cluster_volume = [], options = [2.0, 100, 1e-5, 1])
 
-  ## If gustafson_kessel was called with an incorrect number of arguments, or the
-  ## arguments do not have the correct type, print an error message and halt.
+  ## If gustafson_kessel was called with an incorrect number of
+  ## arguments, or the arguments do not have the correct type, print
+  ## an error message and halt.
 
   if ((nargin < 2) || (nargin > 4))
     puts ("Type 'help gustafson_kessel' for more information.\n");
     error ("gustafson_kessel requires 2, 3, or 4 arguments\n");
   elseif (!is_real_matrix (input_data))
     puts ("Type 'help gustafson_kessel' for more information.\n");
-    error ("gustafson_kessel's first argument must be matrix of real numbers\n");
+    error ("gustafson_kessel's 1st argument must be matrix of reals\n");
   elseif (!(is_int (num_clusters) && (num_clusters > 1)))
     puts ("Type 'help gustafson_kessel' for more information.\n");
-    error ("gustafson_kessel's second argument must be an integer greater than 1\n");
+    error ("gustafson_kessel's 2nd argument must be an integer > 1\n");
   elseif (!(isequal (cluster_volume, []) || ...
            (isreal (cluster_volume) && isvector (cluster_volume))))
     puts ("Type 'help gustafson_kessel' for more information.\n");
-    error ("gustafson_kessel's third (optional) argument must be a vector of real numbers\n");
+    error ("gustafson_kessel's 3rd arg must be a vector of reals\n");
   elseif (!(isreal (options) && isvector (options)))
     puts ("Type 'help gustafson_kessel' for more information.\n");
-    error ("gustafson_kessel's fourth (optional) argument must be a vector of real numbers\n");
+    error ("gustafson_kessel's 4th arg must be a vector of reals\n");
   endif
 
-  ## If the cluster volume matrix was not entered, create a default value
-  ## (a vector of 1's).
+  ## If the cluster volume matrix was not entered, create a default
+  ## value (a vector of 1's).
 
   if (isequal (cluster_volume, []))
     cluster_volume = ones (1, num_clusters);
   endif
 
-  ## Assign options to the more readable variable names: m, max_iterations,
-  ## epsilon, and display_intermediate_results. If options are missing or
-  ## NaN (not a number), use the default values.
+  ## Assign options to the more readable variable names: m,
+  ## max_iterations, epsilon, and display_intermediate_results.
+  ## If options are missing or NaN (not a number), use the default
+  ## values.
 
   default_options = [2.0, 100, 1e-5, 1];
 
   for i = 1 : 4
-    if ((length (options) < i) || isna (options(i)) || isnan (options(i)))
+    if ((length (options) < i) || ...
+        isna (options(i)) || isnan (options(i)))
       options(i) = default_options(i);
     endif
   endfor
@@ -172,21 +176,23 @@ function [cluster_centers, soft_partition, obj_fcn_history] = ...
   ## Call a private function to compute the output.
 
   [cluster_centers, soft_partition, obj_fcn_history] = ...
-    gustafson_kessel_private (input_data, num_clusters, cluster_volume, m, ...
-                              max_iterations, epsilon, display_intermediate_results);
+    gustafson_kessel_private (input_data, num_clusters, ...
+                              cluster_volume, m, max_iterations, ...
+                              epsilon, display_intermediate_results);
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: gustafson_kessel_private
 ## Purpose:  Classify unlabeled data points using the Gustafson-Kessel
 ##           algorithm.
-## Note:     This function (gustafson_kessel_private) is an implementation of
-##           Algorithm 4.2 in Fuzzy and Neural Control, by Robert Babuska,
-##           November 2009, p. 69.
-##------------------------------------------------------------------------------
+## Note:     This function (gustafson_kessel_private) is an
+##           implementation of Algorithm 4.2 in Fuzzy and Neural
+##           Control, by Robert Babuska, November 2009, p. 69.
+##----------------------------------------------------------------------
 
 function [V, Mu, obj_fcn_history] = ...
-  gustafson_kessel_private (X, k, cluster_volume, m, max_iterations, epsilon, display_intermediate_results)
+  gustafson_kessel_private (X, k, cluster_volume, m, max_iterations, ...
+                            epsilon, display_intermediate_results)
 
   ## Initialize the prototype and the calculation.
   V = fcm_init_prototype (X, k);
@@ -199,34 +205,39 @@ function [V, Mu, obj_fcn_history] = ...
   n = rows (X);
   sqr_dist = square_distance_matrix (X, V);
 
-  ## Loop until the objective function is within tolerance or the maximum
-  ## number of iterations has been reached.
-  while (convergence_criterion > epsilon && ++iteration <= max_iterations)
+  ## Loop until the objective function is within tolerance or the
+  ## maximum number of iterations has been reached.
+  while (convergence_criterion > epsilon && ...
+         ++iteration <= max_iterations)
     V_previous = V;
     Mu = fcm_update_membership_fcn (V, X, m, k, n, sqr_dist);
     Mu_m = Mu .^ m;
     V = fcm_update_cluster_centers (Mu_m, X, k);
     sqr_dist = gk_square_distance_matrix (X, V, Mu_m, cluster_volume);
-    obj_fcn_history(iteration) = fcm_compute_objective_fcn (Mu_m, sqr_dist);
+    obj_fcn_history(iteration) = ...
+      fcm_compute_objective_fcn (Mu_m, sqr_dist);
     if (display_intermediate_results)
       printf ("Iteration count = %d,  Objective fcn = %8.6f\n", ...
                iteration, obj_fcn_history(iteration));
     endif
-    convergence_criterion = fcm_compute_convergence_criterion (V, V_previous);
+    convergence_criterion = ...
+      fcm_compute_convergence_criterion (V, V_previous);
   endwhile
 
-  ## Remove extraneous entries from the tail of the objective function history.
+  ## Remove extraneous entries from the tail of the objective ...
+  ## function history.
   if (convergence_criterion <= epsilon)
     obj_fcn_history = obj_fcn_history(1 : iteration);
   endif
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: gk_square_distance_matrix
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 
-function sqr_dist = gk_square_distance_matrix (X, V, Mu_m, cluster_volume)
+function sqr_dist = gk_square_distance_matrix (X, V, Mu_m, ...
+                                               cluster_volume)
 
   k = rows (V);
   n = rows (X);
@@ -250,9 +261,9 @@ function sqr_dist = gk_square_distance_matrix (X, V, Mu_m, cluster_volume)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: compute_covariance_matrix
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 
 function covariance_matrix = compute_covariance_matrix (X, V, Mu_m, i)
 

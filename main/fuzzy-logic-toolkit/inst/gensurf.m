@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -70,7 +70,7 @@
 ## sugeno_tip_demo.m
 ## @end itemize
 ##
-## CURRENT LIMITATION:
+## Current limitation:
 ## The form of gensurf that suppresses plotting (the final form above) is not yet
 ## implemented.
 ##
@@ -78,16 +78,18 @@
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis plot
+## Keywords:      fuzzy-logic-toolkit fuzzy inference system fis plot
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      gensurf.m
-## Last-Modified: 11 Nov 2011
+## Last-Modified: 19 Aug 2012
 
-function [x, y, z] = gensurf (fis, input_axes = [1 2], output_axis = 1, ...
-                              grids = [15 15], ref_input = [], num_points = 101)
+function [x, y, z] = gensurf (fis, input_axes = [1 2], ...
+                              output_axis = 1, grids = [15 15], ...
+                              ref_input = [], num_points = 101)
 
-  ## If gensurf was called with an incorrect number of arguments, or the
-  ## arguments do not have the correct type, print an error message and halt.
+  ## If gensurf was called with an incorrect number of arguments,
+  ## or the arguments do not have the correct type, print an error
+  ## message and halt.
 
   if ((nargin < 1) || (nargin > 6))
     puts ("Type 'help gensurf' for more information.\n");
@@ -103,32 +105,34 @@ function [x, y, z] = gensurf (fis, input_axes = [1 2], output_axis = 1, ...
     error ("gensurf's third argument must be a valid output index\n");
   elseif ((nargin >= 4) && !is_grid_spec (grids))
     puts ("Type 'help gensurf' for more information.\n");
-    error ("gensurf's fourth argument must be a valid grid specification\n");
+    error ("gensurf's 4th argument must be a grid specification\n");
   elseif ((nargin >= 5) && !is_ref_input (ref_input, fis, input_axes))
     puts ("Type 'help gensurf' for more information.\n");
-    error ("gensurf's fifth argument must specify reference input values\n");
-  elseif ((nargin == 6) && !(is_pos_int (num_points) && (num_points >= 2)))
+    error ("gensurf's 5th argument must be reference input values\n");
+  elseif ((nargin == 6) && ...
+          !(is_pos_int (num_points) && (num_points >= 2)))
     puts ("Type 'help gensurf' for more information.\n");
-    error ("gensurf's sixth argument to gensurf must be an integer >= 2\n");
+    error ("gensurf's sixth argument must be an integer >= 2\n");
   endif
 
   if (length (input_axes) == 1 || columns (fis.input) == 1)
-    generate_plot (fis, input_axes, output_axis, grids, ref_input, num_points);
+    generate_plot (fis, input_axes, output_axis, grids, ...
+                   ref_input, num_points);
   else
-    generate_surface (fis, input_axes, output_axis, grids, ref_input, ...
-                      num_points);
+    generate_surface (fis, input_axes, output_axis, grids, ...
+                      ref_input, num_points);
   endif
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: generate_plot
 ## Purpose:  Generate a plot representing one of the FIS outputs as a
 ##           function of one of the FIS inputs.
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 
-function [x, y, z] = generate_plot (fis, input_axis, output_axis, grids, ...
-                                    ref_input, num_points)
+function [x, y, z] = generate_plot (fis, input_axis, output_axis, ...
+                                    grids, ref_input, num_points)
 
   ## Create input to FIS using grid points and reference values.
 
@@ -163,14 +167,14 @@ function [x, y, z] = generate_plot (fis, input_axis, output_axis, grids, ...
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: generate_surface
-## Purpose:  Generate a surface representing one of the FIS outputs as a
-##           function of two of the FIS inputs.
-##------------------------------------------------------------------------------
+## Purpose:  Generate a surface representing one of the FIS outputs as
+##           a function of two of the FIS inputs.
+##----------------------------------------------------------------------
 
-function [x, y, z] = generate_surface (fis, input_axes, output_axis, grids, ...
-                                       ref_input, num_points)
+function [x, y, z] = generate_surface (fis, input_axes, output_axis, ...
+                                       grids, ref_input, num_points)
 
   ## Create input to FIS using grid points and reference values.
 
@@ -203,7 +207,8 @@ function [x, y, z] = generate_surface (fis, input_axes, output_axis, grids, ...
   ## Compute the output and reshape it to fit the grid.
 
   output = evalfis_private (fis_input, fis, num_points);
-  z_matrix = reshape (output(:, output_axis), length (x_axis), length (y_axis));
+  z_matrix = reshape (output(:, output_axis), length (x_axis), ...
+                      length (y_axis));
 
   ## Plot the surface.
 

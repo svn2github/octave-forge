@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -50,15 +50,15 @@
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy membership-function pi-shaped pi
+## Keywords:      fuzzy-logic-toolkit fuzzy membership pi-shaped pi
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      pimf.m
-## Last-Modified: 28 Oct 2011
+## Last-Modified: 19 August 2012
 
 function y = pimf (x, params)
 
-  ## If the caller did not supply 2 argument values with the correct types,
-  ## print an error message and halt.
+  ## If the caller did not supply 2 argument values with the correct
+  ## types, print an error message and halt.
 
   if ((nargin != 2))
     puts ("Type 'help pimf' for more information.\n");
@@ -90,31 +90,32 @@ function y = pimf (x, params)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Usage: y = pimf_val (x_val, a, b, c, d, a_b_ave, b_minus_a, c_d_ave,
 ##                      d_minus_c)
 ##
 ## pimf_val returns one value of the S-shaped membership function, which
 ## satisfies:
-##                0                                if x <= a
-##                2 * ((x - a)/(b - a))^2          if a < x <= (a + b)/2
-##                1 - 2 * ((x - b)/(b - a))^2      if (a + b)/2 < x < b
-##        f(x) =  1                                if b <= x <= c
-##                1 - 2 * ((x - c)/(d - c))^2      if c < x <= (c + d)/2
-##                2 * ((x - d)/(d - c))^2          if (c + d)/2 < x < d
-##                0                                if x >= d
+##             0                                if x <= a
+##             2 * ((x - a)/(b - a))^2          if a < x <= (a + b)/2
+##             1 - 2 * ((x - b)/(b - a))^2      if (a + b)/2 < x < b
+##     f(x) =  1                                if b <= x <= c
+##             1 - 2 * ((x - c)/(d - c))^2      if c < x <= (c + d)/2
+##             2 * ((x - d)/(d - c))^2          if (c + d)/2 < x < d
+##             0                                if x >= d
 ##
-## pimf_val is a private function, called only by pimf. Because pimf_val is not
-## intended for general use -- and because the parameters a, b, c, and d are
-## checked for errors in the function pimf (defined above), the parameters
-## are not checked for errors again here.
-##------------------------------------------------------------------------------
+## pimf_val is a private function, called only by pimf. Because pimf_val
+## is not intended for general use -- and because the parameters a, b,
+## c, and d are checked for errors in the function pimf (defined above),
+## the parameters are not checked for errors again here.
+##----------------------------------------------------------------------
 
-function y_val = pimf_val (x_val, a, b, c, d, a_b_ave, b_minus_a, c_d_ave, ...
-                           d_minus_c)
+function y_val = pimf_val (x_val, a, b, c, d, a_b_ave, b_minus_a, ...
+                           c_d_ave, d_minus_c)
 
   ## Calculate and return a single y value of the pi-shaped membership
-  ## function for the given x value and parameters specified by the arguments.
+  ## function for the given x value and parameters specified by the
+  ## arguments.
 
   if (x_val <= a)
     y_val = 0;

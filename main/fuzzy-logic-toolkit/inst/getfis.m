@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -90,15 +90,16 @@
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
+## Keywords:      fuzzy-logic-toolkit fuzzy inference system fis
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      getfis.m
-## Last-Modified: 31 Oct 2011
+## Last-Modified: 20 Aug 2012
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 
 function retval = getfis (fis, arg2 = 'dummy', arg3 = 'dummy', ...
-                         arg4 = 'dummy', arg5 = 'dummy', arg6 = 'dummy')
+                          arg4 = 'dummy', arg5 = 'dummy', ...
+                          arg6 = 'dummy')
 
   switch (nargin)
     case 1  retval = getfis_one_arg (fis);
@@ -106,7 +107,8 @@ function retval = getfis (fis, arg2 = 'dummy', arg3 = 'dummy', ...
     case 3  retval = getfis_three_args (fis, arg2, arg3);
     case 4  retval = getfis_four_args (fis, arg2, arg3, arg4);
     case 5  retval = getfis_five_args (fis, arg2, arg3, arg4, arg5);
-    case 6  retval = getfis_six_args (fis, arg2, arg3, arg4, arg5, arg6);
+    case 6  retval = getfis_six_args (fis, arg2, arg3, arg4, arg5, ...
+                                      arg6);
     otherwise
             puts ("Type 'help getfis' for more information.\n");
             error ("getfis requires 1-6 arguments\n");
@@ -114,11 +116,11 @@ function retval = getfis (fis, arg2 = 'dummy', arg3 = 'dummy', ...
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: getfis_one_arg
-## Purpose:  Handle calls to getfis that have 1 argument.
-##           See the comment at the top of this file for more complete info.
-##------------------------------------------------------------------------------
+## Purpose:  Handle calls to getfis that have 1 argument. See the
+##           comment at the top of this file for more complete info.
+##----------------------------------------------------------------------
 
 function retval = getfis_one_arg (fis)
 
@@ -154,11 +156,11 @@ function retval = getfis_one_arg (fis)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: getfis_two_args
-## Purpose:  Handle calls to getfis that have 2 arguments.
-##           See the comment at the top of this file for more complete info.
-##------------------------------------------------------------------------------
+## Purpose:  Handle calls to getfis that have 2 arguments. See the
+##           comment at the top of this file for more complete info.
+##----------------------------------------------------------------------
 
 function retval = getfis_two_args (fis, arg2)
 
@@ -168,13 +170,13 @@ function retval = getfis_two_args (fis, arg2)
   if (!is_fis (fis))
     puts ("Type 'help getfis' for more information.\n");
     error ("the first argument to getfis must be an FIS structure\n");
-  elseif (!(is_string (arg2) && ismember (tolower (arg2), {'name', 'type', ...
-           'version', 'numinputs', 'numoutputs', 'numinputmfs', ...
-           'numoutputmfs', 'numrules', 'andmethod', 'ormethod', 'impmethod', ...
-           'aggmethod', 'defuzzmethod', 'inlabels', 'outlabels', ...
-           'inrange', 'outrange', 'inmfs', 'outmfs', 'inmflabels', ...
-           'outmflabels', 'inmftypes', 'outmftypes', 'inmfparams', ...
-           'outmfparams', 'rulelist'})))
+  elseif (!(is_string (arg2) && ismember (tolower (arg2), {'name', ...
+           'type', 'version', 'numinputs', 'numoutputs', ...
+           'numinputmfs', 'numoutputmfs', 'numrules', 'andmethod', ...
+           'ormethod', 'impmethod', 'aggmethod', 'defuzzmethod', ...
+           'inlabels', 'outlabels', 'inrange', 'outrange', 'inmfs', ...
+           'outmfs', 'inmflabels', 'outmflabels', 'inmftypes', ...
+           'outmftypes', 'inmfparams', 'outmfparams', 'rulelist'})))
     puts ("Type 'help getfis' for more information.\n");
     error ("unknown second argument to getfis\n");
   endif
@@ -378,7 +380,8 @@ function retval = getfis_two_args (fis, arg2)
       retval = zeros (num_rules, num_inputs + num_outputs + 2);
       for i = 1 : num_rules
         retval(i, 1:num_inputs) = fis.rule(i).antecedent;
-        retval(i, num_inputs+1:num_inputs+num_outputs) = fis.rule(i).consequent;
+        retval(i, num_inputs+1:num_inputs+num_outputs) = ...
+          fis.rule(i).consequent;
         retval(i, num_inputs+num_outputs+1) = fis.rule(i).weight;
         retval(i, num_inputs+num_outputs+2) = fis.rule(i).connection;
       endfor
@@ -388,11 +391,11 @@ function retval = getfis_two_args (fis, arg2)
   endswitch
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: getfis_three_args
-## Purpose:  Handle calls to getfis that have 3 arguments.
-##           See the comment at the top of this file for more complete info.
-##------------------------------------------------------------------------------
+## Purpose:  Handle calls to getfis that have 3 arguments. See the
+##           comment at the top of this file for more complete info.
+##----------------------------------------------------------------------
 
 function retval = getfis_three_args (fis, arg2, arg3)
 
@@ -402,7 +405,8 @@ function retval = getfis_three_args (fis, arg2, arg3)
   if (!is_fis (fis))
     puts ("Type 'help getfis' for more information.\n");
     error ("the first argument to getfis must be an FIS structure\n");
-  elseif (!(is_string (arg2) && ismember (tolower (arg2), {'input','output'})))
+  elseif (!(is_string (arg2) && ...
+            ismember (tolower (arg2), {'input','output'})))
     puts ("Type 'help getfis' for more information.\n");
     error ("incorrect second argument to getfis\n");
   elseif (!is_var_index (fis, arg2, arg3))
@@ -427,11 +431,11 @@ function retval = getfis_three_args (fis, arg2, arg3)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: getfis_four_args
-## Purpose:  Handle calls to getfis that have 4 arguments.
-##           See the comment at the top of this file for more complete info.
-##------------------------------------------------------------------------------
+## Purpose:  Handle calls to getfis that have 4 arguments. See the
+##           comment at the top of this file for more complete info.
+##----------------------------------------------------------------------
 
 function retval = getfis_four_args (fis, arg2, arg3, arg4)
 
@@ -441,7 +445,8 @@ function retval = getfis_four_args (fis, arg2, arg3, arg4)
   if (!is_fis (fis))
     puts ("Type 'help getfis' for more information.\n");
     error ("the first argument to getfis must be an FIS structure\n");
-  elseif (!(is_string (arg2) && ismember (tolower (arg2), {'input','output'})))
+  elseif (!(is_string (arg2) && ...
+            ismember (tolower (arg2), {'input','output'})))
     puts ("Type 'help getfis' for more information.\n");
     error ("incorrect second argument to getfis\n");
   elseif (!is_var_index (fis, arg2, arg3))
@@ -479,11 +484,11 @@ function retval = getfis_four_args (fis, arg2, arg3, arg4)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: getfis_five_args
-## Purpose:  Handle calls to getfis that have 5 arguments.
-##           See the comment at the top of this file for more complete info.
-##------------------------------------------------------------------------------
+## Purpose:  Handle calls to getfis that have 5 arguments. See the
+##           comment at the top of this file for more complete info.
+##----------------------------------------------------------------------
 
 function retval = getfis_five_args (fis, arg2, arg3, arg4, arg5)
 
@@ -493,7 +498,8 @@ function retval = getfis_five_args (fis, arg2, arg3, arg4, arg5)
   if (!is_fis (fis))
     puts ("Type 'help getfis' for more information.\n");
     error ("the first argument to getfis must be an FIS structure\n");
-  elseif (!(is_string(arg2) && ismember(tolower(arg2), {'input','output'})))
+  elseif (!(is_string(arg2) && ...
+            ismember(tolower(arg2), {'input','output'})))
     puts ("Type 'help getfis' for more information.\n");
     error ("incorrect second argument to getfis\n");
   elseif (!is_var_index(fis, arg2, arg3))
@@ -520,11 +526,11 @@ function retval = getfis_five_args (fis, arg2, arg3, arg4, arg5)
 
 endfunction
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
 ## Function: getfis_six_args
-## Purpose:  Handle calls to getfis that have 6 arguments.
-##           See the comment at the top of this file for more complete info.
-##------------------------------------------------------------------------------
+## Purpose:  Handle calls to getfis that have 6 arguments. See the
+##           comment at the top of this file for more complete info.
+##----------------------------------------------------------------------
 
 function retval = getfis_six_args (fis, arg2, arg3, arg4, arg5, arg6)
 
@@ -534,7 +540,8 @@ function retval = getfis_six_args (fis, arg2, arg3, arg4, arg5, arg6)
   if (!is_fis (fis))
     puts ("Type 'help getfis' for more information.\n");
     error ("the first argument to getfis must be an FIS structure\n");
-  elseif (!(is_string (arg2) && ismember (tolower (arg2), {'input','output'})))
+  elseif (!(is_string (arg2) && ...
+            ismember (tolower (arg2), {'input','output'})))
     puts ("Type 'help getfis' for more information.\n");
     error ("incorrect second argument to getfis\n");
   elseif (!is_var_index (fis, arg2, arg3))

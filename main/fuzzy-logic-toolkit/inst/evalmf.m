@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -58,15 +58,15 @@
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy membership-function evaluate
+## Keywords:      fuzzy-logic-toolkit fuzzy membership evaluate
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      evalmf.m
-## Last-Modified: 13 Nov 2011
+## Last-Modified: 19 Aug 2012
 
 function y = evalmf (x, params, mf_type, hedge = 0, not_flag = false)
 
-  ## If the caller did not supply 3 - 5 argument values with the correct types,
-  ## print an error message and halt.
+  ## If the caller did not supply 3 - 5 argument values with the correct
+  ## types, print an error message and halt.
 
   if ((nargin < 3) || (nargin > 5))
     puts ("Type 'help evalmf' for more information.\n");
@@ -85,8 +85,8 @@ function y = evalmf (x, params, mf_type, hedge = 0, not_flag = false)
     error ("evalmf's fifth argument must be a Boolean\n");
   endif
 
-  ## Calculate and return the y values of the membership function on the
-  ## domain x.
+  ## Calculate and return the y values of the membership function on
+  ## the domain x.
 
   y = evalmf_private (x, params, mf_type, hedge, not_flag);
 
@@ -97,7 +97,8 @@ endfunction
 %! params = [25 50 75];
 %! mf_type = 'trimf';
 %! y = evalmf(x, params, mf_type);
-%! figure('NumberTitle', 'off', 'Name', "evalmf(0:100, [25 50 75], 'trimf')");
+%! figure('NumberTitle', 'off', 'Name', "evalmf(0:100, [25 50 75], ...
+%!        'trimf')");
 %! plot(x, y, 'LineWidth', 2)
 %! ylim([-0.1 1.1]);
 %! xlabel('Crisp Input Value', 'FontWeight', 'bold');

@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -43,15 +43,15 @@
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy membership-function membership
+## Keywords:      fuzzy-logic-toolkit fuzzy membership
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      rmmf.m
 ## Last-Modified: 16 Jul 2011
 
 function fis = rmmf (fis, in_or_out, var_index, mf, mf_index)
 
-  ## If the caller did not supply 5 argument values with the correct types,
-  ## print an error message and halt.
+  ## If the caller did not supply 5 argument values with the correct
+  ## types, print an error message and halt.
 
   if (nargin != 5)
     puts ("Type 'help rmmf' for more information.\n");

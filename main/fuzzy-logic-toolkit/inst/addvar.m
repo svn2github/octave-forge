@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -46,12 +46,12 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy variable
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      addvar.m
-## Last-Modified: 28 Oct 2011
+## Last-Modified: 18 Aug 2012
 
 function fis = addvar (fis, in_or_out, var_name, var_range)
 
-  ## If the caller did not supply 4 argument values with the correct types,
-  ## print an error message and halt.
+  ## If the caller did not supply 4 argument values with the correct
+  ## types, print an error message and halt.
 
   if (nargin != 4)
     puts ("Type 'help addvar' for more information.\n");
@@ -74,7 +74,8 @@ function fis = addvar (fis, in_or_out, var_name, var_range)
   ## Create a new variable struct and update the FIS input or output
   ## variable list.
 
-  new_variable = struct ('name', var_name, 'range', var_range, 'mf', []);
+  new_variable = struct ('name', var_name, 'range', var_range, ...
+                         'mf', []);
   if (strcmp (tolower (in_or_out), 'input'))
     if (length (fis.input) == 0)
       fis.input = new_variable;

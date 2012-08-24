@@ -1,4 +1,4 @@
-## Copyright (C) 2012 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -41,22 +41,24 @@
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy partition coefficient cluster validity
+## Keywords:      fuzzy-logic-toolkit partition coefficient cluster
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      partition_coeff.m
-## Last-Modified: 8 July 2012
+## Last-Modified: 19 Aug 2012
 
-##------------------------------------------------------------------------------
-## Note: This function is an implementation of Equation 13.9 (corrected -- the
-##       equation in the book omits the exponent 2) in
-##       Fuzzy Logic: Intelligence, Control and Information, by J. Yen and
-##       R. Langari, Prentice Hall, 1999, page 384 (International Edition). 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------
+## Note: This function is an implementation of Equation 13.9 (corrected
+##       -- the equation in the book omits the exponent 2) in
+##       Fuzzy Logic: Intelligence, Control and Information, by J. Yen
+##       and R. Langari, Prentice Hall, 1999, page 384 (International
+##       Edition). 
+##----------------------------------------------------------------------
 
 function vpc = partition_coeff (soft_partition)
 
-  ## If partition_coeff was called with an incorrect number of arguments, or the
-  ## argument does not have the correct type, print an error message and halt.
+  ## If partition_coeff was called with an incorrect number of
+  ## arguments, or the argument does not have the correct type,
+  ## print an error message and halt.
 
   if (nargin != 1)
     puts ("Type 'help partition_coeff' for more information.\n");
@@ -65,7 +67,9 @@ function vpc = partition_coeff (soft_partition)
             (min (min (soft_partition)) >= 0) &&
             (max (max (soft_partition)) <= 1)))
     puts ("Type 'help partition_coeff' for more information.\n");
-    error ("partition_coeff's argument must be a matrix of real numbers mu, with 0 <= mu <= 1\n");
+    puts ("partition_coeff's argument must be a matrix of real ");
+    puts ("numbers mu, with 0 <= mu <= 1\n");
+    error ("invalid argument to partition_coeff\n");
   endif
 
   ## Compute and return the partition coefficient.

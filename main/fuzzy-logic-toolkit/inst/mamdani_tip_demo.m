@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -47,7 +47,7 @@
 ##                Dr. Bruce Segee (University of Maine Dept. of ECE).
 ## Directory:     fuzzy-logic-toolkit/inst
 ## Filename:      mamdani_tip_demo.m
-## Last-Modified: 12 Nov 2011
+## Last-Modified: 19 Aug 2012
 
 ## Read the FIS structure from a file.
 fis=readfis ('mamdani_tip_calculator');
@@ -58,16 +58,20 @@ plotmf (fis, 'input', 2);
 plotmf (fis, 'output', 1);
 plotmf (fis, 'output', 2);
 
-## Plot the Tip and Check + Tip as functions of Food-Quality and Service.
+## Plot the Tip and Check + Tip as functions of Food-Quality
+## and Service.
 gensurf (fis, [1 2], 1);
 gensurf (fis, [1 2], 2);
 
-## Calculate the Tip and Check + Tip using (Food-Quality, Service) = (4, 6).
-[output, rule_input, rule_output, fuzzy_output] = evalfis ([4 6], fis, 1001);
+## Calculate the Tip and Check + Tip using
+## (Food-Quality, Service) = (4, 6).
+[output, rule_input, rule_output, fuzzy_output] = ...
+  evalfis ([4 6], fis, 1001);
 
 ## Plot the first output (Tip) of the individual fuzzy rules
 ## on one set of axes.
-x_axis = linspace (fis.output(1).range(1), fis.output(1).range(2), 1001);
+x_axis = linspace (fis.output(1).range(1), ...
+                   fis.output(1).range(2), 1001);
 colors = ['r' 'b' 'm' 'g'];
 figure ('NumberTitle', 'off', 'Name', ...
         'Output of Fuzzy Rules 1-4 for Input = (4, 6)');
@@ -83,10 +87,12 @@ xlabel ('Tip', 'FontWeight', 'bold');
 grid;
 hold;
 
-## Plot the first aggregated fuzzy output and the first crisp output (Tip)
-## on one set of axes.
-figure('NumberTitle', 'off', 'Name', 'Aggregation and Defuzzification for Input = (4, 6)');
-plot (x_axis, fuzzy_output(:, 1), "b;Aggregated Fuzzy Output;", 'LineWidth', 2);
+## Plot the first aggregated fuzzy output and the first crisp output
+## (Tip) on one set of axes.
+figure('NumberTitle', 'off', 'Name', ...
+       'Aggregation and Defuzzification for Input = (4, 6)');
+plot (x_axis, fuzzy_output(:, 1), "b;Aggregated Fuzzy Output;", ...
+      'LineWidth', 2);
 hold on;
 crisp_output = evalmf(x_axis, output(1), 'constant');
 y_label = ["r;Crisp Output = " num2str(output(1)) "%;"];

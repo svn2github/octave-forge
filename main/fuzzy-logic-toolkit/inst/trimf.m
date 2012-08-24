@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -51,15 +51,15 @@
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy membership-function triangular
+## Keywords:      fuzzy-logic-toolkit fuzzy membership triangular
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      trimf.m
-## Last-Modified: 28 Oct 2011
+## Last-Modified: 20 Aug 2012
 
 function y = trimf (x, params)
 
-  ## If the caller did not supply 2 argument values with the correct types,
-  ## print an error message and halt.
+  ## If the caller did not supply 2 argument values with the correct
+  ## types, print an error message and halt.
 
   if (nargin != 2)
     puts ("Type 'help trimf' for more information.\n");
@@ -80,8 +80,6 @@ function y = trimf (x, params)
 
   b_minus_a = b - a;
   c_minus_b = c - b;
-
-### CHECK -- IS THE EXTRA MIN(1... NECESSARY ???
 
   y_val = @(x_val) max (0, min (min (1, (x_val - a) / b_minus_a), ...
                                (c - x_val)/c_minus_b));

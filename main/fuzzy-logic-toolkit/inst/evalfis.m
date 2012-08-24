@@ -1,4 +1,4 @@
-## Copyright (C) 2011 L. Markowsky <lmarkov@users.sourceforge.net>
+## Copyright (C) 2011-2012 L. Markowsky <lmarkov@users.sourceforge.net>
 ##
 ## This file is part of the fuzzy-logic-toolkit.
 ##
@@ -232,16 +232,17 @@
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
+## Keywords:      fuzzy-logic-toolkit fuzzy inference system fis
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      evalfis.m
-## Last-Modified: 12 Nov 2011
+## Last-Modified: 20 Aug 2012
 
 function [output, rule_input, rule_output, fuzzy_output] = ...
            evalfis (user_input, fis, num_points = 101)
 
-  ## If evalfis was called with an incorrect number of arguments, or the
-  ## arguments do not have the correct type, print an error message and halt.
+  ## If evalfis was called with an incorrect number of arguments, or
+  ## the arguments do not have the correct type, print an error message
+  ## and halt.
 
   if ((nargin != 2) && (nargin != 3))
     puts ("Type 'help evalfis' for more information.\n");
@@ -251,7 +252,7 @@ function [output, rule_input, rule_output, fuzzy_output] = ...
     error ("evalfis's second argument must be an FIS structure\n");
   elseif (!is_input_matrix (user_input, fis))
     puts ("Type 'help evalfis' for more information.\n");
-    error ("evalfis's first argument must be a matrix of input values\n");
+    error ("evalfis's 1st argument must be a matrix of input values\n");
   elseif (!is_pos_int (num_points))
     puts ("Type 'help evalfis' for more information.\n");
     error ("evalfis's third argument must be a positive integer\n");

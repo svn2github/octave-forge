@@ -1,3 +1,12 @@
+2012-08-22 L. Markowsky <lmarkov@users.sourceforge.net>
+
+  * Version 0.4.1 released.
+  * ChangeLog: Updated file.
+  * DESCRIPTION: Updated file.
+  * inst/*.m: Many trivial changes to line length and copyright notices.
+  * inst/private/*.m: Many trivial changes to line length and copyright notice.
+  * All demos tested under: Fedora 16/Octave 3.4.3
+
 2012-07-10 L. Markowsky <lmarkov@users.sourceforge.net>
 
   * Version 0.4.0 released.

@@ -7,6 +7,6 @@ Title: Octave Fuzzy Logic Toolkit
 Description: A mostly MATLAB-compatible fuzzy logic toolkit for Octave.
 Depends: octave (>= 3.2.4)
 Autoload: no
-License: GPL version 3 or later
+License: GPLv3+
 Url: http://octave.sf.net
  http://sf.net/projects/octave-fuzzy

@@ -1,8 +1,6 @@
 Summary of important user-visible changes for fuzzy-logic-toolkit 0.4.1:
 ------------------------------------------------------------------------
 
- ** GPLv2 was replaced with GPLv3 to fix inconsistency with source files.
-
  ** The package is no longer automatically loaded.
 
  ** The following demo scripts were rewritten and embedded in fcm.m,
@@ -15,10 +13,6 @@ Summary of important user-visible changes for fuzzy-logic-toolkit 0.4.1:
       gustafson_kessel_demo_2
 
     (The separate demo script files have been removed.)
-
- ** Many trivial changes were made to source file line length and
-    copyright notices.
-
 
 Summary of important user-visible changes for fuzzy-logic-toolkit 0.4.0:
 ------------------------------------------------------------------------

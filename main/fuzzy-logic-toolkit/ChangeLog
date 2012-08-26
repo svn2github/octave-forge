@@ -1,11 +1,22 @@
-2012-08-22 L. Markowsky <lmarkov@users.sourceforge.net>
+2012-08-26 L. Markowsky <lmarkov@users.sourceforge.net>
 
   * Version 0.4.1 released.
   * ChangeLog: Updated file.
+  * COPYING: Replaced GPLv2 with GPLv3 (to fix inconsistency with source files).
   * DESCRIPTION: Updated file.
+  * INDEX: Updated file.
+  * NEWS: Updated file.
+  * inst/fcm.m: Rewrote and embedded the demos previously contained in
+      fcm_demo_1.m and fcm_demo_2.m.
+  * inst/fcm_demo_1.m: Removed script file.
+  * inst/fcm_demo_2.m: Removed script file.
+  * inst/gustafson_kessel.m: Rewrote and embedded the demos previously
+      contained in gustafson_kessel_demo_1.m and gustafson_kessel_demo_2.m.
+  * inst/gustafson_kessel_demo_1.m: Removed script file.
+  * inst/gustafson_kessel_demo_2.m: Removed script file.
   * inst/*.m: Many trivial changes to line length and copyright notices.
   * inst/private/*.m: Many trivial changes to line length and copyright notice.
-  * All demos tested under: Fedora 16/Octave 3.4.3
+  * All demos tested under: Fedora 17/Octave 3.6.2
 
 2012-07-10 L. Markowsky <lmarkov@users.sourceforge.net>
 

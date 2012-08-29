@@ -24,11 +24,8 @@
 /* along the datatype   */
 
 int send_class (MPI_Comm comm, octave_value ov, ColumnVector rankrec, int mytag);       
-
 int send_string (int t_id, MPI_Comm comm, std::string  oi8, ColumnVector rankrec, int mytag);
-
 int send_cell (int t_id, MPI_Comm comm, Cell cell, ColumnVector rankrec, int mytag);
-
 int send_struct (int t_id, MPI_Comm comm, Octave_map map,ColumnVector rankrec, int mytag);
 
 template <class Any>
@@ -38,9 +35,7 @@ template <class Any>
 int send_scalar (int t_id, MPI_Datatype TSnd, MPI_Comm comm, Any d, ColumnVector rankrec, int mytag);
 
 int send_range (int t_id, MPI_Comm comm, Range range, ColumnVector rankrec, int mytag);
-
 int send_matrix (int t_id, MPI_Datatype TSnd, MPI_Comm comm, octave_value myOv, ColumnVector rankrec, int mytag);
-
 int send_sp_mat (int t_id, MPI_Datatype TSnd, MPI_Comm comm, octave_value MyOv, ColumnVector rankrec, int mytag);
 
 // template specialization for complex case
@@ -280,6 +275,7 @@ int send_matrix (int t_id, MPI_Datatype TSnd, MPI_Comm comm, octave_value myOv, 
 
 int send_sp_mat (int t_id, MPI_Datatype TSnd, MPI_Comm comm, octave_value MyOv, ColumnVector rankrec, int mytag)
 {
+
   int info;
   OCTAVE_LOCAL_BUFFER(int,tanktag,6);
   tanktag[0] = mytag;
@@ -289,7 +285,7 @@ int send_sp_mat (int t_id, MPI_Datatype TSnd, MPI_Comm comm, octave_value MyOv, 
   tanktag[4] = mytag+4;
   tanktag[5] = mytag+5;
   
-#define __MAKE_TYPE_BRANCH__(TMPI,T1,T2,A1)                             \
+#define __MAKE_TYPE_BRANCH__(TMPI,T0,T1,T2,A1)                          \
   if (TSnd == TMPI and MyOv.T1)                                         \
     {                                                                   \
       OCTAVE_LOCAL_BUFFER(int,s,3);                                     \
@@ -316,7 +312,7 @@ int send_sp_mat (int t_id, MPI_Datatype TSnd, MPI_Comm comm, octave_value MyOv, 
       for (octave_idx_type ix = 0; ix < m.cols () + 1; ix++)            \
         scidx[ix]= m.cidx(ix);                                          \
                                                                         \
-      OCTAVE_LOCAL_BUFFER(bool,sdata,m.capacity ());                    \
+      OCTAVE_LOCAL_BUFFER(T0,sdata,m.capacity ());                      \
                                                                         \
       for (octave_idx_type ix = 0; ix < m.capacity (); ix++)            \
         {                                                               \
@@ -353,8 +349,8 @@ int send_sp_mat (int t_id, MPI_Datatype TSnd, MPI_Comm comm, octave_value MyOv, 
         }                                                               \
     }                                                                   
 
-  __MAKE_TYPE_BRANCH__(MPI_INT,is_bool_type(),SparseBoolMatrix,sparse_bool_matrix_value())
-  else __MAKE_TYPE_BRANCH__(MPI_DOUBLE,is_real_type(),SparseMatrix,sparse_matrix_value())
+  __MAKE_TYPE_BRANCH__(MPI_INT,bool,is_bool_type(),SparseBoolMatrix,sparse_bool_matrix_value())
+  else __MAKE_TYPE_BRANCH__(MPI_DOUBLE,double,is_real_type(),SparseMatrix,sparse_matrix_value())
   else if (TSnd == MPI_DOUBLE and MyOv.is_complex_type ())
     { 
       SparseComplexMatrix m = MyOv.sparse_complex_matrix_value ();
@@ -477,7 +473,7 @@ int send_cell (int t_id, MPI_Comm comm, Cell cell, ColumnVector rankrec, int myt
   // nd for number of dimensions
   // dimvec derived datatype
   // item of cell
-  int n = cell.capacity();
+  int n = cell.capacity ();
   int info;
   int tanktag[5];
   tanktag[0] = mytag;
@@ -502,9 +498,9 @@ int send_cell (int t_id, MPI_Comm comm, Cell cell, ColumnVector rankrec, int myt
   // Now start the big loop
   for (octave_idx_type i = 0; i < rankrec.nelem (); i++)
     {
-      info = MPI_Send (&t_id, 1, MPI_INT, rankrec(i), 
+      info = MPI_Send (&t_id, 1, MPI_INT, int (rankrec(i)),
                        tanktag[0], comm);
-      if (info !=MPI_SUCCESS) 
+      if (info != MPI_SUCCESS) 
         return info;
       info = MPI_Send (&n, 1, MPI_INT, rankrec(i), 
                        tanktag[1], comm);
@@ -519,24 +515,23 @@ int send_cell (int t_id, MPI_Comm comm, Cell cell, ColumnVector rankrec, int myt
                        tanktag[3], comm);
       if (info != MPI_SUCCESS) 
         return info;
+      
+      int cap;
+      // Now focus on every single octave_value
+      for (octave_idx_type j = 0; j < n; j++)
+        {
+          octave_value ov = cell.data ()[j];
+          cap = ov.capacity ();
+          info = MPI_Send (&cap, 1, MPI_INT, rankrec(i), 
+                           newtag, comm);
+          if (info != MPI_SUCCESS) 
+            return info;
+          newtag = newtag + ov.capacity ();
+          info = send_class (comm, ov, rankrec, newtag);
+          if (info != MPI_SUCCESS) 
+            return info;
+        }                                       
     }
-
-  int cap;
-  // Now focus on every single octave_value
-  for (octave_idx_type i=0; i<n; i++)
-    {
-      octave_value ov = cell.data ()[i];
-      cap = ov.capacity ();
-      info = MPI_Send (&cap, 1, MPI_INT, rankrec(i), 
-                       newtag, comm);
-      if (info != MPI_SUCCESS) 
-        return info;
-      newtag = newtag + ov.capacity ();
-      info = send_class (comm, ov, rankrec, newtag);
-      if (info != MPI_SUCCESS) 
-        return info;
-    }                                       
-
   return (info); 
 }
 
@@ -574,9 +569,8 @@ int send_struct (int t_id, MPI_Comm comm, Octave_map map, ColumnVector rankrec, 
       int   ntagCell = ntagkey + 1;
 
       // iterate through keys(fnames)
-      Octave_map::const_iterator p = map.begin (); 
       int scap;
-      for (octave_idx_type i=0; p != map.end (); p++, i++)
+      for (Octave_map::const_iterator p = map.begin (); p != map.end (); p++)
         {
           // field name
           std::string key = map.key (p);

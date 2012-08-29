@@ -87,7 +87,7 @@ DEFUN_DLD(NAME, args, nargout,"-*- texinfo -*-\n\
           int src = args(0).int_value ();    
           int tag = args(1).int_value ();    
           
-          if (! error_status)
+          if (! error_state)
             {
               MPI_Status stat = {0, 0, 0, 0};
               int info = MPI_Probe (src, tag, comm, &stat);

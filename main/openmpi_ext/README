@@ -1,3 +1,36 @@
+CONTENTS:
+
+1) INSTALLATION INSTRUCTIONS
+
+The makefile included derives all the info it needs for building the code 
+from running mpicc, so make sure that mpicc is in your path before running Octave
+or type 
+
+putenv ("PATH", "/path/to/mpicc:${PATH}")
+
+from within Octave.
+Once this is done you should be able to install openmpi_ext from a locally dowloaded tarball
+by doing:
+
+pkg install openmpi_ext-<version>.tar.gz
+
+or directly from the ftp server by doing
+
+pkg install -forge openmpi_ext
+
+
+2) ORIGINAL README
+
+--------------------
+
+1) INSTALLATION INSTRUCTIONS
+
+2) ORIGINAL README
+
+Below are the contents of the original README file included with the first release
+by R. Corradini, I am not sure all the info there still make sense but they are still
+reported here, just in case ...
+
 The code is general-purpose, but  I would like to use it for econometrics.
 So the first step will be to install the following tarball from
 http://www.open-mpi.org/software/ompi/v1.3/downloads/openmpi-1.3.3.tar.bz2

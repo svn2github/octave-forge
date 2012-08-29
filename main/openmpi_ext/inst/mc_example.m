@@ -13,35 +13,44 @@
 ## You should have received a copy of the GNU General Public License along with
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
-# mc_example: shows how Monte Carlo can be done using mpi, Does Monte
-# Carlo on the OLS estimator. Uses montecarlo.m
-#
-# USAGE: from the command prompt, not the octave prompt, execute
-# orterun -np 3 octave --eval mc_example
+## -*- texinfo -*-
+## @deftypefn {Function File} {} = mc_example ()
+## Demonstrates doing Monte Carlo with mpi.
+## Does Monte Carlo on the OLS estimator. Uses montecarlo.m
+## @seealso{hello2dimmat,helloworld,hellocell,hellosparsemat,Pi,montecarlo,hellostruct} 
+## @end deftypefn
 
-1;
-function betahat = olswrapper(args)
-	n = args{1};
-	theta = args{2};
-	x = [ones(n,1) randn(n,1)];
-	y = x*theta + randn(n,1);
-	betahat = ols(y,x);
-  	betahat = betahat';
+function mc_example ()
+
+  n = 30;
+  theta = [1;1];
+
+  reps = 1000;
+  f = "olswrapper";
+  args = {n, theta};
+  outfile = "mc_output";
+  n_pooled = 10;
+  verbose = true;
+
+  ## montecarlo(f, args, reps, outfile, n_pooled, false, verbose);
+
+  if not (MPI_Initialized ()) 
+    MPI_Init (); 
+  endif
+  
+  montecarlo (f, args, reps, outfile, n_pooled, verbose);
+  if not (MPI_Finalized) 
+    MPI_Finalize; 
+  endif
+
 endfunction
 
+function betahat = olswrapper (args)
+  n = args{1};
+  theta = args{2};
+  x = [ones(n,1) randn(n,1)];
+  y = x*theta + randn(n,1);
+  betahat = ols(y,x);
+  betahat = betahat';
+endfunction
 
-n = 30;
-theta = [1;1];
-
-reps = 1000;
-f = "olswrapper";
-args = {n, theta};
-outfile = "mc_output";
-n_pooled = 10;
-verbose = true;
-
-# montecarlo(f, args, reps, outfile, n_pooled, false, verbose);
-
-if not(MPI_Initialized) MPI_Init; endif
-montecarlo(f, args, reps, outfile, n_pooled, verbose);
-if not(MPI_Finalized) MPI_Finalize; endif

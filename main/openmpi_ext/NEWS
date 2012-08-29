@@ -1,0 +1,7 @@
+Summary of changes for openmpi_ext 1.1.0:
+-------------------------------------------------------------------
+
+ * Added help text and demos in all example scripts
+
+ * Code clean-up and standardization, and some bug-fixes
+

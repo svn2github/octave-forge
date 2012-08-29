@@ -64,6 +64,7 @@ SEE ALSO: MPI_Comm_size\n\
             {
               int my_rank;
               int info = MPI_Comm_rank (comm, &my_rank);
+              //std::cout << my_rank << std::endl;
               if (nargout > 1)
                 results(1) = info;
 

@@ -349,7 +349,7 @@ int recv_sp_mat (bool is_complex, MPI_Datatype TRcv, MPI_Comm comm, octave_value
           for (octave_idx_type i = 0; i < s[2]; i++)
             {
               m.ridx(i) = sridx[i];
-              m.data(i) = real(LBNDA1[i])+imag(LBNDA2[i]);
+              m.data(i) = real (LBNDA1[i]) + imag (LBNDA2[i]);
             }
           
           ov = m;

@@ -58,8 +58,8 @@ SEE ALSO: MPI_Comm_rank\n\
       if ((args.length() != 1 )
           || args(0).type_id () != simple::static_type_id ())
         {		
-          error("MPI_Comm_size: Please enter octave comunicator object");
-          results(0) = octave_value(-1);
+          error ("MPI_Comm_size: Please enter octave comunicator object");
+          results(0) = octave_value (-1);
 	}
       else
         {
@@ -78,7 +78,7 @@ SEE ALSO: MPI_Comm_rank\n\
           else
             print_usage ();
         }
-      comm = NULL;
+      // comm = NULL;
       /* [size info] = MPI_Comm_size (comm) */   
     }
   return results;

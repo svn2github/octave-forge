@@ -27,22 +27,22 @@
 
 DEFUN_DLD (NAME, args, ,
 "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} @var{INFO} = MPI_Barrier (@var{COMM})\n \
-Blocks until all processes in the communicator have reached this routine.\n \
-If @var{COMM} octave comunicator object loaded with MPI_Comm_Load is omitted \n \
-returns an error. \n                                                    \
- @example\n                                                             \
- @group\n                                                               \
-    @var{INFO} (int) return code\n                                      \
-       0 MPI_SUCCESS    No error\n                                      \
-       5 MPI_ERR_COMM   Invalid communicator (NULL?)\n                  \
-      13 MPI_ERR_ARG    Invalid argument (typically a NULL pointer?)\n  \
-@end group\n                                                            \
-@end example\n                                                          \
+@deftypefn {Loadable Function} {} @var{INFO} = MPI_Barrier (@var{COMM})\n\
+Blocks until all processes in the communicator have reached this routine.\n\
+If @var{COMM} octave comunicator object loaded with MPI_Comm_Load is omitted \n\
+returns an error. \n\
+ @example\n\
+ @group\n\
+    @var{INFO} (int) return code\n\
+       0 MPI_SUCCESS    No error\n\
+       5 MPI_ERR_COMM   Invalid communicator (NULL?)\n\
+      13 MPI_ERR_ARG    Invalid argument (typically a NULL pointer?)\n\
+@end group\n\
+@end example\n\
 @end deftypefn")
 {
 
-  octave_value results;
+  octave_value_list results;
   int nargin = args.length ();
 
   if (nargin != 1)
@@ -53,7 +53,7 @@ returns an error. \n                                                    \
          || args(0).type_id () != simple::static_type_id ())
         {
           error ("MPI_Barrier: Please enter octave comunicator object");
-          results(0) = octave_value(-1);
+          results(0) = octave_value (-1);
         }
       else
         {
@@ -72,14 +72,12 @@ returns an error. \n                                                    \
               int my_size;
               int info = MPI_Barrier (comm);
               
-              results = info;
+              results(0) = octave_value (info);
             }
           else
             print_usage ();
         }
     }
-  comm= NULL;
-  /* [info] = MPI_Barrier (comm) */
    
   return results;
 }

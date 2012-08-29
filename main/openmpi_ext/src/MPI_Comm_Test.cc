@@ -33,12 +33,12 @@ MPI_Finalize();\n\
 @end example\n\
 @end deftypefn")
 {
-  octave_value retval;
+  octave_value_list results;
   if(args.length() != 1 
      || args(0).type_id () != simple::static_type_id ())
     {
       print_usage ();
-      results = octave_value (-1);
+      results(0) = octave_value (-1);
     }
   else
     {
@@ -52,7 +52,7 @@ MPI_Finalize();\n\
       const simple& b = ((const simple &)rep);
       //octave_stdout << "MPI_Comm_Test has " << b.name_value()  << " output arguments.\n";
       MPI_Comm res = b.comunicator_value ();
-      retval = b.name_value ();
+      results(0) = octave_value (b.name_value ());
     }
-  return retval;
+  return results;
 }

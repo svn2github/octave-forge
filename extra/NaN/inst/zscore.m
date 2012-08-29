@@ -1,13 +1,13 @@
 function [i,v,m] = zscore(i,DIM)
-% ZSCORE removes the mean and normalizes the data 
-% to a variance of 1. Can be used for Pre-Whitening of the data, too. 
+% ZSCORE removes the mean and normalizes data 
+% to a variance of 1. Can be used for pre-whitening of data, too. 
 %
 % [z,r,m] = zscore(x,DIM)
 %   z   z-score of x along dimension DIM
 %   r   is the inverse of the standard deviation
 %   m   is the mean of x
 %
-% The data x can be reconstrated with 
+% The data x can be reconstucted with 
 %     x = z*diag(1./r) + repmat(m,size(z)./size(m))  
 %     z = x*diag(r) - repmat(m.*v,size(z)./size(m))  
 %

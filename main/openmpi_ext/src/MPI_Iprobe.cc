@@ -44,8 +44,8 @@ Octave_map put_MPI_Stat (const MPI_Status &stat)
 }
 
 DEFUN_DLD(NAME, args, nargout,"-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} [@var{FLAG} @var{STAT} @var{INFO}] = MPI_Iprobe(@var{SRCRANK}, @var{TAG}, @var{COMM})\n \
-           Nonblocking test for a message\n\
+@deftypefn {Loadable Function} {} [@var{FLAG} @var{STAT} @var{INFO}] = MPI_Iprobe(@var{SRCRANK}, @var{TAG}, @var{COMM})\n\
+Nonblocking test for an MPI message.\n\
  @example\n\
  @group\n\
  \n\
@@ -67,7 +67,7 @@ DEFUN_DLD(NAME, args, nargout,"-*- texinfo -*-\n\
  @end group\n\
  @end example\n\
  \n\
-  SEE ALSO: MPI_Probe, MPI_Recv, MPI documentation for examples\n\
+@seealso{MPI_Probe, MPI_Recv, MPI documentation for examples}\n\
 @end deftypefn")
 {
   octave_value_list results;

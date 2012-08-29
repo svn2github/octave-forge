@@ -26,9 +26,9 @@
 #include "simple.h"  
 DEFUN_DLD(NAME, args,nargout ,"-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} [@var{RANK} @var{INFO}] = MPI_Comm_size (@var{COMM})\n\
-Determines size of calling process in communicator.\n\
-If @var{COMM} octave comunicator object loaded with MPI_Comm_Load is omitted \n\
-returns an error. \n\
+Return the size of a communicator.\n\
+The comunicator object @var{COMM} (loaded with MPI_Comm_Load) must be sepcified \n\
+or otherwise an error occurs. \n\
  @example\n\
  @group\n\
     @var{exprank} rank of the calling process in group of communicator\n\

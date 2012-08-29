@@ -19,8 +19,8 @@
 #include <octave/oct.h>
 
 DEFUN_DLD(MPI_Get_processor_name, args, nargout,"-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} @var{name,resultlen,INFO} = MPI_Get_processor_name()\n\
-           Get the name of the processor that is using MPI\n\
+@deftypefn {Loadable Function} {} @var{name,resultlen,INFO} = MPI_Get_processor_name ()\n\
+Get the name of the processor that is using MPI.\n\
 \n\
  @example\n\
  @group\n\
@@ -29,9 +29,9 @@ DEFUN_DLD(MPI_Get_processor_name, args, nargout,"-*- texinfo -*-\n\
       16 MPI_ERR_OTHER  Attempt was made to call MPI_Init a  second  time\n\
                        MPI_Init may only be called once in a program\n\
                        \n\
-SEE ALSO: MPI_Finalize, MPI_Initialized, MPI_Finalized\n\
 @end group\n\
 @end example\n\
+@seealso{MPI_Finalize, MPI_Initialized, MPI_Finalized}\n\
 @end deftypefn")
 {
   int info; 	

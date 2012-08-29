@@ -17,7 +17,7 @@
 #include "simple.h"
 DEFUN_DLD(MPI_Comm_Test, args, ,"-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} @var{DESCRIPTION} = MPI_Comm_Test (@var{COMM})\n\
-Return @var{DESCRIPTION} string description of the MPI_Communicator  @var{COMM}\n\
+Return @var{DESCRIPTION} string description of the MPI_Communicator  @var{COMM}.\n\
 For\n\
 example,\n\
 \n\

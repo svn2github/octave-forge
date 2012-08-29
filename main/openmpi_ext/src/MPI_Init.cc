@@ -28,7 +28,7 @@
 
 DEFUN_DLD(NAME, args, nargout,"-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} @var{INFO} = MPI_Init()\n\
-           Initialize the MPI execution environment\n\
+Initialize the MPI execution environment.\n\
 \n\
  @example\n\
  @group\n\

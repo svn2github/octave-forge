@@ -749,9 +749,8 @@ int send_class (MPI_Comm comm, octave_value ov, ColumnVector rankrec, int mytag)
 DEFUN_DLD(MPI_Send, args, nargout, 
           "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{INFO} =} MPI_Send(@var{VALUE},@var{RANKS},@var{TAG},@var{COMM})\n\
-MPI_Send sends  any octave_value  into contiguous memory using openmpi library \n\
-even over an heterogeneous cluster i.e 32 bits CPUs and 64 bits CPU.\n\
-Returns an integer @var{INFO} to indicate success or failure of octave_value expedition.\n\
+Pack an Octave variable into a contiguous memory chunck and transmit it as an MPI message.\n\
+Return an integer @var{INFO} to indicate success or failure.\n\
 @example\n\
 @group\n\
 @var{VALUE} must be an octave variable \n\

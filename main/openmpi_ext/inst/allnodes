@@ -1,7 +1,0 @@
-#!/bin/bash
-# this script will run an Octave script using MPI with a given hostfile,
-# using a given number of ranks. Edit it to set the hostfile and number of nodes
-# then use it as follows: allnodes <your_script_name.m> 
-HOSTFILE="/home/user/tmp/bhosts"
-NUMBER_OF_NODES="33"
-mpirun --hostfile $HOSTFILE -np $NUMBER_OF_NODES octave -q --eval $1

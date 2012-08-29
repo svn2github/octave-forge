@@ -27,8 +27,8 @@
 #include <octave/oct.h>
 
 DEFUN_DLD(NAME, args, nargout,"-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} @var{INFO} = MPI_Finalize()\n\
-           Terminates MPI execution environment\n\
+@deftypefn {Loadable Function} {} @var{INFO} = MPI_Finalize ()\n\
+Terminate the MPI execution environment.\n\
 \n\
  @example\n\
  @group\n\

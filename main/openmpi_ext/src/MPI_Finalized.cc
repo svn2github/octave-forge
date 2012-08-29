@@ -24,8 +24,8 @@
 #include "mpi.h"       
 #include <octave/oct.h>
 DEFUN_DLD(NAME, args, nargout,"-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} [@var{FLAG} @var{INFO}] = MPI_Finalized\n\
-           Indicates whether MPI_Finalize has completed\n\
+@deftypefn {Loadable Function} {[@var{FLAG}, @var{INFO}]} = MPI_Finalized ()\n\
+Indicates whether MPI_Finalize has been executed.\n\
 \n\
  @example\n\
  @group\n\

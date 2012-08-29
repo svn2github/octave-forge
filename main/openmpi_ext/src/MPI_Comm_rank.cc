@@ -26,9 +26,9 @@
 #include "simple.h"       
 DEFUN_DLD(NAME, args,nargout ,"-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} [@var{RANK} @var{INFO}] = MPI_Comm_rank (@var{COMM})\n\
-Determines rank of calling process in communicator.\n\
-If @var{COMM} octave comunicator object loaded with MPI_Comm_Load is omitted \n\
-returns an error. \n\
+Return the rank of the calling process in the specified communicator.\n\
+If the comunicator object @var{COMM} (loaded with MPI_Comm_Load) is omitted \n\
+an error is thrown. \n\
  @example\n\
  @group\n\
     @var{RANK} rank of the calling process in group of communicator\n\

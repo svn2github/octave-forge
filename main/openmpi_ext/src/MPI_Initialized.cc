@@ -27,7 +27,7 @@
 
 DEFUN_DLD(NAME, args, nargout,"-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} [@var{FLAG} @var{INFO}] = MPI_Initialized\n\
-           Indicates whether MPI_Init has been called\n\
+Indicates whether MPI_Init has been executed.\n\
 \n\
  @example\n\
  @group\n\

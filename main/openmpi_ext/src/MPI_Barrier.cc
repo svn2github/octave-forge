@@ -28,9 +28,9 @@
 DEFUN_DLD (NAME, args, ,
 "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} @var{INFO} = MPI_Barrier (@var{COMM})\n\
-Blocks until all processes in the communicator have reached this routine.\n\
-If @var{COMM} octave comunicator object loaded with MPI_Comm_Load is omitted \n\
-returns an error. \n\
+Block processes in the communicator @var{COMM} untill the call to this routine has been reached by all.\n\
+The communicator object @var{COMM} (loaded with MPI_Comm_Load) must be specified otherwise \n\
+an error occurs. \n\
  @example\n\
  @group\n\
     @var{INFO} (int) return code\n\

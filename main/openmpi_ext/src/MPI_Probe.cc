@@ -44,7 +44,7 @@ Octave_map put_MPI_Stat (const MPI_Status &stat)
 
 DEFUN_DLD(NAME, args, nargout,"-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} [@var{STAT} @var{INFO}] = MPI_Probe(@var{SRCRANK}, @var{TAG}, @var{COMM})\n \
-           blocking test for a message\n\
+Blocking test for a message.\n\
  @example\n\
  @group\n\
  \n\
@@ -63,7 +63,7 @@ DEFUN_DLD(NAME, args, nargout,"-*- texinfo -*-\n\
  @end group\n\
  @end example\n\
  \n\
-  SEE ALSO: MPI_Iprobe, MPI_Recv, and MPI documentation for C examples\n\
+@seealso{MPI_Iprobe, MPI_Recv, and MPI documentation for C examples}\n\
 @end deftypefn")
 {
   octave_value_list results;

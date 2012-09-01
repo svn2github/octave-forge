@@ -9,11 +9,6 @@ grep FIXME and/or TODO for more information
 -------
 General:
 -------
-
-  * Add missing features to quaternion_oo such that it can replace quaternion-1.0.0.
-  
-  * Rename the existion main/quaternion package to extra/quaternion-legacy.
-    Rename extra/quaternion_oo to main/quaternion and release it as quaternion-2.0.0.
   
   * See if LaTEX code from Scottedward Hodel's quaternion.ps document is available.
     Update it to use the commands from quaternion-2.0.0.
@@ -29,8 +24,6 @@ Features:
   * Inverses of quaternion arrays.
   
   * Add functionality of qderiv and qtrans from quaternion-1.0.0.
-
-  * Finish q2rot and rot2q.
 
 ------
 Always:

@@ -1,4 +1,4 @@
-## Copyright (C) 2010   Lukas F. Reichlin
+## Copyright (C) 2010, 2012   Lukas F. Reichlin
 ##
 ## This program is free software: you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -18,9 +18,13 @@
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: May 2010
-## Version: 0.1
+## Version: 0.2
 
 function q = rdivide (a, b)
+
+  if (nargin != 2)
+    error ("quaternion: rdivide: this is a binary operator");
+  endif
 
   q = a .* b.^-1;
 

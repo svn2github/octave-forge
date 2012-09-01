@@ -1,4 +1,4 @@
-## Copyright (C) 2010   Lukas F. Reichlin
+## Copyright (C) 2010, 2012   Lukas F. Reichlin
 ##
 ## This program is free software: you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -18,26 +18,22 @@
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: May 2010
-## Version: 0.1
+## Version: 0.2
 
-function a = mtimes (a, b)
+function q = mtimes (a, b)
 
-  if (! isa (a, "quaternion"))
-    a = quaternion (a);
+  if (nargin != 2)
+    error ("quaternion: mtimes: this is a binary operator");
   endif
 
-  if (! isa (b, "quaternion"))
-    b = quaternion (b);
-  endif
+  a = quaternion (a);
+  b = quaternion (b);
 
   w = a.w*b.w - a.x*b.x - a.y*b.y - a.z*b.z;
   x = a.y*b.z - a.z*b.y + a.w*b.x + a.x*b.w;
   y = a.z*b.x - a.x*b.z + a.w*b.y + a.y*b.w;
   z = a.x*b.y - a.y*b.x + a.w*b.z + a.z*b.w;
 
-  a.w = w;
-  a.x = x;
-  a.y = y;
-  a.z = z;
+  q = quaternion (w, x, y, z);
 
 endfunction

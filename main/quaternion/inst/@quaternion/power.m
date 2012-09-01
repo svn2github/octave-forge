@@ -1,4 +1,4 @@
-## Copyright (C) 2010, 2011   Lukas F. Reichlin
+## Copyright (C) 2010, 2011, 2012   Lukas F. Reichlin
 ## Copyright (c) 2011 Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 ##
 ## This program is free software: you can redistribute it and/or modify
@@ -20,9 +20,13 @@
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: May 2010
-## Version: 0.3
+## Version: 0.4
 
 function a = power (a, b)
+
+  if (nargin != 2)
+    error ("quaternion: power: this is a binary operator");
+  endif
 
   if (isa (b, "quaternion"))          # exponent is a quaternion
     a = exp (log (a) .* b);           # a could be real, but log doesn't care

@@ -1,4 +1,4 @@
-## Copyright (C) 2010   Lukas F. Reichlin
+## Copyright (C) 2010, 2012   Lukas F. Reichlin
 ##
 ## This program is free software: you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -18,21 +18,22 @@
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: May 2010
-## Version: 0.1
+## Version: 0.2
 
-function a = minus (a, b)
+function q = minus (a, b)
 
-  if (! isa (a, "quaternion"))
-    a = quaternion (a);
+  if (nargin != 2)
+    error ("quaternion: minus: this is a binary operator");
   endif
 
-  if (! isa (b, "quaternion"))
-    b = quaternion (b);
-  endif
+  a = quaternion (a);
+  b = quaternion (b);
 
-  a.w = a.w - b.w;
-  a.x = a.x - b.x;
-  a.y = a.y - b.y;
-  a.z = a.z - b.z;
+  w = a.w - b.w;
+  x = a.x - b.x;
+  y = a.y - b.y;
+  z = a.z - b.z;
+
+  q = quaternion (w, x, y, z);
 
 endfunction

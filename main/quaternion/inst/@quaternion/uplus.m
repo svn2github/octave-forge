@@ -1,4 +1,4 @@
-## Copyright (C) 2011   Lukas F. Reichlin
+## Copyright (C) 2011, 2012   Lukas F. Reichlin
 ##
 ## This program is free software: you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -18,9 +18,13 @@
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: November 2011
-## Version: 0.1
+## Version: 0.2
 
 function a = uplus (a)
+
+  if (nargin != 1)
+    error ("quaternion: uplus: this is an unary operator");
+  endif
 
   ## nothing to do here
 

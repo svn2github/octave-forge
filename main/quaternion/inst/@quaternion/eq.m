@@ -1,4 +1,4 @@
-## Copyright (C) 2010   Lukas F. Reichlin
+## Copyright (C) 2010, 2012   Lukas F. Reichlin
 ##
 ## This program is free software: you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -18,17 +18,16 @@
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: May 2010
-## Version: 0.1
+## Version: 0.2
 
 function flg = eq (a, b)
 
-  if (! isa (a, "quaternion"))
-    a = quaternion (a);
+  if (nargin != 2)
+    error ("quaternion: eq: this is a binary operator");
   endif
 
-  if (! isa (b, "quaternion"))
-    b = quaternion (b);
-  endif
+  a = quaternion (a);
+  b = quaternion (b);
 
   flg = (a.w == b.w) && (a.x == b.x) && (a.y == b.y) && (a.z == a.z);
 

@@ -93,6 +93,9 @@
 ## 2012-02-26 Added ";" to suppress echo of filename f UNO
 ## 2012-06-06 Made interface checking routine less verbose when same requested interface
 ##            was used consecutively
+## 2012-09-03 (in UNO section) replace canonicalize_file_name on non-Windows to
+##            make_absolute_filename (see bug #36677)
+##     ''     (in UNO section) web adresses need only two consecutive slashes
 ##
 ## Latest change on subfunctions below: 2012-06-08
 
@@ -263,12 +266,18 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
   if (odsinterfaces.UNO && ~odssupport)
     # First the file name must be transformed into a URL
-    if (~isempty (strmatch ("file:///", filename)) || ~isempty (strmatch ("http:///", filename))...
-      || ~isempty (strmatch ("ftp:///", filename)) || ~isempty (strmatch ("www:///", filename)))
+    if (~isempty (strmatch ("file:///", filename)) || ~isempty (strmatch ("http://", filename))...
+      || ~isempty (strmatch ("ftp://", filename)) || ~isempty (strmatch ("www://", filename)))
       # Seems in proper shape for OOO (at first sight)
     else
       # Transform into URL form
-      fname = canonicalize_file_name (strsplit (filename, filesep){end});
+      ## FIXME make_absolute_filename() doesn't work across drive(-letters) so
+      ##       until it is fixed we'll fall back on canonicalize_file_name() there
+      if (ispc)
+        fname = canonicalize_file_name (strsplit (filename, filesep){end});
+      else
+        fname = make_absolute_filename (strsplit (filename, filesep){end});
+      endif
       # On Windows, change backslash file separator into forward slash
       if (strcmp (filesep, "\\"))
         tmp = strsplit (fname, filesep);

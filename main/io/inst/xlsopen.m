@@ -108,8 +108,11 @@
 ## 2012-06-06 Improved interface detection logic. No more messages if same interface is
 ##            requested & used consecutively
 ## 2012-06-07 Fixed mixed-up lastintf assignments for POI and JXL
+## 2012-09-02 (in UNO section) web adresses need only two consecutive slashes
+## 2012-09-03 (in UNO section) replace canonicalize_file_name on non-Windows to
+##            make_absolute_filename (see bug #36677)
 ##
-## Latest subfunction update: 2012-06-06
+## Latest subfunction update: 2012-09-03
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
@@ -327,12 +330,18 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
   if (xlsinterfaces.UNO && ~xlssupport)
     # First, the file name must be transformed into a URL
-    if (~isempty (strmatch ("file:///", filename)) || ~isempty (strmatch ("http:///", filename))...
-      || ~isempty (strmatch ("ftp:///", filename)) || ~isempty (strmatch ("www:///", filename)))
+    if (~isempty (strmatch ("file:///", filename)) || ~isempty (strmatch ("http://", filename))...
+      || ~isempty (strmatch ("ftp://", filename)) || ~isempty (strmatch ("www://", filename)))
       # Seems in proper shape for OOo (at first sight)
     else
-      # Transform into URL form
-      fname = canonicalize_file_name (strsplit (filename, filesep){end});
+      # Transform into URL form. 
+      ## FIXME make_absolute_filename() doesn't work across drive(-letters) so
+      ##       until it is fixed we'll fall back on canonicalize_file_name() there
+      if (ispc)
+        fname = canonicalize_file_name (strsplit (filename, filesep){end});
+      else
+        fname = make_absolute_filename (strsplit (filename, filesep){end});
+      endif
       # On Windows, change backslash file separator into forward slash
       if (strcmp (filesep, "\\"))
         tmp = strsplit (fname, filesep);
@@ -468,6 +477,7 @@ endfunction
 ##     ''     Improved logic for finding out what interfaces to check
 ##     ''     Fixed bugs with Java interface checking (tmp1 initialization)
 ## 2012-06-06 Improved & simplified Java check code
+## 2012-09-03 Check for matching .jar names & javaclasspath was reversed (oops)
 
 function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 
@@ -558,7 +568,7 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
     # under Windows we need the following more subtle, platform-independent approach:
     for ii=1:length (jcp)
       for jj=1:length (entries1)
-        if (isempty (strfind (tolower (jcp{ii}), entries1{jj}))), ++jpchk1; endif
+        if (~isempty (strfind (tolower (jcp{ii}), entries1{jj}))), ++jpchk1; endif
       endfor
     endfor
     if (jpchk1 > 1)
@@ -569,7 +579,7 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
     jpchk2 = 0; entries2 = {"xbean", "poi-ooxml-schemas", "dom4j"};
     for ii=1:length (jcp)
       for jj=1:length (entries2)
-        if (isempty (strfind (lower (jcp{ii}), entries2{jj}))), ++jpchk2; endif
+        if (~isempty (strfind (lower (jcp{ii}), entries2{jj}))), ++jpchk2; endif
       endfor
     endfor
     if (jpchk2 > 2), printf (" (& OOXML)"); endif
@@ -584,7 +594,7 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
     jpchk = 0; entries = {"jxl"};
     for ii=1:length (jcp)
       for jj=1:length (entries)
-        if (isempty (strfind (lower (jcp{ii}), entries{jj}))), ++jpchk; endif
+        if (~isempty (strfind (lower (jcp{ii}), entries{jj}))), ++jpchk; endif
       endfor
     endfor
     if (jpchk > 0)
@@ -600,7 +610,7 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
     jpchk = 0; entries = {"openxls"};
     for ii=1:length (jcp)
       for jj=1:length (entries)
-        if (isempty (strfind (lower (jcp{ii}), entries{jj}))), ++jpchk; endif
+        if (~isempty (strfind (lower (jcp{ii}), entries{jj}))), ++jpchk; endif
       endfor
     endfor
     if (jpchk > 0)

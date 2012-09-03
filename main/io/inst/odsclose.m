@@ -65,6 +65,7 @@
 ## 2011-09-08 FIXME - closing OOo kills all other OOo invocations (known Java-UNO issue)
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-06-08 tabs replaced by double space
+## 2012-09-03 Extended file renaming section to xlsclose equivalent
 
 function [ ods ] = odsclose (ods, varargs)
 
@@ -78,17 +79,39 @@ function [ ods ] = odsclose (ods, varargs)
       if (strcmp (lower (varargin{ii}), "force"))
         # Close .ods anyway even if write errors occur
         force = 1;
-      elseif (~isempty (strfind (tolower (varargin{ii}), '.ods')) || ...
-          ~isempty (strfind (tolower (varargin{ii}), '.sxc')))
-        # Apparently a file name
+      elseif (~isempty (strfind (tolower (varargin{ii}), '.')))
+        # Apparently a file name. First some checks....
         if (ods.changed == 0 || ods.changed > 2)
           warning ("File %s wasn't changed, new filename ignored.", ods.filename);
+        elseif (~strcmp (xls.xtype, 'UNO') && isempty (strfind ( lower (filename), '.ods')))
+          # UNO will write any file type, all other interfaces only .ods
+            error ('.ods suffix lacking in filename %s', filename);
         else
-          if (strfind (tolower (filename), '.sxc') || strfind (tolower (filename), '.ods'))
-            ods.filename = filename;
-          else
-            error ('No .sxc or .ods filename extension specified');
+          # All checks passed
+          if (strcmp (xls.xtype, 'UNO'))
+            # For UNO, turn filename into URL
+            if (~isempty (strmatch ("file:///", filename)) || ~isempty (strmatch ("http://", filename))...
+              || ~isempty (strmatch ("ftp://", filename)) || ~isempty (strmatch ("www://", filename)))
+              # Seems in proper shape for OOo (at first sight)
+            else
+              # Transform into URL form
+              if (ispc)
+                fname = canonicalize_file_name (strsplit (filename, filesep){end});
+              else
+                fname = make_absolute_filename (strsplit (filename, filesep){end});
+              endif
+               # On Windows, change backslash file separator into forward slash
+              if (strcmp (filesep, "\\"))
+                tmp = strsplit (fname, filesep);
+                flen = numel (tmp);
+                tmp(2:2:2*flen) = tmp;
+                tmp(1:2:2*flen) = '/';
+                filename = [ 'file://' tmp{:} ];
+              endif
+            endif
           endif
+          # Preprocessing / -checking ready. Assign filename arg to file ptr struct
+          ods.filename = filename;
         endif
       endif
     endfor

@@ -1,6 +1,19 @@
 Summary of important user-visible changes for releases of the io package
 
 ===============================================================================
+io-1.0.20   Release Date: 2012-TBA   Release Manager: Philip Nienhuis
+===============================================================================
+
+** Bug fixes:
+--- xlsopen, xlsclose, odsopen, odsclose: replaced canonicalize_file_name call
+    with make_absolute_filename for non-windows systems (canonicalize_file_name
+    doesn't work with non-existent (new) files on *nix) (bug #36677);
+    Web addresses (URLs) only need two rather than three slashes;
+--- xlsopen: matching .jar names to javaclasspath entries worked the wrong way
+
+** Extended file rename section in odsclose similar to that in xlsclose
+
+===============================================================================
 io-1.0.19   Release Date: 2012-06-08   Release Manager: Philip Nienhuis
 ===============================================================================
 

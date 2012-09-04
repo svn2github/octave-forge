@@ -10,6 +10,11 @@ io-1.0.20   Release Date: 2012-TBA   Release Manager: Philip Nienhuis
     doesn't work with non-existent (new) files on *nix) (bug #36677);
     Web addresses (URLs) only need two rather than three slashes;
 --- xlsopen: matching .jar names to javaclasspath entries worked the wrong way
+--- io_xls_testscript / io_ods_testscript: added small delay for UNO calls to
+    avoid lock-ups with recent LibreOffice (3.6.x)
+
+** The annoying flashing LibreOffice splash screens have been fixed upstream;
+   with LibreOffice 3.6.1 I didn't see them anymore
 
 ** Extended file rename section in odsclose similar to that in xlsclose
 

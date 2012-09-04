@@ -21,15 +21,18 @@
 ## Created: 2012-02-25
 ## Updates:
 ## 2012-06-06 Adapted to COM implementation for "formulas_as_text" option
+## 2012-09-04 Added delay between LibreOffice calls to avoid lockups with UNO
 
 
 printf ("\nTesting .xls interface %s ...\n", intf);
 
-if (strcmp (lower (intf), 'oxs')); 
+isuno = false; dly = 0.25;
+intf2 = intf;
+if (strcmp (lower (intf), 'oxs'))
   printf ("OXS interface has no write support enabled - writing is done with POI.\n");
   intf2 = 'com'; 
-else; 
-  intf2 = intf; 
+elseif (strcmp (lower (intf), 'uno'));
+  isuno = true;
 endif
 
 ## 1. Initialize test arrays
@@ -40,26 +43,26 @@ opts = struct ("formulas_as_text", 0);
 
 ## 2. Insert empty sheet
 printf ("\n 2. Insert first empty sheet.\n");
-xlswrite ('io-test.xls', {''}, 'EmptySheet', 'b4', intf2);
+xlswrite ('io-test.xls', {''}, 'EmptySheet', 'b4', intf2); if (isuno); sleep (dly); endif
 
 ## 3. Add data to test sheet
 printf ("\n 3. Add data to test sheet.\n");
-xlswrite ('io-test.xls', arr1, 'Testsheet', 'c2:d3', intf2);
-xlswrite ('io-test.xls', arr2, 'Testsheet', 'd4:z20', intf2);
+xlswrite ('io-test.xls', arr1, 'Testsheet', 'c2:d3', intf2); if (isuno); sleep (dly); endif
+xlswrite ('io-test.xls', arr2, 'Testsheet', 'd4:z20', intf2); if (isuno); sleep (dly); endif
 
 ## 4. Insert another sheet
 printf ("\n 4. Add another sheet with just one number in A1.\n");
-xlswrite ('io-test.xls', [1], 'JustOne', 'A1', intf2);
+xlswrite ('io-test.xls', [1], 'JustOne', 'A1', intf2); if (isuno); sleep (dly); endif
 
 ## 5. Get sheet info & find sheet with data and data range
 printf ("\n 5. Explore sheet info.\n");
-[~, shts] = xlsfinfo ('io-test.xls', intf);
+[~, shts] = xlsfinfo ('io-test.xls', intf); if (isuno); sleep (dly); endif
 shnr = strmatch ('Testsheet', shts(:, 1));                      # Note case!
 crange = shts{shnr, 2};
 
 ## 6. Read data back
 printf ("\n 6. Read data back.\n");
-[num, txt, raw, lims] = xlsread ('io-test.xls', shnr, crange, intf);
+[num, txt, raw, lims] = xlsread ('io-test.xls', shnr, crange, intf); if (isuno); sleep (dly); endif
 
 ## 7. Here come the tests, part 1
 printf ("\n 7. Tests part 1 (basic I/O):\n");
@@ -97,9 +100,9 @@ end_try_catch
 ## Check if "formulas_as_text" option works:
 printf ("\n 8. Repeat reading, now return formulas as text\n");
 opts.formulas_as_text = 1;
-xls = xlsopen ('io-test.xls', 0, intf);
-raw = xls2oct (xls, shnr, crange, opts);
-xls = xlsclose (xls);
+xls = xlsopen ('io-test.xls', 0, intf); if (isuno); sleep (dly); endif
+raw = xls2oct (xls, shnr, crange, opts); if (isuno); sleep (dly); endif
+xls = xlsclose (xls); if (isuno); sleep (dly); endif
 
 ## 9. Here come the tests, part 2.
 printf ("\n 9. Tests part 2 (read back formula):\n");

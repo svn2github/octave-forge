@@ -20,9 +20,14 @@
 ## Author: Philip Nienhuis
 ## Created: 2012-02-25
 ## Updates:
-
+## 2012-09-04 Add small delay between LibreOffice calls to avoid lock-ups with UNO
 
 printf ("\nTesting .ods interface %s ...\n", intf);
+
+isuno = false; dly = 0.25;
+if (strcmp (lower (intf), 'uno'));
+  isuno = true;
+endif
 
 ## 1. Initialize test arrays
 printf ("\n 1. Initialize arrays.\n");
@@ -32,26 +37,26 @@ opts = struct ("formulas_as_text", 0);
 
 ## 2. Insert empty sheet
 printf ("\n 2. Insert first empty sheet.\n");
-odswrite ('io-test.ods', {''}, 'EmptySheet', 'b4', intf);
+odswrite ('io-test.ods', {''}, 'EmptySheet', 'b4', intf); if (isuno); sleep (dly); endif
 
 ## 3. Add data to test sheet
 printf ("\n 3. Add data to test sheet.\n");
-odswrite ('io-test.ods', arr1, 'Testsheet', 'c2:d3', intf);
-odswrite ('io-test.ods', arr2, 'Testsheet', 'd4:z20', intf);
+odswrite ('io-test.ods', arr1, 'Testsheet', 'c2:d3', intf); if (isuno); sleep (dly); endif
+odswrite ('io-test.ods', arr2, 'Testsheet', 'd4:z20', intf); if (isuno); sleep (dly); endif
 
 ## 4. Insert another sheet
 printf ("\n 4. Add another sheet with just one number in A1.\n");
-odswrite ('io-test.ods', [1], 'JustOne', 'A1', intf);
+odswrite ('io-test.ods', [1], 'JustOne', 'A1', intf); if (isuno); sleep (dly); endif
 
 ## 5. Get sheet info & find sheet with data and data range
 printf ("\n 5. Explore sheet info.\n");
-[~, shts] = odsfinfo ('io-test.ods', intf);
+[~, shts] = odsfinfo ('io-test.ods', intf); if (isuno); sleep (dly); endif
 shnr = strmatch ('Testsheet', shts(:, 1));                      # Note case!
 crange = shts{shnr, 2};
 
 ## 6. Read data back
 printf ("\n 6. Read data back.\n");
-[num, txt, raw, lims] = odsread ('io-test.ods', shnr, crange, intf);
+[num, txt, raw, lims] = odsread ('io-test.ods', shnr, crange, intf); if (isuno); sleep (dly); endif
 
 ## 7. Here come the tests, part 1
 printf ("\n 7. Tests part 1 (basic I/O):\n");
@@ -92,9 +97,9 @@ end_try_catch
 ## Check if formulas_as_text works:
 printf ("\n 8. Repeat reading, now return formulas as text\n");
 opts.formulas_as_text = 1;
-ods = odsopen ('io-test.ods', 0, intf);
-raw = ods2oct (ods, shnr, crange, opts);
-ods = odsclose (ods);
+ods = odsopen ('io-test.ods', 0, intf); if (isuno); sleep (dly); endif
+raw = ods2oct (ods, shnr, crange, opts); if (isuno); sleep (dly); endif
+ods = odsclose (ods); if (isuno); sleep (dly); endif
 clear ods;
 
 ## 9. Here come the tests, part 2. Fails on COM

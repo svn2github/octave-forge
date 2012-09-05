@@ -117,6 +117,14 @@ function df = subasgn(df, S, RHS)
           endif
           return
 
+	case "header"
+          if (length (S) > 1)
+            df._header = feval (@subsasgn, df._header, S(2:end), RHS);
+          else
+            df._header = RHS;
+          endif
+          return
+	  
         case "comment"
           if (length (S) > 1)
             df._cmt = feval (@subsasgn, df._cmt, S(2:end), RHS);

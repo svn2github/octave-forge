@@ -124,6 +124,9 @@ function resu = subsref(df, S)
                   case "source"
                     S(1).subs = "_src";
                     further_deref = true;
+		  case "header"
+                    S(1).subs = "_header";
+                    further_deref = true;
                   case "comment"
                     S(1).subs = "_cmt";
                     further_deref = true;
@@ -431,6 +434,7 @@ function resu = subsref(df, S)
       endif
       %# to be verified :       keyboard
       resu._src = df._src;
+      resu._header = df._header;
       resu._cmt = df._cmt;
       resu = df_thirddim (resu);
       if (length (S) > 1) %# perform further access, if required

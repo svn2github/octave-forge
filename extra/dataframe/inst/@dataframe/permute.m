@@ -109,6 +109,7 @@ function resu = permute(df, perm)
   endif
 
   resu._src = df._src;
+  resu._header = df._header;
   resu._cmt = df._cmt;
 
 endfunction

@@ -5,6 +5,6 @@ function resu = isempty(df)
   %#   the number of columns, or both are zero).  Otherwise, return 0.
   %# @end deftypefn
 
-  resu = any(0 == size(df));
+  resu = any (0 == size (df));
 
 endfunction

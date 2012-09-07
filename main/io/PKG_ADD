@@ -3,7 +3,6 @@
     pkglist = pkg ("list");
     javapkgind = find (cellfun (@(x) strcmp(x.name, "java"), pkglist), 1, "first");
     if (! isempty (javapkgind))
-    keyboard
       javapkg = pkglist{javapkgind};
       if (javapkg.loaded)
         # Assume jar files are in /lib/java and let chk_spreadsheet_support sort it out

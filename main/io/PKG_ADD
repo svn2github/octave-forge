@@ -1,16 +1,17 @@
 ## PKG_ADD
-## add paths of io pkg java jars if java pkg is installed and loaded
-pkglist = pkg ("list");
-javapkgind = find (cellfun (@(x) strcmp(x.name, "java"), pkglist), 1, "first");
-if (! isempty (javapkgind))
-  javapkg = pkglist{javapkgind};
-  if (javapkg.loaded)
-    # Assume jar files are in /lib/java and let chk_spreadsheet_support sort it out
-    libdir = octave_config_info ("libdir");
-    ## Allow time for package to be fully loaded
-    pause (0.25);
-    spr_status = chk_spreadsheet_support ([ libdir filesep "java" ]);
-  endif
-endif
-## Clean up
-clear javapkgind javapkg libdir spr_status pkglist ;
+    ## add paths of io pkg java jars if java pkg is installed and loaded
+    pkglist = pkg ("list");
+    javapkgind = find (cellfun (@(x) strcmp(x.name, "java"), pkglist), 1, "first");
+    if (! isempty (javapkgind))
+    keyboard
+      javapkg = pkglist{javapkgind};
+      if (javapkg.loaded)
+        # Assume jar files are in /lib/java and let chk_spreadsheet_support sort it out
+        libdir = octave_config_info ("libdir");
+        ## Allow time for package to be fully loaded
+        pause (0.25);
+        spr_status = chk_spreadsheet_support ([ libdir filesep "java" ]);
+      endif
+    endif
+    ## Clean up
+    clear javapkgind javapkg libdir spr_status pkglist ;

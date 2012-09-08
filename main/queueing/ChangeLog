@@ -1,3 +1,8 @@
+2012-09-08 Moreno Marzolla <marzolla@cs.unibo.it>
+
+	* Version 1.1.1 released
+	* Increased tolerance in tests for dtmc_fpt and dtmc_mtta
+
 2012-04-05 Moreno Marzolla <marzolla@cs.unibo.it>
 
 	* Version 1.1.0 released

@@ -158,9 +158,9 @@ endfunction
 %!test
 %! P = dtmc_bd([0 .5 .5 .5 .5], [.5 .5 .5 .5 0]);
 %! [t N B] = dtmc_mtta(P);
-%! assert( t(2:5), [4 6 6 4], 10*eps );
-%! assert( B(2:5,1), [.8 .6 .4 .2]', 10*eps );
-%! assert( B(2:5,6), [.2 .4 .6 .8]', 10*eps );
+%! assert( t(2:5), [4 6 6 4], 100*eps );
+%! assert( B(2:5,1), [.8 .6 .4 .2]', 100*eps );
+%! assert( B(2:5,6), [.2 .4 .6 .8]', 100*eps );
 
 ## Compute the probability of completing the "snakes and ladders"
 ## game in n steps, for various values of n. Also, computes the expected

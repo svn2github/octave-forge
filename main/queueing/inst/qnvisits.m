@@ -189,7 +189,7 @@ endfunction
 %! P(2,3,2,1) = 0.2;
 %! P(2,4,2,1) = 0.16;
 %! lambda = [0.1 0 0 0.1 ; 0 0 0.2 0.1];
-%! lambda_sum = sum(sum(lambda));
+%! lambda_sum = sum(lambda(:));
 %! V = qnvisits(P, lambda);
 %! assert( all( all(V>=0) ) );
 %! for i=1:K
@@ -413,7 +413,7 @@ function [V chains] = __qnvisitsmulti( P, lambda )
     
     ## solve the traffic equation
     A = eye(K*C) - reshape(P,[K*C K*C]);
-    b = reshape(lambda / sum(sum(lambda)), [1,K*C]);
+    b = reshape(lambda / sum(lambda(:)), [1,K*C]);
     V = reshape(b/A, [C, K]);
   endif
   ## Make sure that no negative values appear (sometimes, numerical

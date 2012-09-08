@@ -38,7 +38,14 @@ your machine. You can verify that the package is indeed installed:
      octave:1>pkg list queueing
      Package Name  | Version | Installation directory
      --------------+---------+-----------------------
-         queueing *|   1.1.1 | /home/moreno/octave/queueing-1.1.1
+         queueing  |   1.1.1 | /home/moreno/octave/queueing-1.1.1
+
+     Note: Starting from version 1.1.1, `queueing' is no longer
+     automatically loaded on startup. To load the package you need to
+     issue the command `pkg load queueing' at the Octave prompt. To
+     automatically load `queueing' each time Octave starts, you can add
+     the command above to the startup script (`.octaverc' on Unix
+     systems).
 
    Alternatively, you can first download `queueing' from Octave-Forge;
 then, to install the package in the system-wide location issue this

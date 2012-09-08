@@ -80,8 +80,17 @@ your machine. You can verify that the package is indeed installed:
 octave:1>@kbd{pkg list queueing}
 Package Name  | Version | Installation directory
 --------------+---------+-----------------------
-    queueing *|   @value{VERSION} | /home/moreno/octave/queueing-@value{VERSION}
+    queueing  |   @value{VERSION} | /home/moreno/octave/queueing-@value{VERSION}
 @end example
+
+@quotation Note
+Starting from version 1.1.1, @code{queueing} is no longer
+automatically loaded on startup. To load the package you need to issue
+the command @code{pkg load queueing} at the Octave prompt. To
+automatically load @code{queueing} each time Octave starts, you can
+add the command above to the startup script (@file{.octaverc} on Unix
+systems).
+@end quotation
 
 Alternatively, you can first download @code{queueing} from
 Octave-Forge; then, to install the package in the system-wide
@@ -107,7 +116,7 @@ package will be available to your user only.
 
 @quotation Note 
 Octave version 3.2.3 as shipped with Ubuntu 10.04 seems to ignore
-@code{-local} and always tries to install the package on the system
+@option{-local} and always tries to install the package on the system
 directory.
 @end quotation
 

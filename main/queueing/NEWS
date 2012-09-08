@@ -1,6 +1,32 @@
 Summary of important user-visible changes for queueing-1.1.1
 ------------------------------------------------------------------------------
 
-** Increased tolerance in tests for dtmc_fpt and dtmc_mtta to avoid
-   spurious failures on some platforms.
+** queueing-1.1.1 is a bug fix release
 
+** Increased tolerance in tests for dtmc_fpt and dtmc_mtta to avoid
+   spurious failures on some platforms
+
+** Set "Autoload: no" in the DESCRIPTION file. This means that this
+   package is no longer automatically loaded on Octave startup. To use
+   the queueing package you need to issue the command "pkg load
+   queueing" at the Octave prompt.
+
+
+Summary of important user-visible changes for queueing-1.1.0
+------------------------------------------------------------------------------
+
+** Function ctmc_exps() can now compute the expected sojourn time
+   until absorption for absorbing CTMC
+
+** Functions ctmc_exps() and ctmc_taexps() now accept a scalar as
+   the second argument (time). 
+
+** Function ctmc_bd() now returns the infinitesimal generator matrix Q
+   of the birth-death process with given rates, not the steady-state
+   solution.
+
+** The following new functions have been added: dtmc_bd(), dtmc_mtta(), 
+   ctmc_check_Q(), dtmc_exps(), dtmc_taexps()
+
+** The following deprecated functions have been removed: ctmc_bd_solve(),
+   ctmc_solve(), dtmc_solve()

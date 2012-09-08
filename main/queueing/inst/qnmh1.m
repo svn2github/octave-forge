@@ -1,4 +1,5 @@
 ## Copyright (C) 2009 Dmitry Kolesnikov
+## Copyright (C) 2012 Moreno Marzolla
 ##
 ## This file is part of the queueing toolbox.
 ##
@@ -83,8 +84,6 @@
 ## Service center throughput
 ##
 ## @end table
-##
-## @c @seealso{qnmhr1}
 ##
 ## @end deftypefn
 

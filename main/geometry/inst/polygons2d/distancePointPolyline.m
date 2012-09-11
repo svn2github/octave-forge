@@ -1,5 +1,6 @@
 ## Copyright (C) 2003-2011 David Legland <david.legland@grignon.inra.fr>
 ## Copyright (C) 2012 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
+## Copyright (C) 2012 Carlo de Falco (Speed up by vectorization)
 ## All rights reserved.
 ##
 ## Redistribution and use in source and binary forms, with or without
@@ -51,17 +52,22 @@ function varargout = distancePointPolyline(point, poly, varargin)
   # allocate memory for result
   minDist = inf * ones(Np, 1);
 
-  # process each point
-  for p = 1:Np
-      # construct the set of edges
-      edges = [poly(1:end-1, :) poly(2:end, :)];
-      
-      # compute distance between current each point and all edges
-      dist = distancePointEdge(point(p, :), edges);
 
-      # update distance if necessary
-      minDist(p) = min(dist);
-  end
+  ## compute distance between current each point and all edges
+  dist = distancePointEdge(point, edges);
+  ## get the minimum distance
+  minDist = min(dist, [], 2);
+
+  ## original loopy verion:
+  # process each point
+  # for p = 1:Np
+  #     # construct the set of edges
+  #     edges = [poly(1:end-1, :) poly(2:end, :)];      
+  #     # compute distance between current each point and all edges
+  #     dist = distancePointEdge(point(p, :), edges);
+  #     # update distance if necessary
+  #     minDist(p) = min(dist);
+  # end
 
   # process output arguments
   if nargout<=1

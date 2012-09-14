@@ -1,3 +1,9 @@
+optim 1.2.1:
+------------
+
+ ** Bugfix in leasqr.m: errors when a function 'options' is in
+    namespace.
+
 Summary of important user-visible changes for optim 1.2.0:
 -------------------------------------------------------------------
 

@@ -570,7 +570,7 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %% only preliminary, for testing
   hook.testing = false;
   hook.new_s = false;
-  if (exist ('options'))
+  if (nargin > 9)
     if (isfield (options, 'testing'))
       hook.testing = options.testing;
     end

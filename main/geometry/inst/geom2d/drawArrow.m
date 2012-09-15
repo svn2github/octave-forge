@@ -59,12 +59,11 @@ function varargout = drawArrow(varargin)
   end
 
   % parse arrow coordinate
-  var = varargin{1};
-  if size(var, 2)==4
-      x1 = var(:,1);
-      y1 = var(:,2);
-      x2 = var(:,3);
-      y2 = var(:,4);
+  if size(varargin{1}, 2)==4
+      x1 = varargin{1}(:,1);
+      y1 = varargin{1}(:,2);
+      x2 = varargin{1}(:,3);
+      y2 = varargin{1}(:,4);
       varargin = varargin(2:end);
   elseif length(varargin)>3
       x1 = varargin{1};

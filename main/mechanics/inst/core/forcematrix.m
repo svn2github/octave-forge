@@ -51,11 +51,12 @@
 %% distances between the points.
 %% @end itemize
 %%
-%% @html
-%% @include doc/matrixforce.svg
-%% @end html
 %% @seealso{pointmassmesh, polyval, vech, sub2ind}
 %% @end deftypefn
+
+%% @html
+%% @include ../doc/matrixforce.svg
+%% @end html
 
 function [F D dr] = forcematrix (pos, A, funcs)
 

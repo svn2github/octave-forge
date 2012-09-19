@@ -1,7 +1,10 @@
 Summary of important user-visible changes for releases of the geometry package
 ===============================================================================
-geometry-1.5.1   Release Date: 2012-xx-xx  Release Manager: Juan Pablo Carbajal
+geometry-1.6.0   Release Date: 2012-xx-xx  Release Manager: Juan Pablo Carbajal
 ===============================================================================
+* Added Functions
+  anglePoints3d.m   angles3d.m   boxes3d.m    geom3d_Contents.m
+
 
 * Bug Fixes:
   - drawArrow.m was not working due to porting errors.

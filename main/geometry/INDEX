@@ -157,6 +157,13 @@ geometry >> Computational Geometry
  hexagonalGrid
  squareGrid
  triangleGrid
+3D Descriptive
+ geom3d_Contents
+ angles3d
+ boxes3d
+ circles3d
+3D Points
+ anglePoints3d
 Geometric graphs creation
  delaunayGraph.m
  knnGraph.m

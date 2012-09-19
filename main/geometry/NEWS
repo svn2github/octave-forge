@@ -4,7 +4,8 @@ geometry-1.6.0   Release Date: 2012-xx-xx  Release Manager: Juan Pablo Carbajal
 ===============================================================================
 * Added Functions
   anglePoints3d.m   angles3d.m   boxes3d.m    geom3d_Contents.m
-
+  lines3d.m         planes3d.m   points3d.m   polygons3d.m
+  vectors3d.m       graphs_Contents.m         meshes3d_Contents.m
 
 * Bug Fixes:
   - drawArrow.m was not working due to porting errors.

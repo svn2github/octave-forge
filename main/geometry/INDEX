@@ -159,17 +159,25 @@ geometry >> Computational Geometry
  triangleGrid
 3D Descriptive
  geom3d_Contents
+ meshes3d_Contents
  angles3d
  boxes3d
  circles3d
+ lines3d
+ planes3d
+ points3d
+ polygons3d
+ vectors3d
 3D Points
  anglePoints3d
+Geometric graphs descriptive
+ graphs_Contents
 Geometric graphs creation
- delaunayGraph.m
- knnGraph.m
- voronoi2d.m
+ delaunayGraph
+ knnGraph
+ voronoi2d
 Geometric graphs visualization
- drawGraph.m
+ drawGraph
 Geometric graphs manipulation
 Input
  @svg/svg

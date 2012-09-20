@@ -240,4 +240,8 @@ sub fix {
   if ($verbose) { say "Added copyright notice to '$_'"; }
 }
 
-find(\&fix, @ARGV);     # this call does all the recursive work
+if (@ARGV) {
+  find(\&fix, @ARGV);     # this call does all the recursive work
+} else {
+  warn ("No path was specified, no changes were made");
+}

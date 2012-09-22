@@ -75,7 +75,7 @@
 ##
 ##     ## one can create a function handle to anonymous functions for validators
 ##     val_mat = @@(x)isvector(x) && all( x <= 1) && all(x >= 0);
-##     p = p.addOptional ("mat", [0 0], @@val_mat);
+##     p = p.addOptional ("mat", [0 0], val_mat);
 ##
 ##     ## create two ParamValue type of arguments
 ##     val_type = @@(x) ischar(x) && any(strcmp(x, @{"linear", "quadratic"@});

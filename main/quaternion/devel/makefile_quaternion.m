@@ -12,7 +12,9 @@ develdir = fileparts (which ("makefile_quaternion"));
 srcdir = [develdir, "/../src"];
 cd (srcdir);
 
-mkoctfile is_real_array.cc
-
+system ("make clean");
+system ("make -j1 all");
 system ("rm *.o");
+system ("rm *.d");
+
 cd (homedir);

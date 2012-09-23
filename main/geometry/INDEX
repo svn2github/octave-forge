@@ -170,6 +170,17 @@ geometry >> Computational Geometry
  vectors3d
 3D Points
  anglePoints3d
+ angleSort3d
+3D Planes
+ createPlane
+ intersectLinePlane
+ normalizePlane
+ planeNormal
+ planePosition
+ projPointOnPlane
+3D Others
+ sph2cart2
+ vectorAngle3d
 Geometric graphs descriptive
  graphs_Contents
 Geometric graphs creation

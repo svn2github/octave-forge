@@ -40,5 +40,5 @@ else
 endif
 
 warning('off', 'Octave:fopen-file-in-path');
-clear dirlist dirname pp arch pkg_folder
+clear dirlist dirname pp arch pkg_folder dep_folder
 clear global_packages ii installed_pkgs_lst local_packages pkg_data

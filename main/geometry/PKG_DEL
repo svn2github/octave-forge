@@ -36,4 +36,4 @@ else
   endfor
 endif
 
-clear dirlist dirname pp arch pkg_folder
+clear dirlist dirname pp arch pkg_folder dep_folder

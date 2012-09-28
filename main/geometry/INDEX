@@ -171,6 +171,8 @@ geometry >> Computational Geometry
 3D Points
  anglePoints3d
  angleSort3d
+3D Lines
+ distancePointLine3d
 3D Planes
  createPlane
  intersectLinePlane

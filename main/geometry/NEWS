@@ -8,6 +8,7 @@ geometry-1.6.0   Release Date: 2012-xx-xx  Release Manager: Juan Pablo Carbajal
   graphs_Contents.m   meshes3d_Contents.m   angleSort3d.m   createPlane.m
   intersectLinePlane.m   normalizePlane.m   planeNormal.m   planePosition.m
   projPointOnPlane.m   sph2cart2.m   vectorAngle3d.m
+  distancePointLine3d.m
 
 * Bug Fixes:
   - drawArrow.m was not working due to porting errors.

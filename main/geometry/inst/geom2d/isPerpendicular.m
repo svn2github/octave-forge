@@ -67,25 +67,25 @@ function b = isPerpendicular(v1, v2, varargin)
 
   % default accuracy
   acc = 1e-14;
-  if ~isempty(varargin)
-      acc = abs(varargin{1});
+  if ~isempty (varargin)
+      acc = abs (varargin{1});
   end
 
   % adapt size of inputs
-  n1 = size(v1, 1);
-  n2 = size(v2, 1);
+  n1 = size (v1, 1);
+  n2 = size (v2, 1);
   if n1~=n2
       if n1==1
-          v1 = v1(ones(n2, 1), :);
+          v1 = v1(ones (n2, 1), :);
       elseif n2==1
-          v2 = v2(ones(n1, 1), :);
+          v2 = v2(ones (n1, 1), :);
       else
           error('Inputs must either have same size, or one must be scalar');
       end
   end
 
   % performs test
-  b = abs(dot(v1, v2, 2)) < acc;
+  b = abs (dot (v1, v2, 2)) < acc;
 
 endfunction
 

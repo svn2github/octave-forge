@@ -83,8 +83,8 @@ function [p_res, objf, cvg, outp] = __lm_feasible__ (f, pin, hook)
   if (any (pin < lbound | pin > ubound) ||
       any (pin_cstr.inequ.lin_except_bounds < 0) ||
       any (pin_cstr.inequ.gen < 0) ||
-      any (abs (pin_cstr.equ.lin)) >= nz ||
-      any (abs (pin_cstr.equ.gen)) >= nz)
+      any (abs (pin_cstr.equ.lin) >= nz) ||
+      any (abs (pin_cstr.equ.gen) >= nz))
     error ("Initial parameters violate constraints.");
   endif
   ##

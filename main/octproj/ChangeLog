@@ -1,8 +1,47 @@
+2012-10-01  José Luis García Pallero  <jgpallero@gmail.com>
+
+	* .hgtags:
+	Version 1.1.1
+	[7d540b58610e] [tip]
+
+	* DESCRIPTION:
+	Update version number and date in DESCRIPTION file
+	[9de75e122f32] [OctCLIP-1.1.1]
+
+	* doc/octproj.pdf, doc/octproj.tex:
+	Update documentation
+	[2cb2101efed4]
+
+2012-09-30  José Luis García Pallero  <jgpallero@gmail.com>
+
+	* src/Makefile:
+	Supression of compiler flag not common to all archs
+	[a72af8414d08]
+
+2012-04-17  José Luis García Pallero  <jgpallero@gmail.com>
+
+	* Merging branches (I forgot push the last changes to
+	www.bitbucket.org)
+	[91322cd2aecc]
+
+	* src/Makefile:
+	Changes in src/Makefile in ordert to pass warning and optimisation
+	flags to mkoctfile
+	[b21b21074393]
+
+	* .hgignore:
+	Update .hgignore file in mercurial repo
+	[22cd13e4c60f]
+
 2012-04-13  José Luis García Pallero  <jgpallero@gmail.com>
+
+	* doc/octproj.pdf, doc/octproj.tex:
+	Change author's affiliation and dates in the reference manual
+	[59d7aac9e4bb]
 
 	* .hgtags:
 	Version 1.1.0
-	[12956dd625ba] [tip]
+	[12956dd625ba]
 
 	* src/projwrap.c:
 	Fix bug with return of pj_transform (this bug was introduced in the

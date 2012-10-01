@@ -1,6 +1,6 @@
 /* -*- coding: utf-8 -*- */
 /**
-\ingroup geom
+\ingroup geom gshhs
 @{
 \file ptopol.c
 \brief Declaración de funciones para la realización de chequeos de inclusión de
@@ -62,12 +62,25 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include"libgeoc/ptopol.h"
 /******************************************************************************/
 /******************************************************************************/
-int GeocParOmpPtopol(void)
+int GeocParOmpPtopol(char version[])
 {
     //comprobamos si hay paralelización
 #if defined(_OPENMP)
+    //comprobamos si hay que extraer versión
+    if(version!=NULL)
+    {
+        //calculamos la versión
+        VersionOpenMP(_OPENMP,version);
+    }
+    //salimos de la función
     return 1;
 #else
+    if(version!=NULL)
+    {
+        //utilizamos la variable version para que no dé warming al compilar
+        strcpy(version,"");
+    }
+    //salimos de la función
     return 0;
 #endif
 }
@@ -113,6 +126,72 @@ int PtoEnRectangulo(const double x,
         //punto en el borde
         return GEOC_PTO_BORDE_POLIG;
     }
+}
+/******************************************************************************/
+/******************************************************************************/
+int RectanguloEnRectangulo(const int borde,
+                           const double xMin1,
+                           const double xMax1,
+                           const double yMin1,
+                           const double yMax1,
+                           const double xMin2,
+                           const double xMax2,
+                           const double yMin2,
+                           const double yMax2)
+{
+    //variable de salida, que inicializamos como polígonos no disjuntos
+    int sal=0;
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //comprobamos si el borde se tiene en cuenta o no
+    if(borde)
+    {
+        //el borde se tiene en cuenta
+        if((xMin1>=xMin2)&&(xMax1<=xMax2)&&(yMin1>=yMin2)&&(yMax1<=yMax2))
+        {
+            //el rectángulo está contenido
+            sal = 1;
+        }
+    }
+    else
+    {
+        //el borde no se tiene en cuenta
+        if((xMin1>xMin2)&&(xMax1<xMax2)&&(yMin1>yMin2)&&(yMax1<yMax2))
+        {
+            //el rectángulo está contenido
+            sal = 1;
+        }
+    }
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //salimos de la función
+    return sal;
+}
+/******************************************************************************/
+/******************************************************************************/
+int RectDisjuntos(const double xMin1,
+                  const double xMax1,
+                  const double yMin1,
+                  const double yMax1,
+                  const double xMin2,
+                  const double xMax2,
+                  const double yMin2,
+                  const double yMax2)
+{
+    //variable de salida, que inicializamos como polígonos no disjuntos
+    int sal=0;
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //comprobamos si son disjuntos
+    if((xMin1>xMax2)||(xMax1<xMin2)||(yMin1>yMax2)||(yMax1<yMin2))
+    {
+        //los restángulos son disjuntos
+        sal = 1;
+    }
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //salimos de la función
+    return sal;
 }
 /******************************************************************************/
 /******************************************************************************/
@@ -919,3 +998,10 @@ int PtoEnPoligonoVerticeBordeDoubleInd(const double x,
 /******************************************************************************/
 /******************************************************************************/
 /** @} */
+/******************************************************************************/
+/******************************************************************************/
+/* kate: encoding utf-8; end-of-line unix; syntax c; indent-mode cstyle; */
+/* kate: replace-tabs on; space-indent on; tab-indents off; indent-width 4; */
+/* kate: line-numbers on; folding-markers on; remove-trailing-space on; */
+/* kate: backspace-indents on; show-tabs on; */
+/* kate: word-wrap-column 80; word-wrap-marker-color #D2D2D2; word-wrap off; */

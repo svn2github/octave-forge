@@ -212,6 +212,18 @@ int IntersecSegmentos2D(const double xA,
     int cod=0;
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
+    //comprobamos si los rectángulos que encierran a los segmentos son disjuntos
+    if(RectDisjuntos(GEOC_MIN(xA,xB),GEOC_MAX(xA,xB),GEOC_MIN(yA,yB),
+                     GEOC_MAX(yA,yB),GEOC_MIN(xC,xD),GEOC_MAX(xC,xD),
+                     GEOC_MIN(yC,yD),GEOC_MAX(yC,yD)))
+    {
+        //si los rectángulos son disjuntos, los segmentos no se tocan
+        cod = GEOC_SEG_NO_INTERSEC;
+        //salimos de la función
+        return cod;
+    }
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
     //calculamos el denominador
     den = xA*(yD-yC)+xB*(yC-yD)+xD*(yB-yA)+xC*(yA-yB);
     //si el denominador es 0.0, los segmentos son paralelos
@@ -271,3 +283,10 @@ int IntersecSegmentos2D(const double xA,
 /******************************************************************************/
 /******************************************************************************/
 /** @} */
+/******************************************************************************/
+/******************************************************************************/
+/* kate: encoding utf-8; end-of-line unix; syntax c; indent-mode cstyle; */
+/* kate: replace-tabs on; space-indent on; tab-indents off; indent-width 4; */
+/* kate: line-numbers on; folding-markers on; remove-trailing-space on; */
+/* kate: backspace-indents on; show-tabs on; */
+/* kate: word-wrap-column 80; word-wrap-marker-color #D2D2D2; word-wrap off; */

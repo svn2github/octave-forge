@@ -48,18 +48,20 @@ extern "C" {
 /******************************************************************************/
 /******************************************************************************/
 /**
-\brief Comprueba si el compilador utilizado para compilar este fichero fue de la
+\brief Comprueba si el compilador utilizado para compilar este fichero es de la
        familia GCC.
 \param[out] noGnu Identificador de que estamos ante un compilador que no es de
             la familia GCC, diga lo que diga la variable devuelta por la función
             (ver nota al final de la documentación). Este argumento sólo es
             utilizado si en la entrada su valor es distinto de \p NULL. Dos
-            posibles valores:
+            posibles valores de salida:
             - 0: El compilador \b *ES* de la familia GCC.
             - Distinto de 0: El compilador \b *NO* \b *ES* de la familia GCC.
 \return Dos posibilidades:
         - 0: El compilador no pertenece a la familia GCC.
-        - Distinto de 0: El compilador sí pertenece a la familia GCC.
+        - Distinto de 0: El compilador sí pertenece a la familia GCC (para una
+          validez total de este valor hay que tener en cuenta el argumento
+          \em noGnu).
 \note Esta función realiza la comprobación mediante el chequeo de la existencia
       de la constante simbólica \p __GNUC__. Este hecho hace que la detección
       del compilador se lleve a cabo durante la compilación del fichero que
@@ -85,3 +87,10 @@ int EsCompiladorGNU(int* noGnu);
 /******************************************************************************/
 /******************************************************************************/
 /** @} */
+/******************************************************************************/
+/******************************************************************************/
+/* kate: encoding utf-8; end-of-line unix; syntax c; indent-mode cstyle; */
+/* kate: replace-tabs on; space-indent on; tab-indents off; indent-width 4; */
+/* kate: line-numbers on; folding-markers on; remove-trailing-space on; */
+/* kate: backspace-indents on; show-tabs on; */
+/* kate: word-wrap-column 80; word-wrap-marker-color #D2D2D2; word-wrap off; */

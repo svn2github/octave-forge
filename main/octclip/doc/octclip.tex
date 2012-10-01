@@ -9,10 +9,12 @@
 \title{Clipping polygons from \octave\footnote{This document is distributed
        under the terms of the GNU Free Documentation License. Please, see
        \url{http://www.gnu.org/licenses/}}}
-\author{Jos\'e Luis Garc\'ia Pallero\footnote{Instituto de Astronom\'ia y
-        Geodesia, Fac. de CC Matem\'aticas, Universidad Complutense de Madrid.
-        \texttt{jlgpallero@pdi.ucm.es}, \texttt{jgpallero@gmail.com}}}
-\date{\today}
+\author{Jos\'e Luis Garc\'ia Pallero\footnote{ETSI en Topograf\'ia, Geodesia y
+        Cartograf\'ia, Universidad Polit\'ecnica de Madrid.
+        \texttt{jlg.pallero@upm.es}, \texttt{jgpallero@gmail.com}}}
+\date{October 1, 2012 (version 1.0.2)\\
+      November 21, 2011 (version 1.0.1)\\
+      May 24, 2011 (version 1.0.0)}
 
 \begin{document}
 \maketitle
@@ -32,22 +34,22 @@ description about the Greiner-Hormann implemented algorithm, please read
 \section{Overview}
 
 The \octclip{} package allows you to perform boolean operations (intersection,
-union and difference) between two polygons in \octave{} using the
+union, difference and exclusive or) between two polygons in \octave{} using the
 Greiner-Hormann algorithm\footnote{\cite{greiner1998} and
 \url{http://davis.wpi.edu/~matt/courses/clipping/}}.
 
 Greiner-Hormann is an efficient algorithm for clipping arbitrary 2D polygons.
-The algorithm can handle arbitrary closed polygons, speciﬁcally where the
+The algorithm can handle arbitrary closed polygons, specifically where the
 subject and clip polygons may self-intersect.
 
 \section{Installation}
 
-As several \octave{} packages, \octclip{} installation consists in compiling the
+As most of \octave{} packages, \octclip{} installation consists in compiling the
 C++ kernel sources, link them against \octave{} library to generate
 \texttt{*.oct} functions and copy this \texttt{*.oct} executables and other
 \texttt{*.m} functions into a working directory.
 
-The automatic procedure can be easily done by running the command:
+The automagic procedure can be easily done by running the command:
 
 \begin{verbatim}
 octave:1> pkg install octclip-x.x.x.tar.gz
@@ -71,7 +73,7 @@ strict than \texttt{*.m} functions and don't check for some errors.
 
 The function is:
 \begin{itemize}
-\item \texttt{\_oc\_polybool}: boolean operation between two polygons.
+\item \texttt{\_oc\_polybool}: Performs boolean operation between two polygons.
 \end{itemize}
 
 \subsection{\texttt{*.m} function}
@@ -83,21 +85,21 @@ and checking of input arguments is performed.
 The function is the same as in section \ref{op-of} (without the \texttt{\_} at
 the beginning of the name):
 \begin{itemize}
-\item \texttt{oc\_polybool}: calls \texttt{\_oc\_polybool}.
+\item \texttt{oc\_polybool}: Performs boolean operation between two polygons
+      by calling the \texttt{\_oc\_polybool}.
 \end{itemize}
 
-A test script for the package exists too:
-
-\begin{itemize}
-\item \texttt{test\_octclip}: plots an example of the \texttt{oc\_polybool}
-      usage.
-\end{itemize}
+\texttt{oc\_polybool} includes too some demonstration code in order to test the
+functionality of the functions. The demo code can be executed as:
+\begin{verbatim}
+octave:1> demo oc_polybool
+\end{verbatim}
 
 \subsection{Error handling}
 
-\texttt{*.oct} and \texttt{*.m} functions can emit errors, some due to errors in
-input arguments and other due to errors in functions from the C\footnote{The
-algorithm is internally implemented in C (C99 standard).} code.
+\texttt{*.oct} and \texttt{*.m} functions can emit errors, some due to errors
+with input arguments and other due to errors in functions from the
+C\footnote{The algorithm is internally implemented in C (C99 standard).} code.
 
 Errors due to wrong input arguments (data types, dimensions, etc.) can be only
 given for \texttt{*.m} function and this is the reason because the use of this
@@ -108,13 +110,19 @@ The \texttt{*.oct} function can emit errors due to wrong number of input
 arguments, wrong value of the operation identifier and internal errors of memory
 allocation.
 
-\section{Caveats}
+\section{Caveats of Greiner-Hormann algorithm}
 
 To do.
 
 \section{Examples}
 
 To do.
+
+\section{Notes}
+
+Apart from \url{http://octave.sourceforge.net/octclip/index.html}, an up to date
+version of \octclip{} can be downloaded from
+\url{https://bitbucket.org/jgpallero/octclip/}.
 
 % \subsection{Geodetic to geocentric and vice versa}
 %

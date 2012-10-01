@@ -1,6 +1,6 @@
 /* -*- coding: utf-8 -*- */
 /**
-\ingroup geom
+\ingroup geom gshhs
 @{
 \file greiner.c
 \brief Definición de funciones para el recorte de polígonos mediante el
@@ -322,6 +322,31 @@ vertPoliClip* ReiniciaPoliClip(vertPoliClip* poli)
     ////////////////////////////////////////////////////////////////////////////
     //salimos de la función
     return sal;
+}
+/******************************************************************************/
+/******************************************************************************/
+vertPoliClip* ReiniciaVerticesPoliClip(vertPoliClip* poli)
+{
+    //estructura auxiliar
+    vertPoliClip* aux=NULL;
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //inicializamos la estructura de auxiliar con la dirección de entrada
+    aux = poli;
+    //mientras no lleguemos al final
+    while(aux!=NULL)
+    {
+        //vamos poniendo a 0 el campo 'visitado'
+        aux->visitado = 0;
+        //vamos poniendo a 0 el campo 'entrada'
+        aux->entrada = 0;
+        //nos posicionamos en el siguiente vértice
+        aux = aux->siguiente;
+    }
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //salimos de la función
+    return poli;
 }
 /******************************************************************************/
 /******************************************************************************/
@@ -802,7 +827,7 @@ int Paso1Greiner(vertPoliClip* poliBas,
                           (intersec!=GEOC_SEG_INTERSEC))
                     {
                         //distinguimos entre intersecciones donde sólo se toca
-                        //un extremo es intersecciones colineales donde se
+                        //un extremo e intersecciones colineales donde se
                         //comparte más de un punto
                         if((intersec==GEOC_SEG_INTERSEC_EXTREMO_NO_COLIN)||
                            (intersec==GEOC_SEG_INTERSEC_EXTREMO_COLIN))
@@ -1001,8 +1026,8 @@ void Paso2Greiner(vertPoliClip* poliBas,
 }
 /******************************************************************************/
 /******************************************************************************/
-poligGreiner* Paso3Greiner(vertPoliClip* poliBas,
-                           vertPoliClip* poliRec)
+polig* Paso3Greiner(vertPoliClip* poliBas,
+                    vertPoliClip* poliRec)
 {
     //vértices colgados al cerrar los polígonos
     vertPoliClip* ultBas=NULL;
@@ -1016,8 +1041,10 @@ poligGreiner* Paso3Greiner(vertPoliClip* poliBas,
     size_t nPtos=0;
     //número de elementos para los que ha sido asignada memoria
     size_t nElem=0;
+    //variable de estado
+    int estado=GEOC_ERR_NO_ERROR;
     //polígono de salida
-    poligGreiner* resultado=NULL;
+    polig* resultado=NULL;
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
     //cerramos los polígonos, convirtiéndolos en listas circulares
@@ -1155,72 +1182,30 @@ poligGreiner* Paso3Greiner(vertPoliClip* poliBas,
     }
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
-    //aumentamos el contador de puntos para añadir la marca de final de polígono
-    nPtos++;
-    //comprobamos si hay que reasignar memoria a los vectores de coordenadas
-    if(nPtos>nElem)
-    {
-        //actualizamos el número de elementos de los vectores de puntos
-        nElem += GEOC_GREINER_BUFFER_PTOS;
-        //reasignamos memoria para los vectores
-        x = (double*)realloc(x,nElem*sizeof(double));
-        y = (double*)realloc(y,nElem*sizeof(double));
-        //comprobamos si ha ocurrido algún error
-        if((x==NULL)||(y==NULL))
-        {
-            //liberamos la posible memoria asignada
-            free(x);
-            free(y);
-            //reabrimos los polígonos
-            AbrePoliClip(poliBas,ultBas);
-            AbrePoliClip(poliRec,ultRec);
-            //mensaje de error
-            GEOC_ERROR("Error de asignación de memoria");
-            //salimos de la función
-            return NULL;
-        }
-    }
-    //asignamos las coordenadas del punto de intersección
-    x[nPtos-1] = GeocNan();
-    y[nPtos-1] = GeocNan();
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
-    //ajustamos los tamaños de los vectores al número final de coordenadas
-    if(nElem>nPtos)
-    {
-        //reasignamos memoria para los vectores
-        x = (double*)realloc(x,nPtos*sizeof(double));
-        y = (double*)realloc(y,nPtos*sizeof(double));
-        //comprobamos si ha ocurrido algún error
-        if((x==NULL)||(y==NULL))
-        {
-            //liberamos la posible memoria asignada
-            free(x);
-            free(y);
-            //reabrimos los polígonos
-            AbrePoliClip(poliBas,ultBas);
-            AbrePoliClip(poliRec,ultRec);
-            //mensaje de error
-            GEOC_ERROR("Error de asignación de memoria");
-            //salimos de la función
-            return NULL;
-        }
-    }
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
     //creamos la estructura de salida
-    resultado = CreaPoligGreinerVectores(nPtos,x,y);
+    resultado = CreaPolig(x,y,nPtos,1,1,&estado);
     //comprobamos los posibles errores
     if(resultado==NULL)
     {
-        //liberamos la posible memoria asignada
+        //liberamos la memoria asignada
         free(x);
         free(y);
         //reabrimos los polígonos
         AbrePoliClip(poliBas,ultBas);
         AbrePoliClip(poliRec,ultRec);
-        //mensaje de error
-        GEOC_ERROR("Error de asignación de memoria");
+        //comprobamos el error
+        if(estado==GEOC_ERR_ASIG_MEMORIA)
+        {
+            //mensaje de error
+            GEOC_ERROR("Error de asignación de memoria");
+        }
+        else
+        {
+            //mensaje de error
+            GEOC_ERROR("Error en la llamada a 'CreaPolig()'\nEste error no "
+                       "puede producirse aquí porque los NaN deben estar "
+                       "bien puestos");
+        }
         //salimos de la función
         return NULL;
     }
@@ -1231,24 +1216,33 @@ poligGreiner* Paso3Greiner(vertPoliClip* poliBas,
     AbrePoliClip(poliRec,ultRec);
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
+    //liberamos la memoria asignada
+    free(x);
+    free(y);
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
     //salimos de la función
     return resultado;
 }
 /******************************************************************************/
 /******************************************************************************/
-poligGreiner* PoliBoolGreiner(vertPoliClip* poliBas,
-                              vertPoliClip* poliRec,
-                              const enum GEOC_OP_BOOL_POLIG op,
-                              const double facPer,
-                              size_t* nIntersec,
-                              size_t* nPerturb)
+polig* PoliBoolGreiner(vertPoliClip* poliBas,
+                       vertPoliClip* poliRec,
+                       const enum GEOC_OP_BOOL_POLIG op,
+                       const double facPer,
+                       size_t* nIntersec,
+                       size_t* nPerturb)
 {
     //factor de perturbación
     double factor=0.0;
+    //variables de posición
+    int posBas=0,posRec=0;
     //identificador de error
     int idError=GEOC_ERR_NO_ERROR;
+    //polígono auxiliar
+    polig* ba=NULL;
     //polígono de salida
-    poligGreiner* resultado=NULL;
+    polig* resultado=NULL;
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
     //comprobamos si se ha pasado factor de perturbación
@@ -1282,90 +1276,94 @@ poligGreiner* PoliBoolGreiner(vertPoliClip* poliBas,
     //comprobamos si no hay intersecciones
     if(!(*nIntersec))
     {
+        //calculo la situación relativa entre los polígonos
+        posBas = PtoEnPoliClipVertice(poliBas->xP,poliBas->yP,poliRec);
+        posRec = PtoEnPoliClipVertice(poliRec->xP,poliRec->yP,poliBas);
         //comprobamos las posibles situaciones relativas entre los polígonos que
         //pueden producir cero intersecciones
-        if(PtoEnPoliClipVertice(poliBas->xP,poliBas->yP,poliRec))
+        if((posBas==GEOC_PTO_DENTRO_POLIG)||(posBas==GEOC_PTO_VERTICE_POLIG))
         {
             //EL POLÍGONO BASE ESTÁ DENTRO DEL POLÍGONO DE RECORTE
             //distinguimos las operaciones (por defecto, intersección)
             if(op==GeocOpBoolUnion)
             {
                 //el resultado es el polígono de recorte
-                resultado = CreaPoligGreinerPoliClip(poliRec,0);
+                resultado = CreaPoligPoliClip(poliRec,0);
             }
             else if(op==GeocOpBoolAB)
             {
                 //el resultado es un polígono vacío
-                resultado = CreaPoligGreinerPoliClip(NULL,0);
+                resultado = CreaPoligPoliClip(NULL,0);
             }
-            else if(op==GeocOpBoolBA)
+            else if((op==GeocOpBoolBA)||(op==GeocOpBoolXor))
             {
                 //el resultado son los dos polígonos
                 //polígono base
-                resultado = CreaPoligGreinerPoliClip(poliBas,0);
+                resultado = CreaPoligPoliClip(poliBas,0);
                 //añadimos el polígono de recorte
-                resultado = AnyadePoligClipPoligGreiner(resultado,poliRec,0);
+                AnyadePoligClipPolig(resultado,poliRec,0);
             }
             else
             {
                 //el resultado es el polígono base
-                resultado = CreaPoligGreinerPoliClip(poliBas,0);
+                resultado = CreaPoligPoliClip(poliBas,0);
             }
         }
-        else if(PtoEnPoliClipVertice(poliRec->xP,poliRec->yP,poliBas))
+        else if((posRec==GEOC_PTO_DENTRO_POLIG)||
+                (posRec==GEOC_PTO_VERTICE_POLIG))
         {
             //EL POLÍGONO DE RECORTE ESTÁ DENTRO DEL POLÍGONO BASE
             //distinguimos las operaciones (por defecto, intersección)
             if(op==GeocOpBoolUnion)
             {
                 //el resultado es el polígono base
-                resultado = CreaPoligGreinerPoliClip(poliBas,0);
+                resultado = CreaPoligPoliClip(poliBas,0);
             }
-            else if(op==GeocOpBoolAB)
+            else if((op==GeocOpBoolAB)||(op==GeocOpBoolXor))
             {
                 //el resultado son los dos polígonos
                 //polígono base
-                resultado = CreaPoligGreinerPoliClip(poliBas,0);
+                resultado = CreaPoligPoliClip(poliBas,0);
                 //añadimos el polígono de recorte
-                resultado = AnyadePoligClipPoligGreiner(resultado,poliRec,0);
+                AnyadePoligClipPolig(resultado,poliRec,0);
             }
             else if(op==GeocOpBoolBA)
             {
                 //el resultado es un polígono vacío
-                resultado = CreaPoligGreinerPoliClip(NULL,0);
+                resultado = CreaPoligPoliClip(NULL,0);
             }
             else
             {
                 //el resultado es el polígono de recorte
-                resultado = CreaPoligGreinerPoliClip(poliRec,0);
+                resultado = CreaPoligPoliClip(poliRec,0);
             }
         }
         else
         {
             //NINGÚN POLÍGONO ESTÁ DENTRO DEL OTRO
             //distinguimos las operaciones (por defecto, intersección)
-            if(op==GeocOpBoolUnion)
+            if((op==GeocOpBoolUnion)||(op==GeocOpBoolXor))
             {
                 //el resultado son los dos polígonos
                 //polígono base
-                resultado = CreaPoligGreinerPoliClip(poliBas,0);
+                resultado = CreaPoligPoliClip(poliBas,0);
                 //añadimos el polígono de recorte
-                resultado = AnyadePoligClipPoligGreiner(resultado,poliRec,0);
+                AnyadePoligClipPolig(resultado,poliRec,0);
             }
             else if(op==GeocOpBoolAB)
             {
                 //el resultado es el polígono base
-                resultado = CreaPoligGreinerPoliClip(poliBas,0);
+                resultado = CreaPoligPoliClip(poliBas,0);
             }
             else if(op==GeocOpBoolBA)
             {
                 //el resultado es el polígono de recorte
-                resultado = CreaPoligGreinerPoliClip(poliRec,0);
+                resultado = CreaPoligPoliClip(poliRec,0);
             }
             else
             {
                 //el resultado es un polígono vacío
-                resultado = CreaPoligGreinerPoliClip(NULL,0);
+                resultado = CreaPoligPoliClip(NULL,0);
             }
         }
         //comprobamos los posibles errores
@@ -1381,24 +1379,77 @@ poligGreiner* PoliBoolGreiner(vertPoliClip* poliBas,
     }
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
-    //SEGUNDO PASO DEL ALGORITMO DE GREINER-HORMANN: IDENTIFICACIÓN DE
-    //INTERSECCIONES COMO ENTRADA-SALIDA
-    //marcamos los puntos como entrada o salida
-    Paso2Greiner(poliBas,poliRec,op);
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
-    //TERCER PASO DEL ALGORITMO DE GREINER-HORMANN: EXTRACCIÓN DE LOS POLÍGONOS
-    //RESULTADO DE LA OPERACIÓN
-    //extraemos los polígonos
-    resultado = Paso3Greiner(poliBas,poliRec);
-    //comprobamos los posibles errores
-    if(resultado==NULL)
+    //distinguimos entre XOR y el resto de operaciones
+    if(op!=GeocOpBoolXor)
     {
-        //mensaje de error
-        GEOC_ERROR("Error de asignación de memoria en la llamada a "
-                   "'Paso3Greiner'");
-        //salimos de la función
-        return NULL;
+        //SEGUNDO PASO DEL ALGORITMO DE GREINER-HORMANN: IDENTIFICACIÓN DE
+        //INTERSECCIONES COMO ENTRADA-SALIDA
+        //marcamos los puntos como entrada o salida
+        Paso2Greiner(poliBas,poliRec,op);
+        //TERCER PASO DEL ALGORITMO DE GREINER-HORMANN: EXTRACCIÓN DE LOS POLÍGONOS
+        //RESULTADO DE LA OPERACIÓN
+        //extraemos los polígonos
+        resultado = Paso3Greiner(poliBas,poliRec);
+        //comprobamos los posibles errores
+        if(resultado==NULL)
+        {
+            //mensaje de error
+            GEOC_ERROR("Error de asignación de memoria en la llamada a "
+                       "'Paso3Greiner'");
+            //salimos de la función
+            return NULL;
+        }
+    }
+    else
+    {
+        //LA OPERCIÓN XOR LA HACEMOS COMO LA UNIÓN DE LA OPERACIÓN A-B CON B-A
+        //marcamos los puntos como entrada o salida para la operación A-B
+        Paso2Greiner(poliBas,poliRec,GeocOpBoolAB);
+        //extraemos los polígonos
+        resultado = Paso3Greiner(poliBas,poliRec);
+        //comprobamos los posibles errores
+        if(resultado==NULL)
+        {
+            //mensaje de error
+            GEOC_ERROR("Error de asignación de memoria en la llamada a "
+                       "'Paso3Greiner'");
+            //salimos de la función
+            return NULL;
+        }
+        //reinicializamos los polígonos, pero manteniendo las intersecciones
+        poliBas = ReiniciaVerticesPoliClip(poliBas);
+        poliRec = ReiniciaVerticesPoliClip(poliRec);
+        //marcamos los puntos como entrada o salida para la operación B-A
+        Paso2Greiner(poliBas,poliRec,GeocOpBoolBA);
+        //extraemos los polígonos
+        ba = Paso3Greiner(poliBas,poliRec);
+        //comprobamos los posibles errores
+        if(ba==NULL)
+        {
+            //liberamos la memoria asignada
+            LibMemPolig(resultado);
+            //mensaje de error
+            GEOC_ERROR("Error de asignación de memoria en la llamada a "
+                       "'Paso3Greiner'");
+            //salimos de la función
+            return NULL;
+        }
+        //añadimos el resultado de la operación B-A al anterior de A-B
+        idError = AnyadePoligPolig(resultado,ba);
+        //comprobamos los posibles errores
+        if(idError==GEOC_ERR_ASIG_MEMORIA)
+        {
+            //liberamos la memoria asignada
+            LibMemPolig(resultado);
+            LibMemPolig(ba);
+            //mensaje de error
+            GEOC_ERROR("Error de asignación de memoria en la llamada a "
+                       "'AnyadePoligPolig' para la operación XOR");
+            //salimos de la función
+            return NULL;
+        }
+        //liberamos la memoria asociada a la estructura auxiliar ba
+        LibMemPolig(ba);
     }
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
@@ -1407,115 +1458,227 @@ poligGreiner* PoliBoolGreiner(vertPoliClip* poliBas,
 }
 /******************************************************************************/
 /******************************************************************************/
-poligGreiner* CreaPoligGreinerVectores(const size_t nElem,
-                                       double* x,
-                                       double* y)
+polig* PoliBoolGreinerMult(const polig* poliBas,
+                           const polig* poliRec,
+                           const enum GEOC_OP_BOOL_POLIG op,
+                           const double facPer,
+                           size_t* nIntersec,
+                           size_t* nPerturb)
 {
-    //índice para recorrer bucles
-    size_t i=0;
+    //índices para recorrer bucles
+    size_t i=0,j=0;
     //variable de posición
     size_t pos=0;
+    //número de intersecciones y de puntos perturbados auxiliar
+    size_t nInt=0,nPer=0;
+    //posición de un rectángulo con respecto a otro
+    int pr=0;
+    //variables de error
+    int estado1=GEOC_ERR_NO_ERROR,estado2=GEOC_ERR_NO_ERROR;
+    //listas de trabajo
+    vertPoliClip* poligBas=NULL;
+    vertPoliClip* poligRec=NULL;
+    //polígono auxiliar
+    polig* poligAux=NULL;
     //variable de salida
-    poligGreiner* result=NULL;
+    polig* resultado=NULL;
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
-    //asignamos memoria para la estructura
-    result = (poligGreiner*)malloc(sizeof(poligGreiner));
+    //inicializamos el número total de intersecciones y de puntos perturbados
+    *nIntersec = 0;
+    *nPerturb = 0;
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //inicializamos la variable de salida
+    resultado = IniciaPoligVacio();
     //comprobamos los posibles errores
-    if(result==NULL)
+    if(resultado==NULL)
     {
         //mensaje de error
         GEOC_ERROR("Error de asignación de memoria");
         //salimos de la función
         return NULL;
     }
-    //asignamos el número de elementos
-    result->nElem = nElem;
-    //enlazamos con los vectores de coordenadas
-    result->x = x;
-    result->y = y;
-    //inicializamos los otros campos
-    result->nPolig = 0;
-    result->posIni = NULL;
-    result->nVert = NULL;
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
-    //recorremos los elementos de trabajo
-    for(i=0;i<nElem;i++)
+    //recorremos los polígonos base
+    for(i=0;i<poliBas->nPolig;i++)
     {
-        //comprobamos si las coordenadas de trabajo son NaN
-        if(EsGeocNan(x[i])&&EsGeocNan(y[i]))
-        {
-            //aumentamos el contador de polígonos
-            (result->nPolig)++;
-        }
-    }
-    //quitamos uno, porque siempre hay un NaN de más
-    (result->nPolig)--;
-    //sólo continuamos si hay algún polígono
-    if(result->nPolig)
-    {
-        //asignamos memoria para los vectores de posiciones
-        result->posIni = (size_t*)malloc(result->nPolig*sizeof(size_t));
-        result->nVert = (size_t*)malloc(result->nPolig*sizeof(size_t));
+        //dirección de inicio de los vértices del polígono base
+        pos = poliBas->posIni[i];
+        //creamos el polígono base de trabajo
+        poligBas = CreaPoliClip(&(poliBas->x[pos]),&(poliBas->y[pos]),
+                                poliBas->nVert[i],1,1);
         //comprobamos los posibles errores
-        if((result->posIni==NULL)||(result->nVert==NULL))
+        if(poligBas==NULL)
         {
-            //liberamos la memoria asignada hasta ahora, pero no la de los
-            //vectores de coordenadas
-            free(result->posIni);
-            free(result->nVert);
-            free(result);
+            //liberamos la memoria asignada hasta ahora
+            LibMemPolig(resultado);
             //mensaje de error
             GEOC_ERROR("Error de asignación de memoria");
             //salimos de la función
             return NULL;
         }
-        //inicializamos a 0 los vectores de posiciones
-        for(i=0;i<result->nPolig;i++)
+        //recorremos los polígonos de recorte
+        for(j=0;j<poliRec->nPolig;j++)
         {
-            result->posIni[i] = 0;
-            result->nVert[i] = 0;
-        }
-        //recorremos los elementos desde el primero hasta el anterior al último,
-        //que es NaN
-        for(i=0;i<(nElem-1);i++)
-        {
-            //comprobamos si es NaN
-            if(EsGeocNan(x[i])&&EsGeocNan(y[i]))
+            //comprobamos si los polígonos tienen definidos sus límites
+            if((poliBas->hayLim)&&(poliRec->hayLim))
             {
-                //actualizamos la posición en los vectores de posiciones, si ha
-                //lugar
-                if(i==0)
+                //comprobamos si los restángulos que encierran a los polígonos
+                //son disjuntos o no
+                pr = RectDisjuntos(poliBas->xMin[i],poliBas->xMax[i],
+                                   poliBas->yMin[i],poliBas->yMax[i],
+                                   poliRec->xMin[j],poliRec->xMax[j],
+                                   poliRec->yMin[j],poliRec->yMax[j]);
+                //comprobamos los casos particulares si los rectángulos son
+                //disjuntos
+                if(pr&&(op==GeocOpBoolInter))
                 {
-                    //inicializamos la posición
-                    pos = 0;
+                    //EN CASO DE INTERSECCIÓN, NO SE AÑADE NADA
+                    //vamos a la siguiente vuelta del bucle
+                    continue;
                 }
-                else
+                else if(pr&&((op==GeocOpBoolUnion)||(op==GeocOpBoolXor)))
                 {
-                    //aumentamos el contador
-                    pos++;
+                    //EN CASO DE UNIÓN O UNIÓN EXCLUSIVA, SE AÑADEN LOS DOS
+                    //POLÍGONOS
+                    //añadimos el polígono base
+                    estado1 = AnyadeDatosPolig(resultado,&(poliBas->x[pos]),
+                                               &(poliBas->y[pos]),
+                                               poliBas->nVert[i],1,1);
+                    //añadimos el polígono de recorte
+                    pos = poliRec->posIni[j];
+                    estado2 = AnyadeDatosPolig(resultado,&(poliRec->x[pos]),
+                                               &(poliRec->y[pos]),
+                                               poliRec->nVert[j],1,1);
+                    //comprobamos los posibles errores, que sólo pueden ser de
+                    //asignación de memoria
+                    if((estado1!=GEOC_ERR_NO_ERROR)||
+                       (estado2!=GEOC_ERR_NO_ERROR))
+                    {
+                        //liberamos la posible memoria asignada hasta ahora
+                        LibMemPoliClip(poligBas);
+                        LibMemPolig(resultado);
+                        //lanzamos el mensaje de error
+                        GEOC_ERROR("Error de asignación de memoria");
+                        //salimos de la función
+                        return NULL;
+                    }
+                    //vamos a la siguiente vuelta del bucle
+                    continue;
                 }
-                //indicamos la posición de comienzo de coordenadas
-                result->posIni[pos] = i+1;
+                else if(pr&&(op==GeocOpBoolAB))
+                {
+                    //EN CASO DE OPERACIÓN A-B, SE AÑADE EL POLÍGONO BASE
+                    //añadimos el polígono base
+                    estado1 = AnyadeDatosPolig(resultado,&(poliBas->x[pos]),
+                                               &(poliBas->y[pos]),
+                                               poliBas->nVert[i],1,1);
+                    //comprobamos los posibles errores, que sólo pueden ser de
+                    //asignación de memoria
+                    if(estado1!=GEOC_ERR_NO_ERROR)
+                    {
+                        //liberamos la posible memoria asignada hasta ahora
+                        LibMemPoliClip(poligBas);
+                        LibMemPolig(resultado);
+                        //lanzamos el mensaje de error
+                        GEOC_ERROR("Error de asignación de memoria");
+                        //salimos de la función
+                        return NULL;
+                    }
+                    //vamos a la siguiente vuelta del bucle
+                    continue;
+                }
+                else if(pr&&(op==GeocOpBoolBA))
+                {
+                    //EN CASO DE OPERACIÓN B-A, SE AÑADE EL POLÍGONO DE RECORTE
+                    //añadimos el polígono de recorte
+                    pos = poliRec->posIni[j];
+                    estado1 = AnyadeDatosPolig(resultado,&(poliRec->x[pos]),
+                                               &(poliRec->y[pos]),
+                                               poliRec->nVert[j],1,1);
+                    //comprobamos los posibles errores, que sólo pueden ser de
+                    //asignación de memoria
+                    if(estado1!=GEOC_ERR_NO_ERROR)
+                    {
+                        //liberamos la posible memoria asignada hasta ahora
+                        LibMemPoliClip(poligBas);
+                        LibMemPolig(resultado);
+                        //lanzamos el mensaje de error
+                        GEOC_ERROR("Error de asignación de memoria");
+                        //salimos de la función
+                        return NULL;
+                    }
+                    //vamos a la siguiente vuelta del bucle
+                    continue;
+                }
             }
-            else
+            //dirección de inicio de los vértices del polígono de recorte
+            pos = poliRec->posIni[j];
+            //creamos el polígono de recorte de trabajo
+            poligRec = CreaPoliClip(&(poliRec->x[pos]),&(poliRec->y[pos]),
+                                    poliRec->nVert[j],1,1);
+            //comprobamos los posibles errores
+            if(poligRec==NULL)
             {
-                //si no es NaN, añadimos un vértice más a la cuenta del número
-                //de vértices del polígono
-                result->nVert[pos] += 1;
+                //liberamos la memoria asignada hasta ahora
+                LibMemPoliClip(poligBas);
+                LibMemPolig(resultado);
+                //mensaje de error
+                GEOC_ERROR("Error de asignación de memoria");
+                //salimos de la función
+                return NULL;
             }
+            //recortamos
+            poligAux = PoliBoolGreiner(poligBas,poligRec,op,facPer,&nInt,&nPer);
+            //comprobamos los posibles errores
+            if(poligAux==NULL)
+            {
+                //liberamos la posible memoria asignada hasta ahora
+                LibMemPoliClip(poligBas);
+                LibMemPoliClip(poligRec);
+                LibMemPolig(resultado);
+                //mensaje de error
+                GEOC_ERROR("Error de asignación de memoria");
+                //salimos de la función
+                return NULL;
+            }
+            //sumamos el número de intersecciones y de puntos perturbados
+            (*nIntersec) += nInt;
+            (*nPerturb) += nPer;
+            //añadimos los polígonos recortados a la variable de salida
+            if(AnyadePoligPolig(resultado,poligAux)==GEOC_ERR_ASIG_MEMORIA)
+            {
+                //liberamos la posible memoria asignada hasta ahora
+                LibMemPoliClip(poligBas);
+                LibMemPoliClip(poligRec);
+                LibMemPolig(poligAux);
+                LibMemPolig(resultado);
+                //mensaje de error
+                GEOC_ERROR("Error de asignación de memoria");
+                //salimos de la función
+                return NULL;
+            }
+            //liberamos la memoria asignada al polígono de esta vuelta del bucle
+            LibMemPoliClip(poligRec);
+            //liberamos la memoria asignada al polígono auxiliar
+            LibMemPolig(poligAux);
+            //reinicializamos el polígono base
+            poligBas = ReiniciaPoliClip(poligBas);
         }
+        //liberamos la memoria asignada al polígono de esta vuelta del bucle
+        LibMemPoliClip(poligBas);
     }
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
     //salimos de la función
-    return result;
+    return resultado;
 }
 /******************************************************************************/
 /******************************************************************************/
-poligGreiner* CreaPoligGreinerPoliClip(vertPoliClip* poli,
-                                       const int coorOrig)
+polig* CreaPoligPoliClip(vertPoliClip* poli,
+                         const int coorOrig)
 {
     //índice para recorrer bucles
     size_t i=0;
@@ -1524,15 +1687,11 @@ poligGreiner* CreaPoligGreinerPoliClip(vertPoliClip* poli,
     //estructura auxiliar
     vertPoliClip* aux=poli;
     //variable de salida
-    poligGreiner* result=NULL;
+    polig* result=NULL;
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
-    //contamos todos los vértices del polígono
-    nVert = NumeroVertPoliClip(poli);
-    //número de elementos de los vectores de coordenadas
-    nElem = nVert+2;
-    //asignamos memoria para la estructura de trabajo
-    result = (poligGreiner*)malloc(sizeof(poligGreiner));
+    //creamos la estructura vacía
+    result = IniciaPoligVacio();
     //comprobamos los posibles errores
     if(result==NULL)
     {
@@ -1541,63 +1700,46 @@ poligGreiner* CreaPoligGreinerPoliClip(vertPoliClip* poli,
         //salimos de la función
         return NULL;
     }
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //contamos todos los vértices del polígono
+    nVert = NumeroVertPoliClip(poli);
+    //contemplamos una posible salida rápida
+    if(nVert==0)
+    {
+        //devolvemos la estructura vacía
+        return result;
+    }
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //número de elementos de los vectores de coordenadas
+    nElem = nVert+2;
     //asignamos memoria para los vectores de coordenadas de la estructura
     result->x = (double*)malloc(nElem*sizeof(double));
     result->y = (double*)malloc(nElem*sizeof(double));
+    //asignamos memoria para los vectores de posición
+    result->posIni = (size_t*)malloc(sizeof(size_t));
+    result->nVert = (size_t*)malloc(sizeof(size_t));
     //comprobamos los posibles errores de asignación de memoria
-    if((result->x==NULL)||(result->y==NULL))
+    if((result->x==NULL)||(result->y==NULL)||(result->posIni==NULL)||
+       (result->nVert==NULL))
     {
         //liberamos la posible memoria asignada
-        free(result->x);
-        free(result->y);
-        free(result);
+        LibMemPolig(result);
         //mensaje de error
         GEOC_ERROR("Error de asignación de memoria");
         //salimos de la función
         return NULL;
     }
-    //asignamos memoria para los vectores de posiciones, si ha lugar
-    if(nVert>0)
-    {
-        result->posIni = (size_t*)malloc(sizeof(size_t));
-        result->nVert = (size_t*)malloc(sizeof(size_t));
-        //comprobamos los posibles errores de asignación de memoria
-        if((result->posIni==NULL)||(result->nVert==NULL))
-        {
-            //liberamos la posible memoria asignada
-            free(result->x);
-            free(result->y);
-            free(result->posIni);
-            free(result->nVert);
-            free(result);
-            //mensaje de error
-            GEOC_ERROR("Error de asignación de memoria");
-            //salimos de la función
-            return NULL;
-        }
-    }
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
-    //asignamos el número de elementos de los vectores de coordenadas
+    //asignamos el número de elementos de los vectores de coordenadas y de
+    //polígonos
     result->nElem = nElem;
-    //asignamos los campos de posiciones, dependiendo del número de vértices
-    if(nVert>0)
-    {
-        //número de polígonos
-        result->nPolig = 1;
-        //posición de inicio del único polígono
-        result->posIni[0] = 1;
-        //número de vértices del único polígono
-        result->nVert[0] = nVert;
-    }
-    else
-    {
-        //número de polígonos
-        result->nPolig = 0;
-        //inicializamos a NULL los vectores de posición
-        result->posIni = NULL;
-        result->nVert = NULL;
-    }
+    result->nPolig = 1;
+    //asignamos la posición de inicio y el número de vértices
+    result->posIni[0] = 1;
+    result->nVert[0] = nVert;
     //asignamos los separadores de polígono al principio y al final
     result->x[0] = GeocNan();
     result->y[0] = GeocNan();
@@ -1631,114 +1773,68 @@ poligGreiner* CreaPoligGreinerPoliClip(vertPoliClip* poli,
 }
 /******************************************************************************/
 /******************************************************************************/
-poligGreiner* AnyadePoligClipPoligGreiner(poligGreiner* poliOrig,
-                                          vertPoliClip* poli,
-                                          const int coorOrig)
+int AnyadePoligClipPolig(polig* poli,
+                         vertPoliClip* anyade,
+                         const int coorOrig)
 {
-    //índice para recorrer bucles
-    size_t i=0;
-    //número de elementos
-    size_t nVert=0,nElem=0;
-    //estructura auxiliar
-    vertPoliClip* aux=poli;
+    //número de elementos a añadir
+    size_t nVert=0;
+    //polígono auxiliar
+    polig* aux=NULL;
+    //variable de estado (salida)
+    int estado=GEOC_ERR_NO_ERROR;
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
-    //contamos todos los vértices del polígono
-    nVert = NumeroVertPoliClip(poli);
-    //sólo continuamos si el nuevo polígono contiene algún vértice
-    if(nVert>0)
+    //contamos todos los vértices del polígono a añadir
+    nVert = NumeroVertPoliClip(anyade);
+    //contemplamos una posible salida rápida
+    if(nVert==0)
     {
-        //número total de elementos
-        nElem = poliOrig->nElem+nVert+1;
-        //reasignamos memoria para los vectores de la estructura
-        poliOrig->x = (double*)realloc(poliOrig->x,nElem*sizeof(double));
-        poliOrig->y = (double*)realloc(poliOrig->y,nElem*sizeof(double));
-        poliOrig->posIni = (size_t*)realloc(poliOrig->posIni,
-                                           (poliOrig->nPolig+1)*sizeof(size_t));
-        poliOrig->nVert = (size_t*)realloc(poliOrig->nVert,
-                                           (poliOrig->nPolig+1)*sizeof(size_t));
-        //comprobamos los posibles errores de asignación de memoria
-        if((poliOrig->x==NULL)||(poliOrig->y==NULL)||(poliOrig->posIni==NULL)||
-           (poliOrig->nVert==NULL))
-        {
-            //liberamos la posible memoria asignada
-            LibMemPoligGreiner(poliOrig);
-            //mensaje de error
-            GEOC_ERROR("Error de asignación de memoria");
-            //salimos de la función
-            return NULL;
-        }
-        //número total de polígonos
-        poliOrig->nPolig += 1;
-        //posición de inicio del polígono a añadir
-        poliOrig->posIni[poliOrig->nPolig-1] = poliOrig->nElem;
-        //número de vértices del polígono a añadir
-        poliOrig->nVert[poliOrig->nPolig-1] = nVert;
-        //copiamos los nuevos vértices
-        for(i=0;i<nVert;i++)
-        {
-            //distinguimos el tipo de coordenadas a copiar
-            if(coorOrig)
-            {
-                //coordenadas originales
-                poliOrig->x[poliOrig->nElem+i] = aux->x;
-                poliOrig->y[poliOrig->nElem+i] = aux->y;
-            }
-            else
-            {
-                //coordenadas perturbadas
-                poliOrig->x[poliOrig->nElem+i] = aux->xP;
-                poliOrig->y[poliOrig->nElem+i] = aux->yP;
-            }
-            //siguiente vértice
-            aux = aux->siguiente;
-        }
-        //elementos totales de los vectores de coordenadas
-        poliOrig->nElem = nElem;
-        //copiamos la marca de fin de polígono
-        poliOrig->x[poliOrig->nElem-1] = GeocNan();
-        poliOrig->y[poliOrig->nElem-1] = GeocNan();
+        //devolvemos la estructura vacía
+        return estado;
     }
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
-    //salimos de la función
-    return poliOrig;
-}
-/******************************************************************************/
-/******************************************************************************/
-void LibMemPoligGreiner(poligGreiner* poli)
-{
-    //sólo trabajamos si la estructura pasada tiene memoria asignada
-    if(poli!=NULL)
+    //creamos un nuevo polígono con los datos a añadir
+    aux = CreaPoligPoliClip(anyade,coorOrig);
+    //comprobamos los posibles errores
+    if(aux==NULL)
     {
-        //liberamos la memoria asignada al vector de coordenadas X
-        if(poli->x!=NULL)
-        {
-            free(poli->x);
-        }
-        //liberamos la memoria asignada al vector de coordenadas Y
-        if(poli->y!=NULL)
-        {
-            free(poli->y);
-        }
-        //liberamos la memoria asignada al vector de posiciones de inicio
-        if(poli->posIni!=NULL)
-        {
-            free(poli->posIni);
-        }
-        //liberamos la memoria asignada al vector de número de vértices
-        if(poli->nVert!=NULL)
-        {
-            free(poli->nVert);
-        }
-        //liberamos la memoria asignada a la estructura
-        free(poli);
+        //mensaje de error
+        GEOC_ERROR("Error de asignación de memoria");
+        //salimos de la función
+        return GEOC_ERR_ASIG_MEMORIA;
     }
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
+    //añadimos la nueva estructura
+    estado = AnyadePoligPolig(poli,aux);
+    //comprobamos los posibles errores
+    if(estado!=GEOC_ERR_NO_ERROR)
+    {
+        //liberamos la memoria asignada
+        LibMemPolig(aux);
+        //mensaje de error
+        GEOC_ERROR("Error de asignación de memoria");
+        //salimos de la función
+        return estado;
+    }
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //liberamos la memoria utilizada
+    LibMemPolig(aux);
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
     //salimos de la función
-    return;
+    return estado;
 }
 /******************************************************************************/
 /******************************************************************************/
 /** @} */
+/******************************************************************************/
+/******************************************************************************/
+/* kate: encoding utf-8; end-of-line unix; syntax c; indent-mode cstyle; */
+/* kate: replace-tabs on; space-indent on; tab-indents off; indent-width 4; */
+/* kate: line-numbers on; folding-markers on; remove-trailing-space on; */
+/* kate: backspace-indents on; show-tabs on; */
+/* kate: word-wrap-column 80; word-wrap-marker-color #D2D2D2; word-wrap off; */

@@ -41,10 +41,13 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _GEOM_H_
 /******************************************************************************/
 /******************************************************************************/
+#include"libgeoc/dpeucker.h"
 #include"libgeoc/eucli.h"
 #include"libgeoc/greiner.h"
 #include"libgeoc/polig.h"
+#include"libgeoc/polil.h"
 #include"libgeoc/ptopol.h"
+#include"libgeoc/recpolil.h"
 #include"libgeoc/segmento.h"
 /******************************************************************************/
 /******************************************************************************/
@@ -52,3 +55,10 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /******************************************************************************/
 /******************************************************************************/
 /** @} */
+/******************************************************************************/
+/******************************************************************************/
+/* kate: encoding utf-8; end-of-line unix; syntax c; indent-mode cstyle; */
+/* kate: replace-tabs on; space-indent on; tab-indents off; indent-width 4; */
+/* kate: line-numbers on; folding-markers on; remove-trailing-space on; */
+/* kate: backspace-indents on; show-tabs on; */
+/* kate: word-wrap-column 80; word-wrap-marker-color #D2D2D2; word-wrap off; */

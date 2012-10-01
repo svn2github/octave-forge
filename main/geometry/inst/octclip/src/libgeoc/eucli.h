@@ -8,7 +8,7 @@
 \author José Luis García Pallero, jgpallero@gmail.com
 \date 27 de octubre de 2009
 \section Licencia Licencia
-Copyright (c) 2009-2010, José Luis García Pallero. All rights reserved.
+Copyright (c) 2009-2011, José Luis García Pallero. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
@@ -56,8 +56,8 @@ extern "C" {
 \return Distancia euclídea entre los dos puntos.
 \note Esta función asume que todas las coordenadas vienen dadas en las mismas
       unidades.
-\todo Esta función no está probada.
 \date 27 de octubre de 2009: Creación de la función.
+\todo Esta función todavía no está probada.
 */
 double Dist2D(const double x1,
               const double y1,
@@ -84,8 +84,8 @@ double Dist2D(const double x1,
       unidades.
 \note Las unidades de las matrices de varianza-covarianza han de ser congruentes
       con las de las coordenadas pasadas.
-\todo Esta función no está probada.
 \date 27 de octubre de 2009: Creación de la función.
+\todo Esta función todavía no está probada.
 */
 void Dist2DVC(const double x1,
               const double y1,
@@ -112,8 +112,8 @@ void Dist2DVC(const double x1,
 \return Distancia euclídea entre los dos puntos.
 \note Esta función asume que todas las coordenadas vienen dadas en las mismas
       unidades.
-\todo Esta función no está probada.
 \date 27 de octubre de 2009: Creación de la función.
+\todo Esta función todavía no está probada.
 */
 double Dist3D(const double x1,
               const double y1,
@@ -150,8 +150,8 @@ double Dist3D(const double x1,
       unidades.
 \note Las unidades de las matrices de varianza-covarianza han de ser congruentes
       con las de las coordenadas pasadas.
-\todo Esta función no está probada.
 \date 27 de octubre de 2009: Creación de la función.
+\todo Esta función todavía no está probada.
 */
 void Dist3DVC(const double x1,
               const double y1,
@@ -175,6 +175,50 @@ void Dist3DVC(const double x1,
               double* varDist);
 /******************************************************************************/
 /******************************************************************************/
+/**
+\brief Calcula el ángulo formado por dos vectores en el plano.
+\param[in] x1 Coordenada X del primer vector.
+\param[in] y1 Coordenada Y del primer vector.
+\param[in] x2 Coordenada X del segundo vector.
+\param[in] y2 Coordenada Y del segundo vector.
+\return Ángulo formado por los dos vectores, en radianes.
+\note Esta función asume que todas las coordenadas vienen dadas en las mismas
+      unidades.
+\date 04 de julio de 2011: Creación de la función.
+\todo Esta función todavía no está probada.
+*/
+double AnguloVecPlano(const double x1,
+                      const double y1,
+                      const double x2,
+                      const double y2);
+/******************************************************************************/
+/******************************************************************************/
+/**
+\brief Calcula la altura de un triángulo a partir de las coordenadas de sus
+       vértices.
+\param[in] xVert Coordenada X del vértice a partir del cual se calculará la
+           altura.
+\param[in] yVert Coordenada Y del vértice a partir del cual se calculará la
+           altura.
+\param[in] xBase1 Coordenada X del primer punto de la base del triángulo.
+\param[in] yBase1 Coordenada Y del primer punto de la base del triángulo.
+\param[in] xBase2 Coordenada X del segundo punto de la base del triángulo.
+\param[in] yBase2 Coordenada Y del segundo punto de la base del triángulo.
+\return Altura del triángulo, dada como la longitud del segmento que, partiendo
+        del vértice pasado, corta en ángulo recto a la base.
+\note Esta función asume que todas las coordenadas vienen dadas en las mismas
+      unidades.
+\date 04 de julio de 2011: Creación de la función.
+\todo Esta función todavía no está probada.
+*/
+double AlturaTriangulo(const double xVert,
+                       const double yVert,
+                       const double xBase1,
+                       const double yBase1,
+                       const double xBase2,
+                       const double yBase2);
+/******************************************************************************/
+/******************************************************************************/
 #ifdef __cplusplus
 }
 #endif
@@ -184,3 +228,10 @@ void Dist3DVC(const double x1,
 /******************************************************************************/
 /******************************************************************************/
 /** @} */
+/******************************************************************************/
+/******************************************************************************/
+/* kate: encoding utf-8; end-of-line unix; syntax c; indent-mode cstyle; */
+/* kate: replace-tabs on; space-indent on; tab-indents off; indent-width 4; */
+/* kate: line-numbers on; folding-markers on; remove-trailing-space on; */
+/* kate: backspace-indents on; show-tabs on; */
+/* kate: word-wrap-column 80; word-wrap-marker-color #D2D2D2; word-wrap off; */

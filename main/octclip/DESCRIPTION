@@ -1,8 +1,8 @@
 Name: OctCLIP
-Version: 1.0.0
-Date: 2011-03-01
-Author: José Luis García Pallero <jgpallero@gmail.com>
-Maintainer: José Luis García Pallero <jgpallero@gmail.com>
+Version: 1.0.2
+Date: 2012-10-01
+Author: José Luis García Pallero, <jgpallero@gmail.com>
+Maintainer: José Luis García Pallero, <jgpallero@gmail.com>
 Title: GNU Octave clipping polygons tool
 Description: This package allows to do boolean operations with polygons using
  the Greiner-Hormann algorithm.

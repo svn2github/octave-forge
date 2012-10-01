@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File}{[@var{X},@var{Y},@var{nPol},@var{nInt},@var{nPert}] =}_oc_polybool(@var{sub},@var{clip},@var{op})
-## @deftypefnx{Function File}{[@var{X},@var{Y},@var{nPol},@var{nInt},@var{nPert}] =}_oc_polybool(@var{sub},@var{clip})
+## @deftypefn{Function File}{[@var{X},@var{Y},@var{nPol},@var{nInt},@var{nPert}] =}oc_polybool(@var{sub},@var{clip},@var{op})
+## @deftypefnx{Function File}{[@var{X},@var{Y},@var{nPol},@var{nInt},@var{nPert}] =}oc_polybool(@var{sub},@var{clip})
 ##
 ## This function performs boolean operations between two polygons using the
 ## Greiner-Hormann algorithm (http://davis.wpi.edu/~matt/courses/clipping/).
@@ -45,13 +45,13 @@
 ##
 ## For the matrices @var{sub} and @var{clip}, the first point is not needed to
 ## be repeated at the end (but is permitted). Pairs of (NaN,NaN) coordinates in
-## @var{sub} and/or @var{clip} are omitted.
+## @var{sub} and/or @var{clip} are ommitted.
 ##
-## @var{X} is a column vector containing the X coordinates of the vertices for.
-## resultant polygon(s).
+## @var{X} is a column vector containing the X coordinates of the vertices of
+## the resultant polygon(s).
 ##
-## @var{Y} is a column vector containing the Y coordinates of the vertices for.
-## resultant polygon(s).
+## @var{Y} is a column vector containing the Y coordinates of the vertices of
+## the resultant polygon(s).
 ##
 ## @var{nPol} is the number of output polygons.
 ##

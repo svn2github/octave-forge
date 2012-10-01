@@ -51,10 +51,10 @@ For the matrices @var{sub} and @var{clip}, the first point is not needed to\n\
 be repeated at the end (but is permitted). Pairs of (NaN,NaN) coordinates in\n\
 @var{sub} and/or @var{clip} are ommitted.\n\
 \n\
-@var{X} is a column vector containing the X coordinates of the vertices for.\n\
-resultant polygon(s).\n\n\
-@var{Y} is a column vector containing the Y coordinates of the vertices for.\n\
-resultant polygon(s).\n\n\
+@var{X} is a column vector containing the X coordinates of the vertices of\n\
+the resultant polygon(s).\n\n\
+@var{Y} is a column vector containing the Y coordinates of the vertices of\n\
+the resultant polygon(s).\n\n\
 @var{nPol} is the number of output polygons.\n\n\
 @var{nInt} is the number of intersections between @var{sub} and @var{clip}.\n\n\
 @var{nPert} is the number of perturbed points of the @var{clip} polygon in\n\
@@ -117,7 +117,7 @@ DEFUN_DLD(_oc_polybool,args,,HELPTEXT)
         //operation identifier
         enum GEOC_OP_BOOL_POLIG op=GeocOpBoolInter;
         //output struct
-        poligGreiner* result=NULL;
+        polig* result=NULL;
         //number of polygons, intersections and perturbations
         size_t nPol=0,nInter=0,nPert=0;
         //number of elements for the output vectors
@@ -231,7 +231,7 @@ DEFUN_DLD(_oc_polybool,args,,HELPTEXT)
         //free memory
         LibMemPoliClip(polA);
         LibMemPoliClip(polB);
-        LibMemPoligGreiner(result);
+        LibMemPolig(result);
     }
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////

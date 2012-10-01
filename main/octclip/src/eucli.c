@@ -8,7 +8,7 @@
 \author José Luis García Pallero, jgpallero@gmail.com
 \date 27 de octubre de 2009
 \section Licencia Licencia
-Copyright (c) 2009-2010, José Luis García Pallero. All rights reserved.
+Copyright (c) 2009-2011, José Luis García Pallero. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
@@ -157,4 +157,82 @@ void Dist3DVC(const double x1,
 }
 /******************************************************************************/
 /******************************************************************************/
+double AnguloVecPlano(const double x1,
+                      const double y1,
+                      const double x2,
+                      const double y2)
+{
+    //variables auxiliares
+    double num=0.0,den=0.0;
+    //variable de salida
+    double alfa=0.0;
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //calculamos el numerador de la fórmula que da el coseno del ángulo
+    num = x1*x2+y1*y2;
+    //calculamos el denominador de la fórmula que da el coseno del ángulo
+    den = sqrt((x1*x1+y1*y1)*(x2*x2+y2*y2));
+    //calculamos el coseno del ángulo, teniendo en cuenta casos singulares
+    if(den==0.0)
+    {
+        //si el denominador es 0.0, el ángulo es 0.0 y su coseno 1.0
+        alfa = 1.0;
+    }
+    else
+    {
+        //no hay singularidad
+        alfa = num/den;
+    }
+    //calculamos el ángulo
+    alfa = acos(alfa);
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //salimos de la función
+    return alfa;
+}
+/******************************************************************************/
+/******************************************************************************/
+double AlturaTriangulo(const double xVert,
+                       const double yVert,
+                       const double xBase1,
+                       const double yBase1,
+                       const double xBase2,
+                       const double yBase2)
+{
+    //ángulo entra la base en el punto 1 y el vértice
+    double alfa=0.0;
+    //longitud del punto 1 de la base al vértice
+    double lon=0.0;
+    //variables auxiliares
+    double dxv=0.0,dyv=0.0,dxb=0.0,dyb=0.0;
+    //variable de salida
+    double h=0.0;
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //calculamos los incrementos de coordenadas auxiliares
+    dxv = xVert-xBase1;
+    dyv = yVert-yBase1;
+    dxb = xBase2-xBase1;
+    dyb = yBase2-yBase1;
+    //calculamos el ángulo entre la base y el segmento que une el punto inicial
+    //de ésta con el vértice
+    alfa = AnguloVecPlano(dxv,dyv,dxb,dyb);
+    //longitud del lado que une la base con el vértice 1 de la base
+    lon = sqrt(dxv*dxv+dyv*dyv);
+    //calculamos la altura
+    h = fabs(lon*sin(alfa));
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //salimos de la función
+    return h;
+}
+/******************************************************************************/
+/******************************************************************************/
 /** @} */
+/******************************************************************************/
+/******************************************************************************/
+/* kate: encoding utf-8; end-of-line unix; syntax c; indent-mode cstyle; */
+/* kate: replace-tabs on; space-indent on; tab-indents off; indent-width 4; */
+/* kate: line-numbers on; folding-markers on; remove-trailing-space on; */
+/* kate: backspace-indents on; show-tabs on; */
+/* kate: word-wrap-column 80; word-wrap-marker-color #D2D2D2; word-wrap off; */

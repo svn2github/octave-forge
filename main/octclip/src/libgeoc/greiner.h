@@ -1,6 +1,6 @@
 /* -*- coding: utf-8 -*- */
 /**
-\ingroup geom
+\ingroup geom gshhs
 @{
 \file greiner.h
 \brief Definición de estructuras y declaración de funciones para el recorte de
@@ -46,7 +46,8 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include<time.h>
 #include"libgeoc/errores.h"
 #include"libgeoc/eucli.h"
-#include"libgeoc/fgeneral.h"
+#include"libgeoc/geocnan.h"
+#include"libgeoc/polig.h"
 #include"libgeoc/ptopol.h"
 #include"libgeoc/segmento.h"
 /******************************************************************************/
@@ -88,10 +89,12 @@ enum GEOC_OP_BOOL_POLIG
     GeocOpBoolInter=111,
     /** \brief Unión de polígonos. */
     GeocOpBoolUnion=112,
+    /** \brief Unión exclusiva de polígonos. */
+    GeocOpBoolXor=113,
     /** \brief Operación A-B. */
-    GeocOpBoolAB=113,
+    GeocOpBoolAB=114,
     /** \brief Operación B-A. */
-    GeocOpBoolBA=114
+    GeocOpBoolBA=115
 };
 /******************************************************************************/
 /******************************************************************************/
@@ -158,43 +161,6 @@ typedef struct _vertPoliClip
                respecto al primer vértice del segmento que lo contiene. */
     double alfa;
 }vertPoliClip;
-/******************************************************************************/
-/******************************************************************************/
-/** \struct poligGreiner
-\brief Estructura contenedora de los vértices que definen el contorno de los
-       polígonos obtenidos tras una operación booleana entre polígonos según el
-       algoritmo de Greiner-Hormann.
-\date 23 de mayo de 2011: Creación de la estructura.
-*/
-typedef struct
-{
-    /** \brief Número de elementos de los vectores de coordenadas. */
-    size_t nElem;
-    /**
-    \brief Vector de \em nElem elementos, que almacena las coordenadas X de los
-           vértices del polígono, así como los separadores entre polígonos. El
-           primer elemento se repite al final.
-    */
-    double* x;
-    /**
-    \brief Vector de \em nElem elementos, que almacena las coordenadas Y de los
-           vértices del polígono, así como los separadores entre polígonos. El
-           primer elemento se repite al final.
-    */
-    double* y;
-    /** \brief Número de polígonos almacenados. */
-    size_t nPolig;
-    /**
-    \brief Vector de \em nPolig elementos, que almacena las posiciones en los
-           vectores \em x e \em y de inicio de cada polígono almacenado.
-    */
-    size_t* posIni;
-    /**
-    \brief Vector de \em nPolig elementos, que almacena el número de vértices de
-           cada polígono almacenado.
-    */
-    size_t* nVert;
-}poligGreiner;
 /******************************************************************************/
 /******************************************************************************/
 /**
@@ -293,11 +259,32 @@ void LibMemPoliClip(vertPoliClip* poli);
       vértice original, si no lo es, la variable de entrada queda modificada.
       Por tanto, siempre es recomendable capturar la variable de salida, que
       garantiza la posición del primer elemento.
+\note Las coordenadas de todos los vértices originales vuelven a ser la de
+      inicio, es decir, los campos _vertPoliClip::xP e _vertPoliClip::yP se
+      sobreescriben con los valores almacenados en _vertPoliClip::x e
+      _vertPoliClip::y.
 \note Esta función \b *NO* trabaja con listas circulares.
 \date 18 de mayo de 2011: Creación de la función.
 \todo Esta función todavía no está probada.
 */
 vertPoliClip* ReiniciaPoliClip(vertPoliClip* poli);
+/******************************************************************************/
+/******************************************************************************/
+/**
+\brief Reinicia los vértices de un polígono almacenado como una lista doblemente
+       enlazada de elementos \ref _vertPoliClip para poder volver a calcular
+       otra operación booleana sin tener que recalcular las intersecciones.
+
+       Esta función devuelve todos los campos _vertPoliClip::visitado a 0 y los
+       campos _vertPoliClip::entrada a 0.
+\param[in] poli Puntero al primer elemento del polígono.
+\return Puntero al primer elemento del polígono original. Si se devuelve
+        \p NULL, quiere decir qie el argumento de entrada valía \p NULL.
+\note Esta función \b *NO* trabaja con listas circulares.
+\date 30 de mayo de 2011: Creación de la función.
+\todo Esta función todavía no está probada.
+*/
+vertPoliClip* ReiniciaVerticesPoliClip(vertPoliClip* poli);
 /******************************************************************************/
 /******************************************************************************/
 /**
@@ -600,7 +587,10 @@ int Paso1Greiner(vertPoliClip* poliBas,
                de la ejecución de la función los puntos de intersección han sido
                marcados como entrada o salida.
 \param[in] op Identificador de la operación a realizar. Ha de ser un elemento
-           del tipo enumerado #GEOC_OP_BOOL_POLIG.
+           del tipo enumerado #GEOC_OP_BOOL_POLIG, excepto la unión exclusiva
+           \p xor. En el caso de indicar la operación de unión exclusiva \p xor,
+           se realiza una intersección y \b *NO* se avisa del argumento
+           incorrecto.
 \note Esta función no comprueba si las variables \em poliBas y \em poliRec son
       polígonos correctamente almacenados.
 \date 22 de mayo de 2011: Creación de la función.
@@ -624,16 +614,17 @@ void Paso2Greiner(vertPoliClip* poliBas,
                sale de la función \ref Paso2Greiner. Al término de la ejecución
                de la función los puntos visitados han sido marcados en el campo
                _vertPoliClip::visitado.
-\return Estructura \ref poligGreiner con los polígonos resultado de la
-        operación. Si se devuelve \p NULL ha ocurrido un error de asignación de
-        memoria.
+\return Estructura \ref polig con los polígonos resultado de la operación. Si se
+        devuelve \p NULL ha ocurrido un error de asignación de memoria.
 \note Esta función no comprueba si las variables \em poliBas y \em poliRec son
       polígonos correctamente almacenados.
 \date 22 de mayo de 2011: Creación de la función.
+\date 29 de mayo de 2011: Cambio de la variable de salida por la estructura
+      \ref polig.
 \todo Esta función no está probada.
 */
-poligGreiner* Paso3Greiner(vertPoliClip* poliBas,
-                           vertPoliClip* poliRec);
+polig* Paso3Greiner(vertPoliClip* poliBas,
+                    vertPoliClip* poliRec);
 /******************************************************************************/
 /******************************************************************************/
 /**
@@ -652,6 +643,8 @@ poligGreiner* Paso3Greiner(vertPoliClip* poliBas,
            - #GeocOpBoolInter: Realiza la intersección entre \em poliBas y
              \em poliRec.
            - #GeocOpBoolUnion: Realiza la unión entre \em poliBas y \em poliRec.
+           - #GeocOpBoolXor: Realiza la unión exclusiva entre \em poliBas y
+             \em poliRec.
            - #GeocOpBoolAB: Realiza la sustracción \em poliBas-poliRec.
            - #GeocOpBoolBA: Realiza la sustracción \em poliRec-poliBas.
 \param[in] facPer Factor para el posible cálculo de la perturbación de las
@@ -660,12 +653,11 @@ poligGreiner* Paso3Greiner(vertPoliClip* poliBas,
            para este argumento es #GEOC_GREINER_FAC_EPS_PERTURB.
 \param[out] nIntersec Número de intersecciones calculadas.
 \param[out] nPerturb Número de puntos perturbados en el proceso.
-\return Estructura \ref poligGreiner con los polígonos resultado de la
-        operación. Si se devuelve \p NULL ha ocurrido un error de asignación de
-        memoria.
+\return Estructura \ref polig con los polígonos resultado de la operación. Si se
+        devuelve \p NULL ha ocurrido un error de asignación de memoria.
 \note Esta función no comprueba si las variables \em poliBas y \em poliRec son
       polígonos correctamente almacenados.
-\note Estafunción no comprueba internamente si \em op pertenece al tipo
+\note Esta función no comprueba internamente si \em op pertenece al tipo
       enumerado #GEOC_OP_BOOL_POLIG. Si se introduce un valor no perteneciente
       al tipo, se realiza la operación #GeocOpBoolInter.
 \note En el caso de tener que perturbar algún vértice, sólo se modifican los de
@@ -673,54 +665,88 @@ poligGreiner* Paso3Greiner(vertPoliClip* poliBas,
 \note Si \em facPer es menor o igual que 1, se sustituye internamente su valor
       por #GEOC_GREINER_FAC_EPS_PERTURB (ver documentación de la función
       \ref CantPerturbMin).
+\note Esta función realiza la unión exclusiva #GeocOpBoolXor mediante la unión
+      de las operaciones individuales #GeocOpBoolAB y #GeocOpBoolBA. Esta última
+      unión simplemente es el almacenamiento en la estructura de salida de los
+      resultados de #GeocOpBoolAB y #GeocOpBoolBA. En ningún momento se realiza
+      la operación booleana #GeocOpBoolUnion entre los resultados de
+      #GeocOpBoolAB y #GeocOpBoolBA.
 \date 22 de mayo de 2011: Creación de la función.
+\date 29 de mayo de 2011: Cambio de la variable de salida por la estructura
+      \ref polig.
+\date 30 de mayo de 2011: Adición de la capacidad de calcular la operación unión
+      exclusiva \p xor.
 \todo Esta función no está probada.
 */
-poligGreiner* PoliBoolGreiner(vertPoliClip* poliBas,
-                              vertPoliClip* poliRec,
-                              const enum GEOC_OP_BOOL_POLIG op,
-                              const double facPer,
-                              size_t* nIntersec,
-                              size_t* nPerturb);
+polig* PoliBoolGreiner(vertPoliClip* poliBas,
+                       vertPoliClip* poliRec,
+                       const enum GEOC_OP_BOOL_POLIG op,
+                       const double facPer,
+                       size_t* nIntersec,
+                       size_t* nPerturb);
 /******************************************************************************/
 /******************************************************************************/
 /**
-\brief Crea una estructura \ref poligGreiner a partir de dos vectores de
-       coordenadas de vértices y separadores de polígono (marca #GEOC_NAN).
-\param[in] nElem Número de elementos de los vectores de trabajo.
-\param[in] x Vector de coordenadas X de los polígonos de trabajo.
-\param[in] y Vector de coordenadas Y de los polígonos de trabajo.
-\return Estructura \ref poligGreiner que representa el polígono. Si se devuelve
-        \p NULL ha ocurrido un error de asignación de memoria.
-\note Esta función no comprueba si las variables \em x e \em y tienen suficiente
-      memoria asignada.
-\note Si ocurre un error de asignación de memoria, la memoria asociada a los
-      vectores de entrada \em x e \em y no se libera.
-\note Los vectores \em x e \em y han de contener separadores de polígonos
-      (valor #GEOC_NAN) entre cada polígono definido, aunque sólo sea uno. Ha de
-      haber una marca (en ambos vectores) entre cada polígono definido y una al
-      principio y al final de los vectores de coordenadas. Esto es, si las
-      coordenadas de los vértices de un polígono son (1,1), (2,2), (3,1) y
-      (1,1), los vectores \em x e \em y deben almacenar
-      <tt>x=[NaN,1,2,3,1,NaN]</tt> e <tt>y=[NaN,1,2,1,1,NaN]</tt>. Si hay otro
-      polígono de coordenadas (1,3), (2,4), (3,3) y (1,3), los vectores \em x e
-      \em y deben almacenar <tt>x=[NaN,1,2,3,1,NaN,1,2,3,1,NaN]</tt> e
-      <tt>y=[NaN,1,2,1,1,NaN,3,4,3,3,NaN]</tt>.
-\note Esta función no realiza copia en memoria de las coordenadas de los
-      vértices. Los vectores \em x e \em y se enlazan a la estructura de salida.
-\note Esta función se ha programado sólo para trabajar con los listados de
-      coordenadas que genera internamente la función \ref Paso3Greiner.
-\date 23 de mayo de 2011: Creación de la función.
+\brief Realiza una operación booleana entre múltiples polígonos mediante el
+       algoritmo de Greiner-Hormann.
+\param[in] poliBas Estructura \ref polig que almacena los polígonos base.
+\param[in] poliRec Estructura \ref polig que almacena los polígonos de recorte.
+\param[in] op Identificador de la operación a realizar. Ha de ser un elemento
+           del tipo enumerado #GEOC_OP_BOOL_POLIG. Varias posibilidades:
+           - #GeocOpBoolInter: Realiza la intersección entre los polígonos
+             almacenados en \em poliBas y los almacenados en \em poliRec.
+           - #GeocOpBoolUnion: Realiza la unión entre los polígonos almacenados
+             en \em poliBas y los almacenados en \em poliRec.
+           - #GeocOpBoolXor: Realiza la unión exclusiva entre los polígonoa
+             almacenados en \em poliBas y los almacenados en \em poliRec.
+           - #GeocOpBoolAB: Realiza la sustracción entre todos los polígonos
+             \em poliBas-poliRec.
+           - #GeocOpBoolBA: Realiza la sustracción entre todos los polígonos
+             \em poliRec-poliBas.
+\param[in] facPer Factor para el posible cálculo de la perturbación de las
+           coordenadas de algunos vértices. Este valor es usado internamente por
+           la función \ref Paso1Greiner (ver su documentación). Un buen valor
+           para este argumento es #GEOC_GREINER_FAC_EPS_PERTURB.
+\param[out] nIntersec Número total de intersecciones calculadas entre todas los
+            polígonos.
+\param[out] nPerturb Número total de puntos perturbados en el proceso.
+\return Estructura \ref polig con los polígonos resultado de las operaciones. Si
+        se devuelve \p NULL ha ocurrido un error de asignación de memoria.
+\note Esta función realiza la operación \em op con todas las combinaciones
+      posibles de polígonos. Es decir, se recorren todos los polígonos
+      almacenados en \em poliBas y con cada uno de ellos se realiza la operación
+      \em op con cada polígono almacenado en \em poliRec.
+\note Esta función no comprueba si las variables \em poliBas y \em poliRec son
+      polígonos correctamente almacenados.
+\note Esta función no comprueba internamente si \em op pertenece al tipo
+      enumerado #GEOC_OP_BOOL_POLIG. Si se introduce un valor no perteneciente
+      al tipo, se realiza la operación #GeocOpBoolInter.
+\note En el caso de tener que perturbar algún vértice, sólo se modifican los
+      correspondientes a \em poliRec, dejando las coordenadas de los polígonos
+      de \em poliBase inalteradas.
+\note Si \em facPer es menor o igual que 1, se sustituye internamente su valor
+      por #GEOC_GREINER_FAC_EPS_PERTURB (ver documentación de la función
+      \ref CantPerturbMin).
+\note Esta función realiza la unión exclusiva #GeocOpBoolXor mediante la unión
+      de las operaciones individuales #GeocOpBoolAB y #GeocOpBoolBA. Esta última
+      unión simplemente es el almacenamiento en la estructura de salida de los
+      resultados de #GeocOpBoolAB y #GeocOpBoolBA. En ningún momento se realiza
+      la operación booleana #GeocOpBoolUnion entre los resultados de
+      #GeocOpBoolAB y #GeocOpBoolBA.
+\date 07 de junio de 2011: Creación de la función.
 \todo Esta función no está probada.
 */
-poligGreiner* CreaPoligGreinerVectores(const size_t nElem,
-                                       double* x,
-                                       double* y);
+polig* PoliBoolGreinerMult(const polig* poliBas,
+                           const polig* poliRec,
+                           const enum GEOC_OP_BOOL_POLIG op,
+                           const double facPer,
+                           size_t* nIntersec,
+                           size_t* nPerturb);
 /******************************************************************************/
 /******************************************************************************/
 /**
-\brief Crea una estructura \ref poligGreiner a partir de todos los vértices de
-       un polígono almacenado como una lista doblemente enlazada de elementos
+\brief Crea una estructura \ref polig a partir de todos los vértices de un
+       polígono almacenado como una lista doblemente enlazada de elementos
        \ref _vertPoliClip.
 \param[in] poli Polígono de trabajo, representado como una lista doblemente
                 enlazada de elementos \ref _vertPoliClip. El puntero pasado ha
@@ -732,61 +758,55 @@ poligGreiner* CreaPoligGreinerVectores(const size_t nElem,
              _vertPoliClip::yP.
            - Distinto de 0: Se copiarán las coordenadas originales
              _vertPoliClip::x e _vertPoliClip::y.
-\return Estructura \ref poligGreiner que representa el polígono. Si se devuelve
-        \p NULL ha ocurrido un error de asignación de memoria.
+\return Estructura \ref polig que representa el polígono. Si se devuelve \p NULL
+        ha ocurrido un error de asignación de memoria.
 \note Esta función no comprueba si la variable \em poli es un polígono
       correctamente almacenado.
 \note Esta función \b *NO* trabaja con listas circulares.
 \note Esta función realiza una copia en memoria de las coordenadas de los
       vértices de la estructura \em poli a la estructura de salida.
-\date 23 de mayo de 2011: Creación de la función.
+\date 29 de mayo de 2011: Creación de la función.
 \todo Esta función no está probada.
 */
-poligGreiner* CreaPoligGreinerPoliClip(vertPoliClip* poli,
-                                       const int coorOrig);
+polig* CreaPoligPoliClip(vertPoliClip* poli,
+                         const int coorOrig);
 /******************************************************************************/
 /******************************************************************************/
 /**
 \brief Añade los vértices de un polígono almacenado como una lista doblemente
-       enlazada de elementos \ref _vertPoliClip a una estructura
-       \ref poligGreiner previamente creada.
-\param[in] poliOrig Estructura \ref poligGreiner, que almacena
-           (obligatoriamente) un polígono.
-\param[in] poli Polígono a añadir, representado como una lista doblemente
-                enlazada de elementos \ref _vertPoliClip. El puntero pasado ha
-                de apuntar al primer elemento del polígono (no se controla
-                internamente).
+       enlazada de elementos \ref _vertPoliClip a una estructura \ref polig
+       previamente creada.
+\param[in,out] poli Estructura \ref polig, que almacena una serie de polígonos.
+               Al término de la ejecución de la función, se han añadido los
+               polígonos de la estructura \em anyade.
+\param[in] anyade Polígono a añadir, representado como una lista doblemente
+                  enlazada de elementos \ref _vertPoliClip. El puntero pasado ha
+                  de apuntar al primer elemento del polígono (no se controla
+                  internamente).
 \param[in] coorOrig Identificador para copiar las coordenadas originales o
            perturbadas. Dos posibilidades:
            - 0: Se copiarán las coordenadas perturbadas _vertPoliClip::xP e
              _vertPoliClip::yP.
            - Distinto de 0: Se copiarán las coordenadas originales
              _vertPoliClip::x e _vertPoliClip::y.
-\return Estructura \ref poligGreiner actualizada con el nuevo polígono (es la
-        misma estructura de entrada). Si se devuelve \p NULL ha ocurrido un
-        error de asignación de memoria.
-\note Esta función no comprueba si la variable \em poliOrig es un polígono
-      correctamente almacenado.
+\return Variable de error. Dos posibilidades:
+        - #GEOC_ERR_NO_ERROR: Todo ha ido bien.
+        - #GEOC_ERR_ASIG_MEMORIA: Ha ocurrido un error de asignación de memoria.
 \note Esta función no comprueba si la variable \em poli es un polígono
+      correctamente almacenado.
+\note Esta función no comprueba si la variable \em anyade es un polígono
       correctamente almacenado.
 \note Esta función \b *NO* trabaja con listas circulares.
 \note Esta función realiza una copia en memoria de las coordenadas de los
       vértices de la estructura \em poli a la estructura de salida.
-\date 23 de mayo de 2011: Creación de la función.
+\note Esta función crea internamente una estructura \ref polig para luego
+      añadirla a \em poli con la función \ref AnyadePoligPolig.
+\date 29 de mayo de 2011: Creación de la función.
 \todo Esta función no está probada.
 */
-poligGreiner* AnyadePoligClipPoligGreiner(poligGreiner* poliOrig,
-                                          vertPoliClip* poli,
-                                          const int coorOrig);
-/******************************************************************************/
-/******************************************************************************/
-/**
-\brief Libera la memoria asignada a una estructura \ref poligGreiner.
-\param[in] poli Estructura \ref poligGreiner.
-\date 23 de mayo de 2011: Creación de la función.
-\todo Esta función no está probada.
-*/
-void LibMemPoligGreiner(poligGreiner* poli);
+int AnyadePoligClipPolig(polig* poli,
+                         vertPoliClip* anyade,
+                         const int coorOrig);
 /******************************************************************************/
 /******************************************************************************/
 #ifdef __cplusplus
@@ -798,3 +818,10 @@ void LibMemPoligGreiner(poligGreiner* poli);
 /******************************************************************************/
 /******************************************************************************/
 /** @} */
+/******************************************************************************/
+/******************************************************************************/
+/* kate: encoding utf-8; end-of-line unix; syntax c; indent-mode cstyle; */
+/* kate: replace-tabs on; space-indent on; tab-indents off; indent-width 4; */
+/* kate: line-numbers on; folding-markers on; remove-trailing-space on; */
+/* kate: backspace-indents on; show-tabs on; */
+/* kate: word-wrap-column 80; word-wrap-marker-color #D2D2D2; word-wrap off; */

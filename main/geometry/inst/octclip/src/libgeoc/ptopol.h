@@ -1,6 +1,6 @@
 /* -*- coding: utf-8 -*- */
 /**
-\ingroup geom
+\ingroup geom gshhs
 @{
 \file ptopol.h
 \brief Declaración de funciones para la realización de chequeos de inclusión de
@@ -66,7 +66,8 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include<stdlib.h>
 #include<math.h>
 #include"libgeoc/errores.h"
-#include"libgeoc/fgeneral.h"
+#include"libgeoc/geocnan.h"
+#include"libgeoc/geocomp.h"
 /******************************************************************************/
 /******************************************************************************/
 #ifdef __cplusplus
@@ -137,9 +138,12 @@ typedef long int ptopol_long;
 \return Dos posibles valores:
         - 0: No hay ninguna función compilada en paralelo con OpenMP.
         - Distinto de 0: Sí hay alguna función compilada en paralelo con OpenMP.
+\note Esta función asume que el argumento \em version tiene suficiente memoria
+      asignada (si es distinto de \p NULL).
 \date 13 de abril de 2011: Creación de la función.
+\date 25 de agosto de 2011: Adición del argumento de entrada \em version.
 */
-int GeocParOmpPtopol(void);
+int GeocParOmpPtopol(char version[]);
 /******************************************************************************/
 /******************************************************************************/
 /**
@@ -168,7 +172,7 @@ int GeocLongLongIntPtopol(void);
         - #GEOC_PTO_VERTICE_POLIG: El punto es un vértice del rectángulo.
         - #GEOC_PTO_BORDE_POLIG: El punto pertenece a la frontera del
           rectángulo, pero no es un vértice.
-\note Esta función asume que \em xMin<xMax y \em yMin<yMax.
+\note Esta función asume que \em xMin<xMax e \em yMin<yMax.
 \date 05 de abril de 2010: Creación de la función.
 \date 12 de abril de 2011: Las variables de salida son ahora constantes
       simbólicas.
@@ -180,6 +184,74 @@ int PtoEnRectangulo(const double x,
                     const double xMax,
                     const double yMin,
                     const double yMax);
+/******************************************************************************/
+/******************************************************************************/
+/**
+\brief Comprueba si un rectángulo 1 está contenido íntegramente en otro 2.
+\param[in] borde Identificador para indicar si los bordes se tienen en cuenta o
+           no. Dos posibilidades:
+           - 0: Lo bordes \b *NO* se tienen en cuenta. Es decir, si algún borde
+             de un rectángulo coincide con el de otro, el resultado es que el
+             rectángulo 1 no está contenido en 2.
+           - Distinto de 0: Lo bordes \b *SÍ* se tienen en cuenta. Es decir, el
+             que un borde del rectángulo 1 coincida con otro del rectángulo 2 no
+             impide que 1 esté contenido en 2.
+\param[in] xMin1 Coordenada X mínima del rectángulo 1.
+\param[in] xMax1 Coordenada X máxima del rectángulo 1.
+\param[in] yMin1 Coordenada Y mínima del rectángulo 1.
+\param[in] yMax1 Coordenada Y máxima del rectángulo 1.
+\param[in] xMin2 Coordenada X mínima del rectángulo 2.
+\param[in] xMax2 Coordenada X máxima del rectángulo 2.
+\param[in] yMin2 Coordenada Y mínima del rectángulo 2.
+\param[in] yMax2 Coordenada Y máxima del rectángulo 2.
+\return Dos posibilidades:
+        - 0: El rectángulo 1 no está contenido íntegramente en el rectángulo 2.
+        - Distinto de 0: El rectángulo 1 está contenido íntegramente en el
+          rectángulo 2.
+\note Esta función asume que \em xMin1<xMax1, \em yMin1<yMax1, \em xMin2<xMax2 e
+      \em yMin2<yMax2.
+\date 20 de junio de 2010: Creación de la función.
+\todo Esta función no está probada.
+*/
+int RectanguloEnRectangulo(const int borde,
+                           const double xMin1,
+                           const double xMax1,
+                           const double yMin1,
+                           const double yMax1,
+                           const double xMin2,
+                           const double xMax2,
+                           const double yMin2,
+                           const double yMax2);
+/******************************************************************************/
+/******************************************************************************/
+/**
+\brief Comprueba si dos rectángulos son disjuntos.
+\param[in] xMin1 Coordenada X mínima del rectángulo 1.
+\param[in] xMax1 Coordenada X máxima del rectángulo 1.
+\param[in] yMin1 Coordenada Y mínima del rectángulo 1.
+\param[in] yMax1 Coordenada Y máxima del rectángulo 1.
+\param[in] xMin2 Coordenada X mínima del rectángulo 2.
+\param[in] xMax2 Coordenada X máxima del rectángulo 2.
+\param[in] yMin2 Coordenada Y mínima del rectángulo 2.
+\param[in] yMax2 Coordenada Y máxima del rectángulo 2.
+\return Dos posibilidades:
+        - 0: Los rectángulos no son disjuntos, es decir, tienen alguna parte
+             común (se cortan o se tocan) o uno está completamente contenido en
+             el otro.
+        - Distinto de 0: Los rectángulos son disjuntos.
+\note Esta función asume que \em xMin1<xMax1, \em yMin1<yMax1, \em xMin2<xMax2 e
+      \em yMin2<yMax2.
+\date 13 de junio de 2010: Creación de la función.
+\todo Esta función no está probada.
+*/
+int RectDisjuntos(const double xMin1,
+                  const double xMax1,
+                  const double yMin1,
+                  const double yMax1,
+                  const double xMin2,
+                  const double xMax2,
+                  const double yMin2,
+                  const double yMax2);
 /******************************************************************************/
 /******************************************************************************/
 /**
@@ -866,3 +938,10 @@ int PtoEnPoligonoVerticeBordeDoubleInd(const double x,
 /******************************************************************************/
 /******************************************************************************/
 /** @} */
+/******************************************************************************/
+/******************************************************************************/
+/* kate: encoding utf-8; end-of-line unix; syntax c; indent-mode cstyle; */
+/* kate: replace-tabs on; space-indent on; tab-indents off; indent-width 4; */
+/* kate: line-numbers on; folding-markers on; remove-trailing-space on; */
+/* kate: backspace-indents on; show-tabs on; */
+/* kate: word-wrap-column 80; word-wrap-marker-color #D2D2D2; word-wrap off; */

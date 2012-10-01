@@ -934,6 +934,112 @@ extern "C" {
 #define GEOC_ERR_GSHHS_VERS_ANTIGUA 8001
 /******************************************************************************/
 /******************************************************************************/
+/**
+\def GEOC_ERR_GSHHS_CREA_POLI
+\brief Indicador de que ha ocurrido un error de tipo
+       #GEOC_ERR_POLIG_VEC_DISTINTO_NUM_POLIG o
+       #GEOC_ERR_POLIG_VEC_DISTINTOS_POLIG al crear una estructura \ref polig o
+       \ref polil
+\date 19 de junio de 2011: Creación de la constante.
+*/
+#define GEOC_ERR_GSHHS_CREA_POLI 8002
+/******************************************************************************/
+/******************************************************************************/
+#ifdef __cplusplus
+}
+#endif
+/******************************************************************************/
+/******************************************************************************/
+//POLIG
+#ifdef __cplusplus
+extern "C" {
+#endif
+/******************************************************************************/
+/******************************************************************************/
+/**
+\def GEOC_ERR_POLIG_VEC_DISTINTO_NUM_POLIG
+\brief Indicador de que dos vectores de coordenadas no contienen el mismo número
+       de polígonos.
+\date 27 de mayo de 2011: Creación de la constante.
+*/
+#define GEOC_ERR_POLIG_VEC_DISTINTO_NUM_POLIG 9001
+/******************************************************************************/
+/******************************************************************************/
+/**
+\def GEOC_ERR_POLIG_VEC_DISTINTOS_POLIG
+\brief Indicador de que dos vectores de coordenadas no contienen los mismos
+       polígonos.
+\date 27 de mayo de 2011: Creación de la constante.
+*/
+#define GEOC_ERR_POLIG_VEC_DISTINTOS_POLIG 9002
+/******************************************************************************/
+/******************************************************************************/
+#ifdef __cplusplus
+}
+#endif
+/******************************************************************************/
+/******************************************************************************/
+//POLIL
+#ifdef __cplusplus
+extern "C" {
+#endif
+/******************************************************************************/
+/******************************************************************************/
+/**
+\def GEOC_ERR_POLIL_VEC_DISTINTO_NUM_POLIL
+\brief Indicador de que dos vectores de coordenadas no contienen el mismo número
+       de polilíneas.
+\date 03 de junio de 2011: Creación de la constante.
+*/
+#define GEOC_ERR_POLIL_VEC_DISTINTO_NUM_POLIL 10001
+/******************************************************************************/
+/******************************************************************************/
+/**
+\def GEOC_ERR_POLIL_VEC_DISTINTAS_POLIL
+\brief Indicador de que dos vectores de coordenadas no contienen las mismas
+       polilíneas.
+\date 03 de junio de 2011: Creación de la constante.
+*/
+#define GEOC_ERR_POLIL_VEC_DISTINTAS_POLIL 10002
+/******************************************************************************/
+/******************************************************************************/
+#ifdef __cplusplus
+}
+#endif
+/******************************************************************************/
+/******************************************************************************/
+//PROYEC
+#ifdef __cplusplus
+extern "C" {
+#endif
+/******************************************************************************/
+/******************************************************************************/
+/**
+\def GEOC_ERR_PROYEC_INI_PROJ
+\brief Indicador de que ha ocurrido un error en la inicialización de una
+       proyección de PROJ.4.
+\date 31 de mayo de 2011: Creación de la constante.
+*/
+#define GEOC_ERR_PROYEC_INI_PROJ 11001
+/******************************************************************************/
+/******************************************************************************/
+/**
+\def GEOC_ERR_PROYEC_NO_INV_PROJ
+\brief Indicador de que una proyección cartográfica de PROJ.4 no tiene paso
+       inverso.
+\date 31 de mayo de 2011: Creación de la constante.
+*/
+#define GEOC_ERR_PROYEC_NO_INV_PROJ 11002
+/******************************************************************************/
+/******************************************************************************/
+/**
+\def GEOC_ERR_PROYEC_PROJ_ERROR
+\brief Indicador de que ha ocurrido un error al proyectar un punto con PROJ.4.
+\date 31 de mayo de 2011: Creación de la constante.
+*/
+#define GEOC_ERR_PROYEC_PROJ_ERROR 11003
+/******************************************************************************/
+/******************************************************************************/
 #ifdef __cplusplus
 }
 #endif
@@ -943,3 +1049,10 @@ extern "C" {
 /******************************************************************************/
 /******************************************************************************/
 /** @} */
+/******************************************************************************/
+/******************************************************************************/
+/* kate: encoding utf-8; end-of-line unix; syntax c; indent-mode cstyle; */
+/* kate: replace-tabs on; space-indent on; tab-indents off; indent-width 4; */
+/* kate: line-numbers on; folding-markers on; remove-trailing-space on; */
+/* kate: backspace-indents on; show-tabs on; */
+/* kate: word-wrap-column 80; word-wrap-marker-color #D2D2D2; word-wrap off; */

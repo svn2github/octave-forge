@@ -38,6 +38,10 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _SEGMENTO_H_
 /******************************************************************************/
 /******************************************************************************/
+#include"libgeoc/fgeneral.h"
+#include"libgeoc/ptopol.h"
+/******************************************************************************/
+/******************************************************************************/
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -262,6 +266,8 @@ int PtoComunSegmParalelos2D(const double xA,
 \date 14 de mayo de 2011: Creación de la función.
 \date 21 de mayo de 2011: Adición de un nuevo valor de salida:
       #GEOC_SEG_INTERSEC_MISMO_SEG.
+\date 06 de julio de 2011: Adición de chequeo rápido al principio de la función
+      para descartar que los segmentos no tienen ningún punto en común.
 */
 int IntersecSegmentos2D(const double xA,
                         const double yA,
@@ -284,3 +290,10 @@ int IntersecSegmentos2D(const double xA,
 /******************************************************************************/
 /******************************************************************************/
 /** @} */
+/******************************************************************************/
+/******************************************************************************/
+/* kate: encoding utf-8; end-of-line unix; syntax c; indent-mode cstyle; */
+/* kate: replace-tabs on; space-indent on; tab-indents off; indent-width 4; */
+/* kate: line-numbers on; folding-markers on; remove-trailing-space on; */
+/* kate: backspace-indents on; show-tabs on; */
+/* kate: word-wrap-column 80; word-wrap-marker-color #D2D2D2; word-wrap off; */

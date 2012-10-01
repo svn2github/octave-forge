@@ -5,6 +5,7 @@
 \file fgeneral.h
 \brief Declaración de macros y funciones de utilidad general.
 \author José Luis García Pallero, jgpallero@gmail.com
+\note Este fichero contiene funciones paralelizadas con OpenMP.
 \date 25 de septiembre de 2009
 \version 1.0
 \section Licencia Licencia
@@ -40,8 +41,12 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /******************************************************************************/
 /******************************************************************************/
 #include<stdlib.h>
+#include<stdint.h>
+#include<float.h>
 #include<math.h>
+#include"libgeoc/constantes.h"
 #include"libgeoc/errores.h"
+#include"libgeoc/geocomp.h"
 /******************************************************************************/
 /******************************************************************************/
 #ifdef __cplusplus
@@ -50,11 +55,15 @@ extern "C" {
 /******************************************************************************/
 /******************************************************************************/
 /**
-\def GEOC_NAN
-\brief Constante \em Not-a-Number (\em NaN). Se define como \em 0.0/0.0.
-\date 21 de diciembre de 2010: Creación de la constante.
+\def GEOC_SIGNO
+\brief Macro para determinar el signo de un escalar.
+\param[in] a Un número.
+\return Signo del dato de entrada. Dos posibilidades:
+        - -1.0: El dato pasado es negativo.
+        - 1.0: El dato pasado es positivo o 0.0.
+\date 10 de junio de 2011: Creación de la macro.
 */
-#define GEOC_NAN (0.0/0.0)
+#define GEOC_SIGNO(a) ((a)>=0.0 ? 1.0 : -1.0)
 /******************************************************************************/
 /******************************************************************************/
 /**
@@ -110,6 +119,46 @@ extern "C" {
 \todo Esta macro todavía no está probada.
 */
 #define GEOC_ES_CERO(num,tol) (((num)>(-(tol)))&&((num)<(tol)) ? 1 : 0)
+/******************************************************************************/
+/******************************************************************************/
+/**
+\def GEOC_DBL
+\brief Macro para realizar una conversión explícita a tipo de dato \p double.
+\param[in] a Un número.
+\return Órdenes para la conversión explícita del dato pasado a \p double.
+\date 19 de junio de 2011: Creación de la macro.
+*/
+#define GEOC_DBL(a) ((double)(a))
+/******************************************************************************/
+/******************************************************************************/
+/**
+\brief Indica si hay alguna función compilada en paralelo con OpenMP en el
+       fichero \ref fgeneral.c.
+\param[out] version Cadena identificadora de la versión de OpenMP utilizada.
+            Este argumento sólo se utiliza si su valor de entrada es distinto de
+            \p NULL y si hay alguna función compilada con OpenMP.
+\return Dos posibles valores:
+        - 0: No hay ninguna función compilada en paralelo con OpenMP.
+        - Distinto de 0: Sí hay alguna función compilada en paralelo con OpenMP.
+\note Esta función asume que el argumento \em version tiene suficiente memoria
+      asignada (si es distinto de \p NULL).
+\date 22 de agosto de 2011: Creación de la función.
+\date 25 de agosto de 2011: Adición del argumento de entrada \em version.
+*/
+int GeocParOmpFgeneral(char version[]);
+/******************************************************************************/
+/******************************************************************************/
+/**
+\brief Mete un ángulo en el dominio \f$]-2*\pi,2*\pi[\f$.
+\param[in] angulo Valor angular, en radianes.
+\return Valor angular de entrada, en el dominio \f$]-2*\pi,2*\pi[\f$, en
+        radianes.
+\note Esta función elimina todas las vueltas completas a la circunferencia que
+      hacen que el posible valor de entrada esté fuera de los límites del
+      dominio de salida.
+\date 10 de junio de 2011: Creación de la función.
+*/
+double PonAnguloDominio(const double angulo);
 /******************************************************************************/
 /******************************************************************************/
 /**
@@ -203,9 +252,13 @@ void BuscaSegmento1D(const double valor,
       trabajo son congruentes con los límites de la matriz.
 \note Esta función asume que los pasos de malla son congruentes con los límites
       de la malla (supone que el cálculo del número de nodos es un número
-      entero).
+      entero o del tipo X.9... o X.0...).
 \note Esta función asume que \em xMin < \em xMax y que \em yMin < \em yMax.
+\note Esta función asume que \em pasoX y \em pasoY han sido introducidos en
+      valor absoluto.
 \date 15 de mayo de 2010: Creación de la función.
+\date 25 de septiembre de 2011: Corrección de error que hacía que se calculase
+      una fila de más en determinados casos.
 \todo Esta función no está probada.
 */
 void BuscaPosNWEnMalla(const double xPto,
@@ -221,22 +274,151 @@ void BuscaPosNWEnMalla(const double xPto,
 /******************************************************************************/
 /******************************************************************************/
 /**
+\brief Busca el elemento de mínimo valor en una lista de tipo \p double.
+\param[in] lista Lista de valores.
+\param[in] nDatos Número de elementos de la lista de valores.
+\param[in] incDatos Posiciones de separación entre los elementos del vector
+           \em lista. Este argumento siempre ha de ser un número positivo.
+\return Elemento de mínimo valor.
+\note Esta función se puede ejecutar en paralelo con OpenMP, versión 3.1 o
+      superior (se detecta automáticamente en la compilación).
+\note Esta función no comprueba internamente si la longitud de \em lista es
+      congruente con los valores de \em nDatos e \em incDatos.
+\note Esta función supone que \em lista contiene un número de elementos >= 1.
+\date 22 de agosto de 2011: Creación de la función.
+\todo Esta función todavía no está probada con OpenMP.
+*/
+double Minimo(const double* lista,
+              const size_t nDatos,
+              const size_t incDatos);
+/******************************************************************************/
+/******************************************************************************/
+/**
+\brief Busca el elemento de máximo valor en una lista de tipo \p double.
+\param[in] lista Lista de valores.
+\param[in] nDatos Número de elementos de la lista de valores.
+\param[in] incDatos Posiciones de separación entre los elementos del vector
+           \em lista. Este argumento siempre ha de ser un número positivo.
+\return Elemento de máximo valor.
+\note Esta función se puede ejecutar en paralelo con OpenMP, versión 3.1 o
+      superior (se detecta automáticamente en la compilación).
+\note Esta función no comprueba internamente si la longitud de \em lista es
+      congruente con los valores de \em nDatos e \em incDatos.
+\note Esta función supone que \em lista contiene un número de elementos >= 1.
+\date 22 de agosto de 2011: Creación de la función.
+\todo Esta función todavía no está probada con OpenMP.
+*/
+double Maximo(const double* lista,
+              const size_t nDatos,
+              const size_t incDatos);
+/******************************************************************************/
+/******************************************************************************/
+/**
+\brief Busca el elemento de mínimo valor absoluto en una lista de tipo
+       \p double.
+\param[in] lista Lista de valores.
+\param[in] nDatos Número de elementos de la lista de valores.
+\param[in] incDatos Posiciones de separación entre los elementos del vector
+           \em lista. Este argumento siempre ha de ser un número positivo.
+\return Elemento de mínimo valor absoluto.
+\note Esta función se puede ejecutar en paralelo con OpenMP, versión 3.1 o
+      superior (se detecta automáticamente en la compilación).
+\note Esta función no comprueba internamente si la longitud de \em lista es
+      congruente con los valores de \em nDatos e \em incDatos.
+\note Esta función supone que \em lista contiene un número de elementos >= 1.
+\date 22 de agosto de 2011: Creación de la función.
+\todo Esta función todavía no está probada con OpenMP.
+*/
+double MinimoAbs(const double* lista,
+                 const size_t nDatos,
+                 const size_t incDatos);
+/******************************************************************************/
+/******************************************************************************/
+/**
+\brief Busca el elemento de máximo valor absoluto en una lista de tipo
+       \p double.
+\param[in] lista Lista de valores.
+\param[in] nDatos Número de elementos de la lista de valores.
+\param[in] incDatos Posiciones de separación entre los elementos del vector
+           \em lista. Este argumento siempre ha de ser un número positivo.
+\return Elemento de máximo valor absoluto.
+\note Esta función se puede ejecutar en paralelo con OpenMP, versión 3.1 o
+      superior (se detecta automáticamente en la compilación).
+\note Esta función no comprueba internamente si la longitud de \em lista es
+      congruente con los valores de \em nDatos e \em incDatos.
+\note Esta función supone que \em lista contiene un número de elementos >= 1.
+\date 22 de agosto de 2011: Creación de la función.
+\todo Esta función todavía no está probada con OpenMP.
+*/
+double MaximoAbs(const double* lista,
+                 const size_t nDatos,
+                 const size_t incDatos);
+/******************************************************************************/
+/******************************************************************************/
+/**
+\brief Busca el elemento de mínimo valor en una lista de tipo \p size_t.
+\param[in] lista Lista de valores.
+\param[in] nDatos Número de elementos de la lista de valores.
+\param[in] incDatos Posiciones de separación entre los elementos del vector
+           \em lista. Este argumento siempre ha de ser un número positivo.
+\return Elemento de mínimo valor.
+\note Esta función se puede ejecutar en paralelo con OpenMP, versión 3.1 o
+      superior (se detecta automáticamente en la compilación).
+\note Esta función no comprueba internamente si la longitud de \em lista es
+      congruente con los valores de \em nDatos e \em incDatos.
+\note Esta función supone que \em lista contiene un número de elementos >= 1.
+\date 24 de agosto de 2011: Creación de la función.
+\todo Esta función todavía no está probada con OpenMP.
+*/
+size_t MinimoSizeT(const size_t* lista,
+                   const size_t nDatos,
+                   const size_t incDatos);
+/******************************************************************************/
+/******************************************************************************/
+/**
+\brief Busca el elemento de máximo valor en una lista de tipo \p size_t.
+\param[in] lista Lista de valores.
+\param[in] nDatos Número de elementos de la lista de valores.
+\param[in] incDatos Posiciones de separación entre los elementos del vector
+           \em lista. Este argumento siempre ha de ser un número positivo.
+\return Elemento de máximo valor.
+\note Esta función se puede ejecutar en paralelo con OpenMP, versión 3.1 o
+      superior (se detecta automáticamente en la compilación).
+\note Esta función no comprueba internamente si la longitud de \em lista es
+      congruente con los valores de \em nDatos e \em incDatos.
+\note Esta función supone que \em lista contiene un número de elementos >= 1.
+\date 24 de agosto de 2011: Creación de la función.
+\todo Esta función todavía no está probada con OpenMP.
+*/
+size_t MaximoSizeT(const size_t* lista,
+                   const size_t nDatos,
+                   const size_t incDatos);
+/******************************************************************************/
+/******************************************************************************/
+/**
 \brief Busca las posiciones que ocupan en una lista de tipo \p double los
        elementos de menor y mayor valor.
 \param[in] lista Lista de valores.
 \param[in] nDatos Número de elementos de la lista de valores.
+\param[in] incDatos Posiciones de separación entre los elementos del vector
+           \em lista. Este argumento siempre ha de ser un número positivo.
 \param[out] posMin Posición en \em lista del elemento de menor valor.
 \param[out] posMax Posición en \em lista del elemento de mayor valor.
 \note Esta función no comprueba internamente si la longitud de \em lista es
-      congruente con el valor \em nDatos.
+      congruente con los valores de \em nDatos e \em incDatos.
 \note Esta función supone que \em lista contiene un número de elementos >= 1.
 \note Si hay varios elementos en la lista que se corresponden con el valor menor
       o mayor, la posición devuelta es la correspondiente al primer elemento a
       partir del inicio.
+\note Las posiciones devueltas lo son atendiendo al parámetro \em nDatos, por lo
+      que para obtener las posiciones reales del elemento en memoria han de ser
+      multiplicadas por el valor \em incDatos.
 \date 27 de octubre de 2009: Creación de la función.
+\date 29 de mayo de 2011: Adición del argumento de entrada \em incDatos.
 */
 void MinMax(const double* lista,
             const size_t nDatos,
+            const size_t incDatos,
             size_t* posMin,
             size_t* posMax);
 /******************************************************************************/
@@ -246,18 +428,25 @@ void MinMax(const double* lista,
        mayor valor absoluto.
 \param[in] lista Lista de valores.
 \param[in] nDatos Número de elementos de la lista de valores.
+\param[in] incDatos Posiciones de separación entre los elementos del vector
+           \em lista. Este argumento siempre ha de ser un número positivo.
 \param[out] posMin Posición en \em lista del elemento de menor valor absoluto.
 \param[out] posMax Posición en \em lista del elemento de mayor valor absoluto.
 \note Esta función no comprueba internamente si la longitud de \em lista es
-      congruente con el valor \em nDatos.
+      congruente con los valores de \em nDatos e \em incDatos.
 \note Esta función supone que \em lista contiene un número de elementos >= 1.
 \note Si hay varios elementos en la lista que se corresponden con el valor menor
       o mayor, la posición devuelta es la correspondiente al primer elemento a
       partir del inicio.
+\note Las posiciones devueltas lo son atendiendo al parámetro \em nDatos, por lo
+      que para obtener las posiciones reales del elemento en memoria han de ser
+      multiplicadas por el valor \em incDatos.
 \date 27 de octubre de 2009: Creación de la función.
+\date 29 de mayo de 2011: Adición del argumento de entrada \em incDatos.
 */
 void MinMaxAbs(const double* lista,
                const size_t nDatos,
+               const size_t incDatos,
                size_t* posMin,
                size_t* posMax);
 /******************************************************************************/
@@ -267,19 +456,25 @@ void MinMaxAbs(const double* lista,
        elementos de menor y mayor valor.
 \param[in] lista Lista de valores.
 \param[in] nDatos Número de elementos de la lista de valores.
+\param[in] incDatos Posiciones de separación entre los elementos del vector
+           \em lista. Este argumento siempre ha de ser un número positivo.
 \param[out] posMin Posición en \em lista del elemento de menor valor.
 \param[out] posMax Posición en \em lista del elemento de mayor valor.
 \note Esta función no comprueba internamente si la longitud de \em lista es
-      congruente con el valor \em nDatos.
+      congruente con los valores de \em nDatos e \em incDatos.
 \note Esta función supone que \em lista contiene un número de elementos >= 1.
 \note Si hay varios elementos en la lista que se corresponden con el valor menor
       o mayor, la posición devuelta es la correspondiente al primer elemento a
       partir del inicio.
+\note Las posiciones devueltas lo son atendiendo al parámetro \em nDatos, por lo
+      que para obtener las posiciones reales del elemento en memoria han de ser
+      multiplicadas por el valor \em incDatos.
 \date 08 de enero de 2010: Creación de la función.
-\note Esta función todavía no está probada.
+\date 29 de mayo de 2011: Adición del argumento de entrada \em incDatos.
 */
 void MinMaxSizeT(const size_t* lista,
                  const size_t nDatos,
+                 const size_t incDatos,
                  size_t* posMin,
                  size_t* posMax);
 /******************************************************************************/
@@ -309,36 +504,6 @@ double** AsigMemMatrizC(const size_t fil,
       si se le pasaba un puntero a NULL.
 */
 void LibMemMatrizC(double** matriz);
-/******************************************************************************/
-/******************************************************************************/
-/**
-\brief Devuelve el número que representa el valor \em Not-a-Number (\em NaN),
-       que se define como el resultado de la evaluación de la operación
-       \em 0.0/0.0.
-\return Valor NaN.
-\note Esta función devuelve el valor almacenado en la constante #GEOC_NAN.
-\date 21 de diciembre de 2010: Creación de la función.
-\date 24 de mayo de 2011: Ahora la función devuelve el valor absoluto de
-      #GEOC_NAN, calculado con la función <tt>fabs()</tt> de C estándar. Se ha
-      hecho así porque, a veces, al imprimir un valor normal de #GEOC_NAN, éste
-      aparecía con un signo negativo delante.
-\todo Esta función todavía no está probada.
-*/
-double GeocNan(void);
-/******************************************************************************/
-/******************************************************************************/
-/**
-\brief Comprueba si un número es \em Not-a-Number (\em NaN).
-\param[in] valor Un número.
-\return Dos posibilidades:
-        - 0: El número pasado no es NaN.
-        - Distinto de 0: El número pasado sí es NaN.
-\note Esta función ha sido adaptada de LAPACK 3.2.1, disnan.f,
-      (http://www.netlib.org/lapack).
-\date 21 de diciembre de 2010: Creación de la función.
-\todo Esta función todavía no está probada.
-*/
-int EsGeocNan(const double valor);
 /******************************************************************************/
 /******************************************************************************/
 /**
@@ -415,6 +580,54 @@ size_t* NumElemRepeEnVector(const size_t* pos,
                             const size_t nElemVecOrig);
 /******************************************************************************/
 /******************************************************************************/
+/**
+\brief Aplica un factor de escala y una traslación (en este orden) a los
+       elementos de un vector.
+\param[in,out] vector Vector de datos. Al término de la ejecución de la función,
+               se ha aplicado un factor de escala y una traslación (en este
+               orden) a los elementos del vector.
+\param[in] nElem Número de elementos de \em vector.
+\param[in] inc Posiciones de separación entre los elementos del vector
+           \em vector. Este argumento siempre ha de ser un número positivo.
+\param[in] escala Factor de escala a aplicar.
+\param[in] traslada Traslación a aplicar.
+\note Primero se aplica el factor de escala y luego la traslación.
+\note Esta función asume que el vector de entrada \em vector tiene memoria
+      asignada.
+\date 18 de junio de 2011: Creación de la función.
+\note Esta función todavía no está probada.
+*/
+void EscalaYTrasladaVector(double* vector,
+                           const size_t nElem,
+                           const size_t inc,
+                           const double escala,
+                           const double traslada);
+/******************************************************************************/
+/******************************************************************************/
+/**
+\brief Aplica una traslación y un factor de escala (en este orden) a los
+       elementos de un vector.
+\param[in,out] vector Vector de datos. Al término de la ejecución de la función,
+               se ha aplicado una traslación y un factor de escala (en este
+               orden) a los elementos del vector.
+\param[in] nElem Número de elementos de \em vector.
+\param[in] inc Posiciones de separación entre los elementos del vector
+           \em vector. Este argumento siempre ha de ser un número positivo.
+\param[in] escala Factor de escala a aplicar.
+\param[in] traslada Traslación a aplicar.
+\note Primero se aplica la traslación y luego el factor de escala.
+\note Esta función asume que el vector de entrada \em vector tiene memoria
+      asignada.
+\date 18 de junio de 2011: Creación de la función.
+\note Esta función todavía no está probada.
+*/
+void TrasladaYEscalaVector(double* vector,
+                           const size_t nElem,
+                           const size_t inc,
+                           const double escala,
+                           const double traslada);
+/******************************************************************************/
+/******************************************************************************/
 #ifdef __cplusplus
 }
 #endif
@@ -424,3 +637,10 @@ size_t* NumElemRepeEnVector(const size_t* pos,
 /******************************************************************************/
 /******************************************************************************/
 /** @} */
+/******************************************************************************/
+/******************************************************************************/
+/* kate: encoding utf-8; end-of-line unix; syntax c; indent-mode cstyle; */
+/* kate: replace-tabs on; space-indent on; tab-indents off; indent-width 4; */
+/* kate: line-numbers on; folding-markers on; remove-trailing-space on; */
+/* kate: backspace-indents on; show-tabs on; */
+/* kate: word-wrap-column 80; word-wrap-marker-color #D2D2D2; word-wrap off; */

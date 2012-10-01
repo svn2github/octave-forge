@@ -5,6 +5,7 @@
 \file fgeneral.c
 \brief Definición de funciones de utilidad general.
 \author José Luis García Pallero, jgpallero@gmail.com
+\note Este fichero contiene funciones paralelizadas con OpenMP.
 \date 10 de octubre de 2009
 \version 1.0
 \section Licencia Licencia
@@ -36,6 +37,65 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /******************************************************************************/
 /******************************************************************************/
 #include"libgeoc/fgeneral.h"
+/******************************************************************************/
+/******************************************************************************/
+int GeocParOmpFgeneral(char version[])
+{
+    //comprobamos si hay paralelización
+#if defined(_OPENMP)
+    //comprobamos si hay que extraer versión
+    if(version!=NULL)
+    {
+        //calculamos la versión
+        VersionOpenMP(_OPENMP,version);
+    }
+    //salimos de la función
+    return 1;
+#else
+    if(version!=NULL)
+    {
+        //utilizamos la variable version para que no dé warming al compilar
+        strcpy(version,"");
+    }
+    //salimos de la función
+    return 0;
+#endif
+}
+/******************************************************************************/
+/******************************************************************************/
+double PonAnguloDominio(const double angulo)
+{
+    //signo del ángulo de trabajo
+    double signo=0.0;
+    //2.0*pi
+    double dosPi=2.0*GEOC_CONST_PI;
+    //variable auxiliar
+    double aux=angulo;
+    //variable de salida
+    double sal=0.0;
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //sólo trabajamos si el valor de entrada está fuera de los límites
+    if((angulo<=-dosPi)||(angulo>=dosPi))
+    {
+        //extraemos el signo del ángulo pasado
+        signo = GEOC_SIGNO(angulo);
+        //valor absoluto del ángulo pasado
+        aux = fabs(angulo);
+        //metemos el ángulo en dominio eliminando la cantidad que se pase de
+        //2.0*pi
+        sal = signo*(aux-floor(aux/dosPi)*dosPi);
+    }
+    else
+    {
+        //el valor de entrada no cambia
+        sal = angulo;
+    }
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //salimos de la función
+    return sal;
+}
 /******************************************************************************/
 /******************************************************************************/
 void BuscaSegmento1DInc(const double valor,
@@ -171,7 +231,7 @@ void BuscaPosNWEnMalla(const double xPto,
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
     //calculamos la fila y comprobamos si es el extremo S
-    *fil = f-1-(size_t)((yPto-yMin)/pasoY);
+    *fil = (size_t)(fabs(yPto-yMax)/pasoY);
     if(*fil==(f-1))
     {
         //retrasamos una fila
@@ -191,13 +251,250 @@ void BuscaPosNWEnMalla(const double xPto,
 }
 /******************************************************************************/
 /******************************************************************************/
+double Minimo(const double* lista,
+              const size_t nDatos,
+              const size_t incDatos)
+{
+    //índice para recorrer bucles
+    size_t i=0;
+    //variable de posición
+    size_t pos=0;
+    //variable de salida, inicializada como el máximo valor para un double
+    double salida=DBL_MAX;
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //paralelización con OpenMP, sólo si la versión es superior a la 3.0
+    //en versiones anteriores no existe la posibilidad de usar reduction(min:)
+#if defined(_OPENMP)&&(_OPENMP>=GEOC_OMP_F_3_1)
+#pragma omp parallel for default(none) \
+ shared(lista) \
+ private(i,pos) \
+ reduction(min:salida)
+#endif
+    //recorremos el resto de elementos de la lista
+    for(i=0;i<nDatos;i++)
+    {
+        //posición del elemento a comprobar
+        pos = i*incDatos;
+        //comprobamos si el elemento actual es menor que el considerado menor
+        if(lista[pos]<salida)
+        {
+            //asignamos el nuevo valor menor
+            salida = lista[pos];
+        }
+    } // --> fin del #pragma omp parallel for
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //salimos de la función
+    return salida;
+}
+/******************************************************************************/
+/******************************************************************************/
+double Maximo(const double* lista,
+              const size_t nDatos,
+              const size_t incDatos)
+{
+    //índice para recorrer bucles
+    size_t i=0;
+    //variable de posición
+    size_t pos=0;
+    //variable de salida, inicializada como el mínimo valor para un double
+    double salida=DBL_MIN;
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //paralelización con OpenMP, sólo si la versión es superior a la 3.0
+    //en versiones anteriores no existe la posibilidad de usar reduction(max:)
+#if defined(_OPENMP)&&(_OPENMP>=GEOC_OMP_F_3_1)
+#pragma omp parallel for default(none) \
+ shared(lista) \
+ private(i,pos) \
+ reduction(max:salida)
+#endif
+    //recorremos el resto de elementos de la lista
+    for(i=0;i<nDatos;i++)
+    {
+        //posición del elemento a comprobar
+        pos = i*incDatos;
+        //comprobamos si el elemento actual es mayor que el considerado mayor
+        if(lista[pos]>salida)
+        {
+            //asignamos el nuevo valor menor
+            salida = lista[pos];
+        }
+    } // --> fin del #pragma omp parallel for
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //salimos de la función
+    return salida;
+}
+/******************************************************************************/
+/******************************************************************************/
+double MinimoAbs(const double* lista,
+                 const size_t nDatos,
+                 const size_t incDatos)
+{
+    //índice para recorrer bucles
+    size_t i=0;
+    //variable de posición
+    size_t pos=0;
+    //variable de salida, inicializada como el máximo valor para un double
+    double salida=DBL_MAX;
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //paralelización con OpenMP, sólo si la versión es superior a la 3.0
+    //en versiones anteriores no existe la posibilidad de usar reduction(min:)
+#if defined(_OPENMP)&&(_OPENMP>=GEOC_OMP_F_3_1)
+#pragma omp parallel for default(none) \
+ shared(lista) \
+ private(i,pos) \
+ reduction(min:salida)
+#endif
+    //recorremos el resto de elementos de la lista
+    for(i=0;i<nDatos;i++)
+    {
+        //posición del elemento a comprobar
+        pos = i*incDatos;
+        //comprobamos si el elemento actual es menor que el considerado menor
+        if(fabs(lista[pos])<salida)
+        {
+            //asignamos el nuevo valor menor
+            salida = fabs(lista[pos]);
+        }
+    } // --> fin del #pragma omp parallel for
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //salimos de la función
+    return salida;
+}
+/******************************************************************************/
+/******************************************************************************/
+double MaximoAbs(const double* lista,
+                 const size_t nDatos,
+                 const size_t incDatos)
+{
+    //índice para recorrer bucles
+    size_t i=0;
+    //variable de posición
+    size_t pos=0;
+    //variable de salida, inicializada como 0.0 (trabajamos en valor absoluto)
+    double salida=0.0;
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //paralelización con OpenMP, sólo si la versión es superior a la 3.0
+    //en versiones anteriores no existe la posibilidad de usar reduction(max:)
+#if defined(_OPENMP)&&(_OPENMP>=GEOC_OMP_F_3_1)
+#pragma omp parallel for default(none) \
+ shared(lista) \
+ private(i,pos) \
+ reduction(max:salida)
+#endif
+    //recorremos el resto de elementos de la lista
+    for(i=0;i<nDatos;i++)
+    {
+        //posición del elemento a comprobar
+        pos = i*incDatos;
+        //comprobamos si el elemento actual es mayor que el considerado mayor
+        if(fabs(lista[pos])>salida)
+        {
+            //asignamos el nuevo valor menor
+            salida = fabs(lista[pos]);
+        }
+    } // --> fin del #pragma omp parallel for
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //salimos de la función
+    return salida;
+}
+/******************************************************************************/
+/******************************************************************************/
+size_t MinimoSizeT(const size_t* lista,
+                   const size_t nDatos,
+                   const size_t incDatos)
+{
+    //índice para recorrer bucles
+    size_t i=0;
+    //variable de posición
+    size_t pos=0;
+    //variable de salida, inicializada como el máximo valor para un size_t
+    size_t salida=SIZE_MAX;
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //paralelización con OpenMP, sólo si la versión es superior a la 3.0
+    //en versiones anteriores no existe la posibilidad de usar reduction(min:)
+#if defined(_OPENMP)&&(_OPENMP>=GEOC_OMP_F_3_1)
+#pragma omp parallel for default(none) \
+ shared(lista) \
+ private(i,pos) \
+ reduction(min:salida)
+#endif
+    //recorremos el resto de elementos de la lista
+    for(i=0;i<nDatos;i++)
+    {
+        //posición del elemento a comprobar
+        pos = i*incDatos;
+        //comprobamos si el elemento actual es menor que el considerado menor
+        if(lista[pos]<salida)
+        {
+            //asignamos el nuevo valor menor
+            salida = lista[pos];
+        }
+    } // --> fin del #pragma omp parallel for
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //salimos de la función
+    return salida;
+}
+/******************************************************************************/
+/******************************************************************************/
+size_t MaximoSizeT(const size_t* lista,
+                   const size_t nDatos,
+                   const size_t incDatos)
+{
+    //índice para recorrer bucles
+    size_t i=0;
+    //variable de posición
+    size_t pos=0;
+    //variable de salida, inicializada como 0 (size_t es sólo positivo)
+    size_t salida=0;
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //paralelización con OpenMP, sólo si la versión es superior a la 3.0
+    //en versiones anteriores no existe la posibilidad de usar reduction(max:)
+#if defined(_OPENMP)&&(_OPENMP>=GEOC_OMP_F_3_1)
+#pragma omp parallel for default(none) \
+ shared(lista) \
+ private(i,pos) \
+ reduction(max:salida)
+#endif
+    //recorremos el resto de elementos de la lista
+    for(i=0;i<nDatos;i++)
+    {
+        //posición del elemento a comprobar
+        pos = i*incDatos;
+        //comprobamos si el elemento actual es mayor que el considerado mayor
+        if(lista[pos]>salida)
+        {
+            //asignamos el nuevo valor menor
+            salida = lista[pos];
+        }
+    } // --> fin del #pragma omp parallel for
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //salimos de la función
+    return salida;
+}
+/******************************************************************************/
+/******************************************************************************/
 void MinMax(const double* lista,
             const size_t nDatos,
+            const size_t incDatos,
             size_t* posMin,
             size_t* posMax)
 {
     //índice para recorrer bucles
     size_t i=0;
+    //variable de posición
+    size_t pos=0;
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
     //consideramos que el primer elemento es el mayor y el menor
@@ -206,14 +503,16 @@ void MinMax(const double* lista,
     //recorremos el resto de elementos de la lista
     for(i=1;i<nDatos;i++)
     {
+        //posición del elemento a comprobar
+        pos = i*incDatos;
         //comprobamos si el elemento actual es menor que el considerado menor
-        if(lista[i]<lista[*posMin])
+        if(lista[pos]<lista[(*posMin)*incDatos])
         {
             //asignamos la nueva posición
             *posMin = i;
         }
         //comprobamos si el elemento actual es mayor que el considerado mayor
-        if(lista[i]>lista[*posMax])
+        if(lista[pos]>lista[(*posMax)*incDatos])
         {
             //asignamos la nueva posición
             *posMax = i;
@@ -228,11 +527,14 @@ void MinMax(const double* lista,
 /******************************************************************************/
 void MinMaxAbs(const double* lista,
                const size_t nDatos,
+               const size_t incDatos,
                size_t* posMin,
                size_t* posMax)
 {
     //índice para recorrer bucles
     size_t i=0;
+    //variable de posición
+    size_t pos=0;
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
     //consideramos que el primer elemento es el mayor y el menor
@@ -241,14 +543,16 @@ void MinMaxAbs(const double* lista,
     //recorremos el resto de elementos de la lista
     for(i=1;i<nDatos;i++)
     {
+        //posición del elemento a comprobar
+        pos = i*incDatos;
         //comprobamos si el elemento actual es menor que el considerado menor
-        if(fabs(lista[i])<fabs(lista[*posMin]))
+        if(fabs(lista[pos])<fabs(lista[(*posMin)*incDatos]))
         {
             //asignamos la nueva posición
             *posMin = i;
         }
         //comprobamos si el elemento actual es mayor que el considerado mayor
-        if(fabs(lista[i])>fabs(lista[*posMax]))
+        if(fabs(lista[pos])>fabs(lista[(*posMax)*incDatos]))
         {
             //asignamos la nueva posición
             *posMax = i;
@@ -263,11 +567,14 @@ void MinMaxAbs(const double* lista,
 /******************************************************************************/
 void MinMaxSizeT(const size_t* lista,
                  const size_t nDatos,
+                 const size_t incDatos,
                  size_t* posMin,
                  size_t* posMax)
 {
     //índice para recorrer bucles
     size_t i=0;
+    //variable de posición
+    size_t pos=0;
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
     //consideramos que el primer elemento es el mayor y el menor
@@ -276,14 +583,16 @@ void MinMaxSizeT(const size_t* lista,
     //recorremos el resto de elementos de la lista
     for(i=1;i<nDatos;i++)
     {
+        //posición del elemento a comprobar
+        pos = i*incDatos;
         //comprobamos si el elemento actual es menor que el considerado menor
-        if(lista[i]<lista[*posMin])
+        if(lista[pos]<lista[(*posMin)*incDatos])
         {
             //asignamos la nueva posición
             *posMin = i;
         }
         //comprobamos si el elemento actual es mayor que el considerado mayor
-        if(lista[i]>lista[*posMax])
+        if(lista[pos]>lista[(*posMax)*incDatos])
         {
             //asignamos la nueva posición
             *posMax = i;
@@ -360,22 +669,6 @@ void LibMemMatrizC(double** matriz)
     ////////////////////////////////////////////////////////////////////////////
     //salimos de la función
     return;
-}
-/******************************************************************************/
-/******************************************************************************/
-double GeocNan(void)
-{
-    //devolvemos el valor de NaN
-    //le calculamos el valor absoluto porque, en algunos sistemas, al imprimir
-    //un valor GEOC_NAN normal, éste sale con un signo negativo delante
-    return fabs(GEOC_NAN);
-}
-/******************************************************************************/
-/******************************************************************************/
-int EsGeocNan(const double valor)
-{
-    //comparamos y salimos de la función
-    return valor!=valor;
 }
 /******************************************************************************/
 /******************************************************************************/
@@ -497,4 +790,91 @@ size_t* NumElemRepeEnVector(const size_t* pos,
 }
 /******************************************************************************/
 /******************************************************************************/
+void EscalaYTrasladaVector(double* vector,
+                           const size_t nElem,
+                           const size_t inc,
+                           const double escala,
+                           const double traslada)
+{
+    //índice para recorrer bucles
+    size_t i=0;
+    //variable de posición
+    size_t pos=0;
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //distinguimos entre incremento igual a 1 o mayor
+    if(inc==1)
+    {
+        //recorremos los elementos del vector
+        for(i=0;i<nElem;i++)
+        {
+            //primero factor de escala y luego traslación
+            vector[i] = vector[i]*escala+traslada;
+        }
+    }
+    else
+    {
+        //recorremos los elementos del vector
+        for(i=0;i<nElem;i++)
+        {
+            //posición en el vector de trabajo
+            pos = i*inc;
+            //primero factor de escala y luego traslación
+            vector[pos] = vector[pos]*escala+traslada;
+        }
+    }
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //salimos de la función
+    return;
+}
+/******************************************************************************/
+/******************************************************************************/
+void TrasladaYEscalaVector(double* vector,
+                           const size_t nElem,
+                           const size_t inc,
+                           const double escala,
+                           const double traslada)
+{
+    //índice para recorrer bucles
+    size_t i=0;
+    //variable de posición
+    size_t pos=0;
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //distinguimos entre incremento igual a 1 o mayor
+    if(inc==1)
+    {
+        //recorremos los elementos del vector
+        for(i=0;i<nElem;i++)
+        {
+            //primero traslación y luego factor de escala
+            vector[i] = (vector[i]+traslada)*escala;
+        }
+    }
+    else
+    {
+        //recorremos los elementos del vector
+        for(i=0;i<nElem;i++)
+        {
+            //posición en el vector de trabajo
+            pos = i*inc;
+            //primero traslación y luego factor de escala
+            vector[pos] = (vector[pos]+traslada)*escala;
+        }
+    }
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //salimos de la función
+    return;
+}
+/******************************************************************************/
+/******************************************************************************/
 /** @} */
+/******************************************************************************/
+/******************************************************************************/
+/* kate: encoding utf-8; end-of-line unix; syntax c; indent-mode cstyle; */
+/* kate: replace-tabs on; space-indent on; tab-indents off; indent-width 4; */
+/* kate: line-numbers on; folding-markers on; remove-trailing-space on; */
+/* kate: backspace-indents on; show-tabs on; */
+/* kate: word-wrap-column 80; word-wrap-marker-color #D2D2D2; word-wrap off; */

@@ -3,8 +3,9 @@ ifndef MKOCTFILE
 MKOCTFILE := mkoctfile
 endif
 
-CLIPOBJECT = compilador.o errores.o eucli.o fgeneral.o greiner.o polig.o \
-             ptopol.o segmento.o ventorno.o
+CLIPOBJECT = calctopo.o compilador.o dpeucker.o errores.o eucli.o fgeneral.o \
+             geocnan.o geocomp.o greiner.o polig.o polil.o ptopol.o recpolil.o \
+             segmento.o ventorno.o
 FLAGS = -Wall -Wextra
 
 %.o: %.c

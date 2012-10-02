@@ -64,8 +64,6 @@ function [pkgtar htmltar] = releasePKG (pkgname, varargin)
 
   end
 
-
-
   % Export from repo
   outpath = checkpath(parser.Results.outpath);
 

@@ -26,9 +26,12 @@
 ## Implementation of the Conditional MVA (CMVA) algorithm, a numerically
 ## stable variant of MVA for load-dependent servers. CMVA is described
 ## in G. Casale, @cite{A Note on Stable Flow-Equivalent Aggregation in
-## Closed Networks}. The network is made of @math{M} service centers and
-## a delay center. Servers @math{1, \ldots, M-1} are load-independent;
-## server @math{M} is load-dependent.
+## Closed Networks}. 
+##
+## The network is made of @math{M} service centers and a single delay
+## center. Servers @math{1, \ldots, M-1} are load-independent; server
+## @math{M} is load-dependent. If @math{M=1}, only the load-dependent
+## server (plus the delay center) exists.
 ##
 ## @strong{INPUTS}
 ##
@@ -46,10 +49,9 @@
 ## fixed-rate servers, then @code{S = []}
 ##
 ## @item Sld
-## @code{@var{Sld}(n)} is the mean service time on server @math{M}
-## when there are @math{n} requests, @math{n=1, @dots{}, N}.
-## @code{@var{Sld}(n) = } @math{1 / \mu(n)}, where @math{\mu(n)} is the
-## service rate at center @math{N} when there are @math{n} requests.
+## @code{@var{Sld}(n)} is the inverse service rate at server @math{M}
+## (the load-dependent server) when there are @math{n} requests,
+## @math{n=1, @dots{}, N}. @code{@var{Sld}(n) = } @math{1 / \mu(n)}.
 ##
 ## @item V
 ## @code{@var{V}(k)} is the average number of visits to service center
@@ -67,19 +69,18 @@
 ## @table @var
 ##
 ## @item U
-## @code{@var{U}(k)} is the utilization of center @math{k=1, @dots{}, M}
+## @code{@var{U}(k)} is the utilization of center @math{k} (@math{k=1, @dots{}, M})
 ##
 ## @item R
-## @code{@var{R}(k)} is the @emph{response time} at center @math{k=1, @dots{}, M}.
-## The system response time @var{Rsys}
-## can be computed as @code{@var{Rsys} = @var{N}/@var{Xsys} - Z}
+## @code{@var{R}(k)} is the response time of center @math{k}, (@math{k=1,
+## @dots{}, M}). The system response time @var{Rsys} can be computed as
+## @code{@var{Rsys} = @var{N}/@var{Xsys} - Z}
 ##
 ## @item Q
-## @code{@var{Q}(k)} is the average number of requests at center
-## @math{k=1, @dots{}, M}.
+## @code{@var{Q}(k)} is the average number of requests at center @math{k}, (@math{k=1, @dots{}, M}).
 ##
 ## @item X
-## @code{@var{X}(k)} is the throughput of center @math{k=1, @dots{}, M}.
+## @code{@var{X}(k)} is the throughput of center @math{k}, (@math{k=1, @dots{}, M}).
 ##
 ## @end table
 ##
@@ -97,7 +98,7 @@ function [U R Q X] = qncmva( N, S, Sld, V, Z )
   isscalar(N) && N >= 0 || \
       error("N must be a positive scalar");
 
-  isempty(S) || isvector(S) || \
+  (isempty(S) || isvector(S)) || \
       error("S must be a vector");
   S = S(:)'; # make S a row vector
   M = length(S)+1; # total number of service centers (excluding the delay center)
@@ -216,21 +217,23 @@ endfunction
 %! assert( X1, X2, 1e-5 );
 
 %!demo
-%! maxN = 90;
-%! Rmva = Rcmva = zeros(1,maxN);
+%! maxN = 90; # Max population size
+%! Rmva = Rcmva = zeros(1,maxN); # Results
 %! S = 4;
 %! Z = 10;
 %! m = 8;
 %! for N=1:maxN
+%!   # Use MVA
 %!   [U R] = qnclosedsinglemva(N,S,1,m,Z);
 %!   Rmva(N) = R(1);
-%!   Scmva = resize( S / 1:m, [1, N]);
-%!   if (N > m )
-%!     Scmva(m+1:N) = S/m;
+%!   # USe CMVA
+%!   if ( N > m )
+%!     Scmva = S ./ min(1:N,m);
+%!   else
+%!     Scmva = S ./ (1:N);
 %!   endif
 %!   [U R] = qncmva(N,[],Scmva,1,Z);
 %!   Rcmva(N) = R(1);
-%!   printf("%.2f %.2f\n",Rmva(N), Rcmva(N));
 %! endfor
 %! plot(1:maxN, Rmva, ";Resp. Time (MVA);", \
 %!      1:maxN, Rcmva, ";Resp. Time (CMVA);");

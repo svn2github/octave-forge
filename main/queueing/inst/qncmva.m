@@ -35,13 +35,15 @@
 ## @table @var
 ##
 ## @item N
-## Population size (number of requests in the system, @code{@var{N} @geq{} 0}).
-## If @code{@var{N} == 0}, this function returns
-## @code{@var{U} = @var{R} = @var{Q} = @var{X} = 0}
+## Number of requests in the system, @code{@var{N} @geq{} 0}. If
+## @code{@var{N} == 0}, this function returns @code{@var{U} = @var{R} =
+## @var{Q} = @var{X} = 0}
 ##
 ## @item S
-## @code{@var{S}(k)} is the mean service time on server @math{k = 1, @dots{}, M-1}
-## (@code{@var{S}(k) > 0}).
+## Vector of mean service times for load-independent (fixed rate) servers.
+## Specifically, @code{@var{S}(k)} is the mean service time on server
+## @math{k = 1, @dots{}, M-1} (@code{@var{S}(k) > 0}). If there are no
+## fixed-rate servers, then @code{S = []}
 ##
 ## @item Sld
 ## @code{@var{Sld}(n)} is the mean service time on server @math{M}
@@ -51,7 +53,9 @@
 ##
 ## @item V
 ## @code{@var{V}(k)} is the average number of visits to service center
-## @math{k= 1, @dots{}, M} (@code{@var{V}(k) @geq{} 0}).
+## @math{k=1, @dots{}, M}, where @code{@var{V}(k) @geq{} 0}.
+## @code{@var{V}(1:M-1)} are the visit rates to the fixed rate servers;
+## @code{@var{V}(M)} is the visit rate to the load dependent server.
 ##
 ## @item Z
 ## External delay for customers (@code{@var{Z} @geq{} 0}). Default is 0.
@@ -66,7 +70,7 @@
 ## @code{@var{U}(k)} is the utilization of center @math{k=1, @dots{}, M}
 ##
 ## @item R
-## @code{@var{R}(k)} is the response time at center @math{k=1, @dots{}, M}.
+## @code{@var{R}(k)} is the @emph{response time} at center @math{k=1, @dots{}, M}.
 ## The system response time @var{Rsys}
 ## can be computed as @code{@var{Rsys} = @var{N}/@var{Xsys} - Z}
 ##
@@ -93,10 +97,10 @@ function [U R Q X] = qncmva( N, S, Sld, V, Z )
   isscalar(N) && N >= 0 || \
       error("N must be a positive scalar");
 
-  isvector(S) || \
+  isempty(S) || isvector(S) || \
       error("S must be a vector");
   S = S(:)'; # make S a row vector
-  M = length(S)+1; # number of service centers (escluding the delay center)
+  M = length(S)+1; # total number of service centers (excluding the delay center)
   
   isvector(Sld) && length(Sld) == N && all(Sld>=0) || \
       error("Sld must be a vector with %d elements >= 0", N);
@@ -105,6 +109,14 @@ function [U R Q X] = qncmva( N, S, Sld, V, Z )
   isvector(V) && length(V) == M && all(V>=0) || \
       error("V must be a vector with %d elements", M);
   V = V(:)'; # Make V a row vector
+
+  ## The reference paper assumes queue M (LD center) as reference.
+  ## Therefore, we need to rescale V
+
+  V(M) > 0 || \
+      error("V(M) must be >0");
+
+  V = V / V(M);
 
   if ( nargin == 5 )
     isscalar(Z) && Z>=0 || \
@@ -115,33 +127,53 @@ function [U R Q X] = qncmva( N, S, Sld, V, Z )
 
   if ( N == 0 )
     U = R = Q = X = zeros(1,M);
+    return;
   endif
 
-  D = S .* V(1:M-1); # service demands
-  Ri = Qi = zeros(M,N+1,N+1);
-  DM = Xs = zeros(N+1,N+1); # system throughput
+  ## Di(1+k) = service demand of server k=0,1,...,M-1 (server 0 is the delay center)
+  Di = zeros(1,M); 
+  Di(1) = Z;
+  Di(2:M) = S .* V(1:M-1);
+  ## DM(n,t), n=1, ..., N, t=1, ..., N
+  DM = zeros(N,N);
+
+  mu = 1./Sld; # rate function
+
+  ## Ri(1+k,:,:) = response time of server k=0,1,...,M
+  Ri = zeros(1+M,N,N); 
+
+  ## Qi(k,1+n,t) = queue length of server k=1,...,M, n=0,1,...,N, t=1,...,N+1
+  Qi = zeros(M,1+N,N+1);
+
+  Xs = zeros(N,N); # Xs = system throughput
 
   ## Main MVA loop
   for n=1:N 
     for t=1:(N-n+1)
       if ( n==1 )
-	DM(1+n,t) = Sld(t)*V(M);
-      else
-	DM(1+n,t) = Xs(n,t)/Xs(n,t+1)*DM(n,t);
+	DM(n,t) = 1/mu(t);
+      else # n>=2
+	DM(n,t) = Xs(n-1,t)/Xs(n-1,t+1)*DM(n-1,t);
       endif
-      i=1:(M-1);
-      Ri(i,1+n,t) = D(i).*(1+Qi(i,n,t))';
-      Ri(M,1+n,t) = DM(1+n,t).*(1+Qi(M,n,t+1));
-      Xs(1+n,t) = n/(Z+sum(Ri(:,1+n,t)));
-      i=1:(M-1);
-      Qi(i,1+n,t) = D(i) .* Xs(1+n,t) .* (1+Qi(i,n,t))';
-      Qi(M,1+n,t) = DM(1+n,t).*Xs(1+n,t).*(1+Qi(M,n,t+1));
+
+      Ri(1+0,n,t) = Di(1+0);
+      i=1:M-1; Ri(1+i,n,t) = Di(1+i).*(1+Qi(i,1+n-1,t))';
+      Ri(1+M,n,t) = DM(n,t)*(1+Qi(M,1+n-1,t+1));
+
+      Xs(n,t) = n/sum(Ri(:,n,t));
+
+      i=1:M-1; Qi(i,1+n,t) = Di(1+i) .* Xs(n,t) .* (1+Qi(i,1+n-1,t))';
+      Qi(M,1+n,t) = DM(n,t) * Xs(n,t) * (1+Qi(M,1+n-1,t+1));
     endfor
   endfor
-  X = Xs(1+N,1)*V;
-  Q = Qi(:,1+N,1)';
-  R = Ri(:,1+N,1)';
-  U = [D DM(1+N,1)] .* X;
+  X = Xs(N,1).*V;
+  Q = Qi(1:M,1+N,1)';
+  ## Note that the result R is the *response time*, while the value
+  ## computed by the reference paper is the *residence time*. The
+  ## response time is equal to the residence time divided by the visit
+  ## ratios. FIXME: This will choke if the visit ratio is zero for some server k
+  R = Ri(2:M+1,N,1)' ./ V;
+  U = [Di(2:M) DM(N,1)] .* X ./ V;
 endfunction
 %!test
 %! N=5;
@@ -149,10 +181,10 @@ endfunction
 %! V = [1 1 1 1];
 %! [U1 R1 Q1 X1] = qncmva( N, S(1:3), repmat(S(4),1,N), V );
 %! [U2 R2 Q2 X2] = qnclosedsinglemva(N, S, V);
+%! assert( X1, X2, 1e-5 );
 %! assert( U1, U2, 1e-5 );
 %! assert( R1, R2, 1e-5 );
 %! assert( Q1, Q2, 1e-5 );
-%! assert( X1, X2, 1e-5 );
 
 %!test
 %! N=5;
@@ -168,3 +200,37 @@ endfunction
 %! assert( Q1, Q2, 1e-5 );
 %! assert( X1, X2, 1e-5 );
 
+%!test
+%! N=5;
+%! S = [1 1 1 1 1; \
+%!      1 1 1 1 1; \
+%!      1 1 1 1 1; \
+%!      1 1/2 1/3 1/4 1/5];
+%! V = [1 2 1 1];
+%! Z = 3;
+%! [U1 R1 Q1 X1] = qncmva( N, S(1:3,1), S(4,:), V, Z );
+%! [U2 R2 Q2 X2] = qnclosedsinglemvald(N, S, V, Z);
+%! assert( U1, U2, 1e-5 );
+%! assert( R1, R2, 1e-5 );
+%! assert( Q1, Q2, 1e-5 );
+%! assert( X1, X2, 1e-5 );
+
+%!demo
+%! maxN = 90;
+%! Rmva = Rcmva = zeros(1,maxN);
+%! S = 4;
+%! Z = 10;
+%! m = 8;
+%! for N=1:maxN
+%!   [U R] = qnclosedsinglemva(N,S,1,m,Z);
+%!   Rmva(N) = R(1);
+%!   Scmva = resize( S / 1:m, [1, N]);
+%!   if (N > m )
+%!     Scmva(m+1:N) = S/m;
+%!   endif
+%!   [U R] = qncmva(N,[],Scmva,1,Z);
+%!   Rcmva(N) = R(1);
+%!   printf("%.2f %.2f\n",Rmva(N), Rcmva(N));
+%! endfor
+%! plot(1:maxN, Rmva, ";Resp. Time (MVA);", \
+%!      1:maxN, Rcmva, ";Resp. Time (CMVA);");

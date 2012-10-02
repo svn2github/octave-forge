@@ -88,8 +88,8 @@ function [pkgtar htmltar] = releasePKG (pkgname, varargin)
 
     % Delete .svnignore files
     % This works only for unix
-    unix (sprintf('find %s -name .svnignore | xargs rm -v',exported));
-
+    unix (sprintf ('find %s -name .svnignore | xargs rm -v',exported));
+    % FIXME: This prints a confusing error when no .svnignore are present.
   end
 
   printf("Exported to %s\n", exported);
@@ -101,62 +101,58 @@ function [pkgtar htmltar] = releasePKG (pkgname, varargin)
   pkgversion = desc_file{ind+1};
 
   % Compress package
-  pkgtar = sprintf ("%s-%s.tar.gz", pkgname, pkgversion);
-  if system (sprintf ("tar cfz %s %s/", pkgtar, pkgname));
-      error ("Can not make package tar.\n");
-  end
+  pkgtar = sprintf ("%s-%s.tar", pkgname, pkgversion);
+  tar (pkgtar, pkgname);
+  gzip (pkgtar);
+  pkgtar = sprintf ("%s.gz", pkgtar);
 
-  printf("Tared to %s\n", pkgtar);
-  fflush(stdout);
+  printf ("Tared to %s\n", pkgtar);
+  fflush (stdout);
 
-  do_doc = input("\nCreate documentation for Octave-Forge? [y|Yes|Y] / [n|No|N] ","s");
-  do_doc = strcmpi(do_doc(1),'y');
+  do_doc = input ("\nCreate documentation for Octave-Forge? [y|Yes|Y] / [n|No|N] ","s");
+  do_doc = strcmpi (do_doc(1),'y');
 
   if do_doc
     % Install package
     printf("Installing...\n");
-    fflush(stdout);
+    fflush (stdout);
     pkg ('install', pkgtar);
 
 
     % Load package and generate_html
-    printf("Generating html...\n");
+    printf ("Generating html...\n");
     fflush(stdout);
 
-    pkg('load', pkgname);
-    pkg('load','generate_html');
+    pkg ('load', pkgname);
+    pkg ('load','generate_html');
     pkghtml = [pkgname '-html'];
     generate_package_html (pkgname, pkghtml, 'octave-forge');
 
     % Compress html
-    htmltar = sprintf ("%s-html.tar.gz", pkgname);
-    if system (sprintf ("tar cfz %s %s/", htmltar, pkghtml));
-      error ("Can not make html tar.\n");
-    end
+    htmltar = sprintf ("%s-html.tar", pkgname);
+    tar (htmltar, pkghtml);
+    gzip (htmltar);
+    htmltar = sprintf ("%s.gz", htmltar);
 
-    printf("Documentation tared to %s\n", pkghtml);
+    printf ("Documentation tared to %s\n", pkghtml);
     fflush(stdout);
 
     % md5sum
-    printf(["md5sum for " htmltar "\n"]);
+    printf (["\nmd5sum for " htmltar "\n"]);
     fflush (stdout);
-    if system(["md5sum " htmltar]);
-      warning ("md5sum failed.\n");
-    end
+    disp ([md5sum(htmltar) " " htmltar]);
 
     % Uninstall package
-    printf("Uninstalling...\n");
-    fflush(stdout);
+    printf ("Uninstalling...\n");
+    fflush (stdout);
     pkg ('uninstall', pkgname);
 
   endif % do_doc
 
   % md5sum
-  printf(["md5sum for " pkgtar "\n"]);
+  printf (["\nmd5sum for " pkgtar "\n"]);
   fflush (stdout);
-  if system(["md5sum " pkgtar]);
-     warning ("md5sum failed.\n");
-  end
+  disp ([md5sum(pkgtar) " " pkgtar]);
 
 
 endfunction

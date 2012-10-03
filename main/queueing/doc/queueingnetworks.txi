@@ -1411,7 +1411,58 @@ Again, it is possible to use the @command{qnsolve} high-level function:
 @end group
 @end example
 
-@subsubsection Closed Multiclass Network
+@subsubsection Closed Multiclass Network/1
+
+The following example is taken from Herb Schwetman, @cite{Implementing
+the Mean Value Algorith for the Solution of Queueing Network Models},
+Technical Report CSD-TR-355, Department of Computer Sciences, Purdue
+University, feb 15, 1982.
+
+We consider the following multiclass QN with three servers and two classes
+
+@float Figure,fig:apl
+@center @image{qn_closed_multi_apl}
+@end float
+
+Servers 1 and 2 (labeled ``APL'' and ``IMS'', respectively) are
+infinite server nodes; server 3 (labeled ``SYS'') is Processor Sharing
+(PS). Mean service times are given in the following table:
+
+@multitable @columnfractions .15 .15 .15 .15
+@headitem @tab  APL @tab IMS @tab SYS
+@item Class 1 @tab 1 @tab - @tab 0.025
+@item Class 2 @tab - @tab 15 @tab 0.500
+@end multitable
+
+There is no class switching. If  we assume a population of 15 requests
+for  class 1,  and  5 requests  for class  2,  then the  model can  be
+analyzed as follows:
+
+@example
+@GETDEMO{qnclosedmultimva,2}
+  @result{}
+U =
+
+   14.32312    0.00000    0.35808
+    0.00000    4.70699    0.15690
+
+R =
+
+    1.000000   15.000000    0.047258
+    1.000000   15.000000    0.933745
+
+Q =
+
+   14.32312    0.00000    0.67688
+    0.00000    4.70699    0.29301
+
+X =
+
+   14.32312    0.00000   14.32312
+    0.00000    0.31380    0.31380
+@end example
+
+@subsubsection Closed Multiclass Network/2
 
 The following example is taken from M. Marzolla, @cite{The qnetworks
 Toolbox: A Software Package for Queueing Networks Analysis}, Technical
@@ -1520,55 +1571,4 @@ higher contention on the resources.
 @caption{System Power as a function of the population mix}
 @end float
 
-
-@subsubsection Multiple
-
-The following example is taken from Herb Schwetman, @cite{Implementing
-the Mean Value Algorith for the Solution of Queueing Network Models},
-Technical Report CSD-TR-355, Department of Computer Sciences, Purdue
-University, feb 15, 1982.
-
-We consider the following multiclass QN with three servers and two classes
-
-@float Figure,fig:apl
-@center @image{qn_closed_multi_apl}
-@end float
-
-Servers 1 and 2 (labeled ``APL'' and ``IMS'', respectively) are
-infinite server nodes; server 3 (labeled ``SYS'') is Processor Sharing
-(PS). Mean service times are given in the following table:
-
-@multitable @columnfractions .15 .15 .15 .15
-@headitem @tab  APL @tab IMS @tab SYS
-@item Class 1 @tab 1 @tab - @tab 0.025
-@item Class 2 @tab - @tab 15 @tab 0.500
-@end multitable
-
-There is no class switching. If  we assume a population of 15 requests
-for  class 1,  and  5 requests  for class  2,  then the  model can  be
-analyzed as follows:
-
-@example
-@GETDEMO{qnclosedmultimva,2}
-  @result{}
-U =
-
-   14.32312    0.00000    0.35808
-    0.00000    4.70699    0.15690
-
-R =
-
-    1.000000   15.000000    0.047258
-    1.000000   15.000000    0.933745
-
-Q =
-
-   14.32312    0.00000    0.67688
-    0.00000    4.70699    0.29301
-
-X =
-
-   14.32312    0.00000   14.32312
-    0.00000    0.31380    0.31380
-@end example
 

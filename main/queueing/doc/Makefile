@@ -1,6 +1,6 @@
 DOC=queueing
 CHAPTERS=$(patsubst %.txi, %.texi, $(wildcard *.txi))
-FIGS=qn_open_single qn_closed_single qn_web_model qn_closed_multi web qn_closed_multi_apl
+FIGS=qn_open_single qn_closed_single qn_web_model qn_closed_multi web power qn_closed_multi_apl
 FIGS_EPS=$(FIGS:%=%.eps)
 FIGS_PDF=$(FIGS:%=%.pdf)
 FIGS_PNG=$(FIGS:%=%.png)
@@ -41,8 +41,8 @@ $(DOC).info: $(DOC).texi $(CHAPTERS)
 %.eps: %.fig
 	fig2dev -L eps $< $@
 
-web.eps: demo_web.m
-	octave -p../inst/ -q --eval "figure (1, \"visible\", \"off\"); more off; demo qnclosedmultimva; print(\"web.eps\", \"-deps2\", \"-mono\", \"-tight\");"
+web.eps power.eps: demo_web.m
+	octave -p../inst/ -q $<
 
 %.pdf: %.eps
 	epstopdf $<

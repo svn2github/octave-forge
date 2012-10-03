@@ -775,4 +775,4 @@ endfunction
 %! P(2,2,2,3) = P(2,3,2,2) = 1;
 %! N = [15 5];
 %! m = [-1 -1 1];
-%! [U R Q X] = qnclosedmultimva(N,S,P,m)
+%! [U R Q X] = qnclosedmultimva(N,S,P,m);

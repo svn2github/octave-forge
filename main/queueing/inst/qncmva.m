@@ -23,15 +23,13 @@
 ## @cindex Mean Value Analysys (MVA)
 ## @cindex CMVA
 ##
-## Implementation of the Conditional MVA (CMVA) algorithm, a numerically
-## stable variant of MVA for load-dependent servers. CMVA is described
-## in G. Casale, @cite{A Note on Stable Flow-Equivalent Aggregation in
-## Closed Networks}. 
-##
-## The network is made of @math{M} service centers and a single delay
-## center. Servers @math{1, @dots{}, M-1} are load-independent; server
-## @math{M} is load-dependent. If @math{M=1}, only the load-dependent
-## server (plus the delay center) exists.
+## This is the implementation of the original Conditional MVA (CMVA)
+## algorithm, a numerically stable variant of MVA, as described in G.
+## Casale, @cite{A Note on Stable Flow-Equivalent Aggregation in Closed
+## Networks}. This function supports a network of @math{M @geq{} 1}
+## service centers and a single delay center. Servers @math{1, @dots{},
+## M-1} are load-independent; server @math{M} is load-dependent. For a
+## more general implementation, @xref{doc-qnclosedsinglecmva}.
 ##
 ## @strong{INPUTS}
 ##

@@ -30,9 +30,7 @@ X1 = X1 = XX = zeros(size(beta));
 R1 = R2 = RR = zeros(size(beta));
 for i=1:length(beta)
   pop = [fix(beta(i)*N) N-fix(beta(i)*N)];
-  #printf("[%3d %3d]\n", pop(1), pop(2) );
-  #[U R Q X] = qnclosedmultimva( pop, D, V );
-  [U R Q X] = qnclosedmultimvaapprox( pop, D, V );
+  [U R Q X] = qnclosedmultimva( pop, D, V );
   X1(i) = X(1,1) / V(1,1);
   X2(i) = X(2,1) / V(2,1);
   XX(i) = X1(i) + X2(i);

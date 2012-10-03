@@ -8,7 +8,7 @@ DISTFILES=README INSTALL $(DOC).pdf $(DOC).html $(DOC).texi $(CHAPTERS)
 
 .PHONY: clean dist
 
-ALL: pdf html INSTALL
+ALL: pdf INSTALL
 
 html: $(DOC).html
 

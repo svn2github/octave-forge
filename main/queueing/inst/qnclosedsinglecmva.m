@@ -27,6 +27,13 @@
 ##
 ## Analyze closed, single-class networks with the Conditional MVA (CMVA) algorithm.
 ##
+## This is a numerically stable implementation of general MVA, based on
+## the Conditional MVA (CMVA) algorithm described in G. Casale, @cite{A
+## note on stable flow-equivalent aggregation in closed networks}. This
+## function has the same signature of the @command{qnclosedsinglemva}
+## function and handles the same class of networks. If is therefore
+## more general than @command{qncmva}.
+##
 ## @strong{INPUTS}
 ##
 ## @table @var
@@ -98,21 +105,8 @@
 
 function [U R Q X] = qnclosedsinglecmva( N, S, V, m, Z )
 
-  ## This is a numerically stable implementation of the MVA algorithm,
-  ## based on G. Casale, A note on stable flow-equivalent aggregation in
-  ## closed networks. Queueing Syst. Theory Appl., 60:193–-202, December
-  ## 2008, http://dx.doi.org/10.1007/s11134-008-9093-6
-
-  ## This implementation extends the paper above to consider a single
-  ## class, closed network with an arbitrary number of multiple server
-  ## nodes, delay stations and single server nodes (plus an external
-  ## delay); the paper only considers a single load-dependent server and
-  ## a single delay center.
-
   ## This implementation uses service rates instead of service demands,
   ## as in the paper. Equations have been modified accordingly.
-
-  # warning("This function may produce incorrect results. Use at your own risk");
 
   if ( nargin < 3 || nargin > 5 ) 
     print_usage();

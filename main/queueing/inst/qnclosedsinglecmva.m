@@ -1,4 +1,4 @@
-## Copyright (C) 2008, 2009, 2010, 2011, 2012 Moreno Marzolla
+## Copyright (C) 2012 Moreno Marzolla
 ##
 ## This file is part of the queueing toolbox.
 ##
@@ -17,24 +17,15 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}, @var{G}] =} qnclosedsinglemva (@var{N}, @var{S}, @var{V})
-## @deftypefnx {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}, @var{G}] =} qnclosedsinglemva (@var{N}, @var{S}, @var{V}, @var{m})
-## @deftypefnx {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}, @var{G}] =} qnclosedsinglemva (@var{N}, @var{S}, @var{V}, @var{m}, @var{Z})
+## @deftypefn {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qnclosedsinglecmva (@var{N}, @var{S}, @var{V})
+## @deftypefnx {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qnclosedsinglecmva (@var{N}, @var{S}, @var{V}, @var{m})
+## @deftypefnx {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qnclosedsinglecmva (@var{N}, @var{S}, @var{V}, @var{m}, @var{Z})
 ##
-## @cindex Mean Value Analysys (MVA)
+## @cindex Conditional Mean Value Analysys (CMVA)
 ## @cindex closed network, single class
 ## @cindex normalization constant
 ##
-## Analyze closed, single class queueing networks using the exact Mean
-## Value Analysis (MVA) algorithm. The following queueing disciplines
-## are supported: FCFS, LCFS-PR, PS and IS (Infinite Server). This
-## function supports fixed-rate service centers or multiple server
-## nodes. For general load-dependent service centers, use the function
-## @code{qnclosedsinglemvald} instead.
-##
-## Additionally, the normalization constant @math{G(n)}, @math{n=0,
-## @dots{}, N} is computed; @math{G(n)} can be used in conjunction with
-## the BCMP theorem to compute steady-state probabilities.
+## Analyze closed, single-class networks with the Conditional MVA (CMVA) algorithm.
 ##
 ## @strong{INPUTS}
 ##
@@ -96,32 +87,33 @@
 ## system throughput @var{Xsys} can be computed as
 ## @code{@var{Xsys} = @var{X}(1) / @var{V}(1)}
 ##
-## @item G
-## Normalization constants. @code{@var{G}(n+1)} corresponds to the value
-## of the normalization constant @math{G(n)}, @math{n=0, @dots{}, N} as
-## array indexes in Octave start from 1. @math{G(n)} can be used in
-## conjunction with the BCMP theorem to compute steady-state
-## probabilities.
-##
 ## @end table
 ##
-## @quotation Note
-## In presence of load-dependent servers (i.e., if @code{@var{m}(i)>1}
-## for some @math{i}), the MVA algorithm is known to be numerically
-## unstable. Generally this problem manifests itself as negative
-## response times produced by this function. If this happens, you may
-## want to consider the @code{qncmva} or @code{qnclosedsinglecmva}
-## functions.
-## @end quotation
-##
-## @seealso{qnclosedsinglemvald,qncmva,qnclosedsinglecmva}
+## @seealso{qnclosedsinglemva}
 ##
 ## @end deftypefn
 
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [U R Q X G] = qnclosedsinglemva( N, S, V, m, Z )
+function [U R Q X] = qnclosedsinglecmva( N, S, V, m, Z )
+
+  ## This is a numerically stable implementation of the MVA algorithm,
+  ## based on G. Casale, A note on stable flow-equivalent aggregation in
+  ## closed networks. Queueing Syst. Theory Appl., 60:193–-202, December
+  ## 2008, http://dx.doi.org/10.1007/s11134-008-9093-6
+
+  ## This implementation extends the paper above to consider a single
+  ## class closed network with an arbitrary number of multiple-server
+  ## nodes, delay stations and single-server nodes (plus an external
+  ## delay); the paper only considers a single load-dependent server and
+  ## a single delay center.
+
+  ## Note also that this implementation uses service rates instead of
+  ## service demands, as in the paper. Equations have been modified
+  ## accordingly.
+
+  # warning("This function may produce incorrect results. Use at your own risk");
 
   if ( nargin < 3 || nargin > 5 ) 
     print_usage();
@@ -163,96 +155,94 @@ function [U R Q X G] = qnclosedsinglemva( N, S, V, m, Z )
   endif
 
   U = R = Q = X = zeros( 1, K );
-  G = zeros(1,N+1); G(1) = 1;
   if ( N == 0 ) # Trivial case of empty population: just return all zeros
     return;
   endif
 
-  ## Initialize results
-  p = zeros( K, max(m)+1 ); # p(i,j+1) is the probability that there are j jobs at server i
-  p(:,1) = 1;
-  X_s = 0; # System throughput
+  ## System throughput
+  ## Xs_n(t) := X(N,t)
+  ## Sx_nm1(t) := X(N-1,t)
+  Xs_n = Xs_nm1 = zeros(1,N);
+
+  ## Queue lengths
+  ## Qn(i,t) := Q_i(n,t)
+  ## Qnm1(i,t) := Q_i(n-1,t)
+  Qn = Qnm1 = zeros(K,N+1);
+
+  ## Response times
+  ## Rn(i,t) := R_i(n,t)
+  Rn = zeros(K,N);
 
   i_single = find( m==1 );
   i_multi = find( m>1 );
   i_delay = find( m<1 );
 
-  ## Main MVA loop, iterates over the population size
+  ## Service times (note that the reference paper uses service demands)
+  ## Sn(i,t) ~ D_i(n,t)
+  ## Snm1(i,t) ~ D_i(n-1,t)
+  Sn = Snm1 = zeros(K,N+1);
+  ## Initialize service times (NOTE: beware of simgular dimensions!)
+  Sn(i_single,:) = Snm1(i_single,:) = repmat(S(1,i_single)',1,N+1);
+  Sn(i_delay,:) = Snm1(i_delay,:) = repmat(S(1,i_delay)',1,N+1);
+
+  ## Main CMVA loop
   for n=1:N 
+    for t=1:(N-n+1)
 
-    R(i_single) = S(i_single) .* (1 + Q(i_single)); 
-    for i=i_multi # I cannot easily vectorize this
-      j=0:m(i)-2;
-      R(i) = S(i) / m(i) * (1+Q(i)+dot( m(i)-j-1, p( i, 1+j ) ) );
+      ## Compute service demands
+      if ( n>=2 )
+	Sn(i_multi,t) = Xs_nm1(t)./Xs_nm1(t+1).*Snm1(i_multi,t);
+      else
+	Sn(i_multi,t) = S(1,i_multi)./min(m(1,i_multi),t);
+      endif
+
+      ## Compute response times
+      Rn(i_single,t) = Sn(i_single,t) .* (1 + Qnm1(i_single,t)); 
+      Rn(i_multi,t) = Sn(i_multi,t) .* (1 + Qnm1(i_multi,t+1));
+      Rn(i_delay,t) = Sn(i_delay,t);
+
+      ## Compute system throughput
+      Xs_n = n ./ ( Z + V * Rn );
+
+      ## Update queue lenghts
+      Qn(i_single,t) = Sn(i_single,t).*V(1,i_single)'.*Xs_n(t).*(1+Qnm1(i_single,t));
+      Qn(i_delay,t) = Sn(i_delay,t).*Xs_n(t);
+      Qn(i_multi,t) = Sn(i_multi,t).*V(1,i_multi)'.*Xs_n(t).*(1+Qnm1(i_multi,t+1));
+
+      ## prepare for next iteration
+      Qnm1 = Qn;
+      Snm1 = Sn;
+      Xs_nm1 = Xs_n;
     endfor
-    R(i_delay) = S(i_delay);
-
-    R_s = dot( V, R ); # System response time
-    X_s = n / ( Z + R_s ); # System Throughput
-    Q = X_s * ( V .* R );
-    G(1+n) = G(n) / X_s;
-    
-    ## prepare for next iteration
-    lambda_i = V * X_s; # lambda_i(i) is the node i throughput
-    for i=i_multi
-      j=1:m(i)-1; # range
-      p(i, j+1) = lambda_i(i) .* S(i) ./ min( j,m(i) ) .* p(i,j);
-      p(i,1) = 1 - 1/m(i) * ...
-          (V(i)*S(i)*X_s + dot( m(i)-j, p(i,j+1)) );
-    endfor
-
   endfor
-  X = X_s * V; # Service centers throughput
+  X = Xs_n(1)*V; # Service centers throughput
+  Q = Qn(:,1)';
+  R = Rn(:,1)';
   U(i_single) = X(i_single) .* S(i_single);
   U(i_delay) = X(i_delay) .* S(i_delay);
   U(i_multi) = X(i_multi) .* S(i_multi) ./ m(i_multi);
 endfunction
 
-#{
-
-## This function is slightly faster (and more compact) than the above
-## when all servers are single-server or delay centers. Improvements are
-## quite small (10%-15% faster, depends on the network size), so at the
-## moment it is commented out.
-function [U R Q X G] = __qnclosedsinglemva_fast( N, S, V, m, Z )
-  U = R = Q = X = zeros( 1, length(S) );
-  X_s = 0; # System throughput
-  G = zeros(1,N+1); G(1) = 1;
-
-  ## Main MVA loop
-  for n=1:N 
-    R = S .* (1+Q.*(m==1));
-    R_s = dot( V, R ); # System response time
-    X_s = n / ( Z + R_s ); # System Throughput
-    Q = X_s * ( V .* R );
-    G(1+n) = G(n) / X_s;    
-  endfor
-  X = X_s * V; # Service centers throughput
-  U = X .* S;
-endfunction
-
-#}
-
 %!test
-%! fail( "qnclosedsinglemva()", "Invalid" );
-%! fail( "qnclosedsinglemva( 10, [1 2], [1 2 3] )", "S, V and m" );
-%! fail( "qnclosedsinglemva( 10, [-1 1], [1 1] )", ">= 0" );
+%! fail( "qnclosedsinglecmva()", "Invalid" );
+%! fail( "qnclosedsinglecmva( 10, [1 2], [1 2 3] )", "S, V and m" );
+%! fail( "qnclosedsinglecmva( 10, [-1 1], [1 1] )", ">= 0" );
 
 ## Check if networks with only one type of server are handled correctly
 %!test
-%! qnclosedsinglemva(1,1,1,1);
-%! qnclosedsinglemva(1,1,1,-1);
-%! qnclosedsinglemva(1,1,1,2);
-%! qnclosedsinglemva(1,[1 1],[1 1],[-1 -1]);
-%! qnclosedsinglemva(1,[1 1],[1 1],[1 1]);
-%! qnclosedsinglemva(1,[1 1],[1 1],[2 2]);
+%! qnclosedsinglecmva(1,1,1,1);
+%! qnclosedsinglecmva(1,1,1,-1);
+%! qnclosedsinglecmva(1,1,1,2);
+%! qnclosedsinglecmva(1,[1 1],[1 1],[-1 -1]);
+%! qnclosedsinglecmva(1,[1 1],[1 1],[1 1]);
+%! qnclosedsinglecmva(1,[1 1],[1 1],[2 2]);
 
 ## Check degenerate case of N==0 (LI case)
 %!test
 %! N = 0;
 %! S = [1 2 3 4];
 %! V = [1 1 1 4];
-%! [U R Q X] = qnclosedsinglemva(N, S, V);
+%! [U R Q X] = qnclosedsinglecmva(N, S, V);
 %! assert( U, 0*S );
 %! assert( R, 0*S );
 %! assert( Q, 0*S );
@@ -264,7 +254,7 @@ endfunction
 %! S = [1 2 3 4];
 %! V = [1 1 1 4];
 %! m = [2 3 4 5];
-%! [U R Q X] = qnclosedsinglemva(N, S, V, m);
+%! [U R Q X] = qnclosedsinglecmva(N, S, V, m);
 %! assert( U, 0*S );
 %! assert( R, 0*S );
 %! assert( Q, 0*S );
@@ -277,7 +267,7 @@ endfunction
 %! N = 20;
 %! m = ones(1,3)';
 %! Z = 4;
-%! [U R Q X] = qnclosedsinglemva(N,S,V,m,Z);
+%! [U R Q X] = qnclosedsinglecmva(N,S,V,m,Z);
 %! assert( R, [ .373 4.854 .300 ], 1e-3 );
 %! assert( Q, [ 1.991 16.177 0.500 ], 1e-3 );
 %! assert( all( U>=0 ) );
@@ -290,7 +280,7 @@ endfunction
 %! N = 20;
 %! m = ones(1,3);
 %! Z = 4;
-%! [U R Q X] = qnclosedsinglemva(N,S,V,m,Z);
+%! [U R Q X] = qnclosedsinglecmva(N,S,V,m,Z);
 %! assert( R, [ .373 4.854 .300 ], 1e-3 );
 %! assert( Q, [ 1.991 16.177 0.500 ], 1e-3 );
 %! assert( all( U>=0 ) );
@@ -302,7 +292,7 @@ endfunction
 %! N = 3;
 %! m = [2 1 1 -1];
 %! V = [ 1 .5 .5 1 ];
-%! [U R Q X] = qnclosedsinglemva(N,S,V,m);
+%! [U R Q X] = qnclosedsinglecmva(N,S,V,m);
 %! assert( Q, [ 0.624 0.473 0.686 1.217 ], 1e-3 );
 %! assert( X, [ 1.218 0.609 0.609 1.218 ], 1e-3 );
 %! assert( all(U >= 0 ) );
@@ -315,7 +305,7 @@ endfunction
 %! S = [ 0.02 0.2 0.4 0.6 ];
 %! K = 6;
 %! V = [ 1 0.4 0.2 0.1 ];
-%! [U R Q X] = qnclosedsinglemva(K, S, V);
+%! [U R Q X] = qnclosedsinglecmva(K, S, V);
 %! assert( U, [ 0.198 0.794 0.794 0.595 ], 1e-3 );
 %! assert( R, [ 0.025 0.570 1.140 1.244 ], 1e-3 );
 %! assert( Q, [ 0.244 2.261 2.261 1.234 ], 1e-3 );
@@ -327,7 +317,7 @@ endfunction
 %! for n=1:N
 %!   S = [1 0.8 1.2 0.5];
 %!   V = [1 2 2 1];
-%!   [U R Q X] = qnclosedsinglemva(n, S, V);
+%!   [U R Q X] = qnclosedsinglecmva(n, S, V);
 %!   Xs = X(1)/V(1);
 %!   Rs = dot(R,V);
 %!   # Compare with balanced system bounds
@@ -373,7 +363,7 @@ endfunction
 %! N = 20;
 %! m = ones(1,3);
 %! Z = 4;
-%! [U R Q X] = qnclosedsinglemva(N,S,V,m,Z);
+%! [U R Q X] = qnclosedsinglecmva(N,S,V,m,Z);
 %! X_s = X(1)/V(1); # System throughput
 %! R_s = dot(R,V); # System response time
 %! printf("\t    Util      Qlen     RespT      Tput\n");
@@ -382,4 +372,21 @@ endfunction
 %!   printf("Dev%d\t%8.4f  %8.4f  %8.4f  %8.4f\n", k, U(k), Q(k), R(k), X(k) );
 %! endfor
 %! printf("\nSystem\t          %8.4f  %8.4f  %8.4f\n\n", N-X_s*Z, R_s, X_s );
+
+%!demo
+%! maxN = 90; # Max population size
+%! Rmva = Rcmva = zeros(1,maxN); # Results
+%! S = 4;
+%! Z = 10;
+%! m = 8;
+%! for N=1:maxN
+%!   # Use MVA
+%!   [U R] = qnclosedsinglemva(N,S,1,m,Z);
+%!   Rmva(N) = R(1);
+%!   # USe CMVA
+%!   [U R] = qnclosedsinglecmva(N,S,1,m,Z);
+%!   Rcmva(N) = R(1);
+%! endfor
+%! plot(1:maxN, Rmva, ";Resp. Time (MVA);", \
+%!      1:maxN, Rcmva, ";Resp. Time (CMVA);");
 

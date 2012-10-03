@@ -1,8 +1,9 @@
 2012-09-XX Moreno Marzolla <marzolla@cs.unibo.it>
 
-	* Version 1.1.2 released
+	* Version 1.2.0 released
 	* Restructured the documentation
 	* Fixed function qncmva()
+	* Added new function qnclosedsinglecmva()
 
 2012-09-08 Moreno Marzolla <marzolla@cs.unibo.it>
 

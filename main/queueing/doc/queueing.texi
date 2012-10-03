@@ -54,6 +54,21 @@
 
 @c @end macro
 
+@c FIXME: The following macros are workaround to fix erratic behavior of texinfo
+@iftex
+@macro lambdack
+@lambda_{c,k}
+@end macro
+@end iftex
+@ifnottex
+@macro lambda
+lambda
+@end macro
+@macro lambdack
+lambda_@{c, k@}
+@end macro
+@end ifnottex
+
 @ifinfo
 @format
 START-INFO-DIR-ENTRY

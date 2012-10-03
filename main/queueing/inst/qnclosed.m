@@ -39,8 +39,8 @@
 ## is the average service time of center @math{k}, and this function
 ## calls @code{qnclosedsinglemva} which supports load-independent
 ## service centers. If @var{S} is a matrix, @code{@var{S}(k,i)} is the
-## average service time at service center @math{k} when @math{i @geq{}
-## 1} jobs are present; in this case, the network is analyzed with the
+## average service time at center @math{k} when @math{i =1, @ldots{}, N}
+## jobs are present; in this case, the network is analyzed with the
 ## @code{qnclosedsinglemvald} function.
 ##
 ## @item If @var{N} is a vector, the network is assumed to have multiple

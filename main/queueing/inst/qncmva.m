@@ -91,6 +91,12 @@
 
 function [U R Q X] = qncmva( N, S, Sld, V, Z )
 
+  ## This is a numerically stable implementation of the MVA algorithm,
+  ## described in G. Casale, A note on stable flow-equivalent aggregation in
+  ## closed networks. Queueing Syst. Theory Appl., 60:193–-202, December
+  ## 2008, http://dx.doi.org/10.1007/s11134-008-9093-6
+
+
   if ( nargin < 4 || nargin > 5 )
     print_usage();
   endif

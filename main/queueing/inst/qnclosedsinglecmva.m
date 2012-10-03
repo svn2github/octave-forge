@@ -104,14 +104,13 @@ function [U R Q X] = qnclosedsinglecmva( N, S, V, m, Z )
   ## 2008, http://dx.doi.org/10.1007/s11134-008-9093-6
 
   ## This implementation extends the paper above to consider a single
-  ## class closed network with an arbitrary number of multiple-server
-  ## nodes, delay stations and single-server nodes (plus an external
+  ## class, closed network with an arbitrary number of multiple server
+  ## nodes, delay stations and single server nodes (plus an external
   ## delay); the paper only considers a single load-dependent server and
   ## a single delay center.
 
-  ## Note also that this implementation uses service rates instead of
-  ## service demands, as in the paper. Equations have been modified
-  ## accordingly.
+  ## This implementation uses service rates instead of service demands,
+  ## as in the paper. Equations have been modified accordingly.
 
   # warning("This function may produce incorrect results. Use at your own risk");
 
@@ -177,7 +176,7 @@ function [U R Q X] = qnclosedsinglecmva( N, S, V, m, Z )
   i_multi = find( m>1 );
   i_delay = find( m<1 );
 
-  ## Service times (note that the reference paper uses service demands)
+  ## Service times (NOTE: the reference paper uses service demands instead)
   ## Sn(i,t) ~ D_i(n,t)
   ## Snm1(i,t) ~ D_i(n-1,t)
   Sn = Snm1 = zeros(K,N+1);
@@ -188,7 +187,6 @@ function [U R Q X] = qnclosedsinglecmva( N, S, V, m, Z )
   ## Main CMVA loop
   for n=1:N 
     for t=1:(N-n+1)
-
       ## Compute service demands
       if ( n>=2 )
 	Sn(i_multi,t) = Xs_nm1(t)./Xs_nm1(t+1).*Snm1(i_multi,t);
@@ -202,18 +200,18 @@ function [U R Q X] = qnclosedsinglecmva( N, S, V, m, Z )
       Rn(i_delay,t) = Sn(i_delay,t);
 
       ## Compute system throughput
-      Xs_n = n ./ ( Z + V * Rn );
+      Xs_n(t) = n / ( Z + dot(V,Rn(:,t)) );
 
       ## Update queue lenghts
       Qn(i_single,t) = Sn(i_single,t).*V(1,i_single)'.*Xs_n(t).*(1+Qnm1(i_single,t));
       Qn(i_delay,t) = Sn(i_delay,t).*Xs_n(t);
       Qn(i_multi,t) = Sn(i_multi,t).*V(1,i_multi)'.*Xs_n(t).*(1+Qnm1(i_multi,t+1));
 
-      ## prepare for next iteration
-      Qnm1 = Qn;
-      Snm1 = Sn;
-      Xs_nm1 = Xs_n;
     endfor
+    ## prepare for next iteration
+    Qnm1 = Qn;
+    Snm1 = Sn;
+    Xs_nm1 = Xs_n;
   endfor
   X = Xs_n(1)*V; # Service centers throughput
   Q = Qn(:,1)';

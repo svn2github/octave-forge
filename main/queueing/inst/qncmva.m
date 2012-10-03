@@ -29,7 +29,7 @@
 ## Closed Networks}. 
 ##
 ## The network is made of @math{M} service centers and a single delay
-## center. Servers @math{1, \ldots, M-1} are load-independent; server
+## center. Servers @math{1, @dots{}, M-1} are load-independent; server
 ## @math{M} is load-dependent. If @math{M=1}, only the load-dependent
 ## server (plus the delay center) exists.
 ##

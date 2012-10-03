@@ -339,7 +339,7 @@ If we let @math{\lambda = 1.2}, we can compute the visit ratios
    @result{} V = 5.0000   1.5000   2.5000
 @end example
 
-Function @code{qnvisits} expects a vector with @math{K} elements as a
+Function @command{qnvisits} expects a vector with @math{K} elements as a
 second parameter, for open networks only. The vector contains the
 arrival rates at each individual node; since in our example external
 arrivals exist only for node @math{S_1} with rate @math{\lambda =
@@ -588,8 +588,8 @@ uses 1-base vectors). The normalization constant can be used to
 compute all performance measures of interest (utilization, average
 response time and so on).
 
-@code{queueing} implements the convolution algorithm, in the function
-@code{qnconvolution} and @code{qnconvolutionld}. The first one
+@command{queueing} implements the convolution algorithm, in the function
+@command{qnconvolution} and @command{qnconvolutionld}. The first one
 supports single-station nodes, multiple-station nodes and IS nodes.
 The second one supports networks with general load-dependent service
 centers.
@@ -672,12 +672,12 @@ pp. 109--117. @url{http://doi.acm.org/10.1145/800200.806187}
 This implementation is based on G. Bolch, S. Greiner, H. de Meer and
 K. Trivedi, @cite{Queueing Networks and Markov Chains: Modeling and
 Performance Evaluation with Computer Science Applications}, Wiley,
-1998, pp. 313--317. Function @code{qnconvolutionld} is slightly
+1998, pp. 313--317. Function @command{qnconvolutionld} is slightly
 different from the version described in Bolch et al. because it
 supports general load-dependent centers (while the version in the book
 does not). The modification is in the definition of function
-@code{F()} in @code{qnconvolutionld} which has been made similar to
-function @math{f_i} defined in Schwetman, @code{Some Computational
+@code{F()} in @command{qnconvolutionld} which has been made similar to
+function @math{f_i} defined in Schwetman, @cite{Some Computational
 Aspects of Queueing Network Models}.
 
 @auindex Bolch, G.
@@ -1048,26 +1048,26 @@ available at
 @section Generic Algorithms
 
 The @code{queueing} package provides a high-level function
-@code{qnsolve} for analyzing QN models. @code{qnsolve} takes as input
-a high-level description of the queueing model, and delegates the
-actual solution of the model to one of the lower-level
-function. @code{qnsolve} supports single or multiclass models, but at
+@command{qnsolve} for analyzing QN models. @command{qnsolve} takes as
+input a high-level description of the queueing model, and delegates
+the actual solution of the model to one of the lower-level
+function. @command{qnsolve} supports single or multiclass models, but at
 the moment only product-form networks can be analyzed. For non
 product-form networks @xref{Non Product-Form QNs}.
 
-@code{qnsolve} accepts two input parameters. The first one is the list
+@command{qnsolve} accepts two input parameters. The first one is the list
 of nodes, encoded as an Octave @emph{cell array}. The second parameter
 is the vector of visit ratios @var{V}, which can be either a vector
 (for single-class models) or a two-dimensional matrix (for
 multiple-class models).
 
 Individual nodes in the network are structures build using the
-@code{qnmknode} function.
+@command{qnmknode} function.
 
 @GETHELP{qnmknode}
 
 After the network has been defined, it is possible to solve it using
-@code{qnsolve}.
+@command{qnsolve}.
 
 @GETHELP{qnsolve}
 
@@ -1211,7 +1211,7 @@ June 2008. @url{http://doi.ieeecomputersociety.org/10.1109/TC.2008.37}
 @auindex Serazzi, G.
 
 In this implementation we set @math{X^+} and @math{X^-} as the upper
-and lower Asymptotic Bounds as computed by the @code{qnclosedab}
+and lower Asymptotic Bounds as computed by the @command{qnclosedab}
 function, respectively.
 
 
@@ -1439,11 +1439,11 @@ at center @math{k}. We use the parameter values:
 @multitable @columnfractions .2 .33 .1 .1
 @headitem Serv. no. @tab  Name @tab Class 1 @tab Class 2
 @item 1 @tab Web Server    @tab 12 @tab 2
-@item 2 @tab App. Server 1 @tab 14 @tab 20 
-@item 3 @tab App. Server 2 @tab 23 @tab 14 
-@item 4 @tab DB Server 1   @tab 20 @tab 90 
-@item 5 @tab DB Server 2   @tab 80 @tab 30 
-@item 6 @tab DB Server 3   @tab 31 @tab 33 
+@item 2 @tab App. Server 1 @tab 14 @tab 20
+@item 3 @tab App. Server 2 @tab 23 @tab 14
+@item 4 @tab DB Server 1   @tab 20 @tab 90
+@item 5 @tab DB Server 2   @tab 80 @tab 30
+@item 6 @tab DB Server 3   @tab 31 @tab 33
 @end multitable
 
 We set the total number of requests to 100, that is @math{N_1 + N_2 =
@@ -1465,14 +1465,14 @@ pop = [fix(beta1*N) N-fix(beta1*N)];
 @end group
 @end example
 
-The @code{qnclosedmultimva(pop, S, V)} function invocation (line 7)
+The @command{qnclosedmultimva(pop, S, V)} function invocation (line 7)
 uses the multiclass MVA algorithm to compute per-class utilizations
 @math{U_{c, k}}, response times @math{R_{c,k}}, mean queue lengths
 @math{Q_{c,k}} and throughputs @math{X_{c,k}} at each service center
 @math{k}, given a population vector @var{pop}, mean service times
 @var{S} and visit ratios @var{V}. Since we are given the service
 demands @math{D_{c, k} = S_{c, k} V_{c,k}}, but function
-@code{qnclosedmultimva()} requires separate service times and visit
+@command{qnclosedmultimva()} requires separate service times and visit
 ratios, we set the service times equal to the demands (line 3--4), and
 all visit ratios equal to one (line 5). Overall class and system
 throughputs and response times can also be computed:

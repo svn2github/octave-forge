@@ -179,10 +179,10 @@ function [U R Q X] = qnclosedsinglecmva( N, S, V, m, Z )
   ## Service times (NOTE: the reference paper uses service demands instead)
   ## Sn(i,t) ~ D_i(n,t)
   ## Snm1(i,t) ~ D_i(n-1,t)
-  Sn = Snm1 = zeros(K,N+1);
+  Sn = Snm1 = zeros(K,N);
   ## Initialize service times (NOTE: beware of simgular dimensions!)
-  Sn(i_single,:) = Snm1(i_single,:) = repmat(S(1,i_single)',1,N+1);
-  Sn(i_delay,:) = Snm1(i_delay,:) = repmat(S(1,i_delay)',1,N+1);
+  Sn(i_single,:) = Snm1(i_single,:) = repmat(S(1,i_single)',1,N);
+  Sn(i_delay,:) = Snm1(i_delay,:) = repmat(S(1,i_delay)',1,N);
 
   ## Main CMVA loop
   for n=1:N 
@@ -200,7 +200,7 @@ function [U R Q X] = qnclosedsinglecmva( N, S, V, m, Z )
       Rn(i_delay,t) = Sn(i_delay,t);
 
       ## Compute system throughput
-      Xs_n(t) = n / ( Z + dot(V,Rn(:,t)) );
+      Xs_n(t) = n ./ ( Z + V*Rn(:,t) );
 
       ## Update queue lenghts
       Qn(i_single,t) = Sn(i_single,t).*V(1,i_single)'.*Xs_n(t).*(1+Qnm1(i_single,t));
@@ -356,35 +356,18 @@ endfunction
 %!              6.8669 0.0000 3.4334 3.3648 ], 1e-4 );
 
 %!demo
-%! S = [ 0.125 0.3 0.2 ];
-%! V = [ 16 10 5 ];
-%! N = 20;
-%! m = ones(1,3);
-%! Z = 4;
-%! [U R Q X] = qnclosedsinglecmva(N,S,V,m,Z);
-%! X_s = X(1)/V(1); # System throughput
-%! R_s = dot(R,V); # System response time
-%! printf("\t    Util      Qlen     RespT      Tput\n");
-%! printf("\t--------  --------  --------  --------\n");
-%! for k=1:length(S)
-%!   printf("Dev%d\t%8.4f  %8.4f  %8.4f  %8.4f\n", k, U(k), Q(k), R(k), X(k) );
+%! N = 90; # Max population size
+%! Rmva = Rcmva = zeros(1,N);
+%! S = 4; Z = 10; m = 8;
+%! for n=1:N
+%!   [U R] = qnclosedsinglemva(n,S,1,m,Z);
+%!   Rmva(n) = R(1);
+%!   [U R] = qnclosedsinglecmva(n,S,1,m,Z);
+%!   Rcmva(n) = R(1);
 %! endfor
-%! printf("\nSystem\t          %8.4f  %8.4f  %8.4f\n\n", N-X_s*Z, R_s, X_s );
-
-%!demo
-%! maxN = 90; # Max population size
-%! Rmva = Rcmva = zeros(1,maxN); # Results
-%! S = 4;
-%! Z = 10;
-%! m = 8;
-%! for N=1:maxN
-%!   # Use MVA
-%!   [U R] = qnclosedsinglemva(N,S,1,m,Z);
-%!   Rmva(N) = R(1);
-%!   # USe CMVA
-%!   [U R] = qnclosedsinglecmva(N,S,1,m,Z);
-%!   Rcmva(N) = R(1);
-%! endfor
-%! plot(1:maxN, Rmva, ";Resp. Time (MVA);", \
-%!      1:maxN, Rcmva, ";Resp. Time (CMVA);");
+%! plot(1:N, Rmva, ";MVA;", \
+%!      1:N, Rcmva, ";Conditional MVA;");
+%! xlabel("Number of requests");
+%! ylabel("Response Time");
+%! legend("location","southwest");
 

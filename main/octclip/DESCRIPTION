@@ -1,7 +1,7 @@
 Name: OctCLIP
 Version: 1.0.3
 Date: 2012-10-03
-Author: José Luis García Pallero, <jgpallero@gmail.com>
+Author: José Luis García Pallero <jgpallero@gmail.com>
 Maintainer: José Luis García Pallero, <jgpallero@gmail.com>
 Title: GNU Octave clipping polygons tool
 Description: This package allows to do boolean operations with polygons using

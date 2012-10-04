@@ -344,29 +344,6 @@ endfunction
 %!   assert( Ruab>=Rs );
 %! endfor
 
-## Example from Schwetman (figure 7, page 9 of
-## http://docs.lib.purdue.edu/cgi/viewcontent.cgi?article=1258&context=cstech
-## "Testing network-of-queues software, technical report CSD-TR 330,
-## Purdue University). Note that the results for that network (table 9
-## of the reference above) seems to be wrong. The "correct" results
-## below have been computed using the multiclass MVA implementation of
-## JMT (http://jmt.sourceforge.net/)
-%!test
-%! V = [ 1.00 0.45 0.50 0.00; \
-%!       1.00 0.00 0.50 0.49 ];
-%! N = [3 2];
-%! S = [0.01 0.09 0.10 0.08; \
-%!      0.05 0.09 0.10 0.08];
-%! [U R Q X] = qnclosedmultimva(N, S, V);
-%! assert( U, [ 0.1215 0.4921 0.6075 0.0000; \
-%!              0.3433 0.0000 0.3433 0.2691 ], 1e-4 );
-%! assert( Q, [ 0.2131 0.7539 2.0328 0.0000; \
-%!              0.5011 0.0000 1.1839 0.3149 ], 1e-4 );
-%! assert( R.*V, [0.0175 0.0620 0.1672 0.0000; \
-%!                0.0729 0.0000 0.1724 0.0458 ], 1e-4 );
-%! assert( X, [12.1517 5.4682 6.0758 0.0000; \
-%!              6.8669 0.0000 3.4334 3.3648 ], 1e-4 );
-
 %!demo
 %! S = [ 0.125 0.3 0.2 ];
 %! V = [ 16 10 5 ];

@@ -21,9 +21,11 @@
 ## @deftypefnx {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qnclosedsinglecmva (@var{N}, @var{S}, @var{V}, @var{m})
 ## @deftypefnx {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qnclosedsinglecmva (@var{N}, @var{S}, @var{V}, @var{m}, @var{Z})
 ##
-## @cindex Conditional Mean Value Analysys (CMVA)
+## @cindex Conditional MVA (CMVA)
+## @cindex Mean Value Analysis, Conditional (CMVA)
 ## @cindex closed network, single class
 ## @cindex normalization constant
+## @cindex CMVA
 ##
 ## Analyze closed, single-class networks with the Conditional MVA (CMVA) algorithm.
 ##
@@ -295,9 +297,9 @@ endfunction
 %! # This is a single-class network, which however nothing else than
 %! # a special case of multiclass network
 %! S = [ 0.02 0.2 0.4 0.6 ];
-%! K = 6;
+%! N = 6;
 %! V = [ 1 0.4 0.2 0.1 ];
-%! [U R Q X] = qnclosedsinglecmva(K, S, V);
+%! [U R Q X] = qnclosedsinglecmva(N, S, V);
 %! assert( U, [ 0.198 0.794 0.794 0.595 ], 1e-3 );
 %! assert( R, [ 0.025 0.570 1.140 1.244 ], 1e-3 );
 %! assert( Q, [ 0.244 2.261 2.261 1.234 ], 1e-3 );
@@ -326,28 +328,27 @@ endfunction
 %!   assert( Ruab>=Rs );
 %! endfor
 
-## Example from Schwetman (figure 7, page 9 of
-## http://docs.lib.purdue.edu/cgi/viewcontent.cgi?article=1258&context=cstech
-## "Testing network-of-queues software, technical report CSD-TR 330,
-## Purdue University). Note that the results for that network (table 9
-## of the reference above) seems to be wrong. The "correct" results
-## below have been computed using the multiclass MVA implementation of
-## JMT (http://jmt.sourceforge.net/)
-%!test
-%! V = [ 1.00 0.45 0.50 0.00; \
-%!       1.00 0.00 0.50 0.49 ];
-%! N = [3 2];
-%! S = [0.01 0.09 0.10 0.08; \
-%!      0.05 0.09 0.10 0.08];
-%! [U R Q X] = qnclosedmultimva(N, S, V);
-%! assert( U, [ 0.1215 0.4921 0.6075 0.0000; \
-%!              0.3433 0.0000 0.3433 0.2691 ], 1e-4 );
-%! assert( Q, [ 0.2131 0.7539 2.0328 0.0000; \
-%!              0.5011 0.0000 1.1839 0.3149 ], 1e-4 );
-%! assert( R.*V, [0.0175 0.0620 0.1672 0.0000; \
-%!                0.0729 0.0000 0.1724 0.0458 ], 1e-4 );
-%! assert( X, [12.1517 5.4682 6.0758 0.0000; \
-%!              6.8669 0.0000 3.4334 3.3648 ], 1e-4 );
+%!demo
+%! V = [1 1 1 1];
+%! S = [10 8 9 3];
+%! m = [4 3 2 1];
+%! Z = 0;
+%! N = 20;
+%! Rmva = Rcmva = zeros(1,N);
+%! for n=1:N
+%!   [U1 R1 Q1 X1] = qnclosedsinglecmva(N,S,V,m,Z);
+%!   R1
+%!   Rcmva(n) = dot(R1,V)+Z;
+%!   [U2 R2 Q2 X2] = qnclosedsinglemva(N,S,V,m,Z);
+%!   R2
+%!   Rmva(n) = dot(R2,V)+Z;
+%!   printf("MVA=%f CMVA=%f\n",Rmva(n), Rcmva(n));
+%! endfor
+%! plot(1:N,Rcmva,";CMVA;",1:N,Rmva,";MVA;");
+%! #assert( U1, U2, 1e-5 );
+%! #assert( R1, R2, 1e-5 );
+%! #assert( Q1, Q2, 1e-5 );
+%! #assert( X1, X2, 1e-5 );
 
 %!demo
 %! N = 90; # Max population size

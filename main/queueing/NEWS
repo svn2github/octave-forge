@@ -1,14 +1,12 @@
 Summary of important user-visible changes for queueing-1.2.0
 ------------------------------------------------------------------------------
 
-** queueing-1.2.0 adds new features and includes some important bug fixes
+** queueing-1.1.2 is a bug fix release
 
-** The documentation has been slightly restructured, hopefully improving
+** The documentation has been restructured, hopefully improving
    readability and overall organization.
 
 ** Fixed function qncmva(); added demo block and additional test cases
-
-** Added function qnclosedsinglecmva()
 
 
 Summary of important user-visible changes for queueing-1.1.1

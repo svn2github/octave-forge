@@ -525,8 +525,6 @@ Networks''.
 @c
 @GETHELP{qncmva}
 
-@GETHELP{qnclosedsinglecmva}
-
 @noindent @strong{REFERENCES}
 
 G. Casale. @cite{A note on stable flow-equivalent aggregation in

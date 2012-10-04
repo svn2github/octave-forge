@@ -20,7 +20,9 @@
 ## @deftypefn {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qncmva (@var{N}, @var{S}, @var{Sld}, @var{V})
 ## @deftypefnx {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qncmva (@var{N}, @var{S}, @var{Sld}, @var{V}, @var{Z})
 ##
-## @cindex Mean Value Analysys (MVA)
+## @cindex Conditional MVA (CMVA)
+## @cindex Mean Value Analysis, Conditional (CMVA)
+## @cindex closed network, single class
 ## @cindex CMVA
 ##
 ## This is the implementation of the original Conditional MVA (CMVA)

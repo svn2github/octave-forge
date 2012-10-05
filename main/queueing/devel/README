@@ -1,3 +1,2 @@
-This directory contains scripts which are currently under development;
-therefore they may not work correctly, or could be not fully
-tested. The content of this directory is ignored by pkg install.
+This directory contains scripts which are under development and/or not
+fully tested.

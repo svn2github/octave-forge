@@ -1,6 +1,6 @@
 DOC=queueing
 CHAPTERS=$(patsubst %.txi, %.texi, $(wildcard *.txi))
-FIGS=qn_open_single qn_closed_single qn_web_model qn_closed_multi web power qn_closed_multi_apl
+FIGS=qn_open_single qn_closed_single qn_web_model qn_closed_multi web power qn_closed_multi_apl qn_closed_multi_cs
 FIGS_EPS=$(FIGS:%=%.eps)
 FIGS_PDF=$(FIGS:%=%.pdf)
 FIGS_PNG=$(FIGS:%=%.png)

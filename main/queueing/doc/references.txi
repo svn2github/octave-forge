@@ -109,7 +109,7 @@ Aspects of Queueing Network Models}, @uref{http://www.cs.purdue.edu/research/tec
 Department of Computer Sciences, Purdue University, feb, 1981
 (revised).
 
-@item [Sch82]
+@item @anchor{Sch82}[Sch82]
 H. Schwetman, @cite{Implementing the Mean Value Algorithm for the
 Solution of Queueing Network Models}, @uref{http://www.cs.purdue.edu/research/technical_reports/1980/TR%2080-355.pdf, Technical Report CSD-TR-355},
 Department of Computer Sciences, Purdue University, feb 15, 1982.

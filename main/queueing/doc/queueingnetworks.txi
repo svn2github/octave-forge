@@ -257,21 +257,23 @@ $$\left\{\eqalign{V_j & = \sum_{i=1}^K V_i P_{i, j} \quad j=1, \ldots, K \cr
 
 @noindent @strong{EXAMPLE}
 
+
 @float Figure,fig:qn_closed_single
 @center @image{qn_closed_single,3in}
-@caption{Closed Queueing Network with a single class of requests}
+@caption{Closed network with a single class of requests}
 @end float
 
 @ref{fig:qn_closed_single} shows a closed QN with a single class of
-requests. The network has three service centers @math{S_1, S_2, S_3},
-and represents the so called @emph{central server} model of a computer
-system. Center @math{S_1} represents the CPU, modeled as a PS
-(Processor Sharing) node. After some time spent at the CPU, requests
-are routed to center @math{S_2} with probability @math{0.3}, and to
-center @math{S_3} with probability @math{0.7}.  @math{S_2} and
-@math{S_3} represent two disks, modeled as FCFS nodes.
+requests. The network has three service centers, labeled @emph{CPU},
+@emph{Disk1}, @emph{Disk2}. and represents the so called @emph{central
+server} model of a computer system. Requests spend some time at the
+CPU, which is represented by a PS (Processor Sharing) node. After
+that, requests are routed to node Disk1 with probability @math{0.3},
+and to node Disk2 with probability @math{0.7}. Both Disk1 and Disk2
+are modeled as FCFS nodes.
 
-The routing matrix of this network is
+If we enumerate the servers as CPU=1, Disk1=2, Disk2=3, we can define
+the routing matrix as follows:
 
 @iftex
 @tex
@@ -290,7 +292,7 @@ P = | 1  0    0   |
 @end example
 @end ifnottex
 
-We can compute the visit ratios @math{V} as follows:
+The visit ratios @math{V} can be computed with:
 
 @example
 @GETDEMO{qnvisits,1}
@@ -308,9 +310,9 @@ We can compute the visit ratios @math{V} as follows:
 requests. The network has the same structure as the one in
 @ref{fig:qn_closed_single}, with the difference that here we have a
 stream of jobs arriving from outside the system, at a rate
-@math{\lambda}. After service completion at node @math{S_1}, a job can
-leave the system with probability 0.2, or be transferred to other
-servers with the probabilities shown in the figure.
+@math{\lambda}. After service completion at the CPU, a job can leave
+the system with probability 0.2, or be transferred to other nodes with
+the probabilities shown in the figure.
 
 The routing matrix of this network is
 
@@ -903,7 +905,7 @@ particular, see section 7.4.1 ("Open Model Solution Techniques").
 @noindent @strong{REFERENCES}
 
 Herb Schwetman, @cite{Implementing the Mean Value Algorithm for the
-Solution of Queueing Network Models}, Technical Report 
+Solution of Queueing Network Models}, Technical Report
 @uref{http://www.cs.purdue.edu/research/technical_reports/1980/TR
 80-355.pdf, CSD-TR-355},
 Department of Computer Sciences, Purdue University, feb 15, 1982,
@@ -1034,7 +1036,7 @@ instead of the mean residence time as in the reference.
 @auindex Sevcik, K. C.
 
 Herb Schwetman, @cite{Implementing the Mean Value Algorithm for the
-Solution of Queueing Network Models}, Technical Report 
+Solution of Queueing Network Models}, Technical Report
 @uref{http://www.cs.purdue.edu/research/technical_reports/1980/TR%2080-355.pdf, CSD-TR-355},
 Department of Computer Sciences, Purdue University, feb 15, 1982,
 
@@ -1423,9 +1425,9 @@ We consider the following multiclass QN with three servers and two classes
 @center @image{qn_closed_multi_apl}
 @end float
 
-Servers 1 and 2 (labeled ``APL'' and ``IMS'', respectively) are
-infinite server nodes; server 3 (labeled ``SYS'') is Processor Sharing
-(PS). Mean service times are given in the following table:
+Servers 1 and 2 (labeled @emph{APL} and @emph{IMS}, respectively) are
+infinite server nodes; server 3 (labeled @emph{SYS}) is Processor
+Sharing (PS). Mean service times are given in the following table:
 
 @multitable @columnfractions .15 .15 .15 .15
 @headitem @tab  APL @tab IMS @tab SYS
@@ -1570,4 +1572,49 @@ higher contention on the resources.
 @caption{System Power as a function of the population mix}
 @end float
 
+@subsubsection Closed Multiclass Network/3
 
+We now consider an example of multiclass network with class switching.
+The example is taken from @ref{Sch82}, and is shown in Figure
+@ref{fig:class_switching}.
+
+@float Figure,fig:class_switching
+@center @image{qn_closed_multi_cs,3in}
+@caption{Multiclass Model with Class Switching}
+@end float
+
+The system consists of three devices and two job classes. The CPU node
+is a PS server, while the two nodes labeled @emph {I/O} are
+FCFS. Class 1 mean service time at the CPU is 0.01; class 2 mean
+service time at the CPU is 0.05. The mean service time at node 2 is
+0.1, and is class-independent. Similarly, the mean service time at
+node 3 is 0.07. Jobs in class 1 leave the CPU and join class 2 with
+probability 0.1; jobs of class 2 leave the CPU and join class 1 with
+probability 0.2. There are @math{N=3} jobs, which are initially
+allocated to class 1. However, note that since class switching is
+allowed, the total number of jobs in each class does not remain
+constant; however the total number of jobs does.
+
+@example
+@GETDEMO{qnclosedmultimva,3}
+  @result{}
+U =
+
+   0.12609   0.61784   0.25218
+   0.31522   0.13239   0.31522
+
+R =
+
+   0.014653   0.133148   0.163256
+   0.073266   0.133148   0.163256
+
+Q =
+
+   0.18476   1.17519   0.41170
+   0.46190   0.25183   0.51462
+
+X =
+
+   12.6089    8.8262    2.5218
+    6.3044    1.8913    3.1522
+@end example

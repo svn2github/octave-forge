@@ -697,7 +697,6 @@ endfunction
 %! P = zeros(2,3,2,3);
 %! P(1,1,1,2) = P(1,2,1,1) = 1;
 %! P(2,1,2,3) = P(2,3,2,1) = 1;
-%! ## V = qnvisits(P);
 %! N = [15 5];
 %! m = [1 -1 -1];
 %! [U R Q X] = qnclosedmultimva(N,S,P,m);
@@ -709,7 +708,10 @@ endfunction
 %! assert( Q, [.677 14.323 0; .293 0 4.707], 1e-3 );
 %! assert( R, [.047 1 15.0; .934 1 15.0], 1e-3 );
 
-## Example figure 9 Schwetman
+## Example figure 9 Herb Schwetman "Implementing the Mean
+## Value Algorith for the Solution of Queueing Network Models",
+## Technical Report CSD-TR-355, Department of Computer Sciences, Purdue
+## University, feb 15, 1982.
 %!test
 %! C = 2; K = 3;
 %! S = [.01 .07 .10; \
@@ -801,3 +803,19 @@ endfunction
 %! N = [15 5];
 %! m = [-1 -1 1];
 %! [U R Q X] = qnclosedmultimva(N,S,P,m);
+
+## Example shown on Figure 9: Herb Schwetman, "Implementing the Mean
+## Value Algorith for the Solution of Queueing Network Models",
+## Technical Report CSD-TR-355, Department of Computer Sciences, Purdue
+## University, feb 15, 1982.
+%!demo
+%! C = 2; K = 3;
+%! S = [.01 .07 .10; \
+%!      .05 .07 .10 ];
+%! P = zeros(C,K,C,K);
+%! P(1,1,1,2) = .7; P(1,1,1,3) = .2; P(1,1,2,1) = .1;
+%! P(2,1,2,2) = .3; P(2,1,2,3) = .5; P(2,1,1,1) = .2;
+%! P(1,2,1,1) = P(2,2,2,1) = 1;
+%! P(1,3,1,1) = P(2,3,2,1) = 1;
+%! N = [3 0];
+%! [U R Q X] = qnclosedmultimva(N, S, P);

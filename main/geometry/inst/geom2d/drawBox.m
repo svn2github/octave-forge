@@ -33,7 +33,7 @@
 
 %% -*- texinfo -*-
 %% @deftypefn {Function File} {@var{h} =} drawBox (@var{box})
-%% @deftypefnx {Function File} {@var{h} =} drawBox (@var{box}, @var{param}, @var{value}, ...)
+%% @deftypefnx {Function File} {@var{h} =} drawBox (@var{box}, @var{param}, @var{value}, @dots{})
 %% Draw a box defined by coordinate extents
 %% 
 %% Draws a box defined by its extent: @var{box} = [@var{xmin} @var{xmax}

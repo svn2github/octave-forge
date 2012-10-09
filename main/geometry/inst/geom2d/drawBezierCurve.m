@@ -33,9 +33,9 @@
 
 %% -*- texinfo -*-
 %% @deftypefn {Function File} drawBezierCurve (@var{points})
-%% @deftypefnx {Command} {Function File} drawBezierCurve (@var{pp})
-%% @deftypefnx {Command} {Function File} drawBezierCurve (..., @var{param}, @var{value}, ...)
-%% @deftypefnx {Command} {Function File} {@var{h} =}drawBezierCurve (...)
+%% @deftypefnx {Function File} drawBezierCurve (@var{pp})
+%% @deftypefnx {Function File} drawBezierCurve (@dots{}, @var{param}, @var{value}, @dots{})
+%% @deftypefnx {Function File} {@var{h} =}drawBezierCurve (@dots{})
 %% Draw a cubic bezier curve defined by the control points @var{points}.
 %%
 %% With only one input argument, draws the Bezier curve defined by the 4 control

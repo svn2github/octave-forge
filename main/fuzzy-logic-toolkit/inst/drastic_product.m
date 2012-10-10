@@ -44,7 +44,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy drastic_product
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      drastic_product.m
-## Last-Modified: 12 Nov 2011
+## Last-Modified: 20 Aug 2012
 
 function retval = drastic_product (x, y = 0)
   if (nargin == 0 || nargin > 2 ||

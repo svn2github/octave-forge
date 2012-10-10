@@ -47,7 +47,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy tests demos
 ## Directory:     fuzzy-logic-toolkit/inst
 ## Filename:      heart_disease_demo_1.m
-## Last-Modified: 12 Nov 2011
+## Last-Modified: 20 Aug 2012
 
 ## Create new FIS.
 a = newfis ('Heart-Disease-Risk', 'sugeno', ...

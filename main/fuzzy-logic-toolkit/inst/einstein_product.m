@@ -39,7 +39,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy einstein_product
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      einstein_product.m
-## Last-Modified: 12 Nov 2011
+## Last-Modified: 20 Aug 2012
 
 function retval = einstein_product (x, y = 0)
   if (nargin == 0 || nargin > 2 ||

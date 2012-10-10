@@ -41,7 +41,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy tests demos
 ## Directory:     fuzzy-logic-toolkit/inst
 ## Filename:      cubic_approx_demo.m
-## Last-Modified: 12 Nov 2011
+## Last-Modified: 20 Aug 2012
 
 ## Read the FIS structure from a file.
 fis = readfis ('cubic_approximator.fis');

@@ -35,6 +35,12 @@
 ## @var{vpe} - the partition entropy for the given soft partition
 ## @end itemize
 ##
+## For demos of this function, please type:
+## @example
+## demo 'fcm'
+## demo 'gustafson_kessel'
+## @end example
+##
 ## For more information about the @var{soft_partition} matrix, please see the
 ## documentation for function fcm.
 ##
@@ -46,7 +52,7 @@
 ## Keywords:      fuzzy-logic-toolkit partition entropy cluster
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      partition_entropy.m
-## Last-Modified: 26 Aug 2012
+## Last-Modified: 4 Sep 2012
 
 ##----------------------------------------------------------------------
 ## Note: This function is an implementation of Equation 13.10 in
@@ -86,77 +92,3 @@ function vpe = partition_entropy (soft_partition, a)
   vpe = -(sum (sum (Mu .* log_a_Mu))) / n;
 
 endfunction
-
-##----------------------------------------------------------------------
-## Partition Entropy Demo #1
-##----------------------------------------------------------------------
-
-%!demo
-%! ## Use the Fuzzy C-Means and Gustafson-Kessel algorithms to classify
-%! ## a small set of unlabeled data points and evaluate the quality
-%! ## of the resulting clusters.
-%!
-%! ## Note: The input_data is taken from Chapter 13, Example 17 in
-%! ##       Fuzzy Logic: Intelligence, Control and Information, by
-%! ##       J. Yen and R. Langari, Prentice Hall, 1999, page 381
-%! ##       (International Edition). 
-%! 
-%! input_data = [2 12; 4 9; 7 13; 11 5; 12 7; 14 4]
-%! number_of_clusters = 2
-%! 
-%! ## Using fcm, classify the input data, print the cluster centers,
-%! ## and calculate and print the partition coefficient.
-%! [cluster_centers, soft_partition, obj_fcn_history] = ...
-%!   fcm (input_data, number_of_clusters, [NaN NaN NaN 0]);
-%! puts ("\nResults using the Fuzzy C-Means algorithm:\n\n");
-%! cluster_centers
-%! printf ("partition entropy (with a = 2): %f\n", ...
-%!         partition_entropy (soft_partition, 2));
-%! 
-%! ## Using gustafson_kessel, classify the input data, print the cluster
-%! ## centers, and calculate and print the partition coefficient.
-%! [cluster_centers, soft_partition, obj_fcn_history] = ...
-%!   gustafson_kessel (input_data, number_of_clusters, [1 1 1], ...
-%!                     [NaN NaN NaN 0]);
-%! puts ("\nResults using the Gustafson-Kessel algorithm:\n\n");
-%! cluster_centers
-%! printf ("partition entropy (with a = 2): %f\n\n", ...
-%!         partition_entropy (soft_partition, 2));
-
-##----------------------------------------------------------------------
-## Partition Entropy Demo #2
-##----------------------------------------------------------------------
-
-%!demo
-%! ## Use the Fuzzy C-Means and Gustafson-Kessel algorithms to classify
-%! ## three-dimensional unlabeled data points and evaluate the quality
-%! ## of the resulting clusters.
-%!
-%! ## Note: The input_data was selected to form three areas of
-%! ##       different shapes.
-%!
-%! input_data = [1 11 5; 1 12 6; 1 13 5; 2 11 7; 2 12 6; 2 13 7; 3 11 6;
-%!               3 12 5; 3 13 7;  1 1 10; 1 3 9; 2 2 11; 3 1 9; 3 3 10;
-%!               3 5 11; 4 4 9; 4 6 8; 5 5 8; 5 7 9; 6 6 10; 9 10 12;
-%!               9 12 13; 9 13 14; 10 9 13; 10 13 12; 11 10 14;
-%!               11 12 13; 12 6 12; 12 7 15; 12 9 15; 14 6 14; 14 8 13]
-%! number_of_clusters = 3
-%!
-%! ## Using fcm, classify the input data, print the cluster centers,
-%! ## and calculate and print the partition coefficient.
-%! [cluster_centers, soft_partition, obj_fcn_history] = ...
-%!   fcm (input_data, number_of_clusters, [NaN NaN NaN 0]);
-%! puts ("\nResults using the Fuzzy C-Means algorithm:\n\n");
-%! cluster_centers
-%! printf ("partition entropy (with a = 2): %f\n", ...
-%!         partition_entropy (soft_partition, 2));
-%! 
-%! ## Using gustafson_kessel, classify the input data, print the cluster
-%! ## centers, and calculate and print the partition coefficient.
-%! [cluster_centers, soft_partition, obj_fcn_history] = ...
-%!   gustafson_kessel (input_data, number_of_clusters, [1 1 1], ...
-%!                     [NaN NaN NaN 0]);
-%! puts ("\nResults using the Gustafson-Kessel algorithm:\n\n");
-%! cluster_centers
-%! printf ("partition entropy (with a = 2): %f\n\n", ...
-%!         partition_entropy (soft_partition, 2));

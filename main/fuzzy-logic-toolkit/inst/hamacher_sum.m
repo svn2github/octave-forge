@@ -39,7 +39,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy hamacher_sum
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      hamacher_sum.m
-## Last-Modified: 12 Nov 2011
+## Last-Modified: 20 Aug 2012
 
 function retval = hamacher_sum (x, y = 0)
   if (nargin == 0 || nargin > 2 ||

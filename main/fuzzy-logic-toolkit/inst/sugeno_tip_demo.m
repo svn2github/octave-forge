@@ -49,7 +49,7 @@
 ##                Dr. Bruce Segee (University of Maine Dept. of ECE).
 ## Directory:     fuzzy-logic-toolkit/inst
 ## Filename:      sugeno_tip_demo.m
-## Last-Modified: 10 Nov 2011
+## Last-Modified: 20 Aug 2012
 
 ## Read the FIS structure from a file.
 fis = readfis ('sugeno_tip_calculator.fis');

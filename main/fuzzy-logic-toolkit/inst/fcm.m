@@ -25,10 +25,12 @@
 ## @deftypefnx {Function File} {[@var{cluster_centers}, @var{soft_partition}, @var{obj_fcn_history}] =} fcm (@var{input_data}, @var{num_clusters}, [@var{m}, @var{max_iterations}, @var{epsilon}, @var{display_intermediate_results}])
 ##
 ## Using the Fuzzy C-Means algorithm, calculate and return the soft partition
-## of a set of unlabeled data points. 
+## of a set of unlabeled data points.
 ##
 ## Also, if @var{display_intermediate_results} is true, display intermediate 
-## results after each iteration.
+## results after each iteration. Note that because the initial cluster
+## prototypes are randomly selected locations in the ranges determined by the
+## input data, the results of this function are nondeterministic.
 ##
 ## The required arguments to fcm are:
 ## @itemize @w
@@ -111,10 +113,10 @@
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy partition clustering fcm
+## Keywords:      fuzzy-logic-toolkit fuzzy partition clustering
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      fcm.m
-## Last-Modified: 26 Aug 2012
+## Last-Modified: 5 Sep 2012
 
 function [cluster_centers, soft_partition, obj_fcn_history] = ...
            fcm (input_data, num_clusters, options = [2.0, 100, 1e-5, 1])
@@ -175,8 +177,8 @@ function [V, Mu, obj_fcn_history] = ...
   fcm_private (X, k, m, max_iterations, epsilon, ...
                display_intermediate_results)
 
-  ## Initialize the prototype and the calculation.
-  V = fcm_init_prototype (X, k);
+  ## Initialize the prototypes and the calculation.
+  V = init_cluster_prototypes (X, k);
   obj_fcn_history = zeros (max_iterations);
   convergence_criterion = epsilon + 1;
   iteration = 0;
@@ -191,18 +193,18 @@ function [V, Mu, obj_fcn_history] = ...
   while (convergence_criterion > epsilon && ...
          ++iteration <= max_iterations)
     V_previous = V;
-    Mu = fcm_update_membership_fcn (V, X, m, k, n, sqr_dist);
+    Mu = update_cluster_membership (V, X, m, k, n, sqr_dist);
     Mu_m = Mu .^ m;
-    V = fcm_update_cluster_centers (Mu_m, X, k);
+    V = update_cluster_prototypes (Mu_m, X, k);
     sqr_dist = square_distance_matrix (X, V);
     obj_fcn_history(iteration) = ...
-      fcm_compute_objective_fcn (Mu_m, sqr_dist);
+      compute_cluster_obj_fcn (Mu_m, sqr_dist);
     if (display_intermediate_results)
       printf ("Iteration count = %d,  Objective fcn = %8.6f\n", ...
                iteration, obj_fcn_history(iteration));
     endif
     convergence_criterion = ...
-      fcm_compute_convergence_criterion (V, V_previous);
+      compute_cluster_convergence (V, V_previous);
   endwhile
 
   ## Remove extraneous entries from the tail of the objective
@@ -219,15 +221,18 @@ endfunction
 
 %!demo
 %! ## This demo:
-%! ##    - classifies a small set of unlabeled data points using the
-%! ##      Fuzzy C-Means algorithm into two fuzzy clusters
+%! ##    - classifies a small set of unlabeled data points using
+%! ##      the Fuzzy C-Means algorithm into two fuzzy clusters
 %! ##    - plots the input points together with the cluster centers
+%! ##    - evaluates the quality of the resulting clusters using
+%! ##      three validity measures: the partition coefficient, the
+%! ##      partition entropy, and the Xie-Beni validity index
 %! ##
 %! ## Note: The input_data is taken from Chapter 13, Example 17 in
 %! ##       Fuzzy Logic: Intelligence, Control and Information, by
 %! ##       J. Yen and R. Langari, Prentice Hall, 1999, page 381
 %! ##       (International Edition). 
-%! 
+%!
 %! ## Use fcm to classify the input_data.
 %! input_data = [2 12; 4 9; 7 13; 11 5; 12 7; 14 4];
 %! number_of_clusters = 2;
@@ -241,14 +246,14 @@ endfunction
 %!         'marker', 'x', 'color', 'b');
 %!   hold on;
 %! endfor
-%! 
+%!
 %! ## Plot the cluster centers as larger red *'s.
 %! for i = 1 : number_of_clusters
 %!   plot (cluster_centers(i, 1), cluster_centers(i, 2), ...
 %!         'LineWidth', 4, 'marker', '*', 'color', 'r');
 %!   hold on;
 %! endfor
-%! 
+%!
 %! ## Make the figure look a little better:
 %! ##    - scale and label the axes
 %! ##    - show gridlines
@@ -258,6 +263,15 @@ endfunction
 %! ylabel ('Feature 2');
 %! grid
 %! hold
+%! 
+%! ## Calculate and print the three validity measures.
+%! printf ("Partition Coefficient: %f\n", ...
+%!         partition_coeff (soft_partition));
+%! printf ("Partition Entropy (with a = 2): %f\n", ...
+%!         partition_entropy (soft_partition, 2));
+%! printf ("Xie-Beni Index: %f\n\n", ...
+%!         xie_beni_index (input_data, cluster_centers, ...
+%!         soft_partition));
 
 ##----------------------------------------------------------------------
 ## FCM Demo #2
@@ -265,19 +279,23 @@ endfunction
 
 %!demo
 %! ## This demo:
-%! ##    - classifies three-dimensional unlabeled data points using the
-%! ##      Fuzzy C-Means algorithm into three fuzzy clusters
+%! ##    - classifies three-dimensional unlabeled data points using
+%! ##      the Fuzzy C-Means algorithm into three fuzzy clusters
 %! ##    - plots the input points together with the cluster centers
+%! ##    - evaluates the quality of the resulting clusters using
+%! ##      three validity measures: the partition coefficient, the
+%! ##      partition entropy, and the Xie-Beni validity index
 %! ##
 %! ## Note: The input_data was selected to form three areas of
 %! ##       different shapes.
 %! 
 %! ## Use fcm to classify the input_data.
-%! input_data = [1 11 5; 1 12 6; 1 13 5; 2 11 7; 2 12 6; 2 13 7; 3 11 6;
-%!               3 12 5; 3 13 7;  1 1 10; 1 3 9; 2 2 11; 3 1 9; 3 3 10;
-%!               3 5 11; 4 4 9; 4 6 8; 5 5 8; 5 7 9; 6 6 10; 9 10 12;
-%!               9 12 13; 9 13 14; 10 9 13; 10 13 12; 11 10 14;
-%!               11 12 13; 12 6 12; 12 7 15; 12 9 15; 14 6 14; 14 8 13];
+%! input_data = [1 11 5; 1 12 6; 1 13 5; 2 11 7; 2 12 6; 2 13 7;
+%!               3 11 6; 3 12 5; 3 13 7; 1 1 10; 1 3 9; 2 2 11;
+%!               3 1 9; 3 3 10; 3 5 11; 4 4 9; 4 6 8; 5 5 8; 5 7 9;
+%!               6 6 10; 9 10 12; 9 12 13; 9 13 14; 10 9 13; 10 13 12;
+%!               11 10 14; 11 12 13; 12 6 12; 12 7 15; 12 9 15;
+%!               14 6 14; 14 8 13];
 %! number_of_clusters = 3;
 %! [cluster_centers, soft_partition, obj_fcn_history] = ...
 %!   fcm (input_data, number_of_clusters, [NaN NaN NaN 0])
@@ -291,8 +309,8 @@ endfunction
 %!   hold on;
 %! endfor
 %! 
-%! ## Plot the cluster centers in two dimensions (using features 1 & 2)
-%! ## as larger red *'s.
+%! ## Plot the cluster centers in two dimensions
+%! ## (using features 1 & 2) as larger red *'s.
 %! for i = 1 : number_of_clusters
 %!   plot (cluster_centers(i, 1), cluster_centers(i, 2), ...
 %!         'LineWidth', 4, 'marker', '*', 'color', 'r');
@@ -309,8 +327,8 @@ endfunction
 %! grid
 %! hold
 %! 
-%! ## Plot the data points in two dimensions (using features 1 & 3)
-%! ## as small blue x's.
+%! ## Plot the data points in two dimensions
+%! ## (using features 1 & 3) as small blue x's.
 %! figure ('NumberTitle', 'off', 'Name', 'FCM Demo 2');
 %! for i = 1 : rows (input_data)
 %!   plot (input_data(i, 1), input_data(i, 3), 'LineWidth', 2, ...
@@ -318,8 +336,8 @@ endfunction
 %!   hold on;
 %! endfor
 %! 
-%! ## Plot the cluster centers in two dimensions (using features 1 & 3)
-%! ## as larger red *'s.
+%! ## Plot the cluster centers in two dimensions
+%! ## (using features 1 & 3) as larger red *'s.
 %! for i = 1 : number_of_clusters
 %!   plot (cluster_centers(i, 1), cluster_centers(i, 3), ...
 %!         'LineWidth', 4, 'marker', '*', 'color', 'r');
@@ -335,3 +353,12 @@ endfunction
 %! ylabel ('Feature 3');
 %! grid
 %! hold
+%! 
+%! ## Calculate and print the three validity measures.
+%! printf ("Partition Coefficient: %f\n", ...
+%!         partition_coeff (soft_partition));
+%! printf ("Partition Entropy (with a = 2): %f\n", ...
+%!         partition_entropy (soft_partition, 2));
+%! printf ("Xie-Beni Index: %f\n\n", ...
+%!         xie_beni_index (input_data, cluster_centers, ...
+%!         soft_partition));

@@ -46,7 +46,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy membership
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      rmmf.m
-## Last-Modified: 16 Jul 2011
+## Last-Modified: 20 Aug 2012
 
 function fis = rmmf (fis, in_or_out, var_index, mf, mf_index)
 

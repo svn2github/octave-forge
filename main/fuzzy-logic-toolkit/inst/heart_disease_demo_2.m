@@ -45,7 +45,7 @@
 ##                Dr. Bruce Segee (University of Maine Dept. of ECE).
 ## Directory:     fuzzy-logic-toolkit/inst
 ## Filename:      heart_disease_demo_2.m
-## Last-Modified: 12 Nov 2011
+## Last-Modified: 20 Aug 2012
 
 ## Read the FIS structure from a file.
 ## (Alternatively, to select heart_disease_risk.fis using the dialog,

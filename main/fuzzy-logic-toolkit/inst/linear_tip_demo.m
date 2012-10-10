@@ -43,7 +43,7 @@
 ##                Dr. Bruce Segee (University of Maine Dept. of ECE).
 ## Directory:     fuzzy-logic-toolkit/inst
 ## Filename:      linear_tip_demo.m
-## Last-Modified: 12 Nov 2011
+## Last-Modified: 20 Aug 2012
 
 ## Read the FIS structure from a file.
 fis = readfis ('linear_tip_calculator.fis');

@@ -38,7 +38,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy einstein_sum
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      einstein_sum.m
-## Last-Modified: 12 Nov 2011
+## Last-Modified: 20 Aug 2012
 
 function retval = einstein_sum (x, y = 0)
   if (nargin == 0 || nargin > 2 ||

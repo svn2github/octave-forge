@@ -29,7 +29,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy private parameter-test
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      are_input_indices.m
-## Last-Modified: 19 May 2011
+## Last-Modified: 20 Aug 2012
 
 function y = are_input_indices (x, fis)
 

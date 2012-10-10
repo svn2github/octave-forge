@@ -39,7 +39,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy private parameter-test
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      is_pos_int.m
-## Last-Modified: 20 May 2011
+## Last-Modified: 20 Aug 2012
 
 function y = is_pos_int (x)
 

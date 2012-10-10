@@ -17,14 +17,14 @@
 ## see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{y} =} is_language (@var{x})
+## @deftypefn {Function File} {@var{y} =} is_builtin_language (@var{x})
 ##
 ## Return 1 if @var{x} is one of the strings representing the
 ## built-in languages, and return 0 otherwise. The comparison is
 ## case-insensitive.
 ##
-## is_language is a private function that localizes the test for 
-## languages handled by showrule.
+## is_builtin_language is a private function that localizes the test 
+## for languages handled by showrule.
 ##
 ## @end deftypefn
 
@@ -32,7 +32,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy private parameter-test
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      is_builtin_language.m
-## Last-Modified: 4 Nov 2011
+## Last-Modified: 3 Sep 2012
 
 function y = is_builtin_language (x)
 

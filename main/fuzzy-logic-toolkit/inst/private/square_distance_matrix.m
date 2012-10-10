@@ -32,7 +32,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy private
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      square_dist_matrix.m
-## Last-Modified: 12 Apr 2012
+## Last-Modified: 20 Aug 2012
 
 function sqr_dist = square_distance_matrix (X, V)
 

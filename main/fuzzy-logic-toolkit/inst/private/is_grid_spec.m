@@ -28,7 +28,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy private parameter-test
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      is_grid_spec.m
-## Last-Modified: 28 Aug 2011
+## Last-Modified: 20 Aug 2012
 
 function y = is_grid_spec (x, fis)
 

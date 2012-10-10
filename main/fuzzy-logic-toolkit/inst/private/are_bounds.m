@@ -32,7 +32,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy private parameter-test
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      are_bounds.m
-## Last-Modified: 19 May 2011
+## Last-Modified: 20 Aug 2012
 
 function y = are_bounds (x)
 

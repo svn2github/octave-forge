@@ -18,8 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{y} =} evalmf_private (@var{x}, @var{param}, @var{mf_type})
-## @deftypefn {Function File} {@var{y} =} evalmf_private (@var{x}, @var{param}, @var{mf_type}, @var{hedge})
-## @deftypefn {Function File} {@var{y} =} evalmf_private (@var{x}, @var{param}, @var{mf_type}, @var{hedge}, @var{not_flag})
+## @deftypefnx {Function File} {@var{y} =} evalmf_private (@var{x}, @var{param}, @var{mf_type}, @var{hedge})
+## @deftypefnx {Function File} {@var{y} =} evalmf_private (@var{x}, @var{param}, @var{mf_type}, @var{hedge}, @var{not_flag})
 ## @deftypefnx {Function File} {@var{y} =} evalmf_private (@var{[x1 x2 ... xn]}, @var{[param1 ... ]}, '<@var{mf_type}>')
 ## @deftypefnx {Function File} {@var{y} =} evalmf_private (@var{[x1 x2 ... xn]}, @var{[param1 ... ]}, '<@var{mf_type}>', @var{hedge})
 ## @deftypefnx {Function File} {@var{y} =} evalmf_private (@var{[x1 x2 ... xn]}, @var{[param1 ... ]}, '<@var{mf_type}>', @var{hedge}, @var{not_flag})
@@ -34,7 +34,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy membership-function evaluate
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      evalmf_private.m
-## Last-Modified: 20 Aug 2012
+## Last-Modified: 3 Sep 2012
 
 function y = evalmf_private (x, params, mf_type, hedge = 0, ...
                              not_flag = false)

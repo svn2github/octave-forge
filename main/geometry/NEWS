@@ -3,58 +3,61 @@ Summary of important user-visible changes for releases of the geometry package
 geometry-1.6.0   Release Date: 2012-xx-xx  Release Manager: Juan Pablo Carbajal
 ===============================================================================
 * Added Functions
-  anglePoints3d.m   angles3d.m   boxes3d.m   geom3d_Contents.m
-  lines3d.m   planes3d.m   points3d.m   polygons3d.m   vectors3d.m
-  graphs_Contents.m   meshes3d_Contents.m   angleSort3d.m   createPlane.m
-  intersectLinePlane.m   normalizePlane.m   planeNormal.m   planePosition.m
-  projPointOnPlane.m   sph2cart2.m   vectorAngle3d.m
-  distancePointLine3d.m
+
+  anglePoints3d   angles3d   boxes3d   geom3d_Contents
+  lines3d   planes3d   points3d   polygons3d   vectors3d
+  graphs_Contents   meshes3d_Contents   angleSort3d   createPlane
+  intersectLinePlane   normalizePlane   planeNormal   planePosition
+  projPointOnPlane   sph2cart2   vectorAngle3d   distancePointLine3d
+  cart2sph2d   createRotationOx   createRotationOy   createRotationOz
+  createTranslation3d   drawAxis3d   drawCylinder   drawSphere
+  polygonArea3d   transformPoint3d
 
 * Bug Fixes:
-  - drawArrow.m was not working due to porting errors.
+  - drawArrow  was not working due to porting errors.
 
 ===============================================================================
 geometry-1.5.0   Release Date: 2012-06-05  Release Manager: Juan Pablo Carbajal
 ===============================================================================
 
 * Added functions:
- - cov2ellipse.m & ellipse2cov: transform between ellipses and covariances matrices.
+ - cov2ellipse  & ellipse2cov: transform between ellipses and covariances matrices.
 
- - beltproblem.m : Finds the four lines tangent to two circles with given centers and
-     radii. This is the solution to  the belt problem in 2D.
+ - beltproblem  : Finds the four lines tangent to two circles with given centers and
+    radii. This is the solution to  the belt problem in 2D.
 
- - curveval.m: Evaluates a polynomial curve defined as a 2-by-N matrix.
+ - curveval : Evaluates a polynomial curve defined as a 2-by-N matrix.
 
- - curve2polyline.m: Converts a polynomial curve into a polyline by the adaptive
-                     sampling method.
+ - curve2polyline : Converts a polynomial curve into a polyline by the adaptive
+                sampling method.
 
- - simplifypolyline.m:  Ramer-Douglas-Peucker algorithm to simplify polylines.
+ - simplifypolyline :  Ramer-Douglas-Peucker algorithm to simplify polylines.
 
- - parametrize.m: Estimate a parametrization of a polygon/line based on the distance
-                 between the points.
+ - parametrize : Estimate a parametrization of a polygon/line based on the distance
+             between the points.
 
- - curvature.m: Estimation of the curvature of a polygon/line based on polynomial
-                approximation.
+ - curvature : Estimation of the curvature of a polygon/line based on polynomial
+            approximation.
 
- - reversePolygon.m and reversePolyline.m: reverse the orders of the points in
-                                           of polygon/line.
+ - reversePolygon  and reversePolyline : reverse the orders of the points in
+                                 of polygon/line.
 
- - supportFunction.m: Compute support function of a polygon.
+ - supportFunction : Compute support function of a polygon.
 
- - distancePointPolygon.m, distancePointPolyline.m, distancePolygons.m ,
-   expandPolygon.m, medialAxisConvex.m, polygonLoops.m, polygonSelfIntersections.m
-   polylineSelfIntersections.m, splitPolygons.m
+ - distancePointPolygon , distancePointPolyline , distancePolygons  ,
+   expandPolygon , medialAxisConvex , polygonLoops , polygonSelfIntersections
+   polylineSelfIntersections , splitPolygons
 
- - close_path.m : given a set of points in the plane calculate a piecewise linear
-                  simple path that passes through all points.
+ - close_path  : given a set of points in the plane calculate a piecewise linear
+              simple path that passes through all points.
 
 * Changed functions:
- - distancePointEdge.m: Now the function computes the distance between all points
-                        and all edges. A third optional argument provides
-                        backward compatibility.
+ - distancePointEdge : Now the function computes the distance between all points
+                  and all edges. A third optional argument provides
+                  backward compatibility.
 
 * Solved bugs:
- - simplifypolygon.m returned empty polygons when points are repeated, i.e when
+ - simplifypolygon  returned empty polygons when points are repeated, i.e when
   the polygon is not correctly formed.
  - Removed installation warnings.
 
@@ -63,19 +66,19 @@ geometry-1.4.1   Release Date: 2012-03-24  Release Manager: Juan Pablo Carbajal
 ===============================================================================
 
 * Renamed functions
- - Contents.m renamed to geom2d_Contents to avoid clashes.
+ - Contents  renamed to geom2d_Contents to avoid clashes.
 
 * Deprecated functions
  - svgload, svgnormalize, svgpath2polygon: Use the methods in class svg.
 
 * Bug fixes
- - @svg/path2polygon.m
+ - @svg/path2polygon
  - Fix addpath/rmpath installation warnings
  - Fix octclip/src/Makefile
- - Fix shapecentriod.m for piece-wise polynomial shapes.
+ - Fix shapecentriod  for piece-wise polynomial shapes.
 
 * Known issues
- - simplifypolygon.m returns empty polygons when points are repeated, i.e when
+ - simplifypolygon  returns empty polygons when points are repeated, i.e when
   the polygon is not correctly formed.
 
 
@@ -101,11 +104,11 @@ geometry-1.2.2   Release Date: 2011-11-04   Release Manager: Juan Pablo Carbajal
 * Adding files to manipulate and convert 2D shapes defined with smooth
   polynomials.
 
- shape2polygon.m
- shapearea.m
- shapecentroid.m
- shapeplot.m
- shapetransform.m
+ shape2polygon
+ shapearea
+ shapecentroid
+ shapeplot
+ shapetransform
 
 * Inverted the order in the NEWS file. New entries are on top.
 
@@ -120,145 +123,145 @@ geometry-1.2.0   Release Date: 2011-10-21   Release Manager: Juan Pablo Carbajal
 ===============================================================================
 
 * All geom2d added
- createCircle.m
- createDirectedCircle.m
- createEdge.m
- medianLine.m
- Contents.m
- bisector.m
- cartesianLine.m
- drawArrow.m
- edges2d.m
- lines2d.m
- orthogonalLine.m
- parallelLine.m
- projPointOnLine.m
- drawCenteredEdge.m
- drawCircle.m
- drawCircleArc.m
- drawEllipse.m
- drawEllipseArc.m
- drawLabels.m
- drawOrientedBox.m
- drawParabola.m
- drawRect.m
- drawShape.m
- circles2d.m
- ellipses2d.m
- createVector.m
- inertiaEllipse.m
+ createCircle
+ createDirectedCircle
+ createEdge
+ medianLine
+ Contents
+ bisector
+ cartesianLine
+ drawArrow
+ edges2d
+ lines2d
+ orthogonalLine
+ parallelLine
+ projPointOnLine
+ drawCenteredEdge
+ drawCircle
+ drawCircleArc
+ drawEllipse
+ drawEllipseArc
+ drawLabels
+ drawOrientedBox
+ drawParabola
+ drawRect
+ drawShape
+ circles2d
+ ellipses2d
+ createVector
+ inertiaEllipse
  changelog.txt
  readme.txt
- hexagonalGrid.m
- squareGrid.m
- triangleGrid.m
- intersectCircles.m
- intersectEdges.m
- intersectLineCircle.m
- isLeftOriented.m
- isPointInCircle.m
- isPointInEllipse.m
- isPointOnCircle.m
- isPointOnLine.m
- edgeLength.m
- edgePosition.m
- edgeToLine.m
- circleArcAsCurve.m
- circleAsPolygon.m
- crackPattern.m
- crackPattern2.m
- distancePointEdge.m
- distancePointLine.m
- ellipseAsPolygon.m
- enclosingCircle.m
- radicalAxis.m
- reverseEdge.m
- reverseLine.m
+ hexagonalGrid
+ squareGrid
+ triangleGrid
+ intersectCircles
+ intersectEdges
+ intersectLineCircle
+ isLeftOriented
+ isPointInCircle
+ isPointInEllipse
+ isPointOnCircle
+ isPointOnLine
+ edgeLength
+ edgePosition
+ edgeToLine
+ circleArcAsCurve
+ circleAsPolygon
+ crackPattern
+ crackPattern2
+ distancePointEdge
+ distancePointLine
+ ellipseAsPolygon
+ enclosingCircle
+ radicalAxis
+ reverseEdge
+ reverseLine
 
 ===============================================================================
 geometry-1.1.3   Release Date: 2011-10-13   Release Manager: Juan Pablo Carbajal
 ===============================================================================
 
 * Continue to add geom2d from matGeom (transforms and points2d)
- createBasisTransform.m
- createHomothecy.m
- createLineReflection.m
- createRotation.m
- createScaling.m
- createTranslation.m
- transformPoint.m
- transforms2d.m
- fitAffineTransform2d.m
- transformEdge.m
- transformLine.m
- centroid.m
- distancePoints.m
- midPoint.m
- polarPoint.m
- drawPoint.m
- isCounterClockwise.m
- minDistancePoints.m
- pointOnLine.m
- points2d.m
- intersectLineEdge.m
- isPointOnEdge.m
+ createBasisTransform
+ createHomothecy
+ createLineReflection
+ createRotation
+ createScaling
+ createTranslation
+ transformPoint
+ transforms2d
+ fitAffineTransform2d
+ transformEdge
+ transformLine
+ centroid
+ distancePoints
+ midPoint
+ polarPoint
+ drawPoint
+ isCounterClockwise
+ minDistancePoints
+ pointOnLine
+ points2d
+ intersectLineEdge
+ isPointOnEdge
 
 ===============================================================================
 geometry-1.1.2   Release Date: 2011-10-09   Release Manager: Juan Pablo Carbajal
 ===============================================================================
 
 * Continue to add geom2d from matGeom (rays and vectors)
- createRay.m
- drawEdge.m
- drawRay.m
- isParallel.m
- isPerpendicular.m
- isPointOnRay.m
- normalizeVector.m
- rays2d.m
- rotateVector.m
- transformVector.m
- vectorNorm.m
- vectors2d.m
+ createRay
+ drawEdge
+ drawRay
+ isParallel
+ isPerpendicular
+ isPointOnRay
+ normalizeVector
+ rays2d
+ rotateVector
+ transformVector
+ vectorNorm
+ vectors2d
 
 ===============================================================================
 geometry-1.1.1   Release Date: 2011-10-06   Release Manager: Juan Pablo Carbajal
 ===============================================================================
 
 * Continue to add geom2d from matGeom (boxes and clips)
- cbezier2poly.m
- boxes2d.m
- clipEdge.m
- clipLine.m
- clipPoints.m
- drawBezierCurve.m
- drawBox.m
- clipRay.m
- intersectBoxes.m
- intersectLines.m
- linePosition.m
- mergeBoxes.m
- randomPointInBox.m
- drawLine.m
+ cbezier2poly
+ boxes2d
+ clipEdge
+ clipLine
+ clipPoints
+ drawBezierCurve
+ drawBox
+ clipRay
+ intersectBoxes
+ intersectLines
+ linePosition
+ mergeBoxes
+ randomPointInBox
+ drawLine
 
 ===============================================================================
 geometry-1.1.0   Release Date: 2011-10-04   Release Manager: Juan Pablo Carbajal
 ===============================================================================
 
 * Starting to add geom2d from matGeom
- angle2Points.m
- angle3Points.m
- angleAbsDiff.m
- angleDiff.m
- angles2d.m
- angleSort.m
- createLine.m
- deg2rad.m
- edgeAngle.m
- lineAngle.m
- normalizeAngle.m
- rad2deg.m
- vectorAngle.m
+ angle2Points
+ angle3Points
+ angleAbsDiff
+ angleDiff
+ angles2d
+ angleSort
+ createLine
+ deg2rad
+ edgeAngle
+ lineAngle
+ normalizeAngle
+ rad2deg
+ vectorAngle
 
 ===============================================================================
 geometry-1.0.1   Release Date: 2011-09-27   Release Manager: Juan Pablo Carbajal

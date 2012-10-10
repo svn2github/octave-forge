@@ -180,9 +180,26 @@ geometry >> Computational Geometry
  planeNormal
  planePosition
  projPointOnPlane
+3D Spheres
+ drawSphere
+3D Cubes
+3D Boxes
+3D Cylinders
+ drawCylinder
+3D Polygons
+ polygonArea3d
+3D Transformations
+ createRotationOx
+ createRotationOy
+ createRotationOz
+ createTranslation3d
+ transformPoint3d
 3D Others
+ cart2sph2d
+ drawAxis3d
  sph2cart2
  vectorAngle3d
+
 Geometric graphs descriptive
  graphs_Contents
 Geometric graphs creation

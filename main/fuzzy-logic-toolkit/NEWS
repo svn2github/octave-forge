@@ -1,3 +1,10 @@
+Summary of important user-visible changes for fuzzy-logic-toolkit 0.4.2:
+------------------------------------------------------------------------
+
+ ** The demos embedded in partition_coeff.m, partition_entropy.m,
+    and xie_beni_index.m were merged with the embedded demos in
+    fcm.m and gustafson_kessel.m.
+
 Summary of important user-visible changes for fuzzy-logic-toolkit 0.4.1:
 ------------------------------------------------------------------------
 

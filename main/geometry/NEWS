@@ -2,7 +2,7 @@ Summary of important user-visible changes for releases of the geometry package
 ===============================================================================
 geometry-1.6.0   Release Date: 2012-xx-xx  Release Manager: Juan Pablo Carbajal
 ===============================================================================
-* Added Functions
+** Added Functions
 
   anglePoints3d   angles3d   boxes3d   geom3d_Contents
   lines3d   planes3d   points3d   polygons3d   vectors3d
@@ -11,9 +11,10 @@ geometry-1.6.0   Release Date: 2012-xx-xx  Release Manager: Juan Pablo Carbajal
   projPointOnPlane   sph2cart2   vectorAngle3d   distancePointLine3d
   cart2sph2d   createRotationOx   createRotationOy   createRotationOz
   createTranslation3d   drawAxis3d   drawCylinder   drawSphere
-  polygonArea3d   transformPoint3d
+  polygonArea3d   transformPoint3d   drawBox3d   drawEdge3d
 
-* Bug Fixes:
+
+** Bug Fixes:
   - drawArrow  was not working due to porting errors.
 
 ===============================================================================

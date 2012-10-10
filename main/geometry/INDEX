@@ -173,6 +173,8 @@ geometry >> Computational Geometry
  angleSort3d
 3D Lines
  distancePointLine3d
+3D Edges
+ drawEdge3d
 3D Planes
  createPlane
  intersectLinePlane
@@ -184,6 +186,7 @@ geometry >> Computational Geometry
  drawSphere
 3D Cubes
 3D Boxes
+ drawBox3d
 3D Cylinders
  drawCylinder
 3D Polygons

@@ -1,23 +1,23 @@
-function test_suite = testCart2sph2(varargin) %#ok<STOUT>
-%TESTCART2SPH2  One-line description here, please.
-%
-%   output = testCart2sph2(input)
-%
-%   Example
-%   testCart2sph2
-%
-%   See also
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2011-06-29,    using Matlab 7.9.0.529 (R2009b)
-% Copyright 2011 INRA - Cepia Software Platform.
+function test_suite = testCart2sph2(varargin) ##ok<STOUT>
+#TESTCART2SPH2  One-line description here, please.
+#
+#   output = testCart2sph2(input)
+#
+#   Example
+#   testCart2sph2
+#
+#   See also
+#
+#
+# ------
+# Author: David Legland
+# e-mail: david.legland@grignon.inra.fr
+# Created: 2011-06-29,    using Matlab 7.9.0.529 (R2009b)
+# Copyright 2011 INRA - Cepia Software Platform.
 
 initTestSuite;
 
-function testNorthPole %#ok<*DEFNU>
+function testNorthPole ##ok<*DEFNU>
 
 [theta phi rho] = cart2sph2(0, 0, 1);
 assertElementsAlmostEqual(0, theta);

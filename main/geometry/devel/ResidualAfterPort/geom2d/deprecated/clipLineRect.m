@@ -1,57 +1,57 @@
-%% Copyright (c) 2011, INRA
-%% 2007-2011, David Legland <david.legland@grignon.inra.fr>
-%% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
-%%
-%% All rights reserved.
-%% (simplified BSD License)
-%%
-%% Redistribution and use in source and binary forms, with or without
-%% modification, are permitted provided that the following conditions are met:
-%%
-%% 1. Redistributions of source code must retain the above copyright notice, this
-%%    list of conditions and the following disclaimer.
-%%     
-%% 2. Redistributions in binary form must reproduce the above copyright notice, 
-%%    this list of conditions and the following disclaimer in the documentation
-%%    and/or other materials provided with the distribution.
-%%
-%% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-%% AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-%% IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-%% ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
-%% LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
-%% CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-%% SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
-%% INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-%% CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-%% ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-%% POSSIBILITY OF SUCH DAMAGE.
-%%
-%% The views and conclusions contained in the software and documentation are
-%% those of the authors and should not be interpreted as representing official
-%% policies, either expressed or implied, of copyright holder.
+## Copyright (c) 2011, INRA
+## 2007-2011, David Legland <david.legland@grignon.inra.fr>
+## 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
+##
+## All rights reserved.
+## (simplified BSD License)
+##
+## Redistribution and use in source and binary forms, with or without
+## modification, are permitted provided that the following conditions are met:
+##
+## 1. Redistributions of source code must retain the above copyright notice, this
+##    list of conditions and the following disclaimer.
+##     
+## 2. Redistributions in binary form must reproduce the above copyright notice, 
+##    this list of conditions and the following disclaimer in the documentation
+##    and/or other materials provided with the distribution.
+##
+## THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+## AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+## IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+## ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+## LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+## CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+## SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
+## INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+## CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+## POSSIBILITY OF SUCH DAMAGE.
+##
+## The views and conclusions contained in the software and documentation are
+## those of the authors and should not be interpreted as representing official
+## policies, either expressed or implied, of copyright holder.
 
-%% -*- texinfo -*-
-%% @deftypefn {Function File} {@var{edge} = } clipLineRect (@var{line}, @var{rect})
-%%
-%% @end deftypefn
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{edge} = } clipLineRect (@var{line}, @var{rect})
+##
+## @end deftypefn
 function edge = clipLineRect(line, rect)
-%CLIPLINERECT clip a line with a polygon
-%
-%   EDGE = clipLineRect(LINE, RECT);
-%   LINE: line in the form [x0 y0 dx dy]
-%   RECT: a rectangle in the form [xr yr wr hr] (xr and yr: coordinate of
-%   first point, wr and hr are width and height of rectangle)
-%   
-%   Deprecated: use function clipLine instead
-%
-% ---------
-% author : David Legland 
-% created the 24/07/2006.
-% Copyright 2010 INRA - Cepia Software Platform.
-%
+#CLIPLINERECT clip a line with a polygon
+#
+#   EDGE = clipLineRect(LINE, RECT);
+#   LINE: line in the form [x0 y0 dx dy]
+#   RECT: a rectangle in the form [xr yr wr hr] (xr and yr: coordinate of
+#   first point, wr and hr are width and height of rectangle)
+#   
+#   Deprecated: use function clipLine instead
+#
+# ---------
+# author : David Legland 
+# created the 24/07/2006.
+# Copyright 2010 INRA - Cepia Software Platform.
+#
 
-%   HISTORY
+#   HISTORY
 
 if size(line, 1)==1
     line = repmat(line, size(rect, 1), 1);
@@ -65,14 +65,14 @@ edge = zeros(size(line, 1), 4);
 for i=1:size(line, 1)
     x = rect(i, 1); y = rect(i, 2); w = rect(i, 3); h = rect(i, 4);
     
-	% intersection with axis : x=xmin
+	# intersection with axis : x=xmin
 	px1 = intersectLineEdge(line(i,:), [x y x+w y]);
 	px2 = intersectLineEdge(line(i,:), [x+w y x+w y+h]);
 	py1 = intersectLineEdge(line(i,:), [x+w y+h x y+h]);
 	py2 = intersectLineEdge(line(i,:), [x y+h x y]);
 	
-	% sort points along the x coordinate, and  draw a line between
-	% the two in the middle
+	# sort points along the x coordinate, and  draw a line between
+	# the two in the middle
 	points = sortrows([px1 ; px2 ; py1 ; py2], 1);
 	if points(2,1)>=x-1e-14 && points(2,1)<=x+w+1e-14
         if isfinite(points(3,1))
@@ -81,7 +81,7 @@ for i=1:size(line, 1)
             edge(i, 1:4) = [points(1,:) points(2,:)];
         end 
     else
-        % line outside the rectangle
+        # line outside the rectangle
         edge(i, 1:4) = [0 0 0 0];
 	end
 end

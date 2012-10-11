@@ -1,23 +1,23 @@
-function test_suite = testVectorAngle3d(varargin) %#ok<STOUT>
-%TESTVECTORANGLE3D  One-line description here, please.
-%
-%   output = testVectorAngle3d(input)
-%
-%   Example
-%   testVectorAngle3d
-%
-%   See also
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2010-11-16,    using Matlab 7.9.0.529 (R2009b)
-% Copyright 2010 INRA - Cepia Software Platform.
+function test_suite = testVectorAngle3d(varargin) ##ok<STOUT>
+#TESTVECTORANGLE3D  One-line description here, please.
+#
+#   output = testVectorAngle3d(input)
+#
+#   Example
+#   testVectorAngle3d
+#
+#   See also
+#
+#
+# ------
+# Author: David Legland
+# e-mail: david.legland@grignon.inra.fr
+# Created: 2010-11-16,    using Matlab 7.9.0.529 (R2009b)
+# Copyright 2010 INRA - Cepia Software Platform.
 
 initTestSuite;
 
-function testOrthogonalUnitVectors %#ok<*DEFNU>
+function testOrthogonalUnitVectors ##ok<*DEFNU>
 
 v1 = [1 0 0];
 v2 = [0 1 0];
@@ -42,7 +42,7 @@ assertEqual(exp, angle2);
 angle3 = vectorAngle3d(v2, -v3);
 assertEqual(exp, angle3);
 
-function testOrthogonalVectors %#ok<*DEFNU>
+function testOrthogonalVectors ##ok<*DEFNU>
 
 v1 = [3 0 0];
 v2 = [0 4 0];

@@ -1,22 +1,22 @@
-function test_suite = testIsPerpendicular3d(varargin) %#ok<STOUT>
-%Check orthogonality 2 vectors
-%   output = testIsPerpendicular3d(input)
-%
-%   Example
-%   testIsPerpendicular3d
-%
-%   See also
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2009-06-19,    using Matlab 7.7.0.471 (R2008b)
-% Copyright 2009 INRA - Cepia Software Platform.
+function test_suite = testIsPerpendicular3d(varargin) ##ok<STOUT>
+#Check orthogonality 2 vectors
+#   output = testIsPerpendicular3d(input)
+#
+#   Example
+#   testIsPerpendicular3d
+#
+#   See also
+#
+#
+# ------
+# Author: David Legland
+# e-mail: david.legland@grignon.inra.fr
+# Created: 2009-06-19,    using Matlab 7.7.0.471 (R2008b)
+# Copyright 2009 INRA - Cepia Software Platform.
 
 initTestSuite;
 
-function testSingle %#ok<*DEFNU>
+function testSingle ##ok<*DEFNU>
 v1  = [10 0 0];
 v2  = [0 20 0];
 v3  = [0 0 30];

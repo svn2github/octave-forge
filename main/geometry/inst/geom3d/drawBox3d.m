@@ -27,8 +27,8 @@
 ## @deftypefn {Function File} drawBox3d (@var{box})
 ## @deftypefnx {Function File} drawBox3d (@dots{},@var{opt})
 ## Draw a 3D box defined by coordinate extents
-##   
-##   Draw a box defined by its coordinate extents: 
+##
+##   Draw a box defined by its coordinate extents:
 ##   BOX = [XMIN XMAX YMIN YMAX ZMIN ZMAX].
 ##   The function draws only the outline edges of the box.
 ##   Extra options @var{opt} are passed to the function @code{drawEdges3d}.
@@ -67,7 +67,7 @@ function drawBox3d(box, varargin)
       drawEdge3d([xmin(i) ymin(i) zmin(i)     xmin(i) ymax(i) zmin(i)], varargin{:});
       drawEdge3d([xmax(i) ymin(i) zmin(i)     xmax(i) ymax(i) zmin(i)], varargin{:});
       drawEdge3d([xmin(i) ymax(i) zmin(i)     xmax(i) ymax(i) zmin(i)], varargin{:});
-   
+
       # front face (y=ymin)
       drawEdge3d([xmin(i) ymin(i) zmin(i)     xmin(i) ymin(i) zmax(i)], varargin{:});
       drawEdge3d([xmax(i) ymin(i) zmin(i)     xmax(i) ymin(i) zmax(i)], varargin{:});
@@ -87,6 +87,8 @@ function drawBox3d(box, varargin)
 endfunction
 
 %!demo
+%!  close all
+%!  graphics_toolkit("fltk")
 %!  # Draw bounding box of a cubeoctehedron
 %!  [v e f] = createCubeOctahedron;
 %!  box3d = boundingBox3d(v);

@@ -1,19 +1,19 @@
 function test_suite = testIntersectBoxes3d(varargin)
-%TESTINTERSECTBOXES3D  One-line description here, please.
-%
-%   output = testIntersectBoxes3d(input)
-%
-%   Example
-%   testIntersectBoxes3d
-%
-%   See also
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2010-07-26,    using Matlab 7.9.0.529 (R2009b)
-% Copyright 2010 INRA - Cepia Software Platform.
+#TESTINTERSECTBOXES3D  One-line description here, please.
+#
+#   output = testIntersectBoxes3d(input)
+#
+#   Example
+#   testIntersectBoxes3d
+#
+#   See also
+#
+#
+# ------
+# Author: David Legland
+# e-mail: david.legland@grignon.inra.fr
+# Created: 2010-07-26,    using Matlab 7.9.0.529 (R2009b)
+# Copyright 2010 INRA - Cepia Software Platform.
 
 
 initTestSuite;

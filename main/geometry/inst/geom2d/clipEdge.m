@@ -1,75 +1,67 @@
-%% Copyright (c) 2011, INRA
-%% 2010-2011, David Legland <david.legland@grignon.inra.fr>
-%% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
-%%
-%% All rights reserved.
-%% (simplified BSD License)
-%%
-%% Redistribution and use in source and binary forms, with or without
-%% modification, are permitted provided that the following conditions are met:
-%%
-%% 1. Redistributions of source code must retain the above copyright notice, this
-%%    list of conditions and the following disclaimer.
-%%     
-%% 2. Redistributions in binary form must reproduce the above copyright notice, 
-%%    this list of conditions and the following disclaimer in the documentation
-%%    and/or other materials provided with the distribution.
-%%
-%% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-%% AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-%% IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-%% ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
-%% LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
-%% CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-%% SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
-%% INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-%% CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-%% ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-%% POSSIBILITY OF SUCH DAMAGE.
-%%
-%% The views and conclusions contained in the software and documentation are
-%% those of the authors and should not be interpreted as representing official
-%% policies, either expressed or implied, of copyright holder.
+## Copyright (C) 2004-2011 David Legland <david.legland@grignon.inra.fr>
+## Copyright (C) 2004-2011 INRA - CEPIA Nantes - MIAJ (Jouy-en-Josas)
+## Copyright (C) 2012 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
+## All rights reserved.
+## 
+## Redistribution and use in source and binary forms, with or without
+## modification, are permitted provided that the following conditions are met:
+## 
+##     1 Redistributions of source code must retain the above copyright notice,
+##       this list of conditions and the following disclaimer.
+##     2 Redistributions in binary form must reproduce the above copyright
+##       notice, this list of conditions and the following disclaimer in the
+##       documentation and/or other materials provided with the distribution.
+## 
+## THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ''AS IS''
+## AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+## IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+## ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR
+## ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+## DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+## SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+## CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+## OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+## OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-%% -*- texinfo -*-
-%% @deftypefn {Function File} {@var{edge2} =} clipEdge (@var{edge}, @var{box})
-%% Clip an edge with a rectangular box.
-%% 
-%%   @var{edge}: [x1 y1 x2 y2],
-%%   @var{box} : [xmin xmax ; ymin ymax] or [xmin xmax ymin ymax];
-%%   return :
-%%   @var{edge2} = [xc1 yc1 xc2 yc2];
-%%
-%%   If clipping is null, return [0 0 0 0];
-%%
-%%   if @var{edge} is a [nx4] array, return an [nx4] array, corresponding to each
-%%   clipped edge.
-%%
-%% @seealso{edges2d, boxes2d, clipLine}
-%% @end deftypefn
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{edge2} =} clipEdge (@var{edge}, @var{box})
+## Clip an edge with a rectangular box.
+## 
+##   @var{edge}: [x1 y1 x2 y2],
+##   @var{box} : [xmin xmax ; ymin ymax] or [xmin xmax ymin ymax];
+##   return :
+##   @var{edge2} = [xc1 yc1 xc2 yc2];
+##
+##   If clipping is null, return [0 0 0 0];
+##
+##   if @var{edge} is a [nx4] array, return an [nx4] array, corresponding to each
+##   clipped edge.
+##
+## @seealso{edges2d, boxes2d, clipLine}
+## @end deftypefn
 
 function edge2 = clipEdge(edge, bb)
 
-  % process data input
+  # process data input
   if size(bb, 1)==2
       bb = bb';
   end
 
-  % get limits of window
+  # get limits of window
   xmin = bb(1);
   xmax = bb(2);
   ymin = bb(3);
   ymax = bb(4);
 
 
-  % convert window limits into lines
+  # convert window limits into lines
   lineX0 = [xmin ymin xmax-xmin 0];
   lineX1 = [xmin ymax xmax-xmin 0];
   lineY0 = [xmin ymin 0 ymax-ymin];
   lineY1 = [xmax ymin 0 ymax-ymin];
 
 
-  % compute outcodes of each vertex
+  # compute outcodes of each vertex
   p11 = edge(:,1)<xmin; p21 = edge(:,3)<xmin;
   p12 = edge(:,1)>xmax; p22 = edge(:,3)>xmax;
   p13 = edge(:,2)<ymin; p23 = edge(:,4)<ymin;
@@ -77,14 +69,14 @@ function edge2 = clipEdge(edge, bb)
   out1 = [p11 p12 p13 p14];
   out2 = [p21 p22 p23 p24];
 
-  % detect edges totally inside window -> no clip.
+  # detect edges totally inside window -> no clip.
   inside = sum(out1 | out2, 2)==0;
 
-  % detect edges totally outside window
+  # detect edges totally outside window
   outside = sum(out1 & out2, 2)>0;
 
-  % select edges not totally outside, and process separately edges totally
-  % inside window
+  # select edges not totally outside, and process separately edges totally
+  # inside window
   ind = find(~(inside | outside));
 
 
@@ -93,47 +85,47 @@ function edge2 = clipEdge(edge, bb)
 
 
   for i=1:length(ind)
-      % current edge
+      # current edge
       iedge = edge(ind(i), :);
           
-      % compute intersection points with each line of bounding window
+      # compute intersection points with each line of bounding window
       px0 = intersectLineEdge(lineX0, iedge);
       px1 = intersectLineEdge(lineX1, iedge);
       py0 = intersectLineEdge(lineY0, iedge);
       py1 = intersectLineEdge(lineY1, iedge);
            
-      % create array of points
+      # create array of points
       points  = [px0; px1; py0; py1; iedge(1:2); iedge(3:4)];
       
-      % remove infinite points (edges parallel to box edges)
+      # remove infinite points (edges parallel to box edges)
 	  points  = points(all(isfinite(points), 2), :);
       
-      % sort points by x then y
+      # sort points by x then y
       points = sortrows(points);
       
-      % get center positions between consecutive points
+      # get center positions between consecutive points
       centers = (points(2:end,:) + points(1:end-1,:))/2;
       
-      % find the centers (if any) inside window
+      # find the centers (if any) inside window
       inside = find(  centers(:,1)>=xmin & centers(:,2)>=ymin & ...
                       centers(:,1)<=xmax & centers(:,2)<=ymax);
 
-      % if multiple segments are inside box, which can happen due to finite
-      % resolution, only take the longest segment
+      # if multiple segments are inside box, which can happen due to finite
+      # resolution, only take the longest segment
       if length(inside)>1
-          % compute delta vectors of the segments
+          # compute delta vectors of the segments
           dv = points(inside+1,:) - points(inside,:); 
-          % compute lengths of segments
+          # compute lengths of segments
           len = hypot(dv(:,1), dv(:,2));
-          % find index of longest segment
-          [a, I] = max(len); %#ok<ASGLU>
+          # find index of longest segment
+          [a, I] = max(len); ##ok<ASGLU>
           inside = inside(I);
       end
       
-      % if one of the center points is inside box, then the according edge
-      % segment is indide box
+      # if one of the center points is inside box, then the according edge
+      # segment is indide box
       if length(inside)==1
-           % restore same direction of edge
+           # restore same direction of edge
           if iedge(1)>iedge(3) || (iedge(1)==iedge(3) && iedge(2)>iedge(4))
               edge2(i, :) = [points(inside+1,:) points(inside,:)];
           else
@@ -141,7 +133,7 @@ function edge2 = clipEdge(edge, bb)
           end
       end
       
-  end % end of loop of edges
+  end # end of loop of edges
 endfunction
 
 %!demo

@@ -1,100 +1,92 @@
-%% Copyright (c) 2011, INRA
-%% 2003-2011, David Legland <david.legland@grignon.inra.fr>
-%% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
-%%
-%% All rights reserved.
-%% (simplified BSD License)
-%%
-%% Redistribution and use in source and binary forms, with or without
-%% modification, are permitted provided that the following conditions are met:
-%%
-%% 1. Redistributions of source code must retain the above copyright notice, this
-%%    list of conditions and the following disclaimer.
-%%     
-%% 2. Redistributions in binary form must reproduce the above copyright notice, 
-%%    this list of conditions and the following disclaimer in the documentation
-%%    and/or other materials provided with the distribution.
-%%
-%% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-%% AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-%% IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-%% ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
-%% LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
-%% CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-%% SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
-%% INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-%% CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-%% ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-%% POSSIBILITY OF SUCH DAMAGE.
-%%
-%% The views and conclusions contained in the software and documentation are
-%% those of the authors and should not be interpreted as representing official
-%% policies, either expressed or implied, of copyright holder.
+## Copyright (C) 2004-2011 David Legland <david.legland@grignon.inra.fr>
+## Copyright (C) 2004-2011 INRA - CEPIA Nantes - MIAJ (Jouy-en-Josas)
+## Copyright (C) 2012 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
+## All rights reserved.
+## 
+## Redistribution and use in source and binary forms, with or without
+## modification, are permitted provided that the following conditions are met:
+## 
+##     1 Redistributions of source code must retain the above copyright notice,
+##       this list of conditions and the following disclaimer.
+##     2 Redistributions in binary form must reproduce the above copyright
+##       notice, this list of conditions and the following disclaimer in the
+##       documentation and/or other materials provided with the distribution.
+## 
+## THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ''AS IS''
+## AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+## IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+## ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR
+## ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+## DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+## SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+## CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+## OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+## OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-%% -*- texinfo -*-
-%% @deftypefn {Function File} {@var{b} = } isPointOnEdge (@var{point}, @var{edge})
-%% @deftypefnx {Function File} {@var{b} = } isPointOnEdge (@var{point}, @var{edge}, @var{tol})
-%% @deftypefnx {Function File} {@var{b} = } isPointOnEdge (@var{point}, @var{edgearray})
-%% @deftypefnx {Function File} {@var{b} = } isPointOnEdge (@var{pointarray}, @var{edgearray})
-%% Test if a point belongs to an edge.
-%
-%   with @var{point} being [xp yp], and @var{edge} being [x1 y1 x2 y2], returns TRUE if
-%   the point is located on the edge, and FALSE otherwise.
-%
-%   Specify an optilonal tolerance value @var{tol}. The tolerance is given as a
-%   fraction of the norm of the edge direction vector. Default is 1e-14. 
-%
-%   When one of the inputs has several rows, return the result of the test
-%   for each element of the array tested against the single parameter.
-%
-%   When both @var{pointarray} and @var{edgearray} have the same number of rows,
-%   returns a column vector with the same number of rows.
-%   When the number of rows are different and both greater than 1, returns
-%   a Np-by-Ne matrix of booleans, containing the result for each couple of
-%   point and edge.
-%
-%   @seealso{edges2d, points2d, isPointOnLine}
-%% @end deftypefn
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{b} = } isPointOnEdge (@var{point}, @var{edge})
+## @deftypefnx {Function File} {@var{b} = } isPointOnEdge (@var{point}, @var{edge}, @var{tol})
+## @deftypefnx {Function File} {@var{b} = } isPointOnEdge (@var{point}, @var{edgearray})
+## @deftypefnx {Function File} {@var{b} = } isPointOnEdge (@var{pointarray}, @var{edgearray})
+## Test if a point belongs to an edge.
+#
+#   with @var{point} being [xp yp], and @var{edge} being [x1 y1 x2 y2], returns TRUE if
+#   the point is located on the edge, and FALSE otherwise.
+#
+#   Specify an optilonal tolerance value @var{tol}. The tolerance is given as a
+#   fraction of the norm of the edge direction vector. Default is 1e-14. 
+#
+#   When one of the inputs has several rows, return the result of the test
+#   for each element of the array tested against the single parameter.
+#
+#   When both @var{pointarray} and @var{edgearray} have the same number of rows,
+#   returns a column vector with the same number of rows.
+#   When the number of rows are different and both greater than 1, returns
+#   a Np-by-Ne matrix of booleans, containing the result for each couple of
+#   point and edge.
+#
+#   @seealso{edges2d, points2d, isPointOnLine}
+## @end deftypefn
 
 function b = isPointOnEdge(point, edge, varargin)
 
-  % extract computation tolerance
+  # extract computation tolerance
   tol = 1e-14;
   if ~isempty(varargin)
       tol = varargin{1};
   end
 
-  % number of edges and of points
+  # number of edges and of points
   Np = size(point, 1);
   Ne = size(edge, 1);
 
-  % adapt size of inputs if needed, and extract elements for computation
+  # adapt size of inputs if needed, and extract elements for computation
   if Np == Ne
-      % When the number of points and edges is the same, the one-to-one test
-      % will be computed, so there is no need to repeat matrices
+      # When the number of points and edges is the same, the one-to-one test
+      # will be computed, so there is no need to repeat matrices
       dx = edge(:,3) - edge(:,1);
       dy = edge(:,4) - edge(:,2);
       lx = point(:,1) - edge(:,1);
       ly = point(:,2) - edge(:,2);
       
   elseif Np == 1
-      % one point, several edges
+      # one point, several edges
       dx = edge(:, 3) - edge(:, 1);
       dy = edge(:, 4) - edge(:, 2);
       lx = point(ones(Ne, 1), 1) - edge(:, 1);
       ly = point(ones(Ne, 1), 2) - edge(:, 2);
       
   elseif Ne == 1
-      % several points, one edge
+      # several points, one edge
       dx = (edge(3) - edge(1)) * ones(Np, 1);
       dy = (edge(4) - edge(2)) * ones(Np, 1);
       lx = point(:, 1) - edge(1);
       ly = point(:, 2) - edge(2);
 
   else
-      % Np points and Ne edges:
-      % Create an array for each parameter, so that the result will be a
-      % Np-by-Ne matrix of booleans (requires more memory, and uses repmat)
+      # Np points and Ne edges:
+      # Create an array for each parameter, so that the result will be a
+      # Np-by-Ne matrix of booleans (requires more memory, and uses repmat)
 
       x0 = repmat(edge(:, 1)', Np, 1);
       y0 = repmat(edge(:, 2)', Np, 1);
@@ -105,17 +97,17 @@ function b = isPointOnEdge(point, edge, varargin)
       ly = repmat(point(:, 2), 1, Ne) - y0;
   end
 
-  % test if point is located on supporting line
+  # test if point is located on supporting line
   b1 = (abs(lx.*dy - ly.*dx) ./ hypot(dx, dy)) < tol;
 
-  % compute position of point with respect to edge bounds
-  % use different tests depending on line angle
+  # compute position of point with respect to edge bounds
+  # use different tests depending on line angle
   ind     = abs(dx) > abs(dy);
   t       = zeros(size(dx));
   t(ind)  = lx( ind) ./ dx( ind);
   t(~ind) = ly(~ind) ./ dy(~ind);
 
-  % check if point is located between edge bounds
+  # check if point is located between edge bounds
   b = t >- tol & t-1 < tol & b1;
 
 endfunction
@@ -123,54 +115,54 @@ endfunction
 %!shared points, vertices, edges
 
 %!demo
-%!   % create a point array
+%!   # create a point array
 %!   points = [10 10;15 10; 30 10];
-%!   % create an edge array
+%!   # create an edge array
 %!   vertices = [10 10;20 10;20 20;10 20];
 %!   edges = [vertices vertices([2:end 1], :)];
 %!
-%!   % Test one point and one edge
+%!   # Test one point and one edge
 %!   isPointOnEdge(points(1,:), edges(1,:))
 %!   isPointOnEdge(points(3,:), edges(1,:))
 
 %!demo
-%!   % create a point array
+%!   # create a point array
 %!   points = [10 10;15 10; 30 10];
-%!   % create an edge array
+%!   # create an edge array
 %!   vertices = [10 10;20 10;20 20;10 20];
 %!   edges = [vertices vertices([2:end 1], :)];
 %!
-%!   % Test one point and several edges
+%!   # Test one point and several edges
 %!   isPointOnEdge(points(1,:), edges)'
 
 %!demo
-%!   % create a point array
+%!   # create a point array
 %!   points = [10 10;15 10; 30 10];
-%!   % create an edge array
+%!   # create an edge array
 %!   vertices = [10 10;20 10;20 20;10 20];
 %!   edges = [vertices vertices([2:end 1], :)];
 %!
-%!   % Test several points and one edge
+%!   # Test several points and one edge
 %!   isPointOnEdge(points, edges(1,:))'
 
 %!demo
-%!   % create a point array
+%!   # create a point array
 %!   points = [10 10;15 10; 30 10];
-%!   % create an edge array
+%!   # create an edge array
 %!   vertices = [10 10;20 10;20 20;10 20];
 %!   edges = [vertices vertices([2:end 1], :)];
 %!
-%!   % Test N points and N edges
+%!   # Test N points and N edges
 %!   isPointOnEdge(points, edges(1:3,:))'
 
 %!demo
-%!   % create a point array
+%!   # create a point array
 %!   points = [10 10;15 10; 30 10];
-%!   % create an edge array
+%!   # create an edge array
 %!   vertices = [10 10;20 10;20 20;10 20];
 %!   edges = [vertices vertices([2:end 1], :)];
 %!
-%!   % Test NP points and NE edges
+%!   # Test NP points and NE edges
 %!   isPointOnEdge(points, edges)
 
 %!test

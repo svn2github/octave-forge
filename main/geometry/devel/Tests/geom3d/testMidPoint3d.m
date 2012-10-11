@@ -1,22 +1,22 @@
-function test_suite = testMidPoint(varargin) %#ok<STOUT>
-% One-line description here, please.
-%   output = testMidPoint(input)
-%
-%   Example
-%   testMidPoint
-%
-%   See also
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2009-04-22,    using Matlab 7.7.0.471 (R2008b)
-% Copyright 2009 INRA - Cepia Software Platform.
+function test_suite = testMidPoint(varargin) ##ok<STOUT>
+# One-line description here, please.
+#   output = testMidPoint(input)
+#
+#   Example
+#   testMidPoint
+#
+#   See also
+#
+#
+# ------
+# Author: David Legland
+# e-mail: david.legland@grignon.inra.fr
+# Created: 2009-04-22,    using Matlab 7.7.0.471 (R2008b)
+# Copyright 2009 INRA - Cepia Software Platform.
 
 initTestSuite;
 
-function test_twoPoints %#ok<*DEFNU>
+function test_twoPoints ##ok<*DEFNU>
 
 p1 = [10 20 30];
 p2 = [30 40 50];

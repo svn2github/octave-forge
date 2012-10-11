@@ -1,50 +1,52 @@
-%% Copyright (C) 2011 David Legland <david.legland@grignon.inra.fr>
-%% All rights reserved.
-%% 
-%% Redistribution and use in source and binary forms, with or without
-%% modification, are permitted provided that the following conditions are met:
-%% 
-%%     1 Redistributions of source code must retain the above copyright notice,
-%%       this list of conditions and the following disclaimer.
-%%     2 Redistributions in binary form must reproduce the above copyright
-%%       notice, this list of conditions and the following disclaimer in the
-%%       documentation and/or other materials provided with the distribution.
-%% 
-%% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ''AS IS''
-%% AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-%% IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-%% ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR
-%% ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-%% DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-%% SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-%% CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-%% OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-%% OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+## Copyright (C) 2004-2011 David Legland <david.legland@grignon.inra.fr>
+## Copyright (C) 2004-2011 INRA - CEPIA Nantes - MIAJ (Jouy-en-Josas)
+## Copyright (C) 2012 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
+## All rights reserved.
+## 
+## Redistribution and use in source and binary forms, with or without
+## modification, are permitted provided that the following conditions are met:
+## 
+##     1 Redistributions of source code must retain the above copyright notice,
+##       this list of conditions and the following disclaimer.
+##     2 Redistributions in binary form must reproduce the above copyright
+##       notice, this list of conditions and the following disclaimer in the
+##       documentation and/or other materials provided with the distribution.
+## 
+## THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ''AS IS''
+## AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+## IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+## ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR
+## ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+## DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+## SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+## CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+## OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+## OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 function varargout = imageGraph(img, varargin)
-%IMAGEGRAPH Create equivalent graph of a binary image
-%
-%   [N E] = imageGraph(IMG);
-%   or 
-%   [N E F] = imageGraph(IMG);
-%   create graph representing adjacencies in image. N is the array of
-%   nodes, E is the array of edges, and F is a 4-columns array containing
-%   indices of vertices of each face.
-%   IMG can be either 2D or 3D image.
-%   This functions uses only 4 neighbors in 2D, and 6 neighbors in 3D.
-%
-%
-%   ---------
-%
-%   author : David Legland 
-%   INRA - TPV URPOI - BIA IMASTE
-%   created the 28/06/2004.
-%
+#IMAGEGRAPH Create equivalent graph of a binary image
+#
+#   [N E] = imageGraph(IMG);
+#   or 
+#   [N E F] = imageGraph(IMG);
+#   create graph representing adjacencies in image. N is the array of
+#   nodes, E is the array of edges, and F is a 4-columns array containing
+#   indices of vertices of each face.
+#   IMG can be either 2D or 3D image.
+#   This functions uses only 4 neighbors in 2D, and 6 neighbors in 3D.
+#
+#
+#   ---------
+#
+#   author : David Legland 
+#   INRA - TPV URPOI - BIA IMASTE
+#   created the 28/06/2004.
+#
 
-%   HISTORY
+#   HISTORY
 
 
-%% Initialisations
+## Initialisations
 
 nodes = [];
 edges = zeros(0, 2);
@@ -54,18 +56,18 @@ cells = [];
 dim = size(img);
 
 
-%% Main processing
+## Main processing
 
 if ndims(img)==2
     N1 = dim(1);
     N2 = dim(2);
     
-    % first find nodes, equivalent to pixels
+    # first find nodes, equivalent to pixels
     ind = find(img);
     [x y] = ind2sub([N1 N2], ind);
     nodes = [x y];
     
-    % find vertical edges
+    # find vertical edges
     ind = find(img(1:N1, 1:N2-1) & img(1:N1, 2:N2));
     for i=1:length(ind)
         [x y] = ind2sub([N1 N2-1], ind(i));
@@ -74,7 +76,7 @@ if ndims(img)==2
         edges(size(edges, 1)+1, 1:2) = [i1 i2];
     end
     
-    % find horizontal edges
+    # find horizontal edges
     ind = find(img(1:N1-1, 1:N2) & img(2:N1, 1:N2));
     for i=1:length(ind)
         [x y] = ind2sub([N1-1 N2], ind(i));
@@ -83,7 +85,7 @@ if ndims(img)==2
         edges(size(edges, 1)+1, 1:2) = [i1 i2];
     end
     
-    % find faces
+    # find faces
     ind = find(img(1:N1-1, 1:N2-1) & img(2:N1, 1:N2-1) & ...
                img(1:N1-1, 2:N2) & img(2:N1, 2:N2) );
     for i=1:length(ind)
@@ -100,26 +102,26 @@ elseif ndims(img)==3
     N2 = dim(2);
     N3 = dim(3);
     
-    % first find nodes, equivalent to pixels
+    # first find nodes, equivalent to pixels
     ind = find(img);
     [x y z] = ind2sub([N1 N2 N3], ind);
     nodes = [x y z];
     
-    % find edges in direction 1
+    # find edges in direction 1
     ind = find(img(1:N1-1, 1:N2, 1:N3) & img(2:N1, 1:N2, 1:N3));
     [x y z] = ind2sub([N1-1 N2 N3], ind);
     i1 = find(ismember(nodes, [x y z], 'rows'));
     i2 = find(ismember(nodes, [x+1 y z], 'rows'));
     edges = [edges ; [i1 i2]];
   
-    % find edges in direction 2
+    # find edges in direction 2
     ind = find(img(1:N1, 1:N2-1, 1:N3) & img(1:N1, 2:N2, 1:N3));
     [x y z] = ind2sub([N1 N2-1 N3], ind);
     i1 = find(ismember(nodes, [x y z], 'rows'));
     i2 = find(ismember(nodes, [x y+1 z], 'rows'));
     edges = [edges ; [i1 i2]];
    
-    % find edges in direction 3
+    # find edges in direction 3
     ind = find(img(1:N1, 1:N2, 1:N3-1) & img(1:N1, 1:N2, 2:N3));
     [x y z] = ind2sub([N1 N2 N3-1], ind);
     i1 = find(ismember(nodes, [x y z], 'rows'));
@@ -127,7 +129,7 @@ elseif ndims(img)==3
     edges = [edges ; [i1 i2]];
     
     
-    % find faces in direction 1
+    # find faces in direction 1
     ind = find(img(1:N1, 1:N2-1, 1:N3-1) & img(1:N1, 1:N2-1, 2:N3) & ...
                img(1:N1, 2:N2, 1:N3-1)   & img(1:N1, 2:N2, 2:N3) );
     [x y z] = ind2sub([N1 N2-1 N3-1], ind);
@@ -137,7 +139,7 @@ elseif ndims(img)==3
     i4 = find(ismember(nodes, [x y z+1], 'rows'));
     faces = [faces; [i1 i2 i3 i4]];
     
-    % find faces in direction 2
+    # find faces in direction 2
     ind = find(img(1:N1-1, 1:N2, 1:N3-1) & img(1:N1-1, 1:N2, 2:N3) & ...
                img(2:N1, 1:N2, 1:N3-1)   & img(2:N1, 1:N2, 2:N3) );
     [x y z] = ind2sub([N1-1 N2 N3-1], ind);
@@ -147,7 +149,7 @@ elseif ndims(img)==3
     i4 = find(ismember(nodes, [x y z+1], 'rows'));
     faces = [faces; [i1 i2 i3 i4]];
    
-    % find faces in direction 3
+    # find faces in direction 3
     ind = find(img(1:N1-1, 1:N2-1, 1:N3) & img(1:N1-1, 2:N2, 1:N3) & ...
                img(2:N1, 1:N2-1, 1:N3)   & img(2:N1, 2:N2, 1:N3) );
     [x y z] = ind2sub([N1-1 N2-1 N3], ind);
@@ -160,7 +162,7 @@ elseif ndims(img)==3
 end
 
 
-%% Format output
+## Format output
 
 if nargout==1
     graph.nodes = nodes;

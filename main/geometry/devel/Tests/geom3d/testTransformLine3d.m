@@ -1,18 +1,18 @@
 function test_suite = testTransformLine3d(varargin)
-%Check transformation of 3Dlines
-%   output = testTransformLine3d(input)
-%
-%   Example
-%   testTransformLine3d
-%
-%   See also
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2009-06-19,    using Matlab 7.7.0.471 (R2008b)
-% Copyright 2009 INRA - Cepia Software Platform.
+#Check transformation of 3Dlines
+#   output = testTransformLine3d(input)
+#
+#   Example
+#   testTransformLine3d
+#
+#   See also
+#
+#
+# ------
+# Author: David Legland
+# e-mail: david.legland@grignon.inra.fr
+# Created: 2009-06-19,    using Matlab 7.7.0.471 (R2008b)
+# Copyright 2009 INRA - Cepia Software Platform.
 
 initTestSuite;
 

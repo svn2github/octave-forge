@@ -1,18 +1,18 @@
 function test_suite = testDrawEdge3d(varargin)
-%Check there is no error when drawing 3D edges
-%   output = testDrawEdge3d(input)
-%
-%   Example
-%   testDrawEdge3d
-%
-%   See also
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2009-06-19,    using Matlab 7.7.0.471 (R2008b)
-% Copyright 2009 INRA - Cepia Software Platform.
+#Check there is no error when drawing 3D edges
+#   output = testDrawEdge3d(input)
+#
+#   Example
+#   testDrawEdge3d
+#
+#   See also
+#
+#
+# ------
+# Author: David Legland
+# e-mail: david.legland@grignon.inra.fr
+# Created: 2009-06-19,    using Matlab 7.7.0.471 (R2008b)
+# Copyright 2009 INRA - Cepia Software Platform.
 
 initTestSuite;
 

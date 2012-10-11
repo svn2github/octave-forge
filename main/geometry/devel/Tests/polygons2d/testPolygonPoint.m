@@ -1,22 +1,22 @@
-function test_suite = testPolygonPoint(varargin) %#ok<STOUT>
-%TESTPOLYGONPOINT  One-line description here, please.
-%   output = testPolygonPoint(input)
-%
-%   Example
-%   testPolygonPoint
-%
-%   See also
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2009-06-16,    using Matlab 7.7.0.471 (R2008b)
-% Copyright 2009 INRA - Cepia Software Platform.
+function test_suite = testPolygonPoint(varargin) ##ok<STOUT>
+#TESTPOLYGONPOINT  One-line description here, please.
+#   output = testPolygonPoint(input)
+#
+#   Example
+#   testPolygonPoint
+#
+#   See also
+#
+#
+# ------
+# Author: David Legland
+# e-mail: david.legland@grignon.inra.fr
+# Created: 2009-06-16,    using Matlab 7.7.0.471 (R2008b)
+# Copyright 2009 INRA - Cepia Software Platform.
 
 initTestSuite;
 
-function testSquare %#ok<DEFNU>
+function testSquare ##ok<DEFNU>
 
 p1 = [10 10];
 p2 = [20 10];

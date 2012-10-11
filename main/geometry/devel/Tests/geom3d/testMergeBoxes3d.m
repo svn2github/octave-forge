@@ -1,19 +1,19 @@
 function test_suite = testMergeBoxes3d(varargin)
-%TESTMERGEBOXES3D  One-line description here, please.
-%
-%   output = testMergeBoxes3d(input)
-%
-%   Example
-%   testMergeBoxes3d
-%
-%   See also
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2010-07-26,    using Matlab 7.9.0.529 (R2009b)
-% Copyright 2010 INRA - Cepia Software Platform.
+#TESTMERGEBOXES3D  One-line description here, please.
+#
+#   output = testMergeBoxes3d(input)
+#
+#   Example
+#   testMergeBoxes3d
+#
+#   See also
+#
+#
+# ------
+# Author: David Legland
+# e-mail: david.legland@grignon.inra.fr
+# Created: 2010-07-26,    using Matlab 7.9.0.529 (R2009b)
+# Copyright 2010 INRA - Cepia Software Platform.
 
 
 initTestSuite;

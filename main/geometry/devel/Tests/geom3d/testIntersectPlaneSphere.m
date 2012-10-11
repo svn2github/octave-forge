@@ -1,24 +1,24 @@
-function varargout = testIntersectPlaneSphere(varargin) %#ok<STOUT>
-%TESTINTERSECTPLANESPHERE  One-line description here, please.
-%
-%   output = testIntersectPlaneSphere(input)
-%
-%   Example
-%   testIntersectPlaneSphere
-%
-%   See also
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2011-06-21,    using Matlab 7.9.0.529 (R2009b)
-% Copyright 2011 INRA - Cepia Software Platform.
+function varargout = testIntersectPlaneSphere(varargin) ##ok<STOUT>
+#TESTINTERSECTPLANESPHERE  One-line description here, please.
+#
+#   output = testIntersectPlaneSphere(input)
+#
+#   Example
+#   testIntersectPlaneSphere
+#
+#   See also
+#
+#
+# ------
+# Author: David Legland
+# e-mail: david.legland@grignon.inra.fr
+# Created: 2011-06-21,    using Matlab 7.9.0.529 (R2009b)
+# Copyright 2011 INRA - Cepia Software Platform.
 
 initTestSuite;
 
-function testOx %#ok<*DEFNU>
-% Plane normal to direction [1 0 0]
+function testOx ##ok<*DEFNU>
+# Plane normal to direction [1 0 0]
 
 center = [10 20 30];
 radius = 50;
@@ -33,7 +33,7 @@ assertElementsAlmostEqual(exp, circle);
 
 
 function testOxShifted
-% Plane normal to direction [1 0 0]
+# Plane normal to direction [1 0 0]
 
 center = [10 20 30];
 radius = 50;
@@ -50,7 +50,7 @@ assertElementsAlmostEqual(exp, circle);
 
 
 function testOy
-% Plane normal to direction [0 1 0]
+# Plane normal to direction [0 1 0]
 
 center = [10 20 30];
 radius = 50;
@@ -65,7 +65,7 @@ assertElementsAlmostEqual(exp, circle);
 
 
 function testOyShifted
-% Plane normal to direction [0 1 0]
+# Plane normal to direction [0 1 0]
 
 center = [10 20 30];
 radius = 50;
@@ -82,7 +82,7 @@ assertElementsAlmostEqual(exp, circle);
 
 
 function testOz
-% Plane normal to direction [0 1 0]
+# Plane normal to direction [0 1 0]
 
 center = [10 20 30];
 radius = 50;
@@ -97,7 +97,7 @@ assertElementsAlmostEqual(exp, circle);
 
 
 function testOzShifted
-% Plane normal to direction [0 0 1]
+# Plane normal to direction [0 0 1]
 
 center = [10 20 30];
 radius = 50;

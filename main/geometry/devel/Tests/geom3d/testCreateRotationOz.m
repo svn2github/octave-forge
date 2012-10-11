@@ -1,18 +1,18 @@
 function test_suite = testCreateRotationOz(varargin)
-%Check creation of rotation around Oz axis
-%   output = testCreateRotationOz(input)
-%
-%   Example
-%   testCreateRotationOz
-%
-%   See also
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2009-06-19,    using Matlab 7.7.0.471 (R2008b)
-% Copyright 2009 INRA - Cepia Software Platform.
+#Check creation of rotation around Oz axis
+#   output = testCreateRotationOz(input)
+#
+#   Example
+#   testCreateRotationOz
+#
+#   See also
+#
+#
+# ------
+# Author: David Legland
+# e-mail: david.legland@grignon.inra.fr
+# Created: 2009-06-19,    using Matlab 7.7.0.471 (R2008b)
+# Copyright 2009 INRA - Cepia Software Platform.
 
 initTestSuite;
 

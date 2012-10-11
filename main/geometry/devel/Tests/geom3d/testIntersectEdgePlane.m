@@ -1,24 +1,24 @@
-function test_suite = testIntersectEdgePlane(varargin) %#ok<STOUT>
-%TESTINTERSECTEDGEPLANE  One-line description here, please.
-%
-%   output = testIntersectEdgePlane(input)
-%
-%   Example
-%   testIntersectEdgePlane
-%
-%   See also
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2011-06-17,    using Matlab 7.9.0.529 (R2009b)
-% Copyright 2011 INRA - Cepia Software Platform.
+function test_suite = testIntersectEdgePlane(varargin) ##ok<STOUT>
+#TESTINTERSECTEDGEPLANE  One-line description here, please.
+#
+#   output = testIntersectEdgePlane(input)
+#
+#   Example
+#   testIntersectEdgePlane
+#
+#   See also
+#
+#
+# ------
+# Author: David Legland
+# e-mail: david.legland@grignon.inra.fr
+# Created: 2011-06-17,    using Matlab 7.9.0.529 (R2009b)
+# Copyright 2011 INRA - Cepia Software Platform.
 
 initTestSuite;
 
-function testOx %#ok<*DEFNU>
-% edge in direction (1,0,0), plane orthogonal
+function testOx ##ok<*DEFNU>
+# edge in direction (1,0,0), plane orthogonal
 
 edge = [10 10 10 10+20 10 10];
 plane = createPlane([20 0 0], [20 50 20], [20 0 40]);
@@ -30,7 +30,7 @@ assertEqual(exp, inter);
 
 
 function testOxParallel
-% edge in direction (1,0,0), plane orthogonal
+# edge in direction (1,0,0), plane orthogonal
 
 edge = [10 10 10 10+50 10 10];
 plane = createPlane([0 0 0], [0 20 0], [0 0 20]);
@@ -42,7 +42,7 @@ assertEqual(exp, inter);
 
 
 function testOxPass
-% edge in direction (1,0,0), plane orthogonal
+# edge in direction (1,0,0), plane orthogonal
 
 edge = [10+20 10 10 10+50 10 10];
 plane = createPlane([20 0 0], [20 50 20], [20 0 40]);
@@ -54,7 +54,7 @@ assertEqual(exp, inter);
 
 
 function testOy
-% edge in direction (0,1,0), plane orthogonal
+# edge in direction (0,1,0), plane orthogonal
 
 edge = [10 10 10 10 10+20 10];
 plane = createPlane([0 20 0], [50 20 20], [0 20 40]);
@@ -66,7 +66,7 @@ assertEqual(exp, inter);
 
 
 function testOz
-% edge in direction (0,0,1), plane orthogonal
+# edge in direction (0,0,1), plane orthogonal
 
 edge = [10 10 10 10 10 10+20];
 plane = createPlane([0 0 20], [50 20 20], [0 40 20]);

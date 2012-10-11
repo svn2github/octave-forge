@@ -1,24 +1,24 @@
-function test_suite = testCreateDodecahedron(varargin) %#ok<STOUT>
-%TESTCREATEDodecahedron  One-line description here, please.
-%
-%   output = testCreateDodecahedron(input)
-%
-%   Example
-%   testCreateDodecahedron
-%
-%   See also
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2010-12-07,    using Matlab 7.9.0.529 (R2009b)
-% Copyright 2010 INRA - Cepia Software Platform.
+function test_suite = testCreateDodecahedron(varargin) ##ok<STOUT>
+#TESTCREATEDodecahedron  One-line description here, please.
+#
+#   output = testCreateDodecahedron(input)
+#
+#   Example
+#   testCreateDodecahedron
+#
+#   See also
+#
+#
+# ------
+# Author: David Legland
+# e-mail: david.legland@grignon.inra.fr
+# Created: 2010-12-07,    using Matlab 7.9.0.529 (R2009b)
+# Copyright 2010 INRA - Cepia Software Platform.
 
 initTestSuite;
 
 
-function testCreation %#ok<*DEFNU>
+function testCreation ##ok<*DEFNU>
 
 createDodecahedron();
 
@@ -42,7 +42,7 @@ function testVFCreation
 assertTrue(~isempty(v));
 assertTrue(~isempty(f));
 
-[nv ne nf] = getMeshElementsNumber; %#ok<ASGLU>
+[nv ne nf] = getMeshElementsNumber; ##ok<ASGLU>
 assertEqual([nv 3], size(v));
 assertEqual(nf, length(f));
 
@@ -63,7 +63,7 @@ assertEqual(nf, length(mesh.faces));
 
 function testFacesOutwards
 
-[v e f] = createDodecahedron(); %#ok<ASGLU>
+[v e f] = createDodecahedron(); ##ok<ASGLU>
 
 centro = centroid(v);
 fc  = faceCentroids(v, f);

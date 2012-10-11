@@ -1,25 +1,25 @@
-function test_suite = test_triangleArea3d(varargin) %#ok<STOUT>
-%TEST_TRIANGLEAREA3D  Test case for the file triangleArea3d
-%
-%   Test case for the file triangleArea3d
+function test_suite = test_triangleArea3d(varargin) ##ok<STOUT>
+#TEST_TRIANGLEAREA3D  Test case for the file triangleArea3d
+#
+#   Test case for the file triangleArea3d
 
-%   Example
-%   test_triangleArea3d
-%
-%   See also
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2011-08-23,    using Matlab 7.9.0.529 (R2009b)
-% Copyright 2011 INRA - Cepia Software Platform.
+#   Example
+#   test_triangleArea3d
+#
+#   See also
+#
+#
+# ------
+# Author: David Legland
+# e-mail: david.legland@grignon.inra.fr
+# Created: 2011-08-23,    using Matlab 7.9.0.529 (R2009b)
+# Copyright 2011 INRA - Cepia Software Platform.
 
 initTestSuite;
 
-function test_Simple %#ok<*DEFNU>
+function test_Simple ##ok<*DEFNU>
 
-% rectangle triangle with sides 20 and 30 -> area is 300.
+# rectangle triangle with sides 20 and 30 -> area is 300.
 p1 = [10 20 30];
 p2 = [30 20 30];
 p3 = [10 50 30];
@@ -46,7 +46,7 @@ assertEqual(exp, area);
 
 function test_XZ
 
-% rectangle triangle with sides 20 and 30 -> area is 300.
+# rectangle triangle with sides 20 and 30 -> area is 300.
 p1 = [10 30 20];
 p2 = [30 30 20];
 p3 = [10 30 50];
@@ -60,7 +60,7 @@ assertEqual(exp, area);
 
 function test_YZ
 
-% rectangle triangle with sides 20 and 30 -> area is 300.
+# rectangle triangle with sides 20 and 30 -> area is 300.
 p1 = [30 10 20];
 p2 = [30 30 20];
 p3 = [30 10 50];

@@ -1,18 +1,18 @@
 function test_suite = testCreateRotationOx(varargin)
-%Check creation of rotation around Ox axis
-%   output = testCreateRotationOx(input)
-%
-%   Example
-%   testCreateRotationOx
-%
-%   See also
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2009-06-19,    using Matlab 7.7.0.471 (R2008b)
-% Copyright 2009 INRA - Cepia Software Platform.
+#Check creation of rotation around Ox axis
+#   output = testCreateRotationOx(input)
+#
+#   Example
+#   testCreateRotationOx
+#
+#   See also
+#
+#
+# ------
+# Author: David Legland
+# e-mail: david.legland@grignon.inra.fr
+# Created: 2009-06-19,    using Matlab 7.7.0.471 (R2008b)
+# Copyright 2009 INRA - Cepia Software Platform.
 
 initTestSuite;
 

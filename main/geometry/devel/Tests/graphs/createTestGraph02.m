@@ -1,23 +1,23 @@
 function [nodes edges] = createTestGraph02(varargin)
-%CREATETESTGRAPH02  Test graph for geodesic functions
-%
-%   [nodes edges] = createTestGraph02;
-%
-%   Example
-%     [nodes edges] = createTestGraph02;
-%     figure;
-%     axis([0 100 10 90]);
-%     axis equal;
-%     drawGraph(nodes, edges);
-%
-%   See also
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2011-05-19,    using Matlab 7.9.0.529 (R2009b)
-% Copyright 2011 INRA - Cepia Software Platform.
+#CREATETESTGRAPH02  Test graph for geodesic functions
+#
+#   [nodes edges] = createTestGraph02;
+#
+#   Example
+#     [nodes edges] = createTestGraph02;
+#     figure;
+#     axis([0 100 10 90]);
+#     axis equal;
+#     drawGraph(nodes, edges);
+#
+#   See also
+#
+#
+# ------
+# Author: David Legland
+# e-mail: david.legland@grignon.inra.fr
+# Created: 2011-05-19,    using Matlab 7.9.0.529 (R2009b)
+# Copyright 2011 INRA - Cepia Software Platform.
 
 nodes = [ ...
    10 40; ...

@@ -1,18 +1,18 @@
 function test_suite = testTransformVector3d(varargin)
-%Check transformation of points
-%   output = testTransformVector3d(input)
-%
-%   Example
-%   testTransformVector3d
-%
-%   See also
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2009-06-19,    using Matlab 7.7.0.471 (R2008b)
-% Copyright 2009 INRA - Cepia Software Platform.
+#Check transformation of points
+#   output = testTransformVector3d(input)
+#
+#   Example
+#   testTransformVector3d
+#
+#   See also
+#
+#
+# ------
+# Author: David Legland
+# e-mail: david.legland@grignon.inra.fr
+# Created: 2009-06-19,    using Matlab 7.7.0.471 (R2008b)
+# Copyright 2009 INRA - Cepia Software Platform.
 
 initTestSuite;
 

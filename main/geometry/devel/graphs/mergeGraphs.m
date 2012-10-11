@@ -1,37 +1,39 @@
-%% Copyright (C) 2011 David Legland <david.legland@grignon.inra.fr>
-%% All rights reserved.
-%% 
-%% Redistribution and use in source and binary forms, with or without
-%% modification, are permitted provided that the following conditions are met:
-%% 
-%%     1 Redistributions of source code must retain the above copyright notice,
-%%       this list of conditions and the following disclaimer.
-%%     2 Redistributions in binary form must reproduce the above copyright
-%%       notice, this list of conditions and the following disclaimer in the
-%%       documentation and/or other materials provided with the distribution.
-%% 
-%% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ''AS IS''
-%% AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-%% IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-%% ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR
-%% ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-%% DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-%% SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-%% CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-%% OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-%% OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+## Copyright (C) 2004-2011 David Legland <david.legland@grignon.inra.fr>
+## Copyright (C) 2004-2011 INRA - CEPIA Nantes - MIAJ (Jouy-en-Josas)
+## Copyright (C) 2012 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
+## All rights reserved.
+## 
+## Redistribution and use in source and binary forms, with or without
+## modification, are permitted provided that the following conditions are met:
+## 
+##     1 Redistributions of source code must retain the above copyright notice,
+##       this list of conditions and the following disclaimer.
+##     2 Redistributions in binary form must reproduce the above copyright
+##       notice, this list of conditions and the following disclaimer in the
+##       documentation and/or other materials provided with the distribution.
+## 
+## THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ''AS IS''
+## AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+## IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+## ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR
+## ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+## DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+## SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+## CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+## OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+## OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 function varargout = mergeGraphs(varargin)
-%MERGEGRAPHS Merge two graphs, by adding nodes, edges and faces lists. 
-%
-%   
-%
-%   -----
-%
-%   author : David Legland 
-%   INRA - TPV URPOI - BIA IMASTE
-%   created the 09/08/2004.
-%
+#MERGEGRAPHS Merge two graphs, by adding nodes, edges and faces lists. 
+#
+#   
+#
+#   -----
+#
+#   author : David Legland 
+#   INRA - TPV URPOI - BIA IMASTE
+#   created the 09/08/2004.
+#
 
 
 simplify = false;
@@ -41,11 +43,11 @@ edges = {}; edges2 = {};
 faces = {}; faces2 = {}; 
 
 
-% ===============================================================
-% process input arguments
+# ===============================================================
+# process input arguments
 
-% ---------------------------------------------------------------
-% extract simplify tag
+# ---------------------------------------------------------------
+# extract simplify tag
 
 var = varargin{nargin};
 if ischar(var)
@@ -56,13 +58,13 @@ if ischar(var)
 end
 
 
-% ---------------------------------------------------------------
-% extract data of first graph
+# ---------------------------------------------------------------
+# extract data of first graph
 
 var = varargin{1};
 if iscell(var)
-    % graph is stored as a cell array : first cell is nodes, second one is
-    % edges, and third is faces
+    # graph is stored as a cell array : first cell is nodes, second one is
+    # edges, and third is faces
     nodes = var{1};
     if length(var)>1
         edges = var{2};
@@ -73,8 +75,8 @@ if iscell(var)
     varargin = varargin(2:length(varargin));
     
 elseif isstruct(var)
-    % graph is stored as a structure, with fields 'nodes', 'edges', and
-    % eventually 'faces'.
+    # graph is stored as a structure, with fields 'nodes', 'edges', and
+    # eventually 'faces'.
     nodes = var.nodes;
     edges = var.edges;
     if isfield(var, 'faces')
@@ -83,17 +85,17 @@ elseif isstruct(var)
     varargin = varargin(2:length(varargin));
     
 elseif length(varargin)>2
-    % graph is stored as set of variables : nodes, edges, and eventually
-    % faces
+    # graph is stored as set of variables : nodes, edges, and eventually
+    # faces
     nodes = varargin{1};
     edges = varargin{2};
     
     if length(varargin)==3
-        % last argument describe graph 2
+        # last argument describe graph 2
         varargin = varargin(3);
     else
         if length(varargin)~=4 || ~isnumeric(varargin{4})
-            % third argument is faces of graph 1
+            # third argument is faces of graph 1
             faces = varargin{3};
             varargin = varargin(4:length(varargin));
         else
@@ -106,13 +108,13 @@ else
 end
 
   
-% ---------------------------------------------------------------    
-% extract data of second graph
+# ---------------------------------------------------------------    
+# extract data of second graph
 
 var = varargin{1};
 if iscell(var)
-    % graph is stored as a cell array : first cell is nodes, second one is
-    % edges, and third is faces
+    # graph is stored as a cell array : first cell is nodes, second one is
+    # edges, and third is faces
     nodes2 = var{1};
     if length(var)>1
         edges2 = var{2};
@@ -122,8 +124,8 @@ if iscell(var)
     end
     
 elseif isstruct(var)
-    % graph is stored as a structure, with fields 'nodes', 'edges', and
-    % eventually 'faces'.
+    # graph is stored as a structure, with fields 'nodes', 'edges', and
+    # eventually 'faces'.
     nodes2 = var.nodes;
     edges2 = var.edges;
     if isfield(var, 'faces')
@@ -131,13 +133,13 @@ elseif isstruct(var)
     end
     
 elseif length(varargin)>1
-    % graph is stored as set of variables : nodes, edges, and eventually
-    % faces
+    # graph is stored as set of variables : nodes, edges, and eventually
+    # faces
     nodes2 = varargin{1};
     edges2 = varargin{2};
     
     if length(varargin)>2
-        % last argument describe graph 2
+        # last argument describe graph 2
         faces2 = varargin{3};
     end
     
@@ -146,10 +148,10 @@ else
 end
 
 
-% ===============================================================
-% Main algorithm
+# ===============================================================
+# Main algorithm
 
-% eventually convert faces
+# eventually convert faces
 if ~iscell(faces)
     f = cell(size(faces, 1), 1);
     for i=1:size(faces, 1)
@@ -161,10 +163,10 @@ end
 edges = [edges ; edges2 + size(nodes, 1)];
 if iscell(faces2)
 	for i=1:length(faces2)
-        faces{length(faces)+1} = faces2{i} + size(nodes, 1); %#ok<AGROW>
+        faces{length(faces)+1} = faces2{i} + size(nodes, 1); ##ok<AGROW>
 	end
 else
-    % TODO
+    # TODO
 end
 nodes = [nodes; nodes2];
 
@@ -177,8 +179,8 @@ if simplify
 end
 
 
-% ===============================================================
-% process output depending on how many arguments are needed
+# ===============================================================
+# process output depending on how many arguments are needed
 
 if nargout == 1
     graph.nodes = nodes;

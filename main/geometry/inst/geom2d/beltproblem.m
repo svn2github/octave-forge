@@ -1,65 +1,75 @@
-%% Copyright (c) 2012 Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
-%%
-%%    This program is free software: you can redistribute it and/or modify
-%%    it under the terms of the GNU General Public License as published by
-%%    the Free Software Foundation, either version 3 of the License, or
-%%    any later version.
-%%
-%%    This program is distributed in the hope that it will be useful,
-%%    but WITHOUT ANY WARRANTY; without even the implied warranty of
-%%    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%%    GNU General Public License for more details.
-%%
-%%    You should have received a copy of the GNU General Public License
-%%    along with this program. If not, see <http://www.gnu.org/licenses/>.
+## Copyright (C) 2004-2011 David Legland <david.legland@grignon.inra.fr>
+## Copyright (C) 2004-2011 INRA - CEPIA Nantes - MIAJ (Jouy-en-Josas)
+## Copyright (C) 2012 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
+## All rights reserved.
+## 
+## Redistribution and use in source and binary forms, with or without
+## modification, are permitted provided that the following conditions are met:
+## 
+##     1 Redistributions of source code must retain the above copyright notice,
+##       this list of conditions and the following disclaimer.
+##     2 Redistributions in binary form must reproduce the above copyright
+##       notice, this list of conditions and the following disclaimer in the
+##       documentation and/or other materials provided with the distribution.
+## 
+## THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ''AS IS''
+## AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+## IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+## ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR
+## ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+## DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+## SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+## CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+## OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+## OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-%% -*- texinfo -*-
-%% @deftypefn {Function File} {[@var{tangent},@var{inner}] = } beltproblem (@var{c}, @var{r})
-%% Finds the four lines tangent to two circles with given centers and radii.
-%%
-%% The function solves the belt problem in 2D for circles with center @var{c} and
-%% radii @var{r}.
-%%
-%% @strong{INPUT}
-%% @table @var
-%% @item c
-%% 2-by-2 matrix containig coordinates of the centers of the circles; one row per circle.
-%% @item r
-%% 2-by-1 vector with the radii of the circles.
-%%@end table
-%%
-%% @strong{OUPUT}
-%% @table @var
-%% @item tangent
-%% 4-by-4 matrix with the points of tangency. Each row describes a segment(edge).
-%% @item inner
-%% 4-by-2 vector with the point of intersection of the inner tangents (crossed belts)
-%% with the segment that joins the centers of the two circles. If
-%% the i-th edge is not an inner tangent then @code{inner(i,:)=[NaN,NaN]}.
-%% @end table
-%%
-%% Example:
-%%
-%% @example
-%% c         = [0 0;1 3];
-%% r         = [1 0.5];
-%% [T inner] = beltproblem(c,r)
-%% @result{} T =
-%%  -0.68516   0.72839   1.34258   2.63581
-%%   0.98516   0.17161   0.50742   2.91419
-%%   0.98675  -0.16225   1.49338   2.91888
-%%  -0.88675   0.46225   0.55663   3.23112
-%%
-%% @result{} inner =
-%%   0.66667   2.00000
-%%   0.66667   2.00000
-%%       NaN       NaN
-%%       NaN       NaN
-%%
-%% @end example
-%%
-%% @seealso{edges2d}
-%% @end deftypefn
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{tangent},@var{inner}] = } beltproblem (@var{c}, @var{r})
+## Finds the four lines tangent to two circles with given centers and radii.
+##
+## The function solves the belt problem in 2D for circles with center @var{c} and
+## radii @var{r}.
+##
+## @strong{INPUT}
+## @table @var
+## @item c
+## 2-by-2 matrix containig coordinates of the centers of the circles; one row per circle.
+## @item r
+## 2-by-1 vector with the radii of the circles.
+##@end table
+##
+## @strong{OUPUT}
+## @table @var
+## @item tangent
+## 4-by-4 matrix with the points of tangency. Each row describes a segment(edge).
+## @item inner
+## 4-by-2 vector with the point of intersection of the inner tangents (crossed belts)
+## with the segment that joins the centers of the two circles. If
+## the i-th edge is not an inner tangent then @code{inner(i,:)=[NaN,NaN]}.
+## @end table
+##
+## Example:
+##
+## @example
+## c         = [0 0;1 3];
+## r         = [1 0.5];
+## [T inner] = beltproblem(c,r)
+## @result{} T =
+##  -0.68516   0.72839   1.34258   2.63581
+##   0.98516   0.17161   0.50742   2.91419
+##   0.98675  -0.16225   1.49338   2.91888
+##  -0.88675   0.46225   0.55663   3.23112
+##
+## @result{} inner =
+##   0.66667   2.00000
+##   0.66667   2.00000
+##       NaN       NaN
+##       NaN       NaN
+##
+## @end example
+##
+## @seealso{edges2d}
+## @end deftypefn
 
 function [edgeTan inner] = beltproblem(c,r)
 
@@ -81,7 +91,7 @@ function [edgeTan inner] = beltproblem(c,r)
   nSol = 0;
   i=1;
 
-  %% Solve for 2 different lines
+  ## Solve for 2 different lines
   while nSol<4 && i<nInit
       ind = find(ind0(ir(i),:)~=0);
       x = x0;
@@ -97,7 +107,7 @@ function [edgeTan inner] = beltproblem(c,r)
       if all(notequal)
        nSol = nSol+1;
        edgeTan(nSol,:) = createEdge(sol(1:2),sol(3:4));
-       % Find innerTangent
+       # Find innerTangent
        inner(nSol,:) = intersectEdges(middleEdge,edgeTan(nSol,:));
       end
 
@@ -131,6 +141,6 @@ end
 %!  axis tight
 %!  axis equal
 %!
-%! % -------------------------------------------------------------------
-%! % The circles with the tangents edges are plotted. The solution with
-%! % crossed belts (inner tangets) is shown in red.
+%! # -------------------------------------------------------------------
+%! # The circles with the tangents edges are plotted. The solution with
+%! # crossed belts (inner tangets) is shown in red.

@@ -1,23 +1,23 @@
 function test_suite = testIsPointInTriangle(varargin)
-%TESTISPOINTINTRIANGLE  One-line description here, please.
-%
-%   output = testIsPointInTriangle(input)
-%
-%   Example
-%   testIsPointInTriangle
-%
-%   See also
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2011-05-17,    using Matlab 7.9.0.529 (R2009b)
-% Copyright 2011 INRA - Cepia Software Platform.
+#TESTISPOINTINTRIANGLE  One-line description here, please.
+#
+#   output = testIsPointInTriangle(input)
+#
+#   Example
+#   testIsPointInTriangle
+#
+#   See also
+#
+#
+# ------
+# Author: David Legland
+# e-mail: david.legland@grignon.inra.fr
+# Created: 2011-05-17,    using Matlab 7.9.0.529 (R2009b)
+# Copyright 2011 INRA - Cepia Software Platform.
 
 initTestSuite;
 
-function testSimple %#ok<*DEFNU>
+function testSimple ##ok<*DEFNU>
 
 p1 = [0 0];
 p2 = [10 0];

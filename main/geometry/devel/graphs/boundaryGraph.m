@@ -1,54 +1,56 @@
-%% Copyright (C) 2011 David Legland <david.legland@grignon.inra.fr>
-%% All rights reserved.
-%% 
-%% Redistribution and use in source and binary forms, with or without
-%% modification, are permitted provided that the following conditions are met:
-%% 
-%%     1 Redistributions of source code must retain the above copyright notice,
-%%       this list of conditions and the following disclaimer.
-%%     2 Redistributions in binary form must reproduce the above copyright
-%%       notice, this list of conditions and the following disclaimer in the
-%%       documentation and/or other materials provided with the distribution.
-%% 
-%% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ''AS IS''
-%% AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-%% IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-%% ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR
-%% ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-%% DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-%% SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-%% CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-%% OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-%% OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+## Copyright (C) 2004-2011 David Legland <david.legland@grignon.inra.fr>
+## Copyright (C) 2004-2011 INRA - CEPIA Nantes - MIAJ (Jouy-en-Josas)
+## Copyright (C) 2012 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
+## All rights reserved.
+## 
+## Redistribution and use in source and binary forms, with or without
+## modification, are permitted provided that the following conditions are met:
+## 
+##     1 Redistributions of source code must retain the above copyright notice,
+##       this list of conditions and the following disclaimer.
+##     2 Redistributions in binary form must reproduce the above copyright
+##       notice, this list of conditions and the following disclaimer in the
+##       documentation and/or other materials provided with the distribution.
+## 
+## THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ''AS IS''
+## AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+## IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+## ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR
+## ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+## DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+## SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+## CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+## OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+## OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 function varargout = boundaryGraph(img)
-%BOUNDARYGRAPH Get boundary of image as a graph
-%
-%   [NODES, EDGES] = boundaryGraph(IMG)         (2D)
-%   [NODES, EDGES, FACES] = boundaryGraph(IMG)  (3D)
-%   Create a graph on the boundary of binary image IMG. Each pixel is
-%   considered as a unit square (or cube), centered on integer coordinates. 
-%   Boundary of the shape is selected as a graph.
-%
-%   Result is a set of nodes with (x,y) or (x,y,z) coordinates, a set of
-%   edges linking two neighbour nodes, and in 3D also a set of square
-%   faces, containing reference to each 4-tuple of nodes.
-%   
-%   The resulting shell is open if the binary structure touches edges of
-%   image.
-%
-%   See also :
-%   imPatch, drawMesh
-%
-%   ---------
-%
-%   author : David Legland 
-%   INRA - TPV URPOI - BIA IMASTE
-%   created the 28/06/2004.
-%
+#BOUNDARYGRAPH Get boundary of image as a graph
+#
+#   [NODES, EDGES] = boundaryGraph(IMG)         (2D)
+#   [NODES, EDGES, FACES] = boundaryGraph(IMG)  (3D)
+#   Create a graph on the boundary of binary image IMG. Each pixel is
+#   considered as a unit square (or cube), centered on integer coordinates. 
+#   Boundary of the shape is selected as a graph.
+#
+#   Result is a set of nodes with (x,y) or (x,y,z) coordinates, a set of
+#   edges linking two neighbour nodes, and in 3D also a set of square
+#   faces, containing reference to each 4-tuple of nodes.
+#   
+#   The resulting shell is open if the binary structure touches edges of
+#   image.
+#
+#   See also :
+#   imPatch, drawMesh
+#
+#   ---------
+#
+#   author : David Legland 
+#   INRA - TPV URPOI - BIA IMASTE
+#   created the 28/06/2004.
+#
 
-%   HISTORY
-%   05/08/2004 : change name and add 2D case.
+#   HISTORY
+#   05/08/2004 : change name and add 2D case.
 
 
 dim = size(img);
@@ -58,9 +60,9 @@ if nd==2 && (dim(1)==1 || dim(2)==1)
 end
 
 
-nodes = zeros([0 nd]);  % coordinates of vertices
-edges = zeros([0 2]);   % first node and second nodes
-faces = zeros([0 4]);   % indices of 4 corners of each square face
+nodes = zeros([0 nd]);  # coordinates of vertices
+edges = zeros([0 2]);   # first node and second nodes
+faces = zeros([0 4]);   # indices of 4 corners of each square face
 
 if nd==1
     img = img(:)>0;
@@ -89,7 +91,7 @@ elseif nd==2
 	px = [px; reshape([x-.5 x+.5]', length(x)*2,1)];
 	py = [py; reshape([y+.5 y+.5]', length(x)*2,1)];	
 	
-	[nodes, i, j] = unique([py px], 'rows'); %#ok<ASGLU>
+	[nodes, i, j] = unique([py px], 'rows'); ##ok<ASGLU>
 	
 
 	ne = floor(size(px, 1)/2);
@@ -129,7 +131,7 @@ elseif nd==3
 	pz = [pz; reshape([z+.5 z+.5 z+.5 z+.5]', length(x)*4,1)];
 	
 	
-	[nodes, i, j] = unique([py px pz], 'rows'); %#ok<ASGLU>
+	[nodes, i, j] = unique([py px pz], 'rows'); ##ok<ASGLU>
 	
 	nf = floor(size(px, 1)/4);
 	faces = repmat(1:4, [nf 1]) + repmat((0:4:4*nf-1)', [1 4]);
@@ -146,7 +148,7 @@ elseif nd==3
 end
 
 
-% format output arguments
+# format output arguments
 
 if nargout==3
     varargout{1} = nodes;

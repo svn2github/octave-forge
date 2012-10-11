@@ -1,23 +1,23 @@
-function test_suite = test_clipPolygon3dHP(varargin) %#ok<STOUT>
-%TEST_CLIPPOLYGON3DHP  Test case for the file clipPolygon3dHP
-%
-%   Test case for the file clipPolygon3dHP
+function test_suite = test_clipPolygon3dHP(varargin) ##ok<STOUT>
+#TEST_CLIPPOLYGON3DHP  Test case for the file clipPolygon3dHP
+#
+#   Test case for the file clipPolygon3dHP
 
-%   Example
-%   test_clipPolygon3dHP
-%
-%   See also
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2011-08-17,    using Matlab 7.9.0.529 (R2009b)
-% Copyright 2011 INRA - Cepia Software Platform.
+#   Example
+#   test_clipPolygon3dHP
+#
+#   See also
+#
+#
+# ------
+# Author: David Legland
+# e-mail: david.legland@grignon.inra.fr
+# Created: 2011-08-17,    using Matlab 7.9.0.529 (R2009b)
+# Copyright 2011 INRA - Cepia Software Platform.
 
 initTestSuite;
 
-function test_Triangle_FirstVertexOutside %#ok<*DEFNU>
+function test_Triangle_FirstVertexOutside ##ok<*DEFNU>
 
 poly = [...
     12.1519 14.0046 58.5201; ...

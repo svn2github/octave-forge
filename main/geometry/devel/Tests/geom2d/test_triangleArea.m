@@ -1,26 +1,26 @@
-function test_suite = test_triangleArea(varargin) %#ok<STOUT>
-%TEST_TRIANGLEAREA  Test case for the file triangleArea
-%
-%   Test case for the file triangleArea
+function test_suite = test_triangleArea(varargin) ##ok<STOUT>
+#TEST_TRIANGLEAREA  Test case for the file triangleArea
+#
+#   Test case for the file triangleArea
 
-%   Example
-%   test_triangleArea
-%
-%   See also
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2011-08-23,    using Matlab 7.9.0.529 (R2009b)
-% Copyright 2011 INRA - Cepia Software Platform.
+#   Example
+#   test_triangleArea
+#
+#   See also
+#
+#
+# ------
+# Author: David Legland
+# e-mail: david.legland@grignon.inra.fr
+# Created: 2011-08-23,    using Matlab 7.9.0.529 (R2009b)
+# Copyright 2011 INRA - Cepia Software Platform.
 
 initTestSuite;
 
-function test_Simple %#ok<*DEFNU>
-% Test call of function without argument
+function test_Simple ##ok<*DEFNU>
+# Test call of function without argument
 
-% rectangle triangle with sides 20 and 30 -> area is 300.
+# rectangle triangle with sides 20 and 30 -> area is 300.
 p1 = [10 20];
 p2 = [30 20];
 p3 = [10 50];

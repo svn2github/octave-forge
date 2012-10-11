@@ -1,30 +1,30 @@
-%% Copyright (c) 2011 Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
-%%
-%% This program is free software; you can redistribute it and/or modify
-%% it under the terms of the GNU General Public License as published by
-%% the Free Software Foundation; either version 3 of the License, or
-%% (at your option) any later version.
-%%
-%% This program is distributed in the hope that it will be useful,
-%% but WITHOUT ANY WARRANTY; without even the implied warranty of
-%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-%% GNU General Public License for more details.
-%%
-%% You should have received a copy of the GNU General Public License
-%% along with this program; if not, see <http://www.gnu.org/licenses/>.
+## Copyright (C) 2012 Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
+## 
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free Software
+## Foundation; either version 3 of the License, or (at your option) any later
+## version.
+## 
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+## details.
+## 
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, see <http://www.gnu.org/licenses/>.
 
-%% -*- texinfo -*-
-%% @deftypefn {Function File} { @var{a} =} shapearea (@var{pp})
-%% Calculate the area of a 2D shape defined with piecewise smooth polynomials.
-%%
-%% Shape is defined with piecewise smooth polynomials. @var{pp} is a
-%% cell where each elements is a 2-by-(poly_degree+1) array containing a pair of
-%% polynomials.
-%%
-%% @code{px(i,:) = pp@{i@}(1,:)} and @code{py(i,:) = pp@{i@}(2,:)}.
-%%
-%% @seealso{shapecentroid, shape2polygon, shapeplot}
-%% @end deftypefn
+## -*- texinfo -*-
+## @deftypefn {Function File} { @var{a} =} shapearea (@var{pp})
+## Calculate the area of a 2D shape defined with piecewise smooth polynomials.
+##
+## Shape is defined with piecewise smooth polynomials. @var{pp} is a
+## cell where each elements is a 2-by-(poly_degree+1) array containing a pair of
+## polynomials.
+##
+## @code{px(i,:) = pp@{i@}(1,:)} and @code{py(i,:) = pp@{i@}(2,:)}.
+##
+## @seealso{shapecentroid, shape2polygon, shapeplot}
+## @end deftypefn
 
 function [A ccw] = shapearea (shape)
 
@@ -48,7 +48,7 @@ function dA = Aint (x)
 
 end
 
-%!demo % non-convex piece-wise polynomial shape
+%!demo # non-convex piece-wise polynomial shape
 %! boomerang = {[ 0 -2 1; ...
 %!               -4  4 0]; ...
 %!              [0.25 -1; ...

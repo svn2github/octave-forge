@@ -23,49 +23,52 @@
 ## OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 ## OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-function box = boundingBox3d(points)
-#BOUNDINGBOX3D Bounding box of a set of 3D points
-#
-#   BOX = boundingBox3d(POINTS)
-#   Returns the bounding box of the set of points POINTS. POINTS is a
-#   N-by-3 array containing points coordinates. The result BOX is a 1-by-6 
-#   array, containing:
-#   [XMIN XMAX YMIN YMAX ZMIN ZMAX]
-#
-#   Example
-#   # Draw bounding box of a cubeoctehedron
-#     [v e f] = createCubeOctahedron;
-#     box3d = boundingBox3d(v);
-#     figure; hold on;
-#     drawMesh(v, f);
-#     drawBox3d(box3d);
-#     set(gcf, 'renderer', 'opengl')
-#     axis([-2 2 -2 2 -2 2]);
-#     view(3)
-#     
-#   See also
-#   boxes3d, drawBox3d
-#
-# ------
-# Author: David Legland
-# e-mail: david.legland@grignon.inra.fr
-# Created: 2011-04-01,    using Matlab 7.9.0.529 (R2009b)
-# Copyright 2011 INRA - Cepia Software Platform.
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{mesh} =} parseMeshData  (@var{vertices},@var{edges},@var{faces})
+## @deftypefnx {Function File} {@var{mesh} =} parseMeshData  (@var{vertices},@var{faces})
+## @deftypefnx {Function File} {[@var{vertices},@var{edges},@var{faces}] =} parseMeshData  (@var{mesh})
+## @deftypefnx {Function File} {[@var{vertices},@var{faces}] =} parseMeshData  (@var{mesh})
+## Conversion of data representation for meshes
+##
+##   MESH = parseMeshData(VERTICES, EDGES, FACES)
+##   MESH = parseMeshData(VERTICES, FACES)
+##   [VERTICES EDGES FACES] = parseMeshData(MESH)
+##   [VERTICES FACES] = parseMeshData(MESH)
+##
+##
+## @seealso{meshes3d, formatMeshOutput}
+## @end deftypefn
 
-#   HISTORY
-#   2011-04-08 add example
-#   2011-12-09 rename to boundingBox3d
+function varargout = parseMeshData(varargin)
 
-# compute extreme x and y values
-xmin = min(points(:,1));
-xmax = max(points(:,1));
-ymin = min(points(:,2));
-ymax = max(points(:,2));
-box = [xmin xmax ymin ymax];
+  # initialize edges
+  edges = [];
 
-# process case of 3D points
-if size(points, 2) > 2
-    zmin = min(points(:,3));
-    zmax = max(points(:,3));
-    box = [xmin xmax ymin ymax zmin zmax];
-end
+  # Process input arguments
+  if nargin == 1
+      # input is a data structure
+      mesh = varargin{1};
+      vertices = mesh.vertices;
+      faces = mesh.faces;
+      if isfield(mesh, 'edges')
+          edges = mesh.edges;
+      end
+      
+  elseif nargin == 2
+      # input are vertices and faces
+      vertices = varargin{1};
+      faces = varargin{2};
+      
+  elseif nargin == 3
+      # input are vertices, edges and faces
+      vertices = varargin{1};
+      edges = varargin{2};
+      faces = varargin{3};
+      
+  else
+      error('Wrong number of arguments');
+  end
+
+  varargout = formatMeshOutput(nargout, vertices, edges, faces);
+
+endfunction

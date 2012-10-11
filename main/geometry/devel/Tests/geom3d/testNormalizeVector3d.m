@@ -1,23 +1,23 @@
-function test_suite = testNormalizeVector3d(varargin) %#ok<STOUT>
-%TESTNORMALIZEVECTOR3D  One-line description here, please.
-%
-%   output = testNormalizeVector3d(input)
-%
-%   Example
-%   testNormalizeVector3d
-%
-%   See also
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2010-11-16,    using Matlab 7.9.0.529 (R2009b)
-% Copyright 2010 INRA - Cepia Software Platform.
+function test_suite = testNormalizeVector3d(varargin) ##ok<STOUT>
+#TESTNORMALIZEVECTOR3D  One-line description here, please.
+#
+#   output = testNormalizeVector3d(input)
+#
+#   Example
+#   testNormalizeVector3d
+#
+#   See also
+#
+#
+# ------
+# Author: David Legland
+# e-mail: david.legland@grignon.inra.fr
+# Created: 2010-11-16,    using Matlab 7.9.0.529 (R2009b)
+# Copyright 2010 INRA - Cepia Software Platform.
 
 initTestSuite;
 
-function testOrthoVectors %#ok<*DEFNU>
+function testOrthoVectors ##ok<*DEFNU>
 
 vec1    = [3 0 0];
 exp1    = [1 0 0];

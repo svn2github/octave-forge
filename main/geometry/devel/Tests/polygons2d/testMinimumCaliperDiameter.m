@@ -1,24 +1,24 @@
 function test_suite = testMinimumCaliperDiameter(varargin)
-%TESTMINIMUMCALIPERDIAMETER  One-line description here, please.
-%
-%   output = testMinimumCaliperDiameter(input)
-%
-%   Example
-%   testMinimumCaliperDiameter
-%
-%   See also
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2011-04-14,    using Matlab 7.9.0.529 (R2009b)
-% Copyright 2011 INRA - Cepia Software Platform.
+#TESTMINIMUMCALIPERDIAMETER  One-line description here, please.
+#
+#   output = testMinimumCaliperDiameter(input)
+#
+#   Example
+#   testMinimumCaliperDiameter
+#
+#   See also
+#
+#
+# ------
+# Author: David Legland
+# e-mail: david.legland@grignon.inra.fr
+# Created: 2011-04-14,    using Matlab 7.9.0.529 (R2009b)
+# Copyright 2011 INRA - Cepia Software Platform.
 
 
 initTestSuite;
 
-function testSquare %#ok<*DEFNU>
+function testSquare ##ok<*DEFNU>
 
 p1 = [10 10];
 p2 = [20 10];
@@ -58,7 +58,7 @@ pts = [...
 width = minimumCaliperDiameter(pts);
 assertEqual(60, width);
 
-% try again by shuffling vertices
+# try again by shuffling vertices
 pts = pts([ 4 10 6 12 2 11 8 1 5 3 9 7], :);
 width = minimumCaliperDiameter(pts);
 assertEqual(60, width);

@@ -1,38 +1,38 @@
-%% Copyright (c) 2010 Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
-%%
-%%    This program is free software: you can redistribute it and/or modify
-%%    it under the terms of the GNU General Public License as published by
-%%    the Free Software Foundation, either version 3 of the License, or
-%%    any later version.
-%%
-%%    This program is distributed in the hope that it will be useful,
-%%    but WITHOUT ANY WARRANTY; without even the implied warranty of
-%%    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%%    GNU General Public License for more details.
-%%
-%%    You should have received a copy of the GNU General Public License
-%%    along with this program. If not, see <http://www.gnu.org/licenses/>.
+## Copyright (C) 2012 Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
+##
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free Software
+## Foundation; either version 3 of the License, or (at your option) any later
+## version.
+##
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+## details.
+##
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, see <http://www.gnu.org/licenses/>.
 
-%% -*- texinfo -*-
-%% @deftypefn {Function File} {@var{fileStr} =} data2geo (@var{data}, @var{lc})
-%% @deftypefnx {Function File} {@var{fileStr} =} data2geo (@dots{}, @var{param}, @var{value})
-%% Uses data to build a file compatible with Gmsh.
-%%
-%% @var{data} is assumed to describe a polygon in @code{polygon2d} format.
-%% The argument @var{lc} specifies the edge size.
-%%
-%% The optional parameters can be 'output' followed with a string specifying a file
-%% to write, and 'spherical' followed by a real number @var{r} indicating that the
-%  polygon describes a spherical surface of radious @var{r}.
-%%
-%% @seealso{polygon2d, @@svg/path2polygon}
-%% @end deftypefn
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{fileStr} =} data2geo (@var{data}, @var{lc})
+## @deftypefnx {Function File} {@var{fileStr} =} data2geo (@dots{}, @var{param}, @var{value})
+## Uses data to build a file compatible with Gmsh.
+##
+## @var{data} is assumed to describe a polygon in @code{polygon2d} format.
+## The argument @var{lc} specifies the edge size.
+##
+## The optional parameters can be 'output' followed with a string specifying a file
+## to write, and 'spherical' followed by a real number @var{r} indicating that the
+##  polygon describes a spherical surface of radious @var{r}.
+##
+## @seealso{polygon2d, @@svg/path2polygon}
+## @end deftypefn
 
 function strFile = data2geo(data,lc,varargin)
 
     nl = @()sprintf('\n');
 
-    %% Parse options
+    ## Parse options
     filegiven = [];
     spherical = [];
     if nargin > 2
@@ -49,24 +49,24 @@ function strFile = data2geo(data,lc,varargin)
     strFile = [];
     strFile = [strFile header nl()];
 
-    % Points
+    # Points
     strFile = [strFile '// Points' nl()];
 
     for i=1:n
         strFile = [strFile pointGeo(i,data(i,:),lc)];
     end
 
-    % Lines
+    # Lines
     strFile = [strFile '// Lines' nl()];
     for i=1:n-1
         strFile = [strFile lineGeo(i,i,i+1)];
     end
     strFile = [strFile lineGeo(n,n,1)];
 
-    % Loop
+    # Loop
     strFile = [strFile lineLoopGeo(n+1,n,1:n)];
 
-    % Surface
+    # Surface
     if spherical
         sphr = varargin{spherical+1};
         if dim ==2
@@ -81,7 +81,7 @@ function strFile = data2geo(data,lc,varargin)
     if filegiven
         outfile = varargin{filegiven+1};
         fid = fopen(outfile,'w');
-        fprintf(fid,'%s',strFile);
+        fprintf(fid,'#s',strFile);
         fclose(fid);
         disp(['DATA2GEO: Geometry file saved to ' outfile])
     end
@@ -106,8 +106,8 @@ endfunction
 %! T = msh2m_gmsh(filename);
 %! pdemesh(T.p,T.e,T.t)
 %!
-%! % --------------------------------------------------------------------------
-%! % We load the drawing6.svg file into Octave and transform it into a polygon.
-%! % Then we create a temporary file where the .geo mesh will be written.
-%! % If the packages msh and fpl are available, a mesh is created from the .geo
-%! % file.
+%! # --------------------------------------------------------------------------
+%! # We load the drawing6.svg file into Octave and transform it into a polygon.
+%! # Then we create a temporary file where the .geo mesh will be written.
+%! # If the packages msh and fpl are available, a mesh is created from the .geo
+%! # file.

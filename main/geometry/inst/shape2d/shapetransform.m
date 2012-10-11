@@ -1,36 +1,36 @@
-%% Copyright (c) 2011 Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
-%%
-%%    This program is free software: you can redistribute it and/or modify
-%%    it under the terms of the GNU General Public License as published by
-%%    the Free Software Foundation, either version 3 of the License, or
-%%    any later version.
-%%
-%%    This program is distributed in the hope that it will be useful,
-%%    but WITHOUT ANY WARRANTY; without even the implied warranty of
-%%    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%%    GNU General Public License for more details.
-%%
-%%    You should have received a copy of the GNU General Public License
-%%    along with this program. If not, see <http://www.gnu.org/licenses/>.
+## Copyright (C) 2012 Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
+## 
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free Software
+## Foundation; either version 3 of the License, or (at your option) any later
+## version.
+## 
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+## details.
+## 
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, see <http://www.gnu.org/licenses/>.
 
-%% -*- texinfo -*-
-%% @deftypefn {Function File} {@var{nshape} = } shapetransform (@var{shape}, @var{T})
-%% Applies transformation to a shape defined by piecewise smooth polynomials.
-%%
-%% @var{shape} is a cell where each elements is a 2-by-(poly_degree+1) matrix
-%% containing a pair of polynomials.
-%%
-%% Format of @var{T} can be one of :
-%% @example
-%% @group
-%%  [c] , [a b] , [a b c] or [a b c]
-%%  [f]   [d e]   [d e f]    [d e f]
-%%                           [0 0 1]
-%% @end group
-%% @end example
-%%
-%% @seealso{shape2polygon, shapeplot}
-%% @end deftypefn
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{nshape} = } shapetransform (@var{shape}, @var{T})
+## Applies transformation to a shape defined by piecewise smooth polynomials.
+##
+## @var{shape} is a cell where each elements is a 2-by-(poly_degree+1) matrix
+## containing a pair of polynomials.
+##
+## Format of @var{T} can be one of :
+## @example
+## @group
+##  [c] , [a b] , [a b c] or [a b c]
+##  [f]   [d e]   [d e f]    [d e f]
+##                           [0 0 1]
+## @end group
+## @end example
+##
+## @seealso{shape2polygon, shapeplot}
+## @end deftypefn
 
 function nshape = shapetransform (shape, Trans)
 
@@ -48,15 +48,15 @@ function nshape = shapetransform (shape, Trans)
 
   switch size(Trans,2)
     case 1
-    % Just translation
+    # Just translation
       v = Trans;
 
     case 2
-    % Just linear transformation
+    # Just linear transformation
       A = Trans;
 
     case 3
-    % Affine transform
+    # Affine transform
       A = Trans(1:2,1:2);
       v = Trans(1:2,3);
   end

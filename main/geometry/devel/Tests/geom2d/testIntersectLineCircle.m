@@ -1,24 +1,24 @@
-function  test_suite = testIntersectLineCircle(varargin) %#ok<STOUT>
-%TESTINTERSECTLINECIRCLE  One-line description here, please.
-%
-%   output = testIntersectLineCircle(input)
-%
-%   Example
-%   testIntersectLineCircle
-%
-%   See also
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2011-06-06,    using Matlab 7.9.0.529 (R2009b)
-% Copyright 2011 INRA - Cepia Software Platform.
+function  test_suite = testIntersectLineCircle(varargin) ##ok<STOUT>
+#TESTINTERSECTLINECIRCLE  One-line description here, please.
+#
+#   output = testIntersectLineCircle(input)
+#
+#   Example
+#   testIntersectLineCircle
+#
+#   See also
+#
+#
+# ------
+# Author: David Legland
+# e-mail: david.legland@grignon.inra.fr
+# Created: 2011-06-06,    using Matlab 7.9.0.529 (R2009b)
+# Copyright 2011 INRA - Cepia Software Platform.
 
 initTestSuite;
 
 
-function testIntersect %#ok<*DEFNU>
+function testIntersect ##ok<*DEFNU>
 
 center = [10 0];
 l1 = [center 0 1];

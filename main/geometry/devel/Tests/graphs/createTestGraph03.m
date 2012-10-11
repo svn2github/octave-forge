@@ -1,19 +1,19 @@
 function [nodes edges] = createTestGraph03(varargin)
-%CREATETESTGRAPH03  One-line description here, please.
-%
-%   output = createTestGraph03(input)
-%
-%   Example
-%   [nodes edges] = createTestGraph03
-%
-%   See also
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2011-05-18,    using Matlab 7.9.0.529 (R2009b)
-% Copyright 2011 INRA - Cepia Software Platform.
+#CREATETESTGRAPH03  One-line description here, please.
+#
+#   output = createTestGraph03(input)
+#
+#   Example
+#   [nodes edges] = createTestGraph03
+#
+#   See also
+#
+#
+# ------
+# Author: David Legland
+# e-mail: david.legland@grignon.inra.fr
+# Created: 2011-05-18,    using Matlab 7.9.0.529 (R2009b)
+# Copyright 2011 INRA - Cepia Software Platform.
 
 nodes = [ ...
      30 10; ...

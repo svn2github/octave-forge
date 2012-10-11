@@ -1,22 +1,22 @@
-function test_suite = testTransformPoint3d(varargin) %#ok<STOUT>
-%Check transformation of points
-%   output = testTransformPoint3d(input)
-%
-%   Example
-%   testTransformPoint3d
-%
-%   See also
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2009-06-19,    using Matlab 7.7.0.471 (R2008b)
-% Copyright 2009 INRA - Cepia Software Platform.
+function test_suite = testTransformPoint3d(varargin) ##ok<STOUT>
+#Check transformation of points
+#   output = testTransformPoint3d(input)
+#
+#   Example
+#   testTransformPoint3d
+#
+#   See also
+#
+#
+# ------
+# Author: David Legland
+# e-mail: david.legland@grignon.inra.fr
+# Created: 2009-06-19,    using Matlab 7.7.0.471 (R2008b)
+# Copyright 2009 INRA - Cepia Software Platform.
 
 initTestSuite;
 
-function testTranslation %#ok<*DEFNU>
+function testTranslation ##ok<*DEFNU>
 p0 = [1 2 3];
 v  = [4 5 6];
 trans = createTranslation3d(v);

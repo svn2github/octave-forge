@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Replace comments
-#sed 's/%/#/g' ${1} > tmp
+sed 's/#!/%!/g' ${1} > tmp
 
-sed 's/isPerpendicular3d/isPerpendicular /g' ${1} > tmp
+#sed 's/isPerpendicular3d/isPerpendicular /g' ${1} > tmp
 
 mv tmp ${1}

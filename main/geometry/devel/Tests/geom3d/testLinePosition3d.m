@@ -1,24 +1,24 @@
-function test_suite = testLinePosition3d(varargin) %#ok<STOUT>
-%TESTLINEPOSITION3D  One-line description here, please.
-%
-%   output = testLinePosition3d(input)
-%
-%   Example
-%   testLinePosition3d
-%
-%   See also
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2010-11-16,    using Matlab 7.9.0.529 (R2009b)
-% Copyright 2010 INRA - Cepia Software Platform.
+function test_suite = testLinePosition3d(varargin) ##ok<STOUT>
+#TESTLINEPOSITION3D  One-line description here, please.
+#
+#   output = testLinePosition3d(input)
+#
+#   Example
+#   testLinePosition3d
+#
+#   See also
+#
+#
+# ------
+# Author: David Legland
+# e-mail: david.legland@grignon.inra.fr
+# Created: 2010-11-16,    using Matlab 7.9.0.529 (R2009b)
+# Copyright 2010 INRA - Cepia Software Platform.
 
 
 initTestSuite;
 
-function testSimple %#ok<*DEFNU>
+function testSimple ##ok<*DEFNU>
 
 p0 = [10 20 30];
 v0 = [40 50 60];

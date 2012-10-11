@@ -1,24 +1,24 @@
-function test_suite = testIntersectLinePolygon(varargin) %#ok<STOUT>
-%TESTINTERSECTLINEPOLYGON Test case for function intersectLinePolygon
-%   output = testIntersectLinePolygon(input)
-%
-%   Example
-%   testIntersectLinePolygon
-%
-%   See also
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2009-04-22,    using Matlab 7.7.0.471 (R2008b)
-% Copyright 2009 INRA - Cepia Software Platform.
+function test_suite = testIntersectLinePolygon(varargin) ##ok<STOUT>
+#TESTINTERSECTLINEPOLYGON Test case for function intersectLinePolygon
+#   output = testIntersectLinePolygon(input)
+#
+#   Example
+#   testIntersectLinePolygon
+#
+#   See also
+#
+#
+# ------
+# Author: David Legland
+# e-mail: david.legland@grignon.inra.fr
+# Created: 2009-04-22,    using Matlab 7.7.0.471 (R2008b)
+# Copyright 2009 INRA - Cepia Software Platform.
 
 initTestSuite;
 
 
-function testSquare %#ok<*DEFNU>
-% test with a square and orthogonal lines, inside and outside
+function testSquare ##ok<*DEFNU>
+# test with a square and orthogonal lines, inside and outside
 
 poly = [0 0;10 0;10 10;0 10];
 
@@ -36,7 +36,7 @@ assertEqual(0, size(intersectLinePolygon(lineV2, poly), 1));
 
 
 function testClosedSquare
-% test when the polygon has same vertices at end and at bginning
+# test when the polygon has same vertices at end and at bginning
 
 poly = [0 0;10 0;10 10;0 10;0 0];
 
@@ -115,7 +115,7 @@ assertEqual(size(intersects, 1), size(inds, 1));
 
 
 function testMShape
-% a more complicated polygon, with 4 intersections
+# a more complicated polygon, with 4 intersections
 
 poly = [10 10;60 10;60 40;40 20;30 20;10 40];
 line = [0 30 3 0];
@@ -128,7 +128,7 @@ assertEqual(expInds, inds);
 
 
 function testUniquePoints
-% Check that function returns unique results, even for vertex points
+# Check that function returns unique results, even for vertex points
 
 poly = [0 0;10 0;10 10;0 10];
 line = [5 5 1 1];
@@ -139,7 +139,7 @@ function testGetEdgesIndices
 
 poly = [0 0;10 0;10 10;0 10];
 line = [5 5 1 0];
-[intersects inds] = intersectLinePolygon(line, poly); %#ok<ASGLU>
+[intersects inds] = intersectLinePolygon(line, poly); ##ok<ASGLU>
 
 assertEqual(2, length(inds));
 assertEqual([4;2], inds);

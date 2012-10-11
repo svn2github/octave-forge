@@ -1,32 +1,32 @@
-%% Copyright (c) 2011 Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
-%%
-%% This program is free software; you can redistribute it and/or modify
-%% it under the terms of the GNU General Public License as published by
-%% the Free Software Foundation; either version 3 of the License, or
-%% (at your option) any later version.
-%%
-%% This program is distributed in the hope that it will be useful,
-%% but WITHOUT ANY WARRANTY; without even the implied warranty of
-%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-%% GNU General Public License for more details.
-%%
-%% You should have received a copy of the GNU General Public License
-%% along with this program; if not, see <http://www.gnu.org/licenses/>.
+## Copyright (C) 2012 Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
+## 
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free Software
+## Foundation; either version 3 of the License, or (at your option) any later
+## version.
+## 
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+## details.
+## 
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, see <http://www.gnu.org/licenses/>.
 
-%% -*- texinfo -*-
-%% @deftypefn {Function File} { @var{cm} =} shapecentroid (@var{pp})
-%%  Centroid of a simple plane shape defined with piecewise smooth polynomials.
-%%
-%% The shape is defined with piecewise smooth polynomials. @var{pp} is a
-%% cell where each elements is a 2-by-(poly_degree+1) matrix containing a pair
-%% of polynomials.
-%% @code{px(i,:) = pp@{i@}(1,:)} and @code{py(i,:) = pp@{i@}(2,:)}.
-%%
-%% The edges of the shape should not self-intersect. This function does not check for the
-%% sanity of the shape.
-%%
-%% @seealso{shapearea, shape2polygon}
-%% @end deftypefn
+## -*- texinfo -*-
+## @deftypefn {Function File} { @var{cm} =} shapecentroid (@var{pp})
+##  Centroid of a simple plane shape defined with piecewise smooth polynomials.
+##
+## The shape is defined with piecewise smooth polynomials. @var{pp} is a
+## cell where each elements is a 2-by-(poly_degree+1) matrix containing a pair
+## of polynomials.
+## @code{px(i,:) = pp@{i@}(1,:)} and @code{py(i,:) = pp@{i@}(2,:)}.
+##
+## The edges of the shape should not self-intersect. This function does not check for the
+## sanity of the shape.
+##
+## @seealso{shapearea, shape2polygon}
+## @end deftypefn
 
 function cm = shapecentroid (shape)
 
@@ -55,7 +55,7 @@ function dcm = CMint (x)
 
 endfunction
 
-%!demo % non-convex bezier shape
+%!demo # non-convex bezier shape
 %! boomerang = {[ 0 -2 1; ...
 %!               -4  4 0]; ...
 %!              [0.25 -1; ...
@@ -128,21 +128,21 @@ endfunction
 %!         [-342.231   191.266   168.108   274.286; ...
 %!           58.870   -38.083   -89.358   232.362]};
 
-%!test % x-Reflection
+%!test # x-Reflection
 %! v = shapecentroid (shape)(:);
 %! T = createLineReflection([0 0 1 0]);
 %! nshape = shapetransform (shape, T);
 %! vn = shapecentroid (nshape)(:);
 %! assert(vn,T(1:2,1:2)*v);
 
-%!test % Rotation
+%!test # Rotation
 %! v = shapecentroid (shape)(:);
 %! T = createRotation(v.',pi/2);
 %! nshape = shapetransform (shape, T);
 %! vn = shapecentroid (nshape)(:);
 %! assert(vn,v,1e-2);
 
-%!test % Translation
+%!test # Translation
 %! v = shapecentroid (shape)(:);
 %! nshape = shapetransform (shape, -v);
 %! vn = shapecentroid (nshape)(:);

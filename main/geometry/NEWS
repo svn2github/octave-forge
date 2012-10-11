@@ -11,8 +11,8 @@ geometry-1.6.0   Release Date: 2012-xx-xx  Release Manager: Juan Pablo Carbajal
   projPointOnPlane   sph2cart2   vectorAngle3d   distancePointLine3d
   cart2sph2d   createRotationOx   createRotationOy   createRotationOz
   createTranslation3d   drawAxis3d   drawCylinder   drawSphere
-  polygonArea3d   transformPoint3d   drawBox3d   drawEdge3d
-
+  polygonArea3d   transformPoint3d   drawBox3d   drawEdge3d   drawMesh
+  createCubeOctahedron   boundingBox3d
 
 ** Bug Fixes:
   - drawArrow  was not working due to porting errors.

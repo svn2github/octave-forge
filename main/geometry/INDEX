@@ -182,10 +182,13 @@ geometry >> Computational Geometry
  planeNormal
  planePosition
  projPointOnPlane
+3D Meshes
+ createCubeOctahedron
+ drawMesh
 3D Spheres
  drawSphere
-3D Cubes
 3D Boxes
+ boundingBox3d
  drawBox3d
 3D Cylinders
  drawCylinder

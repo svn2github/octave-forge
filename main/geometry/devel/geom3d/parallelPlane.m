@@ -44,7 +44,7 @@ function res = parallelPlane(plane, point)
 #     pi1 = intersectLinePlane(line, plane);
 #     pi2 = intersectLinePlane(line, plane2);
 #     # check the distance between intersection points
-#     distancePoints3d(pi1, pi2)
+#     distancePoints (pi1, pi2)
 #     ans = 
 #         5
 #

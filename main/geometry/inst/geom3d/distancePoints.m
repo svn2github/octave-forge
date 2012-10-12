@@ -51,7 +51,7 @@ function dist = distancePoints(p1, p2, varargin)
 
   norm = 2;
   diagonal = false;
-keyboard
+
   switch numel(varargin)
     case 0
       1;
@@ -90,7 +90,11 @@ keyboard
       case 1
           dist = sum(abs(ptsDiff), along_dim);
       case 2
-          dist = reshape(vectorNorm (reshape(ptsDiff,n1*n2,dim)),n1,n2);
+          if ~diagonal
+            dist = reshape(vectorNorm (reshape(ptsDiff,n1*n2,dim)),n1,n2);
+          else
+            dist = vectorNorm (ptsDiff);
+          end
       case Inf
           dist = max(abs(ptsDiff), [], along_dim);
       otherwise

@@ -69,7 +69,7 @@
 ##   midPoint3d                - Middle point of two 3D points or of a 3D edge
 ##   isCoplanar                - Tests input points for coplanarity in 3-space.
 ##   transformPoint3d          - Transform a point with a 3D affine transform
-##   distancePoints3d          - Compute euclidean distance between pairs of 3D Points
+##   distancePoints           - Compute euclidean distance between pairs of 3D Points
 ##   clipPoints3d              - Clip a set of points by a box
 ##   drawPoint3d               - Draw 3D point on the current axis.
 ##

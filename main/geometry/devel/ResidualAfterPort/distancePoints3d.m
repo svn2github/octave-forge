@@ -1,14 +1,14 @@
-function dist = distancePoints3d(p1, p2, varargin)
+function dist = distancePoints (p1, p2, varargin)
 #DISTANCEPOINTS3D Compute euclidean distance between pairs of 3D Points
 #
-#   D = distancePoints3d(P1, P2) return distance between points P1 and
+#   D = distancePoints (P1, P2) return distance between points P1 and
 #   P2, given as [X Y Z].
 #   
 #   If P1 and P2 are two arrays of points, result is a N1*N2 array
 #   containing distance between each point of P1 and each point of P2. 
 #
 #
-#   D = distancePoints3d(P1, P2, NOR)
+#   D = distancePoints (P1, P2, NOR)
 #   with NOR being 1, 2, or Inf, corresponfing to the norm used. Default is
 #   2 (euclidean norm). 1 correspond to manhattan (or taxi driver) distance
 #   and Inf to maximum difference in each coordinate.

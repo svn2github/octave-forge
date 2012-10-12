@@ -77,7 +77,7 @@ function circle = intersectPlaneSphere(plane, sphere)
   circle0 = projPointOnPlane(center, plane);
 
   # radius of circles
-  d   = distancePoints3d(center, circle0);
+  d   = distancePoints (center, circle0);
   Rc  = sqrt(Rs.*Rs - d.*d);
 
   # normal of planes = normal of circles

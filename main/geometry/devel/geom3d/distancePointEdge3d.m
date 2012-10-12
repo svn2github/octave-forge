@@ -40,7 +40,7 @@ function varargout = distancePointEdge3d(point, edge)
 #   comprised between 0 (first point) and 1 (last point).
 #
 #   See also:
-#   edges3d, points3d, distancePoints3d, distancePointLine3d
+#   edges3d, points3d, distancePoints , distancePointLine3d
 #   
 #
 #   ---------

@@ -2,16 +2,16 @@
 ## Copyright (C) 2004-2011 INRA - CEPIA Nantes - MIAJ (Jouy-en-Josas)
 ## Copyright (C) 2012 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 ## All rights reserved.
-## 
+##
 ## Redistribution and use in source and binary forms, with or without
 ## modification, are permitted provided that the following conditions are met:
-## 
+##
 ##     1 Redistributions of source code must retain the above copyright notice,
 ##       this list of conditions and the following disclaimer.
 ##     2 Redistributions in binary form must reproduce the above copyright
 ##       notice, this list of conditions and the following disclaimer in the
 ##       documentation and/or other materials provided with the distribution.
-## 
+##
 ## THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ''AS IS''
 ## AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 ## IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -49,9 +49,9 @@
 ##
 ##   PT2 = transformPoint3d(X1, Y1, Z1, TRANS);
 ##   also work when X1, Y1 and Z1 are 3 arrays with the same size. In this
-##   case, PT2 will be a 1-by-3 cell containing {X Y Z} outputs of size(X1).
+##   case, PT2 will be a 1-by-3 cell containing @{X Y Z@} outputs of size(X1).
 ##
-##   [X2 Y2 Z2] = transformPoint3d(...);
+##   [X2 Y2 Z2] = transformPoint3d(@dots{});
 ##   returns the result in 3 different arrays the same size as the input.
 ##   This form can be useful when used with functions like meshgrid or warp.
 ##

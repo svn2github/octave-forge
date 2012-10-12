@@ -27,16 +27,14 @@
 ## @deftypefn {Function File} {@var{c} =} sph2cart2d(@var{theta}, @var{phi}, @var{rho})
 ## @deftypefnx {Function File} {@var{c} =} sph2cart2d(@var{theta}, @var{phi})
 ## @deftypefnx {Function File} {@var{c} =} sph2cart2d(@var{s})
-## @deftypefn {Function File} {[@var{x},@var{y},@var{z}] =} sph2cart2d(@var{theta}, @var{phi}, @var{rho})
+## @deftypefnx {Function File} {[@var{x},@var{y},@var{z}] =} sph2cart2d(@var{theta}, @var{phi}, @var{rho})
 ## Convert spherical coordinates to cartesian coordinates in degrees
 ##
 ##
-##   @var{c} = SPH2CART2(@var{theta}, @var{phi})       (assume rho = 1)
-##   @var{c} = SPH2CART2(@var{s})
-##   [X, Y, Z] = SPH2CART2(@var{theta}, @var{phi}, @var{rho});
+##   @var{c} = SPH2CART2(@var{theta}, @var{phi}) assumes @var{rho} = 1.
 ##
-##   @var{s} = [phi theta rho] (spherical coordinate).
-##   @var{c} = [X Y Z]  (cartesian coordinate)
+##   @var{s} = [@var{theta}, @var{phi}, @var{rho}] (spherical coordinate).
+##   @var{c} = [@var{x},@var{y},@var{z}]  (cartesian coordinate)
 ##
 ##   The following convention is used:
 ##   @var{theta} is the colatitude, in degrees, 0 for north pole, +180 degrees for

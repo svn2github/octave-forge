@@ -2,6 +2,7 @@
 dirlist = {"geom2d","io","polygons2d","shape2d","octclip", "graphs",...
            "geom3d","meshes3d"};
 dirname = fileparts (canonicalize_file_name (mfilename ("fullpath")));
+%keyboard
 pp = strsplit (dirname,filesep (), true);
 arch = cstrcat (octave_config_info ("canonical_host_type"),
                               "-", octave_config_info ("api_version"));
@@ -15,7 +16,7 @@ pkg_data = installed_pkgs_lst (cellfun(@(x) ismember (x.name, {"geometry"}), ...
 if isempty(pkg_data)
   % The package is not installed yet
   [pkg_folder dep_folder] = pkg ("prefix");
-  pkg_folder = [pkg_folder strcat(filesep(),{pp{end-1:end}}){:} ];
+  pkg_folder = [pkg_folder strcat(filesep(),{pp{end}}){:} ];
   if strcmp (arch , pp{end})
   %% If we are in Architecture dependent folder add from outside
     pkg_folder = strsplit (pkg_folder,filesep (), true);

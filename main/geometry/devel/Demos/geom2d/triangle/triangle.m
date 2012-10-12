@@ -9,8 +9,8 @@
 #
 
 name = 'qu61';
-img = imread(sprintf('~/images/ref2003/img/#s10.bmp', name));
-lbl = imread(sprintf('~/matlab/res/seg2d/#slbl.tif', name));
+img = imread(sprintf('~/images/ref2003/img/%s10.bmp', name));
+lbl = imread(sprintf('~/matlab/res/seg2d/%slbl.tif', name));
 lbl = cleanLabels(lbl);
 
 stats = regionprops(lbl, 'Centroid', 'BoundingBox', 'Area', 'Image');
@@ -18,7 +18,7 @@ ori = zeros(double(max(lbl(:))), 24);
 
 for cell = 1:double(max(lbl(:)))
 
-    disp(sprintf('cell : #d', cell));
+    disp(sprintf('cell : %d', cell));
     # caracteristiques geometriques de la cellule.
     box = stats(cell).BoundingBox;
     center = stats(cell).Centroid;

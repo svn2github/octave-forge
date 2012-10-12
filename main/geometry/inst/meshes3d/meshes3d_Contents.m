@@ -2,16 +2,16 @@
 ## Copyright (C) 2004-2011 INRA - CEPIA Nantes - MIAJ (Jouy-en-Josas)
 ## Copyright (C) 2012 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 ## All rights reserved.
-## 
+##
 ## Redistribution and use in source and binary forms, with or without
 ## modification, are permitted provided that the following conditions are met:
-## 
+##
 ##     1 Redistributions of source code must retain the above copyright notice,
 ##       this list of conditions and the following disclaimer.
 ##     2 Redistributions in binary form must reproduce the above copyright
 ##       notice, this list of conditions and the following disclaimer in the
 ##       documentation and/or other materials provided with the distribution.
-## 
+##
 ## THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ''AS IS''
 ## AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 ## IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,8 +31,8 @@
 ##   Creation, vizualization, and manipulation of 3D surface meshes or
 ##   polyhedra.
 ##
-##   Meshes and Polyhedra are represented by a couple of variables {V, F}:
-##   V: Nv-by-3 array of vertices: [x1 y1 z1; ... ; xn yn zn];
+##   Meshes and Polyhedra are represented by a couple of variables @{V, F@}:
+##   V: Nv-by-3 array of vertices: [x1 y1 z1; @dots{} ; xn yn zn];
 ##   F: is either a NF-by-3 or NF-by-4 array containing reference for
 ##   vertices of each face, or a NF-by-1 cell array, where each cell is an
 ##   array containing a variable number of node indices.
@@ -41,7 +41,7 @@
 ##
 ##   The library provides function to create basic polyhedric meshes (the 5
 ##   platonic solids, plus few others), as well as functions to perform
-##   basic computations (surface area, normal angles, face centroids...).
+##   basic computations (surface area, normal angles, face centroids @dots{}).
 ##   The 'MengerSponge' structure is an example of mesh that is not simply
 ##   connected (multiple tunnels in the structure).
 ##
@@ -49,10 +49,12 @@
 ##   function, allowing passing arguments more quickly.
 ##
 ##   Example
+## @example
 ##     # create a soccer ball mesh and display it
 ##     [n e f] = createSoccerBall;
 ##     drawMesh(n, f, 'faceColor', 'g', 'linewidth', 2);
 ##     axis equal;
+## @end example
 ##
 ##
 ## General functions

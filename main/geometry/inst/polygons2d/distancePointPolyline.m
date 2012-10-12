@@ -48,6 +48,8 @@ function varargout = distancePointPolyline(point, poly, varargin)
   # allocate memory for result
   minDist = inf * ones(Np, 1);
 
+  ## construct the set of edges
+  edges = [poly(1:end-1, :) poly(2:end, :)];
 
   ## compute distance between current each point and all edges
   dist = distancePointEdge(point, edges);

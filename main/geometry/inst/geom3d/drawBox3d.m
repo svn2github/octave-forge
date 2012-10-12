@@ -98,3 +98,7 @@ endfunction
 %!  drawBox3d(box3d);
 %!  axis([-2 2 -2 2 -2 2]);
 %!  view(3)
+
+%!demo
+%!  close all
+%!  graphics_toolkit("gnuplot")

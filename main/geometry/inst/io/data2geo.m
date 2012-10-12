@@ -81,7 +81,7 @@ function strFile = data2geo(data,lc,varargin)
     if filegiven
         outfile = varargin{filegiven+1};
         fid = fopen(outfile,'w');
-        fprintf(fid,'#s',strFile);
+        fprintf(fid,'%s',strFile);
         fclose(fid);
         disp(['DATA2GEO: Geometry file saved to ' outfile])
     end

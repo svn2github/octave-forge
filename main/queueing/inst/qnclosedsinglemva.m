@@ -109,9 +109,7 @@
 ## In presence of load-dependent servers (i.e., if @code{@var{m}(i)>1}
 ## for some @math{i}), the MVA algorithm is known to be numerically
 ## unstable. Generally this problem manifests itself as negative
-## response times produced by this function. If this happens, you may
-## want to consider the @code{qncmva} or @code{qnclosedsinglecmva}
-## functions.
+## response times produced by this function.
 ## @end quotation
 ##
 ## @seealso{qnclosedsinglemvald,qncmva,qnclosedsinglecmva}

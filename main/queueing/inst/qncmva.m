@@ -30,8 +30,7 @@
 ## Casale, @cite{A Note on Stable Flow-Equivalent Aggregation in Closed
 ## Networks}. This function supports a network of @math{M @geq{} 1}
 ## service centers and a single delay center. Servers @math{1, @dots{},
-## M-1} are load-independent; server @math{M} is load-dependent. For a
-## more general implementation, @xref{doc-qnclosedsinglecmva}.
+## M-1} are load-independent; server @math{M} is load-dependent.
 ##
 ## @strong{INPUTS}
 ##

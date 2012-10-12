@@ -1479,8 +1479,8 @@ Italy, February 2010.
 @end float
 
 The model shown in @ref{fig:web_model} shows a three-tier enterprise system
-with @math{K=6} service centers. The first tier contains the @emph{Web
-server} (node 1), which is responsible for generating Web pages and
+with @math{K=6} service centers. The first tier contains the 
+@emph{Web server} (node 1), which is responsible for generating Web pages and
 transmitting them to clients. The application logic is implemented by
 nodes 2 and 3, and the storage tier is made of nodes 4--6.The system
 is subject to two workload classes, both represented as closed
@@ -1584,7 +1584,7 @@ The example is taken from @ref{Sch82}, and is shown in Figure
 @end float
 
 The system consists of three devices and two job classes. The CPU node
-is a PS server, while the two nodes labeled @emph {I/O} are
+is a PS server, while the two nodes labeled @emph{I/O} are
 FCFS. Class 1 mean service time at the CPU is 0.01; class 2 mean
 service time at the CPU is 0.05. The mean service time at node 2 is
 0.1, and is class-independent. Similarly, the mean service time at

@@ -49,11 +49,18 @@
 ##
 ## @table @var
 ##
+## @item Xl
 ## @item Xu
-## Upper bound on the system throughput.
+## Per-class lower and upper throughput bounds. For example,
+## @code{@var{Xu}(c)} is the upper bound for class @math{c} throughput.
+## @code{Xl} is always @code{-inf} since there can be no lower bound
+## on the throughput of open networks.
 ##
 ## @item Rl
-## Lower bound on the system response time.
+## @item Ru
+## Per-class lower and upper response time bounds. 
+## @code{Ru} is always @code{+inf} since there can be no upper bound
+## on the response time of open networks.
 ##
 ## @end table
 ##
@@ -64,7 +71,7 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [X_upper R_lower] = qnopenmultiab( lambda, S, V )
+function [X_lower X_upper R_lower R_upper] = qnopenmultiab( lambda, S, V )
   if ( nargin < 2 || nargin > 3 )
     print_usage();
   endif
@@ -82,8 +89,10 @@ function [X_upper R_lower] = qnopenmultiab( lambda, S, V )
 	error( "V must be a %d x %d matrix >=0", C, K);
   endif
   D = S.*V;
+  X_lower = -inf(1,C);
   X_upper = 1./max(D,[],2)';
   R_lower = sum(D,2)';
+  R_upper = +inf(1,C);
 endfunction
 
 %!test

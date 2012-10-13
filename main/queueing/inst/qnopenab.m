@@ -33,14 +33,14 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [X_upper R_lower] = qnopenab( lambda, varargin )
+function [Xl Xu Rl Ru] = qnopenab( lambda, varargin )
   if ( nargin < 1 )
     print_usage();
   endif
   if ( isscalar(lambda) )
-    [X_upper R_lower] = qnopensingleab(lambda, varargin{:} );
+    [Xl Xu Rl Ru] = qnopensingleab(lambda, varargin{:} );
   else
-    [X_upper R_lower] = qnopenmultiab(lambda, varargin{:} );
+    [Xl Xu Rl Ru] = qnopenmultiab(lambda, varargin{:} );
   endif
 endfunction
 

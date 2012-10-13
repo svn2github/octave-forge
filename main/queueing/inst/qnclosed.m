@@ -79,13 +79,12 @@ endfunction
 %! N = 15; # Maximum population to consider
 %!
 %! V = qnvisits(P); # Compute number of visits from P
-%! D = V .* S; # Compute service demand from S and V
 %! X_bsb_lower = X_bsb_upper = zeros(1,N);
 %! X_ab_lower = X_ab_upper = zeros(1,N);
 %! X_mva = zeros(1,N);
 %! for n=1:N
-%!   [X_bsb_lower(n) X_bsb_upper(n)] = qnclosedbsb(n, D, Z);
-%!   [X_ab_lower(n) X_ab_upper(n)] = qnclosedab(n, D, Z);
+%!   [X_bsb_lower(n) X_bsb_upper(n)] = qnclosedbsb(n, S, V, m, Z);
+%!   [X_ab_lower(n) X_ab_upper(n)] = qnclosedab(n, S, V, m, Z);
 %!   [U R Q X] = qnclosed( n, S, V, m, Z );
 %!   X_mva(n) = X(1)/V(1);
 %! endfor

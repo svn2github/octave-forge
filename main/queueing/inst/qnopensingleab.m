@@ -17,8 +17,8 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{Xu}, @var{Rl}] =} qnopensingleab (@var{lambda}, @var{S})
-## @deftypefnx {Function File} {[@var{Xu}, @var{Rl}] =} qnopensingleab (@var{lambda}, @var{S}, @var{V})
+## @deftypefn {Function File} {[@var{Xl} @var{Xu}  @var{Rl} @var{Ru}] =} qnopensingleab (@var{lambda}, @var{S})
+## @deftypefnx {Function File} {[@var{Xl} @var{Xu} @var{Rl} @var{Ru}] =} qnopensingleab (@var{lambda}, @var{S}, @var{V})
 ##
 ## @cindex bounds, asymptotic
 ## @cindex open network
@@ -48,11 +48,17 @@
 ##
 ## @table @var
 ##
+## @item Xl
 ## @item Xu
-## Upper bound on the system throughput.
+## Lower and upper bounds on the system throughput. @var{Xl} is
+## always set to @code{-inf} since there can be no lower bound on the
+## throughput of open networks.
 ##
 ## @item Rl
-## Lower bound on the system response time.
+## @item Ru
+## Lower and upper bounds on the system response time. @var{Ru}
+## is always set to @code{+inf} since there can be no upper bound on the
+## throughput of open networks.
 ##
 ## @end table
 ##
@@ -63,7 +69,7 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [X_upper R_lower] = qnopensingleab( lambda, S, V )
+function [X_lower X_upper R_lower R_upper] = qnopensingleab( lambda, S, V )
   if ( nargin < 2 || nargin > 3 )
     print_usage();
   endif
@@ -80,8 +86,10 @@ function [X_upper R_lower] = qnopensingleab( lambda, S, V )
     V = V(:)';
   endif
   D = S.*V;
+  X_lower = -inf;
   X_upper = 1/max(D);
   R_lower = sum(D);
+  R_upper = +inf;
 endfunction
 
 %!test

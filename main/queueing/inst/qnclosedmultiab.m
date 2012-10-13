@@ -47,10 +47,6 @@
 ## requests to center
 ## @math{k} (@code{@var{V}(c,k) @geq{} 0}). Default is 1.
 ##
-## @item Z
-## @code{@var{Z}(c)} is class @math{c} external delay
-## (@code{@var{Z}(c) @geq{} 0}). Default is 0.
-##
 ## @item m
 ## @code{@var{m}(k)} is the number of servers at center @math{k}
 ## (if @var{m} is a scalar, all centers have that number of servers). If
@@ -58,6 +54,10 @@
 ## if @code{@var{m}(k) = 1}, center @math{k} is a M/M/1-FCFS server.
 ## This function does not support multiple-server nodes. Default
 ## is 1.
+##
+## @item Z
+## @code{@var{Z}(c)} is class @math{c} external delay
+## (@code{@var{Z}(c) @geq{} 0}). Default is 0.
 ##
 ## @end table
 ##

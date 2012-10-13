@@ -46,8 +46,8 @@
 ## @code{@var{U} = @var{R} = @var{Q} = @var{X} = 0}
 ##
 ## @item S
-## @code{@var{S}(k)} is the mean service time on server @math{k}
-## (@code{@var{S}(k)>0}).
+## @code{@var{S}(k)} is the mean service time at center @math{k}
+## (@code{@var{S}(k) @geq{} 0}).
 ##
 ## @item V
 ## @code{@var{V}(k)} is the average number of visits to service center
@@ -166,14 +166,16 @@ function [U R Q X G] = qnclosedsinglemva( N, S, V, m, Z )
     return;
   endif
 
-  ## Initialize results
-  p = zeros( K, max(m)+1 ); # p(i,j+1) is the probability that there are j jobs at server i
-  p(:,1) = 1;
-  X_s = 0; # System throughput
-
   i_single = find( m==1 );
   i_multi = find( m>1 );
   i_delay = find( m<1 );
+
+  ## Initialize results
+  if ( length(i_multi)>0 )
+    p = zeros( K, max(m)+1 ); # p(i,j+1) is the probability that there are j jobs at server i
+    p(:,1) = 1;
+  endif
+  X_s = 0; # System throughput
 
   ## Main MVA loop, iterates over the population size
   for n=1:N 

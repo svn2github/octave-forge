@@ -143,7 +143,7 @@
 ##
 ## @item X
 ## @code{@var{X}(c,k)} is the class @math{c} throughput at
-## center @math{k}. The class @math{c} system throughput can be computed
+## center @math{k}. The class @math{c} throughput can be computed
 ## as @code{@var{X}(c,1) / @var{V}(c,1)}.
 ##
 ## @end table

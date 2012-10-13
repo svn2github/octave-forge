@@ -16,7 +16,7 @@ later, as published by the Free Software Foundation.
 1.1 Installation through Octave package management system
 =========================================================
 
-The most recent version of `queueing' is 1.1.2 and can be downloaded
+The most recent version of `queueing' is 1.2.0 and can be downloaded
 from Octave-Forge
 
    `http://octave.sourceforge.net/queueing/'
@@ -38,7 +38,7 @@ your machine. You can verify that the package is indeed installed:
      octave:1>pkg list queueing
      Package Name  | Version | Installation directory
      --------------+---------+-----------------------
-         queueing  |   1.1.2 | /home/moreno/octave/queueing-1.1.2
+         queueing  |   1.2.0 | /home/moreno/octave/queueing-1.2.0
 
      Note: Starting from version 1.1.1, `queueing' is no longer
      automatically loaded on startup. To load the package you need to
@@ -51,7 +51,7 @@ your machine. You can verify that the package is indeed installed:
 then, to install the package in the system-wide location issue this
 command at the Octave prompt:
 
-     octave:1> pkg install _queueing-1.1.2.tar.gz_
+     octave:1> pkg install _queueing-1.2.0.tar.gz_
 
 (you may need to start Octave as root in order to allow the
 installation to copy the files to the target locations). After this,
@@ -60,7 +60,7 @@ without the need to tweak the search path.
 
    If you do not have root access, you can do a local install using:
 
-     octave:1> pkg install -local queueing-1.1.2.tar.gz
+     octave:1> pkg install -local queueing-1.2.0.tar.gz
 
    This will install `queueing' within your home directory, and the
 package will be available to your user only.
@@ -79,8 +79,8 @@ package will be available to your user only.
 If you want to manually install `queueing' in a custom location, you
 can download the tarball and unpack it somewhere:
 
-     tar xvfz queueing-1.1.2.tar.gz
-     cd queueing-1.1.2/queueing/
+     tar xvfz queueing-1.2.0.tar.gz
+     cd queueing-1.2.0/queueing/
 
    Copy all `.m' files from the `inst/' directory to some target
 location. Then, start Octave with the `-p' option to add the target

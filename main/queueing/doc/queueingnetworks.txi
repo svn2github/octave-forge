@@ -1144,6 +1144,10 @@ particular, see section 5.2 ("Asymptotic Bounds").
 @c
 @GETHELP{qnclosedab}
 
+@GETHELP{qnclosedsingleab}
+
+@GETHELP{qnclosedmultiab}
+
 @noindent @strong{REFERENCES}
 
 @noindent Edward D. Lazowska, John Zahorjan, G.  Scott Graham, and Kenneth

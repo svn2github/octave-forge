@@ -93,7 +93,7 @@ function [X_lower X_upper Q_lower Q_upper] = qnclosedgb( N, L, Z, X_minus, X_plu
   L_max = max(L);
   M = length(L);
   if ( nargin < 4 ) 
-    [X_minus X_plus] = qnclosedab(N,L,Z);
+    [X_minus X_plus] = qnclosedsingleab(N,L,ones(size(L)),ones(size(L)),Z);
   endif
   ##[X_minus X_plus] = [0 1/L_max];
   [Q_lower Q_upper] = __compute_Q( N, L, Z, X_plus, X_minus);

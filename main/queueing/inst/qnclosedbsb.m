@@ -17,13 +17,12 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedbsb (@var{N}, @var{D})
-## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedbsb (@var{N}, @var{D}, @var{Z})
+## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedbsb (@var{N}, @dots{} )
 ##
 ## @cindex bounds, balanced system
 ## @cindex closed network
 ##
-## This function computes Balanced System Bounds for throughput and response
+## Compute Balanced System Bounds for throughput and response
 ## time of closed, single class queueing networks. Multiclass networks
 ## might be supported in the future.
 ##
@@ -37,10 +36,9 @@
 ## Web: http://www.moreno.marzolla.name/
 
 function [Xl Xu Rl Ru] = qnclosedbsb( N, varargin )
-  if ( nargin < 2 || nargin > 5 )
+  if ( nargin < 1 )
     print_usage();
   endif
-
   if (isscalar(N))
     [Xl Xu Rl Ru] = qnclosedsinglebsb(N, varargin{:});
   else

@@ -8,6 +8,9 @@
 	* qnclosedsingleab() added
 	* qnclosedmultiab() added
 	* Changed interface for qnclosedab()
+	* qnopensingleab() added
+	* qnopenmultiab() added
+	* Changed interface for qnopenab()
 	* qnclosedsinglebsb() added
 	* Stub for qnclosedmultibsb() added
 	* Changed interface for qnclosedbsb()

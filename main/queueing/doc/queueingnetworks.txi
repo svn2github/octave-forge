@@ -1128,6 +1128,10 @@ follows:
 @c
 @GETHELP{qnopenab}
 
+@GETHELP{qnopensingleab}
+
+@GETHELP{qnopenmultiab}
+
 @noindent @strong{REFERENCES}
 
 Edward D. Lazowska, John Zahorjan, G.  Scott Graham, and Kenneth

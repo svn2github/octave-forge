@@ -79,6 +79,13 @@ C. H. Hsieh and S. Lam,
 @cite{Two classes of performance bounds for closed queueing networks},
 PEVA, vol. 7, n. 1, pp. 3--30, 1987
 
+@item [Ker84]
+T. Kerola, @cite{The Composite Bound Method (CBM) for Computing
+Throughput Bounds in Multiple Class Environments},
+@uref{http://docs.lib.purdue.edu/cgi/viewcontent.cgi?article=1394&context=cstech,
+Technical Report CSD-TR-475}, Department of Computer Sciences, Purdue
+University, mar 13 1984 (Revisted aug 27, 1984).
+
 @item [LZGS84]
 E. D. Lazowska, J. Zahorjan, G. Scott Graham, and K. C.
 Sevcik, @cite{Quantitative System Performance: Computer System

@@ -17,8 +17,9 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedmultibsb (@var{N}, @var{D})
-## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedmultibsb (@var{N}, @var{D}, @var{Z})
+## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedmultibsb (@var{N}, @var{S})
+## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedmultibsb (@var{N}, @var{S}, @var{V})
+## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedmultibsb (@var{N}, @var{S}, @var{V}, @var{m})
 ##
 ## Compute Balanced System Bounds for multiclass networks.
 ## Only single-server nodes are supported.
@@ -47,11 +48,6 @@
 ## if @code{@var{m}(k) = 1}, center @math{k} is a M/M/1-FCFS server.
 ## This function does not support multiple-server nodes. Default
 ## is 1.
-##
-## @item Z
-## @code{@var{Z}(c)} is class @math{c} external delay.
-## Currently this function only supports 
-## @code{@var{Z}(c) = 0}). Default 0.
 ##
 ## @end table
 ##
@@ -96,8 +92,8 @@ function [Xl Xu Rl Ru] = qnclosedmultibsb( N, S, V, m, Z )
   else
     (isvector(m) && length(m) == K) || \
 	error("m must be a vector with %d elements",K);
-    all(m==1) || \
-	error("this function supports M/M/1-FCFS servers only");
+    all(m<=1) || \
+	error("this function does not support multiple-server nodes");
     m = m(:)';
   endif
   if ( nargin < 5 )
@@ -110,12 +106,18 @@ function [Xl Xu Rl Ru] = qnclosedmultibsb( N, S, V, m, Z )
 
   D = S .* V;
 
+  ## Equations from T. Kerola, The Composite Bound Method (CBM) for
+  ## Computing Throughput Bounds in Multiple Class Environments},
+  ## Technical Report CSD-TR-475, Department of Computer Sciences,
+  ## Purdue University, mar 13 1984 (Revisted aug 27, 1984), available
+  ## at
+  ## http://docs.lib.purdue.edu/cgi/viewcontent.cgi?article=1394&context=cstech
+
   Dc = sum(D,2)';
   D_max = max(D,[],2)';
   D_min = min(D,[],2)';
   Xl = N ./ (Dc .+ (sum(N)-1) .* D_max);
   Xu = min( 1./D_max, N ./ ((K+sum(N)-1) .* D_min));
   Rl = N ./ Xu;
-  Rl = NaN;
   Ru = N ./ Xl;
 endfunction

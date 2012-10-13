@@ -14,7 +14,9 @@
 	* qnclosedsinglebsb() added
 	* qnclosedmultibsb() added
 	* Changed interface for qnclosedbsb()
-
+	* qnclosedsinglebsb() added
+	* Changed interface for qnopenbsb()
+	
 2012-09-08 Moreno Marzolla <marzolla@cs.unibo.it>
 
 	* Version 1.1.1 released

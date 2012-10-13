@@ -1132,19 +1132,6 @@ follows:
 
 @GETHELP{qnopenmultiab}
 
-@noindent @strong{REFERENCES}
-
-Edward D. Lazowska, John Zahorjan, G.  Scott Graham, and Kenneth
-C. Sevcik, @cite{Quantitative System Performance: Computer System
-Analysis Using Queueing Network Models}, Prentice Hall,
-1984. @url{http://www.cs.washington.edu/homes/lazowska/qsp/}. In
-particular, see section 5.2 ("Asymptotic Bounds").
-
-@auindex Lazowska, E. D.
-@auindex Zahorjan, J.
-@auindex Graham, G. S.
-@auindex Sevcik, K. C.
-
 @c
 @GETHELP{qnclosedab}
 
@@ -1165,9 +1152,13 @@ particular, see section 5.2 ("Asymptotic Bounds").
 @auindex Graham, G. S.
 @auindex Sevcik, K. C.
 
-
 @c
 @GETHELP{qnopenbsb}
+
+@GETHELP{qnopensinglebsb}
+
+@c
+@GETHELP{qnclosedbsb}
 
 @GETHELP{qnclosedsinglebsb}
 
@@ -1186,8 +1177,16 @@ particular, see section 5.4 ("Balanced Systems Bounds").
 @auindex Graham, G. S.
 @auindex Sevcik, K. C.
 
-@c
-@GETHELP{qnclosedbsb}
+@GETHELP{qnclosedmulticb}
+
+@noindent @strong{REFERENCES}
+
+Teemu Kerola, @cite{The Composite Bound Method (CBM) for Computing
+Throughput Bounds in Multiple Class Environments}, Technical Report
+CSD-TR-475, Department of Computer Sciences, Purdue University, mar 13
+1984 (Revisted aug 27, 1984).
+
+@auindex Kerola, T.
 
 @c
 @GETHELP{qnclosedpb}

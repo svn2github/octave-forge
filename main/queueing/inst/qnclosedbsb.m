@@ -49,13 +49,12 @@ endfunction
 %!demo
 %! S = [10 7 5 4; \
 %!      5  2 4 6];
-%! Z = [0 0];
 %! NN=20;
 %! Xl = Xu = Xmva = zeros(NN,2);
 %! for n=1:NN
 %!   N=[n,10];
-%!   [a b] = qnclosedbsb(N,S,ones(size(S)),ones(1,columns(S)),Z);
-%!   [U R Q X] = qnclosedmultimva(N,S,ones(size(S)),ones(1,columns(S)),Z);
+%!   [a b] = qnclosedbsb(N,S);
+%!   [U R Q X] = qnclosedmultimva(N,S,ones(size(S)));
 %!   Xl(n,:) = a;
 %!   Xu(n,:) = b;
 %!   Xmva(n,:) = X(:,1)';

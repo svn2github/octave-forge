@@ -36,11 +36,11 @@ into another language, under the same conditions as for modified versions.
 @chapheading Preface
 The @acronym{GNU} Octave quaternion package from version 2 onwards
 was developed by Lukas F. Reichlin with important contributions by
-Juan Pablo Carbajal. This new package is intended as a replacement
-for quaternion-1.0.0 by A. Scottedward Hodel. It is loosely based
+Juan Pablo Carbajal.  This new package is intended as a replacement
+for quaternion-1.0.0 by A. Scottedward Hodel.  It is loosely based
 on ideas from the Quaternion Toolbox for Matlab by Steve Sangwine
 and Nicolas Le Bihan with a special focus on code simplicity and
-vectorization. Its main features are:
+vectorization.  Its main features are:
 @itemize
 @item Matrices and n-dimensional arrays of quaternions.
 @item Overloaded operators due to the use of classes introduced with Octave 3.2.
@@ -51,14 +51,14 @@ vectorization. Its main features are:
 
 @sp 5
 @subheading Using the help function
-Some functions of the quaternion package are listed with a leading @code{@@quaternion/}.
-This is only needed to view the help text of the function, e.g. @w{@code{help norm}}
-shows the built-in function while @w{@code{help @@quaternion/norm}} shows the overloaded
-function for quaternions. Note that there are quaternion functions
+Some functions of the quaternion package are listed with the somewhat cryptic prefix
+@code{@@quaternion/}.  This prefix is only needed to view the help text of the function,
+e.g. @w{@code{help norm}} shows the built-in function while @w{@code{help @@quaternion/norm}}
+shows the overloaded function for quaternions.  Note that there are quaternion functions
 like @code{unit} that have no built-in equivalent.
 
 When just using the function, the leading @code{@@quaternion/} must @strong{not} be typed.
-Octave selects the right function automatically. So one can type @w{@code{norm (q)}}
+Octave selects the right function automatically.  So one can type @w{@code{norm (q)}}
 and @w{@code{norm (matrix)}} regardless of the class of the argument.
 @end titlepage
 @c %*** End of TITLEPAGE
@@ -66,6 +66,10 @@ and @w{@code{norm (matrix)}} regardless of the class of the argument.
 @contents
 @c @chapter Function Reference
 @include functions.texi
-
 @end
+
+@node Function Index
+@unnumbered Function Index
+@printindex fn
+
 @bye

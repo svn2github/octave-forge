@@ -7,6 +7,7 @@ collect_texinfo_strings
 
 for i = 1:5
   system ("pdftex -interaction batchmode quaternion.tex");
+  system ("texindex quaternion.fn");
 endfor
 
 cd (homedir);

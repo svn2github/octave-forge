@@ -29,9 +29,15 @@ for k = 1:numel (list {1}.provides)
                 if (fun(1) == "@")
                   % fprintf (fid, '@subsection @%s\n', fun);
                   fprintf (fid, '@section @%s\n', fun);
+                  if (strncmp (fun, "@quaternion/", 12))
+                    fprintf (fid, '@findex %s\n', fun(13:end));
+                  else
+                    error ("collect_texinfo_strings: unknown class");
+                  endif
                 else
                   % fprintf (fid, '@subsection %s\n', fun);
                   fprintf (fid, '@section %s\n', fun);
+                  fprintf (fid, '@findex %s\n', fun);
                 endif
                 fprintf (fid,TEXT);
         end

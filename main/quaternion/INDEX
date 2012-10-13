@@ -6,7 +6,7 @@ Quaternions
   qk
   q2rot
   rot2q
-Methods
+Quaternion Methods
   @quaternion/abs
   @quaternion/blkdiag
   @quaternion/cat
@@ -22,7 +22,7 @@ Methods
   @quaternion/rows
   @quaternion/size
   @quaternion/unit
-Overloaded Operators
+Overloaded Quaternion Operators
   @quaternion/ctranspose
   @quaternion/eq
   @quaternion/horzcat

@@ -23,11 +23,12 @@
 ## q = w + x*i + y*j + z*k
 ## @end example
 ##
-## Arguments @var{w}, @var{x}, @var{y} and @var{z} can be scalars or
-## matrices, but they must be real and of equal size.  If scalar part
-## @var{w} or components @var{x}, @var{y} and @var{z} of the vector
-## part are not specified, zero matrices of appropriate size are
-## assumed.
+## Arguments @var{w}, @var{x}, @var{y} and @var{z} can be scalars,
+## matrices or n-dimensional arrays, but they must be real-valued
+## and of equal size.
+## If scalar part @var{w} or components @var{x}, @var{y} and @var{z}
+## of the vector part are not specified, zero matrices of appropriate
+## size are assumed.
 ##
 ## @strong{Example}
 ## @example

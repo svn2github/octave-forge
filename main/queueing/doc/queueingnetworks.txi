@@ -1165,6 +1165,8 @@ particular, see section 5.2 ("Asymptotic Bounds").
 @c
 @GETHELP{qnopenbsb}
 
+@GETHELP{qnclosedsinglebsb}
+
 @noindent @strong{REFERENCES}
 
 Edward D. Lazowska, John Zahorjan, G.  Scott Graham, and Kenneth

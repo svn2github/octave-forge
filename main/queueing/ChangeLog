@@ -8,6 +8,9 @@
 	* qnclosedsingleab() added
 	* qnclosedmultiab() added
 	* Changed interface for qnclosedab()
+	* qnclosedsinglebsb() added
+	* Stub for qnclosedmultibsb() added
+	* Changed interface for qnclosedbsb()
 
 2012-09-08 Moreno Marzolla <marzolla@cs.unibo.it>
 

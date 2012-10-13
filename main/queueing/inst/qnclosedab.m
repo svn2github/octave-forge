@@ -51,7 +51,6 @@ function [Xl Xu Rl Ru] = qnclosedab( N, varargin )
   if ( nargin < 2 || nargin > 5 )
     print_usage();
   endif
-
   if (isscalar(N))
     [Xl Xu Rl Ru] = qnclosedsingleab(N, varargin{:});
   else
@@ -74,14 +73,15 @@ endfunction
 %! assert( [X_u R_l], [0.109 64], 1e-3 );
 
 %!demo
-%! D = [10 7 5 4; \
+%! S = [10 7 5 4; \
 %!      5  2 4 6];
+%! Z = [5 3];
 %! NN=20;
 %! Xl = Xu = Xmva = zeros(NN,2);
 %! for n=1:NN
 %!   N=[n,10];
-%!   [a b] = qnclosedab(N,D);
-%!   [U R Q X] = qnclosedmultimva(N,D);
+%!   [a b] = qnclosedab(N,S,ones(size(S)),ones(1,columns(S)),Z);
+%!   [U R Q X] = qnclosedmultimva(N,S,ones(size(S)),ones(1,columns(S)),Z);
 %!   Xl(n,:) = a;
 %!   Xu(n,:) = b;
 %!   Xmva(n,:) = X(:,1)';

@@ -27,46 +27,44 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [Xl Xu Rl Ru] = qnclosedmultibsb( N, D, Z )
+function [Xl Xu Rl Ru] = qnclosedmultibsb( N, S, V, m, Z )
 
-  error("This function is not implemented yet");
-
-  if ( nargin < 2 || nargin > 3 )
+  if ( nargin < 2 || nargin > 5 )
     print_usage();
   endif
   ( isvector(N) && all(N>0) ) || \
       error( "N must be a vector > 0" );
   N = N(:)'; # make N a row vector
-  ( ismatrix(D) && rows(D) == length(N) && all(all(D>=0)) ) || \
-      error( "wrong D size" );
+  C = length(N);
+  ( ismatrix(S) && rows(S) == length(N) && all(all(S>=0)) ) || \
+      error( "wrong S size" );
+  K = columns(S);
   if ( nargin < 3 )
+    V = ones(size(S));
+  endif   
+  if ( nargin < 4 )
+    m = ones(1,K);
+  else
+    (isvector(m) && length(m) == K) || \
+	error("m must be a vector with %d elements",K);
+    all(m==1) || \
+	error("this function supports M/M/1-FCFS servers only");
+    m = m(:)';
+  endif
+  if ( nargin < 5 )
     Z = 0*N;
   else
-    ( isvector(Z) && all(Z>=0) && length(Z) == length(N) ) || \
+    ( isvector(Z) && all(Z>=0) && length(Z) == C ) || \
         error( "Z must be a vector >= 0" );
     Z = Z(:)';
   endif
 
-  K = columns(D); # number of servers
+  D = S .* V;
 
   D_max = max(D,[],2)';
   D_min = min(D,[],2)';
-  Xl = N ./ ((K+sum(N)-1) .* D_min);
-  Xu = N ./ ((K+sum(N)-1) .* D_max);
+  Xl = N ./ ((K+sum(N)-1) .* D_max);
+  Xu = min( 1./D_max, N ./ ((K+sum(N)-1) .* D_min));
+  Rl = N ./ Xu;
+  Ru = N ./ Xl;
 endfunction
-
-%!demo
-%! D = [10 7 5 4; \
-%!      5  2 4 6];
-%! NN=20;
-%! Xl = Xu = zeros(NN,2);
-%! for n=1:NN
-%!   N=[10,n];
-%!   [a b] = qnclosedmultibsb(N,D);
-%!   Xl(n,:) = a;
-%!   Xu(n,:) = b;
-%! endfor
-%! subplot(2,1,1);
-%! plot(1:NN,Xl(:,1),Xu(:,1));
-%! subplot(2,1,2);
-%! plot(1:NN,Xl(:,2),Xu(:,2));

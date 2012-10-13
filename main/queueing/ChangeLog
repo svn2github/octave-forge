@@ -12,7 +12,7 @@
 	* qnopenmultiab() added
 	* Changed interface for qnopenab()
 	* qnclosedsinglebsb() added
-	* Stub for qnclosedmultibsb() added
+	* qnclosedmultibsb() added
 	* Changed interface for qnclosedbsb()
 
 2012-09-08 Moreno Marzolla <marzolla@cs.unibo.it>

@@ -23,12 +23,12 @@
 ## @cindex closed network
 ##
 ## Compute Balanced System Bounds for throughput and response
-## time of closed, single class queueing networks. Multiclass networks
-## might be supported in the future.
+## time of closed networks with single or multiple classes of customers.
 ##
-## This function dispatches the computation to @code{qnclosedsinglebsb}.
+## This function dispatches the computation to @code{qnclosedsinglebsb}
+## or @code{qnclosedmultibsb}.
 ##
-## @seealso{qnclosedsinglebsb}
+## @seealso{qnclosedsinglebsb, qnclosedmultibsb}
 ##
 ## @end deftypefn
 
@@ -45,3 +45,29 @@ function [Xl Xu Rl Ru] = qnclosedbsb( N, varargin )
     [Xl Xu Rl Ru] = qnclosedmultibsb(N, varargin{:});
   endif
 endfunction
+
+%!demo
+%! S = [10 7 5 4; \
+%!      5  2 4 6];
+%! Z = [5 3];
+%! NN=20;
+%! Xl = Xu = Xmva = zeros(NN,2);
+%! for n=1:NN
+%!   N=[n,10];
+%!   [a b] = qnclosedbsb(N,S,ones(size(S)),ones(1,columns(S)),Z);
+%!   [U R Q X] = qnclosedmultimva(N,S,ones(size(S)),ones(1,columns(S)),Z);
+%!   Xl(n,:) = a;
+%!   Xu(n,:) = b;
+%!   Xmva(n,:) = X(:,1)';
+%! endfor
+%! subplot(2,1,1);
+%! plot(1:NN,Xl(:,1),"linewidth", 2, \
+%!      1:NN,Xu(:,1),"linewidth", 2, \
+%!      1:NN,Xmva(:,1),";MVA;");
+%! title("Class 1 throughput");
+%! subplot(2,1,2);
+%! plot(1:NN,Xl(:,2),"linewidth", 2, \
+%!      1:NN,Xu(:,2), "linewidth", 2,\
+%!      1:NN,Xmva(:,2),";MVA;");
+%! title("Class 2 throughput");
+%! xlabel("Number of class 1 requests");

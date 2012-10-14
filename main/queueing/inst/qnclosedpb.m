@@ -17,11 +17,11 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{Xl}, @var{Xu}] =} qnclosedpb (@var{N}, @var{D} )
+## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedpb (@var{N}, @var{D} )
+## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedpb (@var{N}, @var{D}, @var{Z} )
 ##
-## Compute PB Bounds (C. H. Hsieh and S. Lam, 1987) 
-## for single-class, closed Queueing Networks
-## with @math{K} service centers.
+## Compute PB Bounds (C. H. Hsieh and S. Lam, 1987) for single-class,
+## closed Queueing Networks with @math{K} service centers.
 ##
 ## @strong{INPUTS}
 ##
@@ -35,8 +35,7 @@
 ## @code{@var{D}(k) @geq{} 0} for all @math{k}.
 ##
 ## @item Z
-## external delay (think time, scalar). If omitted, it is assumed to be zero.
-## Must be @code{@var{Z} @geq{} 0}.
+## external delay (think time, @code{@var{Z} @geq{} 0}). Default 0.
 ##
 ## @end table
 ##
@@ -48,6 +47,10 @@
 ## @itemx Xu
 ## Lower and upper bounds on the system throughput.
 ##
+## @item Rl
+## @itemx Ru
+## Lower and upper bounds on the system response time.
+##
 ## @end table
 ##
 ## @seealso{qnclosedab, qbclosedbsb, qnclosedgb}
@@ -57,7 +60,7 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [X_lower X_upper] = qnclosedpb( N, D, Z )
+function [X_lower X_upper R_lower R_upper] = qnclosedpb( N, D, Z )
   if ( nargin < 2 || nargin > 3 )
     print_usage();
   endif
@@ -79,6 +82,8 @@ function [X_lower X_upper] = qnclosedpb( N, D, Z )
   X_upper = N/( Z + D_tot + ...
                ( sum( D .^ 2 * (N-1-Z*X_max) ) / sum( D ) ) );
   X_upper = min( X_upper, X_max ); # cap X upper bound to 1/max(D)
+  R_lower = N/X_upper-Z;
+  R_upper = N/X_lower-Z;
 endfunction
 
 %!test

@@ -40,9 +40,3 @@ function [Xl Xu Rl Ru] = qnopenbsb( lambda, varargin )
   endif
 endfunction
 
-%!test
-%! fail( "qnopenbsb( 0.1, [] )", "vector" );
-%! fail( "qnopenbsb( 0.1, [0 -1])", "vector" );
-%! fail( "qnopenbsb( 0, [1 2] )", "lambda" );
-%! fail( "qnopenbsb( -1, [1 2])", "lambda" );
-

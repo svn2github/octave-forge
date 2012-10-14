@@ -17,30 +17,32 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{Xl} @var{Xu}  @var{Rl} @var{Ru}] =} qnopensingleab (@var{lambda}, @var{S})
-## @deftypefnx {Function File} {[@var{Xl} @var{Xu} @var{Rl} @var{Ru}] =} qnopensingleab (@var{lambda}, @var{S}, @var{V})
+## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnopensingleab (@var{lambda}, @var{D})
+## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnopensingleab (@var{lambda}, @var{S}, @var{V})
 ##
 ## @cindex bounds, asymptotic
 ## @cindex open network
 ##
-## Compute Asymptotic Bounds for single-class, open networks.
+## Compute Asymptotic Bounds for open, single-class networks.
 ##
 ## @strong{INPUTS}
 ##
 ## @table @var
 ##
 ## @item lambda
-## overall arrival rate to the system (scalar). Abort if
-## @code{@var{lambda} @leq{} 0}
+## Arrival rate of requests (@code{@var{lambda} @geq{} 0}).
+##
+## @item D
+## @code{@var{D}(k)} is the service demand at center @math{k}.
+## (@code{@var{D}(k) @geq{} 0} for all @math{k}).
 ##
 ## @item S
 ## @code{@var{S}(k)} is the mean service time at center @math{k}.
 ## (@code{@var{S}(k) @geq{} 0} for all @math{k}).
 ##
 ## @item V
-## @code{@var{V}(k)} is the mean number of visits at center @math{k}.
-## (@code{@var{V}(k) @geq{} 0} for all @math{k}). Default is 1
-## for all @math{k}.
+## @code{@var{V}(k)} is the mean number of visits to center @math{k}.
+## (@code{@var{V}(k) @geq{} 0} for all @math{k}).
 ##
 ## @end table
 ##
@@ -62,7 +64,7 @@
 ##
 ## @end table
 ##
-## @seealso{qnopenbsb}
+## @seealso{qnopenmultiab}
 ##
 ## @end deftypefn
 
@@ -73,19 +75,25 @@ function [X_lower X_upper R_lower R_upper] = qnopensingleab( lambda, S, V )
   if ( nargin < 2 || nargin > 3 )
     print_usage();
   endif
-  ( isscalar(lambda) && lambda > 0 ) || \
-      error( "lambda must be a positive scalar" );
-  ( isvector(S) && length(S)>0 && all( S>=0 ) ) || \
-      error( "S must be a vector of nonnegative scalars" );
+  isscalar(lambda) || error("lambda must be a scalar");
+  lambda > 0 || error("lambda must be >0");
+  ( isvector(S) && length(S)>0 ) || \
+      error( "S/D must be a nonempty vector" );
+  all(S>=0) || \
+      error("S/D must contain nonnegative values");
   S = S(:)';
   if ( nargin < 3 )
     V = ones(size(S));
   else
-    ( isvector(V) && size_equal(S,V) && all( V>=0 ) ) || \
-	error( "V must be a vector >=0 with %d elements", length(S));
+    ( isvector(V) && length(V) == length(S) ) || \
+	error( "V must be a vector with %d elements", length(S));
+    all(V>=0) || \
+	error( "V must contain nonnegative values");
     V = V(:)';
   endif
+
   D = S.*V;
+
   X_lower = -inf;
   X_upper = 1/max(D);
   R_lower = sum(D);
@@ -94,6 +102,13 @@ endfunction
 
 %!test
 %! fail( "qnopensingleab( 0.1, [] )", "vector" );
-%! fail( "qnopensingleab( 0.1, [0 -1])", "vector" );
+%! fail( "qnopensingleab( 0.1, [0 -1])", "nonnegative" );
 %! fail( "qnopensingleab( 0, [1 2] )", "lambda" );
 %! fail( "qnopensingleab( -1, [1 2])", "lambda" );
+%! fail( "qnopensingleab( 1, [1 2 3], [1 2] )", "3 elements");
+%! fail( "qnopensingleab( 1, [1 2 3], [-1 2 3] )", "nonnegative");
+
+%!test
+%! [Xl Xu Rl Ru] = qnopensingleab( 1, [1 1] );
+%! assert( Xl, -inf );
+%! assert( Ru, +inf );

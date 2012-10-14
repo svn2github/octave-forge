@@ -1,4 +1,4 @@
-## Copyright (C) 2008, 2009, 2010, 2011, 2012 Moreno Marzolla
+## Copyright (C) 2012 Moreno Marzolla
 ##
 ## This file is part of the queueing toolbox.
 ##
@@ -17,7 +17,7 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{Xu}, @var{Rl}] =} qnopenab (@var{lambda}, @dots{} )
+## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnopenab (@var{lambda}, @dots{} )
 ##
 ## @cindex bounds, asymptotic
 ## @cindex open network
@@ -25,6 +25,16 @@
 ## Compute Asymptotic Bounds for open networks with single or multiple classes of customers.
 ##
 ## This function dispatches the computation to @code{qnopensingleab} or @code{qnopenmultiab}.
+##
+## @itemize
+##
+## @item if @var{lambda} is a scalar, the network is assumed to have a single 
+## class of requests and control is passed to @code{qnopensingleab}.
+##
+## @item if @var{lambda} is a vector, the network is assumed to have
+## multiple customer classes and control is passed to @code{qnopenmultiab}.
+##
+## @end itemize
 ##
 ## @seealso{qnopensingleab, qnopenmultiab}
 ##
@@ -43,9 +53,3 @@ function [Xl Xu Rl Ru] = qnopenab( lambda, varargin )
     [Xl Xu Rl Ru] = qnopenmultiab(lambda, varargin{:} );
   endif
 endfunction
-
-%!test
-%! fail( "qnopenab( 0.1, [] )", "vector" );
-%! fail( "qnopenab( 0.1, [0 -1])", "vector" );
-%! fail( "qnopenab( 0, [1 2] )", "lambda" );
-%! fail( "qnopenab( -1, [1 2])", "lambda" );

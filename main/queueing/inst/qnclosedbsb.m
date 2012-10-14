@@ -28,6 +28,16 @@
 ## This function dispatches the computation to @code{qnclosedsinglebsb}
 ## or @code{qnclosedmultibsb}.
 ##
+## @itemize
+##
+## @item If @var{N} is a scalar, the network is assumed to have a single
+## class of requests and control is passed to @code{qnclosedsinglebsb}.
+##
+## @item If @var{N} is a vector, the network is assumed to have multiple
+## classes of requests, and control is passed to @code{qnclosedmultibsb}.
+##
+## @end itemize
+##
 ## @seealso{qnclosedsinglebsb, qnclosedmultibsb}
 ##
 ## @end deftypefn
@@ -46,27 +56,3 @@ function [Xl Xu Rl Ru] = qnclosedbsb( N, varargin )
   endif
 endfunction
 
-%!demo
-%! S = [10 7 5 4; \
-%!      5  2 4 6];
-%! NN=20;
-%! Xl = Xu = Xmva = zeros(NN,2);
-%! for n=1:NN
-%!   N=[n,10];
-%!   [a b] = qnclosedbsb(N,S);
-%!   [U R Q X] = qnclosedmultimva(N,S,ones(size(S)));
-%!   Xl(n,:) = a;
-%!   Xu(n,:) = b;
-%!   Xmva(n,:) = X(:,1)';
-%! endfor
-%! subplot(2,1,1);
-%! plot(1:NN,Xl(:,1),"linewidth", 2, \
-%!      1:NN,Xu(:,1),"linewidth", 2, \
-%!      1:NN,Xmva(:,1),";MVA;");
-%! title("Class 1 throughput");
-%! subplot(2,1,2);
-%! plot(1:NN,Xl(:,2),"linewidth", 2, \
-%!      1:NN,Xu(:,2), "linewidth", 2,\
-%!      1:NN,Xmva(:,2),";MVA;");
-%! title("Class 2 throughput");
-%! xlabel("Number of class 1 requests");

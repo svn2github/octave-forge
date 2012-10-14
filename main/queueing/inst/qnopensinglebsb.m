@@ -17,8 +17,8 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{Xl} @var{Xu}, @var{Rl}, @var{Ru}] =} qnopensinglebsb (@var{lambda}, @var{S})
-## @deftypefnx {Function File} {[@var{Xl} @var{Xu}, @var{Rl}, @var{Ru}] =} qnopensinglebsb (@var{lambda}, @var{S}, @var{V})
+## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnopensinglebsb (@var{lambda}, @var{D})
+## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnopensinglebsb (@var{lambda}, @var{S}, @var{V})
 ##
 ## @cindex bounds, balanced system
 ## @cindex open network
@@ -33,14 +33,17 @@
 ## overall arrival rate to the system (scalar). Abort if
 ## @code{@var{lambda} < 0 }
 ##
+## @item D
+## @code{@var{D}(k)} is the service demand at center @math{k}.
+## (@code{@var{D}(k) @geq{} 0} for all @math{k}).
+##
 ## @item S
 ## @code{@var{S}(k)} is the mean service time at center @math{k}.
 ## (@code{@var{S}(k) @geq{} 0} for all @math{k}).
 ##
 ## @item V
 ## @code{@var{V}(k)} is the mean number of visits at center @math{k}.
-## (@code{@var{V}(k) @geq{} 0} for all @math{k}). Default is 1
-## for all @math{k}.
+## (@code{@var{V}(k) @geq{} 0} for all @math{k}).
 ##
 ## @end table
 ##
@@ -71,20 +74,24 @@ function [X_lower X_upper R_lower R_upper] = qnopensinglebsb( lambda, S, V )
   if ( nargin < 2 || nargin > 3 )
     print_usage();
   endif
-  ( isscalar(lambda) && lambda > 0 ) || \
-      error( "lambda must be a positive scalar" );
-  ( isvector(S) && length(S)>0 && all( S>=0 ) ) || \
-      error( "S must be a vector of nonnegative scalars" );
+  isscalar(lambda) || error("lambda must be a scalar");
+  lambda > 0 || error("lambda must be >0");
+  ( isvector(S) && length(S)>0 ) || \
+      error( "S/D must be a nonempty vector" );
+  all(S>=0) || \
+      error("S/D must contain nonnegative values");
   S = S(:)';
   if ( nargin < 3 )
     V = ones(size(S));
   else
-    ( isvector(V) && size_equal(S,V) && all( V>=0 ) ) || \
-	error( "V must be a vector >=0 with %d elements", length(S));
+    ( isvector(V) && length(V) == length(S) ) || \
+	error( "V must be a vector with %d elements", length(S));
+    all(V>=0) || \
+	error( "V must contain nonnegative values");
     V = V(:)';
   endif
 
-  D = S .* V;
+  D = S.*V;
 
   D_max = max(D);
   D_tot = sum(D);
@@ -96,8 +103,12 @@ function [X_lower X_upper R_lower R_upper] = qnopensinglebsb( lambda, S, V )
 endfunction
 
 %!test
-%! fail( "qnopenbsb( 0.1, [] )", "vector" );
-%! fail( "qnopenbsb( 0.1, [0 -1])", "vector" );
-%! fail( "qnopenbsb( 0, [1 2] )", "lambda" );
-%! fail( "qnopenbsb( -1, [1 2])", "lambda" );
+%! fail( "qnopensinglebsb( 0.1, [] )", "vector" );
+%! fail( "qnopensinglebsb( 0.1, [0 -1])", "nonnegative" );
+%! fail( "qnopensinglebsb( 0, [1 2] )", "lambda" );
+%! fail( "qnopensinglebsb( -1, [1 2])", "lambda" );
+
+%!test
+%! [Xl Xu Rl Ru] = qnopensinglebsb(0.1,[1 2 3]);
+%! assert( Xl, -inf );
 

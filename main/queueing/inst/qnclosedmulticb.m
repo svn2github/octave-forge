@@ -17,7 +17,7 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedmulticb (@var{N}, @var{S})
+## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedmulticb (@var{N}, @var{D})
 ## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedmulticb (@var{N}, @var{S}, @var{V})
 ##
 ## Composite Bound (CB) on throughput and response time for multiclass networks.
@@ -35,15 +35,17 @@
 ## @item N
 ## @code{@var{N}(c)} is the number of class @math{c} requests in the system.
 ##
+## @item D
+## @code{@var{D}(c, k)} is class @math{c} service demand
+## at center @math{k} (@code{@var{S}(c,k) @geq{} 0}).
+##
 ## @item S
 ## @code{@var{S}(c, k)} is the mean service time of class @math{c}
-## requests at center @math{k}
-## (@code{@var{S}(c,k) @geq{} 0}).
+## requests at center @math{k} (@code{@var{S}(c,k) @geq{} 0}).
 ##
 ## @item V
 ## @code{@var{V}(c,k)} is the average number of visits of class @math{c}
-## requests to center
-## @math{k} (@code{@var{V}(c,k) @geq{} 0}). Default is 1.
+## requests to center @math{k} (@code{@var{V}(c,k) @geq{} 0}).
 ##
 ## @end table
 ##
@@ -71,19 +73,32 @@ function [Xl Xu Rl Ru] = qnclosedmulticb( N, S, V )
   if ( nargin < 2 || nargin > 3 )
     print_usage();
   endif
-  ( isvector(N) && all(N>0) ) || \
-      error( "N must be a vector > 0" );
-  N = N(:)'; # make N a row vector
-  C = length(N);
-  ( ismatrix(S) && rows(S) == length(N) && all(all(S>=0)) ) || \
-      error( "wrong S size" );
+
+  ( isvector(N) && length(N)>0 ) || \
+      error("N must be a nonempty vector");
+  all(N >= 0) || \
+      error( "N must contain nonnegative values" );
+  sum(N)>0 || \
+      error( "The network has no requests" );
+  N = N(:)';
+
+  C = length(N); # number of classes
+
+  ( ismatrix(S) && rows(S) == C ) || \
+      error("S/D must be a matrix with %d rows", C);
+  all(all(S>=0)) || \
+      error("S/D must contain nonnegative values");
+
   K = columns(S);
-  if ( nargin < 3 )
+
+  if ( nargin<3 )
     V = ones(size(S));
   else
-    ( ismatrix(V) && size_equal(S,V) && all(all(V>=0)) ) || \
-	error("V must be a %d x %d matrix >=0", C, K);
-  endif   
+    (ismatrix(V) && size_equal(S,V) ) || \
+	error("V must be a %d x %d matrix", C, K);
+    all(all(V>=0)) || \
+	error("V must contain nonnegative values");
+  endif
 
   [Xl] = qnclosedmultibsb(N, S, V);
   Xu = zeros(1,C);
@@ -119,19 +134,16 @@ endfunction
 %! for n=1:NN
 %!   N=[n,10];
 %!   [a b] = qnclosedmulticb(N,S);
+%!   Xl(n,:) = a; Xu(n,:) = b;
 %!   [U R Q X] = qnclosedmultimva(N,S,ones(size(S)));
-%!   Xl(n,:) = a;
-%!   Xu(n,:) = b;
 %!   Xmva(n,:) = X(:,1)';
 %! endfor
 %! subplot(2,1,1);
-%! plot(1:NN,Xl(:,1),"linewidth", 2, \
-%!      1:NN,Xu(:,1),"linewidth", 2, \
+%! plot(1:NN,Xl(:,1),"linewidth", 2, 1:NN,Xu(:,1),"linewidth", 2, \
 %!      1:NN,Xmva(:,1),";MVA;");
 %! title("Class 1 throughput");
 %! subplot(2,1,2);
-%! plot(1:NN,Xl(:,2),"linewidth", 2, \
-%!      1:NN,Xu(:,2), "linewidth", 2,\
+%! plot(1:NN,Xl(:,2),"linewidth", 2, 1:NN,Xu(:,2), "linewidth", 2,\
 %!      1:NN,Xmva(:,2),";MVA;");
 %! title("Class 2 throughput");
 %! xlabel("Number of class 1 requests");

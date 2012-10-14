@@ -17,8 +17,8 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{Xu}, @var{Rl}] =} qnopenmultiab (@var{lambda}, @var{S})
-## @deftypefnx {Function File} {[@var{Xu}, @var{Rl}] =} qnopenmultiab (@var{lambda}, @var{S}, @var{V})
+## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnopenmultiab (@var{lambda}, @var{D})
+## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Rl}] =} qnopenmultiab (@var{lambda}, @var{S}, @var{V})
 ##
 ## @cindex bounds, asymptotic
 ## @cindex open network
@@ -33,6 +33,11 @@
 ## @code{@var{lambda}(c)} is the class @math{c} arrival rate to the
 ## system.
 ##
+## @item D
+## @code{@var{D}(c, k)} is class @math{c} service demand 
+## at center @math{k}. (@code{@var{D}(c, k) @geq{} 0} for all
+## @math{k}).
+##
 ## @item S
 ## @code{@var{S}(c, k)} is the mean service time of class @math{c}
 ## requests at center @math{k}. (@code{@var{S}(c, k) @geq{} 0} for all
@@ -41,7 +46,7 @@
 ## @item V
 ## @code{@var{V}(c, k)} is the mean number of visits of class @math{c}
 ## requests at center @math{k}. (@code{@var{V}(c, k) @geq{} 0} for all
-## @math{k}). Default is 1 for all @math{k}.
+## @math{k}).
 ##
 ## @end table
 ##
@@ -75,19 +80,26 @@ function [X_lower X_upper R_lower R_upper] = qnopenmultiab( lambda, S, V )
   if ( nargin < 2 || nargin > 3 )
     print_usage();
   endif
-  ( isvector(lambda) && all(lambda > 0) ) || \
-      error( "lambda must be a vector >= 0" );
+  (isvector(lambda) && length(lambda)>0) || \
+      error( "lambda must be a nonempty vector" );
+  all(lambda > 0) || \
+      error( "lambda must contain nonnegative values" );
   lambda = lambda(:)';
   C = length(lambda);
-  ( ismatrix(S) && rows(S)==C && all(all( S>=0 )) ) || \
-      error( "S must be a matrix >=0 with %d rows", C );
+  ( ismatrix(S) && rows(S)==C ) || \
+      error( "S/D must be a matrix >=0 with %d rows", C );
+  all(all( S>=0 )) || \
+      error( "S/D must contain nonnegative values" );
   K = columns(S);
   if ( nargin < 3 )
     V = ones(size(S));
   else
-    ( ismatrix(V) && size_equal(S,V) && all(all( V>=0 )) ) || \
-	error( "V must be a %d x %d matrix >=0", C, K);
+    ( ismatrix(V) && size_equal(S,V) ) || \
+	error( "V must be a %d x %d matrix", C, K);
+    all(all( V>=0 )) || \
+	error( "V must contain nonnegative values" );
   endif
+
   D = S.*V;
   X_lower = -inf(1,C);
   X_upper = 1./max(D,[],2)';

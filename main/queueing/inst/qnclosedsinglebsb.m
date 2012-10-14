@@ -17,7 +17,7 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedsinglebsb (@var{N}, @var{S})
+## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedsinglebsb (@var{N}, @var{D})
 ## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedsinglebsb (@var{N}, @var{S}, @var{V})
 ## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedsinglebsb (@var{N}, @var{S}, @var{V}, @var{m})
 ## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedsinglebsb (@var{N}, @var{S}, @var{V}, @var{m}, @var{Z})
@@ -25,8 +25,7 @@
 ## @cindex bounds, balanced system
 ## @cindex closed network
 ##
-## Compute Balanced System Bounds for single-class, closed Queueing Networks
-## with @math{K} service centers.
+## Compute Balanced System Bounds on system throughput and response time for closed, single-class networks.
 ##
 ## @strong{INPUTS}
 ##
@@ -34,6 +33,10 @@
 ##
 ## @item N
 ## number of requests in the system (scalar).
+##
+## @item D
+## @code{@var{D}(k)} is the service demand at center @math{k}
+## (@code{@var{D}(k) @geq{} 0}).
 ##
 ## @item S
 ## @code{@var{S}(k)} is the mean service time at center @math{k}
@@ -44,9 +47,10 @@
 ## @math{k} (@code{@var{V}(k) @geq{} 0}). Default is 1.
 ##
 ## @item m
-## @code{@var{m}(k)} is the number of servers at center @math{k}.
-## Currently this function supports @code{@var{m}(k) = 1} only
-## (sing-eserver FCFS nodes). Default is 1.
+## @code{@var{m}(k)} is the number of servers at center @math{k}. This
+## function supports @code{@var{m}(k) = 1} only (sing-eserver FCFS
+## nodes). This option is left for compatibility with
+## @code{qnclosedsingleab}, Default is 1.
 ##
 ## @item Z
 ## External delay (@code{@var{Z} @geq{} 0}). Default is 0.
@@ -67,7 +71,7 @@
 ##
 ## @end table
 ##
-## @seealso{qnclosedab, qnclosedgb, qnclosedpb}
+## @seealso{qnclosedmultibsb}
 ##
 ## @end deftypefn
 
@@ -76,41 +80,37 @@
 
 function [Xl Xu Rl Ru] = qnclosedsinglebsb( N, S, V, m, Z )
 
+
   if (nargin<2 || nargin>5)
     print_usage();
   endif
 
   ( isscalar(N) && N > 0 ) || \
       error( "N must be a positive integer" );
-  isvector(S) || \
-      error( "S must be a vector" );
+  (isvector(S) && length(S)>0) || \
+      error( "S/D must be a nonempty vector" );
+  all(S>=0) || \
+      error( "S/D must contain nonnegative values");
   S = S(:)';
-
+  K = length(S);
   if ( nargin < 3 )
-    V = 1;
+    V = ones(1,K);
   else
-    isvector(V) || \
-	error( "V must be a vector" );
+    (isvector(V) && length(V) == K) || \
+	error( "V must be a vector with %d elements", K );
+    all(V>=0) || \
+	error( "V must contain nonnegative values" );
     V = V(:)';
   endif
   if ( nargin < 4 )
-    m = 1;
+    m = ones(1,K);
   else
-    isvector(m) || \
-	error( "m must be a vector" );
+    (isvector(m) && length(m) == K) || \
+	error( "m must be a vector with %d elements", K );
+    all(m==1) || \
+	error( "only M/M/1 queues are supported" );
     m = m(:)';
   endif
-
-  [err S V m] = common_size(S, V, m);
-  (err == 0) || \
-      error( "S, V and m are of incompatible size" );
-  all(m==1) || \
-      error( "only single-server nodes are supported" );
-  all(S>=0) || \
-      error( "S must be >= 0 ");
-  all(V>=0) || \
-      error( "V must be >= 0" );
-
   if ( nargin < 5 )
     Z = 0;
   else
@@ -130,8 +130,12 @@ function [Xl Xu Rl Ru] = qnclosedsinglebsb( N, S, V, m, Z )
 endfunction
 
 %!test
-%! fail("qnclosedsinglebsb(1)");
-%! fail("qnclosedsinglebsb(1, [])", "vector");
-%! fail("qnclosedsinglebsb(-1,[1 1 1], [1 1 1])", "positive integer");
-%! fail("qnclosedsinglebsb(1,[-1 0 0], [1 1 1])", ">= 0");
-%! fail("qnclosedsinglebsb(1,[0 0 0],-1)", ">= 0");
+%! fail("qnclosedsinglebsb(-1,0)", "N must be");
+%! fail("qnclosedsinglebsb(1,[])", "nonempty");
+%! fail("qnclosedsinglebsb(1,[-1 2])", "nonnegative");
+%! fail("qnclosedsinglebsb(1,[1 2],[1 2 3])", "2 elements");
+%! fail("qnclosedsinglebsb(1,[1 2 3],[1 2 3],[1 2])", "3 elements");
+%! fail("qnclosedsinglebsb(1,[1 2 3],[1 2 3],[1 2 1])", "M/M/1");
+%! fail("qnclosedsinglebsb(1,[1 2 3],[1 2 3],[1 1 1],-1)", "nonnegative");
+%! fail("qnclosedsinglebsb(1,[1 2 3],[1 2 3],[1 1 1],[0 0])", "scalar");
+

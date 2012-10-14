@@ -17,7 +17,7 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedmultiab (@var{N}, @var{S})
+## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedmultiab (@var{N}, @var{D})
 ## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedmultiab (@var{N}, @var{S}, @var{V})
 ## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedmultiab (@var{N}, @var{S}, @var{V}, @var{m})
 ## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedmultiab (@var{N}, @var{S}, @var{V}, @var{m}, @var{Z})
@@ -37,15 +37,17 @@
 ## @item N
 ## @code{@var{N}(c)} is the number of class @math{c} requests in the system.
 ##
+## @item D
+## @code{@var{D}(c, k)} is class @math{c} service demand
+## at center @math{k} (@code{@var{D}(c,k) @geq{} 0}).
+##
 ## @item S
 ## @code{@var{S}(c, k)} is the mean service time of class @math{c}
-## requests at center @math{k}
-## (@code{@var{S}(c,k) @geq{} 0}).
+## requests at center @math{k} (@code{@var{S}(c,k) @geq{} 0}).
 ##
 ## @item V
 ## @code{@var{V}(c,k)} is the average number of visits of class @math{c}
-## requests to center
-## @math{k} (@code{@var{V}(c,k) @geq{} 0}). Default is 1.
+## requests to center @math{k} (@code{@var{V}(c,k) @geq{} 0}).
 ##
 ## @item m
 ## @code{@var{m}(k)} is the number of servers at center @math{k}
@@ -88,39 +90,49 @@ function [Xl Xu Rl Ru] = qnclosedmultiab( N, S, V, m, Z )
     print_usage();
   endif
 
-  ( isvector(N) && all(N >= 0) ) || \
-      error( "N must be a positive integer" );
-  N = N(:)';
+  ( isvector(N) && length(N)>0 ) || \
+      error("N must be a nonempty vector");
+  all(N >= 0) || \
+      error( "N must contain nonnegative values" );
   sum(N)>0 || \
       error( "The network has no requests" );
+  N = N(:)';
 
   C = length(N); # number of classes
 
-  ( ismatrix(S) && rows(S) == C && all(all(S>=0))) || \
-      error("S must be a matrix >=0 with %d rows", C);
-  
+  ( ismatrix(S) && rows(S) == C ) || \
+      error("S/D must be a matrix with %d rows", C);
+  all(all(S>=0)) || \
+      error("S/D must contain nonnegative values");
+
   K = columns(S);
 
   if ( nargin<3 )
     V = ones(size(S));
   else
-    (ismatrix(V) && size_equal(S,V) && all(all(V>=0))) || \
-	error("V must be a %d x %d matrix >=0", C, K);
+    (ismatrix(V) && size_equal(S,V) ) || \
+	error("V must be a %d x %d matrix", C, K);
+    all(all(V>=0)) || \
+	error("V must contain nonnegative values");
   endif
 
   if ( nargin<4 )
     m = ones(1,K);
   else
-    (isvector(m) && length(m) == K && all(m<=1)) || \
-	error("m must be a vector with %d elements <=1", K);
+    (isvector(m) && length(m) == K ) || \
+	error("m must be a vector with %d elements", K);
+    all(m<=1) || \
+	error("Multiple-server nodes are not supported");
     m = m(:)';
   endif
 
   if (nargin<5)
     Z = zeros(1,C);
   else
-    (isvector(Z) && length(Z) == C && all(Z>=0) ) || \
-	error("Z must be a vector >=0 with %d elements", C);
+    (isvector(Z) && length(Z) == C ) || \
+	error("Z must be a vector with %d elements", C);
+    all(Z>=0) || \
+	error("Z must contain nonnegative values");
     Z = Z(:)';
   endif
 
@@ -134,3 +146,39 @@ function [Xl Xu Rl Ru] = qnclosedmultiab( N, S, V, m, Z )
   Xu = min( 1./Dcmax, N ./ (Dc .+ Z) );
   Rl = Ru = [];
 endfunction
+
+%!test
+%! fail("qnclosedmultiab([],[])", "nonempty");
+%! fail("qnclosedmultiab([0 0], [1 2])", "no requests");
+%! fail("qnclosedmultiab([1 0], [1 2 3])", "2 rows");
+%! fail("qnclosedmultiab([1 0], [1 2 3; 4 5 -1])", "nonnegative");
+%! fail("qnclosedmultiab([1 2], [1 2 3; 4 5 6], [1 2 3])", "2 x 3");
+%! fail("qnclosedmultiab([1 2], [1 2 3; 4 5 6], [1 2 3; 4 5 -1])", "nonnegative");
+%! fail("qnclosedmultiab([1 2], [1 2 3; 1 2 3], [1 2 3; 1 2 3], [1 1])", "3 elements");
+%! fail("qnclosedmultiab([1 2], [1 2 3; 1 2 3], [1 2 3; 1 2 3], [1 1 2])", "not supported");
+%! fail("qnclosedmultiab([1 2], [1 2 3; 1 2 3], [1 2 3; 1 2 3], [1 1 -1],[1 2 3])", "2 elements");
+%! fail("qnclosedmultiab([1 2], [1 2 3; 1 2 3], [1 2 3; 1 2 3], [1 1 -1],[1 -2])", "nonnegative");
+
+%!demo
+%! S = [10 7 5 4; \
+%!      5  2 4 6];
+%! NN=20;
+%! Xl = Xu = Xmva = zeros(NN,2);
+%! for n=1:NN
+%!   N=[n,10];
+%!   [a b] = qnclosedmultiab(N,S);
+%!   Xl(n,:) = a; Xu(n,:) = b;
+%!   [U R Q X] = qnclosedmultimva(N,S,ones(size(S)));
+%!   Xmva(n,:) = X(:,1)';
+%! endfor
+%! subplot(2,1,1);
+%! plot(1:NN,Xl(:,1),"linewidth", 2, 1:NN,Xu(:,1),"linewidth", 2, \
+%!      1:NN,Xmva(:,1),";MVA;");
+%! title("Class 1 throughput");
+%! subplot(2,1,2);
+%! plot(1:NN,Xl(:,2),"linewidth", 2, 1:NN,Xu(:,2), "linewidth", 2,\
+%!      1:NN,Xmva(:,2),";MVA;");
+%! title("Class 2 throughput");
+%! xlabel("Number of class 1 requests");
+
+

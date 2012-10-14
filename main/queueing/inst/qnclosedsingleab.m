@@ -17,7 +17,7 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedsingleab (@var{N}, @var{S})
+## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedsingleab (@var{N}, @var{D})
 ## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedsingleab (@var{N}, @var{S}, @var{V})
 ## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedsingleab (@var{N}, @var{S}, @var{V}, @var{m})
 ## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedsingleab (@var{N}, @var{S}, @var{V}, @var{m}, @var{Z})
@@ -25,9 +25,12 @@
 ## @cindex bounds, asymptotic
 ## @cindex closed network
 ##
-## Compute Asymptotic Bounds for single closed networks. Single-server
-## and infinite-server nodes are supported. Multiple-server nodes and
-## general load-dependent servers are not supported.
+## Compute Asymptotic Bounds for throughput and response time of closed,
+## single-class networks.
+##
+## Single-server and infinite-server nodes are supported.
+## Multiple-server nodes and general load-dependent servers are not
+## supported.
 ##
 ## @strong{INPUTS}
 ##
@@ -36,13 +39,17 @@
 ## @item N
 ## number of requests in the system (scalar, @code{@var{N}>0}).
 ##
+## @item D
+## @code{@var{D}(k)} is the service demand at center @math{k}
+## (@code{@var{D}(k) @geq{} 0}).
+##
 ## @item S
 ## @code{@var{S}(k)} is the mean service time at center @math{k}
 ## (@code{@var{S}(k) @geq{} 0}).
 ##
 ## @item V
 ## @code{@var{V}(k)} is the average number of visits to center
-## @math{k} (@code{@var{V}(k) @geq{} 0}). Default is 1.
+## @math{k} (@code{@var{V}(k) @geq{} 0}).
 ##
 ## @item m
 ## @code{@var{m}(k)} is the number of servers at center @math{k}
@@ -86,35 +93,30 @@ function [Xl Xu Rl Ru] = qnclosedsingleab( N, S, V, m, Z )
 
   ( isscalar(N) && N > 0 ) || \
       error( "N must be a positive integer" );
-  isvector(S) || \
-      error( "S must be a vector" );
+  (isvector(S) && length(S)>0) || \
+      error( "S/D must be a nonempty vector" );
+  all(S>=0) || \
+      error( "S/D must contain nonnegative values");
   S = S(:)';
-
+  K = length(S);
   if ( nargin < 3 )
-    V = 1;
+    V = ones(1,K);
   else
-    isvector(V) || \
-	error( "V must be a vector" );
+    (isvector(V) && length(V) == K) || \
+	error( "V must be a vector with %d elements", K );
+    all(V>=0) || \
+	error( "V must contain nonnegative values" );
     V = V(:)';
   endif
   if ( nargin < 4 )
-    m = 1;
+    m = ones(1,K);
   else
-    isvector(m) || \
-	error( "m must be a vector" );
+    (isvector(m) && length(m) == K) || \
+	error( "m must be a vector with %d elements", K );
+    all(m<=1) || \
+	error( "multiple server nodes are not supported" );
     m = m(:)';
   endif
-
-  [err S V m] = common_size(S, V, m);
-  (err == 0) || \
-      error( "S, V and m are of incompatible size" );
-  all(m<=1) || \
-      error( "multiple server nodes are not supported" );
-  all(S>=0) || \
-      error( "S must be >= 0 ");
-  all(V>=0) || \
-      error( "V must be >= 0" );
-
   if ( nargin < 5 )
     Z = 0;
   else
@@ -134,3 +136,23 @@ function [Xl Xu Rl Ru] = qnclosedsingleab( N, S, V, m, Z )
   Rl = max( Dtot, N*Dmax - Z );
   Ru = N*Dtot_single + Dtot_delay;
 endfunction
+
+%!test
+%! fail("qnclosedsingleab(-1,0)", "N must be");
+%! fail("qnclosedsingleab(1,[])", "nonempty");
+%! fail("qnclosedsingleab(1,[-1 2])", "nonnegative");
+%! fail("qnclosedsingleab(1,[1 2],[1 2 3])", "2 elements");
+%! fail("qnclosedsingleab(1,[1 2 3],[1 2 -1])", "nonnegative");
+%! fail("qnclosedsingleab(1,[1 2 3],[1 2 3],[1 2])", "3 elements");
+%! fail("qnclosedsingleab(1,[1 2 3],[1 2 3],[1 2 1])", "not supported");
+%! fail("qnclosedsingleab(1,[1 2 3],[1 2 3],[1 1 1],-1)", "nonnegative");
+%! fail("qnclosedsingleab(1,[1 2 3],[1 2 3],[1 1 1],[0 0])", "scalar");
+
+## Example 9.6 p. 913 Bolch et al.
+%!test
+%! N = 20;
+%! S = [ 4.6*2 8 ];
+%! Z = 120;
+%! [X_l X_u R_l R_u] = qnclosedsingleab(N, S, ones(size(S)), ones(size(S)), Z);
+%! assert( [X_u R_l], [0.109 64], 1e-3 );
+

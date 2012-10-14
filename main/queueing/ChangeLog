@@ -17,6 +17,7 @@
 	* qnclosedsinglebsb() added
 	* Changed interface for qnopenbsb()
 	* Fixed bug in function qnconvolution()
+	* Fixed bug in function qnconvolutionld()
 
 2012-09-08 Moreno Marzolla <marzolla@cs.unibo.it>
 

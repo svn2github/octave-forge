@@ -58,7 +58,7 @@
 ## @item Xu
 ## Per-class lower and upper throughput bounds. For example,
 ## @code{@var{Xu}(c)} is the upper bound for class @math{c} throughput.
-## @code{Xl} is always @code{-inf} since there can be no lower bound
+## @code{Xl} is always @math{0} since there can be no lower bound
 ## on the throughput of open networks.
 ##
 ## @item Rl
@@ -101,7 +101,7 @@ function [X_lower X_upper R_lower R_upper] = qnopenmultiab( lambda, S, V )
   endif
 
   D = S.*V;
-  X_lower = -inf(1,C);
+  X_lower = zeros(1,C);
   X_upper = 1./max(D,[],2)';
   R_lower = sum(D,2)';
   R_upper = +inf(1,C);

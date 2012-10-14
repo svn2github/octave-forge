@@ -53,8 +53,8 @@
 ##
 ## @item Xl
 ## @item Xu
-## Lower and upper bounds on the system throughput. Note: @var{Xl} will
-## be always be @code{-inf}, since there can be no lower bound on open
+## Lower and upper bounds on the system throughput. @var{Xl} is always
+## set to @math{0}, since there can be no lower bound on open
 ## networks throughput.
 ##
 ## @item Rl
@@ -97,7 +97,7 @@ function [X_lower X_upper R_lower R_upper] = qnopensinglebsb( lambda, S, V )
   D_tot = sum(D);
   D_ave = mean(D_tot);
   X_upper = 1/D_max;
-  X_lower = -inf;
+  X_lower = 0;
   R_lower = D_tot / (1-lambda*D_ave);
   R_upper = D_tot / (1-lambda*D_max);
 endfunction
@@ -110,5 +110,5 @@ endfunction
 
 %!test
 %! [Xl Xu Rl Ru] = qnopensinglebsb(0.1,[1 2 3]);
-%! assert( Xl, -inf );
+%! assert( Xl, 0 );
 

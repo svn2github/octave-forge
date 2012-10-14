@@ -21,7 +21,9 @@
 ## @deftypefnx {Function File} {@var{M} =} ctmc_taexps (@var{Q}, @var{p})
 ##
 ## @cindex Markov chain, continuous time
-## @cindex Time-alveraged sojourn time
+## @cindex time-alveraged sojourn time, CTMC
+## @cindex continuous time Markov chain
+## @cindex CTMC
 ##
 ## Compute the @emph{time-averaged sojourn time} @code{@var{M}(i)},
 ## defined as the fraction of the time interval @math{[0,t]} (or until

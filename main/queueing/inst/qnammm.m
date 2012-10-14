@@ -19,7 +19,7 @@
 ##
 ## @deftypefn {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qnammm (@var{lambda}, @var{mu})
 ##
-## @cindex Asymmetric @math{M/M/m} system
+## @cindex asymmetric @math{M/M/m} system
 ##
 ## Compute @emph{approximate} utilization, response time, average number
 ## of requests in service and throughput for an asymmetric  @math{M/M/m}

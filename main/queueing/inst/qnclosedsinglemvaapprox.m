@@ -25,7 +25,7 @@
 ##
 ## @cindex Mean Value Analysys (MVA), approximate
 ## @cindex MVA, approximate
-## @cindex Approximate MVA
+## @cindex approximate MVA
 ## @cindex closed network, single class
 ## @cindex closed network, approximate analysis
 ##

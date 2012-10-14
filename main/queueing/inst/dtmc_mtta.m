@@ -20,9 +20,12 @@
 ## @deftypefn {Function File} {[@var{t} @var{N} @var{B}] =} dtmc_mtta (@var{P})
 ## @deftypefnx {Function File} {[@var{t} @var{N} @var{B}] =} dtmc_mtta (@var{P}, @var{p0})
 ##
-## @cindex Mean time to absorption
-## @cindex Absorption probabilities
-## @cindex Fundamental matrix
+## @cindex mean time to absorption, DTMC
+## @cindex absorption probabilities, DTMC
+## @cindex fundamental matrix
+## @cindex DTMC
+## @cindex discrete time Markov chain
+## @cindex Markov chain, discrete time
 ##
 ## Compute the expected number of steps before absorption for a
 ## DTMC with @math{N \times N} transition probability matrix @var{P};

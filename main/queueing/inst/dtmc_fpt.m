@@ -19,8 +19,11 @@
 ##
 ## @deftypefn {Function File} {@var{M} =} dtmc_fpt (@var{P})
 ##
-## @cindex First passage times
-## @cindex Mean recurrence times
+## @cindex first passage times
+## @cindex mean recurrence times
+## @cindex discrete time Markov chain
+## @cindex Markov chain, discrete time
+## @cindex DTMC
 ##
 ## Compute mean first passage times and mean recurrence times
 ## for an irreducible discrete-time Markov chain.

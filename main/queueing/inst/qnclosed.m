@@ -19,7 +19,8 @@
 ##
 ## @deftypefn {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qnclosed (@var{N}, @var{S}, @var{V}, @dots{})
 ##
-## @cindex closed network
+## @cindex closed network, single class
+## @cindex closed network, multiple classes
 ##
 ## This function computes steady-state performance measures of closed
 ## queueing networks using the Mean Value Analysis (MVA) algorithm. The

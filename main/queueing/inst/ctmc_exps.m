@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {@var{L} =} ctmc_exps (@var{Q}, @var{p})
 ##
 ## @cindex Markov chain, continuous time
-## @cindex Expected sojourn time
+## @cindex expected sojourn time, CTMC
 ##
 ## With three arguments, compute the expected times @code{@var{L}(i)}
 ## spent in each state @math{i} during the time interval @math{[0,t]},

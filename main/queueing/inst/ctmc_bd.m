@@ -20,7 +20,9 @@
 ## @deftypefn {Function File} {@var{Q} =} ctmc_bd (@var{b}, @var{d})
 ##
 ## @cindex Markov chain, continuous time
-## @cindex Birth-death process
+## @cindex continuous time Markov chain
+## @cindex CTMC
+## @cindex birth-death process, CTMC
 ##
 ## Returns the infinitesimal generator matrix @math{Q} for a continuous
 ## birth-death process over state space @math{1, 2, @dots{}, N}.

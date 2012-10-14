@@ -20,7 +20,10 @@
 ## @deftypefn {Function File} {@var{L} =} dtmc_exps (@var{P}, @var{n}, @var{p0})
 ## @deftypefnx {Function File} {@var{L} =} dtmc_exps (@var{P}, @var{p0})
 ##
-## @cindex Expected sojourn times
+## @cindex expected sojourn times, DTMC
+## @cindex DTMC
+## @cindex discrete time Markov chain
+## @cindex Markov chain, discrete time
 ##
 ## Compute the expected number of visits to each state during the first
 ## @var{n} transitions, or until abrosption.

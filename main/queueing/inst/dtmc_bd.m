@@ -20,7 +20,9 @@
 ## @deftypefn {Function File} {@var{P} =} dtmc_bd (@var{b}, @var{d})
 ##
 ## @cindex Markov chain, discrete time
-## @cindex Birth-death process
+## @cindex DTMC
+## @cindex discrete time Markov chain
+## @cindex birth-death process, DTMC
 ##
 ## Returns the transition probability matrix @math{P} for a discrete
 ## birth-death process over state space @math{1, 2, @dots{}, N}.

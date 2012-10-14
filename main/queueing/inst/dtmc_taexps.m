@@ -20,7 +20,10 @@
 ## @deftypefn {Function File} {@var{L} =} dtmc_exps (@var{P}, @var{n}, @var{p0})
 ## @deftypefnx {Function File} {@var{L} =} dtmc_exps (@var{P}, @var{p0})
 ##
-## @cindex Time-alveraged sojourn time
+## @cindex time-alveraged sojourn time, DTMC
+## @cindex discrete time Markov chain
+## @cindex Markov chain, discrete time
+## @cindex DTMC
 ##
 ## Compute the @emph{time-averaged sojourn time} @code{@var{M}(i)},
 ## defined as the fraction of time steps @math{@{0, 1, @dots{}, n@}} (or

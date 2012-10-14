@@ -20,7 +20,7 @@
 ## @deftypefn {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}, @var{G}] =} qnconvolution (@var{N}, @var{S}, @var{V})
 ## @deftypefnx {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}, @var{G}] =} qnconvolution (@var{N}, @var{S}, @var{V}, @var{m})
 ##
-## @cindex closed network
+## @cindex closed network, single class
 ## @cindex normalization constant
 ## @cindex convolution algorithm
 ##

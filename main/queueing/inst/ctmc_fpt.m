@@ -20,7 +20,10 @@
 ## @deftypefn {Function File} {@var{M} =} ctmc_fpt (@var{Q})
 ## @deftypefnx {Function File} {@var{m} =} ctmc_fpt (@var{Q}, @var{i}, @var{j})
 ##
-## @cindex First passage times
+## @cindex first passage times, CTMC
+## @cindex CTMC
+## @cindex continuous time Markov chain
+## @cindex Markov chain, continuous time
 ##
 ## Compute mean first passage times for an irreducible continuous-time
 ## Markov chain.

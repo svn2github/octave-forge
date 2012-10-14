@@ -23,7 +23,7 @@
 ## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedsinglebsb (@var{N}, @var{S}, @var{V}, @var{m}, @var{Z})
 ##
 ## @cindex bounds, balanced system
-## @cindex closed network
+## @cindex closed network, single class
 ##
 ## Compute Balanced System Bounds on system throughput and response time for closed, single-class networks.
 ##

@@ -21,9 +21,10 @@
 ## @deftypefnx {Function File} {@var{p} =} ctmc (@var{Q}, @var{t}. @var{p0})
 ##
 ## @cindex Markov chain, continuous time
-## @cindex Continuous time Markov chain
+## @cindex continuous time Markov chain
 ## @cindex Markov chain, state occupancy probabilities
-## @cindex Stationary probabilities
+## @cindex stationary probabilities
+## @cindex CTMC
 ##
 ## Compute stationary or transient state occupancy probabilities
 ## for a continuous-time Markov chain.

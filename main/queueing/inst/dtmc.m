@@ -21,11 +21,10 @@
 ## @deftypefnx {Function File} {@var{p} =} dtmc (@var{P}, @var{n}, @var{p0})
 ##
 ## @cindex Markov chain, discrete time
-## @cindex Discrete time Markov chain
+## @cindex discrete time Markov chain
+## @cindex DTMC
 ## @cindex Markov chain, stationary probabilities
-## @cindex Stationary probabilities
 ## @cindex Markov chain, transient probabilities
-## @cindex Transient probabilities
 ##
 ## With a single argument, compute the steady-state occupancy
 ## probability vector @code{@var{p}(1), @dots{}, @var{p}(N)} for a

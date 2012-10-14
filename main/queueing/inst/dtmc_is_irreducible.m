@@ -20,8 +20,9 @@
 ## @deftypefn {Function File} {[@var{r} @var{s}] =} dtmc_is_irreducible (@var{P})
 ##
 ## @cindex Markov chain, discrete time
-## @cindex Discrete time Markov chain
-## @cindex Irreducible Markov chain
+## @cindex discrete time Markov chain
+## @cindex DTMC
+## @cindex irreducible Markov chain
 ##
 ## Check if @var{P} is irreducible, and identify Strongly Connected
 ## Components (SCC) in the transition graph of the DTMC with transition

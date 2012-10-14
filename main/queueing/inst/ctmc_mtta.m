@@ -20,7 +20,9 @@
 ## @deftypefn {Function File} {@var{t} =} ctmc_mtta (@var{Q}, @var{p})
 ##
 ## @cindex Markov chain, continuous time
-## @cindex Mean time to absorption
+## @cindex continuous time Markov chain
+## @cindex CTMC
+## @cindex mean time to absorption, CTMC
 ##
 ## Compute the Mean-Time to Absorption (MTTA) of the CTMC described by
 ## the infinitesimal generator matrix @var{Q}, starting from initial

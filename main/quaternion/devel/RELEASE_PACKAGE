@@ -21,12 +21,12 @@ svn export quaternion ~/octave/__TEMP__/quaternion
 rm -R ~/octave/__TEMP__/quaternion/devel
 cd ~/octave/__TEMP__
 grep -i version quaternion/DESCRIPTION
-tar czf quaternion-2.0.0.tar.gz quaternion/
-md5 quaternion-2.0.0.tar.gz
-md5 quaternion-2.0.0.tar.gz > md5_quaternion_pkg.txt
-uuencode quaternion-2.0.0.tar.gz < quaternion-2.0.0.tar.gz > quaternion-2.0.0.tar.gz.uue
+tar czf quaternion-2.0.1.tar.gz quaternion/
+md5 quaternion-2.0.1.tar.gz
+md5 quaternion-2.0.1.tar.gz > md5_quaternion_pkg.txt
+uuencode quaternion-2.0.1.tar.gz < quaternion-2.0.1.tar.gz > quaternion-2.0.1.tar.gz.uue
 octave -q --eval \
-"pkg install quaternion-2.0.0.tar.gz"
+"pkg install quaternion-2.0.1.tar.gz"
 octave -q --eval \
 "pkg load generate_html; generate_package_html ('quaternion', 'quaternion-html', 'octave-forge')"
 tar czf quaternion-html.tar.gz quaternion-html
@@ -41,7 +41,7 @@ Aftermath
 =====================================================================================
 
 rm -R ~/octave/__TEMP__
-rm -R ~/octave/quaternion-2.0.0
+rm -R ~/octave/quaternion-2.0.1
 
 
 =====================================================================================

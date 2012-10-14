@@ -1,7 +1,7 @@
 Summary of important user-visible changes for releases of the quaternion package
 
 ===============================================================================
-quaternion-2.0.1   Release Date: 2012-xx-yy   Release Manager: Lukas Reichlin
+quaternion-2.0.1   Release Date: 2012-10-14   Release Manager: Lukas Reichlin
 ===============================================================================
 
 ** inv
@@ -14,6 +14,13 @@ quaternion-2.0.1   Release Date: 2012-xx-yy   Release Manager: Lukas Reichlin
 
 ** doc/quaternion.pdf
    Revised PDF manual.  There is now a function index at the end of the manual.
+
+** The TeX-files  quaternion.tex  and  functions.texi  for generating
+   quaternion.pdf  are included in the doc folder, next to  quaternion.pdf.
+   Note that  functions.texi  is generated automatically by the scripts in the
+   quaternion/devel folder and the package generate_html.
+   They are not included in the quaternion package and can be found on the
+   OctaveForge SVN server.
 
 
 ===============================================================================

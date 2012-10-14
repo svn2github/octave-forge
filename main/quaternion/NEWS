@@ -1,6 +1,14 @@
 Summary of important user-visible changes for releases of the quaternion package
 
 ===============================================================================
+quaternion-2.0.1   Release Date: 2012-xx-yy   Release Manager: Lukas Reichlin
+===============================================================================
+
+** doc/quaternion.pdf
+   Revised PDF manual.  There is now a function index at the end of the manual.
+
+
+===============================================================================
 quaternion-2.0.0   Release Date: 2012-03-28   Release Manager: Lukas Reichlin
 ===============================================================================
 

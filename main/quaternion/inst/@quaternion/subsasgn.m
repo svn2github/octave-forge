@@ -45,7 +45,7 @@ function q = subsasgn (q, idx, val)
                num2str (size (val), "%d "), num2str (size (subsref (q.w, idx(2:end))), "%d "));
       endif
       switch (tolower (idx(1).subs))
-        case {"w", "s"}
+        case {"w", "s", "e"}
           q.w = subsasgn (q.w, idx(2:end), val);
         case {"x", "i"}
           q.x = subsasgn (q.x, idx(2:end), val);

@@ -4,9 +4,10 @@ Prepare quaternion-2.x.y Package for Release
 USAGE: * adapt all paths to your machine
        * update version number in the commands below
        * adapt version number and release date in DESCRIPTION
-       * update doc/NEWS
+       * update NEWS
        * adapt version number in quaternion.tex
        * update doc/quaternion.pdf
+       * update doc/quaternion.tex  &  doc/functions.texi
        * copy-paste entire block at once to the terminal
        * follow instructions on <http://octave.sourceforge.net/developers.html>
 

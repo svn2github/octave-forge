@@ -30,7 +30,7 @@ function ret = subsref (q, s)
   switch (s(1).type)
     case "."                                # q.w
       switch (tolower (s(1).subs))
-        case {"w", "s"}                     # scalar part
+        case {"w", "s", "e"}                # scalar part
           ret = subsref (q.w, s(2:end));
         case {"x", "i"}
           ret = subsref (q.x, s(2:end));

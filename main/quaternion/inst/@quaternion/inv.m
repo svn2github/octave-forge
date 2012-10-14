@@ -55,7 +55,7 @@ function a = inv (a)
     a = [iA + iAB*Y, -iAB*X;
                  -Y,      X];
   else
-    error ("quaternion: inv: n-dimensional arrays are not supported");
+    error ("quaternion: inv: require square matrices of quaternions");
   endif
 
 endfunction

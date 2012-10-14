@@ -1234,7 +1234,7 @@ function, respectively.
 @node QN Analysis Examples
 @section QN Analysis Examples
 
-@subsubsection Closed, Single Class Network
+@subsection Closed, Single Class Network
 
 We now give a simple example on how the queueing toolbox can be used
 to analyze a closed network. Let us consider again the network shown
@@ -1347,7 +1347,7 @@ Now, the network can be analyzed as follows:
 @end group
 @end example
 
-@subsubsection Open, Single Class Network
+@subsection Open, Single Class Network
 
 Open networks can be analyzed in a similar way. Let us consider
 an open network with @math{K=3} service centers, and routing
@@ -1423,7 +1423,7 @@ Again, it is possible to use the @command{qnsolve} high-level function:
 @end group
 @end example
 
-@subsubsection Closed Multiclass Network/1
+@subsection Closed Multiclass Network/1
 
 The following example is taken from Herb Schwetman, @cite{Implementing
 the Mean Value Algorith for the Solution of Queueing Network Models},
@@ -1474,7 +1474,7 @@ X =
     0.00000    0.31380    0.31380
 @end example
 
-@subsubsection Closed Multiclass Network/2
+@subsection Closed Multiclass Network/2
 
 The following example is taken from M. Marzolla, @cite{The qnetworks
 Toolbox: A Software Package for Queueing Networks Analysis}, Technical
@@ -1583,7 +1583,7 @@ higher contention on the resources.
 @caption{System Power as a function of the population mix}
 @end float
 
-@subsubsection Closed Multiclass Network/3
+@subsection Closed Multiclass Network/3
 
 We now consider an example of multiclass network with class switching.
 The example is taken from @ref{Sch82}, and is shown in Figure

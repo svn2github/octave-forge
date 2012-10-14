@@ -20,6 +20,8 @@
 ## @deftypefn {Function File} {[@var{r} @var{err}] =} dtmc_check_P (@var{P})
 ##
 ## @cindex Markov chain, discrete time
+## @cindex DTMC
+## @cindex discrete time Markov chain
 ##
 ## Check if @var{P} is a valid transition probability matrix. If @var{P}
 ## is valid, @var{r} is the size (number of rows or columns) of @var{P}.

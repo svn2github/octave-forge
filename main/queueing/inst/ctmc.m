@@ -48,8 +48,9 @@
 ## 0}
 ##
 ## @item t
-## Time at which to compute the transient probability. If omitted,
-## compute the steady state occupancy probability.
+## Time at which to compute the transient probability (@math{t @geq{}
+## 0}). If omitted, the function computes the steady state occupancy
+## probability vector.
 ##
 ## @item p0
 ## @code{@var{p0}(i)} is the probability that the system
@@ -62,13 +63,12 @@
 ## @table @var
 ##
 ## @item p
-## If this function is invoked with a single argument,
-## @code{@var{p}(i)} is the steady-state probability that the system is
-## in state @math{i}, @math{i = 1, @dots{}, N}. The vector @var{p}
-## satisfies the equation @math{p{\bf Q} = 0} and @math{\sum_{i=1}^N p_i = 1}.
-## If this function is invoked with three arguments, @code{@var{p}(i)}
-## is the probability that the system is in state @math{i} at time @var{t},
-## given the initial occupancy probabilities @var{p0}(1), @dots{}, @var{p0}(N).
+## If this function is invoked with a single argument, @code{@var{p}(i)}
+## is the steady-state probability that the system is in state @math{i},
+## @math{i = 1, @dots{}, N}. If this function is invoked with three
+## arguments, @code{@var{p}(i)} is the probability that the system is in
+## state @math{i} at time @var{t}, given the initial occupancy
+## probabilities @var{p0}(1), @dots{}, @var{p0}(N).
 ##
 ## @end table
 ##

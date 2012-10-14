@@ -61,13 +61,12 @@
 ## @table @var
 ##
 ## @item p
-## If this function is invoked with a single argument,
-## @code{@var{p}(i)} is the steady-state probability that the system is
-## in state @math{i}. @var{p} satisfies the equations @math{p = p{\bf P}} and @math{\sum_{i=1}^N p_i = 1}. If this function is invoked
-## with three arguments, @code{@var{p}(i)} is the marginal probability
-## that the system is in state @math{i} after @var{n} transitions,
-## given the initial probabilities @code{@var{p0}(i)} that the initial state is
-## @math{i}.
+## If this function is invoked with a single argument, @code{@var{p}(i)}
+## is the steady-state probability that the system is in state @math{i}.
+## If this function is invoked with three arguments, @code{@var{p}(i)}
+## is the probability that the system is in state @math{i}
+## after @var{n} transitions, given the initial probabilities
+## @code{@var{p0}(i)} that the initial state is @math{i}.
 ##
 ## @end table
 ##

@@ -22,6 +22,7 @@
 ##
 ## @cindex bounds, asymptotic
 ## @cindex open network
+## @cindex multiclass network, open
 ##
 ## Compute Asymptotic Bounds for open, multiclass networks.
 ##

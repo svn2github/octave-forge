@@ -24,9 +24,10 @@
 ## @deftypefnx {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qnclosedsinglemvaapprox (@var{N}, @var{S}, @var{V}, @var{m}, @var{Z}, @var{tol}, @var{iter_max})
 ##
 ## @cindex Mean Value Analysys (MVA), approximate
+## @cindex MVA, approximate
 ## @cindex Approximate MVA
-## @cindex Closed network, single class
-## @cindex Closed network, approximate analysis
+## @cindex closed network, single class
+## @cindex closed network, approximate analysis
 ##
 ## Analyze closed, single class queueing networks using the Approximate
 ## Mean Value Analysis (MVA) algorithm. This function is based on

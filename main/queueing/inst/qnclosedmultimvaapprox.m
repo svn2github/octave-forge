@@ -24,9 +24,9 @@
 ## @deftypefnx {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qnclosedmultimvaapprox (@var{N}, @var{S}, @var{V}, @var{m}, @var{Z}, @var{tol}, @var{iter_max})
 ##
 ## @cindex Mean Value Analysys (MVA), approximate
-## @cindex Approximate MVA
-## @cindex Closed network, multiple classes
-## @cindex Closed network, approximate analysis
+## @cindex MVA, approximate
+## @cindex closed network, multiple classes
+## @cindex multiclass network, closed
 ##
 ## Analyze closed, multiclass queueing networks with @math{K} service
 ## centers and @math{C} customer classes using the approximate Mean

@@ -26,6 +26,7 @@
 ##
 ## @cindex Mean Value Analysys (MVA)
 ## @cindex closed network, multiple classes
+## @cindex multiclass network, closed
 ##
 ## Compute steady-state performance measures for closed, multiclass
 ## queueing networks using the Mean Value Analysys (MVA) algorithm.

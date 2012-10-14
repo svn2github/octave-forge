@@ -20,6 +20,9 @@
 ## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedmulticb (@var{N}, @var{D})
 ## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedmulticb (@var{N}, @var{S}, @var{V})
 ##
+## @cindex multiclass network, closed
+## @cindex bounds, composite
+##
 ## Composite Bound (CB) on throughput and response time for multiclass networks.
 ##
 ## This function implements the Composite Bound Method described in T.

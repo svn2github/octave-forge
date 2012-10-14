@@ -21,6 +21,7 @@
 ## @deftypefnx {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qnopenmulti (@var{lambda}, @var{S}, @var{V}, @var{m})
 ##
 ## @cindex open network, multiple classes
+## @cindex multiclass network, open
 ##
 ## Exact analysis of open, multiple-class BCMP networks. The network can
 ## be made of @emph{single-server} queueing centers (FCFS, LCFS-PR or

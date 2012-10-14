@@ -20,6 +20,9 @@
 ## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedmultibsb (@var{N}, @var{D})
 ## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedmultibsb (@var{N}, @var{S}, @var{V})
 ##
+## @cindex bounds, balanced system
+## @cindex multiclass network, closed
+##
 ## Compute Balanced System Bounds for multiclass networks.
 ## Only single-server nodes are supported.
 ##

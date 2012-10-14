@@ -21,6 +21,7 @@
 ## @deftypefnx {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qnclosedsinglemvald (@var{N}, @var{S}, @var{V}, @var{Z})
 ##
 ## @cindex Mean Value Analysys (MVA)
+## @cindex MVA
 ## @cindex closed network, single class
 ## @cindex load-dependent service center
 ##

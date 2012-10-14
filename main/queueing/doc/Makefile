@@ -4,7 +4,7 @@ FIGS=qn_open_single qn_closed_single qn_web_model qn_closed_multi web power qn_c
 FIGS_EPS=$(FIGS:%=%.eps)
 FIGS_PDF=$(FIGS:%=%.pdf)
 FIGS_PNG=$(FIGS:%=%.png)
-DISTFILES=README INSTALL $(DOC).pdf $(DOC).html $(DOC).texi $(CHAPTERS)
+DISTFILES=README INSTALL $(DOC).pdf $(DOC).html $(DOC).texi $(CHAPTERS) $(FIGS_EPS) $(wildcard *.fig)
 
 .PHONY: clean dist
 

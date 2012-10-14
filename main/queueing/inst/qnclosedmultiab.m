@@ -24,6 +24,7 @@
 ##
 ## @cindex bounds, asymptotic
 ## @cindex closed network
+## @cindex multiclass network, closed
 ##
 ## Compute Asymptotic Bounds for multiclass networks.
 ## Single-server and infinite-server nodes are supported.

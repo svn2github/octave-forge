@@ -109,16 +109,16 @@ function [U R Q X G] = qnconvolutionld( N, S, V )
   ## Initialization
   G_n = G_nm1 = zeros(1,K+1); G_n(1) = 1;
   F_n = zeros(N,K+1); F_n(:,1) = 1;
-  for k=0:K
-    G_nm1(k+1) = F_n(1,k+1) = F(1,k,V,S);
+  for k=1:K
+    G_n(k+1) = F_n(1,k+1) = F(1,k,V,S);
   endfor
   ## Main convolution loop
   for n=2:N
+    G_nm1 = G_n;
     for k=2:K+1
       F_n(n,k) = F(n,k-1,V,S);
     endfor
     G_n = conv( F_n(n,:), G_nm1(:) )(1:K+1);
-    G_nm1 = G_n;
   endfor
   ## Done computation of G(n,k).
   G = G_n;

@@ -128,8 +128,8 @@ function [U R Q X G] = qnconvolution( N, S, V, m )
   for n=2:N
     G_nm1 = G_n;
     k=1:K; F_n(n,1+k) = F(n,k,V,S,m);
-    G_n(1) = 1;
-    G_n(2:K+1) = conv( F_n(n,:), G_nm1(:) )(2:K+1);
+    # G_n(1) = 1;
+    G_n = conv( F_n(n,:), G_nm1(:) )(1:K+1);
   endfor
   ## Done computation of G(n,k).
   G = G_n(:)'; # ensure G is a row vector

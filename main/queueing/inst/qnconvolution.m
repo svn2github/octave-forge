@@ -121,19 +121,20 @@ function [U R Q X G] = qnconvolution( N, S, V, m )
   m( i_delay ) = K; # IS nodes are handled as if they were M/M/K nodes with number of servers equal to the population size K, such that queueing never occurs.
 
   ## Initialization
-  G_n = G_nm1 = zeros(1,K+1); G_n(1) = 1;
+  G_n = G_nm1 = zeros(1,K+1); 
   F_n = zeros(N,K+1); F_n(:,1) = 1;
-  k=0:K; G_nm1(k+1) = F_n(1,k+1) = F(1,k,V,S,m);
+  k=1:K; G_n(1) = 1; G_n(k+1) = F_n(1,k+1) = F(1,k,V,S,m); 
   ## Main convolution loop
   for n=2:N
-    k=1:K; F_n(n,1+k) = F(n,k,V,S,m);
-    G_n = conv( F_n(n,:), G_nm1(:) )(1:K+1);
     G_nm1 = G_n;
+    k=1:K; F_n(n,1+k) = F(n,k,V,S,m);
+    G_n(1) = 1;
+    G_n(2:K+1) = conv( F_n(n,:), G_nm1(:) )(2:K+1);
   endfor
   ## Done computation of G(n,k).
-  G = G_n;
-  G = G(:)'; # ensure G is a row vector
+  G = G_n(:)'; # ensure G is a row vector
   ## Computes performance measures
+
   X = V*G(K)/G(K+1);
   U = X .* S ./ m;
   ## Adjust utilization of delay centers

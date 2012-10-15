@@ -115,6 +115,11 @@ function [U R Q X G] = qnconvolution( N, S, V, m )
         error( "m and S have incompatible size" );
   endif
 
+  ## This implementation is based on G. Bolch, S. Greiner, H. de Meer
+  ## and K. Trivedi, Queueing Networks and Markov Chains: Modeling and
+  ## Performance Evaluation with Computer Science Applications, Wiley,
+  ## 1998, pp. 313--317.
+
   ## First, we remember the indexes of IS nodes
   i_delay = find(m<1);
 

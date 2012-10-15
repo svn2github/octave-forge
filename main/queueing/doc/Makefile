@@ -20,13 +20,13 @@ INSTALL: installation.texi
 	-$(MAKEINFO) -D INSTALLONLY \
 	  --no-validate --no-headers --no-split --output INSTALL $<
 
-$(DOC).html: $(DOC).texi $(CHAPTERS) $(FIGS_PNG)
+$(DOC).html: $(DOC).texi conf.texi $(CHAPTERS) $(FIGS_PNG)
 	-$(MAKEINFO) --html --no-split $(DOC).texi
 
-$(DOC).pdf: $(DOC).texi $(CHAPTERS) $(FIGS_PDF)
+$(DOC).pdf: $(DOC).texi conf.texi $(CHAPTERS) $(FIGS_PDF)
 	texi2pdf  -o $(DOC).pdf $(DOC).texi
 
-$(DOC).info: $(DOC).texi $(CHAPTERS)
+$(DOC).info: $(DOC).texi conf.texi $(CHAPTERS)
 	-$(MAKEINFO) $(DOC).texi
 
 %.texi: %.txi

@@ -64,6 +64,11 @@ Additional information can be found at
 
 @url{http://www.moreno.marzolla.name/software/queueing/}
 
+To install @code{queueing}, follow these steps:
+
+@enumerate
+
+@item
 If you have a recent version of GNU Octave and a network connection,
 you can install @code{queueing} directly from Octave command prompt
 using this command:
@@ -74,24 +79,18 @@ octave:1> @kbd{pkg install -forge queueing}
 
 The command above will automaticall download and install the latest
 version of the queueing toolbox from Octave Forge, and install it on
-your machine. You can verify that the package is indeed installed:
+your machine. 
+
+If you do not have root access, you can do a local install using:
 
 @example
-octave:1>@kbd{pkg list queueing}
-Package Name  | Version | Installation directory
---------------+---------+-----------------------
-    queueing  |   @value{VERSION} | /home/moreno/octave/queueing-@value{VERSION}
+octave:1> @kbd{pkg install -local -forge queueing}
 @end example
 
-@quotation Note
-Starting from version 1.1.1, @code{queueing} is no longer
-automatically loaded on startup. To load the package you need to issue
-the command @code{pkg load queueing} at the Octave prompt. To
-automatically load @code{queueing} each time Octave starts, you can
-add the command above to the startup script (@file{.octaverc} on Unix
-systems).
-@end quotation
+This will install @code{queueing} within your home directory, and the
+package will be available to your user only. 
 
+@item
 Alternatively, you can first download @code{queueing} from
 Octave-Forge; then, to install the package in the system-wide
 location issue this command at the Octave prompt:
@@ -111,20 +110,46 @@ If you do not have root access, you can do a local install using:
 octave:1> @kbd{pkg install -local queueing-@value{VERSION}.tar.gz}
 @end example
 
-This will install @code{queueing} within your home directory, and the
-package will be available to your user only. 
-
 @quotation Note 
-Octave version 3.2.3 as shipped with Ubuntu 10.04 seems to ignore
+Octave version 3.2.3 as shipped with Ubuntu 10.04 LTS seems to ignore
 @option{-local} and always tries to install the package on the system
 directory.
 @end quotation
 
-To remove @code{queueing} simply use
+@item
+Verify that the package is indeed installed using the @kbd{pkg list}
+command at the Octave prompt; after succesfull installation you should
+see something like that:
+
+@example
+octave:1>@kbd{pkg list queueing}
+Package Name  | Version | Installation directory
+--------------+---------+-----------------------
+    queueing  |   @value{VERSION} | /home/moreno/octave/queueing-@value{VERSION}
+@end example
+
+@item
+Starting from version 1.1.1, @code{queueing} is no longer
+automatically loaded on startup. To load the package you need to issue
+the command 
+
+@example
+octave:1>@kbd{pkg load queueing} 
+@end example
+
+@noindent at the Octave prompt. To automatically load @code{queueing} each time
+Octave starts, you can add the command above to the startup script
+(usually, @file{~/.octaverc} on Unix systems).
+
+@item
+If you want to completely remove @code{queueing} from your system, use
+the @kbd{pkg uninstall} command:
 
 @example
 octave:1> @kbd{pkg uninstall queueing}
 @end example
+
+@end enumerate
 
 @c
 @c
@@ -208,15 +233,6 @@ with the @samp{dtmc} prefix.
 @item test/
 This directory contains the test functions used to invoke all tests on
 all function files.
-
-@item scripts/
-This directory contains some utility scripts mostly from GNU Octave,
-which extract the documentation from the specially-formatted comments
-in the @verb{|m|}-files.
-
-@item examples/
-This directory contains examples which are automatically extracted
-from the @samp{demo} blocks of the function files.
 
 @item devel/
 This directory contains function files which are either not working

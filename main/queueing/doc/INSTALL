@@ -25,53 +25,68 @@ from Octave-Forge
 
    `http://www.moreno.marzolla.name/software/queueing/'
 
-   If you have a recent version of GNU Octave and a network connection,
-you can install `queueing' directly from Octave command prompt using
-this command:
+   To install `queueing', follow these steps:
 
-     octave:1> pkg install -forge queueing
+  1. If you have a recent version of GNU Octave and a network
+     connection, you can install `queueing' directly from Octave
+     command prompt using this command:
 
-   The command above will automaticall download and install the latest
-version of the queueing toolbox from Octave Forge, and install it on
-your machine. You can verify that the package is indeed installed:
+          octave:1> pkg install -forge queueing
 
-     octave:1>pkg list queueing
-     Package Name  | Version | Installation directory
-     --------------+---------+-----------------------
-         queueing  |   1.2.0 | /home/moreno/octave/queueing-1.2.0
+     The command above will automaticall download and install the latest
+     version of the queueing toolbox from Octave Forge, and install it
+     on your machine.
 
-     Note: Starting from version 1.1.1, `queueing' is no longer
-     automatically loaded on startup. To load the package you need to
-     issue the command `pkg load queueing' at the Octave prompt. To
-     automatically load `queueing' each time Octave starts, you can add
-     the command above to the startup script (`.octaverc' on Unix
-     systems).
+     If you do not have root access, you can do a local install using:
 
-   Alternatively, you can first download `queueing' from Octave-Forge;
-then, to install the package in the system-wide location issue this
-command at the Octave prompt:
+          octave:1> pkg install -local -forge queueing
 
-     octave:1> pkg install _queueing-1.2.0.tar.gz_
+     This will install `queueing' within your home directory, and the
+     package will be available to your user only.
 
-(you may need to start Octave as root in order to allow the
-installation to copy the files to the target locations). After this,
-all functions will be readily available each time Octave starts,
-without the need to tweak the search path.
+  2. Alternatively, you can first download `queueing' from
+     Octave-Forge; then, to install the package in the system-wide
+     location issue this command at the Octave prompt:
 
-   If you do not have root access, you can do a local install using:
+          octave:1> pkg install _queueing-1.2.0.tar.gz_
 
-     octave:1> pkg install -local queueing-1.2.0.tar.gz
+     (you may need to start Octave as root in order to allow the
+     installation to copy the files to the target locations). After
+     this, all functions will be readily available each time Octave
+     starts, without the need to tweak the search path.
 
-   This will install `queueing' within your home directory, and the
-package will be available to your user only.
+     If you do not have root access, you can do a local install using:
 
-     Note: Octave version 3.2.3 as shipped with Ubuntu 10.04 seems to
-     ignore `-local' and always tries to install the package on the
-     system directory.
+          octave:1> pkg install -local queueing-1.2.0.tar.gz
 
-   To remove `queueing' simply use
+          Note: Octave version 3.2.3 as shipped with Ubuntu 10.04 LTS
+          seems to ignore `-local' and always tries to install the
+          package on the system directory.
 
-     octave:1> pkg uninstall queueing
+  3. Verify that the package is indeed installed using the `pkg list'
+     command at the Octave prompt; after succesfull installation you
+     should see something like that:
+
+          octave:1>pkg list queueing
+          Package Name  | Version | Installation directory
+          --------------+---------+-----------------------
+              queueing  |   1.2.0 | /home/moreno/octave/queueing-1.2.0
+
+  4. Starting from version 1.1.1, `queueing' is no longer automatically
+     loaded on startup. To load the package you need to issue the
+     command
+
+          octave:1>pkg load queueing
+
+     at the Octave prompt. To automatically load `queueing' each time
+     Octave starts, you can add the command above to the startup script
+     (usually, `~/.octaverc' on Unix systems).
+
+  5. If you want to completely remove `queueing' from your system, use
+     the `pkg uninstall' command:
+
+          octave:1> pkg uninstall queueing
+
 
 1.2 Manual installation
 =======================

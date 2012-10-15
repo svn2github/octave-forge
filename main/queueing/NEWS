@@ -1,12 +1,25 @@
 Summary of important user-visible changes for queueing-1.2.0
 ------------------------------------------------------------------------------
 
-** queueing-1.1.2 is a bug fix release
+** queueing-1.2.0 includes bug fixes and new features
 
 ** The documentation has been restructured, hopefully improving
-   readability and overall organization.
+   readability and overall organization
 
 ** Fixed function qncmva(); added demo block and additional test cases
+
+** Functions qnclosedab(), qnopenab(), qnclosedbsb() and qnopenbsb()
+   got a new common interface similar to that of qnclosedsinglemva()
+   and qnclosedmultimva()
+   
+** Asymptotic and balanced system bounds can now be computed also for
+   multiclass networks
+
+** New function qnclosedmulticb() for computing Composite Bounds for
+   multiclass networks
+
+** Fixed bugs in qnconvolution() and qnconvolutionld()
+
 
 
 Summary of important user-visible changes for queueing-1.1.1

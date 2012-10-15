@@ -1,11 +1,12 @@
 Name: Combinatorics
-Version: 1.0.9
-Date: 2009-05-18
+Version: 2.0.0
+Date: 2012-10-16
 Author: various authors
 Maintainer: Octave-Forge community <octave-dev@lists.sourceforge.net>
 Title: Combinatorics.
-Description: Combinatorics functions, incuding partitioning.
-Depends: specfun (>= 1.2.0), miscellaneous (>= 1.2.0)
+Description: Combinatorics functions, incuding partitioning. This a dummy package
+ as transition for the miscellaneous package.
+Depends: miscellaneous (>= 1.2.0)
 Autoload: no
 License: GPLv3+
 Url: http://octave.sf.net

@@ -14,12 +14,12 @@
 %%    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 %% -*- texinfo -*-
-%% @deftypefn {Function File} {@var{y} = } truncate (@var{x}, @var{order},@var{method})
-%% @deftypefnx {Function File} {@var{y} = } truncate (@dots,@var{method})
+%% @deftypefn  {Function File} {@var{y} =} truncate (@var{x}, @var{order}, @var{method})
+%% @deftypefnx {Function File} {@var{y} =} truncate (@dots{}, @var{method})
 %% Truncates @var{X} to @var{order} of magnitude.
 %%
 %% The optional argument @var{method} can be a hanlde to a function used to
-%% truncate the number. Default is @code{@round}.
+%% truncate the number. Default is @code{round}.
 %%
 %% Examples:
 %% @example
@@ -37,12 +37,11 @@
 %%   987654321.123000
 %%
 %%    format
-%%    [truncate(0.127,-2), truncate(0.127,-2,@floor)]
+%%    [truncate(0.127,-2), truncate(0.127,-2,@@floor)]
 %% ans =
 %%    0.13000   0.12000
 %%
 %% @end example
-
 %%
 %% @seealso{round,fix,ceil,floor}
 %% @end deftypefn

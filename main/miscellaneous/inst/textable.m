@@ -65,7 +65,7 @@
 ## @group
 ## textable (data, "rlines", "clines", "align", "c")
 ##     @result{}
-##        \begin{tabular}{|c|c|c|}
+##        \begin@{tabular@}@{|c|c|c|@}
 ##            \hline 
 ##            0.889283 & 0.949328 & 0.205663 \\
 ##            \hline 
@@ -73,7 +73,7 @@
 ##            \hline 
 ##            0.245896 & 0.466162 & 0.225864 \\
 ##            \hline 
-##        \end{tabular}
+##        \end@{tabular@}
 ## @end group
 ## @end example
 ##
@@ -83,16 +83,16 @@
 ## @group
 ## textable (data, "math", "matrix-name")
 ##     @result{}
-##        \begin{displaymath}
-##          \mathbf{matrix-name} =
+##        \begin@{displaymath@}
+##          \mathbf@{matrix-name@} =
 ##          \left(
-##          \begin{array}{*{ 3 }{rrr}}
+##          \begin@{array@}@{*@{ 3 @}@{rrr@}@}
 ##            0.889283 & 0.949328 & 0.205663 \\
 ##            0.225978 & 0.426528 & 0.189561 \\
 ##            0.245896 & 0.466162 & 0.225864 \\
-##          \end{array}
+##          \end@{array@}
 ##          \right)
-##        \end{displaymath}
+##        \end@{displaymath@}
 ## @end group
 ## @end example
 ##

@@ -525,7 +525,7 @@ Networks''.
 @c
 @c CMVA for single class, closed networks with a single load dependent servers
 @c
-@GETHELP{qncmva}
+@GETHELP{qnclosedsinglecmva}
 
 @noindent @strong{REFERENCES}
 

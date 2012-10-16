@@ -29,7 +29,7 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [X_lower X_upper R_lower R_upper] = qnclosedpb( N, D, Z )
+function [X_lower X_upper R_lower R_upper] = qnclosedpb( varargin )
   warning("Function qnclosedpb() is deprecated. Please use qnclosedsinglepb() instead");
   [X_lower X_upper R_lower R_upper] = qnclosedsinglepb( varargin{:} );
 endfunction

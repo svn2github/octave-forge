@@ -112,7 +112,7 @@
 ## response times produced by this function.
 ## @end quotation
 ##
-## @seealso{qnclosedsinglemvald,qncmva,qnclosedsinglecmva}
+## @seealso{qnclosedsinglemvald,qnclosedsinglecmva}
 ##
 ## @end deftypefn
 

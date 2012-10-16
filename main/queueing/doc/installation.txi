@@ -130,8 +130,8 @@ Package Name  | Version | Installation directory
 
 @item
 Starting from version 1.1.1, @code{queueing} is no longer
-automatically loaded on startup. To load the package you need to issue
-the command 
+automatically loaded on Octave startup. To make the functions
+available for use, you need to issue the command
 
 @example
 octave:1>@kbd{pkg load queueing} 
@@ -142,8 +142,8 @@ Octave starts, you can add the command above to the startup script
 (usually, @file{~/.octaverc} on Unix systems).
 
 @item
-If you want to completely remove @code{queueing} from your system, use
-the @kbd{pkg uninstall} command:
+To completely remove @code{queueing} from your system, use the
+@kbd{pkg uninstall} command:
 
 @example
 octave:1> @kbd{pkg uninstall queueing}
@@ -188,7 +188,7 @@ If you want, you can add the following line to @file{~/.octaverc}:
 @kbd{addpath("@emph{/path/to/queueing}");}
 @end example
 
-@noindent so that the path @file{/usr/local/queueing} is automatically
+@noindent so that the path @file{/path/to/queueing} is automatically
 added to the search path each time Octave is started, and you no
 longer need to specify the @option{-p} option on the command line.
 

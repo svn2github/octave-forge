@@ -73,8 +73,8 @@ from Octave-Forge
               queueing  |   1.2.0 | /home/moreno/octave/queueing-1.2.0
 
   4. Starting from version 1.1.1, `queueing' is no longer automatically
-     loaded on startup. To load the package you need to issue the
-     command
+     loaded on Octave startup. To make the functions available for use,
+     you need to issue the command
 
           octave:1>pkg load queueing
 
@@ -82,8 +82,8 @@ from Octave-Forge
      Octave starts, you can add the command above to the startup script
      (usually, `~/.octaverc' on Unix systems).
 
-  5. If you want to completely remove `queueing' from your system, use
-     the `pkg uninstall' command:
+  5. To completely remove `queueing' from your system, use the `pkg
+     uninstall' command:
 
           octave:1> pkg uninstall queueing
 
@@ -113,7 +113,7 @@ you can start Octave as follows:
 
      addpath("_/path/to/queueing_");
 
-so that the path `/usr/local/queueing' is automatically added to the
+so that the path `/path/to/queueing' is automatically added to the
 search path each time Octave is started, and you no longer need to
 specify the `-p' option on the command line.
 

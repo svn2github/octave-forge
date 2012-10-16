@@ -18,6 +18,7 @@
 	* Deprecated function qnclosedgb()
 	* New function qnclosedsinglepb() (replaces qnclosedpb)
 	* New function qnclosedsinglegb() (replaces qnclosedgb)
+	* New function qnclosedsinglecmva() (replaces qncmva)
 	* Fixed bugs in various functions (qnconvolution(),
   	  qnconvolutionld(), qnclosedmultimva() and qncmva() )
 

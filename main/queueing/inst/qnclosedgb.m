@@ -19,7 +19,7 @@
 ##
 ## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Ql}, @var{Qu}] =} qnclosedgb (@var{N}, @var{D}, @var{Z})
 ##
-## This function is deprecated. Use @code{qnclosedsinglegb} instead.
+## This function is deprecated. Please use @code{qnclosedsinglegb} instead.
 ##
 ## @seealso{qnclosedsinglegb}
 ##
@@ -28,7 +28,7 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [X_lower X_upper Q_lower Q_upper] = qnclosedgb( N, L, Z, X_minus, X_plus )
+function [X_lower X_upper Q_lower Q_upper] = qnclosedgb( varargin )
   warning("Function qnclosedgb() is deprecated. Use qnclosedsinglegb() instead");
   [X_lower X_upper Q_lower Q_upper] = qnclosedsinglegb( varargin{:} );
 endfunction

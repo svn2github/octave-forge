@@ -58,32 +58,27 @@
 ##
 ## @end itemize
 ##
-## @noindent For each @math{c}, the following must hold:
+## @noindent In other words, for each class @math{c} the following must hold:
 ##
 ## @example
 ## (@var{lambda}(c)>0 && @var{N}(c)==0) || (@var{lambda}(c)==0 && @var{N}(c)>0)
 ## @end example
 ##
-## which means that either @code{@var{lambda}(c)} is nonzero and
-## @code{@var{N}(n)} is zero, or the other way around. If for some
-## @math{c}, @math{@var{lambda}(c) \neq 0} and @math{@var{N}(c) \neq 0}, an
-## error is reported and this function aborts.
-##
 ## @item S
-## @code{@var{S}(c,k)} is the mean service time for class @math{c}
-## customers on service center @math{k}, @code{@var{S}(c,k) @geq{} 0}.
-## For FCFS nodes, service times must be class-independent.
+## @code{@var{S}(c,k)} is the mean class @math{c} service time at center
+## @math{k}, @code{@var{S}(c,k) @geq{} 0}. For FCFS nodes, service times
+## must be class-independent.
 ##
 ## @item V
 ## @code{@var{V}(c,k)} is the average number of visits of class @math{c}
-## customers to service center @math{k} (@code{@var{V}(c,k) @geq{} 0}).
+## customers to center @math{k} (@code{@var{V}(c,k) @geq{} 0}).
 ##
 ## @item m
-## @code{@var{m}(k)} is the number of servers at service center
-## @math{k}. Only single-server (@code{@var{m}(k)==1}) or IS (Infinite
-## Server) nodes (@code{@var{m}(k)<1}) are supported. If omitted, each
-## service center is assumed to have a single server. Queueing discipline
-## for single-server nodes can be FCFS, PS or LCFS-PR. 
+## @code{@var{m}(k)} is the number of servers at center @math{k}. Only
+## single-server (@code{@var{m}(k)==1}) or IS (Infinite Server) nodes
+## (@code{@var{m}(k)<1}) are supported. If omitted, each center
+## is assumed to be of type @math{M/M/1}-FCFS. Queueing discipline for
+## single-server nodes can be FCFS, PS or LCFS-PR.
 ##
 ## @end table
 ##
@@ -92,20 +87,17 @@
 ## @table @var
 ##
 ## @item U
-## @code{@var{U}(c,k)} is the
-## utilization of class @math{c} requests on service center @math{k}.
+## @code{@var{U}(c,k)} is class @math{c} utilization at center @math{k}.
 ##
 ## @item R
-## @code{@var{R}(c,k)} is the response
-## time of class @math{c} requests on service center @math{k}.
+## @code{@var{R}(c,k)} is class @math{c} response time at center @math{k}.
 ##
 ## @item Q
 ## @code{@var{Q}(c,k)} is the average number of
-## class @math{c} requests on service center @math{k}.
+## class @math{c} requests at center @math{k}.
 ##
 ## @item X
-## @code{@var{X}(c,k)} is the class @math{c}
-## throughput on service center @math{k}.
+## @code{@var{X}(c,k)} is class @math{c} throughput at center @math{k}.
 ##
 ## @end table
 ##

@@ -6,7 +6,8 @@ Summary of important user-visible changes for queueing-1.2.0
 ** The documentation has been restructured, hopefully improving
    readability and overall organization
 
-** Fixed function qncmva(); added demo block and additional test cases
+** Fixed bugs in various functions (qncmva, qnconvolution,
+   qnconvolutionld and qnclosedmultimva)
 
 ** Functions qnclosedab(), qnopenab(), qnclosedbsb() and qnopenbsb()
    got a new common interface similar to that of qnclosedsinglemva()
@@ -17,8 +18,6 @@ Summary of important user-visible changes for queueing-1.2.0
 
 ** New function qnclosedmulticb() for computing Composite Bounds for
    multiclass networks
-
-** Fixed bugs in qnconvolution() and qnconvolutionld()
 
 ** Functions qnclosedpb and qnclosedgb have been deprecated and renamed to
    qnclosedsinglepb and qnclosedsinglegp, respectively

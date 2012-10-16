@@ -421,10 +421,10 @@ function [U R Q X Qnm1] = __qnclosedmultimva_nocs( N, S, V, m, Z )
 
       ## Update marginal probabilities for LD servers
       for k=find(m>1)
-        s=0; # s is actually a vector
-        j=1:m(k)-1;
+        j = 1:m(k)-1;
+	s = zeros(size(j));
         for r=find(n_bar>0) # FIXME: I don't know how to vectorize this
-          s+=D(r,k)*X(r)*p{k}(j,idx-dd(r));
+          s+=(D(r,k)*X(r)*p{k}(j,idx-dd(r)))';
         endfor
         p{k}(j+1,idx) = s./j;
         p{k}(1,idx) = 1-1/m(k)*(dot( D(:,k),X ) + ...

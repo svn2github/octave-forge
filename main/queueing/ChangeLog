@@ -2,9 +2,7 @@
 
 	* Version 1.2.0 released
 	* Restructured the documentation
-	* Fixed function qncmva()
-	* Reduced space requirement for qnclosedsinglemva() when
-	  there are no LD servers
+	* Reduced space requirement for qnclosedsinglemva()
 	* qnclosedsingleab() added
 	* qnclosedmultiab() added
 	* Changed interface for qnclosedab()
@@ -16,12 +14,12 @@
 	* Changed interface for qnclosedbsb()
 	* qnclosedsinglebsb() added
 	* Changed interface for qnopenbsb()
-	* Fixed bug in function qnconvolution()
-	* Fixed bug in function qnconvolutionld()
 	* Deprecated function qnclosedpb()
 	* Deprecated function qnclosedgb()
 	* New function qnclosedsinglepb() (replaces qnclosedpb)
 	* New function qnclosedsinglegb() (replaces qnclosedgb)
+	* Fixed bugs in various functions (qnconvolution(),
+  	  qnconvolutionld(), qnclosedmultimva() and qncmva() )
 
 2012-09-08 Moreno Marzolla <marzolla@cs.unibo.it>
 

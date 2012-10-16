@@ -224,25 +224,24 @@ endfunction
 %!demo
 %! maxN = 90; # Max population size
 %! Rmva = Rconv = Rcmva = zeros(1,maxN); # Results
-%! S = 4;
-%! Z = 10;
-%! m = 8;
+%! S = 4; Z = 10; m = 8;
 %! for N=1:maxN
-%!   # Use MVA
-%!   [U R] = qnclosedsinglemva(N,S,1,m,Z);
+%!   [U R] = qnclosedsinglemva(N,S,1,m,Z);	# Use MVA
 %!   Rmva(N) = R(1);
-%!   # Use convolution
-%!   [U R] = qnconvolution(N,[S Z],[1 1],[m -1]);
+%!   [U R] = qnconvolution(N,[S Z],[1 1],[m -1]); # Use Convolution
 %!   Rconv(N) = R(1);
-%!   # USe CMVA
 %!   if ( N > m )
 %!     Scmva = S ./ min(1:N,m);
 %!   else
 %!     Scmva = S ./ (1:N);
 %!   endif
-%!   [U R] = qncmva(N,[],Scmva,1,Z);
+%!   [U R] = qncmva(N,[],Scmva,1,Z);		# Use CMVA
 %!   Rcmva(N) = R(1);
 %! endfor
-%! plot(1:maxN, Rmva, ";Resp. Time (MVA);", \
-%!      1:maxN, Rconv, ";Resp. Time (Convolution);", \
-%!      1:maxN, Rcmva, ";Resp. Time (CMVA);");
+%! plot(1:maxN, Rmva, ";MVA;", \
+%!      1:maxN, Rconv, ";Convolution;", \
+%!      1:maxN, Rcmva, ";CNVA;", "linewidth",2);
+%! xlabel("Population size (N)");
+%! ylabel("Response Time");
+%! ax=axis(); ax(3) = 0; ax(4) = 40; axis(ax);
+%! legend("location","northwest");

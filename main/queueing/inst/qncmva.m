@@ -223,7 +223,7 @@ endfunction
 
 %!demo
 %! maxN = 90; # Max population size
-%! Rmva = Rcmva = zeros(1,maxN); # Results
+%! Rmva = Rconv = Rcmva = zeros(1,maxN); # Results
 %! S = 4;
 %! Z = 10;
 %! m = 8;
@@ -231,28 +231,9 @@ endfunction
 %!   # Use MVA
 %!   [U R] = qnclosedsinglemva(N,S,1,m,Z);
 %!   Rmva(N) = R(1);
-%!   # USe CMVA
-%!   if ( N > m )
-%!     Scmva = S ./ min(1:N,m);
-%!   else
-%!     Scmva = S ./ (1:N);
-%!   endif
-%!   [U R] = qncmva(N,[],Scmva,1,Z);
-%!   Rcmva(N) = R(1);
-%! endfor
-%! plot(1:maxN, Rmva, ";Resp. Time (MVA);", \
-%!      1:maxN, Rcmva, ";Resp. Time (CMVA);");
-
-%!demo
-%! maxN = 90; # Max population size
-%! Rmva = Rcmva = zeros(1,maxN); # Results
-%! S = 4;
-%! Z = 10;
-%! m = 8;
-%! for N=1:maxN
-%!   # Use MVA
+%!   # Use convolution
 %!   [U R] = qnconvolution(N,[S Z],[1 1],[m -1]);
-%!   Rmva(N) = R(1);
+%!   Rconv(N) = R(1);
 %!   # USe CMVA
 %!   if ( N > m )
 %!     Scmva = S ./ min(1:N,m);
@@ -263,4 +244,5 @@ endfunction
 %!   Rcmva(N) = R(1);
 %! endfor
 %! plot(1:maxN, Rmva, ";Resp. Time (MVA);", \
+%!      1:maxN, Rconv, ";Resp. Time (Convolution);", \
 %!      1:maxN, Rcmva, ";Resp. Time (CMVA);");

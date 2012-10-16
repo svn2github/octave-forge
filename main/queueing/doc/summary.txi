@@ -173,5 +173,5 @@ package and find it useful, let me know by dropping me a line. Thanks.
 
 The following people (listed in alphabetical order) contributed to the
 @code{queueing} package, either by providing feedback, reporting bugs
-or contributing code: Philip Carinhas, Phil Colbourn, Yves Durand,
-Marco Guazzone, Dmitry Kolesnikov.
+or contributing code: Philip Carinhas, Phil Colbourn, Diego Didona,
+Yves Durand, Marco Guazzone, Michele Mazzucco, Dmitry Kolesnikov.

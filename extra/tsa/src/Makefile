@@ -1,16 +1,19 @@
 ####################################################
 # Copyright 2010,2011,2012 Alois Schloegl 
-# This is part of the NaN-toolbox - a statistics and machine learning toolbox for data with and without missing values. 
-# http://pub.ist.ac.at/~schloegl/matlab/NaN/
+# This is part of the TSA-toolbox - a statistics and machine learning toolbox for data with and without missing values. 
+# http://pub.ist.ac.at/~schloegl/matlab/tsa/
 ####################################################
 
 ### modify directories according to your needs 
 
+# Define non-default octave-version 
 # Octave - global install  (e.g. from debian package)
-# OCTAVE_VERSION = 
+# OCTAVE_VERSION= 
+# Better alternative: define an OCTAVE_VERSION bash variable (or in .bashrc or .profile)
+# OCTAVE_VERSION=-3.6.3
 
 # Matlab configuration
-MATLABDIR = /usr/local/MATLAB/R2010b
+# MATLABDIR = /usr/local/MATLAB/R2010b
 # comment the following line if you use MATLAB on 32-bit operating system
 MEX_OPTION += -largeArrayDims
 
@@ -49,12 +52,28 @@ MATMEX      = $(MATLABDIR)/bin/mex $(MEX_OPTION)
 
 PROGS = covm_mex.mex sumskipnan_mex.mex kalman_maar.mex
 
+### per default only the mex-files for octave are built
 mex4o octave: $(PROGS)
 
-ifneq (,$(ls -1 $(MATLABDIR)))
-MEX_EXT = $(shell $(MATLABDIR)/bin/mexext)
-mex4m matlab: $(patsubst %.mex, %.$(MEX_EXT), $(PROGS))
+
+### Matlab configuration - search for a matlab directory if not defined above
+ifndef MATLABDIR
+  ifneq ('',$(shell ls -1 /usr/local/MATLAB))
+    # use oldest, typically mex-files a compatible with newer Matlab versions 
+    MATLABDIR=$(shell ls -dt1 /usr/local/MATLAB/R* |tail -1)
+    # alternatively, use latest matlab version
+    #MATLABDIR=$(shell ls -dt1 /usr/local/MATLAB/R* |head -1)
+  endif
 endif
+
+### if the MATLABDIR has been found or defined 
+ifneq ('',MATLABDIR)
+  ifneq ('',$(lshell ls -1 $(MATLABDIR)))
+    MEX_EXT = $(shell $(MATLABDIR)/bin/mexext)
+    mex4m matlab: $(patsubst %.mex, %.$(MEX_EXT), $(PROGS))
+  endif
+endif
+
 
 mexw32 win32:  $(patsubst %.mex, %.mexw32, $(PROGS))
 mexw64 win64:  $(patsubst %.mex, %.mexw64, $(PROGS))

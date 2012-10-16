@@ -455,7 +455,7 @@ $Q_s = \sum_{i=1}^K Q(i)$
 
 @noindent @strong{REFERENCES}
 
-G. Bolch, S. Greiner, H. de Meer and K. Trivedi, @cite{Queueing
+@noindent G. Bolch, S. Greiner, H. de Meer and K. Trivedi, @cite{Queueing
 Networks and Markov Chains: Modeling and Performance Evaluation with
 Computer Science Applications}, Wiley, 1998.
 
@@ -473,7 +473,7 @@ Computer Science Applications}, Wiley, 1998.
 
 @noindent @strong{REFERENCES}
 
-M. Reiser and S. S. Lavenberg, @cite{Mean-Value Analysis of Closed
+@noindent M. Reiser and S. S. Lavenberg, @cite{Mean-Value Analysis of Closed
 Multichain Queuing Networks}, Journal of the ACM, vol. 27, n. 2, April
 1980, pp. 313--322. @uref{http://doi.acm.org/10.1145/322186.322195, 10.1145/322186.322195}
 
@@ -507,7 +507,7 @@ Networks".
 
 @noindent @strong{REFERENCES}
 
-M. Reiser and S. S. Lavenberg, @cite{Mean-Value Analysis of Closed
+@noindent M. Reiser and S. S. Lavenberg, @cite{Mean-Value Analysis of Closed
 Multichain Queuing Networks}, Journal of the ACM, vol. 27, n. 2,
 April 1980, pp. 313--322. @uref{http://doi.acm.org/10.1145/322186.322195, 10.1145/322186.322195}
 
@@ -529,7 +529,7 @@ Networks''.
 
 @noindent @strong{REFERENCES}
 
-G. Casale. @cite{A note on stable flow-equivalent aggregation in
+@noindent G. Casale. @cite{A note on stable flow-equivalent aggregation in
 closed networks}. Queueing Syst. Theory Appl., 60:193–-202, December
 2008, @uref{http://dx.doi.org/10.1007/s11134-008-9093-6, 10.1007/s11134-008-9093-6}
 
@@ -654,7 +654,7 @@ $$
 
 @noindent @strong{REFERENCES}
 
-Herb Schwetman, @cite{Some Computational Aspects of Queueing Network
+@noindent Herb Schwetman, @cite{Some Computational Aspects of Queueing Network
 Models}, Technical Report
 @uref{http://www.cs.purdue.edu/research/technical_reports/1980/TR%2080-354.pdf,
 CSD-TR-354}, Department of Computer Sciences, Purdue University, feb,
@@ -662,7 +662,7 @@ CSD-TR-354}, Department of Computer Sciences, Purdue University, feb,
 
 @auindex Schwetman, H.
 
-M. Reiser, H. Kobayashi, @cite{On The Convolution Algorithm for
+@noindent M. Reiser, H. Kobayashi, @cite{On The Convolution Algorithm for
 Separable Queueing Networks}, In Proceedings of the 1976 ACM
 SIGMETRICS Conference on Computer Performance Modeling Measurement and
 Evaluation (Cambridge, Massachusetts, United States, March 29--31,
@@ -701,7 +701,7 @@ Aspects of Queueing Network Models}.
 
 @noindent @strong{REFERENCES}
 
-Ian F. Akyildiz, @cite{Mean Value Analysis for Blocking Queueing
+@noindent Ian F. Akyildiz, @cite{Mean Value Analysis for Blocking Queueing
 Networks}, IEEE Transactions on Software Engineering, vol. 14, n. 2,
 april 1988, pp. 418--428.  @uref{http://dx.doi.org/10.1109/32.4663, 10.1109/32.4663}
 
@@ -885,7 +885,7 @@ the whole system, then @math{P_{0, s, j} = \lambda_{s, j} / \lambda}.
 
 @noindent @strong{REFERENCES}
 
-Edward D. Lazowska, John Zahorjan, G. Scott Graham, and Kenneth C.
+@noindent Edward D. Lazowska, John Zahorjan, G. Scott Graham, and Kenneth C.
 Sevcik, @cite{Quantitative System Performance: Computer System
 Analysis Using Queueing Network Models}, Prentice Hall,
 1984. @url{http://www.cs.washington.edu/homes/lazowska/qsp/}. In
@@ -904,7 +904,7 @@ particular, see section 7.4.1 ("Open Model Solution Techniques").
 
 @noindent @strong{REFERENCES}
 
-Herb Schwetman, @cite{Implementing the Mean Value Algorithm for the
+@noindent Herb Schwetman, @cite{Implementing the Mean Value Algorithm for the
 Solution of Queueing Network Models}, Technical Report
 @uref{http://www.cs.purdue.edu/research/technical_reports/1980/TR
 80-355.pdf, CSD-TR-355},
@@ -925,7 +925,7 @@ Indices for a Complex Summation}, unpublished report, available at
 
 @noindent @strong{REFERENCES}
 
-Zahorjan, J. and Wong, E. @cite{The solution of separable queueing
+@noindent Zahorjan, J. and Wong, E. @cite{The solution of separable queueing
 network models using mean value analysis}. SIGMETRICS
 Perform. Eval. Rev. 10, 3 (Sep. 1981), 80-85. DOI
 @uref{http://doi.acm.org/10.1145/1010629.805477, 10.1145/1010629.805477}
@@ -954,7 +954,7 @@ implements the approximate MVA algorithm. Note however that
 
 @noindent @strong{REFERENCES}
 
-M. Reiser and S. S. Lavenberg, @cite{Mean-Value Analysis of Closed
+@noindent M. Reiser and S. S. Lavenberg, @cite{Mean-Value Analysis of Closed
 Multichain Queuing Networks}, Journal of the ACM, vol. 27, n. 2, April
 1980, pp. 313--322. @uref{http://doi.acm.org/10.1145/322186.322195, 10.1145/322186.322195}
 
@@ -986,13 +986,13 @@ particular, see section 7.4.2.1 ("Exact Solution Techniques").
 
 @noindent @strong{REFERENCES}
 
-Y. Bard, @cite{Some Extensions to Multiclass Queueing Network Analysis},
+@noindent Y. Bard, @cite{Some Extensions to Multiclass Queueing Network Analysis},
 proc. 4th Int. Symp. on Modelling and Performance Evaluation of
 Computer Systems, feb. 1979, pp. 51--62.
 
 @auindex Bard, Y.
 
-P. Schweitzer, @cite{Approximate Analysis of Multiclass Closed
+@noindent P. Schweitzer, @cite{Approximate Analysis of Multiclass Closed
 Networks of Queues}, Proc. Int. Conf. on Stochastic Control and
 Optimization, jun 1979, pp. 25--29.
 
@@ -1022,7 +1022,7 @@ instead of the residence times.
 
 @noindent @strong{REFERENCES}
 
-Edward D. Lazowska, John Zahorjan, G. Scott Graham, and Kenneth C.
+@noindent Edward D. Lazowska, John Zahorjan, G. Scott Graham, and Kenneth C.
 Sevcik, @cite{Quantitative System Performance: Computer System
 Analysis Using Queueing Network Models}, Prentice Hall,
 1984. @url{http://www.cs.washington.edu/homes/lazowska/qsp/}. In
@@ -1035,10 +1035,11 @@ instead of the mean residence time as in the reference.
 @auindex Graham, G. S.
 @auindex Sevcik, K. C.
 
-Herb Schwetman, @cite{Implementing the Mean Value Algorithm for the
+@noindent Herb Schwetman, @cite{Implementing the Mean Value Algorithm for the
 Solution of Queueing Network Models}, Technical Report
-@uref{http://www.cs.purdue.edu/research/technical_reports/1980/TR%2080-355.pdf, CSD-TR-355},
-Department of Computer Sciences, Purdue University, feb 15, 1982,
+@uref{http://www.cs.purdue.edu/research/technical_reports/1980/TR%2080-355.pdf,
+CSD-TR-355}, Department of Computer Sciences, Purdue University, feb
+15, 1982,
 
 @auindex Schwetman, H.
 
@@ -1166,7 +1167,7 @@ particular, see section 5.2 ("Asymptotic Bounds").
 
 @noindent @strong{REFERENCES}
 
-Edward D. Lazowska, John Zahorjan, G.  Scott Graham, and Kenneth
+@noindent Edward D. Lazowska, John Zahorjan, G.  Scott Graham, and Kenneth
 C. Sevcik, @cite{Quantitative System Performance: Computer System
 Analysis Using Queueing Network Models}, Prentice Hall,
 1984. @url{http://www.cs.washington.edu/homes/lazowska/qsp/}. In
@@ -1181,7 +1182,7 @@ particular, see section 5.4 ("Balanced Systems Bounds").
 
 @noindent @strong{REFERENCES}
 
-Teemu Kerola, @cite{The Composite Bound Method (CBM) for Computing
+@noindent Teemu Kerola, @cite{The Composite Bound Method (CBM) for Computing
 Throughput Bounds in Multiple Class Environments}, Technical Report
 CSD-TR-475, Department of Computer Sciences, Purdue University, mar 13
 1984 (Revisted aug 27, 1984).
@@ -1189,7 +1190,7 @@ CSD-TR-475, Department of Computer Sciences, Purdue University, mar 13
 @auindex Kerola, T.
 
 @c
-@GETHELP{qnclosedpb}
+@GETHELP{qnclosedsinglepb}
 
 @noindent @strong{REFERENCES}
 
@@ -1209,11 +1210,11 @@ Transactions on Computers, 57(6):780-794, June 2008.
 @auindex Serazzi, G.
 
 @c
-@GETHELP{qnclosedgb}
+@GETHELP{qnclosedsinglegb}
 
 @noindent @strong{REFERENCES}
 
-G. Casale, R. R. Muntz, G. Serazzi,
+@noindent G. Casale, R. R. Muntz, G. Serazzi,
 @cite{Geometric Bounds: a Non-Iterative Analysis Technique for Closed
 Queueing Networks}, IEEE Transactions on Computers, 57(6):780-794,
 June 2008. @uref{http://doi.ieeecomputersociety.org/10.1109/TC.2008.37, 10.1109/TC.2008.37}

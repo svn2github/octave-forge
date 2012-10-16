@@ -20,6 +20,8 @@ Summary of important user-visible changes for queueing-1.2.0
 
 ** Fixed bugs in qnconvolution() and qnconvolutionld()
 
+** Functions qnclosedpb and qnclosedgb have been deprecated and renamed to
+   qnclosedsinglepb and qnclosedsinglegp, respectively
 
 
 Summary of important user-visible changes for queueing-1.1.1

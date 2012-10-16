@@ -331,13 +331,13 @@ endfunction
 %!   Xs = X(1)/V(1);
 %!   Rs = dot(R,V);
 %!   # Compare with balanced system bounds
-%!   [Xlbsb Xubsb Rlbsb Rubsb] = qnclosedbsb( n, S .* V );
+%!   [Xlbsb Xubsb Rlbsb Rubsb] = qnclosedsinglebsb( n, S .* V );
 %!   assert( Xlbsb<=Xs );
 %!   assert( Xubsb>=Xs );
 %!   assert( Rlbsb<=Rs );
 %!   assert( Rubsb>=Rs );
 %!   # Compare with asymptotic bounds
-%!   [Xlab Xuab Rlab Ruab] = qnclosedab( n, S .* V );
+%!   [Xlab Xuab Rlab Ruab] = qnclosedsingleab( n, S .* V );
 %!   assert( Xlab<=Xs );
 %!   assert( Xuab>=Xs );
 %!   assert( Rlab<=Rs );

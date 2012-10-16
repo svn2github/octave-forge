@@ -75,7 +75,7 @@ endfunction
 %!demo
 %! P = [0 0.3 0.7; 1 0 0; 1 0 0]; # Transition probability matrix
 %! S = [1 0.6 0.2];               # Average service times
-%! m = ones(1,3);                 # All centers are single-server
+%! m = ones(size(S));             # All centers are single-server
 %! Z = 2;                         # External delay
 %! N = 15;                        # Maximum population to consider
 %! V = qnvisits(P); # Compute number of visits from P

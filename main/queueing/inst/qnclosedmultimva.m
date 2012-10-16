@@ -100,7 +100,8 @@
 ## @code{@var{P}(r,i,s,j)} is the probability that a class @math{r}
 ## job completing service at center @math{i} is routed to center @math{j}
 ## as a class @math{s} job. @strong{If you pass this argument,
-## class switching is allowed}.
+## class switching is allowed}, but you can not specify any external delay
+## (i.e., you can not define @var{Z}).
 ##
 ## @item m
 ## If @code{@var{m}(k)<1}, then center @math{k} is assumed to be a delay
@@ -113,7 +114,9 @@
 ##
 ## @item Z
 ## @code{@var{Z}(c)} is the class @math{c} external delay (think time);
-## @code{@var{Z}(c) @geq{} 0}. Default is 0.
+## @code{@var{Z}(c) @geq{} 0}. Default is 0. This parameter can not be
+## used if you pass a routing matrix as the second parameter of
+## @code{qnclosedmultimva}.
 ##
 ## @end table
 ##

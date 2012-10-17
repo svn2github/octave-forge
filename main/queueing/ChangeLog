@@ -2,25 +2,11 @@
 
 	* Version 1.2.0 released
 	* Restructured the documentation
-	* Reduced space requirement for qnclosedsinglemva()
-	* qnclosedsingleab() added
-	* qnclosedmultiab() added
-	* Changed interface for qnclosedab()
-	* qnopensingleab() added
-	* qnopenmultiab() added
-	* Changed interface for qnopenab()
-	* qnclosedsinglebsb() added
-	* qnclosedmultibsb() added
-	* Changed interface for qnclosedbsb()
-	* qnclosedsinglebsb() added
-	* Changed interface for qnopenbsb()
-	* Deprecated function qnclosedpb()
-	* Deprecated function qnclosedgb()
-	* New function qnclosedsinglepb() (replaces qnclosedpb)
-	* New function qnclosedsinglegb() (replaces qnclosedgb)
-	* New function qnclosedsinglecmva() (replaces qncmva)
+	* Reduced space requirement for qncsmva()
+	* New function naming scheme: qnXYAAA(), where X=c (closed) or o (open) and Y=s (single) or m (multi)
+	* Deprecated functions
 	* Fixed bugs in various functions (qnconvolution(),
-  	  qnconvolutionld(), qnclosedmultimva() and qncmva() )
+  	  qnconvolutionld(), qnclosedmultimva(), qnopenmulti() and qncmva() )
 
 2012-09-08 Moreno Marzolla <marzolla@cs.unibo.it>
 

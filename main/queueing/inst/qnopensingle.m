@@ -123,7 +123,7 @@ function [U R Q X] = qnopensingle( lambda, S, V, m )
   endif
 
   ## Compute maximum processing capacity
-  lambda_sat = 1 / max( S.* V );
+  lambda_sat = m ./ max( S .* V );
   (lambda <= lambda_sat) || \
       error( "Processing capacity exceeded (lambda must be less than %f)", lambda_sat );
 
@@ -206,6 +206,13 @@ endfunction
 %! assert( Q1, Q2, 1e-5 );
 %! assert( X1, X2, 1e-5 );
 
+## Check if processing capacity is properly accounted for
+%!test
+%! lambda = [1.1];
+%! V = 1;
+%! m = [2];
+%! S = [1];
+%! [U1 R1 Q1 X1] = qnopensingle(sum(lambda),S,V,m); 
 
 %!demo
 %! lambda = 3;

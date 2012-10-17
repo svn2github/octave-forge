@@ -28,12 +28,30 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [Xl Xu Rl Ru] = qnclosedab( varargin )
+function [Xl Xu Rl Ru] = qnclosedab( N, D, Z )
   persistent warned = false;
   if (!warned)
     warned = true;
     warning("qn:deprecated-function",
 	    "qnclosedab is deprecated. Please use qncsaba instead");
   endif
-  [Xl Xu Rl Ru] = qncsaba( varargin{:} );
+  if ( nargin < 3 )
+    [Xl Xu Rl Ru] = qncsaba( N, D );
+  else
+    [Xl Xu Rl Ru] = qncsaba( N, D, ones(size(D)), ones(size(D)), Z );
+  endif
 endfunction
+
+%!test
+%! fail("qnclosedab(-1,0)", "N must be");
+%! fail("qnclosedab(1,[])", "nonempty");
+%! fail("qnclosedab(1,[-1 2])", "nonnegative");
+%! fail("qnclosedab(1,[1 2 3],-1)", "nonnegative");
+
+## Example 9.6 p. 913 Bolch et al.
+%!test
+%! N = 20;
+%! D = [ 4.6*2 8 ];
+%! Z = 120;
+%! [X_l X_u R_l R_u] = qnclosedab(N, D, Z);
+%! assert( [X_u R_l], [0.109 64], 1e-3 );

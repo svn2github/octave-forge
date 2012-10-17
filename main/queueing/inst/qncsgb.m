@@ -17,12 +17,16 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Ql}, @var{Qu}] =} qncsgb (@var{N}, @var{D}, @var{Z})
+## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}, @var{Ql}, @var{Qu}] =} qncsgb (@var{N}, @var{D})
+## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}, @var{Ql}, @var{Qu}] =} qncsgb (@var{N}, @var{S}, @var{V})
+## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}, @var{Ql}, @var{Qu}] =} qncsgb (@var{N}, @var{S}, @var{V}, @var{m})
+## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}, @var{Ql}, @var{Qu}] =} qncsgb (@var{N}, @var{S}, @var{V}, @var{m}, @var{Z})
 ##
 ## @cindex bounds, geometric
+## @cindex geometric bounds
 ## @cindex closed network
 ##
-## Compute Geometric Bounds (GB) on throughput and queue lenghts for single-class, closed networks.
+## Compute Geometric Bounds (GB) on system throughput, system response time and server queue lenghts for closed, single-class networks.
 ##
 ## @strong{INPUTS}
 ##
@@ -35,8 +39,21 @@
 ## @code{@var{D}(k)} is the service demand of service center @math{k}
 ## (@code{@var{D}(k) @geq{} 0}).
 ##
+## @item S
+## @code{@var{S}(k)} is the mean service time at center @math{k}
+## (@code{@var{S}(k) @geq{} 0}).
+##
+## @item V
+## @code{@var{V}(k)} is the visit ratio to center @math{k}
+## (@code{@var{V}(k) @geq{} 0}).
+##
+## @item m
+## @code{@var{m}(k)} is the number of servers at center @math{k}.
+## This function only supports @math{M/M/1} queues, therefore
+## @var{m} must be @code{ones(size(S))}. 
+##
 ## @item Z
-## external delay (think time, scalar). If omitted, it is assumed to be zero.
+## external delay (think time, @code{@var{Z} @geq{} 0}). Default 0.
 ##
 ## @end table
 ##
@@ -50,6 +67,13 @@
 ## these bounds are computed using @emph{Geometric Square-root Bounds}
 ## (GSB). If @code{@var{Z}==0}, these bounds are computed using @emph{Geometric Bounds} (GB)
 ##
+## @item Rl
+## @itemx Ru
+## Lower and upper bound on the system response time. These bounds
+## are derived from @var{Xl} and @var{Xu} using Little's Law:
+## @code{@var{Rl} = @var{N} / @var{Xu} - @var{Z}}, 
+## @code{@var{Ru} = @var{N} / @var{Xl} - @var{Z}}
+##
 ## @item Ql
 ## @itemx Qu
 ## @code{@var{Ql}(i)} and @code{@var{Qu}(i)} are the lower and upper
@@ -62,7 +86,7 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [X_lower X_upper Q_lower Q_upper] = qncsgb( N, L, Z, X_minus, X_plus )
+function [X_lower X_upper R_upper R_lower Q_lower Q_upper] = qncsgb( N, S, V, m, Z, X_minus, X_plus )
 
   ## This implementation is based on the paper: G.Casale, R.R.Muntz,
   ## G.Serazzi. Geometric Bounds: a Noniterative Analysis Technique for
@@ -73,24 +97,44 @@ function [X_lower X_upper Q_lower Q_upper] = qncsgb( N, L, Z, X_minus, X_plus )
   ## The original paper uses the symbol "L" instead of "D" to denote the
   ## loadings of service centers. In this function we adopt the same
   ## notation as the paper.
-  if ( nargin < 2 || nargin > 5 )
+  if ( nargin < 2 || nargin > 7 )
     print_usage();
   endif
   ( isscalar(N) && N > 0 ) || \
       error( "N must be >0" );
-  ( isvector(L) && length(L) > 0 && all( L >= 0 ) ) || \
-      error( "D must be a vector >=0" );
-  L = L(:)'; # make L a row vector
+  ( isvector(S) && length(S) > 0 && all( S >= 0 ) ) || \
+      error( "S/D must be a vector >=0" );
+  S = S(:)'; # make S a row vector
+
   if ( nargin < 3 )
+    L = S;
+  else
+    ( isvector(V) && length(V) == length(S) && all( V>=0) ) || \
+	error("V must be a vector with %d elements >=0", length(S));
+    V = V(:)';
+    L = S .* V;
+  endif
+
+  if ( nargin < 4 )
+    # nothing to do
+  else
+    ( isvector(m) && length(m) == length(S) ) || \
+	error("m must be a vector with %d elements", length(S));
+    all(m==1) || \
+	error("this function only supports single server nodes");
+  endif
+
+  if ( nargin < 5 )
     Z = 0;
   else
     ( isscalar(Z) && (Z >= 0) ) || \
         error( "Z must be >=0" );
   endif
+
   L_tot = sum(L);
   L_max = max(L);
   M = length(L);
-  if ( nargin < 4 ) 
+  if ( nargin < 6 ) 
     [X_minus X_plus] = qncsaba(N,L,ones(size(L)),ones(size(L)),Z);
   endif
   ##[X_minus X_plus] = [0 1/L_max];
@@ -111,6 +155,8 @@ function [X_lower X_upper Q_lower Q_upper] = qncsgb( N, L, Z, X_minus, X_plus )
     X_upper = N/(Z+L_tot+L_max*(N-1-Z*X_plus) - ...
                  sum( (L_max - L) .* Q_upper_Nm1 ) );
   endif
+  R_lower = N / X_upper - Z;
+  R_upper = N / X_lower - Z;
 endfunction
 
 ## [ Q_lower Q_uppwer ] = __compute_Q( N, D, Z, X_plus, X_minus )
@@ -151,7 +197,7 @@ endfunction
 %!function test_gb( D, expected, Z=0 )
 %! for i=1:rows(expected)
 %!   N = expected(i,1);
-%!   [X_lower X_upper Q_lower Q_upper] = qncsgb(N,D,Z);
+%!   [X_lower X_upper Q_lower Q_upper] = qnclosedgb(N,D,Z);
 %!   X_exp_lower = expected(i,2);
 %!   X_exp_upper = expected(i,3);
 %!   assert( [N X_lower X_upper], [N X_exp_lower X_exp_upper], 1e-4 )
@@ -187,10 +233,9 @@ endfunction
 %! V = qnvisits(P);
 %! Nmax = 20;
 %! tol = 1e-5; # compensate for numerical errors
-%!
 %! ## Test case with Z>0
 %! for n=1:Nmax
-%!   [X_gb_lower X_gb_upper Q_gb_lower Q_gb_upper] = qncsgb(n, S.*V, 2);
+%!   [X_gb_lower X_gb_upper Q_gb_lower Q_gb_upper] = qnclosedgb(n, S.*V, 2);
 %!   [U R Q X] = qnclosed( n, S, V, m, 2 );
 %!   X_mva = X(1)/V(1);
 %!   assert( X_gb_lower <= X_mva+tol );
@@ -209,7 +254,7 @@ endfunction
 %!
 %! ## Test case with Z=0
 %! for n=1:Nmax
-%!   [X_gb_lower X_gb_upper Q_gb_lower Q_gb_upper] = qncsgb(n, S.*V, 0);
+%!   [X_gb_lower X_gb_upper Q_gb_lower Q_gb_upper] = qnclosedgb(n, S.*V, 0);
 %!   [U R Q X] = qnclosed( n, S, V, m, 0 );
 %!   X_mva = X(1)/V(1);
 %!   assert( X_gb_lower <= X_mva+tol );

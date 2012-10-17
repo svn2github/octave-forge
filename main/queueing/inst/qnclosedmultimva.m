@@ -36,7 +36,7 @@
 function [U R Q X] = qnclosedmultimva( varargin )
   persistent warned = false;
   if (!warned)
-    warned = false;
+    warned = true;
     warning("qn:deprecated-function",
 	    "qnclosedmultimva is deprecated. Please use qncmmva instead");
   endif

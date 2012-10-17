@@ -38,6 +38,13 @@ function [Xu Rl Ru] = qnopenbsb( varargin )
     warning("qn:deprecated-function",
 	    "qnopenbsb is deprecated. Please use qnosbsb instead");
   endif
-  [Xl Xu Rl Ru] = qnosbsb( lambda, varargin{:} );
+  [Xl Xu Rl Ru] = qnosbsb( varargin{:} );
 endfunction
+
+%!test
+%! fail( "qnopenbsb( 0.1, [] )", "vector" );
+%! fail( "qnopenbsb( 0.1, [0 -1])", "nonnegative" );
+%! fail( "qnopenbsb( 0, [1 2] )", "lambda" );
+%! fail( "qnopenbsb( -1, [1 2])", "lambda" );
+
 

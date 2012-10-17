@@ -18,7 +18,9 @@
 ## -*- texinfo -*-
 ##
 ## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qncspb (@var{N}, @var{D} )
-## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qncspb (@var{N}, @var{D}, @var{Z} )
+## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qncspb (@var{N}, @var{S}, @var{V} )
+## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qncspb (@var{N}, @var{S}, @var{V}, @var{m} )
+## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qncspb (@var{N}, @var{S}, @var{V}, @var{m}, @var{Z} )
 ##
 ## Compute PB Bounds (C. H. Hsieh and S. Lam, 1987) for single-class,
 ## closed networks.
@@ -31,8 +33,21 @@
 ## number of requests in the system (scalar). Must be @code{@var{N} > 0}.
 ##
 ## @item D
-## @code{@var{D}(k)} is the service demand of service center @math{k}. Must be
-## @code{@var{D}(k) @geq{} 0} for all @math{k}.
+## @code{@var{D}(k)} is the service demand of service center @math{k}
+## (@code{@var{D}(k) @geq{} 0}).
+##
+## @item S
+## @code{@var{S}(k)} is the mean service time at center @math{k}
+## (@code{@var{S}(k) @geq{} 0}).
+##
+## @item V
+## @code{@var{V}(k)} is the visit ratio to center @math{k}
+## (@code{@var{V}(k) @geq{} 0}).
+##
+## @item m
+## @code{@var{m}(k)} is the number of servers at center @math{k}.
+## This function only supports @math{M/M/1} queues, therefore
+## @var{m} must be @code{ones(size(S))}. 
 ##
 ## @item Z
 ## external delay (think time, @code{@var{Z} @geq{} 0}). Default 0.
@@ -60,20 +75,40 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [X_lower X_upper R_lower R_upper] = qncspb( N, D, Z )
-  if ( nargin < 2 || nargin > 3 )
+function [X_lower X_upper R_lower R_upper] = qncspb( N, S, V, m, Z )
+  if ( nargin < 2 || nargin > 5 )
     print_usage();
   endif
   ( isscalar(N) && N > 0 ) || \
       error( "N must be a positive integer" );
-  ( isvector(D) && length(D)>0 && all( D >= 0 ) ) || \
-      error( "D must be a vector of nonnegative floats" );
+  ( isvector(S) && length(S)>0 && all( S >= 0 ) ) || \
+      error( "S/D must be a vector of nonnegative floats" );
+
   if ( nargin < 3 )
+    D = S;
+  else
+    ( isvector(V) && length(V) == length(S) && all( V>=0) ) || \
+	error("V must be a vector with %d elements >=0", length(S));
+    V = V(:)';
+    D = S .* V;
+  endif
+
+  if ( nargin < 4 )
+    # nothing to do
+  else
+    ( isvector(m) && length(m) == length(S) ) || \
+	error("m must be a vector with %d elements", length(S));
+    all(m==1) || \
+	error("this function only supports single server nodes");
+  endif
+
+  if ( nargin < 5 )
     Z = 0;
   else
-    ( isscalar(Z) && Z >= 0 ) || \
+    ( isscalar(Z) && (Z >= 0) ) || \
         error( "Z must be a nonnegative scalar" );
   endif
+
   D_tot = sum(D);
   X_max = 1/max(D);
   X_min = 0;
@@ -91,13 +126,14 @@ endfunction
 %! fail( "qncspb( 1, [0 -1])", "vector" );
 %! fail( "qncspb( 0, [1 2] )", "positive integer" );
 %! fail( "qncspb( -1, [1 2])", "positive integer" );
-%! fail( "qncspb( 1, [1 2], -1)", "nonnegative scalar" );
+%! fail( "qncspb( 1, [1 2], [1,1], [2, 2])", "single server" );
+%! fail( "qncspb( 1, [1 2], [1,1], [1, 1], -1)", "nonnegative" );
 
 %!# shared test function
 %!function test_pb( D, expected, Z=0 )
 %! for i=1:rows(expected)
 %!   N = expected(i,1);
-%!   [X_lower X_upper] = qncspb(N,D,Z);
+%!   [X_lower X_upper] = qncspb(N,D,ones(size(D)),ones(size(D)),Z);
 %!   X_exp_lower = expected(i,2);
 %!   X_exp_upper = expected(i,3);
 %!   assert( [N X_lower X_upper], [N X_exp_lower X_exp_upper], 1e-4 )

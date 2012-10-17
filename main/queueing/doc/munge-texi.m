@@ -46,7 +46,7 @@ endfunction
 ##############################################################################
 function dump_demo( func, n )
   [code, idx] = test (func, "grabdemo" );
-  (n <= length(idx)+1) || \
+  (n <= length(idx)) || \
       error("Demo not found");
   printf("@verbatim\n%s\n@end verbatim\n",code(idx(n)+1:idx(n+1)-1));
 endfunction

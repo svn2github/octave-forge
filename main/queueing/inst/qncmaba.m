@@ -145,7 +145,8 @@ function [Xl Xu Rl Ru] = qncmaba( N, S, V, m, Z )
   Dcmax = max(D,[],2)'; # maximum class c demand at any server
   Xl = N ./ ( dot(N,Dc_single) .+ Dc_delay .+ Z);
   Xu = min( 1./Dcmax, N ./ (Dc .+ Z) );
-  Rl = Ru = [];
+  Rl = N ./ Xu .- Z;
+  Ru = N ./ Xl .- Z;
 endfunction
 
 %!test
@@ -164,22 +165,26 @@ endfunction
 %! S = [10 7 5 4; \
 %!      5  2 4 6];
 %! NN=20;
-%! Xl = Xu = Xmva = zeros(NN,2);
+%! Xl = Xu = Rl = Ru = Xmva = Rmva = zeros(NN,2);
 %! for n=1:NN
 %!   N=[n,10];
-%!   [a b] = qncmaba(N,S);
-%!   Xl(n,:) = a; Xu(n,:) = b;
-%!   [U R Q X] = qnclosedmultimva(N,S,ones(size(S)));
-%!   Xmva(n,:) = X(:,1)';
+%!   [a b c d] = qncmaba(N,S);
+%!   Xl(n,:) = a; Xu(n,:) = b; Rl(n,:) = c; Ru(n,:) = d;
+%!   [U R Q X] = qncmmva(N,S,ones(size(S)));
+%!   Xmva(n,:) = X(:,1)'; Rmva(n,:) = sum(R,2)';
 %! endfor
-%! subplot(2,1,1);
-%! plot(1:NN,Xl(:,1),"linewidth", 2, 1:NN,Xu(:,1),"linewidth", 2, \
-%!      1:NN,Xmva(:,1),";MVA;");
+%! subplot(2,2,1);
+%! plot(1:NN,Xl(:,1), 1:NN,Xu(:,1), 1:NN,Xmva(:,1),";MVA;", "linewidth", 2);
 %! title("Class 1 throughput");
-%! subplot(2,1,2);
-%! plot(1:NN,Xl(:,2),"linewidth", 2, 1:NN,Xu(:,2), "linewidth", 2,\
-%!      1:NN,Xmva(:,2),";MVA;");
+%! subplot(2,2,2);
+%! plot(1:NN,Xl(:,2), 1:NN,Xu(:,2), 1:NN,Xmva(:,2),";MVA;", "linewidth", 2);
 %! title("Class 2 throughput");
-%! xlabel("Number of class 1 requests");
+%! subplot(2,2,3);
+%! plot(1:NN,Rl(:,1), 1:NN,Ru(:,1), 1:NN,Rmva(:,1),";MVA;", "linewidth", 2);
+%! title("Class 1 response time");
+%! subplot(2,2,4);
+%! plot(1:NN,Rl(:,2), 1:NN,Ru(:,2), 1:NN,Rmva(:,2),";MVA;", "linewidth", 2);
+%! title("Class 2 response time");
+
 
 

@@ -38,3 +38,30 @@ function [X_lower X_upper] = qnclosedpb( varargin )
   endif
   [X_lower X_upper R_lower R_upper] = qncspb( varargin{:} );
 endfunction
+
+%!test
+%! fail( "qnclosedpb( 1, [] )", "vector" );
+%! fail( "qnclosedpb( 1, [0 -1])", "vector" );
+%! fail( "qnclosedpb( 0, [1 2] )", "positive integer" );
+%! fail( "qnclosedpb( -1, [1 2])", "positive integer" );
+
+%!# shared test function
+%!function test_pb( D, expected )
+%! for i=1:rows(expected)
+%!   N = expected(i,1);
+%!   [X_lower X_upper] = qnclosedpb(N,D);
+%!   X_exp_lower = expected(i,2);
+%!   X_exp_upper = expected(i,3);
+%!   assert( [N X_lower X_upper], [N X_exp_lower X_exp_upper], 1e-4 )
+%! endfor
+
+%!test
+%! # table IV
+%! D = [ 0.1 0.1 0.09 0.08 ];
+%! #            N  X_lower  X_upper
+%! expected = [ 2  4.3174   4.3174; ... 
+%!              5  6.6600   6.7297; ...
+%!              10 8.0219   8.2700; ...
+%!              20 8.8672   9.3387; ...
+%!              80 9.6736   10.000 ];
+%! test_pb(D, expected);

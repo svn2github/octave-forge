@@ -70,6 +70,8 @@
 
 function [Xl Xu Rl Ru] = qncmbsb( N, S, V, m, Z )
 
+  ## FIXME: parameter Z is not used, some dead code is left below
+
   if ( nargin<2 || nargin>5 )
     print_usage();
   endif
@@ -92,12 +94,13 @@ function [Xl Xu Rl Ru] = qncmbsb( N, S, V, m, Z )
   K = columns(S);
 
   if ( nargin<3 )
-    V = ones(size(S));
+    D = S;
   else
     (ismatrix(V) && size_equal(S,V) ) || \
 	error("V must be a %d x %d matrix", C, K);
     all(all(V>=0)) || \
 	error("V must contain nonnegative values");
+    D = S .* V;
   endif
 
   if ( nargin<4 )
@@ -119,8 +122,6 @@ function [Xl Xu Rl Ru] = qncmbsb( N, S, V, m, Z )
 	error("Z must contain nonnegative values");
     Z = Z(:)';
   endif
-
-  D = S .* V;
 
   ## Equations from T. Kerola, The Composite Bound Method (CBM) for
   ## Computing Throughput Bounds in Multiple Class Environments},
@@ -154,20 +155,23 @@ endfunction
 %! S = [10 7 5 4; \
 %!      5  2 4 6];
 %! NN=20;
-%! Xl = Xu = Xmva = zeros(NN,2);
+%! Xl = Xu = Rl = Ru = Xmva = Rmva = zeros(NN,2);
 %! for n=1:NN
 %!   N=[n,10];
-%!   [a b] = qncmbsb(N,S);
-%!   Xl(n,:) = a; Xu(n,:) = b;
-%!   [U R Q X] = qnclosedmultimva(N,S,ones(size(S)));
-%!   Xmva(n,:) = X(:,1)';
+%!   [a b c d] = qncmbsb(N,S);
+%!   Xl(n,:) = a; Xu(n,:) = b; Rl(n,:) = c; Ru(n,:) = d;
+%!   [U R Q X] = qncmmva(N,S,ones(size(S)));
+%!   Xmva(n,:) = X(:,1)'; Rmva(n,:) = sum(R,2)';
 %! endfor
-%! subplot(2,1,1);
-%! plot(1:NN,Xl(:,1),"linewidth", 2, 1:NN,Xu(:,1),"linewidth", 2, \
-%!      1:NN,Xmva(:,1),";MVA;");
+%! subplot(2,2,1);
+%! plot(1:NN,Xl(:,1), 1:NN,Xu(:,1), 1:NN,Xmva(:,1),";MVA;", "linewidth", 2);
 %! title("Class 1 throughput");
-%! subplot(2,1,2);
-%! plot(1:NN,Xl(:,2),"linewidth", 2,  1:NN,Xu(:,2), "linewidth", 2,\
-%!      1:NN,Xmva(:,2),";MVA;");
+%! subplot(2,2,2);
+%! plot(1:NN,Xl(:,2), 1:NN,Xu(:,2), 1:NN,Xmva(:,2),";MVA;", "linewidth", 2);
 %! title("Class 2 throughput");
-%! xlabel("Number of class 1 requests");
+%! subplot(2,2,3);
+%! plot(1:NN,Rl(:,1), 1:NN,Ru(:,1), 1:NN,Rmva(:,1),";MVA;", "linewidth", 2);
+%! title("Class 1 response time");
+%! subplot(2,2,4);
+%! plot(1:NN,Rl(:,2), 1:NN,Ru(:,2), 1:NN,Rmva(:,2),";MVA;", "linewidth", 2);
+%! title("Class 2 response time");

@@ -28,13 +28,22 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [Xl Xu Rl Ru] = qnclosedbsb( varargin )
+function [Xl Xu Rl Ru] = qnclosedbsb( N, D, Z )
   persistent warned = false;
   if (!warned)
     warned = true;
     warning("qn:deprecated-function",
 	    "qnclosedbsb is deprecated. Please use qncsbsb instead");
   endif
-  [Xl Xu Rl Ru] = qncsbsb(varargin{:});
+  if ( nargin < 3 )
+    [Xl Xu Rl Ru] = qncsbsb(N, D);
+  else
+    [Xl Xu Rl Ru] = qncsbsb(N, D, ones(size(D)), ones(size(D)), Z);
+  endif
 endfunction
+%!test
+%! fail("qnclosedbsb(-1,0)", "N must be");
+%! fail("qnclosedbsb(1,[])", "nonempty");
+%! fail("qnclosedbsb(1,[-1 2])", "nonnegative");
+%! fail("qnclosedbsb(1,[1 2 3],-1)", "nonnegative");
 

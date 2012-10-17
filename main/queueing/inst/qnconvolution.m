@@ -30,7 +30,7 @@
 ## Web: http://www.moreno.marzolla.name/
 
 function [U R Q X G] = qnconvolution( varargin )
-  persistent warned = true;
+  persistent warned = false;
   if (!warned)
     warned = true;
     warning("qn:deprecated-function",

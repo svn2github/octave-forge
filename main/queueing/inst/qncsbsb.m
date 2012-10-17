@@ -24,6 +24,7 @@
 ##
 ## @cindex bounds, balanced system
 ## @cindex closed network, single class
+## @cindex balanced system bounds
 ##
 ## Compute Balanced System Bounds on system throughput and response time for closed, single-class networks.
 ##
@@ -92,32 +93,34 @@ function [Xl Xu Rl Ru] = qncsbsb( N, S, V, m, Z )
       error( "S/D must contain nonnegative values");
   S = S(:)';
   K = length(S);
+
   if ( nargin < 3 )
-    V = ones(1,K);
+    D = S;
   else
     (isvector(V) && length(V) == K) || \
 	error( "V must be a vector with %d elements", K );
     all(V>=0) || \
 	error( "V must contain nonnegative values" );
     V = V(:)';
+    D = S .* V;
   endif
+
   if ( nargin < 4 )
     m = ones(1,K);
   else
     (isvector(m) && length(m) == K) || \
 	error( "m must be a vector with %d elements", K );
     all(m==1) || \
-	error( "only M/M/1 queues are supported" );
+	error( "this function only supports single server nodes" );
     m = m(:)';
   endif
+
   if ( nargin < 5 )
     Z = 0;
   else
     ( isscalar(Z) && Z >= 0 ) || \
         error( "Z must be a nonnegative scalar" );
   endif
-
-  D = S.*V;
 
   D_max = max(D);
   D_tot = sum(D);
@@ -134,7 +137,7 @@ endfunction
 %! fail("qncsbsb(1,[-1 2])", "nonnegative");
 %! fail("qncsbsb(1,[1 2],[1 2 3])", "2 elements");
 %! fail("qncsbsb(1,[1 2 3],[1 2 3],[1 2])", "3 elements");
-%! fail("qncsbsb(1,[1 2 3],[1 2 3],[1 2 1])", "M/M/1");
+%! fail("qncsbsb(1,[1 2 3],[1 2 3],[1 2 1])", "single server");
 %! fail("qncsbsb(1,[1 2 3],[1 2 3],[1 1 1],-1)", "nonnegative");
 %! fail("qncsbsb(1,[1 2 3],[1 2 3],[1 1 1],[0 0])", "scalar");
 

@@ -95,18 +95,17 @@ function [Xl Xu Rl Ru] = qncmcb( N, S, V )
   K = columns(S);
 
   if ( nargin<3 )
-    V = ones(size(S));
+    D = S;
   else
     (ismatrix(V) && size_equal(S,V) ) || \
 	error("V must be a %d x %d matrix", C, K);
     all(all(V>=0)) || \
 	error("V must contain nonnegative values");
+    D = S .* V;
   endif
 
-  [Xl] = qnclosedmultibsb(N, S, V);
+  [Xl] = qncmbsb(N, D);
   Xu = zeros(1,C);
-
-  D = S .* V;
 
   D_max = max(D,[],2)';
   for r=1:C # FIXME: vectorize this

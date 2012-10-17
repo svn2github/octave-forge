@@ -697,7 +697,7 @@ Aspects of Queueing Network Models}.
 @c MVABLO algorithm for approximate analysis of closed, single class
 @c QN with blocking
 @c
-@GETHELP{qnmvablo}
+@GETHELP{qncsmvablo}
 
 @noindent @strong{REFERENCES}
 
@@ -900,7 +900,7 @@ particular, see section 7.4.1 ("Open Model Solution Techniques").
 @subsection Closed Networks
 
 @c
-@GETHELP{population_mix}
+@GETHELP{qncmpopmix}
 
 @noindent @strong{REFERENCES}
 
@@ -921,7 +921,7 @@ Indices for a Complex Summation}, unpublished report, available at
 @auindex Santini, S.
 
 @c
-@GETHELP{qnmvapop}
+@GETHELP{qncmnpop}
 
 @noindent @strong{REFERENCES}
 

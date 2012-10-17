@@ -19,6 +19,7 @@
 ##
 ## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnosaba (@var{lambda}, @var{D})
 ## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnosaba (@var{lambda}, @var{S}, @var{V})
+## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnosaba (@var{lambda}, @var{S}, @var{V}, @var{m})
 ##
 ## @cindex bounds, asymptotic
 ## @cindex open network
@@ -43,6 +44,11 @@
 ## @item V
 ## @code{@var{V}(k)} is the mean number of visits to center @math{k}.
 ## (@code{@var{V}(k) @geq{} 0} for all @math{k}).
+##
+## @item m
+## @code{@var{m}(k)} is the number of servers at center @math{k}.
+## This function only supports @math{M/M/1} queues, therefore
+## @var{m} must be @code{ones(size(S))}. 
 ##
 ## @end table
 ##
@@ -71,8 +77,8 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [X_lower X_upper R_lower R_upper] = qnosaba( lambda, S, V )
-  if ( nargin < 2 || nargin > 3 )
+function [X_lower X_upper R_lower R_upper] = qnosaba( lambda, S, V, m )
+  if ( nargin < 2 || nargin > 4 )
     print_usage();
   endif
   isscalar(lambda) || error("lambda must be a scalar");
@@ -83,16 +89,22 @@ function [X_lower X_upper R_lower R_upper] = qnosaba( lambda, S, V )
       error("S/D must contain nonnegative values");
   S = S(:)';
   if ( nargin < 3 )
-    V = ones(size(S));
+    D = S;
   else
     ( isvector(V) && length(V) == length(S) ) || \
 	error( "V must be a vector with %d elements", length(S));
     all(V>=0) || \
 	error( "V must contain nonnegative values");
-    V = V(:)';
+    D = S .* V;
   endif
-
-  D = S.*V;
+  if ( nargin < 4 )
+    ## nothing
+  else
+    ( isvector(m) && length(m) == length(S) ) || \
+	error("m must be a vector wiht %d elements", length(S));
+    all(m==1) || \
+	error("this function only supports M/M/1 queues");
+  endif
 
   X_lower = 0;
   X_upper = 1/max(D);

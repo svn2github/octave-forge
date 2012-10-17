@@ -469,7 +469,7 @@ Computer Science Applications}, Wiley, 1998.
 @c
 @subsection Closed Networks
 
-@GETHELP{qnclosedsinglemva}
+@GETHELP{qncsmva}
 
 @noindent @strong{REFERENCES}
 
@@ -497,13 +497,13 @@ Networks".
 @noindent @strong{EXAMPLE}
 
 @example
-@GETDEMO{qnclosedsinglemva,1}
+@GETDEMO{qncsmva,1}
 @end example
 
 @c
 @c MVA for single class, closed networks with load dependent servers
 @c
-@GETHELP{qnclosedsinglemvald}
+@GETHELP{qncsmvald}
 
 @noindent @strong{REFERENCES}
 
@@ -525,7 +525,7 @@ Networks''.
 @c
 @c CMVA for single class, closed networks with a single load dependent servers
 @c
-@GETHELP{qnclosedsinglecmva}
+@GETHELP{qncscmva}
 
 @noindent @strong{REFERENCES}
 
@@ -591,13 +591,13 @@ compute all performance measures of interest (utilization, average
 response time and so on).
 
 @command{queueing} implements the convolution algorithm, in the function
-@command{qnconvolution} and @command{qnconvolutionld}. The first one
+@command{qncsconv} and @command{qncsconvld}. The first one
 supports single-station nodes, multiple-station nodes and IS nodes.
 The second one supports networks with general load-dependent service
 centers.
 
 
-@GETHELP{qnconvolution}
+@GETHELP{qncsconv}
 
 @noindent @strong{NOTE}
 
@@ -642,7 +642,7 @@ $$
 @end iftex
 
 @example
-@GETDEMO{qnconvolution,1}
+@GETDEMO{qncsconv,1}
 @print{} k(1)=1 prob=0.17975
 @print{} k(2)=2 prob=0.48404
 @print{} k(3)=0 prob=0.52779
@@ -650,7 +650,7 @@ $$
 
 
 @c
-@GETHELP{qnconvolutionld}
+@GETHELP{qncsconvld}
 
 @noindent @strong{REFERENCES}
 
@@ -675,11 +675,11 @@ pp. 109--117. @uref{http://doi.acm.org/10.1145/800200.806187, 10.1145/800200.806
 This implementation is based on G. Bolch, S. Greiner, H. de Meer and
 K. Trivedi, @cite{Queueing Networks and Markov Chains: Modeling and
 Performance Evaluation with Computer Science Applications}, Wiley,
-1998, pp. 313--317. Function @command{qnconvolutionld} is slightly
+1998, pp. 313--317. Function @command{qncsconvld} is slightly
 different from the version described in Bolch et al. because it
 supports general load-dependent centers (while the version in the book
 does not). The modification is in the definition of function
-@code{F()} in @command{qnconvolutionld} which has been made similar to
+@code{F()} in @command{qncsconvld} which has been made similar to
 function @math{f_i} defined in Schwetman, @cite{Some Computational
 Aspects of Queueing Network Models}.
 
@@ -936,7 +936,7 @@ Perform. Eval. Rev. 10, 3 (Sep. 1981), 80-85. DOI
 @c
 @c MVA for multiple class, closed networks
 @c
-@GETHELP{qnclosedmultimva}
+@GETHELP{qncmmva}
 
 @noindent @strong{NOTE}
 
@@ -1127,18 +1127,14 @@ follows:
 @section Bounds Analysis
 
 @c
-@GETHELP{qnopenab}
+@GETHELP{qnosaba}
 
-@GETHELP{qnopensingleab}
-
-@GETHELP{qnopenmultiab}
+@GETHELP{qnomaba}
 
 @c
-@GETHELP{qnclosedab}
+@GETHELP{qncsaba}
 
-@GETHELP{qnclosedsingleab}
-
-@GETHELP{qnclosedmultiab}
+@GETHELP{qncmaba}
 
 @noindent @strong{REFERENCES}
 
@@ -1154,16 +1150,12 @@ particular, see section 5.2 ("Asymptotic Bounds").
 @auindex Sevcik, K. C.
 
 @c
-@GETHELP{qnopenbsb}
-
-@GETHELP{qnopensinglebsb}
+@GETHELP{qnosbsb}
 
 @c
-@GETHELP{qnclosedbsb}
+@GETHELP{qncsbsb}
 
-@GETHELP{qnclosedsinglebsb}
-
-@GETHELP{qnclosedmultibsb}
+@GETHELP{qncmbsb}
 
 @noindent @strong{REFERENCES}
 
@@ -1178,7 +1170,7 @@ particular, see section 5.4 ("Balanced Systems Bounds").
 @auindex Graham, G. S.
 @auindex Sevcik, K. C.
 
-@GETHELP{qnclosedmulticb}
+@GETHELP{qncmcb}
 
 @noindent @strong{REFERENCES}
 
@@ -1190,7 +1182,7 @@ CSD-TR-475, Department of Computer Sciences, Purdue University, mar 13
 @auindex Kerola, T.
 
 @c
-@GETHELP{qnclosedsinglepb}
+@GETHELP{qncspb}
 
 @noindent @strong{REFERENCES}
 
@@ -1210,7 +1202,7 @@ Transactions on Computers, 57(6):780-794, June 2008.
 @auindex Serazzi, G.
 
 @c
-@GETHELP{qnclosedsinglegb}
+@GETHELP{qncsgb}
 
 @noindent @strong{REFERENCES}
 
@@ -1452,7 +1444,7 @@ for  class 1,  and  5 requests  for class  2,  then the  model can  be
 analyzed as follows:
 
 @example
-@GETDEMO{qnclosedmultimva,2}
+@GETDEMO{qncmmva,2}
   @result{}
 U =
 
@@ -1525,18 +1517,18 @@ S = [12 14 23 20 80 31; \
       2 20 14 90 30 33 ];
 V = ones(size(S));
 pop = [fix(beta1*N) N-fix(beta1*N)];
-[U R Q X] = qnclosedmultimva(pop, S, V);
+[U R Q X] = qncmmva(pop, S, V);
 @end group
 @end example
 
-The @command{qnclosedmultimva(pop, S, V)} function invocation (line 7)
+The @command{qncmmva(pop, S, V)} function invocation (line 7)
 uses the multiclass MVA algorithm to compute per-class utilizations
 @math{U_{c, k}}, response times @math{R_{c,k}}, mean queue lengths
 @math{Q_{c,k}} and throughputs @math{X_{c,k}} at each service center
 @math{k}, given a population vector @var{pop}, mean service times
 @var{S} and visit ratios @var{V}. Since we are given the service
 demands @math{D_{c, k} = S_{c, k} V_{c,k}}, but function
-@command{qnclosedmultimva()} requires separate service times and visit
+@command{qncmmva()} requires separate service times and visit
 ratios, we set the service times equal to the demands (line 3--4), and
 all visit ratios equal to one (line 5). Overall class and system
 throughputs and response times can also be computed:
@@ -1608,7 +1600,7 @@ allowed, the total number of jobs in each class does not remain
 constant; however the total number of jobs does.
 
 @example
-@GETDEMO{qnclosedmultimva,3}
+@GETDEMO{qncmmva,3}
   @result{}
 U =
 

@@ -17,7 +17,7 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Ql}, @var{Qu}] =} qnclosedsinglegb (@var{N}, @var{D}, @var{Z})
+## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Ql}, @var{Qu}] =} qncsgb (@var{N}, @var{D}, @var{Z})
 ##
 ## @cindex bounds, geometric
 ## @cindex closed network
@@ -62,7 +62,7 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [X_lower X_upper Q_lower Q_upper] = qnclosedsinglegb( N, L, Z, X_minus, X_plus )
+function [X_lower X_upper Q_lower Q_upper] = qncsgb( N, L, Z, X_minus, X_plus )
 
   ## This implementation is based on the paper: G.Casale, R.R.Muntz,
   ## G.Serazzi. Geometric Bounds: a Noniterative Analysis Technique for
@@ -91,7 +91,7 @@ function [X_lower X_upper Q_lower Q_upper] = qnclosedsinglegb( N, L, Z, X_minus,
   L_max = max(L);
   M = length(L);
   if ( nargin < 4 ) 
-    [X_minus X_plus] = qnclosedsingleab(N,L,ones(size(L)),ones(size(L)),Z);
+    [X_minus X_plus] = qncsaba(N,L,ones(size(L)),ones(size(L)),Z);
   endif
   ##[X_minus X_plus] = [0 1/L_max];
   [Q_lower Q_upper] = __compute_Q( N, L, Z, X_plus, X_minus);
@@ -142,16 +142,16 @@ function [ Q_lower Q_upper ] = __compute_Q( N, L, Z, X_plus, X_minus )
 endfunction
 
 %!test
-%! fail( "qnclosedsinglegb( 1, [] )", "vector" );
-%! fail( "qnclosedsinglegb( 1, [0 -1])", "vector" );
-%! fail( "qnclosedsinglegb( 0, [1 2] )", ">0" );
-%! fail( "qnclosedsinglegb( -1, [1 2])", ">0" );
+%! fail( "qncsgb( 1, [] )", "vector" );
+%! fail( "qncsgb( 1, [0 -1])", "vector" );
+%! fail( "qncsgb( 0, [1 2] )", ">0" );
+%! fail( "qncsgb( -1, [1 2])", ">0" );
 
 %!# shared test function
 %!function test_gb( D, expected, Z=0 )
 %! for i=1:rows(expected)
 %!   N = expected(i,1);
-%!   [X_lower X_upper Q_lower Q_upper] = qnclosedsinglegb(N,D,Z);
+%!   [X_lower X_upper Q_lower Q_upper] = qncsgb(N,D,Z);
 %!   X_exp_lower = expected(i,2);
 %!   X_exp_upper = expected(i,3);
 %!   assert( [N X_lower X_upper], [N X_exp_lower X_exp_upper], 1e-4 )
@@ -190,7 +190,7 @@ endfunction
 %!
 %! ## Test case with Z>0
 %! for n=1:Nmax
-%!   [X_gb_lower X_gb_upper Q_gb_lower Q_gb_upper] = qnclosedsinglegb(n, S.*V, 2);
+%!   [X_gb_lower X_gb_upper Q_gb_lower Q_gb_upper] = qncsgb(n, S.*V, 2);
 %!   [U R Q X] = qnclosed( n, S, V, m, 2 );
 %!   X_mva = X(1)/V(1);
 %!   assert( X_gb_lower <= X_mva+tol );
@@ -209,7 +209,7 @@ endfunction
 %!
 %! ## Test case with Z=0
 %! for n=1:Nmax
-%!   [X_gb_lower X_gb_upper Q_gb_lower Q_gb_upper] = qnclosedsinglegb(n, S.*V, 0);
+%!   [X_gb_lower X_gb_upper Q_gb_lower Q_gb_upper] = qncsgb(n, S.*V, 0);
 %!   [U R Q X] = qnclosed( n, S, V, m, 0 );
 %!   X_mva = X(1)/V(1);
 %!   assert( X_gb_lower <= X_mva+tol );

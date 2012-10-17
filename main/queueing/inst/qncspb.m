@@ -17,8 +17,8 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedsinglepb (@var{N}, @var{D} )
-## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedsinglepb (@var{N}, @var{D}, @var{Z} )
+## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qncspb (@var{N}, @var{D} )
+## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qncspb (@var{N}, @var{D}, @var{Z} )
 ##
 ## Compute PB Bounds (C. H. Hsieh and S. Lam, 1987) for single-class,
 ## closed networks.
@@ -60,7 +60,7 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [X_lower X_upper R_lower R_upper] = qnclosedsinglepb( N, D, Z )
+function [X_lower X_upper R_lower R_upper] = qncspb( N, D, Z )
   if ( nargin < 2 || nargin > 3 )
     print_usage();
   endif
@@ -87,17 +87,17 @@ function [X_lower X_upper R_lower R_upper] = qnclosedsinglepb( N, D, Z )
 endfunction
 
 %!test
-%! fail( "qnclosedsinglepb( 1, [] )", "vector" );
-%! fail( "qnclosedsinglepb( 1, [0 -1])", "vector" );
-%! fail( "qnclosedsinglepb( 0, [1 2] )", "positive integer" );
-%! fail( "qnclosedsinglepb( -1, [1 2])", "positive integer" );
-%! fail( "qnclosedsinglepb( 1, [1 2], -1)", "nonnegative scalar" );
+%! fail( "qncspb( 1, [] )", "vector" );
+%! fail( "qncspb( 1, [0 -1])", "vector" );
+%! fail( "qncspb( 0, [1 2] )", "positive integer" );
+%! fail( "qncspb( -1, [1 2])", "positive integer" );
+%! fail( "qncspb( 1, [1 2], -1)", "nonnegative scalar" );
 
 %!# shared test function
 %!function test_pb( D, expected, Z=0 )
 %! for i=1:rows(expected)
 %!   N = expected(i,1);
-%!   [X_lower X_upper] = qnclosedsinglepb(N,D,Z);
+%!   [X_lower X_upper] = qncspb(N,D,Z);
 %!   X_exp_lower = expected(i,2);
 %!   X_exp_upper = expected(i,3);
 %!   assert( [N X_lower X_upper], [N X_exp_lower X_exp_upper], 1e-4 )

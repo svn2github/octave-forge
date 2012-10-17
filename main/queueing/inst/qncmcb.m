@@ -17,8 +17,8 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedmulticb (@var{N}, @var{D})
-## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedmulticb (@var{N}, @var{S}, @var{V})
+## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qncmcb (@var{N}, @var{D})
+## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qncmcb (@var{N}, @var{S}, @var{V})
 ##
 ## @cindex multiclass network, closed
 ## @cindex bounds, composite
@@ -71,7 +71,7 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [Xl Xu Rl Ru] = qnclosedmulticb( N, S, V )
+function [Xl Xu Rl Ru] = qncmcb( N, S, V )
 
   if ( nargin < 2 || nargin > 3 )
     print_usage();
@@ -136,7 +136,7 @@ endfunction
 %! Xl = Xu = Xmva = zeros(NN,2);
 %! for n=1:NN
 %!   N=[n,10];
-%!   [a b] = qnclosedmulticb(N,S);
+%!   [a b] = qncmcb(N,S);
 %!   Xl(n,:) = a; Xu(n,:) = b;
 %!   [U R Q X] = qnclosedmultimva(N,S,ones(size(S)));
 %!   Xmva(n,:) = X(:,1)';

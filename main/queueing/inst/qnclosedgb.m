@@ -19,9 +19,9 @@
 ##
 ## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Ql}, @var{Qu}] =} qnclosedgb (@var{N}, @var{D}, @var{Z})
 ##
-## This function is deprecated. Please use @code{qnclosedsinglegb} instead.
+## This function is deprecated. Please use @code{qncsgb} instead.
 ##
-## @seealso{qnclosedsinglegb}
+## @seealso{qncsgb}
 ##
 ## @end deftypefn
 
@@ -29,6 +29,11 @@
 ## Web: http://www.moreno.marzolla.name/
 
 function [X_lower X_upper Q_lower Q_upper] = qnclosedgb( varargin )
-  warning("Function qnclosedgb() is deprecated. Use qnclosedsinglegb() instead");
-  [X_lower X_upper Q_lower Q_upper] = qnclosedsinglegb( varargin{:} );
+  persistent warned = false;
+  if (!warned)
+    warned = true;
+    warning("qn:deprecated-function",
+	    "Function qnclosedgb is deprecated. Please use qncsgb instead");
+  endif
+  [X_lower X_upper Q_lower Q_upper] = qncsgb( varargin{:} );
 endfunction

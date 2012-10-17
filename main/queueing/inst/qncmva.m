@@ -20,7 +20,9 @@
 ## @deftypefn {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qncmva (@var{N}, @var{S}, @var{Sld}, @var{V})
 ## @deftypefnx {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qncmva (@var{N}, @var{S}, @var{Sld}, @var{V}, @var{Z})
 ##
-## This function is deprecated. Please use @code{qnclosedsinglecmva} instead.
+## This function is deprecated. Please use @code{qncscmva} instead.
+##
+## @seealso{qncscmva}
 ##
 ## @end deftypefn
 
@@ -28,8 +30,11 @@
 ## Web: http://www.moreno.marzolla.name/
 
 function [U R Q X] = qncmva( varargin )
-
-  warning("Function qncmva() is deprecated. Please use qnclosedsinglecmva() instead");
-  [U R Q X] = qnclosedsinglecmva( varargin{:} );
-
+  persistent warned = false;
+  if (!warned)
+    warned = true;
+    warning("qn:deprecated-function",
+	    "Function qncmva is deprecated. Please use qncscmva instead");
+  endif
+  [U R Q X] = qncscmva( varargin{:} );
 endfunction

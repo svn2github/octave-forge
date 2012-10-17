@@ -17,10 +17,10 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedsingleab (@var{N}, @var{D})
-## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedsingleab (@var{N}, @var{S}, @var{V})
-## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedsingleab (@var{N}, @var{S}, @var{V}, @var{m})
-## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedsingleab (@var{N}, @var{S}, @var{V}, @var{m}, @var{Z})
+## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qncsaba (@var{N}, @var{D})
+## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qncsaba (@var{N}, @var{S}, @var{V})
+## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qncsaba (@var{N}, @var{S}, @var{V}, @var{m})
+## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qncsaba (@var{N}, @var{S}, @var{V}, @var{m}, @var{Z})
 ##
 ## @cindex bounds, asymptotic
 ## @cindex closed network, single class
@@ -78,14 +78,14 @@
 ##
 ## @end table
 ##
-## @seealso{qnclosedmultiab}
+## @seealso{qncmaba}
 ##
 ## @end deftypefn
 
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [Xl Xu Rl Ru] = qnclosedsingleab( N, S, V, m, Z )
+function [Xl Xu Rl Ru] = qncsaba( N, S, V, m, Z )
   
   if (nargin<2 || nargin>5)
     print_usage();
@@ -138,21 +138,21 @@ function [Xl Xu Rl Ru] = qnclosedsingleab( N, S, V, m, Z )
 endfunction
 
 %!test
-%! fail("qnclosedsingleab(-1,0)", "N must be");
-%! fail("qnclosedsingleab(1,[])", "nonempty");
-%! fail("qnclosedsingleab(1,[-1 2])", "nonnegative");
-%! fail("qnclosedsingleab(1,[1 2],[1 2 3])", "2 elements");
-%! fail("qnclosedsingleab(1,[1 2 3],[1 2 -1])", "nonnegative");
-%! fail("qnclosedsingleab(1,[1 2 3],[1 2 3],[1 2])", "3 elements");
-%! fail("qnclosedsingleab(1,[1 2 3],[1 2 3],[1 2 1])", "not supported");
-%! fail("qnclosedsingleab(1,[1 2 3],[1 2 3],[1 1 1],-1)", "nonnegative");
-%! fail("qnclosedsingleab(1,[1 2 3],[1 2 3],[1 1 1],[0 0])", "scalar");
+%! fail("qncsaba(-1,0)", "N must be");
+%! fail("qncsaba(1,[])", "nonempty");
+%! fail("qncsaba(1,[-1 2])", "nonnegative");
+%! fail("qncsaba(1,[1 2],[1 2 3])", "2 elements");
+%! fail("qncsaba(1,[1 2 3],[1 2 -1])", "nonnegative");
+%! fail("qncsaba(1,[1 2 3],[1 2 3],[1 2])", "3 elements");
+%! fail("qncsaba(1,[1 2 3],[1 2 3],[1 2 1])", "not supported");
+%! fail("qncsaba(1,[1 2 3],[1 2 3],[1 1 1],-1)", "nonnegative");
+%! fail("qncsaba(1,[1 2 3],[1 2 3],[1 1 1],[0 0])", "scalar");
 
 ## Example 9.6 p. 913 Bolch et al.
 %!test
 %! N = 20;
 %! S = [ 4.6*2 8 ];
 %! Z = 120;
-%! [X_l X_u R_l R_u] = qnclosedsingleab(N, S, ones(size(S)), ones(size(S)), Z);
+%! [X_l X_u R_l R_u] = qncsaba(N, S, ones(size(S)), ones(size(S)), Z);
 %! assert( [X_u R_l], [0.109 64], 1e-3 );
 

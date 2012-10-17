@@ -17,26 +17,27 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{Xl} @var{Xu}, @var{Rl}, @var{Ru}] =} qnopenbsb (@var{lambda}, @dots{})
+## @deftypefn {Function File} {[@var{Xu}, @var{Rl}, @var{Ru}] =} qnopenbsb (@var{lambda}, @dots{})
 ##
 ## @cindex bounds, balanced system
 ## @cindex open network
 ##
-## Compute Balanced System Bounds for open Queueing Networks. 
-## This function delegates actual computation to @code{qnopensinglebsb}.
+## This function is deprecated. Please use @code{qnosbsb} instead.
 ##
-## @seealso{qnopensinglebsb}
+## @seealso{qnosbsb}
 ## 
 ## @end deftypefn
 
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [Xl Xu Rl Ru] = qnopenbsb( lambda, varargin )
-  if ( isscalar(lambda) )
-    [Xl Xu Rl Ru] = qnopensinglebsb( lambda, varargin{:} );
-  else
-    error("This function does not support multiclass networks yet");
+function [Xu Rl Ru] = qnopenbsb( varargin )
+  persistent warned = false;
+  if (!warned)
+    warned = true;
+    warning("qn:deprecated-function",
+	    "qnopenbsb is deprecated. Please use qnosbsb instead");
   endif
+  [Xl Xu Rl Ru] = qnosbsb( lambda, varargin{:} );
 endfunction
 

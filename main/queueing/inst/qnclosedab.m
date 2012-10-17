@@ -19,43 +19,21 @@
 ##
 ## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedab (@var{N}, @dots{})
 ##
-## @cindex bounds, asymptotic
-## @cindex closed network
+## This function is deprecated. Please use @code{qncsaba} instead.
 ##
-## This function computes Asymptotic Bounds for throughput and response
-## time of closed, single or multiclass queueing networks. Single server
-## and delay centers are allowed. Multiple server nodes are not
-## supported.
-##
-## This function dispatches the computation to @code{qnclosedsingleab}
-## or @code{qnclosedmultiab}.
-##
-## @itemize
-##
-## @item If @var{N} is a scalar, the network is assumed to have a single
-## class of requests and control is passed to @code{qnclosedsingleab}.
-##
-## @item If @var{N} is a vector, the network is assumed to have multiple
-## classes of requests, and control is passed to @code{qnclosedmultiab}.
-##
-## @end itemize
-##
-## @seealso{qnclosedsingleab, qnclosedmultiab}.
+## @seealso{qncsaba}
 ##
 ## @end deftypefn
 
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [Xl Xu Rl Ru] = qnclosedab( N, varargin )
-  if ( nargin < 1 )
-    print_usage();
+function [Xl Xu Rl Ru] = qnclosedab( varargin )
+  persistent warned = false;
+  if (!warned)
+    warned = true;
+    warning("qn:deprecated-function",
+	    "qnclosedab is deprecated. Please use qncsaba instead");
   endif
-
-  if (isscalar(N))
-    [Xl Xu Rl Ru] = qnclosedsingleab(N, varargin{:});
-  else
-    [Xl Xu Rl Ru] = qnclosedmultiab(N, varargin{:});
-  endif
+  [Xl Xu Rl Ru] = qncsaba( varargin{:} );
 endfunction
-

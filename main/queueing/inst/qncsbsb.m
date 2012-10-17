@@ -17,10 +17,10 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedsinglebsb (@var{N}, @var{D})
-## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedsinglebsb (@var{N}, @var{S}, @var{V})
-## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedsinglebsb (@var{N}, @var{S}, @var{V}, @var{m})
-## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedsinglebsb (@var{N}, @var{S}, @var{V}, @var{m}, @var{Z})
+## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qncsbsb (@var{N}, @var{D})
+## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qncsbsb (@var{N}, @var{S}, @var{V})
+## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qncsbsb (@var{N}, @var{S}, @var{V}, @var{m})
+## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qncsbsb (@var{N}, @var{S}, @var{V}, @var{m}, @var{Z})
 ##
 ## @cindex bounds, balanced system
 ## @cindex closed network, single class
@@ -78,8 +78,7 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [Xl Xu Rl Ru] = qnclosedsinglebsb( N, S, V, m, Z )
-
+function [Xl Xu Rl Ru] = qncsbsb( N, S, V, m, Z )
 
   if (nargin<2 || nargin>5)
     print_usage();
@@ -130,12 +129,12 @@ function [Xl Xu Rl Ru] = qnclosedsinglebsb( N, S, V, m, Z )
 endfunction
 
 %!test
-%! fail("qnclosedsinglebsb(-1,0)", "N must be");
-%! fail("qnclosedsinglebsb(1,[])", "nonempty");
-%! fail("qnclosedsinglebsb(1,[-1 2])", "nonnegative");
-%! fail("qnclosedsinglebsb(1,[1 2],[1 2 3])", "2 elements");
-%! fail("qnclosedsinglebsb(1,[1 2 3],[1 2 3],[1 2])", "3 elements");
-%! fail("qnclosedsinglebsb(1,[1 2 3],[1 2 3],[1 2 1])", "M/M/1");
-%! fail("qnclosedsinglebsb(1,[1 2 3],[1 2 3],[1 1 1],-1)", "nonnegative");
-%! fail("qnclosedsinglebsb(1,[1 2 3],[1 2 3],[1 1 1],[0 0])", "scalar");
+%! fail("qncsbsb(-1,0)", "N must be");
+%! fail("qncsbsb(1,[])", "nonempty");
+%! fail("qncsbsb(1,[-1 2])", "nonnegative");
+%! fail("qncsbsb(1,[1 2],[1 2 3])", "2 elements");
+%! fail("qncsbsb(1,[1 2 3],[1 2 3],[1 2])", "3 elements");
+%! fail("qncsbsb(1,[1 2 3],[1 2 3],[1 2 1])", "M/M/1");
+%! fail("qncsbsb(1,[1 2 3],[1 2 3],[1 1 1],-1)", "nonnegative");
+%! fail("qncsbsb(1,[1 2 3],[1 2 3],[1 1 1],[0 0])", "scalar");
 

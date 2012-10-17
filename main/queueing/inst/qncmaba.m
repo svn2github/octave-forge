@@ -17,14 +17,19 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedmultibsb (@var{N}, @var{D})
-## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedmultibsb (@var{N}, @var{S}, @var{V})
+## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qncmaba (@var{N}, @var{D})
+## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qncmaba (@var{N}, @var{S}, @var{V})
+## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qncmaba (@var{N}, @var{S}, @var{V}, @var{m})
+## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qncmaba (@var{N}, @var{S}, @var{V}, @var{m}, @var{Z})
 ##
-## @cindex bounds, balanced system
+## @cindex bounds, asymptotic
+## @cindex closed network
 ## @cindex multiclass network, closed
 ##
-## Compute Balanced System Bounds for multiclass networks.
-## Only single-server nodes are supported.
+## Compute Asymptotic Bounds for multiclass networks.
+## Single-server and infinite-server nodes are supported.
+## Multiple-server nodes and general load-dependent servers are not
+## supported.
 ##
 ## @strong{INPUTS}
 ##
@@ -34,7 +39,7 @@
 ## @code{@var{N}(c)} is the number of class @math{c} requests in the system.
 ##
 ## @item D
-## @code{@var{D}(c, k)} is class @math{c} service demand 
+## @code{@var{D}(c, k)} is class @math{c} service demand
 ## at center @math{k} (@code{@var{D}(c,k) @geq{} 0}).
 ##
 ## @item S
@@ -43,7 +48,19 @@
 ##
 ## @item V
 ## @code{@var{V}(c,k)} is the average number of visits of class @math{c}
-## requests to center @math{k} (@code{@var{V}(c,k) @geq{} 0}). 
+## requests to center @math{k} (@code{@var{V}(c,k) @geq{} 0}).
+##
+## @item m
+## @code{@var{m}(k)} is the number of servers at center @math{k}
+## (if @var{m} is a scalar, all centers have that number of servers). If
+## @code{@var{m}(k) < 1}, center @math{k} is a delay center (IS);
+## if @code{@var{m}(k) = 1}, center @math{k} is a M/M/1-FCFS server.
+## This function does not support multiple-server nodes. Default
+## is 1.
+##
+## @item Z
+## @code{@var{Z}(c)} is class @math{c} external delay
+## (@code{@var{Z}(c) @geq{} 0}). Default is 0.
 ##
 ## @end table
 ##
@@ -61,15 +78,14 @@
 ##
 ## @end table
 ##
-## @seealso{qnclosedsinglebsb}
+## @seealso{qnclosedsingleab}
 ##
 ## @end deftypefn
 
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [Xl Xu Rl Ru] = qnclosedmultibsb( N, S, V, m, Z )
-
+function [Xl Xu Rl Ru] = qncmaba( N, S, V, m, Z )
 
   if ( nargin<2 || nargin>5 )
     print_usage();
@@ -123,33 +139,26 @@ function [Xl Xu Rl Ru] = qnclosedmultibsb( N, S, V, m, Z )
 
   D = S .* V;
 
-  ## Equations from T. Kerola, The Composite Bound Method (CBM) for
-  ## Computing Throughput Bounds in Multiple Class Environments},
-  ## Technical Report CSD-TR-475, Department of Computer Sciences,
-  ## Purdue University, mar 13 1984 (Revisted aug 27, 1984), available
-  ## at
-  ## http://docs.lib.purdue.edu/cgi/viewcontent.cgi?article=1394&context=cstech
-
-  Dc = sum(D,2)';
-  D_max = max(D,[],2)';
-  D_min = min(D,[],2)';
-  Xl = N ./ (Dc .+ (sum(N)-1) .* D_max);
-  Xu = min( 1./D_max, N ./ ((K+sum(N)-1) .* D_min));
-  Rl = N ./ Xu;
-  Ru = N ./ Xl;
+  Dc_single = sum(D(:,(m==1)),2)'; # class c demand on single-server nodes
+  Dc_delay = sum(D(:,(m<1)),2)'; # class c demand on delay centers
+  Dc = sum(D,2)'; # class c total demand
+  Dcmax = max(D,[],2)'; # maximum class c demand at any server
+  Xl = N ./ ( dot(N,Dc_single) .+ Dc_delay .+ Z);
+  Xu = min( 1./Dcmax, N ./ (Dc .+ Z) );
+  Rl = Ru = [];
 endfunction
 
 %!test
-%! fail("qnclosedmultibsb([],[])", "nonempty");
-%! fail("qnclosedmultibsb([0 0], [1 2])", "no requests");
-%! fail("qnclosedmultibsb([1 0], [1 2 3])", "2 rows");
-%! fail("qnclosedmultibsb([1 0], [1 2 3; 4 5 -1])", "nonnegative");
-%! fail("qnclosedmultibsb([1 2], [1 2 3; 4 5 6], [1 2 3])", "2 x 3");
-%! fail("qnclosedmultibsb([1 2], [1 2 3; 4 5 6], [1 2 3; 4 5 -1])", "nonnegative");
-%! fail("qnclosedmultibsb([1 2], [1 2 3; 1 2 3], [1 2 3; 1 2 3], [1 1])", "3 elements");
-%! fail("qnclosedmultibsb([1 2], [1 2 3; 1 2 3], [1 2 3; 1 2 3], [1 1 2])", "not supported");
-%! fail("qnclosedmultibsb([1 2], [1 2 3; 1 2 3], [1 2 3; 1 2 3], [1 1 -1],[1 2 3])", "2 elements");
-%! fail("qnclosedmultibsb([1 2], [1 2 3; 1 2 3], [1 2 3; 1 2 3], [1 1 -1],[1 -2])", "nonnegative");
+%! fail("qncmaba([],[])", "nonempty");
+%! fail("qncmaba([0 0], [1 2])", "no requests");
+%! fail("qncmaba([1 0], [1 2 3])", "2 rows");
+%! fail("qncmaba([1 0], [1 2 3; 4 5 -1])", "nonnegative");
+%! fail("qncmaba([1 2], [1 2 3; 4 5 6], [1 2 3])", "2 x 3");
+%! fail("qncmaba([1 2], [1 2 3; 4 5 6], [1 2 3; 4 5 -1])", "nonnegative");
+%! fail("qncmaba([1 2], [1 2 3; 1 2 3], [1 2 3; 1 2 3], [1 1])", "3 elements");
+%! fail("qncmaba([1 2], [1 2 3; 1 2 3], [1 2 3; 1 2 3], [1 1 2])", "not supported");
+%! fail("qncmaba([1 2], [1 2 3; 1 2 3], [1 2 3; 1 2 3], [1 1 -1],[1 2 3])", "2 elements");
+%! fail("qncmaba([1 2], [1 2 3; 1 2 3], [1 2 3; 1 2 3], [1 1 -1],[1 -2])", "nonnegative");
 
 %!demo
 %! S = [10 7 5 4; \
@@ -158,7 +167,7 @@ endfunction
 %! Xl = Xu = Xmva = zeros(NN,2);
 %! for n=1:NN
 %!   N=[n,10];
-%!   [a b] = qnclosedmultibsb(N,S);
+%!   [a b] = qncmaba(N,S);
 %!   Xl(n,:) = a; Xu(n,:) = b;
 %!   [U R Q X] = qnclosedmultimva(N,S,ones(size(S)));
 %!   Xmva(n,:) = X(:,1)';
@@ -168,7 +177,9 @@ endfunction
 %!      1:NN,Xmva(:,1),";MVA;");
 %! title("Class 1 throughput");
 %! subplot(2,1,2);
-%! plot(1:NN,Xl(:,2),"linewidth", 2,  1:NN,Xu(:,2), "linewidth", 2,\
+%! plot(1:NN,Xl(:,2),"linewidth", 2, 1:NN,Xu(:,2), "linewidth", 2,\
 %!      1:NN,Xmva(:,2),";MVA;");
 %! title("Class 2 throughput");
 %! xlabel("Number of class 1 requests");
+
+

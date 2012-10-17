@@ -20,16 +20,21 @@
 ## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedpb (@var{N}, @var{D} )
 ## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedpb (@var{N}, @var{D}, @var{Z} )
 ##
-## This function is deprecated. Please use @code{qnclosedsinglepb} instead.
+## This function is deprecated. Please use @code{qncspb} instead.
 ##
-## @seealso{qnclosedsinglepb}
+## @seealso{qncspb}
 ##
 ## @end deftypefn
 
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [X_lower X_upper R_lower R_upper] = qnclosedpb( varargin )
-  warning("Function qnclosedpb() is deprecated. Please use qnclosedsinglepb() instead");
-  [X_lower X_upper R_lower R_upper] = qnclosedsinglepb( varargin{:} );
+function [X_lower X_upper] = qnclosedpb( varargin )
+  persistent warned = false;
+  if (!warned)
+    warned = true;
+    warning("qn:deprecated-function",
+	    "Function qnclosedpb is deprecated. Please use qncspb instead");
+  endif
+  [X_lower X_upper R_lower R_upper] = qncspb( varargin{:} );
 endfunction

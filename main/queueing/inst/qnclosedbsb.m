@@ -19,40 +19,22 @@
 ##
 ## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnclosedbsb (@var{N}, @dots{} )
 ##
-## @cindex bounds, balanced system
-## @cindex closed network
+## This function is deprecated. Please use @code{qncsbsb} instead.
 ##
-## Compute Balanced System Bounds for throughput and response
-## time of closed networks with single or multiple classes of customers.
-##
-## This function dispatches the computation to @code{qnclosedsinglebsb}
-## or @code{qnclosedmultibsb}.
-##
-## @itemize
-##
-## @item If @var{N} is a scalar, the network is assumed to have a single
-## class of requests and control is passed to @code{qnclosedsinglebsb}.
-##
-## @item If @var{N} is a vector, the network is assumed to have multiple
-## classes of requests, and control is passed to @code{qnclosedmultibsb}.
-##
-## @end itemize
-##
-## @seealso{qnclosedsinglebsb, qnclosedmultibsb}
+## @seealso{qncsbsb}
 ##
 ## @end deftypefn
 
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [Xl Xu Rl Ru] = qnclosedbsb( N, varargin )
-  if ( nargin < 1 )
-    print_usage();
+function [Xl Xu Rl Ru] = qnclosedbsb( varargin )
+  persistent warned = false;
+  if (!warned)
+    warned = true;
+    warning("qn:deprecated-function",
+	    "qnclosedbsb is deprecated. Please use qncsbsb instead");
   endif
-  if (isscalar(N))
-    [Xl Xu Rl Ru] = qnclosedsinglebsb(N, varargin{:});
-  else
-    [Xl Xu Rl Ru] = qnclosedmultibsb(N, varargin{:});
-  endif
+  [Xl Xu Rl Ru] = qncsbsb(varargin{:});
 endfunction
 

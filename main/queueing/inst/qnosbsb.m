@@ -17,20 +17,21 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnopensingleab (@var{lambda}, @var{D})
-## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnopensingleab (@var{lambda}, @var{S}, @var{V})
+## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnosbsb (@var{lambda}, @var{D})
+## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnosbsb (@var{lambda}, @var{S}, @var{V})
 ##
-## @cindex bounds, asymptotic
+## @cindex bounds, balanced system
 ## @cindex open network
 ##
-## Compute Asymptotic Bounds for open, single-class networks.
+## Compute Balanced System Bounds for single-class, open networks.
 ##
 ## @strong{INPUTS}
 ##
 ## @table @var
 ##
-## @item lambda
-## Arrival rate of requests (@code{@var{lambda} @geq{} 0}).
+## @item lambda 
+## overall arrival rate to the system (scalar). Abort if
+## @code{@var{lambda} < 0 }
 ##
 ## @item D
 ## @code{@var{D}(k)} is the service demand at center @math{k}.
@@ -41,7 +42,7 @@
 ## (@code{@var{S}(k) @geq{} 0} for all @math{k}).
 ##
 ## @item V
-## @code{@var{V}(k)} is the mean number of visits to center @math{k}.
+## @code{@var{V}(k)} is the mean number of visits at center @math{k}.
 ## (@code{@var{V}(k) @geq{} 0} for all @math{k}).
 ##
 ## @end table
@@ -52,26 +53,24 @@
 ##
 ## @item Xl
 ## @item Xu
-## Lower and upper bounds on the system throughput. @var{Xl} is
-## always set to @math{0} since there can be no lower bound on the
-## throughput of open networks.
+## Lower and upper bounds on the system throughput. @var{Xl} is always
+## set to @math{0}, since there can be no lower bound on open
+## networks throughput.
 ##
 ## @item Rl
-## @item Ru
-## Lower and upper bounds on the system response time. @var{Ru}
-## is always set to @code{+inf} since there can be no upper bound on the
-## throughput of open networks.
+## @itemx Ru
+## Lower and upper bounds on the system response time.
 ##
 ## @end table
 ##
-## @seealso{qnopenmultiab}
-##
+## @seealso{qnosaba}
+## 
 ## @end deftypefn
 
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [X_lower X_upper R_lower R_upper] = qnopensingleab( lambda, S, V )
+function [X_lower X_upper R_lower R_upper] = qnosbsb( lambda, S, V )
   if ( nargin < 2 || nargin > 3 )
     print_usage();
   endif
@@ -94,21 +93,22 @@ function [X_lower X_upper R_lower R_upper] = qnopensingleab( lambda, S, V )
 
   D = S.*V;
 
+  D_max = max(D);
+  D_tot = sum(D);
+  D_ave = mean(D_tot);
+  X_upper = 1/D_max;
   X_lower = 0;
-  X_upper = 1/max(D);
-  R_lower = sum(D);
-  R_upper = +inf;
+  R_lower = D_tot / (1-lambda*D_ave);
+  R_upper = D_tot / (1-lambda*D_max);
 endfunction
 
 %!test
-%! fail( "qnopensingleab( 0.1, [] )", "vector" );
-%! fail( "qnopensingleab( 0.1, [0 -1])", "nonnegative" );
-%! fail( "qnopensingleab( 0, [1 2] )", "lambda" );
-%! fail( "qnopensingleab( -1, [1 2])", "lambda" );
-%! fail( "qnopensingleab( 1, [1 2 3], [1 2] )", "3 elements");
-%! fail( "qnopensingleab( 1, [1 2 3], [-1 2 3] )", "nonnegative");
+%! fail( "qnosbsb( 0.1, [] )", "vector" );
+%! fail( "qnosbsb( 0.1, [0 -1])", "nonnegative" );
+%! fail( "qnosbsb( 0, [1 2] )", "lambda" );
+%! fail( "qnosbsb( -1, [1 2])", "lambda" );
 
 %!test
-%! [Xl Xu Rl Ru] = qnopensingleab( 1, [1 1] );
+%! [Xl Xu Rl Ru] = qnosbsb(0.1,[1 2 3]);
 %! assert( Xl, 0 );
-%! assert( Ru, +inf );
+

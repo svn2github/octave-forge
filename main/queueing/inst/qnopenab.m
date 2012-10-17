@@ -19,37 +19,21 @@
 ##
 ## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnopenab (@var{lambda}, @dots{} )
 ##
-## @cindex bounds, asymptotic
-## @cindex open network
+## This function is deprecated. Please use @code{qnosaba} instead.
 ##
-## Compute Asymptotic Bounds for open networks with single or multiple classes of customers.
-##
-## This function dispatches the computation to @code{qnopensingleab} or @code{qnopenmultiab}.
-##
-## @itemize
-##
-## @item if @var{lambda} is a scalar, the network is assumed to have a single 
-## class of requests and control is passed to @code{qnopensingleab}.
-##
-## @item if @var{lambda} is a vector, the network is assumed to have
-## multiple customer classes and control is passed to @code{qnopenmultiab}.
-##
-## @end itemize
-##
-## @seealso{qnopensingleab, qnopenmultiab}
+## @seealso{qnosaba}
 ##
 ## @end deftypefn
 
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [Xl Xu Rl Ru] = qnopenab( lambda, varargin )
-  if ( nargin < 1 )
-    print_usage();
+function [Xu Rl] = qnopenab( varargin )
+  persistent warned = false;
+  if (!warned)
+    warned = true;
+    warning("qn:deprecated-function",
+	    "qnopenab is deprecated. Please use qnosaba instead");
   endif
-  if ( isscalar(lambda) )
-    [Xl Xu Rl Ru] = qnopensingleab(lambda, varargin{:} );
-  else
-    [Xl Xu Rl Ru] = qnopenmultiab(lambda, varargin{:} );
-  endif
+  [Xl Xu Rl Ru] = qnosaba( varargin{:} );
 endfunction

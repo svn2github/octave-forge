@@ -1,4 +1,4 @@
-## Copyright (C) 2008, 2009, 2010, 2011, 2012 Moreno Marzolla
+## Copyright (C) 2012 Moreno Marzolla
 ##
 ## This file is part of the queueing toolbox.
 ##
@@ -17,8 +17,8 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnopenmultiab (@var{lambda}, @var{D})
-## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Rl}] =} qnopenmultiab (@var{lambda}, @var{S}, @var{V})
+## @deftypefn {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qnomaba (@var{lambda}, @var{D})
+## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Rl}] =} qnomaba (@var{lambda}, @var{S}, @var{V})
 ##
 ## @cindex bounds, asymptotic
 ## @cindex open network
@@ -70,14 +70,14 @@
 ##
 ## @end table
 ##
-## @seealso{qnopenbsb}
+## @seealso{qnombsb}
 ##
 ## @end deftypefn
 
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [X_lower X_upper R_lower R_upper] = qnopenmultiab( lambda, S, V )
+function [X_lower X_upper R_lower R_upper] = qnomaba( lambda, S, V )
   if ( nargin < 2 || nargin > 3 )
     print_usage();
   endif
@@ -109,4 +109,4 @@ function [X_lower X_upper R_lower R_upper] = qnopenmultiab( lambda, S, V )
 endfunction
 
 %!test
-%! fail( "qnopenmultiab( [1 1], [1 1 1; 1 1 1; 1 1 1] )", "2 rows" );
+%! fail( "qnomaba( [1 1], [1 1 1; 1 1 1; 1 1 1] )", "2 rows" );

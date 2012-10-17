@@ -17,8 +17,8 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qnclosedsinglecmva (@var{N}, @var{S}, @var{Sld}, @var{V})
-## @deftypefnx {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qnclosedsinglecmva (@var{N}, @var{S}, @var{Sld}, @var{V}, @var{Z})
+## @deftypefn {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qncscmva (@var{N}, @var{S}, @var{Sld}, @var{V})
+## @deftypefnx {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qncscmva (@var{N}, @var{S}, @var{Sld}, @var{V}, @var{Z})
 ##
 ## @cindex Conditional MVA (CMVA)
 ## @cindex Mean Value Analysis, Conditional (CMVA)
@@ -88,7 +88,7 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [U R Q X] = qnclosedsinglecmva( N, S, Sld, V, Z )
+function [U R Q X] = qncscmva( N, S, Sld, V, Z )
 
   ## This is a numerically stable implementation of the MVA algorithm,
   ## described in G. Casale, A note on stable flow-equivalent aggregation in
@@ -185,7 +185,7 @@ endfunction
 %! N=5;
 %! S = [1 0.3 0.8 0.9];
 %! V = [1 1 1 1];
-%! [U1 R1 Q1 X1] = qnclosedsinglecmva( N, S(1:3), repmat(S(4),1,N), V );
+%! [U1 R1 Q1 X1] = qncscmva( N, S(1:3), repmat(S(4),1,N), V );
 %! [U2 R2 Q2 X2] = qnclosedsinglemva(N, S, V);
 %! assert( X1, X2, 1e-5 );
 %! assert( U1, U2, 1e-5 );
@@ -199,7 +199,7 @@ endfunction
 %!      1 1 1 1 1; \
 %!      1 1/2 1/3 1/4 1/5];
 %! V = [1 1 1 1];
-%! [U1 R1 Q1 X1] = qnclosedsinglecmva( N, S(1:3,1), S(4,:), V );
+%! [U1 R1 Q1 X1] = qncscmva( N, S(1:3,1), S(4,:), V );
 %! [U2 R2 Q2 X2] = qnclosedsinglemvald(N, S, V);
 %! assert( U1, U2, 1e-5 );
 %! assert( R1, R2, 1e-5 );
@@ -214,7 +214,7 @@ endfunction
 %!      1 1/2 1/3 1/4 1/5];
 %! V = [1 2 1 1];
 %! Z = 3;
-%! [U1 R1 Q1 X1] = qnclosedsinglecmva( N, S(1:3,1), S(4,:), V, Z );
+%! [U1 R1 Q1 X1] = qncscmva( N, S(1:3,1), S(4,:), V, Z );
 %! [U2 R2 Q2 X2] = qnclosedsinglemvald(N, S, V, Z);
 %! assert( U1, U2, 1e-5 );
 %! assert( R1, R2, 1e-5 );
@@ -228,14 +228,14 @@ endfunction
 %! for N=1:maxN
 %!   [U R] = qnclosedsinglemva(N,S,1,m,Z);	# Use MVA
 %!   Rmva(N) = R(1);
-%!   [U R] = qnconvolution(N,[S Z],[1 1],[m -1]); # Use Convolution
+%!   [U R] = qncsconv(N,[S Z],[1 1],[m -1]);	# Use Convolution
 %!   Rconv(N) = R(1);
 %!   if ( N > m )
 %!     Scmva = S ./ min(1:N,m);
 %!   else
 %!     Scmva = S ./ (1:N);
 %!   endif
-%!   [U R] = qnclosedsinglecmva(N,[],Scmva,1,Z);		# Use CMVA
+%!   [U R] = qncscmva(N,[],Scmva,1,Z);		# Use CMVA
 %!   Rcmva(N) = R(1);
 %! endfor
 %! plot(1:maxN, Rmva, ";MVA;", \

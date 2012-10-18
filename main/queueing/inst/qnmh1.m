@@ -20,97 +20,20 @@
 ##
 ## @deftypefn {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}, @var{p0}] =} qnmh1 (@var{lambda}, @var{mu}, @var{alpha})
 ##
-## @cindex @math{M/H_m/1} system
+## This function is deprecated. Please use @code{qsmh1} instead.
 ##
-## Compute utilization, response time, average number of requests and
-## throughput for a @math{M/H_m/1} system. In this system, the customer
-## service times have hyper-exponential distribution:
-##
-## @iftex
-## @tex
-## $$ B(x) = \sum_{j=1}^m \alpha_j(1-e^{-\mu_j x}),\quad x>0 $$
-## @end tex
-## @end iftex
-##
-## @ifnottex
-## @example
-## @group
-##        ___ m
-##        \
-## B(x) =  >  alpha(j) * (1-exp(-mu(j)*x))   x>0
-##        /__ 
-##            j=1
-## @end group
-## @end example
-## @end ifnottex
-##
-## where @math{\alpha_j} is the probability that the request is served
-## at phase @math{j}, in which case the average service rate is
-## @math{\mu_j}. After completing service at phase @math{j}, for
-## some @math{j}, the request exits the system.
-##
-## @strong{INPUTS}
-##
-## @table @var
-##
-## @item lambda
-## Arrival rate.
-##
-## @item mu
-## @code{@var{mu}(j)} is the phase @math{j} service rate. The total
-## number of phases @math{m} is @code{length(@var{mu})}.
-##
-## @item alpha
-## @code{@var{alpha}(j)} is the probability that a request
-## is served at phase @math{j}. @var{alpha} must have the same size
-## as @var{mu}.
-##
-## @end table
-##
-## @strong{OUTPUTS}
-##
-## @table @var
-##
-## @item U
-## Service center utilization
-##
-## @item R
-## Service center response time
-##
-## @item Q
-## Average number of requests in the system
-##
-## @item X
-## Service center throughput
-##
-## @end table
+## @seealso{qsmh1}
 ##
 ## @end deftypefn
 
 ## Author: Dmitry Kolesnikov
 
-function [U R Q X p0] = qnmh1(lambda, mu, alpha)
-   if ( nargin != 3 )
-      print_usage();
-   endif
-   if ( size(mu) != size(alpha) )
-      error( "parameters are of incompatible size" );
-   endif
-   [n c] = size(mu);
-
-   if (!is_scalar(lambda) && (n != length(lambda)) ) 
-      error( "parameters are of incompatible size" );
-   endif
-   for i=1:n
-      avg  = sum( alpha(i,:) .* (1 ./ mu(i,:)) );
-      m2nd = sum( alpha(i,:) .* (1 ./ (mu(i,:) .* mu(i,:))) );
-      if (is_scalar(lambda))
-         xavg = avg;
-         x2nd = m2nd;  
-      else
-         xavg(i) = avg;
-         x2nd(i) = m2nd;
-      endif
-   endfor
-   [U R Q X p0] = qnmg1(lambda, xavg, x2nd);
+function [U R Q X p0] = qnmh1( varargin )
+  persistent warned = false;
+  if (!warned)
+    warned = true;
+    warning("qn:deprecated-function",
+	    "qnmh1 is deprecated. Please use qsmh1 instead");
+  endif
+  [U R Q S p0] = qsmh1( varargin{:} );
 endfunction

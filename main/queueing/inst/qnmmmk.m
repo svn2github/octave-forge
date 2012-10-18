@@ -1,6 +1,9 @@
-## Copyright (C) 2008, 2009, 2010, 2011, 2012 Moreno Marzolla
+## Copyright (C) 2012 Moreno Marzolla
 ##
 ## This file is part of the queueing toolbox.
+##
+## The queueing toolbox is free software: you can redistribute it and/or
+## Copyright (C) 2008, 2009, 2010, 2011, 2012 Moreno Marzolla
 ##
 ## The queueing toolbox is free software: you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License as
@@ -19,134 +22,23 @@
 ##
 ## @deftypefn {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}, @var{p0}, @var{pK}] =} qnmmmk (@var{lambda}, @var{mu}, @var{m}, @var{K})
 ##
-## @cindex @math{M/M/m/K} system
+## This function is deprecated. Please use @code{qsmmmk} instead.
 ##
-## Compute utilization, response time, average number of requests and
-## throughput for a @math{M/M/m/K} finite capacity system. In a
-## @math{M/M/m/K} system there are @math{m \geq 1} identical service
-## centers sharing a fixed-capacity queue. At any time, at most @math{K @geq{} m} requests can be in the system. The maximum queue length
-## is @math{K-m}. This function generates and
-## solves the underlying CTMC.
-##
-## @iftex
-##
-## The steady-state probability @math{\pi_k} that there are @math{k}
-## jobs in the system, @math{0 @leq{} k @leq{} K} can be expressed as:
-##
-## @tex
-## $$
-## \pi_k = \cases{ \displaystyle{{\rho^k \over k!} \pi_0} & if $0 \leq k \leq m$;\cr
-##                 \displaystyle{{\rho^m \over m!} \left( \rho \over m \right)^{k-m} \pi_0} & if $m < k \leq K$\cr}
-## $$
-## @end tex
-##
-## where @math{\rho = \lambda/\mu} is the offered load. The probability
-## @math{\pi_0} that the system is empty can be computed by considering
-## that all probabilities must sum to one: @math{\sum_{k=0}^K \pi_k = 1},
-## which gives:
-##
-## @tex
-## $$
-## \pi_0 = \left[ \sum_{k=0}^m {\rho^k \over k!} + {\rho^m \over m!} \sum_{k=m+1}^K \left( {\rho \over m}\right)^{k-m} \right]^{-1}
-## $$
-## @end tex
-##
-## @end iftex
-##
-## @strong{INPUTS}
-##
-## @table @var
-##
-## @item lambda
-## Arrival rate (@code{@var{lambda}>0}).
-##
-## @item mu
-## Service rate (@code{@var{mu}>0}).
-##
-## @item m
-## Number of servers (@code{@var{m} @geq{} 1}).
-##
-## @item K
-## Maximum number of requests allowed in the system,
-## including those inside the service centers
-## (@code{@var{K} @geq{} @var{m}}).
-##
-## @end table
-##
-## @strong{OUTPUTS}
-##
-## @table @var
-##
-## @item U
-## Service center utilization
-##
-## @item R
-## Service center response time
-##
-## @item Q
-## Average number of requests in the system
-##
-## @item X
-## Service center throughput
-##
-## @item p0
-## Steady-state probability that there are no requests in the system.
-##
-## @item pK
-## Steady-state probability that there are @var{K} requests in the system
-## (i.e., probability that the system is full).
-##
-## @end table
-##
-## @var{lambda}, @var{mu}, @var{m} and @var{K} can be either scalars, or
-## vectors of the  same size. In this case, the results will be vectors
-## as well.
-##
-## @seealso{qnmm1,qnmminf,qnmmm}
+## @seealso{qsmmmk}
 ##
 ## @end deftypefn
 
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [U R Q X p0 pK] = qnmmmk( lambda, mu, m, K )
-  if ( nargin != 4 )
-    print_usage();
+function [U R Q X p0 pK] = qnmmmk( varargin )
+  persistent warned = false;
+  if (!warned)
+    warned = true;
+    warning("qn:deprecated-function",
+	    "qnmmmk is deprecated. Please use qsmmmk instead");
   endif
-
-  ( isvector(lambda) && isvector(mu) && isvector(m) && isvector(K) ) || ...
-      error( "lambda, mu, m, K must be vectors of the same size" );
-  lambda = lambda(:)'; # make lambda a row vector
-  mu = mu(:)'; # make mu a row vector
-  m = m(:)'; # make m a row vector
-  K = K(:)'; # make K a row vector
-
-  [err lambda mu m K] = common_size( lambda, mu, m, K );
-  if ( err ) 
-    error( "Parameters are not of common size" );
-  endif
-
-  all( K>0 ) || \
-      error( "k must be strictly positive" );
-  all( m>0 ) && all( m <= K ) || \
-      error( "m must be in the range 1:k" );
-  all( lambda>0 ) && all( mu>0 ) || \
-      error( "lambda and mu must be >0" );
-  U = R = Q = X = p0 = pK = 0*lambda;
-  for i=1:length(lambda)
-    ## Build and solve the birth-death process describing the M/M/m/k system
-    birth_rate = lambda(i)*ones(1,K(i));
-    death_rate = [ linspace(1,m(i),m(i))*mu(i) ones(1,K(i)-m(i))*m(i)*mu(i) ];
-    p = ctmc(ctmc_bd(birth_rate, death_rate));
-    p0(i) = p(1);
-    pK(i) = p(1+K(i));
-    j = [1:K(i)];
-    Q(i) = dot( p(1+j),j );
-  endfor
-  ## Compute other performance measures
-  X = lambda.*(1-pK);
-  U = X ./ (m .* mu );
-  R = Q ./ X;
+  [U R Q X p0 pK] = qsmmmk( varargin{:} );
 endfunction
 %!test
 %! lambda = mu = m = 1;

@@ -19,80 +19,23 @@
 ##
 ## @deftypefn {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qnammm (@var{lambda}, @var{mu})
 ##
-## @cindex asymmetric @math{M/M/m} system
+## This function is deprecated. Please use @code{qsammm} instead.
 ##
-## Compute @emph{approximate} utilization, response time, average number
-## of requests in service and throughput for an asymmetric  @math{M/M/m}
-## queue. In this system there are @math{m} different service centers
-## connected to a single queue. Each server has its own (possibly different)
-## service rate. If there is more than one server available, requests
-## are routed to a randomly-chosen one.
-##
-## @strong{INPUTS}
-##
-## @table @var
-##
-## @item lambda
-## Arrival rate (@code{@var{lambda}>0}).
-##
-## @item mu
-## @code{@var{mu}(i)} is the service rate of server
-## @math{i}, @math{1 @leq{} i @leq{} m}.
-## The system must be ergodic (@code{@var{lambda} < sum(@var{mu})}).
-##
-## @end table
-##
-## @strong{OUTPUTS}
-##
-## @table @var
-##
-## @item U
-## Approximate service center utilization,
-## @math{U = \lambda / ( \sum_i \mu_i )}.
-##
-## @item R
-## Approximate service center response time
-##
-## @item Q
-## Approximate number of requests in the system
-##
-## @item X
-## Approximate service center throughput. If the system is ergodic, 
-## we will always have @code{@var{X} = @var{lambda}}
-##
-## @end table
-##
-## @seealso{qnmmm}
+## @seealso{qsammm}
 ##
 ## @end deftypefn
 
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [U R Q X p0 pm] = qnammm( lambda, mu )
-  if ( nargin != 2 )
-    print_usage();
+function [U R Q X p0 pm] = qnammm( varargin )
+  persistent warned = false;
+  if (!warned)
+    warned = true;
+    warning("qn:deprecated-function",
+	    "qnammm is deprecated. Please use qsammm instead");
   endif
-
-  ( isscalar(lambda) && isvector(mu) ) || \
-      error( "the parameters must be vectors" );
-
-  m = length(mu); # number of servers
-
-  all( lambda < sum(mu) ) || \
-      error( "Processing capacity exceeded" );
-
-  X = lambda;
-  U = rho = lambda / sum(mu);
-  Q = p0 = 0;
-  k=[0:m-1];
-  p0 = 1 / ( ...
-            sum( (m*rho).^k ./ factorial(k)) + ...
-            (m*rho)^m / (factorial(m)*(1-rho)) ...
-            );
-  pm = (m*rho)^m/(factorial(m)*(1-rho))*p0;
-  Q = m*rho+rho / (1-rho) * pm;
-  R = Q / X;
+  [U R Q X p0 pm] = qsammm( varargin{:} );
 endfunction
 %!test
 %! [U R Q X] = qnammm( 73,[10,15,20,20,25] );

@@ -412,7 +412,7 @@ that there are @math{k_i} requests at service center @math{i}.
 @c @auindex de Meer, H.
 @c @auindex Trivedi, K.
 
-@GETHELP{qnopensingle}
+@GETHELP{qnos}
 
 From the results computed by this function, it is possible to derive
 other quantities of interest as follows:
@@ -448,7 +448,7 @@ $Q_s = \sum_{i=1}^K Q(i)$
 @noindent @strong{EXAMPLE}
 
 @example
-@GETDEMO{qnopensingle,1}
+@GETDEMO{qnos,1}
 @print{} R_s =  1.4062
 @print{} N =  4.2186
 @end example

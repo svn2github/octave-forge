@@ -1,4 +1,4 @@
-## Copyright (C) 2008, 2009, 2010, 2011, 2012 Moreno Marzolla
+## Copyright (C) 2012 Moreno Marzolla
 ##
 ## This file is part of the queueing toolbox.
 ##
@@ -20,149 +20,22 @@
 ## @deftypefn {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qnopenmulti (@var{lambda}, @var{S}, @var{V})
 ## @deftypefnx {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qnopenmulti (@var{lambda}, @var{S}, @var{V}, @var{m})
 ##
-## @cindex open network, multiple classes
-## @cindex multiclass network, open
+## This function is deprecated. Please use @code{qnom} instead.
 ##
-## Exact analysis of open, multiple-class BCMP networks. The network can
-## be made of @emph{single-server} queueing centers (FCFS, LCFS-PR or
-## PS) or delay centers (IS). This function assumes a network with
-## @math{K} service centers and @math{C} customer classes.
-##
-## @strong{INPUTS}
-##
-## @table @var
-##
-## @item lambda
-## @code{@var{lambda}(c)} is the external
-## arrival rate of class @math{c} customers (@code{@var{lambda}(c)>0}).
-##
-## @item S
-## @code{@var{S}(c,k)} is the mean service time of class @math{c}
-## customers on the service center @math{k} (@code{@var{S}(c,k)>0}).
-## For FCFS nodes, mean service times must be class-independent.
-##
-## @item V
-## @code{@var{V}(c,k)} is the average number of visits of class @math{c}
-## customers to service center @math{k} (@code{@var{V}(c,k) @geq{} 0 }).
-##
-## @item m
-## @code{@var{m}(k)} is the number of servers at center @math{i}. If
-## @code{@var{m}(k) < 1}, enter @math{k} is a delay center (IS);
-## otherwise it is a regular queueing center with @code{@var{m}(k)}
-## servers. Default is @code{@var{m}(k) = 1} for all @math{k}.
-##
-## @end table
-##
-## @strong{OUTPUTS}
-##
-## @table @var
-##
-## @item U
-## If @math{k} is a queueing center, then @code{@var{U}(c,k)} is the
-## class @math{c} utilization of center @math{k}. If @math{k} is an IS
-## node, then @code{@var{U}(c,k)} is the class @math{c} @emph{traffic
-## intensity} defined as @code{@var{X}(c,k)*@var{S}(c,k)}.
-##
-## @item R
-## @code{@var{R}(c,k)} is the class @math{c} response time at center
-## @math{k}. The system response time for class @math{c} requests can be
-## computed as @code{dot(@var{R}, @var{V}, 2)}.
-##
-## @item Q
-## @code{@var{Q}(c,k)} is the average number of class @math{c} requests
-## at center @math{k}. The average number of class @math{c} requests
-## in the system @var{Qc} can be computed as @code{Qc = sum(@var{Q}, 2)}
-##
-## @item X
-## @code{@var{X}(c,k)} is the class @math{c} throughput
-## at center @math{k}.
-##
-## @end table
-##
-## @seealso{qnopen,qnopensingle,qnvisits}
+## @seealso{qnom}
 ##
 ## @end deftypefn
 
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
-function [U R Q X] = qnopenmulti( lambda, S, V, m )
-  if ( nargin < 2 || nargin > 4 )
-    print_usage();
+function [U R Q X] = qnopenmulti( varargin )
+  persistent warned = false;
+  if (!warned)
+    warned = true;
+    warning("qn:deprecated-function",
+	    "qnopenmulti is deprecated. Please use qnom instead");
   endif
-  isvector(lambda) && all(lambda > 0) || \
-      error( "lambda must be a vector of positive floats" );
-  lambda = lambda(:)'; # make lambda a row vector
-  C = length(lambda);
-  K = columns(S);
-  (ismatrix(S) && [C,K] == size(S) ) || \
-      error( "S must be a %d x %d matrix", C, K);
-  all(all( S > 0 )) || \
-      error( "S(c,k) must be > 0" );
-  if ( nargin < 3 || isempty(V) )
-    V = ones(size(S));
-  else
-    (ismatrix(V) && [C,K] == size(V)) || \
-	error( "V must be a %d x %d matrix", C, K);
-    all( all(V>=0) ) || \
-	error( "V must be >= 0 " );
-  endif
-
-  D = S .* V;  # Service demands: D(c,k) = S(c,k) * V(c,k)
-
-  if ( nargin < 4 || isempty(m) )
-    m = ones(1,K);
-  else
-    ( isvector( m ) && length(m) == K ) || \
-        error( "m must be a vector wiht %d elements", K);
-    m = m(:)'; # make m a row vector
-  endif
-
-  ## If there are M/M/k servers with k>=1, compute the maximum
-  ## processing capacity
-  m(m<1) = -1; # avoids division by zero in next line
-  [Umax kmax] = max(lambda * D ./ m);
-  (Umax < 1) || \
-      error( "Processing capacity exceeded at center %d", kmax );
-
-  U = R = Q = X = zeros(C,K);
-  X = diag(lambda)*V; # X(c,k) = lambda(c)*V(c,k);
-
-  ## Compute utilizations (for IS nodes compute also response time and
-  ## queue lenghts)
-  for k=1:K
-    for c=1:C
-      if ( m(k) > 1 ) # M/M/m-FCFS
-	[U(c,k)] = qnmmm( X(c,k), 1/S(c,k), m(k) );
-      elseif ( m(k) == 1 ) # M/M/1 or -/G/1-PS
-	[U(c,k)] = qnmm1( X(c,k), 1/S(c,k) );
-      else # -/G/inf
-  	[U(c,k) R(c,k) Q(c,k)] = qnmminf( X(c,k), 1/S(c,k) );
-      endif
-    endfor
-  endfor
-  ## Adjust response times and queue lengths for FCFS queues
-  k_fcfs = find(m>=1);
-  for c=1:C
-    Q(c,k_fcfs) = U(c,k_fcfs) ./ ( 1 - sum(U(:,k_fcfs),1) );
-    R(c,k_fcfs) = Q(c,k_fcfs) ./ X(c,k_fcfs); # Use Little's law
-  endfor
-
-#{
-  i_delay  = find(m<1);
-  i_single = find(m==1);
-  U = diag(lambda)*D; # U(c,:) = lambda(c)*D(c,:);
-
-  
-  ## delay centers
-  R(:,i_delay) = S(:,i_delay);
-  Q(:,i_delay) = U(:,i_delay);
-
-  ## Queueing centers
-  for c=1:C
-    R(c,i_single) = S(c,i_single) ./ ( 1 - sum(U(:,i_single),1) );
-    Q(c,i_single) = U(c,i_single) ./ ( 1 - sum(U(:,i_single),1) );
-  endfor
-#}
+  [U R Q X] = qnom( varargin{:} );
 endfunction
 %!test
 %! fail( "qnopenmulti([1 1], [.9; 1.0])", "exceeded at center 1");

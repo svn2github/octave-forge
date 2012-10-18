@@ -516,6 +516,7 @@ endfunction
 %! assert( R .* V, [ 4/3 5; 5/2 7 ], 1e-3 );
 %! assert( diag( X ./ V )', [ 3/19 2/19 ], 1e-3 );
 %! assert( all(all(U<=1)) );
+%! assert( Q, R.*X, 1e-5 ); # Little's Law
 
 ## Example 8.3 p. 331, Bolch et al. Note that this is not a multiclass
 ## network, because there is a single job class. Nevertheless, the
@@ -549,6 +550,7 @@ endfunction
 %! assert( X(2,1)+X(2,2), 0.064, 1e-3 );
 %! assert( sum(Q,1), [1.949, .966, .085], 1e-3 );
 %! assert( all(U(:,3)<=1) );
+%! assert( Q, R.*X, 1e-5 ); # Little's Law
 
 ## Example from table 5, p. 23, Herb Schwetman, "Implementing the Mean
 ## Value Algorith for the Solution of Queueing Network Models",
@@ -567,6 +569,7 @@ endfunction
 %! # FIXME: I replaced 14.3->14.323
 %! assert( Q, [14.323 0 .677; 0 4.707 .293 ], 1e-3 );
 %! assert( R, [1 0 .047; 0 15 .934 ], 1e-3 );
+%! assert( Q, R.*X, 1e-5 ); # Little's Law
 
 ## Example 9.5 p. 337, Bolch et al.
 %!test
@@ -579,6 +582,7 @@ endfunction
 %! assert( X(1,1), 2.113, 1e-3 ); # CHECK
 %! assert( X(2,1), 0.524, 1e-3 ); # CHECK
 %! assert( all( all(U<=1) ) );
+%! assert( Q, R.*X, 1e-5 ); # Little's Law
 
 ## Multiclass network with two classes; however, class 2 has 0 requests.
 ## Therefore, we check that the results for class 1 are the same as those
@@ -612,6 +616,7 @@ endfunction
 %! assert( Q, [.677; .293], 1e-3 );
 %! assert( X, [14.323; .314], 1e-3 ); ## NOTE: X(1,1) = 14.3 in Schwetman
 %! assert( R, [.047; .934], 1e-3 );
+%! assert( Q, R.*X, 1e-5 ); # Little's Law
 
 ## This is example of Figure 6, page 9 of
 ## http://docs.lib.purdue.edu/cgi/viewcontent.cgi?article=1258&context=cstech
@@ -648,7 +653,7 @@ endfunction
 %! assert( X(:,3), [2.192108 1.386352]', 1e-5 );
 %! assert( X(:,4), X(:,5), 1e-5 );
 %! assert( X(:,5), X(:,6), 1e-5 );
-
+%! assert( Q, R.*X, 1e-5 ); # Little's Law
 
 ## If there is no class switching, we must get the same results as
 ## the plain application of multiclass MVA
@@ -711,6 +716,7 @@ endfunction
 %! # FIXME: I replaced 14.3->14.323
 %! assert( Q, [.677 14.323 0; .293 0 4.707], 1e-3 );
 %! assert( R, [.047 1 15.0; .934 1 15.0], 1e-3 );
+%! assert( Q, R.*X, 1e-5 ); # Little's Law
 
 ## Example figure 9 Herb Schwetman "Implementing the Mean
 ## Value Algorith for the Solution of Queueing Network Models",

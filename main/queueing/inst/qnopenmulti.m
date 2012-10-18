@@ -59,16 +59,14 @@
 ##
 ## @item U
 ## If @math{k} is a queueing center, then @code{@var{U}(c,k)} is the
-## class @math{c} utilization of center @math{k}. If @math{k} is
-## an IS node, then @code{@var{U}(c,k)} is the 
-## class @math{c} @emph{traffic intensity}
-## defined as @code{@var{X}(c,k)*@var{S}(c,k)}.
+## class @math{c} utilization of center @math{k}. If @math{k} is an IS
+## node, then @code{@var{U}(c,k)} is the class @math{c} @emph{traffic
+## intensity} defined as @code{@var{X}(c,k)*@var{S}(c,k)}.
 ##
 ## @item R
-## @code{@var{R}(c,k)} is the class @math{c} response time at
-## center @math{k}. The system response time for
-## class @math{c} requests can be computed
-## as @code{dot(@var{R}, @var{V}, 2)}.
+## @code{@var{R}(c,k)} is the class @math{c} response time at center
+## @math{k}. The system response time for class @math{c} requests can be
+## computed as @code{dot(@var{R}, @var{V}, 2)}.
 ##
 ## @item Q
 ## @code{@var{Q}(c,k)} is the average number of class @math{c} requests

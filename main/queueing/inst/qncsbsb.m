@@ -136,7 +136,7 @@ endfunction
 %! fail("qncsbsb(1,[-1 2])", "nonnegative");
 %! fail("qncsbsb(1,[1 2],[1 2 3])", "2 elements");
 %! fail("qncsbsb(1,[1 2 3],[1 2 3],[1 2])", "3 elements");
-%! fail("qncsbsb(1,[1 2 3],[1 2 3],[1 2 1])", "single server");
+%! fail("qncsbsb(1,[1 2 3],[1 2 3],[1 2 1])", "M/M/1 servers");
 %! fail("qncsbsb(1,[1 2 3],[1 2 3],[1 1 1],-1)", "nonnegative");
 %! fail("qncsbsb(1,[1 2 3],[1 2 3],[1 1 1],[0 0])", "scalar");
 

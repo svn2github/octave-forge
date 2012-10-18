@@ -108,7 +108,7 @@ function [Xl Xu Rl Ru] = qncmaba( N, S, V, m, Z )
 
   K = columns(S);
 
-  if ( nargin<3 || iesmpty(V) )
+  if ( nargin<3 || isempty(V) )
     V = ones(size(S));
   else
     (ismatrix(V) && size_equal(S,V) ) || \

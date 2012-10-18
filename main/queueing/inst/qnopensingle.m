@@ -101,31 +101,33 @@ function [U R Q X] = qnopensingle( lambda, S, V, m )
     print_usage();
   endif
   ( isscalar(lambda) && lambda>0 ) || \
-      error( "lambda must be a positive number" );
-  lambda = lambda(:)';
+      error( "lambda must be a positive scalar" );
   ( isvector( S ) && all(S>0) ) || \
       error( "S must be a vector >0" );
   S = S(:)';
   K = length(S);
-  ( isvector( V ) && length(V)==K && all(V>=0) ) || \
-      error( "V must be a vector >=0 and of the same length as S" );
-  V = V(:)';
+  if ( nargin < 3 || isempty(V) )
+    V = ones(size(S));
+  else
+    ( isvector( V ) && length(V)==K && all(V>=0) ) || \
+	error( "V must be a vector with %d elements >=0", K );
+    V = V(:)';
+  endif
 
-  if ( nargin < 4 )
-    m = ones(1,K);
+  if ( nargin < 4 || isempty(m) )
+    m = ones(size(S));
   else
     (isvector(m) && (length(m) == K)) || \
 	error( "m must be a vector of %d elements", K);
     m = m(:)';
-    [err m] = common_size(m,S);
-    ( err == 0 ) || \
-        error( "m and S are not of common size" );
   endif
 
-  ## Compute maximum processing capacity
-  lambda_sat = m ./ max( S .* V );
-  (lambda <= lambda_sat) || \
-      error( "Processing capacity exceeded (lambda must be less than %f)", lambda_sat );
+  ## If there are M/M/k servers with k>=1, compute the maximum
+  ## processing capacity
+  m(m<1) = -1; # avoids division by zero in next line
+  [Umax kmax] = max( lambda * S .* V ./ m );
+  (Umax < 1) || \
+      error( "Processing capacity exceeded at center %d", kmax );
 
   l = lambda*V; # arrival rates
 
@@ -156,7 +158,11 @@ endfunction
 %! m = [1 1];
 %! fail( "qnopensingle(lambda,S,V,m)","m must be a vector");
 %! V = [1 1 1 1];
-%! fail( "qnopensingle(lambda,S,V)","same length as S");
+%! fail( "qnopensingle(lambda,S,V)","3 elements");
+%! fail( "qnopensingle(1.0, [0.9 1.2], [1 1])", "exceeded at center 2");
+%! fail( "qnopensingle(1.0, [0.9 2.0], [1 1], [1 2])", "exceeded at center 2");
+%! qnopensingle(1.0, [0.9 1.9], [1 1], [1 2]); # should not fail
+%! qnopensingle(1.0, [0.9 1.9], [1 1], [1 0]); # should not fail
  
 %!test
 %! # Example 34.1 p. 572 Bolch et al.
@@ -208,11 +214,14 @@ endfunction
 
 ## Check if processing capacity is properly accounted for
 %!test
-%! lambda = [1.1];
+%! lambda = 1.1;
 %! V = 1;
 %! m = [2];
 %! S = [1];
-%! [U1 R1 Q1 X1] = qnopensingle(sum(lambda),S,V,m); 
+%! [U1 R1 Q1 X1] = qnopensingle(lambda,S,V,m); 
+%! m = [-1];
+%! lambda = 90.0;
+%! [U1 R1 Q1 X1] = qnopensingle(lambda,S,V,m); 
 
 %!demo
 %! lambda = 3;

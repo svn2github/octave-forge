@@ -39,7 +39,7 @@
 ## @item S
 ## @code{@var{S}(c,k)} is the mean service time of class @math{c}
 ## customers on the service center @math{k} (@code{@var{S}(c,k)>0}).
-## For FCFS nodes, average service times must be class-independent.
+## For FCFS nodes, mean service times must be class-independent.
 ##
 ## @item V
 ## @code{@var{V}(c,k)} is the average number of visits of class @math{c}
@@ -47,10 +47,11 @@
 ##
 ## @item m
 ## @code{@var{m}(k)} is the number of servers at service center
-## @math{k}. Valid values are @code{@var{m}(k) < 1} to denote a delay
-## center (@math{-/G/\infty}), and @code{@var{m}(k)==1} to denote
-## a single server queueing center (@math{M/M/1}--FCFS,
-## @math{-/G/1}--LCFS-PR or @math{-/G/1}--PS).
+## @math{k}. If @code{@var{m}(k) < 1}, center @math{k} is a delay center
+## (@math{-/G/\infty}); if @code{@var{m}(k)==1} then center @math{k} is
+## either (@math{M/M/1}--FCFS,
+## @math{-/G/1}--LCFS-PR or @math{-/G/1}--PS). Finally, if @code{@var{m}(k)>1},
+## center math{k} is @math{M/M/m} with @code{@var{m}(k)} identical servers.
 ##
 ## @end table
 ##
@@ -89,7 +90,7 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 function [U R Q X] = qnopenmulti( lambda, S, V, m )
-  if ( nargin < 3 || nargin > 4 )
+  if ( nargin < 2 || nargin > 4 )
     print_usage();
   endif
   isvector(lambda) && all(lambda > 0) || \
@@ -97,32 +98,64 @@ function [U R Q X] = qnopenmulti( lambda, S, V, m )
   lambda = lambda(:)'; # make lambda a row vector
   C = length(lambda);
   K = columns(S);
-  [C,K] == size(S) || \
-      error( "rows(S) must be equal to length(lambda)" );
+  (ismatrix(S) && [C,K] == size(S) ) || \
+      error( "S must be a %d x %d matrix", C, K);
   all(all( S > 0 )) || \
       error( "S(c,k) must be > 0" );
-  [C,K] == size(V) || \
-      error( "V must be a matrix of the same size as S" );
-  all( all(V>= 0) ) || \
-      error( "V must be >= 0 " );
+  if ( nargin < 3 || isempty(V) )
+    V = ones(size(S));
+  else
+    (ismatrix(V) && [C,K] == size(V)) || \
+	error( "V must be a %d x %d matrix", C, K);
+    all( all(V>=0) ) || \
+	error( "V must be >= 0 " );
+  endif
 
-  if ( nargin < 4 )
+  D = S .* V;  # Service demands: D(c,k) = S(c,k) * V(c,k)
+
+  if ( nargin < 4 || isempty(m) )
     m = ones(1,K);
   else
-    ( isvector( m ) && length(m) == K && all( m <= 1 ) ) || \
-        error( "m must be less than or equal to ones(1,K)" );
+    ( isvector( m ) && length(m) == K ) || \
+        error( "m must be a vector wiht %d elements", K);
     m = m(:)'; # make m a row vector
   endif
 
-  D = S .* V; # Service demands: D(c,k) = S(c,k) * V(c,k)
-  max(lambda * D) < 1 || \
-      error( "processing capacity exceeded" );
+  ## If there are M/M/k servers with k>=1, compute the maximum
+  ## processing capacity
+  m(m<1) = -1; # avoids division by zero in next line
+  [Umax kmax] = max(lambda * D ./ m);
+  (Umax < 1) || \
+      error( "Processing capacity exceeded at center %d", kmax );
 
   U = R = Q = X = zeros(C,K);
+  X = diag(lambda)*V; # X(c,k) = lambda(c)*V(c,k);
+
+  ## Compute utilizations (together with resp. time and queue lenghts,
+  ## but only for IS nodes)
+  for k=1:K
+    for c=1:C
+      if ( m(k) > 1 ) # M/M/m-FCFS
+	[U(c,k)] = qnmmm( X(c,k), 1/S(c,k), m(k) );
+      elseif ( m(k) == 1 ) # M/M/1-FCFS
+	[U(c,k)] = qnmm1( X(c,k), 1/S(c,k) );
+      else # -/G/1-PS
+  	[U(c,k) R(c,k) Q(c,k)] = qnmminf( X(c,k), 1/S(c,k) );
+      endif
+    endfor
+  endfor
+  ## Adjust response times and queue lengths for FCFS queues
+  k_fcfs = find(m>=1);
+  for c=1:C
+    Q(c,k_fcfs) = U(c,k_fcfs) ./ ( 1 - sum(U(:,k_fcfs),1) );
+    R(c,k_fcfs) = Q(c,k_fcfs) ./ X(c,k_fcfs); # Use Little's law
+  endfor
+
+#{
   i_delay  = find(m<1);
   i_single = find(m==1);
   U = diag(lambda)*D; # U(c,:) = lambda(c)*D(c,:);
-  X = diag(lambda)*V; # X(c,:) = lambda(c)*V(c,:);
+
   
   ## delay centers
   R(:,i_delay) = S(:,i_delay);
@@ -133,7 +166,16 @@ function [U R Q X] = qnopenmulti( lambda, S, V, m )
     R(c,i_single) = S(c,i_single) ./ ( 1 - sum(U(:,i_single),1) );
     Q(c,i_single) = U(c,i_single) ./ ( 1 - sum(U(:,i_single),1) );
   endfor
+#}
 endfunction
+%!test
+%! fail( "qnopenmulti([1 1], [.9; 1.0])", "exceeded at center 1");
+%! fail( "qnopenmulti([1 1], [0.9 .9; 0.9 1.0])", "exceeded at center 2");
+%! qnopenmulti([1 1], [.9; 1.0],[],2); # should not fail, M/M/2-FCFS
+%! qnopenmulti([1 1], [.9; 1.0],[],-1); # should not fail, -/G/1-PS
+%! fail( "qnopenmulti(1./[2 3], [1.9 1.9 0.9; 2.9 3.0 2.9])", "exceeded at center 2");
+%! qnopenmulti(1./[2 3], [1 1.9 0.9; 0.3 3.0 1.5],[],[1 2 1]); # should not fail
+
 %!test
 %! V = [1 1; 1 1];
 %! S = [1 3; 2 4];

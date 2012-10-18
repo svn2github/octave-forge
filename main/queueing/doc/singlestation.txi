@@ -74,10 +74,10 @@ queueing system.
 @section The @math{M/M/1} System
 
 The @math{M/M/1} system is made of a single server connected to an
-unlimited FCFS queue. The mean arrival rate is Poisson with arrival
-rate @math{\lambda}; the service time is exponentially distributed
-with average service rate @math{\mu}. The system is stable if
-@math{\lambda < \mu}.
+unlimited FCFS queue. Requests arrive according to a Poisson process
+with arrival rate @math{\lambda}; the service time is exponentially
+distributed with average service rate @math{\mu}. The system is stable
+if @math{\lambda < \mu}.
 
 @GETHELP{qsmm1}
 
@@ -99,15 +99,24 @@ Science Applications}, Wiley, 1998, Section 6.3.
 @section The @math{M/M/m} System
 
 The @math{M/M/m} system is similar to the @math{M/M/1} system, except
-that there are @math{m \geq 1} identical servers connected to a single
-queue. Thus, at most @math{m} requests can be served at the same
+that there are @math{m \geq 1} identical servers connected to a shared
+FCFS queue. Thus, at most @math{m} requests can be served at the same
 time. The @math{M/M/m} system can be seen as a single server with
 load-dependent service rate @math{\mu(n)}, which is a function of the
-number @math{n} of nodes in the center:
+number @math{n} of requests in the system:
 
+@iftex
+@tex
+$$\mu(n) = min(m,n) \mu$$
+@end tex
+@end iftex
+@ifnottex
 @example
-@code{mu(n) = min(m,n)*mu}
+mu(n) = min(m,n)*mu
 @end example
+@end ifnottex
+
+@noindent where @math{\mu} is the service rate of each individual server.
 
 @GETHELP{qsmmm}
 

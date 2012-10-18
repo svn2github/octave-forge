@@ -125,19 +125,19 @@ appropriate parameters; the `queueing' package should display an error
 message in case of missing/wrong parameters. You can display the help
 text for any function using the `help' command. For example:
 
-     octave:2> help qnmvablo
+     octave:2> help qncsmvablo
 
-   prints the documentation for the `qnmvablo' function.  Additional
+   prints the documentation for the `qncsmvablo' function.  Additional
 information can be found in the `queueing' manual, which is available
 in PDF format in `doc/queueing.pdf' and in HTML format in
 `doc/queueing.html'.
 
    Within GNU Octave, you can also run the test and demo blocks
 associated to the functions, using the `test' and `demo' commands
-respectively. To run all the tests of, say, the `qnmvablo' function:
+respectively. To run all the tests of, say, the `qncsmvablo' function:
 
-     octave:3> test qnmvablo
-     -| PASSES 4 out of 4 tests
+     octave:3> test qncsmvablo
+     -| PASSES 5 out of 5 tests
 
    To execute the demos of the `qnclosed' function, use the following:
 

@@ -286,10 +286,10 @@ help text for any function using the @command{help} command. For
 example:
 
 @example
-octave:2> @kbd{help qnmvablo}
+octave:2> @kbd{help qncsmvablo}
 @end example
 
-prints the documentation for the @command{qnmvablo} function.
+prints the documentation for the @command{qncsmvablo} function.
 Additional information can be found in the @code{queueing} manual,
 which is available in PDF format in @file{doc/queueing.pdf} and in
 HTML format in @file{doc/queueing.html}.
@@ -297,11 +297,11 @@ HTML format in @file{doc/queueing.html}.
 Within GNU Octave, you can also run the test and demo blocks
 associated to the functions, using the @command{test} and
 @command{demo} commands respectively. To run all the tests of, say,
-the @command{qnmvablo} function:
+the @command{qncsmvablo} function:
 
 @example
-octave:3> @kbd{test qnmvablo}
-@print{} PASSES 4 out of 4 tests
+octave:3> @kbd{test qncsmvablo}
+@print{} PASSES 5 out of 5 tests
 @end example
 
 To execute the demos of the @command{qnclosed} function, use the

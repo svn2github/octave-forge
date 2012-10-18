@@ -398,20 +398,6 @@ $$ \pi(k_1, k_2, \ldots, k_N) = \prod_{i=1}^N \pi_i(k_i) $$
 @noindent where @math{\pi_i(k_i)} is the steady-state probability
 that there are @math{k_i} requests at service center @math{i}.
 
-@c @GETHELP{qnjackson}
-
-@c @noindent @strong{REFERENCES}
-
-@c This implementation is based on G. Bolch, S. Greiner, H. de Meer and
-@c K. Trivedi, @cite{Queueing Networks and Markov Chains: Modeling and
-@c Performance Evaluation with Computer Science Applications}, Wiley,
-@c 1998, pp. 284--287.
-
-@c @auindex Bolch, G.
-@c @auindex Greiner, S.
-@c @auindex de Meer, H.
-@c @auindex Trivedi, K.
-
 @GETHELP{qnos}
 
 From the results computed by this function, it is possible to derive
@@ -881,7 +867,7 @@ the whole system, then @math{P_{0, s, j} = \lambda_{s, j} / \lambda}.
 @c
 @c Open network with multiple classes
 @c
-@GETHELP{qnopenmulti}
+@GETHELP{qnom}
 
 @noindent @strong{REFERENCES}
 

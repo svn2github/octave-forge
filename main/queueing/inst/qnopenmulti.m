@@ -178,12 +178,13 @@ endfunction
 %! V = [1 1; 1 1];
 %! S = [1 3; 2 4];
 %! lambda = [3/19 2/19];
-%! [U R Q] = qnopenmulti(lambda, S, V);
+%! [U R Q X] = qnopenmulti(lambda, S, V);
 %! assert( U(1,1), 3/19, 1e-6 );
 %! assert( U(2,1), 4/19, 1e-6 );
 %! assert( R(1,1), 19/12, 1e-6 );
 %! assert( R(1,2), 57/2, 1e-6 );
 %! assert( Q(1,1), .25, 1e-6 );
+%! assert( Q, R.*X, 1e-5 ); # Little's Law
 
 %!test
 %! # example p. 138 Zahorjan et al.
@@ -195,4 +196,4 @@ endfunction
 %! assert( U(1,1), .158, 1e-3 );
 %! assert( R(1,1), .158, 1e-3 ); # modified from the original example, as the reference above considers R as the residence time, not the response time
 %! assert( Q(1,1), .25, 1e-2 );
-
+%! assert( Q, R.*X, 1e-5 ); # Little's Law

@@ -282,6 +282,7 @@ endfunction
 %! assert( Q, [ 1.991 16.177 0.500 ], 1e-3 );
 %! assert( all( U>=0 ) );
 %! assert( all( U<=1 ) );
+%! assert( Q, R.*X, 1e-5 ); # Little's Law
 
 %!test
 %! # Exsample 3.42 p. 577 Jain
@@ -295,6 +296,7 @@ endfunction
 %! assert( Q, [ 1.991 16.177 0.500 ], 1e-3 );
 %! assert( all( U>=0 ) );
 %! assert( all( U<=1 ) );
+%! assert( Q, R.*X, 1e-5 ); # Little's Law
 
 %!test
 %! # Example 8.4 p. 333 Bolch et al.
@@ -307,6 +309,7 @@ endfunction
 %! assert( X, [ 1.218 0.609 0.609 1.218 ], 1e-3 );
 %! assert( all(U >= 0 ) );
 %! assert( all(U( m>0 ) <= 1 ) );
+%! assert( Q, R.*X, 1e-5 ); # Little's Law
 
 %!test
 %! # Example 8.3 p. 331 Bolch et al.

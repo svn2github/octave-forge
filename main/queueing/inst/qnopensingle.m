@@ -173,6 +173,7 @@ endfunction
 %! [U R Q X] = qnopensingle( lambda, S, V );
 %! assert( R, [0.0192 0.0345 0.107], 1e-2 );
 %! assert( U, [0.48 0.42 0.72], 1e-2 );
+%! assert( Q, R.*X, 1e-5 ); # check Little's Law
 
 %!test
 %! # Example p. 113, Lazowska et al.
@@ -183,23 +184,7 @@ endfunction
 %! assert( U(1), 0.182, 1e-3 );
 %! assert( X(1), 36.3, 1e-2 );
 %! assert( Q(1), 0.222, 1e-3 );
-
-%!test
-%! # Compare the results of this function with qnjackson
-%! P = [ 0 0.4 0.6 0; ...
-%!       0.2 0 0.2 0.6; ...
-%!       0 0 0 1; ...
-%!       0 0 0 0 ];
-%! lambda = [0.1 0 0 0.3];
-%! V = qnvisits(P,lambda);
-%! S = [2 1 2 1.8];
-%! m = [3 1 1 2];
-%! [U R Q X] = qnopensingle( sum(lambda), S, V, m );
-%! [U_j R_j Q_j X_j] = qnjackson( lambda, S, P, m );
-%! assert( U, U_j, 1e-4 );
-%! assert( R, R_j, 1e-4 );
-%! assert( Q, Q_j, 1e-4 );
-%! assert( X, X_j, 1e-4 );
+%! assert( Q, R.*X, 1e-5 ); # check Little's Law
 
 %!test
 %! lambda=[1];

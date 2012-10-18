@@ -4,7 +4,7 @@
 	* Restructured the documentation
 	* Reduced space requirement for qncsmva()
 	* New function naming scheme: qnXYAAA(), where X=c (closed) or o (open) and Y=s (single) or m (multi)
-	* New functions: qncmaba.m qncmnpop.m qncsbsb.m qncsgb.m qncspb.m qnosjackson.m qncmbsb.m qncmpopmix.m qncscmva.m qncsmvablo.m qnomaba.m qncmcb.m qncmva.m qncsconvld.m qncsmvald.m qnosaba.m qncmmva.m qncsaba.m qncsconv.m qncsmva.m qnosbsb.m
+	* New functions: qncmaba qncmnpop qncsbsb qncsgb qncspb qncmbsb qncmpopmix qncscmva qncsmvablo qnomaba qncmcb qncmva qncsconvld qncsmvald qnosaba qncmmva qncsaba qncsconv qncsmva qnosbsb
 	* Deprecated functions population_mix qnclosedab qnclosedbsb qnclosedgb, qnclosedmultimva qnclosedpb qnclosedsinglemvald qnclosedsinglemva qncmva qnconvolutionld qnconvolution qnjackson qnmvablo qnmvapop qnopenab qnopenbsb
 	* Fixed bugs in qncsconv, qncsconvld, qncmmva, qnopensingle and qncscmva
 

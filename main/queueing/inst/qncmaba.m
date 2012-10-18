@@ -108,7 +108,7 @@ function [Xl Xu Rl Ru] = qncmaba( N, S, V, m, Z )
 
   K = columns(S);
 
-  if ( nargin<3 )
+  if ( nargin<3 || iesmpty(V) )
     V = ones(size(S));
   else
     (ismatrix(V) && size_equal(S,V) ) || \
@@ -117,7 +117,7 @@ function [Xl Xu Rl Ru] = qncmaba( N, S, V, m, Z )
 	error("V must contain nonnegative values");
   endif
 
-  if ( nargin<4 )
+  if ( nargin<4 || isempty(m) )
     m = ones(1,K);
   else
     (isvector(m) && length(m) == K ) || \
@@ -127,7 +127,7 @@ function [Xl Xu Rl Ru] = qncmaba( N, S, V, m, Z )
     m = m(:)';
   endif
 
-  if (nargin<5)
+  if ( nargin<5 || isempty(Z) )
     Z = zeros(1,C);
   else
     (isvector(Z) && length(Z) == C ) || \

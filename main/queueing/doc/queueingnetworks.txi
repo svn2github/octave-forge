@@ -398,19 +398,19 @@ $$ \pi(k_1, k_2, \ldots, k_N) = \prod_{i=1}^N \pi_i(k_i) $$
 @noindent where @math{\pi_i(k_i)} is the steady-state probability
 that there are @math{k_i} requests at service center @math{i}.
 
-@GETHELP{qnjackson}
+@c @GETHELP{qnjackson}
 
-@noindent @strong{REFERENCES}
+@c @noindent @strong{REFERENCES}
 
-This implementation is based on G. Bolch, S. Greiner, H. de Meer and
-K. Trivedi, @cite{Queueing Networks and Markov Chains: Modeling and
-Performance Evaluation with Computer Science Applications}, Wiley,
-1998, pp. 284--287.
+@c This implementation is based on G. Bolch, S. Greiner, H. de Meer and
+@c K. Trivedi, @cite{Queueing Networks and Markov Chains: Modeling and
+@c Performance Evaluation with Computer Science Applications}, Wiley,
+@c 1998, pp. 284--287.
 
-@auindex Bolch, G.
-@auindex Greiner, S.
-@auindex de Meer, H.
-@auindex Trivedi, K.
+@c @auindex Bolch, G.
+@c @auindex Greiner, S.
+@c @auindex de Meer, H.
+@c @auindex Trivedi, K.
 
 @GETHELP{qnopensingle}
 

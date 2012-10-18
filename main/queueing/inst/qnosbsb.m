@@ -86,7 +86,7 @@ function [X_lower X_upper R_lower R_upper] = qnosbsb( lambda, S, V, m )
   all(S>=0) || \
       error("S/D must contain nonnegative values");
   S = S(:)';
-  if ( nargin < 3 )
+  if ( nargin < 3 || isempty(V) )
     D = S;
   else
     ( isvector(V) && length(V) == length(S) ) || \
@@ -96,13 +96,13 @@ function [X_lower X_upper R_lower R_upper] = qnosbsb( lambda, S, V, m )
     V = V(:)';
     D = S .* V;
   endif
-  if ( nargin < 4 )
+  if ( nargin < 4 || isempty(m) )
     # nothing to do
   else
     ( isvector(m) && length(m) == length(S) ) || \
 	error("m must be a vector with %d elements", length(S));
     all(m==1) || \
-	error("this function only supports M/M/1 queues");
+	error("this function supports M/M/1 servers only");
   endif
 
   D_max = max(D);

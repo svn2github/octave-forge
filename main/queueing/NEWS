@@ -12,10 +12,9 @@ Summary of important user-visible changes for queueing-1.2.0
 ** New function qncmcb for computing Composite Bounds for multiclass
    networks
 
-** New functions qncmaba qncmnpop qncsbsb qncsgb qncspb qnosjackson
-   qncmbsb qncmpopmix qncscmva qncsmvablo qnomaba qncmcb qncmva
-   qncsconvld qncsmvald qnosaba qncmmva qncsaba qncsconv qncsmva
-   qnosbsb
+** New functions qncmaba qncmnpop qncsbsb qncsgb qncspb qncmbsb
+   qncmpopmix qncscmva qncsmvablo qnomaba qncmcb qncmva qncsconvld
+   qncsmvald qnosaba qncmmva qncsaba qncsconv qncsmva qnosbsb
 
 ** Deprecated functions population_mix qnclosedab qnclosedbsb
    qnclosedgb qnclosedmultimva qnclosedpb qnclosedsinglemvald
@@ -23,7 +22,7 @@ Summary of important user-visible changes for queueing-1.2.0
    qnmvablo qnmvapop qnopenab qnopenbsb
 
 ** Fixed bugs in various functions (qncscmva, qncsconv, qncsconvld,
-   qnopensingle and qncmmva)
+   qnopensingle, qnopenmulti and qncmmva)
 
 
 Summary of important user-visible changes for queueing-1.1.1

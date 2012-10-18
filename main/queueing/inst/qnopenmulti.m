@@ -46,12 +46,10 @@
 ## customers to service center @math{k} (@code{@var{V}(c,k) @geq{} 0 }).
 ##
 ## @item m
-## @code{@var{m}(k)} is the number of servers at service center
-## @math{k}. If @code{@var{m}(k) < 1}, center @math{k} is a delay center
-## (@math{-/G/\infty}); if @code{@var{m}(k)==1} then center @math{k} is
-## either (@math{M/M/1}--FCFS,
-## @math{-/G/1}--LCFS-PR or @math{-/G/1}--PS). Finally, if @code{@var{m}(k)>1},
-## center math{k} is @math{M/M/m} with @code{@var{m}(k)} identical servers.
+## @code{@var{m}(k)} is the number of servers at center @math{i}. If
+## @code{@var{m}(k) < 1}, enter @math{k} is a delay center (IS);
+## otherwise it is a regular queueing center with @code{@var{m}(k)}
+## servers. Default is @code{@var{m}(k) = 1} for all @math{k}.
 ##
 ## @end table
 ##
@@ -131,15 +129,15 @@ function [U R Q X] = qnopenmulti( lambda, S, V, m )
   U = R = Q = X = zeros(C,K);
   X = diag(lambda)*V; # X(c,k) = lambda(c)*V(c,k);
 
-  ## Compute utilizations (together with resp. time and queue lenghts,
-  ## but only for IS nodes)
+  ## Compute utilizations (for IS nodes compute also response time and
+  ## queue lenghts)
   for k=1:K
     for c=1:C
       if ( m(k) > 1 ) # M/M/m-FCFS
 	[U(c,k)] = qnmmm( X(c,k), 1/S(c,k), m(k) );
-      elseif ( m(k) == 1 ) # M/M/1-FCFS
+      elseif ( m(k) == 1 ) # M/M/1 or -/G/1-PS
 	[U(c,k)] = qnmm1( X(c,k), 1/S(c,k) );
-      else # -/G/1-PS
+      else # -/G/inf
   	[U(c,k) R(c,k) Q(c,k)] = qnmminf( X(c,k), 1/S(c,k) );
       endif
     endfor

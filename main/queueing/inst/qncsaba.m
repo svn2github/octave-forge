@@ -99,7 +99,7 @@ function [Xl Xu Rl Ru] = qncsaba( N, S, V, m, Z )
       error( "S/D must contain nonnegative values");
   S = S(:)';
   K = length(S);
-  if ( nargin < 3 )
+  if ( nargin < 3 || isempty(V) )
     V = ones(1,K);
   else
     (isvector(V) && length(V) == K) || \
@@ -108,7 +108,7 @@ function [Xl Xu Rl Ru] = qncsaba( N, S, V, m, Z )
 	error( "V must contain nonnegative values" );
     V = V(:)';
   endif
-  if ( nargin < 4 )
+  if ( nargin < 4 || isempty(m) )
     m = ones(1,K);
   else
     (isvector(m) && length(m) == K) || \
@@ -117,7 +117,7 @@ function [Xl Xu Rl Ru] = qncsaba( N, S, V, m, Z )
 	error( "multiple server nodes are not supported" );
     m = m(:)';
   endif
-  if ( nargin < 5 )
+  if ( nargin < 5 || isempty(Z) )
     Z = 0;
   else
     ( isscalar(Z) && Z >= 0 ) || \

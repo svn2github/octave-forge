@@ -94,7 +94,7 @@ function [Xl Xu Rl Ru] = qncsbsb( N, S, V, m, Z )
   S = S(:)';
   K = length(S);
 
-  if ( nargin < 3 )
+  if ( nargin < 3 || isempty(V) )
     D = S;
   else
     (isvector(V) && length(V) == K) || \
@@ -105,17 +105,16 @@ function [Xl Xu Rl Ru] = qncsbsb( N, S, V, m, Z )
     D = S .* V;
   endif
 
-  if ( nargin < 4 )
-    m = ones(1,K);
+  if ( nargin < 4 || isempty(m) )
+    ## not used
   else
     (isvector(m) && length(m) == K) || \
 	error( "m must be a vector with %d elements", K );
     all(m==1) || \
-	error( "this function only supports single server nodes" );
-    m = m(:)';
+	error( "this function supports M/M/1 servers only" );
   endif
 
-  if ( nargin < 5 )
+  if ( nargin < 5 || isempty(Z) )
     Z = 0;
   else
     ( isscalar(Z) && Z >= 0 ) || \

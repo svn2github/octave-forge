@@ -60,10 +60,9 @@
 ##
 ## @item m
 ## @code{@var{m}(k)} is the number of servers at center @math{i}. If
-## @code{@var{m}(k) < 1}, then service center @math{k} is a delay center
-## (IS); otherwise it is a regular queueing center with
-## @code{@var{m}(k)} servers. Default is @code{@var{m}(k) = 1} for each
-## @math{k}.
+## @code{@var{m}(k) < 1}, enter @math{k} is a delay center (IS);
+## otherwise it is a regular queueing center with @code{@var{m}(k)}
+## servers. Default is @code{@var{m}(k) = 1} for all @math{k}.
 ##
 ## @end table
 ##
@@ -163,6 +162,8 @@ endfunction
 %! fail( "qnopensingle(1.0, [0.9 2.0], [1 1], [1 2])", "exceeded at center 2");
 %! qnopensingle(1.0, [0.9 1.9], [1 1], [1 2]); # should not fail
 %! qnopensingle(1.0, [0.9 1.9], [1 1], [1 0]); # should not fail
+%! qnopensingle(1.0, [1.9 1.9], [1 1], [0 0]); # should not fail
+%! qnopensingle(1.0, [1.9 1.9], [1 1], [2 2]); # should not fail
  
 %!test
 %! # Example 34.1 p. 572 Bolch et al.

@@ -182,12 +182,11 @@ function [U R Q X] = qnmix( lambda, N, S, V, m )
     R(c,i_single) = S(c,i_single).*(1+Qc) ./ (1-Uo); # This is the Response time, _not_ the residence time
     R(c,i_multi) = S(c,i_multi);
   endfor
-  ## Q(op,:) = (diag(lambda(op))*V(op,:)).*R(op,:); # Q(c,k) = lambda(c)*V(c,k)*R(c,k)
-  Q(op,:) = diag(lambda(op))*R(op,:); # Q(c,k) = lambda(c)*R(c,k)
-  ## The next lines are needed to avoid division by zero.
-  idx = false(size(D));
-  idx(op,:) = D(op,:)>0;
-  X(idx) = U(idx) ./ D(idx); # X(c,k) = U(c,k)/D(c,k)
+  Q(op,:) = (diag(lambda(op))*V(op,:)).*R(op,:); # Q(c,k) = lambda(c)*V(c,k)*R(c,k)
+  ## The following is needed to avoid division by zero
+  idx = false(size(X));
+  idx(op,:) = ( S(op,:)>0 & V(op,:)>0 );
+  X(idx) = U(idx) ./ S(idx);
 endfunction
 %!test
 %! lambda = [1 0 0];
@@ -225,7 +224,7 @@ endfunction
 %! assert( U([1 2],:), [0.4 0.3; 0.5 0.6], 1e-3 );
 %! assert( R([3 4],:), [4.829 6.951; 7.727 11.636], 1e-3 );
 %! assert( Q([3 4],:), [0.582 0.418; 0.624 0.376], 1e-3 );
-%! #assert( Q([1 2],:), [8.822 5.383; 11.028 10.766], 1e-3 ); FIXME
+%! assert( Q([1 2],:), [8.822 5.383; 11.028 10.766], 1e-3 ); #FIXME
 %! assert( R([1 2],:), [8.822 10.766; 17.645 28.710], 1e-3 );
 %! assert( X(3,1)/V(3,1), 0.120, 1e-3 );
 %! assert( X(4,1)/V(4,1), 0.081, 1e-3 );

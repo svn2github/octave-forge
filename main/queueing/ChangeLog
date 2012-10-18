@@ -6,7 +6,7 @@
 	* New function naming scheme: qnXYAAA(), where X=c (closed) or o (open) and Y=s (single) or m (multi)
 	* New functions: qncmaba qncmnpop qncsbsb qncsgb qncspb qncmbsb qncmpopmix qncscmva qncsmvablo qnomaba qncmcb qncmva qncsconvld qncsmvald qnosaba qncmmva qncsaba qncsconv qncsmva qnosbsb
 	* Deprecated functions population_mix qnclosedab qnclosedbsb qnclosedgb, qnclosedmultimva qnclosedpb qnclosedsinglemvald qnclosedsinglemva qncmva qnconvolutionld qnconvolution qnjackson qnmvablo qnmvapop qnopenab qnopenbsb
-	* Fixed bugs in qncsconv, qncsconvld, qncmmva, qnopensingle and qncscmva
+	* Fixed bugs in qncsconv, qncsconvld, qncmmva, qnopensingle, qnmix and qncscmva
 
 2012-09-08 Moreno Marzolla <marzolla@cs.unibo.it>
 

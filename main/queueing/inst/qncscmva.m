@@ -186,7 +186,7 @@ endfunction
 %! S = [1 0.3 0.8 0.9];
 %! V = [1 1 1 1];
 %! [U1 R1 Q1 X1] = qncscmva( N, S(1:3), repmat(S(4),1,N), V );
-%! [U2 R2 Q2 X2] = qnclosedsinglemva(N, S, V);
+%! [U2 R2 Q2 X2] = qncsmva(N, S, V);
 %! assert( X1, X2, 1e-5 );
 %! assert( U1, U2, 1e-5 );
 %! assert( R1, R2, 1e-5 );
@@ -200,7 +200,7 @@ endfunction
 %!      1 1/2 1/3 1/4 1/5];
 %! V = [1 1 1 1];
 %! [U1 R1 Q1 X1] = qncscmva( N, S(1:3,1), S(4,:), V );
-%! [U2 R2 Q2 X2] = qnclosedsinglemvald(N, S, V);
+%! [U2 R2 Q2 X2] = qncsmvald(N, S, V);
 %! assert( U1, U2, 1e-5 );
 %! assert( R1, R2, 1e-5 );
 %! assert( Q1, Q2, 1e-5 );
@@ -215,7 +215,7 @@ endfunction
 %! V = [1 2 1 1];
 %! Z = 3;
 %! [U1 R1 Q1 X1] = qncscmva( N, S(1:3,1), S(4,:), V, Z );
-%! [U2 R2 Q2 X2] = qnclosedsinglemvald(N, S, V, Z);
+%! [U2 R2 Q2 X2] = qncsmvald(N, S, V, Z);
 %! assert( U1, U2, 1e-5 );
 %! assert( R1, R2, 1e-5 );
 %! assert( Q1, Q2, 1e-5 );
@@ -226,7 +226,7 @@ endfunction
 %! Rmva = Rconv = Rcmva = zeros(1,maxN); # Results
 %! S = 4; Z = 10; m = 8;
 %! for N=1:maxN
-%!   [U R] = qnclosedsinglemva(N,S,1,m,Z);	# Use MVA
+%!   [U R] = qncsmva(N,S,1,m,Z);		# Use MVA
 %!   Rmva(N) = R(1);
 %!   [U R] = qncsconv(N,[S Z],[1 1],[m -1]);	# Use Convolution
 %!   Rconv(N) = R(1);

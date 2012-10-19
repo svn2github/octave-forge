@@ -17,40 +17,76 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{r} @var{s}] =} dtmc_is_irreducible (@var{P})
+## @deftypefn {Function File} {[@var{r} @var{s}] =} dtmcisir (@var{P})
 ##
-## This function is deprecated. Please use @code{dtmcisir} instead.
-## 
-## @seealso{dtmcisir}
+## @cindex Markov chain, discrete time
+## @cindex discrete time Markov chain
+## @cindex DTMC
+## @cindex irreducible Markov chain
+##
+## Check if @var{P} is irreducible, and identify Strongly Connected
+## Components (SCC) in the transition graph of the DTMC with transition
+## probability matrix @var{P}.
+##
+## @strong{INPUTS}
+##
+## @table @var
+##
+## @item P
+## @code{@var{P}(i,j)} is the transition probability from state @math{i}
+## to state @math{j}. This function does not currently check whether
+## @var{P} is a valid transition probability matrix.
+##
+## @end table
+##
+## @strong{OUTPUTS}
+##
+## @table @var
+##
+## @item r
+## 1 if @var{P} irreducible, 0 otherwise.
+##
+## @item s
+## @code{@var{s}(i)} is the SCC that state @math{i} belongs to. SCCs are
+## numbered as 1, 2, @dots{}. If the graph is strongly connected, then
+## there is a single SCC and the predicate @code{all(s == 1)} evaluates
+## to true.
+##
+## @end table
 ##
 ## @end deftypefn
 
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [r s] = dtmc_is_irreducible( P )
-  persistent warned = false;
-  if (!warned)
-    warned = true;
-    warning("qn:deprecated-function",
-	    "dtmc_is_irreducible is deprecated. Please use dtmcisir instead");
+function [r s] = dtmcisir( P )
+
+  if ( nargin != 1 )
+    print_usage();
   endif
-  [r s] = dtmcisir( P );
+
+  [N err] = dtmcchkP(P);
+  if ( N == 0 ) 
+    error(err);
+  endif
+  s = __scc(P);
+  r = (max(s) == 1);
+
 endfunction
 %!test
 %! P = [0 .5 0; 0 0 0];
-%! fail( "dtmc_is_irresudible(P)" );
+%! fail( "dtmcisir(P)" );
 
 %!test
 %! P = [0 1 0; 0 .5 .5; 0 1 0];
-%! [r s] = dtmc_is_irreducible(P);
+%! [r s] = dtmcisir(P);
 %! assert( r == 0 );
 %! assert( max(s), 2 );
 %! assert( min(s), 1 );
 
 %!test
 %! P = [.5 .5 0; .2 .3 .5; 0 .2 .8];
-%! [r s] = dtmc_is_irreducible(P);
+%! [r s] = dtmcisir(P);
 %! assert( r == 1 );
 %! assert( max(s), 1 );
 %! assert( min(s), 1 );

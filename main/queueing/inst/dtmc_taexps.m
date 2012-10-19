@@ -17,65 +17,26 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {@var{L} =} dtmc_exps (@var{P}, @var{n}, @var{p0})
-## @deftypefnx {Function File} {@var{L} =} dtmc_exps (@var{P}, @var{p0})
+## @deftypefn {Function File} {@var{L} =} dtmc_taexps (@var{P}, @var{n}, @var{p0})
+## @deftypefnx {Function File} {@var{L} =} dtmc_taexps (@var{P}, @var{p0})
 ##
-## @cindex time-alveraged sojourn time, DTMC
-## @cindex discrete time Markov chain
-## @cindex Markov chain, discrete time
-## @cindex DTMC
+## This function is deprecated. Please use @code{dtmctaexps} instead.
 ##
-## Compute the @emph{time-averaged sojourn time} @code{@var{M}(i)},
-## defined as the fraction of time steps @math{@{0, 1, @dots{}, n@}} (or
-## until absorption) spent in state @math{i}, assuming that the state
-## occupancy probabilities at time 0 are @var{p0}.
-##
-## @strong{INPUTS}
-##
-## @table @var
-##
-## @item P
-## @math{N \times N} transition probability matrix.
-##
-## @item n
-## Number of transitions during which the time-averaged expected sojourn times
-## are computed (@math{@var{n} @geq{} 0}). if @math{@var{n} = 0},
-## returns @var{p0}.
-##
-## @item p0
-## Initial state occupancy probabilities.
-##
-## @end table
-##
-## @strong{OUTPUTS}
-##
-## @table @var
-##
-## @item M
-## If this function is called with three arguments, @code{@var{M}(i)} is
-## the expected fraction of steps @math{@{0, 1, @dots{}, n@}} spent in
-## state @math{i}, assuming that the state occupancy probabilities at
-## time zero are @var{p0}. If this function is called with two
-## arguments, @code{@var{M}(i)} is the expected fraction of steps spent
-## in state @math{i} until absorption.
-##
-## @end table
+## @code{dtmcexps}
 ##
 ## @end deftypefn
 
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function M = dtmc_taexps( P, varargin )
-
-  persistent epsilon = 10*eps;
-
-  if ( nargin < 2 || nargin > 3 )
-    print_usage();
+function M = dtmctaexps( varargin )
+  persistent warned = false;
+  if (!warned)
+    warned = true;
+    warning("qn:deprecated-function",
+	    "dtmc_taexps is deprecated. Please use dtmctaexps instead");
   endif
-
-  L = dtmc_exps(P,varargin{:});
-  M = L ./ sum(L);
+  M = dtmctaexps( varargin{:} );
 endfunction
 %!test
 %! P = dtmc_bd([1 1 1 1], [0 0 0 0]);

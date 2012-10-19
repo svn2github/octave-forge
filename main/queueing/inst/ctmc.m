@@ -72,6 +72,8 @@
 ##
 ## @end table
 ##
+## @seealso{dtmc}
+##
 ## @end deftypefn
 
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
@@ -85,7 +87,7 @@ function q = ctmc( Q, t, p0 )
     print_usage();
   endif
 
-  [N err] = ctmc_check_Q(Q);
+  [N err] = ctmcchkQ(Q);
 
   ( N>0 ) || \
       error(err);
@@ -264,7 +266,7 @@ endfunction
 %! assert( p, [0.9983916, 0.000002995, 0.0000066559, 0.00159742, 0.0000012779], 1e-6 );
 %! Q(3,:) = Q(5,:) = 0; # make states 3 and 5 absorbing
 %! p0 = [1 0 0 0 0];
-%! MTBF = ctmc_mtta(Q, p0) / hour;
+%! MTBF = ctmcmtta(Q, p0) / hour;
 %! assert( fix(MTBF), 24857);
 
 ## This example is from: David I. Heimann, Nitin Mittal, Kishor S. Trivedi,
@@ -295,5 +297,5 @@ endfunction
 %! printf("Mean time in 0 state  %9.2f min/year\n",p(5)*year/min);
 %! Q(3,:) = Q(5,:) = 0; # make states 3 and 5 absorbing
 %! p0 = [1 0 0 0 0];
-%! MTBF = ctmc_mtta(Q, p0) / hour;
+%! MTBF = ctmcmtta(Q, p0) / hour;
 %! printf("System MTBF %.2f hours\n",MTBF);

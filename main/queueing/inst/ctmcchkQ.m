@@ -17,55 +17,75 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{result} @var{err}] =} ctmc_check_Q (@var{Q})
+## @deftypefn {Function File} {[@var{result} @var{err}] =} ctmcchkQ (@var{Q})
 ##
-## This function is deprecated. Please use @code{ctmcchkQ} instead
+## @cindex Markov chain, continuous time
+##
+## If @var{Q} is a valid infinitesimal generator matrix, return
+## the size (number of rows or columns) of @var{Q}. If @var{Q} is not
+## an infinitesimal generator matrix, set @var{result} to zero, and
+## @var{err} to an appropriate error string.
 ##
 ## @end deftypefn
 
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [result err] = ctmc_check_Q( Q )
-  persistent warned = false;
-  if (!warned)
-    warned = true;
-    warning("qn:deprecated-function",
-	    "ctmc_check_Q is deprecated. Please use ctmcchkQ instead");
+function [result err] = ctmcchkQ( Q )
+
+  persistent epsilon = 100*eps;
+
+  if ( nargin != 1 )
+    print_usage();
   endif
-  [result err] = ctmcchkQ( Q );
+
+  result = 0;
+
+  if ( !issquare(Q) )
+    err = "P is not a square matrix";
+    return;
+  endif
+  
+  if (any(Q(~logical(eye(size(Q))))<0) || \ # there is any negative non-diagonal element
+      norm( sum(Q,2), "inf" ) > epsilon )
+    err = "Q is not an infinitesimal generator matrix";
+    return;
+  endif
+
+  result = rows(Q);
+  err = "";
 endfunction
 %!test
 %! Q = [0];
-%! [result err] = ctmc_check_Q(Q);
+%! [result err] = ctmcchkQ(Q);
 %! assert( result, 1 );
 %! assert( err, "" );
 
 %!test
 %! N = 10;
-%! Q = ctmc_bd(rand(1,N-1),rand(1,N-1));
-%! [result err] = ctmc_check_Q(Q);
+%! Q = ctmcbd(rand(1,N-1),rand(1,N-1));
+%! [result err] = ctmcchkQ(Q);
 %! assert( result, N );
 %! assert( err, "" );
 
 %!test
 %! Q = [1 2 3; 4 5 6];
-%! [result err] = ctmc_check_Q(Q);
+%! [result err] = ctmcchkQ(Q);
 %! assert( result, 0 );
 %! assert( index(err, "square") > 0 );
 
 %!test
 %! N = 10;
-%! Q = ctmc_bd(rand(1,N-1),rand(1,N-1));
+%! Q = ctmcbd(rand(1,N-1),rand(1,N-1));
 %! Q(2,1) = -1;
-%! [result err] = ctmc_check_Q(Q);
+%! [result err] = ctmcchkQ(Q);
 %! assert( result, 0 );
 %! assert( index(err, "infinitesimal") > 0 );
 
 %!test
 %! N = 10;
-%! Q = ctmc_bd(rand(1,N-1),rand(1,N-1));
+%! Q = ctmcbd(rand(1,N-1),rand(1,N-1));
 %! Q(1,1) += 7;
-%! [result err] = ctmc_check_Q(Q);
+%! [result err] = ctmcchkQ(Q);
 %! assert( result, 0 );
 %! assert( index(err, "infinitesimal") > 0 );

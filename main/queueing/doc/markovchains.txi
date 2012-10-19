@@ -64,7 +64,7 @@ following two properties: (1) @math{P_{i, j} @geq{} 0} for all
 @math{i, j}, and (2) @math{\sum_{j=1}^N P_{i,j} = 1} for all @math{i}
 
 @c
-@GETHELP{dtmc_check_P}
+@GETHELP{dtmcchkP}
 
 @menu
 * State occupancy probabilities (DTMC)::
@@ -216,7 +216,7 @@ using the following code:
 @node Birth-death process (DTMC)
 @subsection Birth-death process
 
-@GETHELP{dtmc_bd}
+@GETHELP{dtmcbd}
 
 @c
 @node Expected number of visits (DTMC)
@@ -280,13 +280,13 @@ started in the @math{i}-th transient state. If we reshape @math{\bf N}
 to the size of @math{\bf P} (filling missing entries with zeros), we
 have that, for absorbing chains @math{{\bf L} = {\bf \pi}(0){\bf N}}.
 
-@GETHELP{dtmc_exps}
+@GETHELP{dtmcexps}
 
 @c
 @node Time-averaged expected sojourn times (DTMC)
 @subsection Time-averaged expected sojourn times
 
-@GETHELP{dtmc_taexps}
+@GETHELP{dtmctaexps}
 
 @c
 @node Mean time to absorption (DTMC)
@@ -329,7 +329,7 @@ B = N R
 @end example
 @end ifnottex
 
-@GETHELP{dtmc_mtta}
+@GETHELP{dtmcmtta}
 
 @c
 @node First passage times (DTMC)
@@ -414,7 +414,7 @@ r_i = -----
 @end example
 @end ifnottex
 
-@GETHELP{dtmc_fpt}
+@GETHELP{dtmcfpt}
 
 @c
 @c
@@ -444,7 +444,7 @@ from state @math{i} to state @math{j}. The matrix @math{\bf Q} must
 satisfy the property that, for all @math{i}, @math{\sum_{j=1}^N Q_{i,
 j} = 0}.
 
-@GETHELP{ctmc_check_Q}
+@GETHELP{ctmcchkQ}
 
 @menu
 * State occupancy probabilities (CTMC)::
@@ -530,7 +530,7 @@ are equal to 1. This can be solved as follows:
 @node Birth-death process (CTMC)
 @subsection Birth-Death Process
 
-@GETHELP{ctmc_bd}
+@GETHELP{ctmcbd}
 
 @c
 @c
@@ -610,7 +610,7 @@ L_T( inf ) Q_T = -pi_T(0)
 @end example
 @end ifnottex
 
-@GETHELP{ctmc_exps}
+@GETHELP{ctmcexps}
 
 @noindent @strong{EXAMPLE}
 
@@ -622,7 +622,7 @@ given the initial occupancy probability @math{{\bf \pi}_0=(1,0,0,0)}.
 
 @example
 @group
-@GETDEMO{ctmc_exps,1}
+@GETDEMO{ctmcexps,1}
 @end group
 @end example
 
@@ -632,13 +632,13 @@ given the initial occupancy probability @math{{\bf \pi}_0=(1,0,0,0)}.
 @node Time-averaged expected sojourn times (CTMC)
 @subsection Time-Averaged Expected Sojourn Times
 
-@GETHELP{ctmc_taexps}
+@GETHELP{ctmctaexps}
 
 @noindent @strong{EXAMPLE}
 
 @example
 @group
-@GETDEMO{ctmc_taexps,1}
+@GETDEMO{ctmctaexps,1}
 @end group
 @end example
 
@@ -648,7 +648,7 @@ given the initial occupancy probability @math{{\bf \pi}_0=(1,0,0,0)}.
 @node Mean time to absorption (CTMC)
 @subsection Mean Time to Absorption
 
-@GETHELP{ctmc_mtta}
+@GETHELP{ctmcmtta}
 
 @noindent @strong{EXAMPLE}
 
@@ -671,7 +671,7 @@ computed with the following expression:
 
 @example
 @group
-@GETDEMO{ctmc_mtta,1}
+@GETDEMO{ctmcmtta,1}
     @result{} t = 78.333
 @end group
 @end example
@@ -694,5 +694,5 @@ Performance Evaluation with Computer Science Applications}, Wiley,
 @node First passage times (CTMC)
 @subsection First Passage Times
 
-@GETHELP{ctmc_fpt}
+@GETHELP{ctmcfpt}
 

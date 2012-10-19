@@ -165,7 +165,7 @@ endfunction
 %! K = 6;
 %! S = [ 0.02 0.2 0.4 0.6 ];
 %! V = [ 1 0.4 0.2 0.1 ];
-%! [U_mva R_mva Q_mva X_mva] = qnclosedsinglemva(K, S, V);
+%! [U_mva R_mva Q_mva X_mva] = qncsmva(K, S, V);
 %! [U_con R_con Q_con X_con G] = qncsconvld(K, repmat(S',1,K), V );
 %! assert( U_mva, U_con, 1e-5 );
 %! assert( R_mva, R_con, 1e-5 );
@@ -178,7 +178,7 @@ endfunction
 %! K = 6;
 %! V = [ 1 0.4 0.2 0.1 ];
 %! m = [ 1 5 2 1 ];
-%! [U_mva R_mva Q_mva X_mva] = qnclosedsinglemva(K, S, V);
+%! [U_mva R_mva Q_mva X_mva] = qncsmva(K, S, V);
 %! [U_con R_con Q_con X_con G] = qncsconvld(K, repmat(S',1,K), V);
 %! assert( U_mva, U_con, 1e-5 );
 %! assert( R_mva, R_con, 1e-5 );

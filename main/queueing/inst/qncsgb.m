@@ -106,7 +106,7 @@ function [X_lower X_upper R_upper R_lower Q_lower Q_upper] = qncsgb( N, S, V, m,
       error( "S/D must be a vector >=0" );
   S = S(:)'; # make S a row vector
 
-  if ( nargin < 3 )
+  if ( nargin < 3 || isempty(V) )
     L = S;
   else
     ( isvector(V) && length(V) == length(S) && all( V>=0) ) || \
@@ -115,8 +115,8 @@ function [X_lower X_upper R_upper R_lower Q_lower Q_upper] = qncsgb( N, S, V, m,
     L = S .* V;
   endif
 
-  if ( nargin < 4 )
-    # nothing to do
+  if ( nargin < 4 || isempty(m) )
+    m = ones(size(S));
   else
     ( isvector(m) && length(m) == length(S) ) || \
 	error("m must be a vector with %d elements", length(S));
@@ -124,7 +124,7 @@ function [X_lower X_upper R_upper R_lower Q_lower Q_upper] = qncsgb( N, S, V, m,
 	error("this function only supports single server nodes");
   endif
 
-  if ( nargin < 5 )
+  if ( nargin < 5 || isempty(Z) )
     Z = 0;
   else
     ( isscalar(Z) && (Z >= 0) ) || \
@@ -135,7 +135,7 @@ function [X_lower X_upper R_upper R_lower Q_lower Q_upper] = qncsgb( N, S, V, m,
   L_max = max(L);
   M = length(L);
   if ( nargin < 6 ) 
-    [X_minus X_plus] = qncsaba(N,L,ones(size(L)),ones(size(L)),Z);
+    [X_minus X_plus] = qncsaba(N,L,ones(size(L)),m,Z);
   endif
   ##[X_minus X_plus] = [0 1/L_max];
   [Q_lower Q_upper] = __compute_Q( N, L, Z, X_plus, X_minus);
@@ -197,7 +197,7 @@ endfunction
 %!function test_gb( D, expected, Z=0 )
 %! for i=1:rows(expected)
 %!   N = expected(i,1);
-%!   [X_lower X_upper Q_lower Q_upper] = qnclosedgb(N,D,Z);
+%!   [X_lower X_upper Q_lower Q_upper] = qncsgb(N,D,[],[],Z);
 %!   X_exp_lower = expected(i,2);
 %!   X_exp_upper = expected(i,3);
 %!   assert( [N X_lower X_upper], [N X_exp_lower X_exp_upper], 1e-4 )
@@ -231,12 +231,13 @@ endfunction
 %! S = [1 0.6 0.2];
 %! m = ones(1,3);
 %! V = qnvisits(P);
+%! Z = 2;
 %! Nmax = 20;
 %! tol = 1e-5; # compensate for numerical errors
 %! ## Test case with Z>0
 %! for n=1:Nmax
-%!   [X_gb_lower X_gb_upper Q_gb_lower Q_gb_upper] = qnclosedgb(n, S.*V, 2);
-%!   [U R Q X] = qnclosed( n, S, V, m, 2 );
+%!   [X_gb_lower X_gb_upper NC NC Q_gb_lower Q_gb_upper] = qncsgb(n, S.*V, [], [], Z);
+%!   [U R Q X] = qnclosed( n, S, V, m, Z );
 %!   X_mva = X(1)/V(1);
 %!   assert( X_gb_lower <= X_mva+tol );
 %!   assert( X_gb_upper >= X_mva-tol );
@@ -247,15 +248,14 @@ endfunction
 %!test
 %! P = [0 0.3 0.7; 1 0 0; 1 0 0];
 %! S = [1 0.6 0.2];
-%! m = ones(1,3);
 %! V = qnvisits(P);
 %! Nmax = 20;
 %! tol = 1e-5; # compensate for numerical errors
 %!
 %! ## Test case with Z=0
 %! for n=1:Nmax
-%!   [X_gb_lower X_gb_upper Q_gb_lower Q_gb_upper] = qnclosedgb(n, S.*V, 0);
-%!   [U R Q X] = qnclosed( n, S, V, m, 0 );
+%!   [X_gb_lower X_gb_upper NC NC Q_gb_lower Q_gb_upper] = qncsgb(n, S.*V);
+%!   [U R Q X] = qnclosed( n, S, V );
 %!   X_mva = X(1)/V(1);
 %!   assert( X_gb_lower <= X_mva+tol );
 %!   assert( X_gb_upper >= X_mva-tol );

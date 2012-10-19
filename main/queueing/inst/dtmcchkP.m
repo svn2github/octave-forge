@@ -17,47 +17,64 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{r} @var{err}] =} dtmc_check_P (@var{P})
+## @deftypefn {Function File} {[@var{r} @var{err}] =} dtmcchkP (@var{P})
 ##
-## This function is deprecated. Please use @code{dtmcchkP} instead.
+## @cindex Markov chain, discrete time
+## @cindex DTMC
+## @cindex discrete time Markov chain
 ##
-## @seealso{dtmcchkP}
+## Check if @var{P} is a valid transition probability matrix. If @var{P}
+## is valid, @var{r} is the size (number of rows or columns) of @var{P}.
+## If @var{P} is not a transition probability matrix, @var{r} is set to
+## zero, and @var{err} to an appropriate error string.
 ##
 ## @end deftypefn
 
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [result err] = dtmc_check_P( P )
-  persistent warned = false;
-  if (!warned)
-    warned = true;
-    warning("qn:deprecated-function",
-	    "dtmc_check_P is deprecated. Please use dtmcchkP instead");
+function [result err] = dtmcchkP( P )
+
+  if ( nargin != 1 )
+    print_usage();
   endif
-  [result err] = dtmcchkP( P );
+
+  result = 0;
+  err = "";
+
+  if ( !issquare(P) )
+    err = "P is not a square matrix";
+    return;
+  endif
+  
+  if (  any(any(P<-eps)) || norm( sum(P,2) - 1, "inf" ) > columns(P)*eps )
+    err = "P is not a stochastic matrix";
+    return;
+  endif
+
+  result = rows(P);
 endfunction
 %!test
-%! [r err] = dtmc_check_P( [1 1 1; 1 1 1] );
+%! [r err] = dtmcchkP( [1 1 1; 1 1 1] );
 %! assert( r, 0 );
 %! assert( index(err, "square") > 0 );
 
 %!test
-%! [r err] = dtmc_check_P( [1 0 0; 0 0.5 0; 0 0 0] );
+%! [r err] = dtmcchkP( [1 0 0; 0 0.5 0; 0 0 0] );
 %! assert( r, 0 );
 %! assert( index(err, "stochastic") > 0 );
 
 %!test
 %! P = [0 1; 1 0];
-%! assert( dtmc_check_P(P), 2 );
+%! assert( dtmcchkP(P), 2 );
 
 %!test
-%! P = dtmc_bd( linspace(0.1,0.4,10), linspace(0.4,0.1,10) );
-%! assert( dtmc_check_P(P), rows(P) );
+%! P = dtmcbd( linspace(0.1,0.4,10), linspace(0.4,0.1,10) );
+%! assert( dtmcchkP(P), rows(P) );
 
 %!test
 %! N = 1000;
 %! P = reshape( 1:N^2, N, N );
 %! P(1:N+1:end) = 0;
 %! P = P ./ repmat(sum(P,2),1,N);
-%! assert( dtmc_check_P(P), N );
+%! assert( dtmcchkP(P), N );

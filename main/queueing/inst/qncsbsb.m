@@ -51,7 +51,7 @@
 ## @code{@var{m}(k)} is the number of servers at center @math{k}. This
 ## function supports @code{@var{m}(k) = 1} only (sing-eserver FCFS
 ## nodes). This option is left for compatibility with
-## @code{qnclosedsingleab}, Default is 1.
+## @code{qncsaba}, Default is 1.
 ##
 ## @item Z
 ## External delay (@code{@var{Z} @geq{} 0}). Default is 0.
@@ -72,7 +72,7 @@
 ##
 ## @end table
 ##
-## @seealso{qnclosedmultibsb}
+## @seealso{qncmbsb}
 ##
 ## @end deftypefn
 

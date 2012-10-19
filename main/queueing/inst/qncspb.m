@@ -68,7 +68,7 @@
 ##
 ## @end table
 ##
-## @seealso{qnclosedsingleab, qbclosedsinglebsb, qnclosedsinglegb}
+## @seealso{qncsaba, qbcsbsb, qncsgb}
 ##
 ## @end deftypefn
 

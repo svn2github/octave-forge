@@ -70,6 +70,8 @@
 ##
 ## @end table
 ##
+## @seealso{ctmc}
+##
 ## @end deftypefn
 
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
@@ -81,7 +83,7 @@ function p = dtmc( P, n, p0 )
     print_usage();
   endif
 
-  [N err] = dtmc_check_P(P);
+  [N err] = dtmcchkP(P);
   
   ( N>0 ) || \
       error( err );

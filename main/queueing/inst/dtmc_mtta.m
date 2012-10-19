@@ -20,123 +20,23 @@
 ## @deftypefn {Function File} {[@var{t} @var{N} @var{B}] =} dtmc_mtta (@var{P})
 ## @deftypefnx {Function File} {[@var{t} @var{N} @var{B}] =} dtmc_mtta (@var{P}, @var{p0})
 ##
-## @cindex mean time to absorption, DTMC
-## @cindex absorption probabilities, DTMC
-## @cindex fundamental matrix
-## @cindex DTMC
-## @cindex discrete time Markov chain
-## @cindex Markov chain, discrete time
+## This function is deprecated. Please use @code{dtmcmtta} instead.
 ##
-## Compute the expected number of steps before absorption for a
-## DTMC with @math{N \times N} transition probability matrix @var{P};
-## compute also the fundamental matrix @var{N} for @var{P}.
-##
-## @strong{INPUTS}
-##
-## @table @var
-##
-## @item P
-## @math{N \times N} transition probability matrix.
-##
-## @end table
-##
-## @strong{OUTPUTS} 
-##
-## @table @var
-##
-## @item t
-## When called with a single argument, @var{t} is a vector of size
-## @math{N} such that @code{@var{t}(i)} is the expected number of steps
-## before being absorbed in any absorbing state, starting from state
-## @math{i}; if @math{i} is absorbing, @code{@var{t}(i) = 0}. When
-## called with two arguments, @var{t} is a scalar, and represents the
-## expected number of steps before absorption, starting from the initial
-## state occupancy probability @var{p0}.
-##
-## @item N
-## When called with a single argument, @var{N} is the @math{N \times N}
-## fundamental matrix for @var{P}. @code{@var{N}(i,j)} is the expected
-## number of visits to transient state @var{j} before absorption, if it
-## is started in transient state @var{i}. The initial state is counted
-## if @math{i = j}. When called with two arguments, @var{N} is a vector
-## of size @math{N} such that @code{@var{N}(j)} is the expected number
-## of visits to transient state @var{j} before absorption, given initial
-## state occupancy probability @var{P0}.
-##
-## @item B
-## When called with a single argument, @var{B} is a @math{N \times N}
-## matrix where @code{@var{B}(i,j)} is the probability of being absorbed
-## in state @math{j}, starting from transient state @math{i}; if
-## @math{j} is not absorbing, @code{@var{B}(i,j) = 0}; if @math{i}
-## is absorbing, @code{@var{B}(i,i) = 1} and
-## @code{@var{B}(i,j) = 0} for all @math{j \neq j}. When called with
-## two arguments, @var{B} is a vector of size @math{N} where
-## @code{@var{B}(j)} is the probability of being absorbed in state
-## @var{j}, given initial state occupancy probabilities @var{p0}.
-##
-## @end table
-##
-## @seealso{ctmc_mtta}
+## @seealso{ctmcmtta}
 ##
 ## @end deftypefn
 
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [t N B] = dtmc_mtta( P, p0 )
-
-  persistent epsilon = 10*eps;
-
-  if ( nargin < 1 || nargin > 2 )
-    print_usage();
+function [t N B] = dtmc_mtta( varargin )
+  persistent warned = false;
+  if (!warned)
+    warned = true;
+    warning("qn:deprecated-function",
+	    "dtmc_mtta is deprecated. Please use dtmcmtta instead");
   endif
-
-  [K err] = dtmc_check_P(P);
-
-  (K>0) || \
-      error(err);
-  
-  if ( nargin == 2 )
-    ( isvector(p0) && length(p0) == K && all(p0>=0) && abs(sum(p0)-1.0)<epsilon ) || \
-	error( "p0 must be a state occupancy probability vector" );
-  endif
-
-  ## identify transient states
-  tr = find(diag(P) < 1);
-  ab = find(diag(P) == 1);
-  k = length(tr); # number of transient states
-  if ( k == K )
-    error("There are no absorbing states");
-  endif
-
-  N = B = zeros(size(P));
-  t = zeros(1,rows(P));
-
-  ## Source: Grinstead, Charles M.; Snell, J. Laurie (July 1997). "Ch.
-  ## 11: Markov Chains". Introduction to Probability. American
-  ## Mathematical Society. ISBN 978-0821807491.
-  ## http://www.cs.virginia.edu/~gfx/Courses/2006/DataDriven/bib/texsyn/Chapter11.pdf
-
-  tmpN = inv(eye(k) - P(tr,tr)); # matrix N = (I-Q)^-1
-  N(tr,tr) = tmpN;
-  R = P(tr,ab);
-
-  res = tmpN * ones(k,1);
-  t(tr) = res;
-
-  tmp = tmpN*R;
-  B(tr,ab) = tmp;
-  ## set B(i,i) = 1 for all absorbing states i
-  dd = diag(B);
-  dd(ab) = 1;
-  B(1:K+1:end) = dd;
-
-  if ( nargin == 2 )
-    t = dot(p0,t);
-    N = p0*N;
-    B = p0*B;
-  endif
-
+  [t N B] = dtmcmtta( varargin{:} );
 endfunction
 %!test
 %! fail( "dtmc_mtta(1,2,3)" );
@@ -164,74 +64,6 @@ endfunction
 %! assert( t(2:5), [4 6 6 4], 100*eps );
 %! assert( B(2:5,1), [.8 .6 .4 .2]', 100*eps );
 %! assert( B(2:5,6), [.2 .4 .6 .8]', 100*eps );
-
-## Compute the probability of completing the "snakes and ladders"
-## game in n steps, for various values of n. Also, computes the expected
-## number of steps which are necessary to complete the game.
-## Source: 
-## http://mapleta.emich.edu/aross15/coursepack3419/419/ch-04/chutes-and-ladders.pdf
-%!demo
-%! n = 6;
-%! P = zeros(101,101);
-%! for j=0:(100-n)
-%!   i=1:n;
-%!   P(1+j,1+j+i) = 1/n;
-%! endfor  
-%! for j=(101-n):100 
-%!   P(1+j,1+j) = (n-100+j)/n;
-%! endfor
-%! for j=(101-n):100
-%!   i=1:(100-j);
-%!   P(1+j,1+j+i) = 1/n;
-%! endfor
-%! Pstar = P;
-%! ## setup snakes and ladders
-%! SL = [1 38; \
-%!       4 14; \
-%!       9 31; \
-%!       16 6; \
-%!       21 42; \
-%!       28 84; \
-%!       36 44; \
-%!       47 26; \
-%!       49 11; \
-%!       51 67; \
-%!       56 53; \
-%!       62 19; \
-%!       64 60; \
-%!       71 91; \
-%!       80 100; \
-%!       87 24; \
-%!       93 73; \
-%!       95 75; \
-%!       98 78 ];
-%! for ii=1:rows(SL);
-%!   i = SL(ii,1);
-%!   j = SL(ii,2);
-%!   Pstar(1+i,:) = 0;
-%!   for k=0:100
-%!     if ( k != i )
-%!       Pstar(1+k,1+j) = P(1+k,1+j) + P(1+k,1+i);
-%!     endif
-%!   endfor
-%!   Pstar(:,1+i) = 0;
-%! endfor
-%! Pstar += diag( 1-sum(Pstar,2) );
-%! # spy(Pstar); pause
-%! nsteps = 250; # number of steps
-%! Pfinish = zeros(1,nsteps); # Pfinish(i) = probability of finishing after step i
-%! pstart = zeros(1,101); pstart(1) = 1; pn = pstart;
-%! for i=1:nsteps
-%!   pn = pn*Pstar;
-%!   Pfinish(i) = pn(101); # state 101 is the ending (absorbing) state
-%! endfor
-%! f = dtmc_mtta(Pstar,pstart);
-%! printf("Average number of steps to complete the game: %f\n", f );
-%! plot(Pfinish,"linewidth",2);
-%! line([f,f],[0,1]);
-%! text(f*1.1,0.2,["Mean Time to Absorption (" num2str(f) ")"]);
-%! xlabel("Step number (n)");
-%! title("Probability of finishing the game before step n");
 
 ## "Rat maze" problem (p. 453 of [GrSn97]);
 %!test

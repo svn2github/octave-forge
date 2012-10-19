@@ -525,7 +525,7 @@ closed networks}. Queueing Syst. Theory Appl., 60:193–-202, December
 @c Approximate MVA for single class, closed networks
 @c
 
-@GETHELP{qnclosedsinglemvaapprox}
+@GETHELP{qncsmvaap}
 
 @noindent @strong{REFERENCES}
 
@@ -926,16 +926,16 @@ Perform. Eval. Rev. 10, 3 (Sep. 1981), 80-85. DOI
 
 @noindent @strong{NOTE}
 
-Given a network with @math{K} service centers, @math{C} job classes and
-population vector @math{{\bf N}=(N_1, N_2, \ldots, N_C)}, the MVA
+Given a network with @math{K} service centers, @math{C} job classes
+and population vector @math{{\bf N}=(N_1, N_2, \ldots, N_C)}, the MVA
 algorithm requires space @math{O(C \prod_i (N_i + 1))}. The time
 complexity is @math{O(CK\prod_i (N_i + 1))}. This implementation is
-slightly more space-efficient (see details in the code). While the space
-requirement can be mitigated by using some optimizations, the time
-complexity can not. If you need to analyze large closed networks you
-should consider the @command{qnclosedmultimvaapprox} function, which
-implements the approximate MVA algorithm. Note however that
-@command{qnclosedmultimvaapprox} will only provide approximate results.
+slightly more space-efficient (see details in the code). While the
+space requirement can be mitigated by using some optimizations, the
+time complexity can not. If you need to analyze large closed networks
+you should consider the @command{qncmmvaap} function, which implements
+the approximate MVA algorithm. Note however that @command{qncmmvaap}
+will only provide approximate results.
 
 
 @noindent @strong{REFERENCES}
@@ -968,7 +968,7 @@ particular, see section 7.4.2.1 ("Exact Solution Techniques").
 @c
 @c Approximate MVA, with Bard-Schweitzer approximation
 @c
-@GETHELP{qnclosedmultimvaapprox}
+@GETHELP{qncmmvaap}
 
 @noindent @strong{REFERENCES}
 
@@ -1202,7 +1202,7 @@ June 2008. @uref{http://doi.ieeecomputersociety.org/10.1109/TC.2008.37, 10.1109/
 @auindex Serazzi, G.
 
 In this implementation we set @math{X^+} and @math{X^-} as the upper
-and lower Asymptotic Bounds as computed by the @command{qnclosedab}
+and lower Asymptotic Bounds as computed by the @command{qncsab}
 function, respectively.
 
 

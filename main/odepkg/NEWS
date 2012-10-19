@@ -1,5 +1,10 @@
 Summary of important user-visible changes for odepkg 0.8.3:
 -------------------------------------------------------------------
 
+ ** Added new function ode23s.
+
+Summary of important user-visible changes for odepkg 0.8.3:
+-------------------------------------------------------------------
+
  ** Makefile fixed to work with non-standard linker options e.g on
     Apple.

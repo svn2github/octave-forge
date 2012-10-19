@@ -3,6 +3,7 @@ OdePkg Tutorial
  odepkg
 OdePkg ODE Solver Functions
  ode23
+ ode23s
  ode45
  ode54
  ode78

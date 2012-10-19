@@ -251,6 +251,56 @@ function [U R Q X] = __qnsolve_closed_single( N, QQ, V, Z )
   ( isvector(V) && length(V) == K ) || \
       error( "V must be a vector of length %d", K );
 
+  found_ld = false;
+  for k=1:K
+    if ( __is_ld(QQ{k}) )
+      found_ld = true;
+      break;
+    endif
+  endfor
+
+  if ( found_ld )
+    S = zeros(K, N);
+    for k=1:K
+      ( QQ{k}.c == 1 ) || \
+	  error( "Multiclass networks are not supported by this function" );
+      if __is_li(QQ{k})
+	S(k,:) = QQ{k}.S;
+      elseif __is_multi(QQ{k})
+	S(k,:) = QQ{k}.S ./ min(1:N,QQ{k}.m);
+      elseif __is_is(QQ{k})
+	S(k,:) = QQ{k}.S ./ (1:N);
+      elseif __is_ld(QQ{k})
+	S(k,:) = QQ{k}.S;
+      else
+	error( "Unsupported type \"%s\" for node %d", QQ{k}.node, k );
+      endif      
+    endfor
+    [U R Q X] = qncsmvald(N, S, V, Z);
+  else
+    S = zeros(1,K);
+    m = ones(1,K);
+    for k=1:K
+      ( QQ{k}.c == 1 ) || \
+	  error( "Multiclass networks are not supported by this function" );
+      S(k) = QQ{k}.S;
+      if __is_li(QQ{k})
+	# nothing to do
+      elseif __is_multi(QQ{k})
+	m(k) = QQ{k}.m;
+      elseif __is_is(QQ{k})
+	m(k) = -1;
+      else
+	error( "Unsupported type \"%s\" for node %d", QQ{k}.node, k );
+      endif
+    endfor
+    [U R Q X] = qncsmva(N, S, V, m, Z);
+  endif
+
+#{
+
+  ## TODO: remove this
+
   ## Initialize vectors
   i_single = i_multi = i_delay = i_ld = [];
   for i=1:K
@@ -351,7 +401,7 @@ function [U R Q X] = __qnsolve_closed_single( N, QQ, V, Z )
   for i=i_ld
     U(i) = 1-p{i}(1);
   endfor
-
+#}
   __prettyprint( N, 0, QQ, V, U, R, Q, X );
 endfunction
 

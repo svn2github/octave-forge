@@ -282,7 +282,7 @@ endfunction
 ##
 ## This implementation is based on:
 ##
-## Herb Schwetman, "Implementing the MEan Value Algorithm for the
+## Herb Schwetman, "Implementing the Mean Value Algorithm for the
 ## Solution of Queueing Network Models", technical report OSD-TR-355,
 ## dept. of Computer Science, Purdue University, feb. 1982.
 ##
@@ -417,13 +417,12 @@ function [U R Q X Qnm1] = __qncmmva_nocs( N, S, V, m, Z )
 
       ## Q_k = sum_c X(c) * R(c,k) * V(c,k)
       Q_next( idx, : ) = (X * (R .* V))';
-      ## Q( idx, : ) = (X * (R .* V))';
 
       ## Update marginal probabilities for LD servers
       for k=find(m>1)
         j = 1:m(k)-1;
 	s = zeros(size(j));
-        for r=find(n_bar>0) # FIXME: I don't know how to vectorize this
+        for r=find(n_bar>0) # FIXME: vectorize this
           s+=(D(r,k)*X(r)*p{k}(j,idx-dd(r)))';
         endfor
         p{k}(j+1,idx) = s./j;

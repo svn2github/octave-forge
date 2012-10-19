@@ -176,6 +176,7 @@ It corresponds to version @value{VERSION} of the package.
 @menu
 * Summary::
 * Installation::                Installation of the queueing toolbox.
+* Getting Started::             Start using the queueing toolbox.
 * Markov Chains::               Functions for Markov Chains.
 * Single Station Queueing Systems:: Functions for single-station queueing systems.
 * Queueing Networks::           Functions for queueing networks.
@@ -190,6 +191,7 @@ It corresponds to version @value{VERSION} of the package.
 
 @include summary.texi
 @include installation.texi
+@include gettingstarted.texi
 @include markovchains.texi
 @include singlestation.texi
 @include queueingnetworks.texi

@@ -61,12 +61,6 @@ for handling the following types of queues:
 
 @end iftex
 
-The functions which analyze the queues above can be used as building
-blocks for analyzing Queueing Networks. For example, Jackson networks
-can be solved by computing the aggregate arrival rates to each node,
-and then solving each node in isolation as if it were a single station
-queueing system.
-
 @c
 @c M/M/1
 @c
@@ -75,7 +69,7 @@ queueing system.
 
 The @math{M/M/1} system is made of a single server connected to an
 unlimited FCFS queue. Requests arrive according to a Poisson process
-with arrival rate @math{\lambda}; the service time is exponentially
+with rate @math{\lambda}; the service time is exponentially
 distributed with average service rate @math{\mu}. The system is stable
 if @math{\lambda < \mu}.
 

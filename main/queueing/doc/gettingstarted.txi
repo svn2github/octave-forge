@@ -1,0 +1,152 @@
+@c -*- texinfo -*-
+
+@c Copyright (C) 2012 Moreno Marzolla
+@c
+@c This file is part of the queueing toolbox, a Queueing Networks
+@c analysis package for GNU Octave.
+@c
+@c The queueing toolbox is free software; you can redistribute it
+@c and/or modify it under the terms of the GNU General Public License
+@c as published by the Free Software Foundation; either version 3 of
+@c the License, or (at your option) any later version.
+@c
+@c The queueing toolbox is distributed in the hope that it will be
+@c useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+@c of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with the queueing toolbox; see the file COPYING.  If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@node Getting Started
+@chapter Getting Started
+
+@menu
+* Naming Conventions::
+* Quickstart Guide::
+@end menu
+
+@node Naming Conventions
+@section Naming Conventions
+
+Most of the functions in the @code{queueing} package obey a common
+naming convention. Function names are obtained by concatenating small
+blocks of letters. The prefix block indicates the class of problems
+the function addresses, as follows:
+
+@table @asis
+@item @strong{ctmc-}
+Function for continuous-time Markov chain analysis
+
+@item @strong{dtmc-}
+Function for discrete-time Markov chain analysis
+
+@item @strong{qs-}
+Function for analyzing queueing systems (individual service centers)
+
+@item @strong{qn-}
+Function for analyzing a Queueing network
+
+@end table
+
+Functions dealing with Markov chains start with either the @code{ctmc}
+or @code{dtmc} prefix; the prefix is optinally followed by an
+additional block which describes the specific metric computed by that
+function:
+
+@table @asis
+@item @strong{-bd}
+Birth-Death process
+
+@item @strong{-mtta}
+Mean Time to Absorption
+
+@item @strong{-fpt}
+First Passage Times
+
+@item @strong{-exps}
+Expected Sojourn Times
+
+@item @strong{-taexps}
+Time-Averaged Expected Sojourn Times
+
+@end table
+
+For example, function @code{ctmcbd} returns the infinitesimal
+generator matrix for a continuous birth-death process, while
+@code{dtmcbd} returns the transition probability matrix for a discrete
+birth-death process. Functions @code{ctmc} and @code{dtmc} (without
+any additional block appendet to the name) are used to compute
+steady-state and transient state occupancy probabilities for CTMCs and
+DTMCs, respectively. @xref{Markov Chains}.
+
+@c
+@c
+@c
+@noindent Network type identification
+
+@table @asis
+@item @strong{-os-}
+Open, single-class network: open network with a single class of customers
+
+@item @strong{-om-}
+Open, multiclass network: open network with multiple job classes
+
+@item @strong{-cs-}
+Closed, single-class network
+
+@item @strong{-cm-}
+Closed, multiclass network
+
+@item @strong{-mix-}
+Mixed network with open as well as closed classes of customers
+
+@end table
+
+@c
+@c
+@c
+@noindent Network algorithms
+
+@table @asis
+@item @strong{-aba}
+Asymptotic Bounds Analysis
+
+@item @strong{-bsb}
+Balanced System Bounds
+
+@item @strong{-gb}
+Geometric Bounds
+
+@item @strong{-pb}
+PB Bounds
+
+@item @strong{-cb}
+Composite Bounds (CB)
+
+@item @strong{-mva}
+Mean Value Analysis (MVA) algorithm
+
+@item @strong{-cmva}
+Conditional MVA
+
+@item @strong{-mvald}
+MVA with general load-dependent servers
+
+@item @strong{-mvaap}
+Approximate MVA
+
+@item @strong{-mvablo}
+MVABLO approximation for blocking queueing networks
+
+@item @strong{-conv}
+Convolution algorithm
+
+@item @strong{-convld}
+Convolution algorithm with general load-dependent servers
+
+@end table
+
+@node Quickstart Guide
+@section Quickstart Guide

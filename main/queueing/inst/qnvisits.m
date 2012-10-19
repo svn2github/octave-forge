@@ -331,7 +331,7 @@ endfunction
 %! V = qnvisits(P,lambda);
 %! S = [2 1 2 1.8];
 %! m = [3 1 1 2];
-%! [U R Q X] = qnopensingle( sum(lambda), S, V, m );
+%! [U R Q X] = qnos( sum(lambda), S, V, m );
 
 ##############################################################################
 ## Solve the visit equation for multiclass networks with class switching
@@ -502,7 +502,7 @@ function V = __qnvisitssingle( P, lambda )
     ##
     ## Closed network
     ##
-    [res err] = dtmc_check_P(P);
+    [res err] = dtmcchkP(P);
     (res>0) || \
         error( "P is not a transition probability matrix for closed networks" );
 

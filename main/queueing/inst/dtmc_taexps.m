@@ -29,7 +29,7 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function M = dtmctaexps( varargin )
+function M = dtmc_taexps( varargin )
   persistent warned = false;
   if (!warned)
     warned = true;

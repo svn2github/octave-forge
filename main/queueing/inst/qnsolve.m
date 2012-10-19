@@ -171,7 +171,7 @@ function [U R Q X] = __qnsolve_open_single( lambda, QQ, V )
     endif
   endfor
 
-  [U R Q X] = qnopensingle( lambda, S, V, m );
+  [U R Q X] = qnos( lambda, S, V, m );
   __prettyprint( 0, lambda, QQ, V, U, R, Q, X );
 endfunction
 
@@ -209,7 +209,7 @@ function [U R Q X] = __qnsolve_open_multi( lambda, QQ, V )
     endif  
   endfor
 
-  [U R Q X] = qnopenmulti( lambda, S, V, m );
+  [U R Q X] = qnom( lambda, S, V, m );
   __prettyprint( 0, lambda, QQ, V, U, R, Q, X );
 endfunction
 
@@ -430,7 +430,7 @@ function [U R Q X] = __qnsolve_closed_multi( N, QQ, V, Z )
   
   ## Main loop
   for n=1:sum(N)
-    feasible_set = population_mix( n, N );
+    feasible_set = qncmpopmix( n, N );
     for nn=1:rows(feasible_set)
       n_bar = feasible_set(nn,:);
       for c=1:C

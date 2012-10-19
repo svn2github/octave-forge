@@ -102,11 +102,3 @@ endfunction
 %! lambda = 90.0;
 %! [U1 R1 Q1 X1] = qnopensingle(lambda,S,V,m); 
 
-%!demo
-%! lambda = 3;
-%! V = [16 7 8];
-%! S = [0.01 0.02 0.03];
-%! [U R Q X] = qnopensingle( lambda, S, V );
-%! R_s = dot(R,V) # System response time
-%! N = sum(Q) # Average number in system
-

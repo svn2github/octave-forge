@@ -104,7 +104,7 @@ function [U R Q X] = qncsmvablo( K, S, M, P )
   (K < sum(M)) || \
       error( "The population size K=%d exceeds the total system capacity %d", K, sum(M) );
 
-  [na err] = dtmc_check_P(P);
+  [na err] = dtmcchkP(P);
   ( na>0 ) || \
       error( err );
 

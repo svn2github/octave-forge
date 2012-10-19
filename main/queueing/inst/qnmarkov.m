@@ -191,7 +191,7 @@ function [U R Q X] = qnmarkov( x, S, C, P, m )
   ## exit_prob(i) is the probability that a job leaves the system from node i
   exit_prob = 1 - sum(P,2);
   for n=valid_populations
-    pop_mix = population_mix( n, C );
+    pop_mix = qncmpopmix( n, C );
     for cur_state=pop_mix' # for each feasible configuration with n customers
       cur_idx = sub2cell( C, cur_state );
       for i=1:K
@@ -231,7 +231,7 @@ function [U R Q X] = qnmarkov( x, S, C, P, m )
   ## Compute the average queue length
   p = zeros(K, max(C)+1); # p(k,i+1) = prob that there are i requests at service center k
   for n=valid_populations
-    pop_mix = population_mix( n, C );
+    pop_mix = qncmpopmix( n, C );
     for cur_state=pop_mix'
       cur_idx = sub2cell( C, cur_state );
       for k=1:K

@@ -137,7 +137,7 @@ endfunction
 %!   N=[n,10];
 %!   [a b] = qncmcb(N,S);
 %!   Xl(n,:) = a; Xu(n,:) = b;
-%!   [U R Q X] = qnclosedmultimva(N,S,ones(size(S)));
+%!   [U R Q X] = qncmmva(N,S,ones(size(S)));
 %!   Xmva(n,:) = X(:,1)';
 %! endfor
 %! subplot(2,1,1);

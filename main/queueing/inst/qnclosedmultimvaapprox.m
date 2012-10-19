@@ -64,9 +64,3 @@ endfunction
 %! R_c = N ./ Xc;
 %! assert( R_c, [ 6.508 9.614 ], 5e-3 );
 
-%!demo
-%! S = [ 1, 1, 1, 1; 2, 1, 3, 1; 4, 2, 3, 3 ];
-%! V = ones(3,4);
-%! N = [10 5 1];
-%! m = [1 0 1 1];
-%! [U R Q X] = qnclosedmultimvaapprox(N,S,V,m);

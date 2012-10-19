@@ -27,7 +27,7 @@
 ## using @code{qnopensingle}. If @var{lambda} is a vector, the network
 ## is considered as a multiclass QN and solved using @code{qnopenmulti}.
 ##
-## @seealso{qnopensingle, qnopenmulti}
+## @seealso{qnos, qnom}
 ##
 ## @end deftypefn
 
@@ -39,9 +39,9 @@ function [U R Q X] = qnopen( lambda, S, V, varargin )
     print_usage();
   endif
   if ( isscalar(lambda) )
-    [U R Q X] = qnopensingle(lambda, S, V, varargin{:});
+    [U R Q X] = qnos(lambda, S, V, varargin{:});
   else
-    [U R Q X] = qnopenmulti(lambda, S, V, varargin{:});
+    [U R Q X] = qnom(lambda, S, V, varargin{:});
   endif
 endfunction
 %!test

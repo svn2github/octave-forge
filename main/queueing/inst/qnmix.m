@@ -35,7 +35,7 @@
 ## @end quotation
 ##
 ## If the network is made of open or closed classes only, then this
-## function calls @code{qnopenmulti} or @code{qnclosedmultimva}
+## function calls @code{qnom} or @code{qncmmva}
 ## respectively, and prints a warning message.
 ##
 ## @strong{INPUTS}
@@ -101,7 +101,7 @@
 ##
 ## @end table
 ##
-## @seealso{qnclosedmultimva, qnopenmulti}
+## @seealso{qncmmva, qncm}
 ##
 ## @end deftypefn
 
@@ -142,13 +142,13 @@ function [U R Q X] = qnmix( lambda, N, S, V, m )
   all( m<=1 ) || \
       error( "This function supports single-server and delay centers only. Check m" );
   if ( !any(lambda>0) ) 
-    warning( "qnmix(): There are no open classes. Using qnclosedmultimva()" );
-    [U R Q X] = qnclosedmultimva( N, S, V, m );
+    warning( "qnmix(): There are no open classes. Using qncmmva()" );
+    [U R Q X] = qncmmva( N, S, V, m );
     return;
   endif
   if ( !any(N>0) ) 
-    warning( "qnmix(): There are no closed classes. Using qnopenmulti()" );
-    [U R Q X] = qnopenmulti( lambda, S, V, m );
+    warning( "qnmix(): There are no closed classes. Using qnom()" );
+    [U R Q X] = qnom( lambda, S, V, m );
     return;
   endif
 
@@ -168,7 +168,7 @@ function [U R Q X] = qnmix( lambda, N, S, V, m )
   endfor
   Scl = Scl(cl,:); # select only rows for closed classes
   Vcl = V(cl,:);
-  [Ucl Rcl Qcl Xcl] = qnclosedmultimva(Ncl, Scl, Vcl, m );
+  [Ucl Rcl Qcl Xcl] = qncmmva(Ncl, Scl, Vcl, m );
   ## Results for closed classes
   X(cl,:) = Xcl;
   Q(cl,:) = Qcl;

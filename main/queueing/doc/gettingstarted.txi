@@ -52,8 +52,7 @@ Function for analyzing a Queueing network
 
 Functions dealing with Markov chains start with either the @code{ctmc}
 or @code{dtmc} prefix; the prefix is optinally followed by an
-additional block which describes the specific metric computed by that
-function:
+additional character string which hints at what the function does:
 
 @table @asis
 @item @strong{-bd}
@@ -76,15 +75,23 @@ Time-Averaged Expected Sojourn Times
 For example, function @code{ctmcbd} returns the infinitesimal
 generator matrix for a continuous birth-death process, while
 @code{dtmcbd} returns the transition probability matrix for a discrete
-birth-death process. Functions @code{ctmc} and @code{dtmc} (without
-any additional block appendet to the name) are used to compute
-steady-state and transient state occupancy probabilities for CTMCs and
-DTMCs, respectively. @xref{Markov Chains}.
+birth-death process. Note that there exist functions @code{ctmc} and
+@code{dtmc}, without any suffix, that to compute steady-state and
+transient state occupancy probabilities for CTMCs and DTMCs,
+respectively. @xref{Markov Chains}.
 
-@c
-@c
-@c
-@noindent Network type identification
+Functions whose name starts with @code{qs-} deal with single station
+queueing systeems. The function name suffix describes th type of
+system, e.g., @code{qsmm1} for @math{M/M/1}, @code{qnmmm} for
+@math{M/M/m} and so on. @xref{Single Station Queueing Systems}.
+
+Finally, functions whose name starts with @code{qn-} deal with
+queueing networks. The character that follows indicates whether the
+function handles open (@code{'o'}) or closed (@code{'c'}) networks,
+and whether there is a single customer class (@code{'s'}) or multiple
+classes (@code{'m'}). The string @code{mix} indicates that the
+function supports mixed networks with both open and closed customer
+classes.
 
 @table @asis
 @item @strong{-os-}
@@ -100,13 +107,13 @@ Closed, single-class network
 Closed, multiclass network
 
 @item @strong{-mix-}
-Mixed network with open as well as closed classes of customers
+Mixed network with open and closed classes of customers
 
 @end table
 
-@c
-@c
-@c
+The last part of the function name indicates the algorithm implemented
+by the function. @xref{Queueing Networks}.
+
 @noindent Network algorithms
 
 @table @asis
@@ -150,3 +157,4 @@ Convolution algorithm with general load-dependent servers
 
 @node Quickstart Guide
 @section Quickstart Guide
+

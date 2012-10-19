@@ -29,8 +29,7 @@
 ## classes are supported.
 ##
 ## This function dispatches the computation to one of
-## @code{qnclosedsinglemva}, @code{qnclosedsinglemvald} or
-## @code{qnclosedmultimva}.
+## @code{qncsemva}, @code{qncsmvald} or @code{qncmmva}.
 ##
 ## @itemize
 ##
@@ -38,19 +37,19 @@
 ## class of requests; in this case, the exact MVA algorithm is used to
 ## analyze the network. If @var{S} is a vector, then @code{@var{S}(k)}
 ## is the average service time of center @math{k}, and this function
-## calls @code{qnclosedsinglemva} which supports load-independent
+## calls @code{qncsmva} which supports load-independent
 ## service centers. If @var{S} is a matrix, @code{@var{S}(k,i)} is the
 ## average service time at center @math{k} when @math{i=1, @dots{}, N}
 ## jobs are present; in this case, the network is analyzed with the
-## @code{qnclosedsinglemvald} function.
+## @code{qncmmvald} function.
 ##
 ## @item If @var{N} is a vector, the network is assumed to have multiple
 ## classes of requests, and is analyzed using the exact multiclass
-## MVA algorithm as implemented in the @code{qnclosedmultimva} function.
+## MVA algorithm as implemented in the @code{qncmmva} function.
 ##
 ## @end itemize
 ##
-## @seealso{qnclosedsinglemva, qnclosedsinglemvald, qnclosedmultimva}
+## @seealso{qncsmva, qncsmvald, qncmmva}
 ##
 ## @end deftypefn
 
@@ -63,12 +62,12 @@ function [U R Q X] = qnclosed( N, S, V, varargin )
   endif
   if ( isscalar(N) )
     if ( isvector(S) ) 
-      [U R Q X] = qnclosedsinglemva( N, S, V, varargin{:} );
+      [U R Q X] = qncsmva( N, S, V, varargin{:} );
     else
-      [U R Q X] = qnclosedsinglemvald( N, S, V, varargin{:} );
+      [U R Q X] = qncsmvald( N, S, V, varargin{:} );
     endif
   else
-    [U R Q X] = qnclosedmultimva( N, S, V, varargin{:} );
+    [U R Q X] = qncmmva( N, S, V, varargin{:} );
   endif
 endfunction
 
@@ -81,8 +80,8 @@ endfunction
 %! V = qnvisits(P); # Compute number of visits from P
 %! X_bsb_lower = X_bsb_upper = X_ab_lower = X_ab_upper = X_mva = zeros(1,N);
 %! for n=1:N
-%!   [X_bsb_lower(n) X_bsb_upper(n)] = qnclosedbsb(n, S, V, m, Z);
-%!   [X_ab_lower(n) X_ab_upper(n)] = qnclosedab(n, S, V, m, Z);
+%!   [X_bsb_lower(n) X_bsb_upper(n)] = qncsbsb(n, S, V, m, Z);
+%!   [X_ab_lower(n) X_ab_upper(n)] = qncsaba(n, S, V, m, Z);
 %!   [U R Q X] = qnclosed( n, S, V, m, Z );
 %!   X_mva(n) = X(1)/V(1);
 %! endfor

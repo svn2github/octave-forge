@@ -1,4 +1,4 @@
-VERSIONNUM=2.0.0-rc0
+VERSIONNUM=2.0.0
 VERSIONDATE="2012-10-XX"
 PROGNAME=queueing
 
@@ -41,7 +41,7 @@ distclean: clean
 	done
 	\rm -r -f doc/conf.texi fname DESCRIPTION $(PROGNAME)-html
 
-dist: ALL
+$(DISTNAME).tar.gz:
 	\rm -r -f $(PROGNAME) fname
 	echo "$(PROGNAME)" > fname
 	mkdir $(PROGNAME)
@@ -52,7 +52,14 @@ dist: ALL
 	ln $(DISTFILES) $(PROGNAME)/
 	tar cfz $(DISTNAME).tar.gz $(PROGNAME)/
 	uuencode $(DISTNAME).tar.gz < $(DISTNAME).tar.gz > $(DISTNAME).tar.gz.uue
+
+$(PROGNAME)-html.tar.gz:
 	~/src/octave-3.6.1/run-octave -qf --eval "pkg load generate_html; pkg install -local $(DISTNAME).tar.gz; pkg load queueing; generate_package_html ('queueing', 'queueing-html', 'octave-forge'); pkg uninstall $(PROGNAME)"
 	tar cfz $(PROGNAME)-html.tar.gz $(PROGNAME)-html
 	uuencode $(PROGNAME)-html.tar.gz < $(PROGNAME)-html.tar.gz > $(PROGNAME)-html.tar.gz.uue
+
+dist: ALL $(DISTNAME).tar.gz $(PROGNAME)-html.tar.gz
+
+
+
 

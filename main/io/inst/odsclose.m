@@ -66,6 +66,8 @@
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-06-08 tabs replaced by double space
 ## 2012-09-03 Extended file renaming section to xlsclose equivalent
+## 2012-10-12 Move most interface-specific code to ./private subfuncs
+##     ''     Move "file ptr preserved" message to proper else clause
 
 function [ ods ] = odsclose (ods, varargs)
 
@@ -79,6 +81,7 @@ function [ ods ] = odsclose (ods, varargs)
       if (strcmp (lower (varargin{ii}), "force"))
         # Close .ods anyway even if write errors occur
         force = 1;
+
       elseif (~isempty (strfind (tolower (varargin{ii}), '.')))
         # Apparently a file name. First some checks....
         if (ods.changed == 0 || ods.changed > 2)
@@ -87,31 +90,8 @@ function [ ods ] = odsclose (ods, varargs)
           # UNO will write any file type, all other interfaces only .ods
             error ('.ods suffix lacking in filename %s', filename);
         else
-          # All checks passed
-          if (strcmp (xls.xtype, 'UNO'))
-            # For UNO, turn filename into URL
-            if (~isempty (strmatch ("file:///", filename)) || ~isempty (strmatch ("http://", filename))...
-              || ~isempty (strmatch ("ftp://", filename)) || ~isempty (strmatch ("www://", filename)))
-              # Seems in proper shape for OOo (at first sight)
-            else
-              # Transform into URL form
-              if (ispc)
-                fname = canonicalize_file_name (strsplit (filename, filesep){end});
-              else
-                fname = make_absolute_filename (strsplit (filename, filesep){end});
-              endif
-               # On Windows, change backslash file separator into forward slash
-              if (strcmp (filesep, "\\"))
-                tmp = strsplit (fname, filesep);
-                flen = numel (tmp);
-                tmp(2:2:2*flen) = tmp;
-                tmp(1:2:2*flen) = '/';
-                filename = [ 'file://' tmp{:} ];
-              endif
-            endif
-          endif
           # Preprocessing / -checking ready. Assign filename arg to file ptr struct
-          ods.filename = filename;
+          ods.nfilename = filename;
         endif
       endif
     endfor
@@ -119,75 +99,15 @@ function [ ods ] = odsclose (ods, varargs)
 
   if (strcmp (ods.xtype, 'OTK'))
     # Java & ODF toolkit
-    try
-      if (ods.changed && ods.changed < 3)
-        ods.app.save (ods.filename);
-        ods.changed = 0;
-      endif
-      ods.app.close ();
-    catch
-      if (force)
-        ods.app.close ();
-      endif
-    end_try_catch
+    ods = __OTK_spsh_close__ (ods, force);
 
   elseif (strcmp (ods.xtype, 'JOD'))
     # Java & jOpenDocument
-    try
-      if (ods.changed && ods.changed < 3)
-        ofile = java_new ('java.io.File', ods.filename);
-        ods.workbook.saveAs (ofile);
-        ods.changed = 0;
-      endif
-    catch
-    end_try_catch
+    ods = __JOD_spsh_close__ (ods);
 
   elseif (strcmp (ods.xtype, 'UNO'))
     # Java & UNO bridge
-    try
-      if (ods.changed && ods.changed < 3)
-        # Workaround:
-        unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XModel');
-        xModel = ods.workbook.queryInterface (unotmp);
-        unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.util.XModifiable');
-        xModified = xModel.queryInterface (unotmp);
-        if (xModified.isModified ())
-          unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XStorable');  # isReadonly() ?    
-          xStore = ods.app.xComp.queryInterface (unotmp);
-          if (ods.changed == 2)
-            # Some trickery as Octave Java cannot create non-numeric arrays
-            lProps = javaArray ('com.sun.star.beans.PropertyValue', 1);
-            lProp = java_new ('com.sun.star.beans.PropertyValue', "Overwrite", 0, true, []);
-            lProps(1) = lProp;
-            # OK, save file to disk
-            xStore.storeAsURL (ods.filename, lProps);
-          else
-            xStore.store ();
-          endif
-        endif
-      endif
-      ods.changed = -1;    # Needed for check op properly shutting down OOo
-      # Workaround:
-      unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XModel');
-      xModel = ods.app.xComp.queryInterface (unotmp);
-      unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.util.XCloseable');
-      xClosbl = xModel.queryInterface (unotmp);
-      xClosbl.close (true);
-      unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XDesktop');
-      xDesk = ods.app.aLoader.queryInterface (unotmp);
-      xDesk.terminate();
-      ods.changed = 0;
-    catch
-      if (force)
-        # Force closing OOo
-        unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XDesktop');
-        xDesk = ods.app.aLoader.queryInterface (unotmp);
-        xDesk.terminate();
-      else
-        warning ("Error dbclosing ods pointer (UNO)");
-      endif
-      return
-    end_try_catch
+    ods = __UNO_spsh_close__ (ods, force);
 
 #  elseif ---- < Other interfaces here >
 
@@ -197,9 +117,11 @@ function [ ods ] = odsclose (ods, varargs)
   endif
 
   if (ods.changed && ods.changed < 3)
-    error ( sprintf ("Could not save file %s - read-only or in use elsewhere?\nFile pointer preserved", ods.filename));
+    error ( sprintf ("Could not save file %s - read-only or in use elsewhere?", ods.filename));
     if (force)
       ods = [];
+    else
+      printf ("(File pointer preserved)\n");
     endif
   else
     # Reset file pointer

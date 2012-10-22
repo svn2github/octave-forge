@@ -77,10 +77,14 @@
 ##     ''     Improve echo of sheet names & ranges if interactive
 ## 2012-03-01 Fix wrong cell refs in UNO section ("(..)" rather than "{..}"
 ## 2012-06-08 Support for odfdom-0.8.8-incubator
+## 2012-10-12 Moved all interface-specific code into ./private subfuncs
 
-function [ filetype, sheetnames ] = odsfinfo (filename, reqintf=[])
+function [ filetype, sh_names ] = odsfinfo (filename, reqintf=[])
 
-  onscreen = nargout < 1;
+  persistent str2; str2 = '                                 '; # 33 spaces
+  persistent lstr2; lstr2 = length (str2);
+
+  toscreen = nargout < 1;
 
   ods = odsopen (filename, 0, reqintf);
   # If no ods support was found, odsopen will have complained. Just return here
@@ -94,92 +98,33 @@ function [ filetype, sheetnames ] = odsfinfo (filename, reqintf=[])
   if ~(nargout == 1)
 
     if (strcmp (ods.xtype, 'OTK'))
-      # Get contents and table (= sheet) stuff from the workbook
-      odfcont = ods.workbook;    # Local copy just in case
-      if (strcmp (ods.odfvsn, '0.8.7') || strfind (ods.odfvsn, "0.8.8"))
-        xpath = ods.workbook.getXPath;
-      else
-        xpath = ods.app.getXPath;
-      endif
+      [sh_names] = __OTK_spsh_info__ (ods);
 
-      # Create an instance of type NODESET for use in subsequent statement
-      NODESET = java_get ('javax.xml.xpath.XPathConstants', 'NODESET');
-      # Parse sheets ("tables") from ODS file
-      sheets = xpath.evaluate ("//table:table", odfcont, NODESET);
-      nr_of_sheets = sheets.getLength(); 
-      sheetnames = cell (nr_of_sheets, 2);
-
-      # Get sheet names (& optionally date row count estimate)
-      for ii=1:nr_of_sheets
-        # Check in first part of the sheet nodeset
-        sheetnames (ii) = sheets.item(ii-1).getTableNameAttribute ();
-        [ tr, lr, lc, rc ] = getusedrange (ods, ii);
-        if (onscreen) 
-          printf (sprintf("%s", sheetnames{ii}));
-          if (tr)
-            printf (sprintf("%s (used range = %s:%s)", \
-            adj_str(1:(30 - length (sheetnames{ii}))), \
-            calccelladdress (tr, lc), calccelladdress (lr, rc)));
-          else
-            printf ("%s (empty)", adj_str(1:(30 - length (sheetnames{ii}))));
-          endif
-          printf ("\n");
-        endif
-        if (tr)
-          sheetnames(ii, 2) = sprintf ("%s:%s", calccelladdress (tr, lc), calccelladdress (lr, rc));
-        endif
-      endfor
-      
     elseif (strcmp (ods.xtype, 'JOD'))
-      nr_of_sheets = ods.workbook.getSheetCount ();
-      sheetnames = cell (nr_of_sheets, 2);
-      for ii=1:nr_of_sheets
-        sheetnames(ii) = ods.workbook.getSheet (ii-1).getName ();
-        [ tr, lr, lc, rc ] = getusedrange (ods, ii);
-        if (onscreen) 
-          printf (sprintf("%s", sheetnames{ii}));
-          if (tr)
-            printf (sprintf("%s (used range = %s:%s)", \
-            adj_str(1:(30 - length (sheetnames{ii}))), \
-            calccelladdress (tr, lc), calccelladdress (lr, rc)));
-          else
-            printf ("%s (empty)", adj_str(1:(30 - length (sheetnames{ii}))));
-          endif
-          printf ("\n");
-        endif
-        if (tr)
-          sheetnames(ii, 2) = sprintf ("%s:%s", calccelladdress (tr, lc), calccelladdress (lr, rc));
-        endif
-      endfor
+      [sh_names] = __JOD_spsh_info__ (ods);
       
     elseif (strcmp (ods.xtype, 'UNO'))
-      sheets = ods.workbook.getSheets ();
-      sheetnames = sheets.getElementNames ();    # A Java object, NOT a cell array
-      nr_of_sheets = numel (sheetnames);
-      sheetnames = char (sheetnames);
-      for ii=1:nr_of_sheets
-        [ tr, lr, lc, rc ] = getusedrange (ods, ii);
-        if (onscreen) 
-          printf (sprintf("%s", sheetnames{ii}));  # () as it is a Java object
-          if (tr)
-            printf (sprintf ("%s (used range = %s:%s)", \
-            adj_str (1:(30 - length (sheetnames{ii}))), \
-            calccelladdress (tr, lc), calccelladdress (lr, rc)));
-          else
-            printf ("%s (empty)", adj_str(1:(30 - length (sheetnames{ii}))));
-          endif
-          printf ("\n");
-        endif
-        if (tr)
-          sheetnames(ii, 2) = sprintf ("%s:%s", calccelladdress (tr, lc), calccelladdress (lr, rc));
-        endif
-
-      endfor
+      [sh_names] = __UNO_spsh_info__ (ods);
 
     else
-#      error (sprintf ("odsfinfo: unknown OpenOffice.org .ods interface - %s.", ods.xtype));
+      ## Below error will have been catched in odsopen() above
+#     error (sprintf ("odsfinfo: unknown OpenOffice.org .ods interface - %s.", ods.xtype));
 
     endif
+  endif
+
+  if (toscreen)
+    sh_cnt = size (sh_names, 1);
+    # Echo sheet names to screen
+    for ii=1:sh_cnt
+      str1 = sprintf ("%3d: %s", ii, sh_names{ii, 1});
+      if (index (sh_names{ii, 2}, ":"))
+        str3 = ['(Used range ~ ' sh_names{ii, 2} ')'];
+      else
+        str3 = sh_names{ii, 2};
+      endif
+      printf ("%s%s%s\n", str1, str2(1:lstr2-length (sh_names{ii, 1})), str3);
+    endfor
   endif
 
   ods = odsclose (ods);

@@ -86,146 +86,71 @@
 ## 2011-09-08 Some code simplifications
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-02-25 Added info on occupied ranges to sh_names outarg for all interfaces
+## 2012-10-12 Moved all interface-specific code into ./private subfuncs
 
 function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 
-	persistent str2; str2 = '                                 '; # 33 spaces
-	persistent lstr2; lstr2 = length (str2);
+  persistent str2; str2 = '                                 '; # 33 spaces
+  persistent lstr2; lstr2 = length (str2);
 
-	xls = xlsopen (filename, 0, reqintf);
-	if (isempty (xls)); return; endif
+  xls = xlsopen (filename, 0, reqintf);
+  if (isempty (xls)); return; endif
 
-	toscreen = nargout < 1;
+  toscreen = nargout < 1;
 
-	xlWorksheet = -4167; xlChart = 4;
-	# If any valid xls-pointer struct has been returned, it must be a valid Excel spreadsheet
-	filetype = 'Microsoft Excel Spreadsheet'; fformat = '';
-	
-	if (strcmp (xls.xtype, 'COM'))
-		# See if desired worksheet number or name exists
-		sh_cnt = xls.workbook.Sheets.count;
-		sh_names = cell (sh_cnt, 2);
-		ws_cnt = 0; ch_cnt = 0; o_cnt = 0;
-		for ii=1:sh_cnt
-			sh_names(ii, 1) = xls.workbook.Sheets(ii).Name;
-			if (xls.workbook.Sheets(ii).Type == xlWorksheet)
-				[tr, lr, lc, rc] = getusedrange (xls, ++ws_cnt);
-				if (tr)
-					sh_names(ii, 2) = sprintf ("%s:%s", calccelladdress (tr, lc), calccelladdress (lr, rc));
-				else
-					sh_names(ii, 2) = "Empty";
-				endif
-			elseif (xls.workbook.Sheets(ii).Type == xlChart)
-				sh_names(ii, 2) = sprintf ("Chart"); ++ch_cnt;
-			else
-				sh_names(ii, 2) = 'Other_type'; ++o_cnt;
-			endif
-		endfor
-		if (ws_cnt > 0 || ch_cnt > 0)
-			if (strcmpi (xls.filename(end-2:end), 'xls'))
-				fformat = "xlWorkbookNormal";
-			elseif (strcmpi (xls.filename(end-2:end), 'csv'))
-				fformat = "xlCSV";			# Works only with COM
-			elseif (strcmpi (xls.filename(end-3:end-1), 'xls'))
-				fformat = "xlOpenXMLWorkbook";
-			elseif (strmatch ('htm', lower (xls.filename(end-3:end))))
-				fformat = "xlHtml";			# Works only with COM
-			else
-				fformat = '';
-			endif
-		endif
-		
-	elseif (strcmp (xls.xtype, 'POI'))
-		persistent cblnk; cblnk = java_get ('org.apache.poi.ss.usermodel.Cell', 'CELL_TYPE_BLANK');
-		sh_cnt = xls.workbook.getNumberOfSheets();
-		sh_names = cell (sh_cnt, 2); nsrows = zeros (sh_cnt, 1);
-		for ii=1:sh_cnt
-			sh = xls.workbook.getSheetAt (ii-1);         # Java POI starts counting at 0 
-			sh_names(ii, 1) = char (sh.getSheetName());
-			# Java POI doesn't distinguish between worksheets and graph sheets
-			[tr, lr, lc, rc] = getusedrange (xls, ii);
-			if (tr)
-				sh_names(ii, 2) = sprintf ("%s:%s", calccelladdress (tr, lc), calccelladdress (lr, rc));
-			else
-				sh_names(ii, 2) = "Empty";
-			endif
-		endfor
-		if (sh_cnt > 0)
-			if (strcmpi (xls.filename(end-2:end), 'xls'))
-				fformat = "xlWorkbookNormal";
-			elseif (strcmpi (xls.filename(end-3:end-1), 'xls'))
-				fformat = "xlOpenXMLWorkbook";
-			else
-				fformat = '';
-			endif
-		endif
+  # If any valid xls-pointer struct has been returned, it must be a valid Excel spreadsheet
+  filetype = 'Microsoft Excel Spreadsheet'; fformat = '';
 
-	elseif (strcmp (xls.xtype, 'JXL'))
-		sh_cnt = xls.workbook.getNumberOfSheets ();
-		sh_names = cell (sh_cnt, 2); nsrows = zeros (sh_cnt, 1);
-		sh_names(:,1) = char (xls.workbook.getSheetNames ());
-		for ii=1:sh_cnt
-			[tr, lr, lc, rc] = getusedrange (xls, ii);
-			if (tr)
-				sh_names(ii, 2) = sprintf ("%s:%s", calccelladdress (tr, lc), calccelladdress (lr, rc));
-			else
-				sh_names(ii, 2) = "Empty";
-			endif
-		endfor
-		if (sh_cnt > 0) fformat = "xlWorkbookNormal"; else, fformat = ''; endif
+  if (strcmp (xls.xtype, 'COM'))
+    [sh_names] = __COM_spsh_info__ (xls);
 
-	elseif (strcmp (xls.xtype, 'OXS'))
-		sh_cnt = xls.workbook.getNumWorkSheets ();
-		sh_names = cell (sh_cnt, 2); nsrows = zeros (sh_cnt, 1);
-		for ii=1:sh_cnt
-			sh = xls.workbook.getWorkSheet (ii-1);   # OpenXLS starts counting at 0 
-			sh_names(ii, 1) = char (sh.getSheetName());
-			# OpenXLS doesn't distinguish between worksheets and graph sheets
-			[tr, lr, lc, rc] = getusedrange (xls, ii);
-			if (tr)
-				sh_names(ii, 2) = sprintf ("%s:%s", calccelladdress (tr, lc), calccelladdress (lr, rc));
-			else
-				sh_names(ii, 2) = "Empty or Chart";
-			endif
-		endfor
-		if (sh_cnt > 0); fformat = "xlWorkbookNormal"; else; fformat = ''; endif
-			
-	elseif (strcmp (xls.xtype, 'UNO'))
-		sheets = xls.workbook.getSheets ();
-		sheetnames = sheets.getElementNames ();		# A Java object, NOT a cell array
-		sh_cnt = numel (sheetnames);
-		sh_names = cell (sh_cnt, 2);
-		for ii=1:sh_cnt
-			sh_names(ii, 1) = sheetnames(ii);
-			[ tr, lr, lc, rc ] = getusedrange (xls, ii);
-			if (tr)
-				sh_names(ii, 2) = sprintf ("%s:%s", calccelladdress (tr, lc), calccelladdress (lr, rc));
-			else
-				sh_names(ii, 2) = "Empty or Chart";
-			endif
-		endfor
-		if (sh_cnt > 0); fformat = "xlWorkbookNormal"; else; fformat = ''; endif
-		
-#	elseif     <Other Excel interfaces below>
+  elseif (strcmp (xls.xtype, 'POI'))
+    [sh_names] = __POI_spsh_info__ (xls);
 
-	else
-		error (sprintf ("xlsfinfo: unknown Excel .xls interface - %s.", xls.xtype));
+  elseif (strcmp (xls.xtype, 'JXL'))
+    [sh_names] = __JXL_spsh_info__ (xls);
 
-	endif
+  elseif (strcmp (xls.xtype, 'OXS'))
+    [sh_names] = __OXS_spsh_info__ (xls);
 
-	if (toscreen)
-		# Echo sheet names to screen
-		for ii=1:sh_cnt
-			str1 = sprintf ("%3d: %s", ii, sh_names{ii, 1});
-			if (index (sh_names{ii, 2}, ":"))
-				str3 = ['(Used range ~ ' sh_names{ii, 2} ')'];
-			else
-				str3 = sh_names{ii, 2};
-			endif
-			printf ("%s%s%s\n", str1, str2(1:lstr2-length (sh_names{ii, 1})), str3);
-		endfor
-	endif
+  elseif (strcmp (xls.xtype, 'UNO'))
+    [sh_names] = __UNO_spsh_info__ (xls);
 
-	xlsclose (xls);
-	
+#  elseif     <Other Excel interfaces below>
+
+  else
+    error (sprintf ("xlsfinfo: unknown Excel .xls interface - %s.", xls.xtype));
+
+  endif
+
+  sh_cnt = size (sh_names, 1);
+  if (toscreen)
+    # Echo sheet names to screen
+    for ii=1:sh_cnt
+      str1 = sprintf ("%3d: %s", ii, sh_names{ii, 1});
+      if (index (sh_names{ii, 2}, ":"))
+        str3 = ['(Used range ~ ' sh_names{ii, 2} ')'];
+      else
+        str3 = sh_names{ii, 2};
+      endif
+      printf ("%s%s%s\n", str1, str2(1:lstr2-length (sh_names{ii, 1})), str3);
+    endfor
+  else
+    if (sh_cnt > 0)
+      if (strcmpi (xls.filename(end-2:end), 'xls'))
+        fformat = "xlWorkbookNormal";
+      elseif (strcmpi (xls.filename(end-2:end), 'csv'))
+        fformat = "xlCSV";      # Works only with COM
+      elseif (strcmpi (xls.filename(end-3:end-1), 'xls'))
+        fformat = "xlOpenXMLWorkbook";
+      elseif (strmatch ('htm', lower (xls.filename(end-3:end))))
+        fformat = "xlHtml";      # Works only with COM
+      else
+        fformat = '';
+      endif
+    endif
+  endif
+
+  xlsclose (xls);
+
 endfunction

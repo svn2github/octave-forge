@@ -24,60 +24,57 @@
 ## OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{h} = } drawPoint (@var{x}, @var{y})
-## @deftypefnx {Function File} {@var{h} = } drawPoint (@var{coord})
-## @deftypefnx {Function File} {@var{h} = } drawPoint (@dots{}, @var{opt})
-## Draw the point on the axis.
-#
-#   Draws points defined by coordinates @var{x} and @var{y}.
-#   @var{x} and @var{y} should be array the same size. Coordinates can be 
-#   packed coordinates in a single [N*2] array @var{coord}. Options @var{opt}
-#   are passed to the @code{plot} function.
-#
-#   @seealso{points2d, clipPoints}
-#
+## @deftypefn {Function File} {@var{h} =} drawPoint3d (@var{x}, @var{y}, @var{z})
+## @deftypefnx {Function File} {@var{h} =} drawPoint3d (@var{coord})
+## @deftypefnx {Function File} {@var{h} =} drawPoint3d (@dots{})
+## Draw 3D point on the current axis.
+##
+##   drawPoint3d(X, Y, Z) 
+##   will draw points defined by coordinates X and Y. 
+##   X and Y are N*1 array, with N being number of points to be drawn.
+##   
+##   drawPoint3d(COORD) 
+##   packs coordinates in a single [N*3] array.
+##
+##   drawPoint3d(..., OPT) 
+##   will draw each point with given option. OPT is a string compatible with
+##   'plot' model.
+##
+##   H = drawPoint3d(...) 
+##   Also return a handle to each of the drawn points.
+##
+## @seealso{points3d, clipPoints3d}
 ## @end deftypefn
 
-function varargout = drawPoint(varargin)
+function varargout = drawPoint3d(varargin)
 
-  # process input arguments
   var = varargin{1};
-  if size(var, 2)==1
-      # points stored in separate arrays
-      px = varargin{1};
-      py = varargin{2};
-      varargin(1:2) = [];
-  else
-      # points packed in one array
+  if size(var, 2)==3
+      # points are given as one single array with 3 columns
       px = var(:, 1);
       py = var(:, 2);
-      varargin(1) = [];
+      pz = var(:, 3);
+      varargin = varargin(2:end);
+  elseif length(varargin)<3
+      error('wrong number of arguments in drawPoint3d');
+  else
+      # points are given as 3 columns with equal length
+      px = varargin{1};
+      py = varargin{2};
+      pz = varargin{3};
+      varargin = varargin(4:end);
   end
 
-  # ensure we have column vectors
-  px = px(:);
-  py = py(:);
-
-  # default drawing options, but keep specified options if it has the form of
-  # a bundled string
+  # default draw style: no line, marker is 'o'
   if length(varargin)~=1
-      varargin = [{'linestyle', 'none', 'marker', 'o', 'color', 'b'}, varargin];
+      varargin = ['linestyle', 'none', 'marker', 'o', varargin];
   end
 
-  # plot the points, using specified drawing options
-  h = plot(px(:), py(:), varargin{:});
+  # plot only points inside the axis.
+  h = plot3(px, py, pz, varargin{:});
 
-  # process output arguments
   if nargout>0
-      varargout{1}=h;
+      varargout{1} = h;
   end
 
 endfunction
-
-%!demo
-%!   drawPoint(10, 10);
-
-%!demo
-%!   t = linspace(0, 2*pi, 20)';
-%!   drawPoint([5*cos(t)+10 3*sin(t)+10], 'r+');
-

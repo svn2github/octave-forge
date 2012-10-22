@@ -24,13 +24,13 @@
 ## OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{} =} function_name (@var{}, @var{})
+## @deftypefn {Function File} {@var{point} =} circle3dPoint (@var{circle},@var{pos})
 ## Coordinates of a point on a 3D circle from its position
 ##
-##   output = circle3dPoint(input)
 ##
 ##   Example
 ## @example
+##   circle = [0 0 0 1 45 45 0];
 ##   # Draw some points on a 3D circle
 ##     figure; hold on;
 ##     # origin point
@@ -43,7 +43,7 @@
 ##     # Draw point opposite to origin
 ##     drawPoint3d(circle3dPoint(circle, 180), 'k*')
 ## @end example
-##   
+##
 ## @seealso{circles3d, circle3dPosition}
 ## @end deftypefn
 
@@ -78,13 +78,20 @@ endfunction
 
 %!demo
 %!  # Draw some points on a 3D circle
-%!  figure; hold on;
+%!  circle = [0 0 0 1 45 45 0];
+%!  figure;
+%!
+%!  drawCircle3d(circle);
+%!  hold on;
+%!
 %!  # origin point
 %!  pos1 = 0;
-%!  drawPoint3d(circle3dPoint(circle, pos1), 'ro')
+%!  drawPoint3d(circle3dPoint(circle, pos1), 'go')
 %!  # few points regularly spaced
-%!  for i = 10:10:40
+%!  for i = 10:10:90
 %!     drawPoint3d(circle3dPoint(circle, i))
 %!  end
 %!  # Draw point opposite to origin
 %!  drawPoint3d(circle3dPoint(circle, 180), 'k*')
+%!  axis square equal;
+%!  view(70,30)

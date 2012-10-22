@@ -16,7 +16,8 @@ geometry-1.6.0   Release Date: 2012-10-12  Release Manager: Juan Pablo Carbajal
   polygonArea3d   transformPoint3d   drawBox3d   drawEdge3d   drawMesh
   createCubeOctahedron   boundingBox3d   cart2sph2   circle3dOrigin
   circle3dPosition   drawCircleArc3d   drawPolygon3d   drawSphericalEdge
-  drawSphericalPolygon   intersectPlaneSphere   sph2cart2d
+  drawSphericalPolygon   intersectPlaneSphere   sph2cart2d   box3dVolume
+   cart2cyl   circle3dPoint   cyl2cart
 
 ** Updated functions
   distancePoints

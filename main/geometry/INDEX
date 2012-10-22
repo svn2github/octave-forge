@@ -191,11 +191,13 @@ geometry >> Computational Geometry
  drawMesh
 3D Spheres
  circle3dOrigin
+ circle3dPoint
  circle3dPosition
  drawCircleArc3d
  drawSphere
 3D Boxes
  boundingBox3d
+ box3dVolume
  drawBox3d
 3D Polygons
  drawPolygon3d
@@ -209,8 +211,10 @@ geometry >> Computational Geometry
  createTranslation3d
  transformPoint3d
 3D Others
+ cart2cyl
  cart2sph2
  cart2sph2d
+ cyl2cart
  drawAxis3d
  drawCylinder
  sph2cart2

@@ -7,7 +7,7 @@ geometry-1.7.0   Release Date: 2012-XX-XX  Release Manager: Juan Pablo Carbajal
 
    box3dVolume   cart2cyl   circle3dPoint   cyl2cart
    drawCircle3d   drawPoint3d   createScaling3d   drawCube
-   createCube
+   createCube drawSphericalTriangle
 
 ===============================================================================
 geometry-1.6.0   Release Date: 2012-10-12  Release Manager: Juan Pablo Carbajal

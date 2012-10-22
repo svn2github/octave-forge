@@ -172,6 +172,7 @@ geometry >> Computational Geometry
  anglePoints3d
  angleSort3d
  distancePoints
+ drawPoint3d
  projPointOnPlane
 3D Lines
  distancePointLine3d
@@ -188,13 +189,17 @@ geometry >> Computational Geometry
  projPointOnPlane
 3D Meshes
  createCubeOctahedron
+ createCube
+ drawCube
  drawMesh
 3D Spheres
  circle3dOrigin
  circle3dPoint
  circle3dPosition
+ drawCircle3d
  drawCircleArc3d
  drawSphere
+ drawSphericalTriangle
 3D Boxes
  boundingBox3d
  box3dVolume
@@ -209,6 +214,7 @@ geometry >> Computational Geometry
  createRotationOy
  createRotationOz
  createTranslation3d
+ createScaling3d
  transformPoint3d
 3D Others
  cart2cyl

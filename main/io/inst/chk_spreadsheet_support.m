@@ -87,6 +87,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 % 2012-06-24 Replaced error msg by printf & return
 %     ''     Added Java pkg inquiry (Octave) before attempting javaclasspath()
 %     ''     Updated check for odfdom version (now supports 0.8.8)
+% 2012-10-07 Moved common classpath entry code to private function
 
   jcp = []; retval = 0;
   if (nargin < 3); path_to_ooo= ''; end %if
@@ -195,25 +196,11 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 
   % Try Java & Apache POI. First Check basic .xls (BIFF8) support
   if (dbug > 1), fprintf ('\nBasic POI (.xls) <poi-3> <poi-ooxml>:\n'); end %if
-  jpchk1 = 0; entries1 = {'poi-3', 'poi-ooxml-3'}; missing1 = zeros (1, numel (entries1));
+  entries1 = {'poi-3', 'poi-ooxml-3'}; missing1 = zeros (1, numel (entries1));
   % Only under *nix we might use brute force: e.g., strfind (javaclasspath, classname)
   % as javaclasspath is one long string. Under Windows however classpath is a cell array
   % so we need the following more subtle, platform-independent approach:
-  for jj=1:length (entries1)
-    found = 0;
-    for ii=1:length (jcp)
-      jcplst = strsplit (jcp{ii}, filesep);
-      jcpentry = jcplst {end};
-      if (~isempty (strfind (lower (jcpentry), lower (entries1{jj}))))
-        jpchk1 = jpchk1 + 1; found = 1;
-        if (dbug > 2), fprintf ('  - %s OK\n', jcp{ii}); end %if
-      end %if
-    end %for
-    if (~found)
-      if (dbug > 2), fprintf ('  %s....jar missing\n', entries1{jj}); end %if 
-      missing1(jj) = 1; 
-    end %if
-  end %for
+  [jpchk1, missing1] = chk_jar_entries (jcp, entries1, dbug);
   if (jpchk1 >= numel (entries1)), retval = retval + 2; end %if
   if (dbug > 1)
     if (jpchk1 >= numel (entries1))
@@ -223,25 +210,10 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
     end %if
   end %if
   % Next, check OOXML support
-    if (dbug > 1), fprintf ('\nPOI OOXML (.xlsx) <xbean> <poi-ooxml-schemas> <dom4j>:\n'); end %if
-  jpchk2 = 0; entries2 = {'xbean', 'poi-ooxml-schemas', 'dom4j-1.6.1'}; 
-  missing2 = zeros (1, numel (entries2));
-  for jj=1:length (entries2)
-    found = 0;
-    for ii=1:length (jcp)
-      jcplst = strsplit (jcp{ii}, filesep);
-      jcpentry = jcplst {end};
-      if (~isempty (strfind (lower (jcpentry), lower (entries2{jj}))))
-        jpchk2 = jpchk2 + 1; found = 1;
-        if (dbug > 2), fprintf ('  - %s OK\n', jcp{ii}); end %if
-      end %if
-    end % for
-    if (~found)
-      if (dbug > 2), fprintf ('  %s....jar missing\n', entries2{jj}); end %if
-      missing2(jj) = 1;
-    end %if
-  end % for
+  if (dbug > 1), fprintf ('\nPOI OOXML (.xlsx) <xbean> <poi-ooxml-schemas> <dom4j>:\n'); end %if
+  entries2 = {'xbean', 'poi-ooxml-schemas', 'dom4j-1.6.1'}; 
   % Only update retval if all classes for basic POI have been found in javaclasspath
+  [jpchk2, missing2] = chk_jar_entries (jcp, entries2, dbug);
   if (jpchk1 >= numel (entries1) && jpchk2 >= numel (entries2)), retval = retval + 4; end %if
   if (dbug > 1)
     if (jpchk2 >= numel (entries2)) 
@@ -253,22 +225,8 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 
   % Try Java & JExcelAPI
   if (dbug > 1), fprintf ('\nJExcelAPI (.xls (incl. BIFF5 read)) <jxl>:\n'); end %if
-  jpchk = 0; entries3 = {'jxl'}; missing3 = zeros (1, numel (entries3));
-  for jj=1:length (entries3)
-    found = 0;
-    for ii=1:length (jcp)
-      jcplst = strsplit (jcp{ii}, filesep);
-      jcpentry = jcplst {end};
-      if (~isempty (strfind (lower (jcpentry), lower (entries3{jj}))))
-        jpchk = jpchk + 1; found = 1;
-        if (dbug > 2), fprintf ('  - %s OK\n', jcp{ii}); end %if
-      end % if
-    end %for
-    if (~found) 
-      if (dbug > 2), fprintf ('  %s....jar missing\n', entries3{jj}); end %if 
-      missing3(jj) = 1; 
-    end %if
-  end %for
+  entries3 = {'jxl'}; missing3 = zeros (1, numel (entries3));
+  [jpchk, missing3] = chk_jar_entries (jcp, entries3, dbug);
   if (jpchk >= numel (entries3)), retval = retval + 8; end %if
   if (dbug > 1)
     if (jpchk >= numel (entries3))
@@ -280,22 +238,8 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 
   % Try Java & OpenXLS
   if (dbug > 1), fprintf ('\nOpenXLS (.xls (BIFF8)) <OpenXLS>:\n'); end %if
-  jpchk = 0; entries4 = {'OpenXLS'}; missing4 = zeros (1, numel (entries4));
-  for jj=1:length (entries4)
-    found = 0;
-    for ii=1:length (jcp)
-      jcplst = strsplit (jcp{ii}, filesep);
-      jcpentry = jcplst {end};
-      if (~isempty (strfind (lower (jcpentry), lower (entries4{jj}))))
-        jpchk = jpchk + 1; found = 1;
-        if (dbug > 2), fprintf ('  - %s OK\n', jcp{ii}); end %if
-      end % if
-    end %for
-    if (~found) 
-      if (dbug > 2), fprintf ('  %s....jar missing\n', entries4{jj}); end %if 
-      missing4(jj) = 1; 
-    end %if
-  end %for
+  entries4 = {'OpenXLS'}; missing4 = zeros (1, numel (entries4));
+  [jpchk, missing4] = chk_jar_entries (jcp, entries4, dbug);
   if (jpchk >= numel (entries4)), retval = retval + 16; end %if
   if (dbug > 1)
     if (jpchk >= numel (entries4))
@@ -307,22 +251,8 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 
   % Try Java & ODF toolkit
   if (dbug > 1), fprintf ('\nODF Toolkit (.ods) <odfdom> <xercesImpl>:\n'); end %if
-  jpchk = 0; entries5 = {'odfdom', 'xercesImpl'}; missing5 = zeros (1, numel (entries5));
-  for jj=1:length (entries5)
-    found = 0;
-    for ii=1:length (jcp)
-      jcplst = strsplit (jcp{ii}, filesep);
-      jcpentry = jcplst {end};
-      if (~isempty (strfind ( lower (jcpentry), lower (entries5{jj}))))
-        jpchk = jpchk + 1; found = 1;
-        if (dbug > 2), fprintf ('  - %s OK\n', jcp{ii}); end %if
-      end %if
-    end %for
-    if (~found) 
-      if (dbug > 2), fprintf ('  %s....jar missing\n', entries5{jj}); end %if
-      missing5(jj) = 1; 
-    end %if
-  end %for
+  entries5 = {'odfdom', 'xercesImpl'}; missing5 = zeros (1, numel (entries5));
+  [jpchk, missing5] = chk_jar_entries (jcp, entries5, dbug);
   if (jpchk >= numel (entries5))    % Apparently all requested classes present.
     % Only now we can check for proper odfdom version (only 0.7.5 & 0.8.6 work OK).
     % The odfdom team deemed it necessary to change the version call so we need this:
@@ -347,22 +277,8 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 
   % Try Java & jOpenDocument
   if (dbug > 1), fprintf ('\njOpenDocument (.ods + experimental .sxc readonly) <jOpendocument>:\n'); end %if
-  jpchk = 0; entries6 = {'jOpenDocument'}; missing6 = zeros (1, numel (entries6));
-  for jj=1:length (entries6)
-    found = 0;
-    for ii=1:length (jcp)
-      jcplst = strsplit (jcp{ii}, filesep);
-      jcpentry = jcplst {end};
-       if (~isempty (strfind (lower (jcpentry), lower (entries6{jj}))))
-        jpchk = jpchk + 1; found = 1;
-        if (dbug > 2), fprintf ('  - %s OK\n', jcp{ii}); end %if
-      end %if
-    end %for
-    if (~found) 
-      if (dbug > 2), fprintf ('  %s....jar missing\n', entries6{jj}); end %if 
-      missing6(jj) = 1; 
-    end %if
-  end %for
+  entries6 = {'jOpenDocument'}; missing6 = zeros (1, numel (entries6));
+  [jpchk, missing6] = chk_jar_entries (jcp, entries6, dbug);
   if (jpchk >= numel (entries6)), retval = retval + 64; end %if
   if (dbug > 1)
     if (jpchk >= numel(entries6))
@@ -375,30 +291,8 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
   % Try Java & UNO
   if (dbug > 1), fprintf ('\nUNO/Java (.ods, .xls, .xlsx, .sxc) <OpenOffice.org>:\n'); end %if
   % entries0(1) = not a jar but a directory (<000_install_dir/program/>)
-  jpchk = 0; entries0 = {'program', 'unoil', 'jurt', 'juh', 'unoloader', 'ridl'};
-  missing0 = zeros (1, numel (entries0));
-  for jj=1:numel (entries0)
-    found = 0;
-    for ii=1:numel (jcp)
-      jcplst = strsplit (jcp{ii}, filesep);
-      jcpentry = jcplst {end};
-      if (~isempty (strfind (lower (jcpentry), lower (entries0{jj}))))
-        jpchk = jpchk + 1; found = 1;
-        if (dbug > 2), fprintf ('  - %s OK\n', jcp{ii}); end %if
-      end %if
-    end %for
-    if (~found)
-      if (dbug > 2)
-        if (jj == 1)
-          % Just a dir
-          fprintf ('  %s.... (directory) not found\n', entries0{jj}); 
-        else
-          fprintf ('  %s....jar missing\n', entries0{jj}); 
-        end %if
-      end %if 
-      missing0(jj) = 1; 
-    end %if
-  end %for
+  entries0 = {'program', 'unoil', 'jurt', 'juh', 'unoloader', 'ridl'};
+  [jpchk, missing0] = chk_jar_entries (jcp, entries0, dbug);
   if (jpchk >= numel (entries0)), retval = retval + 128; end %if
   if (dbug > 1)
     if (jpchk >= numel (entries0))

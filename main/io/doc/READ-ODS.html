@@ -18,7 +18,7 @@
 	Copyright © 2009 - 2012 Philip Nienhuis &lt;prnienhuis at users.sf.net&gt;</font></font>
 </p>
 	<p align="center"><font face="Arial, sans-serif"><font size="2">
-	This version September 7, 2012</font></font>
+	This version October 14, 2012</font></font>
 </p>
     <p><font face="Arial, sans-serif"><font size="2">
 	<i>(ODS = Open Document Format spreadsheet data format, used by e.g., OpenOffice.org.)</i></font></font>
@@ -48,7 +48,7 @@
 	<p><font face="Arial, sans-serif"><font size="2"><i><b>odsfinfo.m</b></i>
 	<br>Explore sheet names and optionally estimated data size of ods files with unknown content.</font></font></p></dt><dt>
 	<p><font face="Arial, sans-serif"><font size="2"><i><b>calccelladdress.m</b></i>
-	<br>Utility function needed for jOpenDocument class.</font></font></p></dt><dt>
+	<br>Utility function, can be used to compute a spreadsheet-type cell adress from 1-based row and column numbers.</font></font></p></dt><dt>
 	<p><font face="Arial, sans-serif"><font size="2"><i><b>parsecell.m</b></i>
 	<br>(contained in Excel xlsread scripts, but works also for ods support) parse raw data (cell array) into separate numeric array and text (cell) array.)</font></font></p></dt><dt>
 	<p><font face="Arial, sans-serif"><font size="2"><i><b>chk_spreadsheet_support.m</b></i>
@@ -56,15 +56,9 @@
 	not specifically meant for direct invocation from the Octave prompt (it
 	is more useful during initialization of Octave itself) it can be very
 	helpful when hunting down issues with spreadsheet support in Octave.</font></font></p></dt>
-	<dt style="font-style: italic;"><font face="Arial, sans-serif"><font size="2"><b>spsh_chkrange.m</b></font></font></dt><dt style="font-style: italic;">
-    	<font face="Arial, sans-serif"><font size="2"><b>spsh_prstype.m</b></font></font></dt><dt style="font-style: italic;">
-    	<font face="Arial, sans-serif"><font size="2"><b>getusedrange.m</b></font></font></dt><dt style="font-style: italic;">
-    	<font face="Arial, sans-serif"><font size="2"><b>calccelladdress.m</b></font></font></dt><dt style="font-style: italic;">
-    	<font face="Arial, sans-serif"><font size="2"><b>parse_sp_range.m</b></font></font></dt><dt>
-    	<font face="Arial, sans-serif"><font size="2">Support files called by
-    	the scripts and not meant for direct invocation by users.</font></font></dt><dt>
+  <dt>
 	<p><font face="Arial, sans-serif"><font size="2"><i><b>io_ods_testscript.m</b></i>
-	<br>Script for testing basic operation of ODS spreadsheet functions.</font></font></p><br></dt>  
+	<br>Script for testing basic operation of ODS spreadsheet functions. Meant for testers and developers, but I don't mind if mere mortal users give it a try as well ;-)</font></font></p><br></dt>  
   
 
 </dl>
@@ -483,9 +477,7 @@
     <p align="center"><font face="Arial, sans-serif"><font size="4"><u><b>DEVELOPMENT</b></u></font></font></p>
     	<p><font face="Arial, sans-serif"><font size="2">As with the Excel
     	r/w stuff, adding new interfaces should be easy and straightforward.
-    	Add relevant stanzas in <b>odsopen</b>, <b>odsclose, odsfinfo</b> &amp;
-    	<b>getusedrange</b> and add new subfunctions (for the real work) to
-    	<b>getusedrange_</b>&lt;INTF&gt;,  <b>oct2ods</b> and <b>ods2oct</b>.</font></font></p><p><font face="Arial, sans-serif"><font size="2">Suggestions for
+    	Add relevant stanzas for your new interface <b><i>INTF</i></b> in <b>odsopen</b>, <b>odsclose</b>, <b>odsfinfo</b>, <b>oct2ods</b>, <b>ods2oct</b>, <b>getusedrange</b> and add new subfunctions (for the real work) in subdir ./private; you'll need a total of six interface-dependent private functions (see the various examples for each interface in subdir ./private).</font></font></p><p><font face="Arial, sans-serif"><font size="2">Suggestions for
     	future development:</font></font></p>
     	<ul><li><font face="Arial, sans-serif"><font size="2">Reliable and easy ODS
     	write support (maybe when jOpenDocument is more mature)</font></font></li></ul><ul><li><p align="left">
@@ -561,7 +553,7 @@
     	<font face="Arial, sans-serif"><font size="2">oct2ods.m (revision
     	7159)</font></font></li></ul>
     	<p><font face="Arial, sans-serif"><font size="2">Enjoy!</font></font></p><p align="center"><font face="Arial, sans-serif"><font size="2">Philip
-    	Nienhuis, September 7, 2012</font></font></p><dl><dd><p align="center">
+    	Nienhuis, October 14, 2012</font></font></p><dl><dd><p align="center">
     	<br>
     </p></dd></dl>
     </body></html>

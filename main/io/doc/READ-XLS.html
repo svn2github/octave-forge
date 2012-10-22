@@ -13,7 +13,7 @@
 <BR>
 Copyright (C) 2009 - 2012 Philip Nienhuis &lt;prnienhuis at users.sf.net&gt;<BR>
 <BR>
-This version September 7, 2012</P>
+This version October 14, 2012</P>
 </FONT></FONT><B><U><FONT FACE="Arial, sans-serif" SIZE=4><FONT FACE="Arial, sans-serif" SIZE=4><P ALIGN="CENTER">EXCEL .XLS SUPPORT FILES</P>
 </B></U></FONT></FONT><FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><DL>
 <DT><BR>
@@ -46,12 +46,10 @@ This file.</FONT></FONT> </DT><BR>
 <B>chk_spreadsheet_support.m</B></DT>
 <DT>Internal function for (1) checking, (2) setting up, (3) debugging spreadsheet support. While not specifically meant for direct invocation from the Octave prompt (it is more useful during initialization of Octave itself) it can be very helpful when hunting down issues with spreadsheet support in Octave.</DT>
 </DL>
-<B>spsh_chkrange.m</B>,</FONT></FONT> <B><FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2>spsh_prstype.m</B>,</FONT></FONT> <B><FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2>getusedrange.m</B>,</FONT></FONT> <B><FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2>calccelladdress.m</B>,</FONT></FONT> <B><FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2>parse_sp_range.m
-</B>
-<DT>Support files called by the scripts and not meant for direct invocation by users.<BR></DT>
+<B>calccelladdress.m</B>,</FONT></FONT><FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><DT>Support function called by the script functions; calculates spreadsheet type row/column address based on 1-based row/column numbers.<BR></DT>
 <BR>
 <DT><B>io_xls_testscript.m</B></DT>
-<DT>Script for testing basic features of the spreadsheet scripts.</DT>
+<DT>Script for testing basic features of the spreadsheet scripts. Meant for testers and developers, but I don't mind ordinary users to give it a try.</DT>
 </DL>
 <P ALIGN="CENTER"><BR>
 </FONT></FONT><B><U><FONT FACE="Arial, sans-serif" SIZE=4><FONT FACE="Arial, sans-serif" SIZE=4>REQUIRED SUPPORT SOFTWARE</P>
@@ -195,7 +193,7 @@ Matlab's <B>xlsread</B> supports invoking extra functions while reading ("passin
 <BR>
 Matlab's <B>xlsread</B> flags some spreadsheet errors, octave-forge just returns blank cells.<BR>
 <BR>
-Octave's xlsread returns info about the actual (rather than the requested) cell range where the data came from. Personally I find it very useful to know from what part of a worksheet the data originate so I've put quite some effort in it :-)</DT>
+Octave's xlsread (and for that matter, xlsfinfo as well) returns info about the actual (rather than the requested) cell range where the data came from. Personally I find it very useful to know from what part of a worksheet the data originate so I've put quite some effort in it :-)</DT>
 <DT>Matlab can't, due to Excel automatically trimming returned arrays from empty outer columns and rows. Octave is more clever but the Visual Basic call used for determining the actually used range has some limitations: (1) it relies on cached range values and thus may be out-of-date, and (2) it counts empty formatted cells too. When using ActiveX/COM, if octave's <B>xlsfinfo</B>.m returns wrong data ranges it is most often an overestimation.</DT>
 <DT>Matlab's <B>xlsread</B> ignores all non-numeric data values outside the smallest rectangle encompassing all numerical values. Octave's <B>xlsread</B> doesn't. This means that Matlab ignores all row/column headers, not very user-friendly IMO. <BR>
 <BR>
@@ -212,7 +210,8 @@ Octave's <B>xlswrite</B> works on systems w/o Excel support, Matlab's doesn't (p
 <DT>If the specified write range is larger than the actual data array, Matlab's <B>xlswrite</B> adds #N/A cells to fill up the lowermost rows and rightmost columns; octave-forge's <B>xlswrite</B> doesn't. <BR>
 <BR>
 <B>xlsfinfo</B><BR>
-When invoking Excel/COM interface, octave's <B>xlsfinfo</B> also echoes the type of sheet (worksheet, chart), not just the sheet names. Using Java I haven't found similar functionality (yet).</DT>
+When invoking Excel/COM interface, Octave's <B>xlsfinfo</B> also echoes the type of sheet (worksheet, chart), not just the sheet names. Using Java I haven't found similar functionality (yet).<BR>
+Octave's <B>xlsfinfo</B> also shows (and returns) the range of the smallest rectangle encompassing all occupied data ranges in each sheet.</DT>
 </DL>
 </FONT></FONT><B><U><FONT FACE="Arial, sans-serif" SIZE=4><FONT FACE="Arial, sans-serif" SIZE=4><P ALIGN="CENTER">COMPARISON OF INTERFACES &amp; USAGE</P>
 </B></U></FONT></FONT><FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><DL>
@@ -225,15 +224,16 @@ Another -obvious- limitation is that COM Excel access only works on Windows syst
 <DT>JexcelAPI, unlike ApachePOI, doesn't evaluate functions while reading but instead relies on cached results (i.e. results computed by Excel itself). Depending on Excel settings (&quot;Automatic calculation&quot; ON or OFF) this may or may not yield incorrect (or expected) results. <BR>
 <BR>
 <b>Apache POI</b> (Java-based and platform-independent too) is based on the OpenOffice.org I/O Excel r/w routines. It is a more versatile than JExcelAPI, while it doesn't support BIFF5 it does support BIFF8 (Excel 97 – 2003) and OOXML (Excel 2007).</DT>
-<DT>It is slower than native JXL let alone Excel &amp; COM but it features active formula evaluation, although at the moment (v. 3.8) still not all Excel functions have been implemented. I've made the relevant subfunction (xls2jpoi2oct) fall back to cached formula results (and yield a suitable warning) for non-implemented Excel functions while reading Excel files. <BR>
+<DT>It is slower than native JXL let alone Excel &amp; COM but it features active formula evaluation, although at the moment (fall 2012, v. 3.8) still not *all* Excel functions have been implemented (a daunting task for the POI devs, as it is hard to keep up with MS here). I've made the relevant subfunction (xls2jpoi2oct) fall back to cached formula results (and yield a suitable warning) for non-implemented Excel functions while reading Excel files. <BR>
 <BR>
-<b>OpenXLS</b> (an open source version of Extentech's commercial Java-xls product) is still experimental. It seems to work faster than JExcelAPI, but it has other issues - i.e., it locks the .xls file and the unlocking mechanism is a bit wonky. Sometimes xls files keep being locked until Octave is shut down. Currently OXS write support is disabled (but the code is there). OpenXLS doesn't support reading back formulas as text strings.<BR>
+<b>OpenXLS</b> (an open source version of Extentech's commercial Java-xls product) is still experimental. It seems to work faster than JExcelAPI, but it has other issues - i.e., it locks the .xls file and the unlocking mechanism is a bit wonky. Sometimes xls files keep being locked until Octave is shut down. The solution suggested by Extentech leaves your working directory cluttered with temporary files. <BR>
+Currently OXS write support is disabled (but the code is there). OpenXLS doesn't support reading back formulas as text strings.<BR>
 <BR>
-<b>UNO</b> (invoking OpenOffice.org or clones behind the scenes, a la ActiveX) is experimental. It works FAST (i.e., once OOo itself is loaded which can take some time) and can process much larger spreadsheets than the other Java-based interfaces because the data are not entered in the JVM but in OOo's memory.<BR>
-A big stumbling block is that odsclose() on a UNO xls struct will kill ALL OpenOffice.org invocations, also those that were not related to Octave! This is due to UNO-Java limitations.<br>
+<b>UNO</b> (invoking OpenOffice.org or clones behind the scenes, a la ActiveX) is experimental. It works FAST (i.e., once OOo itself is loaded and initialized which can take some time) and can process much larger spreadsheets than the other Java-based interfaces because the data are not entered in the JVM but in OOo's memory.<BR>
+A big stumbling block is that odsclose() on a UNO xls struct will kill ALL OpenOffice.org invocations, also those that were not related to Octave! This is due to UNO-Java limitations.<BR>
 The underlying issue is that when Octave starts an OpenOffice.org invocation, OpenOffice.org must be closed for Octave to be able to exit; otherwise Octave will wait for OOo to shut down before it can terminate itself. So Octave must kill OOo to be able to terminate.<br>
 A way out hasn't been found yet.<br><br>
-All in all, of the three Java options I'd prefer Apache POI rather than OpenXLS or JexcelAPI. But the latter is indispensable for BIFF5 formats. Once UNO is stable it is to be preferred as it can read ALL file formats supported by OOo (viz. wk1, ods, xlsx, sxc, ...)</DT>
+All in all, of the three Java options I'd prefer Apache POI rather than OpenXLS or JexcelAPI. But the latter is indispensable for BIFF5 formats. Once UNO is stable it is to be preferred as it can read ALL file formats supported by OOo (viz. wk1, ods, xlsx, sxc, ...). If you need to process really large spreadsheets, UNO is by far the fastest option (behind COM on Windows systems), but for smaller spreadsheets you'll find that the other interfaces are more efficient.</DT>
 <DT><br>Some notes on the choice for Java:</DT>
 </DL>
 <OL>
@@ -313,8 +313,9 @@ rt.maxMemory ().doubleValue () / 1024 / 1024</P>
 
 </FONT></FONT><B><U><FONT FACE="Arial, sans-serif" SIZE=4><FONT FACE="Arial, sans-serif" SIZE=4><P ALIGN="CENTER">DEVELOPMENT</P>
 </U></FONT></FONT><FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><DL>
-<DT>xlsopen</B>/<B>xlsclos</B>e and friends have been written so that adding other interfaces (Perl? native octave? ...?) should be very easily accomplished. <B>Xlsopen.m</B> merely needs two stanzas, <B>xlsfinfo.m</B> and <B>getusedrange.m</B> each need an additional elseif stanza, and <B>xlsclose.m</B> needs a small stanza for closing the pointer struct and writing to disk. </DT>
-<DT>The real work lies in creating the relevant <B><I>xls2&lt;...&gt;2oct</B></I> &amp; <B><I>oct2&lt;...&gt;2xls</B></I> &amp; <B><I>&lt;getusedrange_...&gt;</B></I> subfunction scripts in <B>xls2oct.m</B>, <B>oct2xls.m</B> and <B>getusedrange.m</B>, resp., but that shouldn't be really hard, depending on the interface support libraries' quality and documentation. Separating the file access functions and the actual reading/writing from/to the workbook in memory has made developer's life (I mean: my time developing this stuff) much easier.<BR>
+<DT>xlsopen</B>/<B>xlsclose</B> and friends have been written so that adding other interfaces (Perl? native octave? ...?) should be very easily accomplished. <B>xlsopen.m</B> merely needs two stanzas, <B>xlsfinfo.m</B>, <B>xls2oct.m</B>, <B>oct2xls.m</B> and <B>getusedrange.m</B> each need an additional elseif stanza, and <B>xlsclose.m</B> needs a small stanza for closing the pointer struct and writing to disk.</DT>
+<DT>The real work lies in creating the relevant <B><I>__&lt;INTF&gt;_spsh_open__.m</B></I> &amp; <B><I>__&lt;INTF&gt;_spsh_close__.m</B></I>, <B><I>__&lt;INTF&gt;_spsh2oct__.m</B></I> &amp; <B><I>__&lt;INTF&gt;_oct2spsh__.m</B></I>, <B><I>__&lt;INTF&gt;_spsh_info__.m</B></I>, and <B><I>__&lt;INTF&gt;_getusedrange__.m</B></I> subfunction scripts in ./private subdir, but that shouldn't be really hard, depending on the interface support libraries' quality and documentation. The function scripts in the ./private subdir provide for ample examples.<BR>
+Separating the file access functions and the actual reading/writing from/to the workbook in memory has made developer's life (I mean: my time developing this stuff) much easier.<BR>
 <BR>
 Some other options for development (who?):</DT>
 </DL>
@@ -327,6 +328,6 @@ Some other options for development (who?):</DT>
 
 <P>Enjoy!</FONT></FONT> </P>
 <FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><DL>
-<DD ALIGN="CENTER">Philip Nienhuis, September 7, 2012</DD>
+<DD ALIGN="CENTER">Philip Nienhuis, October 14, 2012</DD>
 </DL></FONT></FONT></BODY>
 </HTML>

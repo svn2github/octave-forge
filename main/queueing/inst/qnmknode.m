@@ -36,8 +36,7 @@
 ## @table @var
 ##
 ## @item S
-## Average service time. @math{S} can be either a scalar, a row vector,
-## a column vector or a two-dimensional matrix.
+## Mean service time.
 ##
 ## @itemize
 ##
@@ -114,8 +113,6 @@ function Q = qnmknode( node, S, varargin )
     endif
     if ( 3 == nargin )
       m = varargin{1};
-      m>=1 || \
-	  error( "m must be >=1" );
     endif
   elseif ( strcmp(node, "m/m/1/k-fcfs") )
     ## M/M/1/k finite capacity node
@@ -124,8 +121,6 @@ function Q = qnmknode( node, S, varargin )
     endif
     if ( 3 == nargin )
       k = varargin{1};
-      k>=1 || \
-	  error( "k must be >=1" );
     endif
   elseif ( strcmp(node, "-/g/1-lcfs-pr") )
     ## -/G/1-LCFS-PR node
@@ -151,6 +146,10 @@ function Q = qnmknode( node, S, varargin )
   else
     error( "Unknown node type \"%s\". node type must be one of \"m/m/m-fcfs\", \"-/g/1-lcfs-pr\", \"-/g/1-ps\" and \"-/g/inf\"", node );
   endif
+  ( isnumeric(m) && m>=1 ) || \
+      error("m must be >=1");
+  ( isnumeric(s2) && s2>= 0 ) || \
+      error("s2 must be >=0");
   Q = struct( "node", node, "m", m, "S", S, "s2", s2, "c", rows(S), "comment", "" );
 endfunction
 %!test

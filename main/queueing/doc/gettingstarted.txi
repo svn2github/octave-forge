@@ -31,28 +31,28 @@
 @section Naming Conventions
 
 Most of the functions in the @code{queueing} package obey a common
-naming convention. Function names are obtained by concatenating small
-blocks of letters. The prefix block indicates the class of problems
-the function addresses, as follows:
+naming convention. Function names are made of several parts; the first
+part is a prefix which indicates the class of problems the function
+addresses:
 
 @table @asis
 @item @strong{ctmc-}
-Function for continuous-time Markov chain analysis
+Functions for continuous-time Markov chains
 
 @item @strong{dtmc-}
-Function for discrete-time Markov chain analysis
+Functions for discrete-time Markov chains
 
 @item @strong{qs-}
-Function for analyzing queueing systems (individual service centers)
+Functions for analyzing queueing systems (individual service centers)
 
 @item @strong{qn-}
-Function for analyzing a Queueing network
+Functions for analyzing queueing networks
 
 @end table
 
 Functions dealing with Markov chains start with either the @code{ctmc}
-or @code{dtmc} prefix; the prefix is optinally followed by an
-additional character string which hints at what the function does:
+or @code{dtmc} prefix; the prefix is optionally followed by an
+additional string which hints at what the function does:
 
 @table @asis
 @item @strong{-bd}
@@ -76,14 +76,14 @@ For example, function @code{ctmcbd} returns the infinitesimal
 generator matrix for a continuous birth-death process, while
 @code{dtmcbd} returns the transition probability matrix for a discrete
 birth-death process. Note that there exist functions @code{ctmc} and
-@code{dtmc}, without any suffix, that to compute steady-state and
+@code{dtmc} (without any suffix) that compute steady-state and
 transient state occupancy probabilities for CTMCs and DTMCs,
 respectively. @xref{Markov Chains}.
 
 Functions whose name starts with @code{qs-} deal with single station
-queueing systeems. The function name suffix describes th type of
-system, e.g., @code{qsmm1} for @math{M/M/1}, @code{qnmmm} for
-@math{M/M/m} and so on. @xref{Single Station Queueing Systems}.
+queueing systems. The suffix describes the type of system, e.g.,
+@code{qsmm1} for @math{M/M/1}, @code{qnmmm} for @math{M/M/m} and so
+on. @xref{Single Station Queueing Systems}.
 
 Finally, functions whose name starts with @code{qn-} deal with
 queueing networks. The character that follows indicates whether the
@@ -113,8 +113,6 @@ Mixed network with open and closed classes of customers
 
 The last part of the function name indicates the algorithm implemented
 by the function. @xref{Queueing Networks}.
-
-@noindent Network algorithms
 
 @table @asis
 @item @strong{-aba}

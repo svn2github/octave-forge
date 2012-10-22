@@ -167,6 +167,7 @@ geometry >> Computational Geometry
  planes3d
  points3d
  polygons3d
+ spheres
  vectors3d
 3D Points
  anglePoints3d
@@ -223,6 +224,9 @@ geometry >> Computational Geometry
  cyl2cart
  drawAxis3d
  drawCylinder
+ drawTorus
+ drawVector3d
+ revolutionSurface
  sph2cart2
  sph2cart2d
  vectorAngle3d

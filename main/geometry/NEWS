@@ -1,5 +1,14 @@
 Summary of important user-visible changes for releases of the geometry package
 ===============================================================================
+geometry-1.7.0   Release Date: 2012-XX-XX  Release Manager: Juan Pablo Carbajal
+===============================================================================
+
+** Added Functions
+
+   box3dVolume   cart2cyl   circle3dPoint   cyl2cart
+   drawCircle3d   drawPoint3d
+
+===============================================================================
 geometry-1.6.0   Release Date: 2012-10-12  Release Manager: Juan Pablo Carbajal
 ===============================================================================
 ** geometry doesn't autoloads anymore
@@ -16,8 +25,7 @@ geometry-1.6.0   Release Date: 2012-10-12  Release Manager: Juan Pablo Carbajal
   polygonArea3d   transformPoint3d   drawBox3d   drawEdge3d   drawMesh
   createCubeOctahedron   boundingBox3d   cart2sph2   circle3dOrigin
   circle3dPosition   drawCircleArc3d   drawPolygon3d   drawSphericalEdge
-  drawSphericalPolygon   intersectPlaneSphere   sph2cart2d   box3dVolume
-   cart2cyl   circle3dPoint   cyl2cart
+  drawSphericalPolygon   intersectPlaneSphere   sph2cart2d
 
 ** Updated functions
   distancePoints

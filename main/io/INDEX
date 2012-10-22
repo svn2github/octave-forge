@@ -6,10 +6,10 @@ Miscellaneous conversion functions
   object2json
   pch2mat
 CSV file functions
+  cell2csv
   csv2cell
   csvconcat
   csvexplode
-  cell2csv
 XML I/O
   xmlread
   xmlwrite
@@ -33,12 +33,7 @@ Spreadsheet utility functions
   calccelladdress
   chk_spreadsheet_support
   parsecell
-Spreadsheet I/O internal functions
-  getusedrange
-  parse_sp_range
-  spsh_chkrange
-  spsh_prstype
 Spreadsheet function test scripts
-  io_xls_testscript
   io_ods_testscript
+  io_xls_testscript
 

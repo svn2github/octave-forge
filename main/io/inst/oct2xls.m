@@ -113,85 +113,95 @@
 ## 2012-03-07 Updated texinfo help text
 ## 2012-05-22 Cast all numeric data in input array to double
 ## 2012-10-12 Moved all interface-specific subfubcs into ./private
+## 2012-10-24 Style fixes
 ##
 ## Latest subfunc update: 2012-10-12
 
-function [ xls, rstatus ] = oct2xls (obj, xls, wsh=1, crange='', spsh_opts=[])
+function [ xls, rstatus ] = oct2xls (obj, xls, wsh=1, crange="", spsh_opts=[])
 
-	if (nargin < 2) error ("oct2xls needs a minimum of 2 arguments."); endif
+  if (nargin < 2) error ("oct2xls needs a minimum of 2 arguments."); endif
   
-	# Validate input array, make sure it is a cell array
-	if (isempty (obj))
-		warning ("Request to write empty matrix - ignored."); 
-		rstatus = 1;
-		return;
-	elseif (isnumeric (obj))
-		obj = num2cell (obj);
-	elseif (ischar (obj))
-		obj = {obj};
-		printf ("(oct2xls: input character array converted to 1x1 cell)\n");
-	elseif (~iscell (obj))
-		error ("oct2xls: input array neither cell nor numeric array");
-	endif
-	if (ndims (obj) > 2), error ("Only 2-dimensional arrays can be written to spreadsheet"); endif
-  # Cast all numerical values to double as spreadsheets only have double/boolean/text type
+  ## Validate input array, make sure it is a cell array
+  if (isempty (obj))
+    warning ("Request to write empty matrix - ignored."); 
+    rstatus = 1;
+    return;
+  elseif (isnumeric (obj))
+    obj = num2cell (obj);
+  elseif (ischar (obj))
+    obj = {obj};
+    printf ("(oct2xls: input character array converted to 1x1 cell)\n");
+  elseif (~iscell (obj))
+    error ("oct2xls: input array neither cell nor numeric array");
+  endif
+  if (ndims (obj) > 2)
+    error ("Only 2-dimensional arrays can be written to spreadsheet"); 
+  endif
+  ## Cast all numerical values to double as spreadsheets only have double/boolean/text type
   idx = cellfun (@isnumeric, obj, "UniformOutput", true);
   obj(idx) = cellfun (@double, obj(idx), "UniformOutput", false);
 
-	# Check xls file pointer struct
-	test1 = ~isfield (xls, "xtype");
-	test1 = test1 || ~isfield (xls, "workbook");
-	test1 = test1 || isempty (xls.workbook);
-	test1 = test1 || isempty (xls.app);
-	test1 = test1 || ~ischar (xls.xtype);
-	if (test1)
-		error ("Invalid xls file pointer struct");
-	endif
-
-	# Check worksheet ptr
-	if (~(ischar (wsh) || isnumeric (wsh))), error ("Integer (index) or text (wsh name) expected for arg # 3"); endif
-
-	# Check range
-	if (~isempty (crange) && ~ischar (crange))
-    error ("Character string (range) expected for arg # 4");
-  elseif (isempty (crange))
-    crange = '';
+  ## Check xls file pointer struct
+  test1 = ~isfield (xls, "xtype");
+  test1 = test1 || ~isfield (xls, "workbook");
+  test1 = test1 || isempty (xls.workbook);
+  test1 = test1 || isempty (xls.app);
+  test1 = test1 || ~ischar (xls.xtype);
+  if (test1)
+    error ("Invalid xls file pointer struct");
   endif
 
-	# Various options 
-	if (isempty (spsh_opts))
-		spsh_opts.formulas_as_text = 0;
-		# other options to be implemented here
-	elseif (isstruct (spsh_opts))
-		if (~isfield (spsh_opts, 'formulas_as_text')), spsh_opts.formulas_as_text = 0; endif
-		# other options to be implemented here
-	else
-		error ("Structure expected for arg # 5");
-	endif
-	
-	if (nargout < 1) printf ("Warning: no output spreadsheet file pointer specified.\n"); endif
-	
-	# Select interface to be used
-	if (strcmpi (xls.xtype, 'COM'))
-		# ActiveX / COM
-		[xls, rstatus] = __COM_oct2spsh__ (obj, xls, wsh, crange, spsh_opts);
-	elseif (strcmpi (xls.xtype, 'POI'))
-		# Invoke Java and Apache POI
-		[xls, rstatus] = __POI_oct2spsh__ (obj, xls, wsh, crange, spsh_opts);
-	elseif (strcmpi (xls.xtype, 'JXL'))
-		# Invoke Java and JExcelAPI
-		[xls, rstatus] = __JXL_oct2spsh__ (obj, xls, wsh, crange, spsh_opts);
-	elseif (strcmpi (xls.xtype, 'OXS'))
-		# Invoke Java and OpenXLS     ##### Not complete, saving file doesn't work yet!
-		printf ('Sorry, writing with OpenXLS not reliable => not supported yet\n');
-#		[xls, rstatus] = __OXS_oct2spsh__ (obj, xls, wsh, crange, spsh_opts);
-	elseif (strcmpi (xls.xtype, 'UNO'))
-		# Invoke Java and UNO bridge (OpenOffice.org)
-		[xls, rstatus] = __UNO_oct2spsh__ (obj, xls, wsh, crange, spsh_opts);
-#	elseif (strcmpi (xls.xtype, '<whatever>'))
-#		<Other Excel interfaces>
-	else
-		error (sprintf ("oct2xls: unknown Excel .xls interface - %s.", xls.xtype));
-	endif
+  ## Check worksheet ptr
+  if (~(ischar (wsh) || isnumeric (wsh)))
+    error ("Integer (index) or text (wsh name) expected for arg # 3");
+  endif
+
+  ## Check range
+  if (~isempty (crange) && ~ischar (crange))
+    error ("Character string expected for arg # 4 (range)");
+  elseif (isempty (crange))
+    crange = "";
+  endif
+
+  ## Various options 
+  if (isempty (spsh_opts))
+    spsh_opts.formulas_as_text = 0;
+    ## other options to be implemented here
+  elseif (isstruct (spsh_opts))
+    if (~isfield (spsh_opts, "formulas_as_text"))
+      spsh_opts.formulas_as_text = 0; 
+    endif
+    ## other options to be implemented here
+
+  else
+    error ("Structure expected for arg # 5");
+  endif
+  
+  if (nargout < 1)
+    printf ("Warning: no output spreadsheet file pointer specified.\n");
+  endif
+  
+  ## Select interface to be used
+  if (strcmpi (xls.xtype, "COM"))
+    ## ActiveX / COM
+    [xls, rstatus] = __COM_oct2spsh__ (obj, xls, wsh, crange, spsh_opts);
+  elseif (strcmpi (xls.xtype, "POI"))
+    ## Invoke Java and Apache POI
+    [xls, rstatus] = __POI_oct2spsh__ (obj, xls, wsh, crange, spsh_opts);
+  elseif (strcmpi (xls.xtype, "JXL"))
+    ## Invoke Java and JExcelAPI
+    [xls, rstatus] = __JXL_oct2spsh__ (obj, xls, wsh, crange, spsh_opts);
+  elseif (strcmpi (xls.xtype, "OXS"))
+    ## Invoke Java and OpenXLS     ##### Not complete, saving file doesn't work yet!
+    printf ("Sorry, writing with OpenXLS not reliable => not supported yet\n");
+    ## [xls, rstatus] = __OXS_oct2spsh__ (obj, xls, wsh, crange, spsh_opts);
+  elseif (strcmpi (xls.xtype, "UNO"))
+    ## Invoke Java and UNO bridge (OpenOffice.org)
+    [xls, rstatus] = __UNO_oct2spsh__ (obj, xls, wsh, crange, spsh_opts);
+##elseif (strcmpi (xls.xtype, "<whatever>"))
+    ##<Other Excel interfaces>
+  else
+    error (sprintf ("oct2xls: unknown Excel .xls interface - %s.", xls.xtype));
+  endif
 
 endfunction

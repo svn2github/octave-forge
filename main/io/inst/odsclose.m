@@ -68,63 +68,70 @@
 ## 2012-09-03 Extended file renaming section to xlsclose equivalent
 ## 2012-10-12 Move most interface-specific code to ./private subfuncs
 ##     ''     Move "file ptr preserved" message to proper else clause
+## 2012-10-23 Style fixes
 
 function [ ods ] = odsclose (ods, varargs)
 
-  # If needed warn that dangling spreadsheet pointers may be left
-  if (nargout < 1) warning ("return argument missing - ods invocation not reset."); endif
+  ## If needed warn that dangling spreadsheet pointers may be left
+  if (nargout < 1)
+    warning ("return argument missing - ods invocation not reset.");
+  endif
 
   force = 0;
 
   if (nargin > 1)
     for ii=2:nargin
-      if (strcmp (lower (varargin{ii}), "force"))
-        # Close .ods anyway even if write errors occur
+      if (strcmpi(varargin{ii}, "force"))
+        ## Close .ods anyway even if write errors occur
         force = 1;
 
-      elseif (~isempty (strfind (tolower (varargin{ii}), '.')))
-        # Apparently a file name. First some checks....
+      elseif (~isempty (strfind (tolower (varargin{ii}), ".")))
+        ## Apparently a file name. First some checks....
         if (ods.changed == 0 || ods.changed > 2)
           warning ("File %s wasn't changed, new filename ignored.", ods.filename);
-        elseif (~strcmp (xls.xtype, 'UNO') && isempty (strfind ( lower (filename), '.ods')))
-          # UNO will write any file type, all other interfaces only .ods
-            error ('.ods suffix lacking in filename %s', filename);
+        elseif (~strcmp (xls.xtype, "UNO") && ...
+                isempty (strfind ( lower (filename), ".ods")))
+          ## UNO will write any file type, all other interfaces only .ods
+            error (".ods suffix lacking in filename %s", filename);
         else
-          # Preprocessing / -checking ready. Assign filename arg to file ptr struct
+          ## Preprocessing / -checking ready. 
+          ## Assign filename arg to file ptr struct
           ods.nfilename = filename;
         endif
       endif
     endfor
   endif
 
-  if (strcmp (ods.xtype, 'OTK'))
-    # Java & ODF toolkit
+  if (strcmp (ods.xtype, "OTK"))
+    ## Java & ODF toolkit
     ods = __OTK_spsh_close__ (ods, force);
 
-  elseif (strcmp (ods.xtype, 'JOD'))
-    # Java & jOpenDocument
+  elseif (strcmp (ods.xtype, "JOD"))
+    ## Java & jOpenDocument
     ods = __JOD_spsh_close__ (ods);
 
-  elseif (strcmp (ods.xtype, 'UNO'))
-    # Java & UNO bridge
+  elseif (strcmp (ods.xtype, "UNO"))
+    ## Java & UNO bridge
     ods = __UNO_spsh_close__ (ods, force);
 
-#  elseif ---- < Other interfaces here >
+  ##elseif ---- < Other interfaces here >
 
   else
-    error (sprintf ("ods2close: unknown OpenOffice.org .ods interface - %s.", ods.xtype));
+    error (sprintf ("ods2close: unknown OpenOffice.org .ods interface - %s.",...
+                    ods.xtype));
 
   endif
 
   if (ods.changed && ods.changed < 3)
-    error ( sprintf ("Could not save file %s - read-only or in use elsewhere?", ods.filename));
+    error (sprintf ("Could not save file %s - read-only or in use elsewhere?",...
+                    ods.filename));
     if (force)
       ods = [];
     else
       printf ("(File pointer preserved)\n");
     endif
   else
-    # Reset file pointer
+    ## Reset file pointer
     ods = [];
   endif
 

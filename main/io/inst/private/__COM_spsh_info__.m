@@ -20,12 +20,13 @@
 ## Created: 2012-10-12
 ## Updates:
 ## 2012-10-12 Moved into ./private
+## 2012-10-24 Style fixes
 
 function [sh_names] = __COM_spsh_info__ (xls)
 
   xlWorksheet = -4167; xlChart = 4;
 
-  # See if desired worksheet number or name exists
+  ## See if desired worksheet number or name exists
   sh_cnt = xls.workbook.Sheets.count;
   sh_names = cell (sh_cnt, 2);
   ws_cnt = 0; ch_cnt = 0; o_cnt = 0;
@@ -34,14 +35,15 @@ function [sh_names] = __COM_spsh_info__ (xls)
     if (xls.workbook.Sheets(ii).Type == xlWorksheet)
       [tr, lr, lc, rc] = getusedrange (xls, ++ws_cnt);
       if (tr)
-        sh_names(ii, 2) = sprintf ("%s:%s", calccelladdress (tr, lc), calccelladdress (lr, rc));
+        sh_names(ii, 2) = sprintf ...
+                ("%s:%s", calccelladdress (tr, lc), calccelladdress (lr, rc));
       else
         sh_names(ii, 2) = "Empty";
       endif
     elseif (xls.workbook.Sheets(ii).Type == xlChart)
       sh_names(ii, 2) = sprintf ("Chart"); ++ch_cnt;
     else
-      sh_names(ii, 2) = 'Other_type'; ++o_cnt;
+      sh_names(ii, 2) = "Other_type"; ++o_cnt;
     endif
   endfor
 

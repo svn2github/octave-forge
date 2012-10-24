@@ -18,6 +18,8 @@
 
 ## Author: Philip Nienhuis <prnienhuis@users.sf.net>
 ## Created: 2012-10-12
+## Updates:
+## 2012-10-24 Style fixes
 
 function [ xls ] = __POI_spsh_close__ (xls)
 
@@ -30,14 +32,14 @@ function [ xls ] = __POI_spsh_close__ (xls)
       try
         xlsout = java_new ("java.io.FileOutputStream", fname);
         bufout = java_new ("java.io.BufferedOutputStream", xlsout);
-#       if (xls.changed == 2) printf ("Saving file %s...\n", fname); endif
+##      if (xls.changed == 2); printf ("Saving file %s...\n", fname); endif
         xls.workbook.write (bufout);
         bufout.flush ();
         bufout.close ();
         xlsout.close ();
         xls.changed = 0;
       catch
-#        xlsout.close ();
+##        xlsout.close ();
       end_try_catch
     endif
 

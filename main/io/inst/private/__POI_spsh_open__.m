@@ -25,35 +25,36 @@
 ## 2010-09-27 Improved POI help message for unrecognized .xls format to hint for BIFF5/JXL
 ## 2010-11-08 Tested with POI 3.7 (OK)
 ## 2012-06-07 Fixed mixed-up lastintf assignments for POI and JXL
+## 2012-10-24 Style fixes; added UNO to fall-back for BIFF5 formats
 
 function [ xls, xlssupport, lastintf ] = __POI_spsh_open__ (xls, xwrite, filename, xlssupport, chk1, chk2, xlsinterfaces)
 
-    if ~(chk1 || chk2)
-      error ("Unsupported file format for Apache POI.")
-    endif
-    # Get handle to workbook
+    ## Get handle to workbook
     try
       if (xwrite > 2)
         if (chk1)
-          wb = java_new ('org.apache.poi.hssf.usermodel.HSSFWorkbook');
+          wb = java_new ("org.apache.poi.hssf.usermodel.HSSFWorkbook");
         elseif (chk2)
-          wb = java_new ('org.apache.poi.xssf.usermodel.XSSFWorkbook');
+          wb = java_new ("org.apache.poi.xssf.usermodel.XSSFWorkbook");
         endif
-          xls.app = 'new_POI';
+        xls.app = "new_POI";
       else
-        xlsin = java_new ('java.io.FileInputStream', filename);
-        wb = java_invoke ('org.apache.poi.ss.usermodel.WorkbookFactory', 'create', xlsin);
+        xlsin = java_new ("java.io.FileInputStream", filename);
+        wb = java_invoke ("org.apache.poi.ss.usermodel.WorkbookFactory",...
+                          "create", xlsin);
         xls.app = xlsin;
       endif
-      xls.xtype = 'POI';
+      xls.xtype = "POI";
       xls.workbook = wb;
       xls.filename = filename;
       xlssupport += 2;
-      lastintf = 'POI';
+      lastintf = "POI";
     catch
       clear xlsin;
-      if (xlsinterfaces.JXL)
-        printf ('Couldn''t open file %s using POI; trying Excel''95 format with JXL...\n', filename);
+      if (chk1 && (xlsinterfaces.JXL || xlsinterfaces.UNO))
+        printf ...
+        (["Couldn't open file %s using POI;\n" ...
+          "trying Excel'95 format with JXL or UNO...\n"], filename);
       endif
     end_try_catch
 

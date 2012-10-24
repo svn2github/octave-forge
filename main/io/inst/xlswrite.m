@@ -107,36 +107,37 @@
 ## 2011-09-08 Minor code syntax updates
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-06-07 Replaced all tabs by double space
+## 2012-10-24 Style fixes
 
 function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
 
   rstatus = 0;
 
-  # Sanity checks
+  ## Sanity checks
   if (nargin < 2)
     usage ("Insufficient arguments - see 'help xlswrite'");
   elseif (~ischar (filename))
     error ("First argument must be a filename (incl. suffix)");
   elseif (nargin == 2)
-    # Assume first worksheet and full worksheet starting at A1
+    ## Assume first worksheet and full worksheet starting at A1
     wsh = 1;
-    if (strcmp (tolower (filename(end-4:end-1)), 'xls'))
-      crange = "A1:XFD1048576";  # OOXML has ridiculously large limits 
+    if (strcmpi (filename(end-4:end-1), "xls"))
+      crange = "A1:XFD1048576";   ## OOXML has ridiculously large limits 
     else
-      crange = "A1:IV65536";    # Regular xls limits
+      crange = "A1:IV65536";      ## Regular xls limits
     endif
   elseif (nargin == 3)
-    # Find out whether 3rd argument = worksheet or range
-    if (isnumeric (arg3) || (isempty (findstr (arg3, ':')) && ~isempty (arg3)))
-      # Apparently a worksheet specified
+    ## Find out whether 3rd argument = worksheet or range
+    if (isnumeric (arg3) || (isempty (findstr (arg3, ":")) && ~isempty (arg3)))
+      ## Apparently a worksheet specified
       wsh = arg3;
-      if (strcmp (tolower (filename(end-4:end-1)), 'xls'))
-        crange = "A1:XFD1048576";  # OOXML has ridiculously large limits 
+      if (strcmpi (filename(end-4:end-1), "xls"))
+        crange = "A1:XFD1048576"; ## OOXML has ridiculously large limits 
       else
-        crange = "A1:IV65536";    # Regular xls limits
+        crange = "A1:IV65536";    ## Regular xls limits
       endif
     else
-      # Range specified
+      ## Range specified
       wsh = 1;
       crange = arg3;
     endif
@@ -150,20 +151,20 @@ function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
     reqintf = [];
   endif
   
-  # Parse range
+  ## Parse range
   [topleft, nrows, ncols, trow, lcol] = parse_sp_range (crange);
   
-  # Check if arr fits in range
+  ## Check if arr fits in range
   [nr, nc] = size (arr);
   if ((nr > nrows) || (nc > ncols))
     # Array too big; truncate
     nr = min (nrows, nr);
     nc = min (ncols, nc);
     warning ("xlswrite - array truncated to %d by %d to fit in range %s", ...
-         nrows, ncols, crange);
+             nrows, ncols, crange);
   endif
 
-  unwind_protect        # Needed to be sure Excel can be closed i.c.o. errors
+  unwind_protect          ## Needed to be sure Excel can be closed i.c.o. errors
     xls_ok = 0;
     xls = xlsopen (filename, 1, reqintf);
     xls_ok = 1;
@@ -171,7 +172,9 @@ function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
     [xls, rstatus] = oct2xls (arr(1:nr, 1:nc), xls, wsh, topleft);
 
   unwind_protect_cleanup
-    if (xls_ok), xls = xlsclose (xls); endif
+    if (xls_ok)
+      xls = xlsclose (xls);
+    endif
 
   end_unwind_protect
 

@@ -18,15 +18,17 @@
 
 ## Author: Philip Nienhuis <prnienhuis@users.sf.net>
 ## Created: 2012-10-12
+## Updates:
+## 2012-10-23 Style fixes
 
 function [ ods ] = __JOD_spsh_close__ (ods)
 
   try
     if (ods.changed && ods.changed < 3)
       if (isfield (ods, "nfilename"))
-        ofile = java_new ('java.io.File', ods.nfilename);
+        ofile = java_new ("java.io.File", ods.nfilename);
       else
-        ofile = java_new ('java.io.File', ods.filename);
+        ofile = java_new ("java.io.File", ods.filename);
       endif
       ods.workbook.saveAs (ofile);
       ods.changed = 0;

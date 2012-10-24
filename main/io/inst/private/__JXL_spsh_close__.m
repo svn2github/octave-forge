@@ -18,17 +18,19 @@
 
 ## Author: Philip Nienhuis <prnienhuis@users.sf.net>
 ## Created: 2012-10-12
+## Updates:
+## 2012-10-24 Style fixes
 
 function [ xls ] = __JXL_spsh_close__ (xls)
 
     if (xls.changed > 0 && xls.changed < 3)
       try
-#       if (xls.changed == 2) printf ("Saving file %s...\n", xls.filename); endif
+##      if (xls.changed == 2); printf ("Saving file %s...\n", xls.filename); endif
         xls.workbook.write ();
         xls.workbook.close ();
         if (xls.changed == 3)
-          # Upon entering write mode, JExcelAPI always makes a disk file
-          # Incomplete new files (no data added) had better be deleted.
+          ## Upon entering write mode, JExcelAPI always resets disk file.
+          ## Incomplete new files (no data added) had better be deleted.
           xls.workbook.close ();
           delete (xls.filename); 
         endif

@@ -30,18 +30,23 @@
 ## 2011-04-30 Simplified column name computation
 ## 2011-12-17 Bugfix for wrong column address if column equals multiple of 26
 ## 2011-12-18 Added tests for multiple-of-26 cases
+## 2012-10-24 Style fixes
 
 function [ celladdress ] = calccelladdress (row, column)
 
 	if (nargin < 2) error ("calccelladdress: Two arguments needed") endif
 
-	if (column > 18278 || column < 1) error ("Specified column out of range (1..18278)"); endif
-	if (row > 1048576 || row < 1), error ('Specified row out of range (1..1048576)'); endif
+	if (column > 18278 || column < 1)
+    error ("Specified column out of range (1..18278)"); 
+  endif
+	if (row > 1048576 || row < 1)
+    error ('Specified row out of range (1..1048576)'); 
+  endif
 
 	str = '';
 	while (column > 0.01)
 		rmd = floor ((column - 1) / 26);
-		str = [char(column - rmd * 26 + 'A' - 1) str];
+		str = [ char(column - rmd * 26 + 'A' - 1) str ];
 		column = rmd;
 	endwhile
 

@@ -60,115 +60,119 @@
 ## 2012-05-21 "Double" cast added when writing numeric values
 ## 2012-05-21 "Double" cast moved into main func oct2xls
 ## 2012-10-12 Renamed & moved into ./private
+## 2012-10-24 Style fixes
 
 function [ xls, rstatus ] = __JXL_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
 
-	# Preliminary sanity checks
-	if (~strmatch (tolower (xls.filename(end-4:end-1)), '.xls'))	# No OOXML in JXL
+	## Preliminary sanity checks
+	if (~strmatch (tolower (xls.filename(end-4:end-1)), ".xls"))	## No OOXML in JXL
 		error ("JXL interface can only write to Excel .xls files")
 	endif
 
 	persistent ctype;
 	if (isempty (ctype))
 		ctype = [1, 2, 3, 4, 5];
-		# Number, Boolean, String, Formula, Empty
+		## Number, Boolean, String, Formula, Empty
 	endif
-	# scratch vars
+	## scratch vars
 	rstatus = 0; f_errs = 0;
 	
-	# Prepare workbook pointer if needed
-	if (xls.changed == 0)			# Only for 1st call of octxls after xlsopen
-		# Create writable copy of workbook. If >2 a writable wb was made in xlsopen
-		xlsout = java_new ('java.io.File', xls.filename);
-		wb = java_invoke ('jxl.Workbook', 'createWorkbook', xlsout, xls.workbook);
-		# Catch JExcelAPI bug/"feature": when switching to write mode, the file on disk
-		# is affected and the memory file MUST be written to disk to save earlier data
+	## Prepare workbook pointer if needed
+	if (xls.changed == 0)			## Only for 1st call of octxls after xlsopen
+		## Create writable copy of workbook. If >2 a writable wb was made in xlsopen
+		xlsout = java_new ("java.io.File", xls.filename);
+		wb = java_invoke ("jxl.Workbook", "createWorkbook", xlsout, xls.workbook);
+		## Catch JExcelAPI bug/"feature": when switching to write mode, the file on disk
+		## is affected and the memory file MUST be written to disk to save earlier data
 		xls.changed = 1;
 		xls.workbook = wb;
 	else
 		wb = xls.workbook;
 	endif
-	# Check if requested worksheet exists in the file & if so, get pointer
-	nr_of_sheets = xls.workbook.getNumberOfSheets ();	# 1 based !!
+	## Check if requested worksheet exists in the file & if so, get pointer
+	nr_of_sheets = xls.workbook.getNumberOfSheets ();	## 1 based !!
 	if (isnumeric (wsh))
 		if (wsh > nr_of_sheets)
-			# Watch out as a sheet called Sheet%d can exist with a lower index...
+			## Watch out as a sheet called Sheet%d can exist with a lower index...
 			strng = sprintf ("Sheet%d", wsh);
 			ii = 1;
 			while (~isempty (wb.getSheet (strng)) && (ii < 5))
-				strng = ['_' strng];
+				strng = ["_" strng];
 				++ii;
 			endwhile
-			if (ii >= 5) error (sprintf( " > 5 sheets named [_]Sheet%d already present!", wsh)); endif
+			if (ii >= 5)
+        error (sprintf( " > 5 sheets named [_]Sheet%d already present!", wsh));
+      endif
 			sh = wb.createSheet (strng, nr_of_sheets); ++nr_of_sheets;
-			xls.changed = min (xls.changed, 2);		# Keep a 2 in case of new file
+			xls.changed = min (xls.changed, 2);		## Keep a 2 in case of new file
 		else
-			sh = wb.getSheet (wsh - 1);				# JXL sheet count 0-based
+			sh = wb.getSheet (wsh - 1);				## JXL sheet count 0-based
 		endif
 		shnames = char (wb.getSheetNames ());
 		printf ("(Writing to worksheet %s)\n", 	shnames {nr_of_sheets, 1});
 	else
 		sh = wb.getSheet (wsh);
 		if (isempty(sh))
-			# Sheet not found, just create it
+			## Sheet not found, just create it
 			sh = wb.createSheet (wsh, nr_of_sheets);
 			++nr_of_sheets;
-			xls.changed = min (xls.changed, 2);		# Keep a 2 for new file
+			xls.changed = min (xls.changed, 2);		## Keep a 2 for new file
 		endif
 	endif
 
-	# Parse date ranges  
+	## Parse date ranges  
 	[nr, nc] = size (obj);
-	[topleft, nrows, ncols, trow, lcol] = spsh_chkrange (crange, nr, nc, xls.xtype, xls.filename);
+	[topleft, nrows, ncols, trow, lcol] = ...
+                    spsh_chkrange (crange, nr, nc, xls.xtype, xls.filename);
 	if (nrows < nr || ncols < nc)
 		warning ("Array truncated to fit in range");
 		obj = obj(1:nrows, 1:ncols);
 	endif
 
-	# Prepare type array
+	## Prepare type array
 	typearr = spsh_prstype (obj, nrows, ncols, ctype, spsh_opts);
 	if ~(spsh_opts.formulas_as_text)
-		# Remove leading '=' from formula strings
+		## Remove leading '=' from formula strings
 		fptr = ~(4 * (ones (size (typearr))) .- typearr);
 		obj(fptr) = cellfun (@(x) x(2:end), obj(fptr), "Uniformoutput", false); 
 	endif
 	clear fptr
 
-	# Write date to worksheet
+	## Write date to worksheet
 	for ii=1:nrows
-		ll = ii + trow - 2;    		# Java JExcelAPI's row count = 0-based
+		ll = ii + trow - 2;    		## Java JExcelAPI's row count = 0-based
 		for jj=1:ncols
-			kk = jj + lcol - 2;		# JExcelAPI's column count is also 0-based
+			kk = jj + lcol - 2;		## JExcelAPI's column count is also 0-based
 			switch typearr(ii, jj)
-				case 1			# Numerical
-					tmp = java_new ('jxl.write.Number', kk, ll, obj{ii, jj});
+				case 1			## Numerical
+					tmp = java_new ("jxl.write.Number", kk, ll, obj{ii, jj});
 					sh.addCell (tmp);
-				case 2			# Boolean
-					tmp = java_new ('jxl.write.Boolean', kk, ll, obj{ii, jj});
+				case 2			## Boolean
+					tmp = java_new ("jxl.write.Boolean", kk, ll, obj{ii, jj});
 					sh.addCell (tmp);
-				case 3			# String
-					tmp = java_new ('jxl.write.Label', kk, ll, obj{ii, jj});
+				case 3			## String
+					tmp = java_new ("jxl.write.Label", kk, ll, obj{ii, jj});
 					sh.addCell (tmp);
-				case 4			# Formula
-					# First make sure formula functions are all uppercase
+				case 4			## Formula
+					## First make sure formula functions are all uppercase
 					obj{ii, jj} = toupper (obj{ii, jj});
-					# There's no guarantee for formula correctness, so....
-					try		# Actually JExcelAPI flags formula errors as mere warnings :-(
-						tmp = java_new ('jxl.write.Formula', kk, ll, obj{ii, jj});
-						# ... while errors are actually detected in addCell(), so
-						#     that should be within the try-catch
+					## There's no guarantee for formula correctness, so....
+					try		## Actually JExcelAPI flags formula errors as mere warnings :-(
+						tmp = java_new ("jxl.write.Formula", kk, ll, obj{ii, jj});
+						## ... while errors are actually detected in addCell(), so
+						##     that should be within the try-catch
 						sh.addCell (tmp);
 					catch
 						++f_errs;
-						# Formula error. Enter formula as text string instead
-						tmp = java_new ('jxl.write.Label', kk, ll, obj{ii, jj});
+						## Formula error. Enter formula as text string instead
+						tmp = java_new ("jxl.write.Label", kk, ll, obj{ii, jj});
 						sh.addCell (tmp);
 					end_try_catch
-				case 5		# Empty or NaN
-					tmp = java_new ('jxl.write.Blank', kk, ll);
+				case 5		## Empty or NaN
+					tmp = java_new ("jxl.write.Blank", kk, ll);
 					sh.addCell (tmp);
 				otherwise
-					# Just skip
+					## Just skip
 			endswitch
 		endfor
 	endfor
@@ -176,7 +180,7 @@ function [ xls, rstatus ] = __JXL_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
 	if (f_errs) 
 		printf ("%d formula errors encountered - please check input array\n", f_errs); 
 	endif
-	xls.changed = max (xls.changed, 1);		# Preserve 2 for new files
+	xls.changed = max (xls.changed, 1);		## Preserve 2 for new files
 	rstatus = 1;
   
 endfunction

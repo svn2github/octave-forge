@@ -78,37 +78,37 @@
 ## 2012-03-01 Fix wrong cell refs in UNO section ("(..)" rather than "{..}"
 ## 2012-06-08 Support for odfdom-0.8.8-incubator
 ## 2012-10-12 Moved all interface-specific code into ./private subfuncs
+## 2012-10-24 Style fixes
 
 function [ filetype, sh_names ] = odsfinfo (filename, reqintf=[])
 
-  persistent str2; str2 = '                                 '; # 33 spaces
+  persistent str2; str2 = "                                 "; # 33 spaces
   persistent lstr2; lstr2 = length (str2);
 
   toscreen = nargout < 1;
 
   ods = odsopen (filename, 0, reqintf);
-  # If no ods support was found, odsopen will have complained. Just return here
+  ## If no ods support was found, odsopen will have complained. Just return here
   if (isempty (ods)), return; endif
   
-  filetype = 'OpenOffice.org Calc Document';
-  
-  persistent adj_str; adj_str = '                              '; # 30 char filler string
+  filetype = "OpenOffice.org Calc Document";
 
-  # To save execution time, only proceed if sheet names are wanted
+  ## To save execution time, only proceed if sheet names are wanted
   if ~(nargout == 1)
 
-    if (strcmp (ods.xtype, 'OTK'))
+    if (strcmp (ods.xtype, "OTK"))
       [sh_names] = __OTK_spsh_info__ (ods);
 
-    elseif (strcmp (ods.xtype, 'JOD'))
+    elseif (strcmp (ods.xtype, "JOD"))
       [sh_names] = __JOD_spsh_info__ (ods);
       
-    elseif (strcmp (ods.xtype, 'UNO'))
+    elseif (strcmp (ods.xtype, "UNO"))
       [sh_names] = __UNO_spsh_info__ (ods);
 
     else
       ## Below error will have been catched in odsopen() above
-#     error (sprintf ("odsfinfo: unknown OpenOffice.org .ods interface - %s.", ods.xtype));
+      ##error (sprintf ("odsfinfo: unknown OpenOffice.org .ods interface - %s.",...
+      ##                ods.xtype));
 
     endif
   endif
@@ -119,7 +119,7 @@ function [ filetype, sh_names ] = odsfinfo (filename, reqintf=[])
     for ii=1:sh_cnt
       str1 = sprintf ("%3d: %s", ii, sh_names{ii, 1});
       if (index (sh_names{ii, 2}, ":"))
-        str3 = ['(Used range ~ ' sh_names{ii, 2} ')'];
+        str3 = ["(Used range ~ " sh_names{ii, 2} ")"];
       else
         str3 = sh_names{ii, 2};
       endif

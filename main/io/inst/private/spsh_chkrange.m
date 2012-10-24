@@ -35,11 +35,12 @@
 ## 2011-03-29 Bug fix - unrecognized pointer struct & wrong type error msg
 ## 2011-05-15 Experimental UNO support added (OpenOffice.org & clones)
 ## 2011-09-18 Updated UNO data row capacity for LibreOffice 3.4+ (now 1,048,576 rows)
+## 2012-10-23 Style fixes
 
 function [ topleft, nrows, ncols, trow, lcol ] = spsh_chkrange (crange, nr, nc, intf, filename=[])
 
 	if (nargin == 4)
-		# File pointer input assumed
+		## File pointer input assumed
 		if (isstruct (intf))
 			xtype = intf.xtype;
 			filename = intf.filename;
@@ -47,30 +48,30 @@ function [ topleft, nrows, ncols, trow, lcol ] = spsh_chkrange (crange, nr, nc, 
 			error ("Too few or improper arguments supplied.");
 		endif
 	else
-		# Interface type & filename supplied
+		## Interface type & filename supplied
 		xtype = intf;
 	endif
 
-	# Define max row & column capacity from interface type & file suffix
+	## Define max row & column capacity from interface type & file suffix
 	switch xtype
 		case { 'COM', 'POI' }
 			if (strmatch (tolower (filename(end-3:end)), '.xls'))
-				# BIFF5 & BIFF8
+				## BIFF5 & BIFF8
 				ROW_CAP = 65536;   COL_CAP = 256;
 			else
-				# OOXML (COM needs Excel 2007+ for this)
+				## OOXML (COM needs Excel 2007+ for this)
 				ROW_CAP = 1048576; COL_CAP = 16384;
 			endif
 		case { 'JXL', 'OXS' }
-			# JExcelAPI & OpenXLS can only process BIFF5 & BIFF8
+			## JExcelAPI & OpenXLS can only process BIFF5 & BIFF8
 			ROW_CAP = 65536;   COL_CAP = 256;
 		case { 'OTK', 'JOD' }
-			# ODS
+			## ODS
 			ROW_CAP = 65536;   COL_CAP = 1024;
 		case { 'UNO' }
-			# ODS; LibreOffice has a higher row capacity
-			# FIXME - use UNO calls to check physical row capacity
-      # FIXME - LibreOffice has higher row capacity but its Java classes haven't been updated
+			## ODS; LibreOffice has a higher row capacity
+			## FIXME - use UNO calls to check physical row capacity
+      ## FIXME - LibreOffice has higher row capacity but its Java classes haven't been updated
 			ROW_CAP = 1048576;   COL_CAP = 1024;
 		otherwise
 			error (sprintf ("Unknown interface type - %s\n", xtype));
@@ -83,7 +84,7 @@ function [ topleft, nrows, ncols, trow, lcol ] = spsh_chkrange (crange, nr, nc, 
 		ncols = nc;
 		topleft = 'A1';
 	elseif (isempty (strfind (deblank (crange), ':')))
-		# Only top left cell specified
+		## Only top left cell specified
 		[topleft, dummy1, dummy2, trow, lcol] = parse_sp_range (crange);
 		nrows = nr;
 		ncols = nc;
@@ -93,10 +94,10 @@ function [ topleft, nrows, ncols, trow, lcol ] = spsh_chkrange (crange, nr, nc, 
 	if (trow > ROW_CAP || lcol > COL_CAP)
 		error ("Topleft cell (%s) beyond spreadsheet limits.");
 	endif
-	# Check spreadsheet capacity beyond requested topleft cell
+	## Check spreadsheet capacity beyond requested topleft cell
 	nrows = min (nrows, ROW_CAP - trow + 1);
 	ncols = min (ncols, COL_CAP - lcol + 1);
-	# Check array size and requested range
+	## Check array size and requested range
 	nrows = min (nrows, nr);
 	ncols = min (ncols, nc);
 

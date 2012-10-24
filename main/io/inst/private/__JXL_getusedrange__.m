@@ -18,27 +18,31 @@
 
 ## Author: Philip <Philip@DESKPRN>
 ## Created: 2010-03-20
+## Updates:
 ## 2012-10-12 Renamed & moved into ./private
+## 2012-10-24 Style fixes
 
 function [ trow, brow, lcol, rcol ] = __JXL_getusedrange__ (xls, wsh)
 
-  persistent emptycell = (java_get ('jxl.CellType', 'EMPTY')).toString ();
+  persistent emptycell = (java_get ("jxl.CellType", "EMPTY")).toString ();
 
-  sh = xls.workbook.getSheet (wsh - 1);      # JXL sheet count 0-based
+  sh = xls.workbook.getSheet (wsh - 1);      ## JXL sheet count 0-based
 
   brow = sh.getRows ();
   rcol = sh.getColumns ();
   
   if (brow == 0 || rcol == 0)
-    # Empty sheet
+    ## Empty sheet
     trow = 0; lcol = 0; brow = 0; rcol = 0;
   else
     trow = brow + 1;
     lcol = rcol + 1;
-    for ii=0:brow-1    # For loop coz we must check ALL rows for leftmost column
+    ## For loop coz we must check ALL rows for leftmost column
+    for ii=0:brow-1    
       emptyrow = 1;
       jj = 0;
-      while (jj < rcol && emptyrow)   # While loop => only til first non-empty cell
+      ## While loop => only til first non-empty cell
+      while (jj < rcol && emptyrow)   
         cell = sh.getCell (jj, ii);
         if ~(strcmp (char (cell.getType ()), emptycell))
           lcol = min (lcol, jj + 1);
@@ -46,7 +50,7 @@ function [ trow, brow, lcol, rcol ] = __JXL_getusedrange__ (xls, wsh)
         endif
         ++jj;
       endwhile
-      if ~(emptyrow) trow = min (trow, ii + 1); endif
+      if ~(emptyrow); trow = min (trow, ii + 1); endif
     endfor
   endif
 

@@ -17,18 +17,21 @@
 
 ## Author: Philip <Philip@DESKPRN>
 ## Created: 2010-03-20
+## Updates:
 ## 2012-10-12 Renamed & moved into ./private
+## 2012-10-24 Style fixes
 
 function [ trow, brow, lcol, rcol ] = __POI_getusedrange__ (xls, ii)
 
-  persistent cblnk; cblnk = java_get ('org.apache.poi.ss.usermodel.Cell', 'CELL_TYPE_BLANK');
+  persistent cblnk; 
+  cblnk = java_get ("org.apache.poi.ss.usermodel.Cell", "CELL_TYPE_BLANK");
 
-  sh = xls.workbook.getSheetAt (ii-1);         # Java POI starts counting at 0 
+  sh = xls.workbook.getSheetAt (ii-1);          ## Java POI starts counting at 0 
 
-  trow = sh.getFirstRowNum ();                 # 0-based
-  brow = sh.getLastRowNum ();                  # 0-based
-  # Get column range
-  lcol = 1048577;  # OOXML (xlsx) max. + 1
+  trow = sh.getFirstRowNum ();                  ## 0-based
+  brow = sh.getLastRowNum ();                   ## 0-based
+  ## Get column range
+  lcol = 1048577;                               ## OOXML (xlsx) max. + 1
   rcol = 0;
   botrow = brow;
   for jj=trow:brow
@@ -38,17 +41,18 @@ function [ trow, brow, lcol, rcol ] = __POI_getusedrange__ (xls, ii)
       lcol = min (lcol, scol);
       ecol = (irow.getLastCellNum).intValue () - 1;
       rcol = max (rcol, ecol);
-      # Keep track of lowermost non-empty row as getLastRowNum() is unreliable
-      if ~(irow.getCell(scol).getCellType () == cblnk && irow.getCell(ecol).getCellType () == cblnk)
+      ## Keep track of lowermost non-empty row as getLastRowNum() is unreliable
+      if   ~(irow.getCell(scol).getCellType () == cblnk ...
+          && irow.getCell(ecol).getCellType () == cblnk)
         botrow = jj;
       endif
     endif
   endfor
   if (lcol > 1048576)
-    # Empty sheet
+    ## Empty sheet
     trow = 0; brow = 0; lcol = 0; rcol = 0;
   else
-    brow = min (brow, botrow) + 1; ++trow; ++lcol; ++rcol;    # 1-based return values
+    brow = min (brow, botrow) + 1; ++trow; ++lcol; ++rcol;   ## 1-based retvals
   endif
 
 endfunction

@@ -76,6 +76,7 @@
 ##     ''     (in UNO section) web adresses need only two consecutive slashes
 ## 2012-10-12 Move most interface-specific code to ./private subfuncs
 ##     ''     Move "file ptr preserved" message to proper else clause
+## 2012-10-24 Style fixes
 
 function [ xls ] = xlsclose (xls, varargs)
 
@@ -83,60 +84,62 @@ function [ xls ] = xlsclose (xls, varargs)
 
   if (nargin > 1)
     for ii=2:nargin
-      if (strcmp (lower (varargin{ii}), "force"))
-        # Close .xls anyway even if write errors occur
+      if (strcmpi (varargin{ii}, "force"))
+        ## Close .xls anyway even if write errors occur
         force = 1;
 
+      ## Interface-specific clauses here:
       elseif (~isempty (strfind (tolower (varargin{ii}), '.')))
-        # Apparently a file name. First some checks....
+        ## Apparently a file name. First some checks....
         if (xls.changed == 0 || xls.changed > 2)
           warning ("File %s wasn't changed, new filename ignored.", xls.filename);
-        elseif (strcmp (xls.xtype, 'JXL'))
+        elseif (strcmp (xls.xtype, "JXL"))
           error ("JXL doesn't support changing filename, new filename ignored.");
-        elseif (~((strcmp (xls.xtype, 'COM') || strcmp (xls.xtype, 'UNO')) ... 
-                && isempty (strfind ( lower (filename), '.xls'))))
+        elseif (~((strcmp (xls.xtype, "COM") || strcmp (xls.xtype, "UNO")) ... 
+                && isempty (strfind ( lower (filename), ".xls"))))
           # Excel/ActiveX && OOo (UNO bridge) will write any valid filetype; POI/JXL/OXS need .xls[x]
-          error ('.xls or .xlsx suffix lacking in filename %s', filename);
+          error (".xls or .xlsx suffix lacking in filename %s", filename);
         else
-          ### For multi-user environments, uncomment below AND relevant stanza in xlsopen
-          # In case of COM, be sure to first close the open workbook
-          #if (strcmp (xls.xtype, 'COM'))
-          #   xls.app.Application.DisplayAlerts = 0;
-          #   xls.workbook.close();
-          #   xls.app.Application.DisplayAlerts = 0;
-          #endif
-          # Preprocessing / -checking ready. Assign filename arg to file ptr struct
+          ## For multi-user environments, uncomment below AND relevant stanza in xlsopen
+          ## In case of COM, be sure to first close the open workbook
+          ##if (strcmp (xls.xtype, 'COM'))
+          ##   xls.app.Application.DisplayAlerts = 0;
+          ##   xls.workbook.close();
+          ##   xls.app.Application.DisplayAlerts = 0;
+          ##endif
+          ## Preprocessing / -checking ready. Assign filename arg to file ptr struct
           xls.nfilename = filename;
         endif
       endif
     endfor
   endif
 
-  if (strcmp (xls.xtype, 'COM'))
+  if (strcmp (xls.xtype, "COM"))
     xls = __COM_spsh_close__ (xls);
 
-  elseif (strcmp (xls.xtype, 'POI'))
+  elseif (strcmp (xls.xtype, "POI"))
     xls = __POI_spsh_close__ (xls);
 
-  elseif (strcmp (xls.xtype, 'JXL'))
+  elseif (strcmp (xls.xtype, "JXL"))
     xls = __JXL_spsh_close__ (xls);
 
-  elseif (strcmp (xls.xtype, 'OXS'))
+  elseif (strcmp (xls.xtype, "OXS"))
     xls = __OXS_spsh_close__ (xls);
 
-  elseif (strcmp (xls.xtype, 'UNO'))
+  elseif (strcmp (xls.xtype, "UNO"))
     xls = __UNO_spsh_close__ (xls, force);
 
-# elseif   <other interfaces here>
+  ## elseif   <other interfaces here>
 
   endif
 
   if (xls.changed && xls.changed < 3)
-    warning (sprintf ("File %s could not be saved. Read-only or in use elsewhere?", xls.filename));
+    warning (sprintf ("File %s could not be saved. Read-only or in use elsewhere?",...
+                      xls.filename));
     if (force)
       xls = [];
     else
-      printf ("(File pointer preserved)\n");
+      printf ("(File pointer preserved. Try saving again later...)\n");
     endif
   else
     xls = [];

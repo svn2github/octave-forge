@@ -29,29 +29,34 @@
 ## Updates:
 ## 2012-02-25 Changed ctype into num array rather than cell array
 ## 2012-10-12 Renamed & moved into ./private
+## 2012-10-24 Style fixes
 
 function [ rawarr, xls, rstatus ] = __OXS_spsh2oct__ (xls, wsh, cellrange, spsh_opts)
 
   persistent ctype;
   if (isempty (ctype))
     ctype = zeros (6, 1);
-    # Get enumerated cell types. Beware as they start at 0 not 1
-    ctype( 1) = (java_get ('com.extentech.ExtenXLS.CellHandle', 'TYPE_STRING'));  # 0
-    ctype( 2) = (java_get ('com.extentech.ExtenXLS.CellHandle', 'TYPE_FP'));      # 1
-    ctype( 3) = (java_get ('com.extentech.ExtenXLS.CellHandle', 'TYPE_INT'));     # 2
-    ctype( 4) = (java_get ('com.extentech.ExtenXLS.CellHandle', 'TYPE_FORMULA')); # 3
-    ctype( 5) = (java_get ('com.extentech.ExtenXLS.CellHandle', 'TYPE_BOOLEAN')); # 4
-    ctype( 6) = (java_get ('com.extentech.ExtenXLS.CellHandle', 'TYPE_DOUBLE'));  # 5
+    ## Get enumerated cell types. Beware as they start at 0 not 1
+    ctype( 1) = (java_get ("com.extentech.ExtenXLS.CellHandle", "TYPE_STRING"));  ## 0
+    ctype( 2) = (java_get ("com.extentech.ExtenXLS.CellHandle", "TYPE_FP"));      ## 1
+    ctype( 3) = (java_get ("com.extentech.ExtenXLS.CellHandle", "TYPE_INT"));     ## 2
+    ctype( 4) = (java_get ("com.extentech.ExtenXLS.CellHandle", "TYPE_FORMULA")); ## 3
+    ctype( 5) = (java_get ("com.extentech.ExtenXLS.CellHandle", "TYPE_BOOLEAN")); ## 4
+    ctype( 6) = (java_get ("com.extentech.ExtenXLS.CellHandle", "TYPE_DOUBLE"));  ## 5
   endif
   
   rstatus = 0; 
   wb = xls.workbook;
   
-  # Check if requested worksheet exists in the file & if so, get pointer
+  ## Check if requested worksheet exists in the file & if so, get pointer
   nr_of_sheets = wb.getNumWorkSheets ();
   if (isnumeric (wsh))
-    if (wsh > nr_of_sheets), error (sprintf ("Worksheet # %d bigger than nr. of sheets (%d) in file %s", wsh, nr_of_sheets, xls.filename)); endif
-    sh = wb.getWorkSheet (wsh - 1);      # OXS sheet count 0-based
+    if (wsh > nr_of_sheets)
+      error (sprintf ...
+          ("Worksheet ## %d bigger than nr. of sheets (%d) in file %s",...
+          wsh, nr_of_sheets, xls.filename)); 
+    endif
+    sh = wb.getWorkSheet (wsh - 1);      ## OXS sheet count 0-based
     printf ("(Reading from worksheet %s)\n", sh.getSheetName ());
   else
     try
@@ -62,12 +67,12 @@ function [ rawarr, xls, rstatus ] = __OXS_spsh2oct__ (xls, wsh, cellrange, spsh_
   end
 
   if (isempty (cellrange))
-    # Get numeric sheet pointer (0-based)
+    ## Get numeric sheet pointer (0-based)
     wsh = sh.getTabIndex ();
-    # Get data rectangle row & column numbers (1-based)
+    ## Get data rectangle row & column numbers (1-based)
     [firstrow, lastrow, lcol, rcol] = getusedrange (xls, wsh+1);
     if (firstrow == 0 && lastrow == 0)
-      # Empty sheet
+      ## Empty sheet
       rawarr = {};
       printf ("Worksheet '%s' contains no data\n", shnames {wsh});
       rstatus = 1;
@@ -77,17 +82,17 @@ function [ rawarr, xls, rstatus ] = __OXS_spsh2oct__ (xls, wsh, cellrange, spsh_
       ncols = rcol - lcol + 1;
     endif
   else
-    # Translate range to row & column numbers (1-based)
+    ## Translate range to row & column numbers (1-based)
     [dummy, nrows, ncols, firstrow, lcol] = parse_sp_range (cellrange);
-    # Check for too large requested range against actually present range
+    ## Check for too large requested range against actually present range
     lastrow = min (firstrow + nrows - 1, sh.getLastRow + 1 ());
     nrows = min (nrows, sh.getLastRow () - firstrow + 1);
     ncols = min (ncols, sh.getLastCol () - lcol + 1);
     rcol = lcol + ncols - 1;
   endif
 
-  # Read contents into rawarr
-  rawarr = cell (nrows, ncols);      # create placeholder
+  ## Read contents into rawarr
+  rawarr = cell (nrows, ncols);      ## create placeholder
   for jj = lcol:rcol
     for ii = firstrow:lastrow
       try
@@ -98,7 +103,7 @@ function [ rawarr, xls, rstatus ] = __OXS_spsh2oct__ (xls, wsh, cellrange, spsh_
           rawarr {ii+1-firstrow, jj+1-lcol} = scell.getDoubleVal ();
         endif
       catch
-        # Empty or non-existing cell
+        ## Empty or non-existing cell
       end_try_catch
     endfor
   endfor

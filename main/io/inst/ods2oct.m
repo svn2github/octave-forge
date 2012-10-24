@@ -124,13 +124,14 @@
 ## 2012-06-08 Support for odfdom-incubator 0.8.8
 ##     ''     Replaced tabs by double space
 ## 2012-10-12 Moved all interface-specific subfubcs into ./private
+## 2012-10-24 Style fixes
 ##
 ## Latest subfunc update: 2012-10-12
 
 function [ rawarr, ods, rstatus ] = ods2oct (ods, wsh=1, datrange=[], spsh_opts=[])
 
-  # Check if ods struct pointer seems valid
-  if (~isstruct (ods)), error ("File ptr struct expected for arg @ 1"); endif
+  ## Check if ods struct pointer seems valid
+  if (~isstruct (ods)); error ("File ptr struct expected for arg @ 1"); endif
   test1 = ~isfield (ods, "xtype");
   test1 = test1 || ~isfield (ods, "workbook");
   test1 = test1 || isempty (ods.workbook);
@@ -138,64 +139,74 @@ function [ rawarr, ods, rstatus ] = ods2oct (ods, wsh=1, datrange=[], spsh_opts=
   if (test1)
     error ("Arg #1 is an invalid ods file struct");
   endif
-  # Check worksheet ptr
-  if (~(ischar (wsh) || isnumeric (wsh))), error ("Integer (index) or text (wsh name) expected for arg # 2"); endif
-  # Check range
-  if (~(isempty (datrange) || ischar (datrange))), error ("Character string (range) expected for arg # 3"); endif
-  # Check & setup options struct
+  ## Check worksheet ptr
+  if (~(ischar (wsh) || isnumeric (wsh)))
+    error ("Integer (index) or text (wsh name) expected for arg # 2");
+  endif
+  ## Check range
+  if (~(isempty (datrange) || ischar (datrange)))
+    error ("Character string (range) expected for arg # 3");
+  endif
+  ## Check & setup options struct
   if (nargin < 4 || isempty (spsh_opts))
     spsh_opts.formulas_as_text = 0;
     spsh_opts.strip_array = 1;
-    # Other options here
+    ## Other options here:
+
   elseif (~isstruct (spsh_opts))
     error ("struct expected for OPTIONS argument (# 4)");
   else
-    if (~isfield (spsh_opts, 'formulas_as_text')), spsh_opts.formulas_as_text = 0; endif
-    if (~isfield (spsh_opts, 'strip_array')), spsh_opts.strip_array = 1; endif
-    % Future options:
+    if (~isfield (spsh_opts, "formulas_as_text"))
+      spsh_opts.formulas_as_text = 0;
+    endif
+    if (~isfield (spsh_opts, "strip_array"))
+      spsh_opts.strip_array = 1;
+    endif
+    ## Future options:
+
   endif
 
-  # Select the proper interfaces
-  if (strcmp (ods.xtype, 'OTK'))
-    # Read ods file tru Java & ODF toolkit
+  ## Select the proper interfaces
+  if (strcmp (ods.xtype, "OTK"))
+    ## Read ods file tru Java & ODF toolkit
     switch ods.odfvsn
-      case '0.7.5'
+      case "0.7.5"
         [rawarr, ods] = __OTK_ods2oct__ (ods, wsh, datrange, spsh_opts);
-      case {'0.8.6', '0.8.7', '0.8.8'}
+      case {"0.8.6", "0.8.7", "0.8.8"}
         [rawarr, ods] = __OTK_spsh2oct__ (ods, wsh, datrange, spsh_opts);
       otherwise
         error ("Unsupported odfdom version or invalid ods file pointer.");
     endswitch
-  elseif (strcmp (ods.xtype, 'JOD'))
-    # Read ods file tru Java & jOpenDocument. JOD doesn't know about formulas :-(
+  elseif (strcmp (ods.xtype, "JOD"))
+    ## Read ods file tru Java & jOpenDocument. JOD doesn't know about formulas :-(
     [rawarr, ods] = __JOD_spsh2oct__  (ods, wsh, datrange);
-  elseif (strcmp (ods.xtype, 'UNO'))
-    # Read ods file tru Java & UNO
+  elseif (strcmp (ods.xtype, "UNO"))
+    ## Read ods file tru Java & UNO
     [rawarr, ods] = __UNO_spsh2oct__ (ods, wsh, datrange, spsh_opts);
-#  elseif 
-  #  ---- < Other interfaces here >
+  ##elseif 
+  ##  ---- < Other interfaces here >
   else
     error (sprintf ("ods2oct: unknown OpenOffice.org .ods interface - %s.", ods.xtype));
   endif
 
   rstatus = ~isempty (rawarr);
 
-  # Optionally strip empty outer rows and columns & keep track of original data location
+  ## Optionally strip empty outer rows and columns & keep track of original data location
   if (spsh_opts.strip_array && rstatus)
-    emptr = cellfun ('isempty', rawarr);
+    emptr = cellfun ("isempty", rawarr);
     if (all (all (emptr)))
       rawarr = {};
       ods.limits= [];
     else
       nrows = size (rawarr, 1); ncols = size (rawarr, 2);
       irowt = 1;
-      while (all (emptr(irowt, :))), irowt++; endwhile
+      while (all (emptr(irowt, :))); irowt++; endwhile
       irowb = nrows;
-      while (all (emptr(irowb, :))), irowb--; endwhile
+      while (all (emptr(irowb, :))); irowb--; endwhile
       icoll = 1;
-      while (all (emptr(:, icoll))), icoll++; endwhile
+      while (all (emptr(:, icoll))); icoll++; endwhile
       icolr = ncols;
-      while (all (emptr(:, icolr))), icolr--; endwhile
+      while (all (emptr(:, icolr))); icolr--; endwhile
 
       # Crop outer rows and columns and update limits
       rawarr = rawarr(irowt:irowb, icoll:icolr);

@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Philip
+## Copyright (C) 2012 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -16,8 +16,10 @@
 
 ## __OXS_xlsopen__ - inernal function for opening an xls file using Java / OpenXLS
 
-## Author: Philip <Philip@DESKPRN>
+## Author: Philip Nienhuis <prnienhuis at users.sf.net>
 ## Created: 2012-10-07
+## Updates:
+## 2012-10-24 Style fixes
 
 function [ xls, xlssupport, lastintf ] = __OXS_spsh_open__ (xls, xwrite, filename, xlssupport, chk1)
 
@@ -25,15 +27,15 @@ function [ xls, xlssupport, lastintf ] = __OXS_spsh_open__ (xls, xwrite, filenam
       error ("OXS can only read from .xls files")
     endif
     try
-      wb = javaObject ('com.extentech.ExtenXLS.WorkBookHandle', filename);
-      xls.xtype = 'OXS';
-      xls.app = 'void - OpenXLS';
+      wb = javaObject ("com.extentech.ExtenXLS.WorkBookHandle", filename);
+      xls.xtype = "OXS";
+      xls.app = "void - OpenXLS";
       xls.workbook = wb;
       xls.filename = filename;
       xlssupport += 8;
-      lastintf = 'OXS';
+      lastintf = "OXS";
     catch
-      printf ('Unsupported file format for OpenXLS - %s\n');
+      printf ("Unsupported file format for OpenXLS - %s\n");
     end_try_catch
 
 endfunction

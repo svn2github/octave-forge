@@ -118,14 +118,15 @@
 ## 2012-06-08 Support for odfdom-incubator-0.8.8
 ##     ''     Tabs replaced by double space
 ## 2012-10-12 Moved all interface-specific subfubcs into ./private
+## 2012-10-24 Style fixes
 ##
 ## Latest subfunc update: 2012-10-12
 
-function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange='', spsh_opts=[])
+function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange="", spsh_opts=[])
 
   if (nargin < 2) error ("oct2xls needs a minimum of 2 arguments."); endif
   
-  # Check if input array is cell
+  ## Check if input array is cell
   if (isempty (c_arr))
     warning ("Request to write empty matrix - ignored."); 
     rstatus = 1;
@@ -138,9 +139,11 @@ function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange='', spsh_opts=[])
   elseif (~iscell (c_arr))
     error ("oct2ods: input array neither cell nor numeric array");
   endif
-  if (ndims (c_arr) > 2), error ("Only 2-dimensional arrays can be written to spreadsheet"); endif
+  if (ndims (c_arr) > 2)
+    error ("Only 2-dimensional arrays can be written to spreadsheet");
+  endif
 
-  # Check ods file pointer struct
+  ## Check ods file pointer struct
   test1 = ~isfield (ods, "xtype");
   test1 = test1 || ~isfield (ods, "workbook");
   test1 = test1 || isempty (ods.workbook);
@@ -149,31 +152,38 @@ function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange='', spsh_opts=[])
     error ("Arg #2: Invalid ods file pointer struct");
   endif
 
-  # Check worksheet ptr
-  if (~(ischar (wsh) || isnumeric (wsh))), error ("Integer (index) or text (wsh name) expected for arg # 3"); endif
+  ## Check worksheet ptr
+  if (~(ischar (wsh) || isnumeric (wsh)))
+    error ("Integer (index) or text (wsh name) expected for arg # 3");
+  endif
 
-  # Check range
+  ## Check range
   if (~isempty (crange) && ~ischar (crange))
     error ("Character string (range) expected for arg # 4");
   elseif (isempty (crange))
-    crange = '';
+    crange = "";
   endif
 
-  # Various options 
+  ## Various options 
   if (isempty (spsh_opts))
     spsh_opts.formulas_as_text = 0;
-    # other options to be implemented here
+    ## other options to be implemented here
   elseif (isstruct (spsh_opts))
-    if (~isfield (spsh_opts, 'formulas_as_text')), spsh_opts.formulas_as_text = 0; endif
-    # other options to be implemented here
+    if (~isfield (spsh_opts, "formulas_as_text"))
+      spsh_opts.formulas_as_text = 0; 
+    endif
+    ## other options to be implemented here:
+ 
   else
-    error ("Structure expected for arg # 5");
+    error ("Structure expected for arg # 5" (options));
   endif
   
-  if (nargout < 1) printf ("Warning: no output spreadsheet file pointer specified.\n"); endif
+  if (nargout < 1)
+    printf ("Warning: no output spreadsheet file pointer specified.\n");
+  endif
 
-  if (strcmp (ods.xtype, 'OTK'))
-    # Write ods file tru Java & ODF toolkit.
+  if (strcmp (ods.xtype, "OTK"))
+    ## Write ods file tru Java & ODF toolkit.
     switch ods.odfvsn
       case "0.7.5"
         [ ods, rstatus ] = __OTK_oct2ods__ (c_arr, ods, wsh, crange, spsh_opts);
@@ -183,19 +193,20 @@ function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange='', spsh_opts=[])
         error ("Unsupported odfdom version");
     endswitch
 
-  elseif (strcmp (ods.xtype, 'JOD'))
-    # Write ods file tru Java & jOpenDocument. API still leaves lots to be wished...
+  elseif (strcmp (ods.xtype, "JOD"))
+    ## Write ods file tru Java & jOpenDocument. API still leaves lots to be wished...
     [ ods, rstatus ] = __JOD_oct2spsh__ (c_arr, ods, wsh, crange);
 
-  elseif (strcmp (ods.xtype, 'UNO'))
-    # Write ods file tru Java & UNO bridge (OpenOffice.org & clones)
+  elseif (strcmp (ods.xtype, "UNO"))
+    ## Write ods file tru Java & UNO bridge (OpenOffice.org & clones)
     [ ods, rstatus ] = __UNO_oct2spsh__ (c_arr, ods, wsh, crange, spsh_opts);
 
-#  elseif 
-    # ---- < Other interfaces here >
+  ##elseif 
+    ##---- < Other interfaces here >
 
   else
-    error (sprintf ("ods2oct: unknown OpenOffice.org .ods interface - %s.", ods.xtype));
+    error (sprintf ("ods2oct: unknown OpenOffice.org .ods interface - %s.",...
+                    ods.xtype));
   endif
 
   if (rstatus), ods.limits = []; endif

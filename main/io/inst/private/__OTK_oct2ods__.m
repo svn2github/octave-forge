@@ -15,6 +15,7 @@
 
 ## __OTK_oct2ods__
 ## write data array to an ODS spreadsheet using Java & ODFtoolkit 0.7.5
+## Note: __OTK_oct2spsh__ uses more recent odfdom that operates at higher level
 
 ## I'm truly sorry that oct2jotk2ods is so ridiculously complex,
 ## and therefore so slow; but there's a good reason for that:
@@ -43,51 +44,52 @@
 ## 2010-10-27 Improved file change tracking tru ods.changed
 ## 2010-11-12 Improved file change tracking tru ods.changed
 ## 2012-10-12 Renamed & moved into ./private
+## 2012-10-24 Style fixes
 
 function [ ods, rstatus ] = __OTK_oct2ods__ (c_arr, ods, wsh, crange, spsh_opts)
 
   persistent ctype;
   if (isempty (ctype))
-    # Number, Boolean, String, Formula, Empty, Date, Time (last 2 are ignored)
+    ## Number, Boolean, String, Formula, Empty, Date, Time (last 2 are ignored)
     ctype = [1, 2, 3, 4, 5, 6, 7];
   endif
 
   rstatus = 0; f_errs = 0;
 
-  # Get some basic spreadsheet data from the pointer using ODFtoolkit
+  ## Get some basic spreadsheet data from the pointer using ODFtoolkit
   odfcont = ods.workbook;
   xpath = ods.app.getXPath ();
   offsprdsh = ods.app.getContentRoot();
   autostyles = odfcont.getOrCreateAutomaticStyles();
   officestyles = ods.app.getOrCreateDocumentStyles();
 
-  # Create an instance of type NODESET for use in subsequent statements
-  NODESET = java_get ('javax.xml.xpath.XPathConstants', 'NODESET');
+  ## Create an instance of type NODESET for use in subsequent statements
+  NODESET = java_get ("javax.xml.xpath.XPathConstants", "NODESET");
 
-  # Parse sheets ("tables") from ODS file
+  ## Parse sheets ("tables") from ODS file
   sheets = xpath.evaluate ("//table:table", odfcont, NODESET);
   nr_of_sheets = sheets.getLength ();
-  newsh = 0;                # Assume existing sheet
+  newsh = 0;                ## Assume existing sheet
   if isempty (wsh) wsh = 1; endif
-  if (~isnumeric (wsh))          # Sheet name specified
-    # Search in sheet names, match sheet name to sheet number.
-    # Beware, 0-based index, 1-based count!
+  if (~isnumeric (wsh))          ## Sheet name specified
+    ## Search in sheet names, match sheet name to sheet number.
+    ## Beware, 0-based index, 1-based count!
     ii = 0;
     while (++ii <= nr_of_sheets && ischar (wsh))  
-      # Look in first part of the sheet nodeset
+      ## Look in first part of the sheet nodeset
       sh_name = sheets.item(ii-1).getTableNameAttribute ();
       if (strcmp (sh_name, wsh))
-        # Convert local copy of wsh into a number (pointer)
+        ## Convert local copy of wsh into a number (pointer)
         wsh = ii - 1;
       endif
     endwhile
     if (ischar (wsh) && nr_of_sheets < 256) newsh = 1; endif
-  else                    # Sheet index specified
-    if ((ods.changed > 2) || (wsh > nr_of_sheets && wsh < 256))  # Max nr of sheets = 256
-      # Create a new sheet
+  else                    ## Sheet index specified
+    if ((ods.changed > 2) || (wsh > nr_of_sheets && wsh < 256))  ## Max nr of sheets = 256
+      ## Create a new sheet
       newsh = 1;
     elseif (wsh <=nr_of_sheets && wsh > 0)
-      # Existing sheet. Count = 1-based, index = 0-based
+      ## Existing sheet. Count = 1-based, index = 0-based
       --wsh; sh = sheets.item(wsh);
       printf ("Writing to sheet %s\n", sh.getTableNameAttribute());
     else
@@ -95,146 +97,148 @@ function [ ods, rstatus ] = __OTK_oct2ods__ (c_arr, ods, wsh, crange, spsh_opts)
     endif
   endif
 
-# Check size of data array & range / capacity of worksheet & prepare vars
+## Check size of data array & range / capacity of worksheet & prepare vars
   [nr, nc] = size (c_arr);
-  [topleft, nrows, ncols, trow, lcol] = spsh_chkrange (crange, nr, nc, ods.xtype, ods.filename);
-  --trow; --lcol;                  # Zero-based row # & col #
+  [topleft, nrows, ncols, trow, lcol] = ...
+                    spsh_chkrange (crange, nr, nc, ods.xtype, ods.filename);
+  --trow; --lcol;                  ## Zero-based row ## & col ##
   if (nrows < nr || ncols < nc)
     warning ("Array truncated to fit in range");
     c_arr = c_arr(1:nrows, 1:ncols);
   endif
   
-# Parse data array, setup typarr and throw out NaNs  to speed up writing;
+## Parse data array, setup typarr and throw out NaNs  to speed up writing;
   typearr = spsh_prstype (c_arr, nrows, ncols, ctype, spsh_opts, 0);
   if ~(spsh_opts.formulas_as_text)
-    # Find formulas (designated by a string starting with "=" and ending in ")")
-    fptr = cellfun (@(x) ischar (x) && strncmp (x, "=", 1) && strncmp (x(end:end), ")", 1), c_arr);
-    typearr(fptr) = ctype(4);          # FORMULA
+    ## Find formulas (designated by a string starting with "=" and ending in ")")
+    fptr = cellfun (@(x) ischar (x) && strncmp (x, "=", 1) ...
+                                    && strncmp (x(end:end), ")", 1), c_arr);
+    typearr(fptr) = ctype(4);          ## FORMULA
   endif
 
-# Prepare worksheet for writing. If needed create new sheet
+## Prepare worksheet for writing. If needed create new sheet
   if (newsh)
     if (ods.changed > 2)
-      # New spreadsheet. Prepare to use the default 1x1 first sheet.
+      ## New spreadsheet. Prepare to use the default 1x1 first sheet.
       sh = sheets.item(0);
     else
-      # Other sheets exist, create a new sheet. First the basics
-      sh = java_new ('org.odftoolkit.odfdom.doc.table.OdfTable', odfcont);
-      # Append sheet to spreadsheet ( contentRoot)
+      ## Other sheets exist, create a new sheet. First the basics
+      sh = java_new ("org.odftoolkit.odfdom.doc.table.OdfTable", odfcont);
+      ## Append sheet to spreadsheet ( contentRoot)
       offsprdsh.appendChild (sh);
-      # Rebuild sheets nodes
+      ## Rebuild sheets nodes
       sheets = xpath.evaluate ("//table:table", odfcont, NODESET);
     endif 
 
-    # Sheet name
+    ## Sheet name
     if (isnumeric (wsh))
-      # Give sheet a name
+      ## Give sheet a name
       str = sprintf ("Sheet%d", wsh);
       sh.setTableNameAttribute (str);
     else
-      # Assign name to sheet and change wsh into numeric pointer
+      ## Assign name to sheet and change wsh into numeric pointer
       sh.setTableNameAttribute (wsh);
       wsh = sheets.getLength () - 1;
     endif
-    # Fixup wsh pointer in case of new spreadsheet
+    ## Fixup wsh pointer in case of new spreadsheet
     if (ods.changed > 2) wsh = 0; endif
 
-    # Add table-column entry for style etc
+    ## Add table-column entry for style etc
     col = sh.addTableColumn ();
     col.setTableDefaultCellStyleNameAttribute ("Default");
     col.setTableNumberColumnsRepeatedAttribute (lcol + ncols + 1);
     col.setTableStyleNameAttribute ("co1");
 
-  # Build up the complete row & cell structure to cover the data array.
-  # This will speed up processing later
+  ## Build up the complete row & cell structure to cover the data array.
+  ## This will speed up processing later
 
-    # 1. Build empty table row template
-    row = java_new ('org.odftoolkit.odfdom.doc.table.OdfTableRow', odfcont);
-    # Create an empty tablecell & append it to the row
-    scell = java_new ('org.odftoolkit.odfdom.doc.table.OdfTableCell', odfcont);
+    ## 1. Build empty table row template
+    row = java_new ("org.odftoolkit.odfdom.doc.table.OdfTableRow", odfcont);
+    ## Create an empty tablecell & append it to the row
+    scell = java_new ("org.odftoolkit.odfdom.doc.table.OdfTableCell", odfcont);
     scell = row.appendCell (scell);
     scell.setTableNumberColumnsRepeatedAttribute (1024);
-    # 2. If needed add empty filler row above the data rows & if needed add repeat count
+    ## 2. If needed add empty filler row above the data rows & if needed add repeat count
     if (trow > 0)        
       sh.appendRow (row);
       if (trow > 1) row.setTableNumberRowsRepeatedAttribute (trow); endif
     endif
-    # 3. Add data rows; first one serves as a template
-    drow = java_new ('org.odftoolkit.odfdom.doc.table.OdfTableRow', odfcont);
+    ## 3. Add data rows; first one serves as a template
+    drow = java_new ("org.odftoolkit.odfdom.doc.table.OdfTableRow", odfcont);
     if (lcol > 0) 
-      scell = java_new ('org.odftoolkit.odfdom.doc.table.OdfTableCell', odfcont);
+      scell = java_new ("org.odftoolkit.odfdom.doc.table.OdfTableCell", odfcont);
       drow.appendCell (scell);
       if (lcol > 1) scell.setTableNumberColumnsRepeatedAttribute (lcol); endif
     endif
-    # 4. Add data cell placeholders
-    scell = java_new ('org.odftoolkit.odfdom.doc.table.OdfTableCell', odfcont);
+    ## 4. Add data cell placeholders
+    scell = java_new ("org.odftoolkit.odfdom.doc.table.OdfTableCell", odfcont);
     drow.appendCell (scell);
     for jj=2:ncols
-      dcell = scell.cloneNode (1);    # Deep copy
+      dcell = scell.cloneNode (1);    ## Deep copy
       drow.appendCell (dcell);
     endfor
-    # 5. Last cell is remaining column counter
+    ## 5. Last cell is remaining column counter
     rest = max (1024 - lcol - ncols);
     if (rest)
-      dcell = scell.cloneNode (1);    # Deep copy
+      dcell = scell.cloneNode (1);    ## Deep copy
       drow.appendCell (dcell);
       if (rest > 1) dcell.setTableNumberColumnsRepeatedAttribute (rest); endif
     endif
-    # Only now add drow as otherwise for each cell an empty table-column is
-    # inserted above the rows (odftoolkit bug?)
+    ## Only now add drow as otherwise for each cell an empty table-column is
+    ## inserted above the rows (odftoolkit bug?)
     sh.appendRow (drow);
     if (ods.changed > 2)
-      # In case of a completely new spreadsheet, delete the first initial 1-cell row
-      # But check if it *is* a row...
+      ## In case of a completely new spreadsheet, delete the first initial 1-cell row
+      ## But check if it *is* a row...
       try
         sh.removeChild (drow.getPreviousRow ());
       catch
-        # Nothing. Apparently there was only the just appended row.
+        ## Nothing. Apparently there was only the just appended row.
       end_try_catch
     endif
-    # 6. Row template ready. Copy row template down to cover future array
+    ## 6. Row template ready. Copy row template down to cover future array
     for ii=2:nrows
-      nrow = drow.cloneNode (1);  # Deep copy
+      nrow = drow.cloneNode (1);  ## Deep copy
       sh.appendRow (nrow);
     endfor
-    ods.changed = min (ods.changed, 2);    # Keep 2 for new spshsht, 1 for existing + changed
+    ods.changed = min (ods.changed, 2);    ## Keep 2 for new spshsht, 1 for existing + changed
 
   else
-    # Existing sheet. We must be prepared for all situations, incomplete rows,
-    # number-rows/columns-repeated, merged (spanning) cells, you name it.
-    # First explore row buildup of existing sheet using an XPath
-    sh = sheets.item(wsh);                      # 0 - based
-    str = sprintf ("//table:table[%d]/table:table-row", wsh + 1);  # 1 - based 
+    ## Existing sheet. We must be prepared for all situations, incomplete rows,
+    ## number-rows/columns-repeated, merged (spanning) cells, you name it.
+    ## First explore row buildup of existing sheet using an XPath
+    sh = sheets.item(wsh);                      ## 0 - based
+    str = sprintf ("//table:table[%d]/table:table-row", wsh + 1);  ## 1 - based 
     trows = xpath.evaluate (str, odfcont, NODESET);
-    nr_of_trows = trows.getLength();   # Nr. of existing table-rows, not data rows!
+    nr_of_trows = trows.getLength();   ## Nr. of existing table-rows, not data rows!
 
-    # For the first rows we do some preprocessing here. Similar stuff for cells
-    # i.e. table-cells (columns) is done in the loops below.
-    # Make sure the upper data array row doesn't end up in a nr-rows-repeated row
+    ## For the first rows we do some preprocessing here. Similar stuff for cells
+    ## i.e. table-cells (columns) is done in the loops below.
+    ## Make sure the upper data array row doesn't end up in a nr-rows-repeated row
 
-    # Provisionally! set start table-row in case "while" & "if" (split) are skipped
+    ## Provisionally! set start table-row in case "while" & "if" (split) are skipped
     drow = trows.item(0);  
-    rowcnt = 0; trowcnt = 0;          # Spreadsheet/ table-rows, resp;
+    rowcnt = 0; trowcnt = 0;          ## Spreadsheet/ table-rows, resp;
     while (rowcnt < trow && trowcnt < nr_of_trows)
-      # Count rows & table-rows UNTIL we reach trow
-      ++trowcnt;                # Nr of table-rows
+      ## Count rows & table-rows UNTIL we reach trow
+      ++trowcnt;                ## Nr of table-rows
       row = drow;
       drow = row.getNextSibling ();
       repcnt = row.getTableNumberRowsRepeatedAttribute();
-      rowcnt = rowcnt + repcnt;        # Nr of spreadsheet rows
+      rowcnt = rowcnt + repcnt;        ## Nr of spreadsheet rows
     endwhile
     rsplit = rowcnt - trow;
     if (rsplit > 0)
-      # Apparently a nr-rows-repeated top table-row must be split, as the
-      # first data row seems to be projected in it (1st while condition above!)
-      row.removeAttribute ('table:number-rows-repeated');
-      row.getCellAt (0).removeAttribute ('table:number-columns-repeated');
+      ## Apparently a nr-rows-repeated top table-row must be split, as the
+      ## first data row seems to be projected in it (1st while condition above!)
+      row.removeAttribute ("table:number-rows-repeated");
+      row.getCellAt (0).removeAttribute ("table:number-columns-repeated");
       nrow = row.cloneNode (1);
-      drow = nrow;              # Future upper data array row
+      drow = nrow;              ## Future upper data array row
       if (repcnt > 1)
         row.setTableNumberRowsRepeatedAttribute (repcnt - rsplit);
       else
-        row.removeAttribute ('table:number-rows-repeated');
+        row.removeAttribute ("table:number-rows-repeated");
       endif
       rrow = row.getNextSibling ();
       sh.insertBefore (nrow, rrow);
@@ -243,14 +247,14 @@ function [ ods, rstatus ] = __OTK_oct2ods__ (c_arr, ods, wsh, crange, spsh_opts)
         sh.insertBefore (nrow, rrow);
       endfor
     elseif (rsplit < 0)
-      # New data rows to be added below existing data & table(!) rows, i.e.
-      # beyond lower end of the current sheet. Add filler row and 1st data row
-      row = java_new ('org.odftoolkit.odfdom.doc.table.OdfTableRow', odfcont);
-      drow = row.cloneNode (1);                # First data row
-      row.setTableNumberRowsRepeatedAttribute (-rsplit);    # Filler row
-      scell = java_new ('org.odftoolkit.odfdom.doc.table.OdfTableCell', odfcont);
+      ## New data rows to be added below existing data & table(!) rows, i.e.
+      ## beyond lower end of the current sheet. Add filler row and 1st data row
+      row = java_new ("org.odftoolkit.odfdom.doc.table.OdfTableRow", odfcont);
+      drow = row.cloneNode (1);                ## First data row
+      row.setTableNumberRowsRepeatedAttribute (-rsplit);    ## Filler row
+      scell = java_new ("org.odftoolkit.odfdom.doc.table.OdfTableCell", odfcont);
       dcell = scell.cloneNode (1);
-      scell.setTableNumberColumnsRepeatedAttribute (COL_CAP);  # Filler cell
+      scell.setTableNumberColumnsRepeatedAttribute (COL_CAP);  ## Filler cell
       row.appendCell (scell);
       sh.appendRow (row);
       drow.appendCell (dcell);
@@ -258,26 +262,26 @@ function [ ods, rstatus ] = __OTK_oct2ods__ (c_arr, ods, wsh, crange, spsh_opts)
     endif
   endif
 
-# For each row, for each cell, add the data. Expand row/column-repeated nodes
+## For each row, for each cell, add the data. Expand row/column-repeated nodes
 
-  row = drow;      # Start row; pointer still exists from above stanzas
+  row = drow;      ## Start row; pointer still exists from above stanzas
   for ii=1:nrows
-    if (~newsh)    # Only for existing sheets the next checks should be made
-      # While processing next data rows, fix table-rows if needed
+    if (~newsh)    ## Only for existing sheets the next checks should be made
+      ## While processing next data rows, fix table-rows if needed
       if (isempty (row) || (row.getLength () < 1))
-        # Append an empty row with just one empty cell
-        row = java_new ('org.odftoolkit.odfdom.doc.table.OdfTableRow', odfcont);
-        scell = java_new ('org.odftoolkit.odfdom.doc.table.OdfTableCell', odfcont);
+        ## Append an empty row with just one empty cell
+        row = java_new ("org.odftoolkit.odfdom.doc.table.OdfTableRow", odfcont);
+        scell = java_new ("org.odftoolkit.odfdom.doc.table.OdfTableCell", odfcont);
         scell.setTableNumberColumnsRepeatedAttribute (lcol + 1);
         row.appendCell (scell);
         sh.appendRow (row);
       else
-        # If needed expand nr-rows-repeated
+        ## If needed expand nr-rows-repeated
         repcnt = row.getTableNumberRowsRepeatedAttribute ();
         if (repcnt > 1)
-          row.removeAttribute ('table:number-rows-repeated');
-          # Insert new table-rows above row until our new data space is complete.
-          # Keep handle of upper new table-row as that's where data are added 1st
+          row.removeAttribute ("table:number-rows-repeated");
+          ## Insert new table-rows above row until our new data space is complete.
+          ## Keep handle of upper new table-row as that's where data are added 1st
           drow = row.cloneNode (1);
           sh.insertBefore (drow, row);
           for kk=1:min (repcnt, nrows-ii)
@@ -291,26 +295,26 @@ function [ ods, rstatus ] = __OTK_oct2ods__ (c_arr, ods, wsh, crange, spsh_opts)
         endif
       endif
 
-      # Check if leftmost cell ends up in nr-cols-repeated cell
+      ## Check if leftmost cell ends up in nr-cols-repeated cell
       colcnt = 0; tcellcnt = 0; rcellcnt = row.getLength();
       dcell = row.getCellAt (0);
       while (colcnt < lcol && tcellcnt < rcellcnt)
-        # Count columns UNTIL we hit lcol
-        ++tcellcnt;            # Nr of table-cells counted
+        ## Count columns UNTIL we hit lcol
+        ++tcellcnt;            ## Nr of table-cells counted
         scell = dcell;
         dcell = scell.getNextSibling ();
         repcnt = scell.getTableNumberColumnsRepeatedAttribute ();
-        colcnt = colcnt + repcnt;    # Nr of spreadsheet cell counted
+        colcnt = colcnt + repcnt;    ## Nr of spreadsheet cell counted
       endwhile
       csplit = colcnt - lcol;
       if (csplit > 0)
-        # Apparently a nr-columns-repeated cell must be split
-        scell.removeAttribute ('table:number-columns-repeated');
+        ## Apparently a nr-columns-repeated cell must be split
+        scell.removeAttribute ("table:number-columns-repeated");
         ncell = scell.cloneNode (1);
         if (repcnt > 1)
           scell.setTableNumberColumnsRepeatedAttribute (repcnt - csplit);
         else
-          scell.removeAttribute ('table:number-columns-repeated');
+          scell.removeAttribute ("table:number-columns-repeated");
         endif
         rcell = scell.getNextSibling ();
         row.insertBefore (ncell, rcell);
@@ -319,8 +323,8 @@ function [ ods, rstatus ] = __OTK_oct2ods__ (c_arr, ods, wsh, crange, spsh_opts)
           row.insertBefore (ncell, rcell);
         endfor
       elseif (csplit < 0)
-        # New cells to be added beyond current last cell & table-cell in row
-        dcell = java_new ('org.odftoolkit.odfdom.doc.table.OdfTableCell', odfcont);
+        ## New cells to be added beyond current last cell & table-cell in row
+        dcell = java_new ("org.odftoolkit.odfdom.doc.table.OdfTableCell", odfcont);
         scell = dcell.cloneNode (1);
         dcell.setTableNumberColumnsRepeatedAttribute (-csplit);
         row.appendCell (dcell);
@@ -328,97 +332,100 @@ function [ ods, rstatus ] = __OTK_oct2ods__ (c_arr, ods, wsh, crange, spsh_opts)
       endif
     endif
 
-  # Write a row of data from data array, column by column
+  ## Write a row of data from data array, column by column
   
     for jj=1:ncols
       scell = row.getCellAt (lcol + jj - 1);
       if (~newsh)
         if (isempty (scell))
-          # Apparently end of row encountered. Add cell
-          scell = java_new ('org.odftoolkit.odfdom.doc.table.OdfTableCell', odfcont);
+          ## Apparently end of row encountered. Add cell
+          scell = java_new ("org.odftoolkit.odfdom.doc.table.OdfTableCell", odfcont);
           scell = row.appendCell (scell);
         else
-          # If needed expand nr-cols-repeated
+          ## If needed expand nr-cols-repeated
           repcnt = scell.getTableNumberColumnsRepeatedAttribute ();
           if (repcnt > 1)
-            scell.removeAttribute ('table:number-columns-repeated');
+            scell.removeAttribute ("table:number-columns-repeated");
             for kk=2:repcnt
               ncell = scell.cloneNode (1);
               row.insertBefore (ncell, scell.getNextSibling ());
             endfor
           endif
         endif
-        # Clear text contents
+        ## Clear text contents
         while (scell.hasChildNodes ())
           tmp = scell.getFirstChild ();
           scell.removeChild (tmp);
         endwhile
-        scell.removeAttribute ('table:formula');
+        scell.removeAttribute ("table:formula");
       endif
 
-      # Empty cell count stuff done. At last we can add the data
+      ## Empty cell count stuff done. At last we can add the data
       switch (typearr (ii, jj))
-        case 1  # float
-          scell.setOfficeValueTypeAttribute ('float');
+        case 1  ## float
+          scell.setOfficeValueTypeAttribute ("float");
           scell.setOfficeValueAttribute (c_arr{ii, jj});
-        case 2    # boolean
-          # Beware, for unpatched-for-booleans java-1.2.7- we must resort to floats
+        case 2    ## boolean
+          ## Beware, for unpatched-for-booleans java-1.2.7- we must resort to floats
           try
-            # First try the preferred java-boolean way
-            scell.setOfficeValueTypeAttribute ('boolean');
-            scell.removeAttribute ('office:value');
+            ## First try the preferred java-boolean way
+            scell.setOfficeValueTypeAttribute ("boolean");
+            scell.removeAttribute ("office:value");
             if (c_arr{ii, jj})
               scell.setOfficeBooleanValueAttribute (1);
             else
               scell.setOfficeBooleanValueAttribute (0);
             endif
           catch
-            # Unpatched java package. Fall back to transferring a float
-            scell.setOfficeValueTypeAttribute ('float');
+            ## Unpatched java package. Fall back to transferring a float
+            scell.setOfficeValueTypeAttribute ("float");
             if (c_arr{ii, jj})
               scell.setOfficeValueAttribute (1);
             else
               scell.setOfficeValueAttribute (0);
             endif
           end_try_catch
-        case 3  # string
-          scell.setOfficeValueTypeAttribute ('string');
-          pe = java_new ('org.odftoolkit.odfdom.doc.text.OdfTextParagraph', odfcont,'', c_arr{ii, jj});
+        case 3  ## string
+          scell.setOfficeValueTypeAttribute ("string");
+          pe = java_new ("org.odftoolkit.odfdom.doc.text.OdfTextParagraph",...
+                          odfcont,"", c_arr{ii, jj});
           scell.appendChild (pe);
-        case 4  # Formula.  
-          # As we don't know the result type, simply remove previous type info.
-          # Once OOo Calc reads it, it'll add the missing attributes
-          scell.removeAttribute ('office:value');
-          scell.removeAttribute ('office:value-type');
-          # Try-catch not strictly needed, there's no formula validator yet
+        case 4  ## Formula.  
+          ## As we don't know the result type, simply remove previous type info.
+          ## Once OOo Calc reads it, it'll add the missing attributes
+          scell.removeAttribute ("office:value");
+          scell.removeAttribute ("office:value-type");
+          ## Try-catch not strictly needed, there's no formula validator yet
           try
             scell.setTableFormulaAttribute (c_arr{ii, jj});
-            scell.setOfficeValueTypeAttribute ('string');
-            pe = java_new ('org.odftoolkit.odfdom.doc.text.OdfTextParagraph', odfcont,'', '#Recalc Formula#');
+            scell.setOfficeValueTypeAttribute ("string");
+            pe = java_new ("org.odftoolkit.odfdom.doc.text.OdfTextParagraph",...
+                            odfcont,"", "##Recalc Formula##");
             scell.appendChild (pe);
           catch
             ++f_errs;
-            scell.setOfficeValueTypeAttribute ('string');
-            pe = java_new ('org.odftoolkit.odfdom.doc.text.OdfTextParagraph', odfcont,'', c_arr{ii, jj});
+            scell.setOfficeValueTypeAttribute ("string");
+            pe = java_new ("org.odftoolkit.odfdom.doc.text.OdfTextParagraph",...
+                            odfcont,"", c_arr{ii, jj});
             scell.appendChild (pe);
           end_try_catch
-        case {0 5}  # Empty. Clear value attributes
+        case {0 5}  ## Empty. Clear value attributes
           if (~newsh)
-            scell.removeAttribute ('office:value-type');
-            scell.removeAttribute ('office:value');
+            scell.removeAttribute ("office:value-type");
+            scell.removeAttribute ("office:value");
           endif
-        case 6  # Date (implemented but Octave has no "date" data type - yet?)
-          scell.setOfficeValueTypeAttribute ('date');
+        case 6  ## Date (implemented but Octave has no "date" data type - yet?)
+          scell.setOfficeValueTypeAttribute ("date");
           [hh mo dd hh mi ss] = datevec (c_arr{ii,jj});
           str = sprintf ("%4d-%2d-%2dT%2d:%2d:%2d", yy, mo, dd, hh, mi, ss);
           scell.setOfficeDateValueAttribute (str);
-        case 7  # Time (implemented but Octave has no "time" data type)
-          scell.setOfficeValueTypeAttribute ('time');
+        case 7  ## Time (implemented but Octave has no "time" data type)
+          scell.setOfficeValueTypeAttribute ("time");
           [hh mo dd hh mi ss] = datevec (c_arr{ii,jj});
           str = sprintf ("PT%2d:%2d:%2d", hh, mi, ss);
           scell.setOfficeTimeValuettribute (str);
         otherwise
-          # Nothing
+          ## Nothing
       endswitch
 
       scell = scell.getNextSibling ();
@@ -432,7 +439,7 @@ function [ ods, rstatus ] = __OTK_oct2ods__ (c_arr, ods, wsh, crange, spsh_opts)
   if (f_errs) 
     printf ("%d formula errors encountered - please check input array\n", f_errs); 
   endif
-  ods.changed = max (min (ods.changed, 2), changed);  # Preserve 2 (new file), 1 (existing)
+  ods.changed = max (min (ods.changed, 2), changed);  ## Preserve 2 (new file), 1 (existing)
   rstatus = 1;
   
 endfunction

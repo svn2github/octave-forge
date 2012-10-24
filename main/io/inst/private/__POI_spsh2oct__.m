@@ -49,47 +49,53 @@
 ##            of text sheet name arg
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-10-12 Renamed & moved into ./private
+## 2012-10-24 Style fixes
 
 function [ rawarr, xls, rstatus ] = __POI_spsh2oct__ (xls, wsh, cellrange, spsh_opts)
 
   persistent ctype;
   if (isempty (ctype))
-    # Get enumerated cell types. Beware as they start at 0 not 1
-    ctype(1) = java_get ('org.apache.poi.ss.usermodel.Cell', 'CELL_TYPE_NUMERIC');
-    ctype(2) = java_get ('org.apache.poi.ss.usermodel.Cell', 'CELL_TYPE_STRING');
-    ctype(3) = java_get ('org.apache.poi.ss.usermodel.Cell', 'CELL_TYPE_FORMULA');
-    ctype(4) = java_get ('org.apache.poi.ss.usermodel.Cell', 'CELL_TYPE_BLANK');
-    ctype(5) = java_get ('org.apache.poi.ss.usermodel.Cell', 'CELL_TYPE_BOOLEAN');
-    ctype(6) = java_get ('org.apache.poi.ss.usermodel.Cell', 'CELL_TYPE_ERROR');
+    ## Get enumerated cell types. Beware as they start at 0 not 1
+    ctype(1) = java_get ("org.apache.poi.ss.usermodel.Cell", "CELL_TYPE_NUMERIC");
+    ctype(2) = java_get ("org.apache.poi.ss.usermodel.Cell", "CELL_TYPE_STRING");
+    ctype(3) = java_get ("org.apache.poi.ss.usermodel.Cell", "CELL_TYPE_FORMULA");
+    ctype(4) = java_get ("org.apache.poi.ss.usermodel.Cell", "CELL_TYPE_BLANK");
+    ctype(5) = java_get ("org.apache.poi.ss.usermodel.Cell", "CELL_TYPE_BOOLEAN");
+    ctype(6) = java_get ("org.apache.poi.ss.usermodel.Cell", "CELL_TYPE_ERROR");
   endif
   
   rstatus = 0; jerror = 0;
   wb = xls.workbook;
 
-  # Check if requested worksheet exists in the file & if so, get pointer
+  ## Check if requested worksheet exists in the file & if so, get pointer
   nr_of_sheets = wb.getNumberOfSheets ();
   if (isnumeric (wsh))
-    if (wsh > nr_of_sheets), error (sprintf ("Worksheet # %d bigger than nr. of sheets (%d) in file %s", wsh, nr_of_sheets, xls.filename)); endif
-    sh = wb.getSheetAt (wsh - 1);      # POI sheet count 0-based
-    # printf ("(Reading from worksheet %s)\n",   sh.getSheetName ());
+    if (wsh > nr_of_sheets)
+      error (sprintf ("Worksheet ## %d bigger than nr. of sheets (%d) in file %s",...
+                      wsh, nr_of_sheets, xls.filename)); 
+    endif
+    sh = wb.getSheetAt (wsh - 1);      ## POI sheet count 0-based
+##  printf ("(Reading from worksheet %s)\n", sh.getSheetName ());
   else
     sh = wb.getSheet (wsh);
-    if (isempty (sh)), error (sprintf ("Worksheet %s not found in file %s", wsh, xls.filename)); endif
+    if (isempty (sh))
+      error (sprintf ("Worksheet %s not found in file %s", wsh, xls.filename)); 
+    endif
   end
 
-  # Check ranges
-  firstrow = sh.getFirstRowNum ();    # 0-based
-  lastrow = sh.getLastRowNum ();      # 0-based
+  ## Check ranges
+  firstrow = sh.getFirstRowNum ();    ## 0-based
+  lastrow = sh.getLastRowNum ();      ## 0-based
   if (isempty (cellrange))
     if (ischar (wsh))
-      # get numeric sheet index
+      ## get numeric sheet index
       ii = wb.getSheetIndex (sh) + 1;
     else
       ii = wsh;
     endif
     [ firstrow, lastrow, lcol, rcol ] = getusedrange (xls, ii);
     if (firstrow == 0 && lastrow == 0)
-      # Empty sheet
+      ## Empty sheet
       rawarr = {};
       printf ("Worksheet '%s' contains no data\n", sh.getSheetName ());
       rstatus = 1;
@@ -99,17 +105,17 @@ function [ rawarr, xls, rstatus ] = __POI_spsh2oct__ (xls, wsh, cellrange, spsh_
       ncols = rcol - lcol + 1;
     endif
   else
-    # Translate range to HSSF POI row & column numbers
+    ## Translate range to HSSF POI row & column numbers
     [topleft, nrows, ncols, firstrow, lcol] = parse_sp_range (cellrange);
     lastrow = firstrow + nrows - 1;
     rcol = lcol + ncols - 1;
   endif
 
-  # Create formula evaluator (needed to infer proper cell type into rawarr)
+  ## Create formula evaluator (needed to infer proper cell type into rawarr)
   frm_eval = wb.getCreationHelper().createFormulaEvaluator ();
   
-  # Read contents into rawarr
-  rawarr = cell (nrows, ncols);      # create placeholder
+  ## Read contents into rawarr
+  rawarr = cell (nrows, ncols);               ## create placeholder
   for ii = firstrow:lastrow
     irow = sh.getRow (ii-1);
     if ~isempty (irow)
@@ -118,57 +124,64 @@ function [ rawarr, xls, rstatus ] = __POI_spsh2oct__ (xls, wsh, cellrange, spsh_
       for jj = lcol:rcol
         scell = irow.getCell (jj-1);
         if ~isempty (scell)
-          # Explore cell contents
+          ## Explore cell contents
           type_of_cell = scell.getCellType ();
-          if (type_of_cell == ctype(3))        # Formula
+          if (type_of_cell == ctype(3))       ## Formula
             if ~(spsh_opts.formulas_as_text)
-              try    # Because not al Excel formulas have been implemented in POI
+              try    
+                ## Because not al Excel formulas have been implemented in POI
                 cvalue = frm_eval.evaluate (scell);
                 type_of_cell = cvalue.getCellType();
-                # Separate switch because form.eval. yields different type
+                ## Separate switch because form.eval. yields different type
                 switch type_of_cell
-                  case ctype (1)  # Numeric
+                  case ctype (1)              ## Numeric
                     rawarr {ii+1-firstrow, jj+1-lcol} = cvalue.getNumberValue ();
-                  case ctype(2)  # String
-                    rawarr {ii+1-firstrow, jj+1-lcol} = char (cvalue.getStringValue ());
-                  case ctype (5)  # Boolean
+                  case ctype(2)               ## String
+                    rawarr {ii+1-firstrow, jj+1-lcol} = ...
+                                          char (cvalue.getStringValue ());
+                  case ctype (5)              ## Boolean
                     rawarr {ii+1-firstrow, jj+1-lcol} = cvalue.BooleanValue ();
                   otherwise
-                    # Nothing to do here
+                    ## Nothing to do here
                 endswitch
-                # Set cell type to blank to skip switch below
+                ## Set cell type to blank to skip switch below
                 type_of_cell = ctype(4);
               catch
-                # In case of formula errors we take the cached results
+                ## In case of formula errors we take the cached results
                 type_of_cell = scell.getCachedFormulaResultType ();
-                ++jerror;   # We only need one warning even for multiple errors 
+                ## We only need one warning even for multiple errors 
+                ++jerror;     
               end_try_catch
             endif
           endif
-          # Preparations done, get data values into data array
+          ## Preparations done, get data values into data array
           switch type_of_cell
-            case ctype(1)    # 0 Numeric
+            case ctype(1)                     ## 0 Numeric
               rawarr {ii+1-firstrow, jj+1-lcol} = scell.getNumericCellValue ();
-            case ctype(2)    # 1 String
-              rawarr {ii+1-firstrow, jj+1-lcol} = char (scell.getRichStringCellValue ());
+            case ctype(2)                     ## 1 String
+              rawarr {ii+1-firstrow, jj+1-lcol} = ...
+                                        char (scell.getRichStringCellValue ());
             case ctype(3)
               if (spsh_opts.formulas_as_text)
                 tmp = char (scell.getCellFormula ());
-                rawarr {ii+1-firstrow, jj+1-lcol} = ['=' tmp];
+                rawarr {ii+1-firstrow, jj+1-lcol} = ["=" tmp];
               endif
-            case ctype(4)    # 3 Blank
-              # Blank; ignore until further notice
-            case ctype(5)    # 4 Boolean
+            case ctype(4)                     ## 3 Blank
+              ## Blank; ignore until further notice
+            case ctype(5)                     ## 4 Boolean
               rawarr {ii+1-firstrow, jj+1-lcol} = scell.getBooleanCellValue ();
-            otherwise      # 5 Error
-              # Ignore
+            otherwise                         ## 5 Error
+              ## Ignore
           endswitch
         endif
       endfor
     endif
   endfor
 
-  if (jerror > 0) warning (sprintf ("%d cached values instead of formula evaluations read.\n", jerror)); endif
+  if (jerror > 0)
+    warning (sprintf ("%d cached values instead of formula evaluations read.\n",...
+                      jerror));
+  endif
   
   rstatus = 1;
   xls.limits = [lcol, rcol; firstrow, lastrow];

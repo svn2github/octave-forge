@@ -18,6 +18,8 @@
 
 ## Author: Philip Nienhuis <prnienhuis@users.sf.net>
 ## Created: 2012-10-12
+## Updates:
+## 2012-10-23 Style fixes (none)
 
 function [ ods ] = __OTK_spsh_close__ (ods, force)
 

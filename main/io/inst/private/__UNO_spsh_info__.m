@@ -20,18 +20,20 @@
 ## Created: 2012-10-12
 ## Updates:
 ## 2012-10-12 Moved into ./private
+## 2012-10-24 Style fixes
 
 function [sh_names] = __UNO_spsh_info__ (xls)
 
   sheets = xls.workbook.getSheets ();
-  sheetnames = sheets.getElementNames ();    # A Java object, NOT a cell array
+  sheetnames = sheets.getElementNames ();    ## A Java object, NOT a cell array
   sh_cnt = numel (sheetnames);
   sh_names = cell (sh_cnt, 2);
   for ii=1:sh_cnt
     sh_names(ii, 1) = sheetnames(ii);
     [ tr, lr, lc, rc ] = getusedrange (xls, ii);
     if (tr)
-      sh_names(ii, 2) = sprintf ("%s:%s", calccelladdress (tr, lc), calccelladdress (lr, rc));
+      sh_names(ii, 2) = ...
+          sprintf ("%s:%s", calccelladdress (tr, lc), calccelladdress (lr, rc));
     else
       sh_names(ii, 2) = "Empty or Chart";
     endif

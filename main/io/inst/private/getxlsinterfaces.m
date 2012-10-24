@@ -62,45 +62,48 @@
 ## 2012-06-06 Improved & simplified Java check code
 ## 2012-09-03 Check for matching .jar names & javaclasspath was reversed (oops)
 ## 2012-10-07 Moved common classpath entry code to private function
+## 2012-10-24 Style fixes
 
 function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 
-  # tmp1 = [] (not initialized), 0 (No Java detected), or 1 (Working Java found)
-  persistent tmp1 = []; persistent tmp2 = []; persistent jcp;  # Java class path
+  ## tmp1 = [] (not initialized), 0 (No Java detected), or 1 (Working Java found)
+  persistent tmp1 = []; persistent tmp2 = []; persistent jcp;  ## Java class path
   persistent uno_1st_time = 0;
 
-  if (isempty (xlsinterfaces.COM) && isempty (xlsinterfaces.POI) && isempty (xlsinterfaces.JXL)
-   && isempty (xlsinterfaces.OXS) && isempty (xlsinterfaces.UNO))
-    # Looks like first call to xlsopen. Check Java support
+  if  (isempty (xlsinterfaces.COM) && isempty (xlsinterfaces.POI) ...
+    && isempty (xlsinterfaces.JXL) && isempty (xlsinterfaces.OXS) ...
+    && isempty (xlsinterfaces.UNO))
+    ## Looks like first call to xlsopen. Check Java support
     printf ("Detected XLS interfaces: ");
     tmp1 = [];
-  elseif (isempty (xlsinterfaces.POI) || isempty (xlsinterfaces.JXL)
-       || isempty (xlsinterfaces.OXS) || isempty (xlsinterfaces.UNO))
-    # Can't be first call. Here one of the Java interfaces is requested
+  elseif (isempty (xlsinterfaces.COM) || isempty (xlsinterfaces.POI) ... 
+       || isempty (xlsinterfaces.JXL) || isempty (xlsinterfaces.OXS) ...
+       || isempty (xlsinterfaces.UNO))
+    ## Can't be first call. Here one of the Java interfaces is requested
     if (~tmp1)
-      # Check Java support again
+      ## Check Java support again
       tmp1 = [];
     endif
   endif
   deflt = 0;
 
-  # Check if MS-Excel COM ActiveX server runs (only on Windows!)
-  if (isempty (xlsinterfaces.COM))
+  ## Check if MS-Excel COM ActiveX server runs (only on Windows!)
+  if (ispc && isempty (xlsinterfaces.COM))
     xlsinterfaces.COM = 0;
     if (ispc)
       try
         app = actxserver ("Excel.application");
-        # If we get here, the call succeeded & COM works.
+        ## If we get here, the call succeeded & COM works.
         xlsinterfaces.COM = 1;
-        # Close Excel. Yep this is inefficient when we need only one r/w action,
-        # but it quickly pays off when we need to do more with the same file
-        # (+, MS-Excel code is in OS cache anyway after this call so no big deal)
+        ## Close Excel. Yep this is inefficient when we need only one r/w action,
+        ## but it quickly pays off when we need to do more with the same file
+        ## (+, MS-Excel code is in OS cache anyway after this call so no big deal)
         app.Quit();
         delete(app);
         printf ("COM");
         if (deflt), printf ("; "); else, printf ("*; "); deflt = 1; endif
       catch
-        # COM non-existent. Only print message if COM is explicitly requested (tmp1==[])
+        ## COM non-existent. Only print message if COM is explicitly requested (tmp1==[])
         if (~isempty (tmp1))
           printf ("ActiveX not working; no Excel installed?\n"); 
         endif
@@ -109,52 +112,52 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
   endif
 
   if (isempty (tmp1))
-    # Try if Java package works properly by invoking javaclasspath
+    ## Try if Java package works properly by invoking javaclasspath
     try
-      jcp = javaclasspath ('-all');                   # For java pkg > 1.2.7
-      if (isempty (jcp)), jcp = javaclasspath; endif  # For java pkg < 1.2.8
-      # If we get here, at least Java works. Now check for proper version (>= 1.6)
-      jver = char (java_invoke ('java.lang.System', 'getProperty', 'java.version'));
+      jcp = javaclasspath ("-all");                   ## For java pkg > 1.2.7
+      if (isempty (jcp)), jcp = javaclasspath; endif  ## For java pkg < 1.2.8
+      ## If we get here, at least Java works. Now check for proper version (>= 1.6)
+      jver = char (java_invoke ("java.lang.System", "getProperty", "java.version"));
       cjver = strsplit (jver, '.');
-      if (sscanf (cjver{2}, '%d') < 6)
+      if (sscanf (cjver{2}, "%d") < 6)
         warning ("\nJava version might be too old - you need at least Java 6 (v. 1.6.x.x)\n");
         return
       endif
-      # Now check for proper entries in class path. Under *nix the classpath
-      # must first be split up. In java 1.2.8+ javaclasspath is already a cell array
+      ## Now check for proper entries in class path. Under *nix the classpath
+      ## must first be split up. In java 1.2.8+ javaclasspath is already a cell array
       if (isunix && ~iscell (jcp)); jcp = strsplit (char (jcp), pathsep); endif
       tmp1 = 1;
     catch
-      # No Java support found
+      ## No Java support found
       tmp1 = 0;
       if (isempty (xlsinterfaces.POI) || isempty (xlsinterfaces.JXL)...
         || isempty (xlsinterfaces.OXS) || isempty (xlsinterfaces.UNO))
-        # Some or all Java-based interface(s) explicitly requested but no Java support
-        warning (' No working Java support found. Java pkg properly installed?');
+        ## Some or all Java-based interface(s) explicitly requested but no Java support
+        warning (" No working Java support found. Java pkg properly installed?");
       endif
-      # Set Java interfaces to 0 anyway as there's no Java support
+      ## Set Java interfaces to 0 anyway as there's no Java support
       xlsinterfaces.POI = 0;
       xlsinterfaces.JXL = 0;
       xlsinterfaces.OXS = 0;
       xlsinterfaces.UNO = 0;
       printf ("\n");
-      # No more need to try any Java interface
+      ## No more need to try any Java interface
       return
     end_try_catch
   endif
 
-  # Try Java & Apache POI
+  ## Try Java & Apache POI
   if (isempty (xlsinterfaces.POI))
     xlsinterfaces.POI = 0;
-    # Check basic .xls (BIFF8) support
+    ## Check basic .xls (BIFF8) support
     entries = {"poi-3", "poi-ooxml-3"};
-    # Only under *nix we might use brute force: e.g., strfind (classname, classpath);
-    # under Windows we need the following more subtle, platform-independent approach:
+    ## Only under *nix we might use brute force: e.g., strfind (classname, classpath);
+    ## under Windows we need the following more subtle, platform-independent approach:
     if (chk_jar_entries (jcp, entries) >= numel (entries))
       xlsinterfaces.POI = 1;
       printf ("POI");
     endif
-    # Check OOXML support
+    ## Check OOXML support
     entries = {"xbean", "poi-ooxml-schemas", "dom4j"};
     if (chk_jar_entries (jcp, entries) >= numel (entries)), printf (" (& OOXML)"); endif
     if (xlsinterfaces.POI)
@@ -162,7 +165,7 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
     endif
   endif
 
-  # Try Java & JExcelAPI
+  ## Try Java & JExcelAPI
   if (isempty (xlsinterfaces.JXL))
     xlsinterfaces.JXL = 0;
     entries = {"jxl"};
@@ -173,7 +176,7 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
     endif
   endif
 
-  # Try Java & OpenXLS
+  ## Try Java & OpenXLS
   if (isempty (xlsinterfaces.OXS))
     xlsinterfaces.OXS = 0;
     entries = {"openxls"};
@@ -184,19 +187,25 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
     endif
   endif
 
-  # Try Java & UNO
+  ## Try Java & UNO
   if (isempty (xlsinterfaces.UNO))
     xlsinterfaces.UNO = 0;
-    # entries0(1) = not a jar but a directory (<00o_install_dir/program/>)
-    entries = {'program', 'unoil', 'jurt', 'juh', 'unoloader', 'ridl'};
+    ## entries0(1) = not a jar but a directory (<00o_install_dir/program/>)
+    entries = {"program", "unoil", "jurt", "juh", "unoloader", "ridl"};
     if (chk_jar_entries (jcp, entries) >= numel (entries))
       xlsinterfaces.UNO = 1;
-      printf ('UNO');
-      if (deflt), printf ("; "); else, printf ("*; "); deflt = 1; uno_1st_time = min (++uno_1st_time, 2); endif
+      printf ("UNO");
+      if (deflt);
+        printf ("; "); 
+      else
+        printf ("*; ");
+        deflt = 1; 
+        uno_1st_time = min (++uno_1st_time, 2);
+      endif
     endif
   endif
 
-  # ---- Other interfaces here, similar to the ones above
+  ## ---- Other interfaces here, similar to the ones above
 
   if (deflt), printf ("(* = active interface)\n"); endif
 

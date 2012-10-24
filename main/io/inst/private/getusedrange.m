@@ -69,30 +69,31 @@
 ## 2012-06-08 Replaced tabs by double space
 ##     ''     Added COM and OXS to message about supported interfaces
 ## 2012-10-12 Moved all interface-specific subfuncs to . /private
-##
-## Last subfunc update: 2012-10-12
+## 2012-10-23 Added UNO to error message
+##     ''     Style fixes
 
 function [ trow, lrow, lcol, rcol ] = getusedrange (spptr, ii)
 
-  # Some checks
+  ## Some checks
   if ~isstruct (spptr), error ("Illegal spreadsheet pointer argument"); endif
 
   if (strcmp (spptr.xtype, 'OTK'))
     [ trow, lrow, lcol, rcol ] = __OTK_getusedrange__ (spptr, ii);
-  elseif (strcmp (spptr.xtype, 'JOD'))
+  elseif (strcmp (spptr.xtype, "JOD"))
     [ trow, lrow, lcol, rcol ] = __JOD_getusedrange__ (spptr, ii);
-  elseif (strcmp (spptr.xtype, 'UNO'))
+  elseif (strcmp (spptr.xtype, "UNO"))
     [ trow, lrow, lcol, rcol ] = __UNO_getusedrange__ (spptr, ii);
-  elseif (strcmp (spptr.xtype, 'COM'))
+  elseif (strcmp (spptr.xtype, "COM"))
     [ trow, lrow, lcol, rcol ] = __COM_getusedrange__ (spptr, ii);
-  elseif (strcmp (spptr.xtype, 'POI'))
+  elseif (strcmp (spptr.xtype, "POI"))
     [ trow, lrow, lcol, rcol ] = __POI_getusedrange__ (spptr, ii);
-  elseif (strcmp (spptr.xtype, 'JXL'))
+  elseif (strcmp (spptr.xtype, "JXL"))
     [ trow, lrow, lcol, rcol ] = __JXL_getusedrange__ (spptr, ii);
-  elseif (strcmp (spptr.xtype, 'OXS'))
+  elseif (strcmp (spptr.xtype, "OXS"))
     [ trow, lrow, lcol, rcol ] = __OXS_getusedrange__ (spptr, ii);
   else
-    error ("Only OTK, JOD, COM, POI, JXL and OXS interface implemented");
+    error ...
+      ("Unknown interface - only OTK, JOD, COM, POI, JXL, UNO and OXS implemented");
   endif
 
 endfunction

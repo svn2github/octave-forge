@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Philip
+## Copyright (C) 2012 Philip Nienhuis <prnienhuis@users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -16,27 +16,29 @@
 
 ## __JOD_spsh_open
 
-## Author: Philip <Philip@DESKPRN>
+## Author: Philip Nienhuis <prnienhuis@users.sf.net>
 ## Created: 2012-10-12
+## Updates:
+## 2012-10-24 Style fixes
 
 function [ ods, odssupport, lastintf ] = __JOD_spsh_open__ (ods, rw, filename, odssupport)
 
-    file = java_new ('java.io.File', filename);
-    jopendoc = 'org.jopendocument.dom.spreadsheet.SpreadSheet';
+    file = java_new ("java.io.File", filename);
+    jopendoc = "org.jopendocument.dom.spreadsheet.SpreadSheet";
     try
       if (rw > 2)
-        # Create an empty 2 x 2 default TableModel template
-        tmodel= java_new ('javax.swing.table.DefaultTableModel', 2, 2);
-        wb = java_invoke (jopendoc, 'createEmpty', tmodel);
+        ## Create an empty 2 x 2 default TableModel template
+        tmodel= java_new ("javax.swing.table.DefaultTableModel", 2, 2);
+        wb = java_invoke (jopendoc, "createEmpty", tmodel);
       else
-        wb = java_invoke (jopendoc, 'createFromFile', file);
+        wb = java_invoke (jopendoc, "createFromFile", file);
       endif
       ods.workbook = wb;
       ods.filename = filename;
-      ods.xtype = 'JOD';
-      ods.app = 'file';
-      # Check jOpenDocument version. This can only work here when a
-      # workbook has been opened
+      ods.xtype = "JOD";
+      ods.app = "file";
+      ## Check jOpenDocument version. This can only work here when a
+      ## workbook has been opened
       sh = ods.workbook.getSheet (0);
       cl = sh.getCellAt (0, 0);
       try
@@ -49,9 +51,9 @@ function [ ods, odssupport, lastintf ] = __JOD_spsh_open__ (ods, rw, filename, o
         printf ("NOTE: jOpenDocument v. 1.2b2 has limited functionality. Try upgrading to 1.2\n");
       end_try_catch
       odssupport += 2;
-      lastintf = 'JOD';
+      lastintf = "JOD";
     catch
-      error ('Couldn''t open file %s using JOD', filename);
+      error ("Couldn't open file %s using JOD", filename);
     end_try_catch
 
 endfunction

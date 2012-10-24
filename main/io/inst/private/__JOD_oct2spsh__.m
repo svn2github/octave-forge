@@ -39,50 +39,53 @@
 ## 2010-11-12 Improved file change tracking tru ods.changed
 ## 2012-02-26 Write logicals as doubles (bug in jOpenDocument, would write as text)
 ## 2012-10-12 Renamed & moved into ./private
+## 2012-10-24 Style fixes
 
 function [ ods, rstatus ] = __JOD_oct2spsh__ (c_arr, ods, wsh, crange)
 
   rstatus = 0; sh = []; changed = 0;
 
-  # Get worksheet. Use first one if none given
+  ## Get worksheet. Use first one if none given
   if (isempty (wsh)) wsh = 1; endif
   sh_cnt = ods.workbook.getSheetCount ();
   if (isnumeric (wsh))
     if (wsh > 1024)
       error ("Sheet number out of range of ODS specification (>1024)");
     elseif (wsh > sh_cnt)
-      error ("Sheet number (%d) larger than number of sheets in file (%d)\n", wsh, sh_cnt);
+      error ("Sheet number (%d) larger than number of sheets in file (%d)\n",...
+              wsh, sh_cnt);
     else
       wsh = wsh - 1;
       sh = ods.workbook.getSheet (wsh);
       if (isempty (sh))
-        # Sheet number wsh didn't exist yet
+        ## Sheet number wsh didn't exist yet
         wsh = sprintf ("Sheet%d", wsh+1);
       elseif (ods.changed > 2)
-        sh.setName ('Sheet1');
+        sh.setName ("Sheet1");
         changed = 1;
       endif
     endif
   endif
-  # wsh is now either a 0-based sheet no. or a string. In latter case:
+  ## wsh is now either a 0-based sheet no. or a string. In latter case:
   if (isempty (sh) && ischar (wsh))
     sh = ods.workbook.getSheet (wsh);
     if (isempty (sh))
-      # Still doesn't exist. Create sheet
+      ## Still doesn't exist. Create sheet
       if (ods.odfvsn == 3)
         if (ods.changed > 2)
-          # 1st "new" -unnamed- sheet has already been made when creating the spreadsheet
+          ## 1st "new" -unnamed- sheet has already been made when creating the spreadsheet
           sh = ods.workbook.getSheet (0);
           sh.setName (wsh);
           changed = 1;
         else
-          # For existing spreadsheets
-          # printf ("Adding sheet '%s'\n", wsh);
+          ## For existing spreadsheets
+          ## printf ("Adding sheet '%s'\n", wsh);
           sh = ods.workbook.addSheet (sh_cnt, wsh);
           changed = 1;
         endif
       else
-        error ("jOpenDocument v. 1.2b2 does not support adding sheets - upgrade to v. 1.2b3\n");
+        error (["jOpenDocument v. 1.2b2 does not support adding sheets" ...
+                " - upgrade to v. 1.2b3\n"]);
       endif
     endif
   endif
@@ -93,59 +96,59 @@ function [ ods, rstatus ] = __JOD_oct2spsh__ (c_arr, ods, wsh, crange)
     lcol = 0;
     nrows = nr;
     ncols = nc;
-  elseif (isempty (strfind (deblank (crange), ':'))) 
+  elseif (isempty (strfind (deblank (crange), ":"))) 
     [dummy1, dummy2, dummy3, trow, lcol] = parse_sp_range (crange);
     nrows = nr;
     ncols = nc;
-    # Row/col = 0 based in jOpenDocument
+    ## Row/col = 0 based in jOpenDocument
     trow = trow - 1; lcol = lcol - 1;
   else
     [dummy, nrows, ncols, trow, lcol] = parse_sp_range (crange);
-    # Row/col = 0 based in jOpenDocument
+    ## Row/col = 0 based in jOpenDocument
     trow = trow - 1; lcol = lcol - 1;
   endif
 
   if (trow > 65535 || lcol > 1023)
     error ("Topleft cell beyond spreadsheet limits (AMJ65536).");
   endif
-  # Check spreadsheet capacity beyond requested topleft cell
-  nrows = min (nrows, 65536 - trow);    # Remember, lcol & trow are zero-based
+  ## Check spreadsheet capacity beyond requested topleft cell
+  nrows = min (nrows, 65536 - trow);    ## Remember, lcol & trow are zero-based
   ncols = min (ncols, 1024 - lcol);
-  # Check array size and requested range
+  ## Check array size and requested range
   nrows = min (nrows, nr);
   ncols = min (ncols, nc);
   if (nrows < nr || ncols < nc) warning ("Array truncated to fit in range"); endif
 
   if (isnumeric (c_arr)) c_arr = num2cell (c_arr); endif
 
-  # Ensure sheet capacity is large enough to contain new data
-  try    # try-catch needed to work around bug in jOpenDocument v 1.2b3 and earlier
+  ## Ensure sheet capacity is large enough to contain new data
+  try    ## try-catch needed to work around bug in jOpenDocument v 1.2b3 and earlier
     sh.ensureColumnCount (lcol + ncols);  # Remember, lcol & trow are zero-based
-  catch  # catch is needed for new empty sheets (first ensureColCnt() hits null ptr)
+  catch  ## catch is needed for new empty sheets (first ensureColCnt() hits null ptr)
     sh.ensureColumnCount (lcol + ncols);
-    # Kludge needed because upper row is defective (NPE jOpenDocument bug). ?Fixed in 1.2b4?
+    ## Kludge needed because upper row is defective (NPE jOpenDocument bug). ?Fixed in 1.2b4?
     if (trow == 0)
-      # Shift rows one down to avoid defective upper row
+      ## Shift rows one down to avoid defective upper row
       ++trow;
       printf ("Info: empy upper row above data added to avoid JOD bug.\n");
     endif
   end_try_catch
   sh.ensureRowCount (trow + nrows);
 
-  # Write data to worksheet
+  ## Write data to worksheet
   for ii = 1 : nrows
     for jj = 1 : ncols
       val = c_arr {ii, jj};
       if ((isnumeric (val) && ~isnan (val)) || ischar (val) || islogical (val))
-        # FIXME: jOpenDocument doesn't really support writing booleans (doesn't set OffValAttr)
+        ## FIXME: jOpenDocument doesn't really support writing booleans (doesn't set OffValAttr)
         if (islogical (val)); val = double (val); endif
         try
           sh.getCellAt (jj + lcol - 1, ii + trow - 1).clearValue();
           jcell = sh.getCellAt (jj + lcol - 1, ii + trow - 1).setValue (val);
           changed = 1;
         catch
-          # No panic, probably a merged cell
-        #  printf (sprintf ("Cell skipped at (%d, %d)\n", ii+lcol-1, jj+trow-1));
+          ## No panic, probably a merged cell
+          ##  printf (sprintf ("Cell skipped at (%d, %d)\n", ii+lcol-1, jj+trow-1));
         end_try_catch
       endif
     endfor

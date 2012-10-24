@@ -32,71 +32,72 @@
 ##            the cntents could be BOOLEAN as well (JOD doesn't write OffVal attr either)
 ## 2012-02-26 Further workaround for reading strings (actually: cells w/o OfficeValueAttr)
 ## 2012-10-12 Renamed & moved into ./private
+## 2012-10-24 Style fixes
 
 function [ rawarr, ods] = __JOD_spsh2oct__ (ods, wsh, crange)
 
   persistent months;
   months = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};
 
-  # Check jOpenDocument version
+  ## Check jOpenDocument version
   sh = ods.workbook.getSheet (0);
   cl = sh.getCellAt (0, 0);
   if (ods.odfvsn == 3)
-    # 1.2b3+ has public getValueType ()
+    ## 1.2b3+ has public getValueType ()
     persistent ctype;
     if (isempty (ctype))
-      BOOLEAN    = char (java_get ('org.jopendocument.dom.ODValueType', 'BOOLEAN'));
-      CURRENCY   = char (java_get ('org.jopendocument.dom.ODValueType', 'CURRENCY'));
-      DATE       = char (java_get ('org.jopendocument.dom.ODValueType', 'DATE'));
-      FLOAT      = char (java_get ('org.jopendocument.dom.ODValueType', 'FLOAT'));
-      PERCENTAGE = char (java_get ('org.jopendocument.dom.ODValueType', 'PERCENTAGE'));
-      STRING     = char (java_get ('org.jopendocument.dom.ODValueType', 'STRING'));
-      TIME       = char (java_get ('org.jopendocument.dom.ODValueType', 'TIME'));
+      BOOLEAN    = char (java_get ("org.jopendocument.dom.ODValueType", "BOOLEAN"));
+      CURRENCY   = char (java_get ("org.jopendocument.dom.ODValueType", "CURRENCY"));
+      DATE       = char (java_get ("org.jopendocument.dom.ODValueType", "DATE"));
+      FLOAT      = char (java_get ("org.jopendocument.dom.ODValueType", "FLOAT"));
+      PERCENTAGE = char (java_get ("org.jopendocument.dom.ODValueType", "PERCENTAGE"));
+      STRING     = char (java_get ("org.jopendocument.dom.ODValueType", "STRING"));
+      TIME       = char (java_get ("org.jopendocument.dom.ODValueType", "TIME"));
     endif
-#  else
-#    # 1.2b2 has not
-#    ver = 2;
+##  else
+##    ## 1.2b2 has not
+##    ver = 2;
   endif
 
-  if (isnumeric (wsh)) wsh = wsh - 1; endif   # Sheet INDEX starts at 0
-  # Check if sheet exists. If wsh = numeric, nonexistent sheets throw errors.
+  if (isnumeric (wsh)); wsh = wsh - 1; endif   ## Sheet INDEX starts at 0
+  ## Check if sheet exists. If wsh = numeric, nonexistent sheets throw errors.
   try
-    sh  = ods.workbook.getSheet (wsh);
+    sh = ods.workbook.getSheet (wsh);
   catch
     error ("Illegal sheet number (%d) requested for file %s\n", wsh+1, ods.filename);
   end_try_catch
-  # If wsh = string, nonexistent sheets yield empty results
+  ## If wsh = string, nonexistent sheets yield empty results
   if (isempty (sh))
     error ("No sheet called '%s' present in file %s\n", wsh, ods.filename);
   endif
 
-  # Either parse (given cell range) or prepare (unknown range) help variables 
+  ## Either parse (given cell range) or prepare (unknown range) help variables 
   if (isempty (crange))
     if (ods.odfvsn < 3)
       error ("No empty read range allowed in jOpenDocument version 1.2b2")
     else
-      if (isnumeric (wsh)) wsh = wsh + 1; endif
+      if (isnumeric (wsh)); wsh = wsh + 1; endif
       [ trow, brow, lcol, rcol ] = getusedrange (ods, wsh);
-      nrows = brow - trow + 1;  # Number of rows to be read
-      ncols = rcol - lcol + 1;  # Number of columns to be read
+      nrows = brow - trow + 1;  ## Number of rows to be read
+      ncols = rcol - lcol + 1;  ## Number of columns to be read
     endif
   else
     [dummy, nrows, ncols, trow, lcol] = parse_sp_range (crange);
-    # Check ODS column limits
+    ## Check ODS column limits
     if (lcol > 1024 || trow > 65536) 
       error ("ods2oct: invalid range; max 1024 columns & 65536 rows."); 
     endif
-    # Truncate range silently if needed
+    ## Truncate range silently if needed
     rcol = min (lcol + ncols - 1, 1024);
     ncols = min (ncols, 1024 - lcol + 1);
     nrows = min (nrows, 65536 - trow + 1);
     brow= trow + nrows - 1;
   endif
-  # Create storage for data content
+  ## Create storage for data content
   rawarr = cell (nrows, ncols);
 
   if (ods.odfvsn >= 3) 
-    # Version 1.2b3+
+    ## Version 1.2b3+
     for ii=1:nrows
       for jj = 1:ncols
         try
@@ -110,7 +111,7 @@ function [ rawarr, ods] = __JOD_spsh2oct__ (ods, wsh, crange)
             case STRING
               rawarr{ii, jj} = scell.getValue();
             case DATE
-              tmp = strsplit (char (scell.getValue ()), ' ');
+              tmp = strsplit (char (scell.getValue ()), " ");
               yy = str2num (tmp{6});
               mo = find (ismember (months, toupper (tmp{2})) == 1);
               dd = str2num (tmp{3});
@@ -119,44 +120,46 @@ function [ rawarr, ods] = __JOD_spsh2oct__ (ods, wsh, crange)
               ss = str2num (tmp{4}(7:8));
               rawarr{ii, jj} = datenum (yy, mo, dd, hh, mi, ss);
             case TIME
-              tmp = strsplit (char (scell.getValue ().getTime ()), ' ');
+              tmp = strsplit (char (scell.getValue ().getTime ()), " ");
               hh = str2num (tmp{4}(1:2)) /    24.0;
               mi = str2num (tmp{4}(4:5)) /  1440.0;
               ss = str2num (tmp{4}(7:8)) / 86600.0;
               rawarr {ii, jj} = hh + mi + ss;
             otherwise
-              # Workaround for sheets written by jOpenDocument (no value-type attrb):
+              ## Workaround for sheets written by jOpenDocument (no value-type attrb):
               if (~isempty (scell.getValue) )
-                # FIXME Assume cell contains string if there's a text attr. But it could be BOOLEAN too...
-                if (findstr ('<text:', char (scell))), sctype = STRING; endif
+                ## FIXME Assume cell contains string if there's a text attr. 
+                ## But it could be BOOLEAN too...
+                if (findstr ("<text:", char (scell))), sctype = STRING; endif
                 rawarr{ii, jj} = scell.getValue();
               endif
-              # Nothing
+              ## Nothing
           endswitch
         catch
-          # Probably a merged cell, just skip
-          # printf ("Error in row %d, col %d (addr. %s)\n", ii, jj, calccelladdress (lcol+jj-2, trow+ii-2));
+          ## Probably a merged cell, just skip
+          ## printf ("Error in row %d, col %d (addr. %s)\n", 
+          ## ii, jj, calccelladdress (lcol+jj-2, trow+ii-2));
         end_try_catch
       endfor
     endfor
-  else  # ods.odfvsn == 3
-    # 1.2b2
+  else  ## ods.odfvsn == 3
+    ## 1.2b2
     for ii=1:nrows
       for jj = 1:ncols
         celladdress = calccelladdress (trow+ii-1, lcol+jj-1);
         try
           val = sh.getCellAt (celladdress).getValue ();
         catch
-          # No panic, probably a merged cell
+          ## No panic, probably a merged cell
           val = {};
         end_try_catch
         if (~isempty (val))
           if (ischar (val))
-            # Text string
+            ## Text string
             rawarr(ii, jj) = val;
           elseif (isnumeric (val))
-            # Boolean
-            if (val) rawarr(ii, jj) = true; else; rawarr(ii, jj) = false; endif 
+            ## Boolean
+            if (val) rawarr(ii, jj) = true; else; rawarr(ii, jj) = false; endif
           else
             try
               val = sh.getCellAt (celladdress).getValue ().doubleValue ();
@@ -164,9 +167,9 @@ function [ rawarr, ods] = __JOD_spsh2oct__ (ods, wsh, crange)
             catch
               val = char (val);
               if (isempty (val))
-                # Probably empty Cell
+                ## Probably empty Cell
               else
-                # Maybe date / time value. Dirty hack to get values:
+                ## Maybe date / time value. Dirty hack to get values:
                 mo = strmatch (toupper (val(5:7)), months);
                 dd = str2num (val(9:10));
                 yy = str2num (val(25:end));
@@ -183,7 +186,7 @@ function [ rawarr, ods] = __JOD_spsh2oct__ (ods, wsh, crange)
 
   endif  
 
-  # Keep track of data rectangle limits
+  ## Keep track of data rectangle limits
   ods.limits = [lcol, rcol; trow, brow];
 
 endfunction

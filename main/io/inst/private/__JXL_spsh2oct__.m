@@ -27,8 +27,8 @@
 ## Examples:
 ##
 ## @example
-##   [Arr, status, xls] = __JXL_spsh2oct__ (xls, 'Second_sheet', 'B3:AY41');
-##   B = __JXL_spsh2oct__ (xls, 'Second_sheet');
+##   [Arr, status, xls] = __JXL_spsh2oct__ (xls, "Second_sheet", "B3:AY41");
+##   B = __JXL_spsh2oct__ (xls, "Second_sheet");
 ## @end example
 ##
 ## @seealso {xls2oct, oct2xls, xlsopen, xlsclose, xlsread, xlswrite, oct2jxla2xls}
@@ -50,44 +50,50 @@
 ##     ''     order in strsplit, wrong isTime condition
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-10-12 Renamed & moved into ./private
+## 2012-10-24 Style fixes
 
 function [ rawarr, xls, rstatus ] = __JXL_spsh2oct__ (xls, wsh, cellrange, spsh_opts)
 
   persistent ctype; persistent months;
   if (isempty (ctype))
     ctype = cell (11, 1);
-    # Get enumerated cell types. Beware as they start at 0 not 1
-    ctype( 1) = (java_get ('jxl.CellType', 'BOOLEAN')).toString ();
-    ctype( 2) = (java_get ('jxl.CellType', 'BOOLEAN_FORMULA')).toString ();
-    ctype( 3) = (java_get ('jxl.CellType', 'DATE')).toString ();
-    ctype( 4) = (java_get ('jxl.CellType', 'DATE_FORMULA')).toString ();
-    ctype( 5) = (java_get ('jxl.CellType', 'EMPTY')).toString ();
-    ctype( 6) = (java_get ('jxl.CellType', 'ERROR')).toString ();
-    ctype( 7) = (java_get ('jxl.CellType', 'FORMULA_ERROR')).toString ();
-    ctype( 8) = (java_get ('jxl.CellType', 'NUMBER')).toString ();
-    ctype( 9) = (java_get ('jxl.CellType', 'LABEL')).toString ();
-    ctype(10) = (java_get ('jxl.CellType', 'NUMBER_FORMULA')).toString ();
-    ctype(11) = (java_get ('jxl.CellType', 'STRING_FORMULA')).toString ();
-    months = {'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'};
+    ## Get enumerated cell types. Beware as they start at 0 not 1
+    ctype( 1) = (java_get ("jxl.CellType", "BOOLEAN")).toString ();
+    ctype( 2) = (java_get ("jxl.CellType", "BOOLEAN_FORMULA")).toString ();
+    ctype( 3) = (java_get ("jxl.CellType", "DATE")).toString ();
+    ctype( 4) = (java_get ("jxl.CellType", "DATE_FORMULA")).toString ();
+    ctype( 5) = (java_get ("jxl.CellType", "EMPTY")).toString ();
+    ctype( 6) = (java_get ("jxl.CellType", "ERROR")).toString ();
+    ctype( 7) = (java_get ("jxl.CellType", "FORMULA_ERROR")).toString ();
+    ctype( 8) = (java_get ("jxl.CellType", "NUMBER")).toString ();
+    ctype( 9) = (java_get ("jxl.CellType", "LABEL")).toString ();
+    ctype(10) = (java_get ("jxl.CellType", "NUMBER_FORMULA")).toString ();
+    ctype(11) = (java_get ("jxl.CellType", "STRING_FORMULA")).toString ();
+    months = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};
   endif
   
   rstatus = 0; 
   wb = xls.workbook;
   
-  # Check if requested worksheet exists in the file & if so, get pointer
+  ## Check if requested worksheet exists in the file & if so, get pointer
   nr_of_sheets = wb.getNumberOfSheets ();
   shnames = char (wb.getSheetNames ());
   if (isnumeric (wsh))
-    if (wsh > nr_of_sheets), error (sprintf ("Worksheet # %d bigger than nr. of sheets (%d) in file %s", wsh, nr_of_sheets, xls.filename)); endif
-    sh = wb.getSheet (wsh - 1);      # JXL sheet count 0-based
-    # printf ("(Reading from worksheet %s)\n", shnames {wsh});
+    if (wsh > nr_of_sheets)
+      error (sprintf ("Worksheet ## %d bigger than nr. of sheets (%d) in file %s",...
+                      wsh, nr_of_sheets, xls.filename)); 
+    endif
+    sh = wb.getSheet (wsh - 1);      ## JXL sheet count 0-based
+    ## printf ("(Reading from worksheet %s)\n", shnames {wsh});
   else
     sh = wb.getSheet (wsh);
-    if (isempty (sh)), error (sprintf ("Worksheet %s not found in file %s", wsh, xls.filename)); endif
+    if (isempty (sh))
+      error (sprintf ("Worksheet %s not found in file %s", wsh, xls.filename)); 
+    endif
   end
 
   if (isempty (cellrange))
-    # Get numeric sheet pointer (1-based)
+    ## Get numeric sheet pointer (1-based)
     ii = 1;
     while (ii <= nr_of_sheets)
       if (strcmp (wsh, shnames{ii}) == 1)
@@ -97,10 +103,10 @@ function [ rawarr, xls, rstatus ] = __JXL_spsh2oct__ (xls, wsh, cellrange, spsh_
         ++ii;
       endif
     endwhile
-    # Get data rectangle row & column numbers (1-based)
+    ## Get data rectangle row & column numbers (1-based)
     [firstrow, lastrow, lcol, rcol] = getusedrange (xls, wsh);
     if (firstrow == 0 && lastrow == 0)
-      # Empty sheet
+      ## Empty sheet
       rawarr = {};
       printf ("Worksheet '%s' contains no data\n", shnames {wsh});
       rstatus = 1;
@@ -110,37 +116,37 @@ function [ rawarr, xls, rstatus ] = __JXL_spsh2oct__ (xls, wsh, cellrange, spsh_
       ncols = rcol - lcol + 1;
     endif
   else
-    # Translate range to row & column numbers (1-based)
+    ## Translate range to row & column numbers (1-based)
     [dummy, nrows, ncols, firstrow, lcol] = parse_sp_range (cellrange);
-    # Check for too large requested range against actually present range
+    ## Check for too large requested range against actually present range
     lastrow = min (firstrow + nrows - 1, sh.getRows ());
     nrows = min (nrows, sh.getRows () - firstrow + 1);
     ncols = min (ncols, sh.getColumns () - lcol + 1);
     rcol = lcol + ncols - 1;
   endif
 
-  # Read contents into rawarr
-  rawarr = cell (nrows, ncols);      # create placeholder
+  ## Read contents into rawarr
+  rawarr = cell (nrows, ncols);      ## create placeholder
   for jj = lcol : rcol
     for ii = firstrow:lastrow
       scell = sh.getCell (jj-1, ii-1);
       switch char (scell.getType ())
-        case ctype {1}   # Boolean
+        case ctype {1}   ## Boolean
           rawarr {ii+1-firstrow, jj+1-lcol} = scell.getValue ();
-        case ctype {2}   # Boolean formula
+        case ctype {2}   ## Boolean formula
           if (spsh_opts.formulas_as_text)
             tmp = scell.getFormula ();
             rawarr {ii+1-firstrow, jj+1-lcol} = ["=" tmp];
           else
             rawarr {ii+1-firstrow, jj+1-lcol} = scell.getValue ();
           endif
-        case ctype {3}   # Date
+        case ctype {3}   ## Date
           try
             % Older JXL.JAR, returns float
             rawarr {ii+1-firstrow, jj+1-lcol} = scell.getValue ();
           catch
             % Newer JXL.JAR, returns date string w. epoch = 1-1-1900 :-(
-            tmp = strsplit (char (scell.getDate ()), ' ');
+            tmp = strsplit (char (scell.getDate ()), " ");
             yy = str2num (tmp{6});
             mo = find (ismember (months, upper (tmp{2})) == 1);
             dd = str2num (tmp{3});
@@ -152,7 +158,7 @@ function [ rawarr, xls, rstatus ] = __JXL_spsh2oct__ (xls, wsh, cellrange, spsh_
             endif
             rawarr {ii+1-firstrow, jj+1-lcol} = datenum (yy, mo, dd, hh, mi, ss);
           end_try_catch
-        case ctype {4}   # Date formula
+        case ctype {4}   ## Date formula
           if (spsh_opts.formulas_as_text)
             tmp = scell.getFormula ();
             rawarr {ii+1-firstrow, jj+1-lcol} = ["=" tmp];
@@ -171,7 +177,7 @@ function [ rawarr, xls, rstatus ] = __JXL_spsh2oct__ (xls, wsh, cellrange, spsh_
             unwind_protect_cleanup
               if (isempty (rawarr {ii+1-firstrow, jj+1-lcol}))
                 % Newer JXL.JAR, returns date string w. epoch = 1-1-1900 :-(
-                tmp = strsplit (char (scell.getDate ()), ' ');
+                tmp = strsplit (char (scell.getDate ()), " ");
                 yy = str2num (tmp{6});
                 mo = find (ismember (months, upper (tmp{2})) == 1);
                 dd = str2num (tmp{3});
@@ -186,19 +192,19 @@ function [ rawarr, xls, rstatus ] = __JXL_spsh2oct__ (xls, wsh, cellrange, spsh_
             end_unwind_protect
           endif
         case { ctype {5}, ctype {6}, ctype {7} }
-          # Empty, Error or Formula error. Nothing to do here
-        case ctype {8}   # Number
+          ## Empty, Error or Formula error. Nothing to do here
+        case ctype {8}   ## Number
           rawarr {ii+1-firstrow, jj+1-lcol} = scell.getValue ();
-        case ctype {9}   # String
+        case ctype {9}   ## String
           rawarr {ii+1-firstrow, jj+1-lcol} = scell.getString ();
-        case ctype {10}  # Numerical formula
+        case ctype {10}  ## Numerical formula
           if (spsh_opts.formulas_as_text)
             tmp = scell.getFormula ();
             rawarr {ii+1-firstrow, jj+1-lcol} = ["=" tmp];
           else
             rawarr {ii+1-firstrow, jj+1-lcol} = scell.getValue ();
           endif
-        case ctype {11}  # String formula
+        case ctype {11}  ## String formula
           if (spsh_opts.formulas_as_text)
             tmp = scell.getFormula ();
             rawarr {ii+1-firstrow, jj+1-lcol} = ["=" tmp];
@@ -206,7 +212,7 @@ function [ rawarr, xls, rstatus ] = __JXL_spsh2oct__ (xls, wsh, cellrange, spsh_
             rawarr {ii+1-firstrow, jj+1-lcol} = scell.getString ();
           endif
         otherwise
-          # Do nothing
+          ## Do nothing
       endswitch
     endfor
   endfor

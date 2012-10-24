@@ -18,6 +18,8 @@
 
 ## Author: Philip Nienhuis <prnienhuis@users.sf.net>
 ## Created: 2012-10-12
+## Updates:
+## 2012-10-24 Style fixes
 
 function [ xls ] = __OXS_spsh_close__ (xls)
 
@@ -38,7 +40,7 @@ function [ xls ] = __OXS_spsh_close__ (xls)
         xlsout.close ();
         xls.changed = 0;
       catch
-#        xlsout.close ();
+##      xlsout.close ();
       end_try_catch
     else
       xls.workbook.close ();

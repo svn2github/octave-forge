@@ -87,10 +87,11 @@
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-02-25 Added info on occupied ranges to sh_names outarg for all interfaces
 ## 2012-10-12 Moved all interface-specific code into ./private subfuncs
+## 2012-10-24 Style fixes
 
 function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 
-  persistent str2; str2 = '                                 '; # 33 spaces
+  persistent str2; str2 = "                                 "; # 33 spaces
   persistent lstr2; lstr2 = length (str2);
 
   xls = xlsopen (filename, 0, reqintf);
@@ -98,25 +99,26 @@ function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 
   toscreen = nargout < 1;
 
-  # If any valid xls-pointer struct has been returned, it must be a valid Excel spreadsheet
-  filetype = 'Microsoft Excel Spreadsheet'; fformat = '';
+  ## If any valid xls-pointer struct has been returned, it must be a valid Excel spreadsheet
+  filetype = "Microsoft Excel Spreadsheet"; 
+  fformat = "";
 
-  if (strcmp (xls.xtype, 'COM'))
+  if (strcmp (xls.xtype, "COM"))
     [sh_names] = __COM_spsh_info__ (xls);
 
-  elseif (strcmp (xls.xtype, 'POI'))
+  elseif (strcmp (xls.xtype, "POI"))
     [sh_names] = __POI_spsh_info__ (xls);
 
-  elseif (strcmp (xls.xtype, 'JXL'))
+  elseif (strcmp (xls.xtype, "JXL"))
     [sh_names] = __JXL_spsh_info__ (xls);
 
-  elseif (strcmp (xls.xtype, 'OXS'))
+  elseif (strcmp (xls.xtype, "OXS"))
     [sh_names] = __OXS_spsh_info__ (xls);
 
-  elseif (strcmp (xls.xtype, 'UNO'))
+  elseif (strcmp (xls.xtype, "UNO"))
     [sh_names] = __UNO_spsh_info__ (xls);
 
-#  elseif     <Other Excel interfaces below>
+##elseif   <Other Excel interfaces below>
 
   else
     error (sprintf ("xlsfinfo: unknown Excel .xls interface - %s.", xls.xtype));
@@ -125,11 +127,11 @@ function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 
   sh_cnt = size (sh_names, 1);
   if (toscreen)
-    # Echo sheet names to screen
+    ## Echo sheet names to screen
     for ii=1:sh_cnt
       str1 = sprintf ("%3d: %s", ii, sh_names{ii, 1});
       if (index (sh_names{ii, 2}, ":"))
-        str3 = ['(Used range ~ ' sh_names{ii, 2} ')'];
+        str3 = [ "(Used range ~ " sh_names{ii, 2} ")" ];
       else
         str3 = sh_names{ii, 2};
       endif
@@ -137,16 +139,16 @@ function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
     endfor
   else
     if (sh_cnt > 0)
-      if (strcmpi (xls.filename(end-2:end), 'xls'))
+      if (strcmpi (xls.filename(end-2:end), "xls"))
         fformat = "xlWorkbookNormal";
-      elseif (strcmpi (xls.filename(end-2:end), 'csv'))
-        fformat = "xlCSV";      # Works only with COM
-      elseif (strcmpi (xls.filename(end-3:end-1), 'xls'))
+      elseif (strcmpi (xls.filename(end-2:end), "csv"))
+        fformat = "xlCSV";        ## Works only with COM
+      elseif (strcmpi (xls.filename(end-3:end-1), "xls"))
         fformat = "xlOpenXMLWorkbook";
       elseif (strmatch ('htm', lower (xls.filename(end-3:end))))
-        fformat = "xlHtml";      # Works only with COM
+        fformat = "xlHtml";       ##  Works only with COM
       else
-        fformat = '';
+        fformat = "";
       endif
     endif
   endif

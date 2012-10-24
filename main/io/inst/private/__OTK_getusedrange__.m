@@ -29,40 +29,42 @@
 ## 2011-09-12 Support for odfdom-0.8.7 added (API change for XPATH)
 ## 2012-06-08 Support for odsfdom-0.8.8-incubator
 ## 2012-10-12 Renamed & moved into ./private
+## 2012-10-24 Style fixes
 
 function [ trow, lrow, lcol, rcol ] = __OTK_getusedrange__ (ods, ii)
 
-  odfcont = ods.workbook;  # Local copy just in case
+  odfcont = ods.workbook;  ## Local copy just in case
 
-  if (isfield (ods, 'odfvsn'))
-    if (strcmp (ods.odfvsn, '0.8.6') || strcmp (ods.odfvsn, '0.7.5'))
+  if (isfield (ods, "odfvsn"))
+    if (strcmp (ods.odfvsn, "0.8.6") || strcmp (ods.odfvsn, "0.7.5"))
       xpath = ods.app.getXPath;
     else
-      # API changed in odfdom-0.8.7
+      ## API changed in odfdom-0.8.7
       xpath = ods.workbook.getXPath;
     endif
   else
     error ("ODS file ptr struct for OTK interface seems broken.");
   endif
   
-  # Create an instance of type NODESET for use in subsequent statement
-  NODESET = java_get ('javax.xml.xpath.XPathConstants', 'NODESET');
-  # Get table-rows in sheet no. wsh. Sheet count = 1-based (!)
+  ## Create an instance of type NODESET for use in subsequent statement
+  NODESET = java_get ("javax.xml.xpath.XPathConstants", "NODESET");
+  ## Get table-rows in sheet no. wsh. Sheet count = 1-based (!)
   str = sprintf ("//table:table[%d]/table:table-row", ii);
   sh = xpath.evaluate (str, odfcont, NODESET);
   nr_of_trows = sh.getLength();
 
-  jj = 0;                  # Table row counter
-  trow = 0; drows = 0;     # Top data row, actual data row range
-  nrows = 0; reprows = 0;  # Scratch counter
-  rcol = 0; lcol = 1024;   # Rightmost and leftmost data column
+  jj = 0;                  ## Table row counter
+  trow = 0; drows = 0;     ## Top data row, actual data row range
+  nrows = 0; reprows = 0;  ## Scratch counter
+  rcol = 0; lcol = 1024;   ## Rightmost and leftmost data column
+
   while jj < nr_of_trows
     row = sh.item(jj);
-    # Check for data rows
+    ## Check for data rows
     rw_char = char (row) (1:min(500, length (char (row))));
-    if (findstr ('office:value-type', rw_char) || findstr ('<text:', rw_char))
+    if (findstr ("office:value-type", rw_char) || findstr ("<text:", rw_char))
       ++drows;
-      # Check for uppermost data row
+      ## Check for uppermost data row
       if (~trow) 
         trow = nrows + 1;
         nrows = 0;
@@ -71,34 +73,36 @@ function [ trow, lrow, lcol, rcol ] = __OTK_getusedrange__ (ods, ii)
         reprows = 0;
       endif
 
-    # Get leftmost cell column number
+      ## Get leftmost cell column number
       lcell = row.getFirstChild ();
       cl_char = char (lcell);
-    # Swap the following lines into comment to catch a jOpenDocument bug which foobars OTK
-    # (JOD doesn't set <office:value-type='string'> attribute when writing strings
-      #if (isempty (findstr ('office:value-type', cl_char)) || isempty (findstr ('<text:', cl_char)))
-      if (isempty (findstr ('office:value-type', cl_char)))
+      ## Swap the following lines into comment to catch a jOpenDocument bug which foobars OTK
+      ## (JOD doesn't set <office:value-type='string'> attribute when writing strings
+      ##if  (isempty (findstr ("office:value-type", cl_char)) ...
+      ##  || isempty (findstr ("<text:", cl_char)))
+      if (isempty (findstr ("office:value-type", cl_char)))
         lcol = min (lcol, lcell.getTableNumberColumnsRepeatedAttribute () + 1);
       else
         lcol = 1;
       endif
 
-      # if rcol is already 1024 no more exploring for rightmost column is needed
+      ## if rcol is already 1024 no more exploring for rightmost column is needed
       if ~(rcol == 1024)
-        # Get rightmost cell column number by counting....
+        ## Get rightmost cell column number by counting....
         rc = 0;
         for kk=1:row.getLength()
           lcell = row.item(kk - 1);
           rc = rc + lcell.getTableNumberColumnsRepeatedAttribute ();
         endfor
-        # Watch out for filler tablecells
-        if (isempty (findstr ('office:value-type', char (lcell))) || isempty (findstr ('<text:', char (lcell))))
+        ## Watch out for filler tablecells
+        if (isempty (findstr ("office:value-type", char (lcell)))... 
+            || isempty (findstr ("<text:", char (lcell))))
           rc = rc - lcell.getTableNumberColumnsRepeatedAttribute ();
         endif
         rcol = max (rcol, rc);
       endif
     else
-      # Check for repeated tablerows
+      ## Check for repeated tablerows
       nrows = nrows + row.getTableNumberRowsRepeatedAttribute ();
       if (trow)
         reprows = reprows + row.getTableNumberRowsRepeatedAttribute ();
@@ -110,7 +114,7 @@ function [ trow, lrow, lcol, rcol ] = __OTK_getusedrange__ (ods, ii)
   if (trow)
     lrow = trow + drows - 1;
   else
-    # Empty sheet
+    ## Empty sheet
     lrow = 0; lcol = 0; rcol = 0;
   endif
 

@@ -65,19 +65,22 @@
 ## 2012-06-08 Support for odfdom-0.8.8 (-incubator)
 ## 2012-10-07 Moved common classpath entry code to ./private function
 ## 2012-10-07 Moved into ./private
+## 2012-10-24 Style fixes
 
 function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 
-  # tmp1 = [] (not initialized), 0 (No Java detected), or 1 (Working Java found)
+  ## tmp1 = [] (not initialized), 0 (No Java detected), or 1 (Working Java found)
   persistent tmp1 = []; persistent jcp;  # Java class path
   persistent uno_1st_time = 0;
 
-  if (isempty (odsinterfaces.OTK) && isempty (odsinterfaces.JOD) && isempty (odsinterfaces.UNO))
-    # Assume no interface detection has happened yet
+  if (isempty (odsinterfaces.OTK) && isempty (odsinterfaces.JOD) ...
+                                  && isempty (odsinterfaces.UNO))
+    ## Assume no interface detection has happened yet
     printf ("Detected ODS interfaces: ");
     tmp1 = [];
-  elseif (isempty (odsinterfaces.OTK) || isempty (odsinterfaces.JOD) || isempty (odsinterfaces.UNO))
-    # Can't be first call. Here one of the Java interfaces is requested
+  elseif (isempty (odsinterfaces.OTK) || isempty (odsinterfaces.JOD) ...
+                                      || isempty (odsinterfaces.UNO))
+    ## Can't be first call. Here one of the Java interfaces is requested
     if (~tmp1)
       # Check Java support again
       tmp1 = [];
@@ -86,29 +89,35 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
   deflt = 0;
 
   if (isempty (tmp1))
-  # Check Java support
+  ## Check Java support
     try
       jcp = javaclasspath ("-all");          # For java pkg >= 1.2.8
       if (isempty (jcp)), jcp = javaclasspath; endif  # For java pkg <  1.2.8
-      # If we get here, at least Java works. Now check for proper version (>= 1.6)
-      jver = char (java_invoke ('java.lang.System', 'getProperty', 'java.version'));
-      cjver = strsplit (jver, '.');
-      if (sscanf (cjver{2}, '%d') < 6)
-        warning ("\nJava version too old - you need at least Java 6 (v. 1.6.x.x)\n");
+      ## If we get here, at least Java works. Now check for proper version (>= 1.6)
+      jver = ...
+        char (java_invoke ('java.lang.System', 'getProperty', 'java.version'));
+      cjver = strsplit (jver, ".");
+      if (sscanf (cjver{2}, "%d") < 6)
+        warning ...
+          ("\nJava version too old - you need at least Java 6 (v. 1.6.x.x)\n");
         return
       endif
-      # Now check for proper entries in class path. Under *nix the classpath
-      # must first be split up. In java 1.2.8+ javaclasspath is already a cell array
-      if (isunix && ~iscell (jcp)), jcp = strsplit (char (jcp), pathsep ()); endif
+      ## Now check for proper entries in class path. Under *nix the classpath
+      ## must first be split up. In java 1.2.8+ javaclasspath is already a cell array
+      if (isunix && ~iscell (jcp));
+        jcp = strsplit (char (jcp), pathsep ()); 
+      endif
       tmp1 = 1;
     catch
-      # No Java support
+      ## No Java support
       tmp1 = 0;
-      if (isempty (odsinterfaces.OTK) || isempty (odsinterfaces.JOD) || isempty (odsinterfaces.UNO))
-        # Some or all Java-based interface explicitly requested; but no Java support
-        warning (' No Java support found (no Java JRE? no Java pkg installed AND loaded?');
+      if (isempty (odsinterfaces.OTK) || isempty (odsinterfaces.JOD) ...
+                                      || isempty (odsinterfaces.UNO))
+        ## Some or all Java-based interface explicitly requested; but no Java support
+        warning ...
+          (" No Java support found (no Java JRE? no Java pkg installed AND loaded?");
       endif
-      # No specific Java-based interface requested. Just return
+      ## No specific Java-based interface requested. Just return
       odsinterfaces.OTK = 0;
       odsinterfaces.JOD = 0;
       odsinterfaces.UNO = 0;
@@ -117,31 +126,34 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
     end_try_catch
   endif
 
-  # Try Java & ODF toolkit
+  ## Try Java & ODF toolkit
   if (isempty (odsinterfaces.OTK))
     odsinterfaces.OTK = 0;
     entries = {"odfdom", "xercesImpl"};
-    # Only under *nix we might use brute force: e.g., strfind(classpath, classname);
-    # under Windows we need the following more subtle, platform-independent approach:
+    ## Only under *nix we might use brute force: e.g., strfind(classpath, classname);
+    ## under Windows we need the following more subtle, platform-independent approach:
     if (chk_jar_entries (jcp, entries) >= numel (entries))    
-      # Apparently all requested classes present.
-      # Only now we can check for proper odfdom version (only 0.7.5 & 0.8.6 work OK).
-      # The odfdom team deemed it necessary to change the version call so we need this:
-      odfvsn = ' ';
+      ## Apparently all requested classes present.
+      ## Only now we can check for proper odfdom version (only 0.7.5 & 0.8.6+ work OK).
+      ## The odfdom team deemed it necessary to change the version call so we need this:
+      odfvsn = " ";
       try
-        # New in 0.8.6
-        odfvsn = java_invoke ('org.odftoolkit.odfdom.JarManifest', 'getOdfdomVersion');
+        ## New in 0.8.6
+        odfvsn = ...
+          java_invoke ("org.odftoolkit.odfdom.JarManifest", "getOdfdomVersion");
       catch
-        odfvsn = java_invoke ('org.odftoolkit.odfdom.Version', 'getApplicationVersion');
+        odfvsn = ...
+          java_invoke ("org.odftoolkit.odfdom.Version", "getApplicationVersion");
       end_try_catch
-      # For odfdom-incubator, strip extra info
+      ## For odfdom-incubator (= 0.8.8+), strip extra info
       odfvsn = regexp (odfvsn, '\d\.\d\.\d', "match"){1};
-      if ~(strcmp  (odfvsn, "0.7.5") || strcmp (odfvsn, "0.8.6") || strcmp (odfvsn, "0.8.7")
-        || strfind (odfvsn, "0.8.8"))
+      if  ~(strcmp (odfvsn, "0.7.5") || strcmp (odfvsn, "0.8.6") ...
+         || strcmp (odfvsn, "0.8.7") || strfind (odfvsn, "0.8.8"))
         warning ("\nodfdom version %s is not supported - use v. 0.8.6 or later\n", odfvsn);
       else
-        if (strcmp (odfvsn, '0.7.5'))
-          warning ("odfdom v. 0.7.5 support won't be maintained - please upgrade to 0.8.6 or higher."); 
+        if (strcmp (odfvsn, "0.7.5"))
+          warning (["odfdom v. 0.7.5 support won't be maintained " ...
+                    "- please upgrade to 0.8.6 or higher."]); 
         endif
         odsinterfaces.OTK = 1;
         printf ("OTK");
@@ -153,7 +165,7 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
     endif
   endif
 
-  # Try Java & jOpenDocument
+  ## Try Java & jOpenDocument
   if (isempty (odsinterfaces.JOD))
     odsinterfaces.JOD = 0;
     entries = {"jOpenDocument"};
@@ -166,26 +178,32 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
     endif
   endif
 
-  # Try Java & UNO
+  ## Try Java & UNO
   if (isempty (odsinterfaces.UNO))
     odsinterfaces.UNO = 0;
-    # entries(1) = not a jar but a directory (<000_install_dir/program/>)
-    entries = {'program', 'unoil', 'jurt', 'juh', 'unoloader', 'ridl'};
+    ## entries(1) = not a jar but a directory (<000_install_dir/program/>)
+    entries = {"program", "unoil", "jurt", "juh", "unoloader", "ridl"};
     if (chk_jar_entries (jcp, entries) >= numel (entries))
       odsinterfaces.UNO = 1;
       printf ("UNO");
-      if (deflt), printf ("; "); else, printf ("*; "); deflt = 1; uno_1st_time = min (++uno_1st_time, 2); endif
+      if (deflt)
+        printf ("; ");
+      else
+        printf ("*; "); 
+        deflt = 1; 
+        uno_1st_time = min (++uno_1st_time, 2); 
+      endif
     else
       warning ("\nOne or more UNO classes (.jar) missing in javaclasspath");
     endif
   endif
   
-  # ---- Other interfaces here, similar to the ones above
+  ## ---- Other interfaces here, similar to the ones above
 
   if (deflt), printf ("(* = active interface)\n"); endif
 
   ## FIXME the below stanza should be dropped once UNO is stable.
-  # Echo a suitable warning about experimental status:
+  ## Echo a suitable warning about experimental status:
   if (uno_1st_time == 1)
     ++uno_1st_time;
     printf ("\nPLEASE NOTE: UNO (=OpenOffice.org-behind-the-scenes) is EXPERIMENTAL\n");

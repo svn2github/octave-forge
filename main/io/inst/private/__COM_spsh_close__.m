@@ -21,23 +21,23 @@
 
 function [ xls ] = __COM_spsh_close__ (xls)
 
-    # If file has been changed, write it out to disk.
-    #
-    # Note: COM / VB supports other Excel file formats as FileFormatNum:
-    # 4 = .wks - Lotus 1-2-3 / Microsoft Works
-    # 6 = .csv
-    # -4158 = .txt 
-    # 36 = .prn
-    # 50 = .xlsb - xlExcel12 (Excel Binary Workbook in 2007 with or without macro's)
-    # 51 = .xlsx - xlOpenXMLWorkbook (without macro's in 2007)
-    # 52 = .xlsm - xlOpenXMLWorkbookMacroEnabled (with or without macro's in 2007)
-    # 56 = .xls  - xlExcel8 (97-2003 format in Excel 2007)
-    # (see Excel Help, VB reference, Enumerations, xlFileType)
+    ## If file has been changed, write it out to disk.
+    ##
+    ## Note: COM / VB supports other Excel file formats as FileFormatNum:
+    ## 4 = .wks - Lotus 1-2-3 / Microsoft Works
+    ## 6 = .csv
+    ## -4158 = .txt 
+    ## 36 = .prn
+    ## 50 = .xlsb - xlExcel12 (Excel Binary Workbook in 2007 with or without macro's)
+    ## 51 = .xlsx - xlOpenXMLWorkbook (without macro's in 2007)
+    ## 52 = .xlsm - xlOpenXMLWorkbookMacroEnabled (with or without macro's in 2007)
+    ## 56 = .xls  - xlExcel8 (97-2003 format in Excel 2007)
+    ## (see Excel Help, VB reference, Enumerations, xlFileType)
     
-    # xls.changed = 0: no changes: just close;
-    #               1: existing file with changes: save, close.
-    #               2: new file with data added: save, close
-    #               3: new file, no added added (empty): close & delete on disk
+    ## xls.changed = 0: no changes: just close;
+    ##               1: existing file with changes: save, close.
+    ##               2: new file with data added: save, close
+    ##               3: new file, no added added (empty): close & delete on disk
 
     xls.app.Application.DisplayAlerts = 0;
     try
@@ -48,19 +48,19 @@ function [ xls ] = __COM_spsh_close__ (xls)
           fname = xls.filename;
         endif
         if (xls.changed == 2)
-          # Probably a newly created, or renamed, Excel file
-#         printf ("Saving file %s ...\n", fname);
+          ## Probably a newly created, or renamed, Excel file
+##         printf ("Saving file %s ...\n", fname);
           xls.workbook.SaveAs (canonicalize_file_name (fname));
         elseif (xls.changed == 1)
-          # Just updated existing Excel file
+          ## Just updated existing Excel file
           xls.workbook.Save ();
         endif
         xls.changed = 0;
         xls.workbook.Close (canonicalize_file_name (fname));
       endif
       xls.app.Quit ();
-      delete (xls.workbook);  # This statement actually closes the workbook
-      delete (xls.app);     # This statement actually closes down Excel
+      delete (xls.workbook);  ## This statement actually closes the workbook
+      delete (xls.app);     ## This statement actually closes down Excel
     catch
       xls.app.Application.DisplayAlerts = 1;
     end_try_catch

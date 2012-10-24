@@ -68,36 +68,46 @@
 ## Updates: 
 ## 2009-12-30 ....<forgot what is was >
 ## 2010-01-17 Make sure proper dimensions are checked in parsed javaclasspath
-## 2010-01-24 Added warning when trying to create a new spreadsheet using jOpenDocument
+## 2010-01-24 Added warning when trying to create a new spreadsheet using 
+##            jOpenDocument
 ## 2010-03-01 Removed check for rt.jar in javaclasspath
 ## 2010-03-04 Slight texinfo adaptation (reqd. odfdom version = 0.7.5)
 ## 2010-03-14 Updated help text (section on readwrite)
 ## 2010-06-01 Added check for jOpenDocument version + suitable warning
 ## 2010-06-02 Added ";" to supress debug stuff around lines 115
-##     ''      Moved JOD version check to subfunc getodsinterfaces
-##     ''      Fiddled ods.changed flag when creating a spreadsheet to avoid unnamed 1st sheets
-## 2010-08-23 Added version field "odfvsn" to ods file ptr, set in getodsinterfaces() (odfdom)
-##     ''     Moved JOD version check to this func from subfunc getodsinterfaces()
+##     ''     Moved JOD version check to subfunc getodsinterfaces
+##     ''     Fiddled ods.changed flag when creating a spreadsheet to avoid
+##            unnamed 1st sheets
+## 2010-08-23 Added version field "odfvsn" to ods file ptr, set in
+##            getodsinterfaces() (odfdom)
+##     ''     Moved JOD version check to this func from subfunc
+##            getodsinterfaces()
 ##     ''     Full support for odfdom 0.8.6 (in subfunc)
 ## 2010-08-27 Improved help text
 ## 2010-10-27 Improved tracking of file changes tru ods.changed
 ## 2010-11-12 Small changes to help text
-##     ''     Added try-catch to file open sections to create fallback to other intf
+##     ''     Added try-catch to file open sections to create fallback to other
+##            interface
 ## 2011-05-06 Experimental UNO support
 ## 2011-05-18 Creating new spreadsheet docs in UNO now works
 ## 2011-06-06 Tamed down interface verbosity on first startup
 ##     ''     Multiple requested interfaces now possible 
-## 2011-09-03 Reset chkintf if no ods support was found to allow full interface rediscovery
-##            (otherwise javaclasspath additions will never be picked up)
+## 2011-09-03 Reset chkintf if no ods support found to allow full interface
+##            rediscovery (otherwise javaclasspath additions will never be
+##            picked up)
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-02-26 Added ";" to suppress echo of filename f UNO
-## 2012-06-06 Made interface checking routine less verbose when same requested interface
-##            was used consecutively
+## 2012-06-06 Made interface checking routine less verbose when same requested
+##            interface was used consecutively
 ## 2012-09-03 (in UNO section) replace canonicalize_file_name on non-Windows to
 ##            make_absolute_filename (see bug #36677)
 ##     ''     (in UNO section) web adresses need only two consecutive slashes
 ## 2012-10-07 Moved subfunc getodsinterfaces to ./private
-## 2012-10-12 Moved all interface-specific file open stanzas to separate ./private funcs
+## 2012-10-12 Moved all interface-specific file open stanzas to separate 
+##            ./private funcs
+## 2012-10-24 Style fixes
+##      ''    Removed fall-back options for .sxc. Other than .xls this can be
+##            inferred from file suffix
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
@@ -106,46 +116,51 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
     odsinterfaces = struct ( "OTK", [], "JOD", [], "UNO", [] );
     chkintf = 1;
   endif
-  if (isempty (lastintf)); lastintf = '---'; endif 
+  if (isempty (lastintf)); lastintf = "---"; endif 
   
-  if (nargout < 1) usage ("ODS = odsopen (ODSfile, [Rw]). But no return argument specified!"); endif
+  if (nargout < 1)
+    usage ("ODS = odsopen (ODSfile, [Rw]). But no return argument specified!");
+  endif
 
   if (~isempty (reqinterface))
-    if ~(ischar (reqinterface) || iscell (reqinterface)), usage ("Arg # 3 not recognized"); endif
-    # Turn arg3 into cell array if needed
+    if ~(ischar (reqinterface) || iscell (reqinterface))
+      usage ("Arg # 3 (interface) not recognized");
+    endif
+    ## Turn arg3 into cell array if needed
     if (~iscell (reqinterface)), reqinterface = {reqinterface}; endif
     ## Check if previously used interface matches a requested interface
-    if (isempty (regexpi (reqinterface, lastintf, 'once'){1}))
+    if (isempty (regexpi (reqinterface, lastintf, "once"){1}))
       ## New interface requested
       odsinterfaces.OTK = 0; odsinterfaces.JOD = 0; odsinterfaces.UNO = 0;
       for ii=1:numel (reqinterface)
         reqintf = toupper (reqinterface {ii});
-        # Try to invoke requested interface(s) for this call. Check if it
-        # is supported anyway by emptying the corresponding var.
-        if     (strcmp (reqintf, 'OTK'))
+        ## Try to invoke requested interface(s) for this call. Check if it
+        ## is supported anyway by emptying the corresponding var.
+        if     (strcmp (reqintf, "OTK"))
           odsinterfaces.OTK = [];
-        elseif (strcmp (reqintf, 'JOD'))
+        elseif (strcmp (reqintf, "JOD"))
           odsinterfaces.JOD = [];
-        elseif (strcmp (reqintf, 'UNO'))
+        elseif (strcmp (reqintf, "UNO"))
           odsinterfaces.UNO = [];
         else 
-          usage (sprintf ("Unknown .ods interface \"%s\" requested. Only OTK, JOD or UNO supported\n", reqinterface{}));
+          usage (sprintf (["Unknown .ods interface \"%s\" requested.\n" ...
+                  "Only OTK, JOD or UNO supported\n"], reqinterface{}));
         endif
       endfor
+
       printf ("Checking requested interface(s):\n");
       odsinterfaces = getodsinterfaces (odsinterfaces);
-      # Well, is/are the requested interface(s) supported on the system?
-      # FIXME check for multiple interfaces
+      ## Well, is/are the requested interface(s) supported on the system?
       odsintf_cnt = 0;
       for ii=1:numel (reqinterface)
         if (~odsinterfaces.(toupper (reqinterface{ii})))
-          # No it aint
+          ## No it aint
           printf ("%s is not supported.\n", toupper (reqinterface{ii}));
         else
           ++odsintf_cnt;
         endif
       endfor
-      # Reset interface check indicator if no requested support found
+      ## Reset interface check indicator if no requested support found
       if (~odsintf_cnt)
         chkintf = [];
         ods = [];
@@ -154,69 +169,79 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
     endif
   endif
   
-  # Var rw is really used to avoid creating files when wanting to read, or
-  # not finding not-yet-existing files when wanting to write.
+  ## Var rw is really used to avoid creating files when wanting to read, or
+  ## not finding not-yet-existing files when wanting to write a new one.
+  ## Be sure it's either 0 or 1 initially
+  if (rw), rw = 1; endif      
 
-  if (rw), rw = 1; endif    # Be sure it's either 0 or 1 initially
-
-  # Check if ODS file exists. Set open mode based on rw argument
-  if (rw), fmode = 'r+b'; else fmode = 'rb'; endif
+  ## Check if ODS file exists. Set open mode based on rw argument
+  if (rw), fmode = "r+b"; else fmode = "rb"; endif
   fid = fopen (filename, fmode);
   if (fid < 0)
-    if (~rw)      # Read mode requested but file doesn't exist
+    if (~rw)                  ## Read mode requested but file doesn't exist
       err_str = sprintf ("File %s not found\n", filename);
       error (err_str)
-    else        # For writing we need more info:
-      fid = fopen (filename, 'rb');  # Check if it can be opened for reading
-      if (fid < 0)  # Not found => create it
+    else        
+      ## For writing we need more info:
+      fid = fopen (filename, "rb");  
+      ## Check if it can be opened for reading
+      if (fid < 0)            ## Not found => create it
         printf ("Creating file %s\n", filename);
         rw = 3;
-      else      # Found but not writable = error
-        fclose (fid);  # Do not forget to close the handle neatly
-        error (sprintf ("Write mode requested but file %s is not writable\n", filename))
+      else                    ## Found but not writable = error
+        fclose (fid);         ## Do not forget to close the handle neatly
+        error (sprintf ("Write mode requested but file %s is not writable\n",...
+                        filename))
       endif
     endif
   else
-    # close file anyway to avoid Java errors
+    ## Close file anyway to avoid Java errors
     fclose (fid);
   endif
 
-# Check for the various ODS interfaces. No problem if they've already
-# been checked, getodsinterfaces (far below) just returns immediately then.
+  ## Check for the various ODS interfaces. No problem if they've already
+  ## been checked, getodsinterfaces (far below) just returns immediately then.
 
   [odsinterfaces] = getodsinterfaces (odsinterfaces);
 
-# Supported interfaces determined; now check ODS file type.
+  ## Supported interfaces determined; now check ODS file type.
 
-# chk1 = strcmp (tolower (filename(end-3:end)), '.ods');
-  # Only jOpenDocument (JOD) can read from .sxc files, but only if odfvsn = 2
-  chk2 = strcmp (tolower (filename(end-3:end)), '.sxc');
-#  if (~chk1)
-#    error ("Currently ods2oct can only read reliably from .ods files")
-#  endif
+  chk3 = strcmpi (filename(end-3:end), '.ods');
+  ## Only jOpenDocument (JOD) can read from .sxc files, but only if odfvsn = 2
+  chk4 = strcmpi (filename(end-3:end), '.sxc');
 
-  ods = struct ("xtype", [], "app", [], "filename", [], "workbook", [], "changed", 0, "limits", [], "odfvsn", []);
+  ods = struct ("xtype",    [], 
+                "app",      [], 
+                "filename", [], 
+                "workbook", [], 
+                "changed",  0, 
+                "limits",   [], 
+                "odfvsn",   []);
 
-  # Preferred interface = OTK (ODS toolkit & xerces), so it comes first. 
-  # Keep track of which interface is selected. Can be used for fallback to other intf
+  ## Preferred interface = OTK (ODS toolkit & xerces), so it comes first. 
+  ## Keep track of which interface is selected. Can be used for fallback to other intf
   odssupport = 0;
 
-  if (odsinterfaces.OTK && ~odssupport)
-    [ ods, odssupport, lastintf ] = __OTK_spsh_open__ (ods, rw, filename, odssupport, chk2, odsinterfaces);
+  if (odsinterfaces.OTK && ~odssupport && chk3)
+    [ ods, odssupport, lastintf ] = ...
+              __OTK_spsh_open__ (ods, rw, filename, odssupport);
   endif
 
-  if (odsinterfaces.JOD && ~odssupport)
-    [ ods, odssupport, lastintf ] = __JOD_spsh_open__ (ods, rw, filename, odssupport);
+  if (odsinterfaces.JOD && ~odssupport && (chk3 || chk4))
+    [ ods, odssupport, lastintf ] = ...
+              __JOD_spsh_open__ (ods, rw, filename, odssupport);
   endif
 
   if (odsinterfaces.UNO && ~odssupport)
-    [ ods, odssupport, lastintf ] = __UNO_spsh_open__ (ods, rw, filename, odssupport);
+    [ ods, odssupport, lastintf ] = ...
+              __UNO_spsh_open__ (ods, rw, filename, odssupport);
   endif
 
-#  if 
-#    <other interfaces here>
+  ## if 
+  ##   <other interfaces here>
 
   if (~odssupport)
+    ## Below message follows after getodsinterfaces
     printf ("None.\n");
     warning ("No support for OpenOffice.org .ods I/O"); 
     ods = [];
@@ -227,10 +252,10 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
     # message is to be given when saving a newly created ods file.
     ods.changed = rw;
 
-    # Until something was written to existing files we keep status "unchanged".
     # ods.changed = 0 (existing/only read from), 1 (existing/data added), 2 (new,
     # data added) or 3 (pristine, no data added).
-    if (ods.changed == 1) ods.changed = 0; endif
+    # Until something was written to existing files we keep status "unchanged".
+    if (ods.changed == 1); ods.changed = 0; endif
   endif
 
 endfunction

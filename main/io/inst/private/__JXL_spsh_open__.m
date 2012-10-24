@@ -20,6 +20,7 @@
 ## Created: 2012-10-07
 ## Updates (possibly from xlsopen):
 ## 2010-11-05 Bug fix: JXL fallback from POI for BIFF5 is only useful for reading
+## 2012-10-24 Style fixes
 
 function [ xls, xlssupport, lastintf ] = __JXL_spsh_open__ (xls, xwrite, filename, xlssupport, chk1)
 
@@ -27,24 +28,25 @@ function [ xls, xlssupport, lastintf ] = __JXL_spsh_open__ (xls, xwrite, filenam
       error ("JXL can only read reliably from .xls files")
     endif
     try
-      xlsin = java_new ('java.io.File', filename);
+      xlsin = java_new ("java.io.File", filename);
       if (xwrite > 2)
-        # Get handle to new xls-file
-        wb = java_invoke ('jxl.Workbook', 'createWorkbook', xlsin);
+        ## Get handle to new xls-file
+        wb = java_invoke ("jxl.Workbook", "createWorkbook", xlsin);
       else
-        # Open existing file
-        wb = java_invoke ('jxl.Workbook', 'getWorkbook', xlsin);
+        ## Open existing file
+        wb = java_invoke ("jxl.Workbook", "getWorkbook", xlsin);
       endif
-      xls.xtype = 'JXL';
+      xls.xtype = "JXL";
       xls.app = xlsin;
       xls.workbook = wb;
       xls.filename = filename;
       xlssupport += 4;
-      lastintf = 'JXL';
+      lastintf = "JXL";
     catch
       clear xlsin;
       if (xlsinterfaces.POI)
-        printf ('... No luck with JXL either, unsupported file format.\n', filename);
+        ## Fall back to UNO only when that is stable (= closing soffice)
+        printf ("... No luck with JXL either, unsupported file format.\n", filename);
       endif
     end_try_catch
 

@@ -51,27 +51,30 @@
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-06-06 Implemented "formulas_as_text option"
 ## 2012-10-12 Renamed & moved into ./private
+## 2012-10-24 Style fixes
 
 function [rawarr, xls, rstatus ] = __COM_spsh2oct__ (xls, wsh, crange, spsh_opts)
 
   rstatus = 0; rawarr = {};
   
-  # Basic checks
-  if (nargin < 2) error ("__COM_spsh2oct__ needs a minimum of 2 arguments."); endif
+  ## Basic checks
+  if (nargin < 2)
+    error ("__COM_spsh2oct__ needs a minimum of 2 arguments."); 
+  endif
   if (size (wsh, 2) > 31) 
     warning ("Worksheet name too long - truncated") 
     wsh = wsh(1:31);
   endif
   app = xls.app;
   wb = xls.workbook;
-  # Check to see if ActiveX is still alive
+  ## Check to see if ActiveX is still alive
   try
     wb_cnt = wb.Worksheets.count;
   catch
     error ("ActiveX invocation in file ptr struct seems non-functional");
   end_try_catch
 
-  # Check & get handle to requested worksheet
+  ## Check & get handle to requested worksheet
   wb_cnt = wb.Worksheets.count;
   old_sh = 0;  
   if (isnumeric (wsh))
@@ -84,7 +87,7 @@ function [rawarr, xls, rstatus ] = __COM_spsh2oct__ (xls, wsh, crange, spsh_opts
       old_sh = wsh;
     endif
   else
-    # Find worksheet number corresponding to name in wsh
+    ## Find worksheet number corresponding to name in wsh
     wb_cnt = wb.Worksheets.count;
     for ii =1:wb_cnt
       sh_name = wb.Worksheets(ii).name;
@@ -102,10 +105,10 @@ function [rawarr, xls, rstatus ] = __COM_spsh2oct__ (xls, wsh, crange, spsh_opts
   nrows = 0;
   if ((nargin == 2) || (isempty (crange)))
     allcells = sh.UsedRange;
-    # Get actually used range indices
+    ## Get actually used range indices
     [trow, brow, lcol, rcol] = getusedrange (xls, old_sh);
     if (trow == 0 && brow == 0)
-      # Empty sheet
+      ## Empty sheet
       rawarr = {};
       printf ("Worksheet '%s' contains no data\n", sh.Name);
       return;
@@ -113,17 +116,17 @@ function [rawarr, xls, rstatus ] = __COM_spsh2oct__ (xls, wsh, crange, spsh_opts
       nrows = brow - trow + 1; ncols = rcol - lcol + 1;
       topleft = calccelladdress (trow, lcol);
       lowerright = calccelladdress (brow, rcol);
-      crange = [topleft ':' lowerright];
+      crange = [topleft ":" lowerright];
     endif
   else
-    # Extract top_left_cell from range
+    ## Extract top_left_cell from range
     [topleft, nrows, ncols, trow, lcol] = parse_sp_range (crange);
     brow = trow + nrows - 1;
     rcol = lcol + ncols - 1;
   endif;
   
   if (nrows >= 1) 
-    # Get object from Excel sheet, starting at cell top_left_cell
+    ## Get object from Excel sheet, starting at cell top_left_cell
     rr = sh.Range (crange);
     if (spsh_opts.formulas_as_text)
       rawarr = rr.Formula;
@@ -132,14 +135,14 @@ function [rawarr, xls, rstatus ] = __COM_spsh2oct__ (xls, wsh, crange, spsh_opts
     endif
     delete (rr);
 
-    # Take care of actual singe cell range
+    ## Take care of actual singe cell range
     if (isnumeric (rawarr) || ischar (rawarr))
       rawarr = {rawarr};
     endif
 
-    # If we get here, all seems to have gone OK
+    ## If we get here, all seems to have gone OK
     rstatus = 1;
-    # Keep track of data rectangle limits
+    ## Keep track of data rectangle limits
     xls.limits = [lcol, rcol; trow, brow];
   else
     error ("No data read from Excel file");

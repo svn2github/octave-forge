@@ -134,13 +134,16 @@
 ## 2012-06-06 Implemented "formulas_as_text" option for COM
 ## 2012-06-07 Replaced all tabs by double space
 ## 2012-10-12 Moved all interface-specific subfubcs into ./private
+## 2012-10-24 Style fixes
 ##
 ## Latest subfunc update: 2012-10-12
 
-function [ rawarr, xls, rstatus ] = xls2oct (xls, wsh=1, datrange='', spsh_opts=[])
+function [ rawarr, xls, rstatus ] = xls2oct (xls, wsh=1, datrange="", spsh_opts=[])
 
-  # Check if xls struct pointer seems valid
-  if (~isstruct (xls)), error ("File ptr struct expected for arg @ 1"); endif
+  ## Check if xls struct pointer seems valid
+  if (~isstruct (xls))
+    error ("File ptr struct expected for arg @ 1"); 
+  endif
   test1 = ~isfield (xls, "xtype");
   test1 = test1 || ~isfield (xls, "workbook");
   test1 = test1 || isempty (xls.workbook);
@@ -150,47 +153,57 @@ function [ rawarr, xls, rstatus ] = xls2oct (xls, wsh=1, datrange='', spsh_opts=
     error ("Invalid xls file pointer struct");
   endif
 
-  # Check worksheet ptr
-  if (~(ischar (wsh) || isnumeric (wsh))), error ("Integer (index) or text (wsh name) expected for arg # 2"); endif
-  # Check range
-  if (~(isempty (datrange) || ischar (datrange))), error ("Character string (range) expected for arg # 3"); endif
+  ## Check worksheet ptr
+  if (~(ischar (wsh) || isnumeric (wsh)))
+    error ("Integer (index) or text (wsh name) expected for arg # 2");
+  endif
+  ## Check range
+  if (~(isempty (datrange) || ischar (datrange)))
+    error ("Character string expected for arg # 3 (range)"); 
+  endif
 
-  # Check & setup options struct
+  ## Check & setup options struct
   if (nargin < 4 || isempty (spsh_opts))
     spsh_opts.formulas_as_text = 0;
     spsh_opts.strip_array = 1;
-    # Future options:
+    ## Future options:
+
   elseif (isstruct (spsh_opts))
-    if (~isfield (spsh_opts', 'formulas_as_text')), spsh_opts.formulas_as_text = 0; endif
-    if (~isfield (spsh_opts', 'strip_array')), spsh_opts.strip_array = 1; endif
-    % Future options:
+    if (~isfield (spsh_opts, "formulas_as_text"))
+      spsh_opts.formulas_as_text = 0; 
+    endif
+    if (~isfield (spsh_opts, "strip_array"))
+      spsh_opts.strip_array = 1; 
+    endif
+    ## Future options:
+
   else
-    error ("Structure expected for arg # 4");
+    error ("Structure expected for arg # 4 (options)");
   endif
 
-  # Select the proper interfaces
-  if (strcmp (xls.xtype, 'COM'))
-    # Call Excel tru COM / ActiveX server
+  ## Select the proper interfaces
+  if (strcmp (xls.xtype, "COM"))
+    ## Call Excel tru COM / ActiveX server
     [rawarr, xls, rstatus] = __COM_spsh2oct__ (xls, wsh, datrange, spsh_opts);
-  elseif (strcmp (xls.xtype, 'POI'))
-    # Read xls file tru Java POI
+  elseif (strcmp (xls.xtype, "POI"))
+    ## Read xls file tru Java POI
     [rawarr, xls, rstatus] = __POI_spsh2oct__ (xls, wsh, datrange, spsh_opts);
-  elseif (strcmp (xls.xtype, 'JXL'))
-    # Read xls file tru JExcelAPI
+  elseif (strcmp (xls.xtype, "JXL"))
+    ## Read xls file tru JExcelAPI
     [rawarr, xls, rstatus] = __JXL_spsh2oct__ (xls, wsh, datrange, spsh_opts);
-  elseif (strcmp (xls.xtype, 'OXS'))
-    # Read xls file tru OpenXLS
+  elseif (strcmp (xls.xtype, "OXS"))
+    ## Read xls file tru OpenXLS
     [rawarr, xls, rstatus] = __OXS_spsh2oct__ (xls, wsh, datrange, spsh_opts);
-  elseif (strcmp (xls.xtype, 'UNO'))
-    # Read xls file tru OpenOffice.org UNO (Java) bridge
+  elseif (strcmp (xls.xtype, "UNO"))
+    ## Read xls file tru OpenOffice.org UNO (Java) bridge
     [rawarr, xls, rstatus] = __UNO_spsh2oct__ (xls, wsh, datrange, spsh_opts);
-#  elseif ---- <Other interfaces here>
-    # Call to next interface
+  ##elseif ---- <Other interfaces here>
+    ## Call to next interface
   else
     error (sprintf ("xls2oct: unknown Excel .xls interface - %s.", xls.xtype));
   endif
 
-  # Optionally strip empty outer rows and columns & keep track of original data location
+  ## Optionally strip empty outer rows and columns & keep track of original data location
   if (spsh_opts.strip_array)
     emptr = cellfun ('isempty', rawarr);
     if (all (all (emptr)))
@@ -207,7 +220,7 @@ function [ rawarr, xls, rstatus ] = xls2oct (xls, wsh=1, datrange='', spsh_opts=
       icolr = ncols;
       while (all (emptr(:, icolr))), icolr--; endwhile
 
-      # Crop output cell array and update limits
+      ## Crop output cell array and update limits
       rawarr = rawarr(irowt:irowb, icoll:icolr);
       xls.limits = xls.limits + [icoll-1, icolr-ncols; irowt-1, irowb-nrows];
     endif

@@ -20,6 +20,7 @@
 ## Created: 2012-10-12
 ## Updates:
 ## 2012-10-12 Moved into ./private
+## 2012-10-24 Style fixes
 
 function [sh_names, fformat] = __JXL_spsh_info__ (xls)
 
@@ -29,11 +30,12 @@ function [sh_names, fformat] = __JXL_spsh_info__ (xls)
   for ii=1:sh_cnt
     [tr, lr, lc, rc] = getusedrange (xls, ii);
     if (tr)
-      sh_names(ii, 2) = sprintf ("%s:%s", calccelladdress (tr, lc), calccelladdress (lr, rc));
+      sh_names(ii, 2) = ...
+          sprintf ("%s:%s", calccelladdress (tr, lc), calccelladdress (lr, rc));
     else
       sh_names(ii, 2) = "Empty";
     endif
   endfor
-  if (sh_cnt > 0) fformat = "xlWorkbookNormal"; else, fformat = ''; endif
+  if (sh_cnt > 0); fformat = "xlWorkbookNormal"; else, fformat = ''; endif
 
 endfunction

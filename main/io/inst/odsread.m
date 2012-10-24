@@ -119,10 +119,11 @@
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-03-07 Updated texinfo help text
 ## 2012-06-08 Tabs replaced by double space
+## 2012-10-24 Style fixes
 
 function [ numarr, txtarr, rawarr, lim ] = odsread (filename, wsh=1, datrange=[], reqintf=[])
 
-  if (nargin < 1 || isempty (findstr ('.ods', tolower (filename))))
+  if (nargin < 1 || isempty (findstr (".ods", tolower (filename))))
     usage ("odsread: at least a filename incl. suffix is needed");
   endif
   if (nargout < 1)

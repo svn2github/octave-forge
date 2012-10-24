@@ -17,29 +17,31 @@
 
 ## Author: Philip Nienhuis <prnienhuis@users.sf.net>
 ## Created: 2010-10-07
+## Updates:
 ## 2012-10-12 Renamed & moved into ./private
+## 2012-10-24 Style fixes
 
 function [ trow, brow, lcol, rcol ] = __COM_getusedrange__ (xls, ii)
 
   sh = xls.workbook.Worksheets (ii);
   
-  # Decipher used range. Beware, UsedRange() returns *cached* rectangle of
-  # all spreadsheet cells containing *anything*, including just formatting
-  # (i.e., empty cells are included too). ==> This is an approximation only
+  ## Decipher used range. Beware, UsedRange() returns *cached* rectangle of
+  ## all spreadsheet cells containing *anything*, including just formatting
+  ## (i.e., empty cells are included too). ==> This is an approximation only
   allcells = sh.UsedRange;
   
-  # Get top left cell as a Range object
+  ## Get top left cell as a Range object
   toplftcl = allcells.Columns(1).Rows(1);
   
-  # Count number of rows & cols in virtual range from A1 to top left cell
+  ## Count number of rows & cols in virtual range from A1 to top left cell
   lcol = sh.Range ("A1", toplftcl).columns.Count;
   trow = sh.Range ("A1", toplftcl).rows.Count;
   
-  # Add real occupied rows & cols to obtain end row & col
+  ## Add real occupied rows & cols to obtain end row & col
   brow = trow + allcells.rows.Count() - 1;
   rcol = lcol + allcells.columns.Count() - 1;
   
-  # Check if there are real data
+  ## Check if there are real data
   if ((lcol == rcol) && (trow = brow))
     if (isempty (toplftcl.Value))
       trow = brow = lcol = rcol = 0;

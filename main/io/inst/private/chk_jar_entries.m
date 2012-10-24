@@ -18,6 +18,8 @@
 
 ## Author: Philip <Philip@DESKPRN>
 ## Created: 2012-10-07
+## Updates:
+## 2012-10-23 Style fixes
 
 function [ retval, missing ] = chk_jar_entries (jcp, entries, dbug=0)
 
@@ -32,13 +34,13 @@ function [ retval, missing ] = chk_jar_entries (jcp, entries, dbug=0)
         ++retval; 
         found = 1;
         if (dbug > 2)
-          fprintf ('  - %s OK\n', jentry); 
+          fprintf ("  - %s OK\n", jentry); 
         endif
       endif
     endfor
     if (~found)
       if (dbug > 2)
-        printf ('  %s....jar missing\n', entries{jj});
+        printf ("  %s....jar missing\n", entries{jj});
       endif
       missing(jj) = 1;
     endif

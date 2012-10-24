@@ -113,11 +113,12 @@
 ##            make_absolute_filename (see bug #36677)
 ## 2012-10-07 Moved subfunc getxlsinterfaces to ./private
 ##     ''     Moved all interface-specific file open stanzas to separate ./private funcs
+## 2012-10-24 Style fixes
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
   persistent xlsinterfaces; persistent chkintf; persistent lastintf;
-  # xlsinterfaces.<intf> = [] (not yet checked), 0 (found to be unsupported) or 1 (OK)
+  ## xlsinterfaces.<intf> = [] (not yet checked), 0 (found to be unsupported) or 1 (OK)
   if (isempty (chkintf));
       chkintf = 1;
       xlsinterfaces = struct ('COM', [], 'POI', [], 'JXL', [], 'OXS', [], 'UNO', []);
@@ -133,13 +134,17 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
   endif
 
   if (~(islogical (xwrite) || isnumeric (xwrite)))
-      usage ("Numerical or logical value expected for arg # 2")
+      usage ("Numerical or logical value expected for arg ## 2 (readwrite)")
   endif
 
   if (~isempty (reqinterface))
-    if ~(ischar (reqinterface) || iscell (reqinterface)), usage ("Arg # 3 not recognized"); endif
-    # Turn arg3 into cell array if needed
-    if (~iscell (reqinterface)), reqinterface = {reqinterface}; endif
+    if ~(ischar (reqinterface) || iscell (reqinterface))
+      usage ("Arg ## 3 (interface) not recognized - character value required"); 
+    endif
+    ## Turn arg3 into cell array if needed
+    if (~iscell (reqinterface))
+      reqinterface = {reqinterface}; 
+    endif
     ## Check if previously used interface matches a requested interface
     if (isempty (regexpi (reqinterface, lastintf, 'once'){1}))
       ## New interface requested
@@ -147,8 +152,8 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
       xlsinterfaces.OXS = 0; xlsinterfaces.UNO = 0;
       for ii=1:numel (reqinterface)
         reqintf = toupper (reqinterface {ii});
-        # Try to invoke requested interface(s) for this call. Check if it
-        # is supported anyway by emptying the corresponding var.
+        ## Try to invoke requested interface(s) for this call. Check if it
+        ## is supported anyway by emptying the corresponding var.
         if     (strcmpi (reqintf, 'COM'))
           xlsinterfaces.COM = [];
         elseif (strcmpi (reqintf, 'POI'))
@@ -160,23 +165,23 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
         elseif (strcmpi (reqintf, 'UNO'))
           xlsinterfaces.UNO = [];
         else 
-          usage (sprintf ("Unknown .xls interface \"%s\" requested. Only COM, POI, JXL, OXS or UNO supported\n", reqinterface{}));
+          usage (sprintf (["Unknown .xls interface \"%s\" requested.\n" 
+                 "Only COM, POI, JXL, OXS or UNO supported\n"], reqinterface{}));
         endif
       endfor
       printf ("Checking requested interface(s):\n");
       xlsinterfaces = getxlsinterfaces (xlsinterfaces);
-      # Well, is/are the requested interface(s) supported on the system?
-      # FIXME check for multiple interfaces
+      ## Well, is/are the requested interface(s) supported on the system?
       xlsintf_cnt = 0;
       for ii=1:numel (reqinterface)
         if (~xlsinterfaces.(toupper (reqinterface{ii})))
-          # No it aint
+          ## No it aint
           printf ("%s is not supported.\n", upper (reqinterface{ii}));
         else
           ++xlsintf_cnt;
         endif
       endfor
-      # Reset interface check indicator if no requested support found
+      ## Reset interface check indicator if no requested support found
       if (~xlsintf_cnt)
         chkintf = [];
         xls = [];
@@ -185,92 +190,103 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
     endif
   endif
 
-  # Var xwrite is really used to avoid creating files when wanting to read, or
-  # not finding not-yet-existing files when wanting to write.
+  ## Var readwrite is really used to avoid creating files when wanting to read,
+  ## or not finding not-yet-existing files when wanting to write a new one.
 
-  # Check if Excel file exists. Adapt file open mode for readwrite argument
-  if (xwrite), fmode = 'r+b'; else fmode = 'rb'; endif
+  ## Check if Excel file exists. Adapt file open mode for readwrite argument
+  if (xwrite); fmode = 'r+b'; else fmode = 'rb'; endif
   fid = fopen (filename, fmode);
-  if (fid < 0)            # File doesn't exist...
-    if (~xwrite)        # ...which obviously is fatal for reading...
+  if (fid < 0)                      ## File doesn't exist...
+    if (~xwrite)                    ## ...which obviously is fatal for reading...
       error ( sprintf ("File %s not found\n", filename));
-    else              # ...but for writing, we need more info:
-      fid = fopen (filename, 'rb');  # Check if it exists at all...
-      if (fid < 0)      # File didn't exist yet. Simply create it
+    else                            ## ...but for writing, we need more info:
+      fid = fopen (filename, 'rb'); ## Check if it exists at all...
+      if (fid < 0)                  ## File didn't exist yet. Simply create it
         printf ("Creating file %s\n", filename);
         xwrite = 3;
-      else            # File exists, but is not writable => Error
-        fclose (fid);  # Do not forget to close the handle neatly
+      else                          ## File exists, but isn't writable => Error
+        fclose (fid);  ## Do not forget to close the handle neatly
         error (sprintf ("Write mode requested but file %s is not writable\n", filename))
       endif
     endif
   else
-    # Close file anyway to avoid COM or Java errors
+    ## Close file anyway to avoid COM or Java errors
     fclose (fid);
   endif
   
-  # Check for the various Excel interfaces. No problem if they've already
-  # been checked, getxlsinterfaces (far below) just returns immediately then.
+  ## Check for the various Excel interfaces. No problem if they've already
+  ## been checked, getxlsinterfaces (far below) just returns immediately then.
   xlsinterfaces = getxlsinterfaces (xlsinterfaces);
 
-  # Supported interfaces determined; Excel file type check moved to separate interfaces.
-  chk1 = strcmpi (filename(end-3:end), '.xls');      # Regular (binary) BIFF 
-  chk2 = strcmpi (filename(end-4:end-1), '.xls');    # Zipped XML / OOXML
+  ## Supported interfaces determined; Excel file type check moved to separate interfaces.
+  chk1 = strcmpi (filename(end-3:end), '.xls');      ## Regular (binary) BIFF 
+  chk2 = strcmpi (filename(end-4:end-1), '.xls');    ## Zipped XML / OOXML
   
-  # Initialize file ptr struct
-  xls = struct ("xtype", 'NONE', "app", [], "filename", [], "workbook", [], "changed", 0, "limits", []); 
+  ## Initialize file ptr struct
+  xls = struct ("xtype",    'NONE', 
+                "app",      [], 
+                "filename", [], 
+                "workbook", [], 
+                "changed",  0, 
+                "limits",   []);
 
-  # Keep track of which interface is selected
+  ## Keep track of which interface is selected
   xlssupport = 0;
 
-  # Interface preference order is defined below: currently COM -> POI -> JXL -> OXS -> UNO
-  # chk1 & chk2 (xls file type) are conveyed depending on interface capabilities
+  ## Interface preference order is defined below: currently COM -> POI -> JXL -> OXS -> UNO
+  ## chk1 & chk2 (xls file type) are conveyed depending on interface capabilities
 
   if (xlsinterfaces.COM && ~xlssupport)
-    # Excel functioning has been tested above & file exists, so we just invoke it
+    ## Excel functioning has been tested above & file exists, so we just invoke it.
     [ xls, xlssupport, lastintf ] = __COM_spsh_open__ (xls, xwrite, filename, xlssupport);
   endif
 
-  if (xlsinterfaces.POI && ~xlssupport)
+  if (xlsinterfaces.POI && ~xlssupport && (chk1 || chk2))
     [ xls, xlssupport, lastintf ] = __POI_spsh_open__ (xls, xwrite, filename, xlssupport, chk1, chk2, xlsinterfaces);
+  elseif ~(chk1 || chk2)
+    error ("Unsupported file format for Apache POI")
   endif
 
-  if (xlsinterfaces.JXL && ~xlssupport)
+  if (xlsinterfaces.JXL && ~xlssupport && chk1)
     [ xls, xlssupport, lastintf ] = __JXL_spsh_open__ (xls, xwrite, filename, xlssupport, chk1);
+  elseif (~chk1)
+    error ("Unsupported file format for JExcelAPI")
   endif
 
-  if (xlsinterfaces.OXS && ~xlssupport)
+  if (xlsinterfaces.OXS && ~xlssupport && chk1)
     [ xls, xlssupport, lastintf ] = __OXS_spsh_open__ (xls, xwrite, filename, xlssupport, chk1);
+  elseif (~chk1)
+    error ("Unsupported file format for OpenXLS")
   endif
 
   if (xlsinterfaces.UNO && ~xlssupport)
     [ xls, xlssupport, lastintf ] = __UNO_spsh_open__ (xls, xwrite, filename, xlssupport);
   endif
 
-  # if 
-  #  ---- other interfaces
-  # endif
+  ## if 
+  ##  ---- other interfaces
+  ## endif
 
-  # Rounding up. If none of the xlsinterfaces is supported we're out of luck.
+  ## Rounding up. If none of the xlsinterfaces is supported we're out of luck.
   if (~xlssupport)
     if (isempty (reqinterface))
+      ## This message is appended after message from getxlsinterfaces()
       printf ("None.\n");
       warning ("No support for Excel .xls I/O"); 
     else
       warning ("File type not supported by %s %s %s %s %s", reqinterface{:});
     endif
     xls = [];
-    # Reset found interfaces for re-testing in the next call. Add interfaces if needed.
+    ## Reset found interfaces for re-testing in the next call. Add interfaces if needed.
     chkintf = [];
   else
-    # From here on xwrite is tracked via xls.changed in the various lower
-    # level r/w routines and it is only used to determine if an informative
-    # message is to be given when saving a newly created xls file.
+    ## From here on xwrite is tracked via xls.changed in the various lower
+    ## level r/w routines
     xls.changed = xwrite;
 
-    # Until something was written to existing files we keep status "unchanged".
-    # xls.changed = 0 (existing/only read from), 1 (existing/data added), 2 (new,
-    # data added) or 3 (pristine, no data added).
+    ## xls.changed = 0 (existing/only read from), 1 (existing/data added), 2 (new,
+    ## data added) or 3 (pristine, no data added).
+    ## Until something was written to existing files we keep status "unchanged".
     if (xls.changed == 1), xls.changed = 0; endif
   endif
 

@@ -23,79 +23,79 @@
 
 function [topleft, nrows, ncols, toprow, lcol] = parse_sp_range (range_org)
 
-	range = deblank (toupper (range_org));
-	range_error = 0; nrows = 0; ncols = 0;
+  range = deblank (upper (range_org));
+  range_error = 0; nrows = 0; ncols = 0;
 
-	# Basic checks
-	if (index (range, ':') == 0) 
-		if (isempty (range))
-			range_error = 0;
-			leftcol = 'A';
-			rightcol = 'A';
-		else
-			# Only upperleft cell given, just complete range to 1x1
-			# (needed for some routines)
-			range = [range ":" range];
-		endif
-	endif
+  # Basic checks
+  if (index (range, ':') == 0)
+    if (isempty (range))
+      range_error = 0;
+      leftcol = 'A';
+      rightcol = 'A';
+    else
+      # Only upperleft cell given, just complete range to 1x1
+      # (needed for some routines)
+      range = [range ":" range];
+    endif
+  endif
 
-	# Split up both sides of the range
-	[topleft, lowerright] = strtok (range, ':');
+  # Split up both sides of the range
+  [topleft, lowerright] = strtok (range, ':');
 
-	# Get toprow and clean up left column
-	[st, en] = regexp (topleft, '\d+');
-	toprow = str2num (topleft(st:en));
-	leftcol = deblank (topleft(1:st-1));
-	[st, en1] = regexp( leftcol,'\s+');
-	if (isempty (en1)) 
-		en1=0; 
-	endif
-	[st, en2] = regexp (leftcol,'\D+');
-	leftcol = leftcol(en1+1:en2);
+  # Get toprow and clean up left column
+  [st, en] = regexp (topleft, '\d+');
+  toprow = str2num (topleft(st:en));
+  leftcol = deblank (topleft(1:st-1));
+  [st, en1] = regexp (leftcol, '\s+');
+  if (isempty (en1)) 
+    en1=0  ; 
+  endif
+  [st, en2] = regexp (leftcol,'\D+');
+  leftcol = leftcol(en1+1:en2);
 
-	# Get bottom row and clean up right column
-	[st, en] = regexp (lowerright,'\d+');
-	bottomrow = str2num (lowerright(st:en));
-	rightcol = deblank (lowerright(2:st-1));
-	[st, en1] = regexp (rightcol,'\s+');
-	if (isempty (en1)) 
-		en1=0; 
-	endif
-	[st, en2] = regexp (rightcol,'\D+');
-	rightcol = rightcol(en1+1:en2);
+  # Get bottom row and clean up right column
+  [st, en] = regexp (lowerright, '\d+');
+  bottomrow = str2num (lowerright(st:en));
+  rightcol = deblank (lowerright(2:st-1));
+  [st, en1] = regexp (rightcol, '\s+');
+  if (isempty (en1)) 
+    en1 = 0; 
+  endif
+  [st, en2] = regexp (rightcol, '\D+');
+  rightcol = rightcol(en1+1:en2);
 
-	# Check nr. of rows
-	nrows = bottomrow - toprow + 1; 
-	if (nrows < 1) 
-		range_error = 1; 
-	endif
+  # Check nr. of rows
+  nrows = bottomrow - toprow + 1; 
+  if (nrows < 1) 
+    range_error = 1; 
+  endif
 
-	if (range_error == 0) 
-		# Get left column nr.
-		[st, en] = regexp (leftcol, '\D+');
-		lcol = (leftcol(st:st) - 'A' + 1);
-		while (++st <= en)
-			lcol = lcol * 26 + (leftcol(st:st) - 'A' + 1);
-		endwhile
+  if (range_error == 0) 
+    # Get left column nr.
+    [st, en] = regexp (leftcol, '\D+');
+    lcol = (leftcol(st:st) - 'A' + 1);
+    while (++st <= en)
+      lcol = lcol * 26 + (leftcol(st:st) - 'A' + 1);
+    endwhile
 
-		# Get right column nr.
-		[st, en] = regexp (rightcol, '\D+');
-		rcol = (rightcol(st:st) - 'A' + 1);
-		while (++st <= en)
-			rcol = rcol * 26 + (rightcol(st:st) - 'A' + 1);
-		endwhile
+    # Get right column nr.
+    [st, en] = regexp (rightcol, '\D+');
+    rcol = (rightcol(st:st) - 'A' + 1);
+    while (++st <= en)
+      rcol = rcol * 26 + (rightcol(st:st) - 'A' + 1);
+    endwhile
 
-		# Check
-		ncols = rcol - lcol + 1;
-		if (ncols < 1) 
-			range_error = 1; 
-		endif
-	endif
+    # Check
+    ncols = rcol - lcol + 1;
+    if (ncols < 1) 
+      range_error = 1; 
+    endif
+  endif
 
-	if (range_error > 0) 
-		ncols = 0; nrows = 0;
-		error ("Spreadsheet range error! ");
-	endif
+  if (range_error > 0) 
+    ncols = 0; nrows = 0;
+    error ("Spreadsheet range error!");
+  endif
   
 endfunction
 
@@ -114,4 +114,3 @@ endfunction
 %!test
 %! [a b c d e] = parse_sp_range ('BvV12798 : xFd1054786');
 %! assert ([b c d e], [1041989, 14439, 12798, 1946]);
-

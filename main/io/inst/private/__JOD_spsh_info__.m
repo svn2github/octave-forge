@@ -20,6 +20,8 @@
 ## Created: 2012-10-12
 ## Updates:
 ## 2012-10-12 Moved into ./private
+## Updates:
+## 2012-10-24 Style fixes
 
 function [sh_names] = __JOD_spsh_info__ (ods)
 
@@ -29,7 +31,8 @@ function [sh_names] = __JOD_spsh_info__ (ods)
     sh_names(ii) = ods.workbook.getSheet (ii-1).getName ();
     [ tr, lr, lc, rc ] = getusedrange (ods, ii);
     if (tr)
-      sh_names(ii, 2) = sprintf ("%s:%s", calccelladdress (tr, lc), calccelladdress (lr, rc));
+      sh_names(ii, 2) = sprintf ("%s:%s", calccelladdress (tr, lc),...
+                        calccelladdress (lr, rc));
     else
       sh_names(ii, 2) = "Empty";
     endif

@@ -1,4 +1,4 @@
-## Copyright (C) 2010,2011,2012 Philip Nienhuis, <prnienhuis at users.sf.net>
+## Copyright (C) 2010,2011,2012 Philip Nienhuis <prnienhuis at users.sf.net>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -20,21 +20,24 @@
 ## Updates:
 ## 2011-06-29 try-catch to be able to skip non-data (e.g., graph) sheets
 ## 2012-10-12 Renamed & moved into ./private
+## 2012-10-24 Style fixes
 
 function [ trow, brow, lcol, rcol ] = __OXS_getusedrange__ (xls, wsh)
 
   sh = xls.workbook.getWorkSheet (wsh - 1);
   try
-    # Intriguing:  sh.getFirst<> is off by one, sh.getLast<> = OK.... 8-Z 
+    ## Intriguing:  sh.getFirst<> is off by one, sh.getLast<> = OK.... 8-Z 
     trow = sh.getFirstRow () + 1;
     brow = sh.getLastRow ();
     lcol = sh.getFirstCol () + 1;
     rcol = sh.getLastCol ();
   catch
-    # Might be an empty sheet
+    ## Might be an empty sheet
     trow = brow = lcol = rcol = 0;
   end_try_catch
-  # Check for empty sheet
-  if ((trow > brow) || (lcol > rcol)), trow = brow = lcol = rcol = 0; endif
+  ## Check for empty sheet
+  if ((trow > brow) || (lcol > rcol))
+    trow = brow = lcol = rcol = 0; 
+  endif
 
 endfunction

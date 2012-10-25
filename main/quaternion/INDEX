@@ -21,6 +21,7 @@ Quaternion Methods
   @quaternion/norm
   @quaternion/rows
   @quaternion/size
+  @quaternion/size_equal
   @quaternion/unit
 Overloaded Quaternion Operators
   @quaternion/ctranspose

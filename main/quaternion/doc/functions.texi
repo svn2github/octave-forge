@@ -356,6 +356,13 @@
  Sizes of the 3rd to n-th dimensions.
  @end table
  @end deftypefn
+@section @@quaternion/size_equal
+@findex size_equal
+
+ @deftypefn {Function File} {@var{bool} =} size_equal (@var{a}, @var{b}, @dots{})
+ Return true if quaternions (and matrices) @var{a}, @var{b}, @dots{}
+ are of equal size and false otherwise.
+ @end deftypefn
 @section @@quaternion/unit
 @findex unit
 

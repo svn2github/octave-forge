@@ -12,7 +12,7 @@ quaternion-2.0.2   Release Date: 2012-xx-yy   Release Manager: Lukas Reichlin
    Add overloaded method because the built-in function gives false positives
    for quaternions.
 
-** ldivide, mldivide
+** ldivide, mldivide, mpower
    Show error message if the number of input arguments is not 2.
 
 

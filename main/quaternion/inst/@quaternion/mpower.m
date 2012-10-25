@@ -22,6 +22,10 @@
 
 function q = mpower (a, b)
 
+  if (nargin != 2)
+    error ("quaternion: mpower: this is a binary operator");
+  endif
+
   [r, c] = size (a);
   
   if (r != c)

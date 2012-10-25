@@ -1,6 +1,22 @@
 Summary of important user-visible changes for releases of the quaternion package
 
 ===============================================================================
+quaternion-2.0.2   Release Date: 2012-xx-yy   Release Manager: Lukas Reichlin
+===============================================================================
+
+** eq
+   -- Fix typo bug which gave false positives for the k-component.
+   -- Avoid error if arguments are non-conformant.
+
+** size_equal
+   Add overloaded method because the built-in function gives false positives
+   for quaternions.
+
+** ldivide, mldivide
+   Show error message if the number of input arguments is not 2.
+
+
+===============================================================================
 quaternion-2.0.1   Release Date: 2012-10-14   Release Manager: Lukas Reichlin
 ===============================================================================
 

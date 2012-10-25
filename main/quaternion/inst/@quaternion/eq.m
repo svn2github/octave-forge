@@ -18,7 +18,7 @@
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: May 2010
-## Version: 0.2
+## Version: 0.3
 
 function flg = eq (a, b)
 
@@ -29,6 +29,6 @@ function flg = eq (a, b)
   a = quaternion (a);
   b = quaternion (b);
 
-  flg = (a.w == b.w) && (a.x == b.x) && (a.y == b.y) && (a.z == a.z);
+  flg = size_equal (a, b) && (a.w == b.w) && (a.x == b.x) && (a.y == b.y) && (a.z == b.z);
 
 endfunction

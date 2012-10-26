@@ -31,7 +31,7 @@
 function mask = isbusday (rd, hol=[], wkend=[])
 
   if ~ isnumeric (rd)
-	rd = datenum (rd);
+    rd = datenum (rd);
   endif
   if isempty (hol)
     ## Get all possible holidays that could affect the output.
@@ -48,7 +48,7 @@ function mask = isbusday (rd, hol=[], wkend=[])
   mask = reshape (wkend (weekday (rd)), size (rd));
   if ~ isempty (hol)
     ## Is it a holiday?
-    mask = mask | ismember(rd, hol);
+    mask = mask | ismember (floor (rd), hol);
   endif
   mask = ~mask;
 endfunction

@@ -159,9 +159,18 @@ function hol = calculate_holidays (sd, ed)
 endfunction
 
 %!assert(holidays("jan 1 1999", "jan 1 1998"), zeros(0,1));   # return empty when startdate is after enddate
-%!assert(holidays(datenum(2008,3,5), datenum(2008,3,8)), zeros(0,1));
+%!assert(holidays("mar 5 2008", "mar 8 2008"), zeros(0,1));
 %!assert(holidays(datenum(2008,3,5), datenum(2008,3,5)), zeros(0,1));
 %!assert(holidays(datenum(2008,1,1), datenum(2008,1,1)), datenum(2008,1,1));
+
+## accept input dates in multiple formats
+%!assert (holidays ("jan 1 2010",         "mar 1 2010"),         [734139; 734156; 734184]);
+%!assert (holidays (datenum (2010, 1, 1), datenum (2010, 3, 1)), [734139; 734156; 734184]);
+
+## do NOT move new year's day to Friday when it falls on a Saturday (Jan 2005)
+%!assert (holidays ("dec 29 2004", "jan 2 2005"), zeros (0, 1));
+## but do move new year's day to Monday when it falls on a Sunday (Jan 2006)
+%!assert (holidays ("dec 29 2005", "jan 2 2006"), datenum (2006 ,1 ,2));
 
 ## check for special dates such as 11-jun-2004 (PresidentialFuneral-RonaldReagan) which can't be guessed, are just on the list
 %!assert(holidays(datenum(2004,1,1), datenum(2004,12,31)), datenum(2004*ones(10,1), [1;1;2;4;5;6;7;9;11;12], [1;19;16;9;31;11;5;6;25;24]));

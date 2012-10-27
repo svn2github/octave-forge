@@ -40,7 +40,7 @@ function hol = holidays (sd, ed)
   hol = [];
   ## New Year's Day
   tmphol = datenum (yrs, 1, 1);
-  hol = [hol; tmphol(:)];
+  hol = [hol; tmphol(weekday(tmphol(:)) != 7)(:)];
   ## Martin Luther King Day, the third Monday in January
   tmphol = nweekdate (3, 2, yrs, 1);
   hol = [hol; tmphol(:)];

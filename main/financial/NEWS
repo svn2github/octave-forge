@@ -3,6 +3,9 @@ Summary of important user-visible changes for financial 0.X.X:
 
  ** `isbusday' has been fixed to accept non-integer values.
 
+ ** `holidays' has been fixed to check that New Year's holiday falls on
+    a Saturday.
+
 Summary of important user-visible changes for financial 0.4.0:
 -------------------------------------------------------------------
 

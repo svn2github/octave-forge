@@ -100,12 +100,10 @@ function hol = holidays (sd, ed)
 
   if (sd > ed)
     hol = zeros (0,1);  # matlab compatibility 0x1
-  elseif (sd >= sd_hol && ed <= ed_hol)
-    ## if date interval is in between the list of holidays, just index them.
-    hol = hol(hol >= sd & hol <= ed);
   else
+    hol = hol(hol >= sd & hol <= ed);
     if (sd < sd_hol); hol = [calculate_holidays(sd, sd_hol -1); hol]; endif
-    if (ed > ed_hol); hol = [hol; calculate_holidays(ed, ed_hol +1)]; endif
+    if (ed > ed_hol); hol = [hol; calculate_holidays(ed_hol +1, ed)]; endif
   endif
 
 endfunction

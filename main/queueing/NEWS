@@ -1,28 +1,24 @@
-Summary of important user-visible changes for queueing-1.2.0
+Summary of important user-visible changes for queueing-2.0.0
 ------------------------------------------------------------------------------
 
-** queueing-1.2.0 includes bug fixes and new features
+** queueing-2.0.0 is a major update which includes bug fixes and new
+   features
 
 ** The documentation has been restructured, hopefully improving
    readability and overall organization
 
-** Asymptotic and balanced system bounds can now be computed also for
+** Asymptotic and balanced system bounds can be computed for
    multiclass networks
 
 ** New function qncmcb for computing Composite Bounds for multiclass
    networks
 
-** New functions qncmaba qncmnpop qncsbsb qncsgb qncspb qncmbsb
-   qncmpopmix qncscmva qncsmvablo qnomaba qncmcb qncmva qncsconvld
-   qncsmvald qnosaba qncmmva qncsaba qncsconv qncsmva qnosbsb
+** Adopted a new scheme for naming functions; old names are still
+   available for compatibility with existing scripts, but will be
+   removed in future releases.
 
-** Deprecated functions population_mix qnclosedab qnclosedbsb
-   qnclosedgb qnclosedmultimva qnclosedpb qnclosedsinglemvald
-   qnclosedsinglemva qncmva qnconvolutionld qnconvolution qnjackson
-   qnmvablo qnmvapop qnopenab qnopenbsb
-
-** Fixed bugs in various functions (qncscmva, qncsconv, qncsconvld,
-   qnopensingle, qnopenmulti and qncmmva)
+** Fixed bugs in qncscmva, qncsconv, qncsconvld, qnopensingle,
+   qnopenmulti and qncmmva
 
 
 Summary of important user-visible changes for queueing-1.1.1

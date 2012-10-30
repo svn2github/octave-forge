@@ -1,11 +1,11 @@
 2012-10-XX Moreno Marzolla <marzolla@cs.unibo.it>
 
-	* Version 1.2.0 released
+	* Version 2.0.0 released
 	* Restructured the documentation
 	* Reduced space requirement for qncsmva()
-	* New function naming scheme: qnXYAAA(), where X=c (closed) or o (open) and Y=s (single) or m (multi)
-	* New functions: qncmaba qncmnpop qncsbsb qncsgb qncspb qncmbsb qncmpopmix qncscmva qncsmvablo qnomaba qncmcb qncmva qncsconvld qncsmvald qnosaba qncmmva qncsaba qncsconv qncsmva qnosbsb
-	* Deprecated functions population_mix qnclosedab qnclosedbsb qnclosedgb, qnclosedmultimva qnclosedpb qnclosedsinglemvald qnclosedsinglemva qncmva qnconvolutionld qnconvolution qnjackson qnmvablo qnmvapop qnopenab qnopenbsb
+	* New function naming scheme; old function names are still available for compatibility with existing scripts, but will be removed in the future.
+	* New functions qncmaba, qncmbsb, qncmcb, qnomaba for computing performance bounds on multiclass networks
+	* New function qnom for analyzing open multiclass networks
 	* Fixed bugs in qncsconv, qncsconvld, qncmmva, qnopensingle, qnmix and qncscmva
 
 2012-09-08 Moreno Marzolla <marzolla@cs.unibo.it>

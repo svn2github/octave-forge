@@ -94,7 +94,7 @@ block: TOK_CLASSES class_list ';'
 
 class_list: /* empty */
 | TOK_ID		{ push_class($1); }
-| class_list ',' TOK_ID { push_class($3); }
+| TOK_OD ',' class_list { push_class($1); }
 ;
 
 server_list: /* empty */

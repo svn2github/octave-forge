@@ -1,5 +1,5 @@
 .PHONY: clean check dist
-DISTFILES=$(wildcard *.m) Makefile
+DISTFILES=$(wildcard *.m) $(wildcard private/*.m) Makefile
 
 ALL:
 

@@ -85,12 +85,19 @@ function [U R Q X p0 pm] = qsammm( lambda, mu )
   X = lambda;
   U = rho = lambda / sum(mu);
   Q = p0 = 0;
+#{
   k=[0:m-1];
   p0 = 1 / ( ...
             sum( (m*rho).^k ./ factorial(k)) + ...
             (m*rho)^m / (factorial(m)*(1-rho)) ...
             );
   pm = (m*rho)^m/(factorial(m)*(1-rho))*p0;
+#}
+  p0 = 1 / ( ...
+            sumexpn( m*rho, m-1 ) + ...
+            expn(m*rho, m) / (1-rho) ...
+            );
+  pm = expn(m*rho, m)*p0/(1-rho);
   Q = m*rho+rho / (1-rho) * pm;
   R = Q / X;
 endfunction

@@ -98,7 +98,8 @@ function [dp, dn, dxf, dsk] = run_test_dir (fid, d);
   dp = dn = dxf = dsk = 0;
   for i = 1:length (lst)
     nm = lst(i).name;
-    if (length (nm) > 5 && strcmp (nm(1:5), "test_")
+    if (length (nm) > 5 
+	&& strcmp (nm(1:5), "test_")
 	&& strcmp (nm((end-1):end), ".m"))
       p = n = 0;
       ffnm = fullfile (d, nm);
@@ -127,7 +128,10 @@ function [dp, dn, dxf, dsk] = run_test_script (fid, d);
   dp = dn = dxf = dsk = 0;
   for i = 1:length (lst)
     nm = lst(i).name;
-    if (lst(i).isdir && ! strcmp (nm, ".") && ! strcmp (nm, "..")
+    if (lst(i).isdir 
+	&& ! strcmp (nm, "private")
+	&& ! strcmp (nm, ".") 
+	&& ! strcmp (nm, "..")
 	&& ! strcmp (nm, "CVS"))
       [p, n, xf, sk] = run_test_script (fid, [d, "/", nm]);
       dp += p;

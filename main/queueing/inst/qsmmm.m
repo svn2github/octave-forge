@@ -125,18 +125,22 @@ function [U R Q X p0 pm] = qsmmm( lambda, mu, m )
 
   X = lambda;
   U = rho = lambda ./ (m .* mu );
-  Q = p0 = 0*lambda;
-  for i=1:length(lambda) # I cannot easily vectorize this
-    #p = zeros(1,m(i)+1);
+  Q = p0 = pm = 0*lambda;
+  for i=1:length(lambda)
+#{
     k=[0:m(i)-1];
     p0(i) = 1 / ( ...
-                 sum( (m(i)*rho(i)).^ k ./ factorial(k)) + ...
+		 sum( (m(i)*rho(i)).^ k ./ factorial(k)) + ...
                  (m(i)*rho(i))^m(i) / (factorial(m(i))*(1-rho(i))) ...
                  );
-    #p(2+k) = p(1)*( m(i)*rho(i) ).^(1+k)./factorial(1+k);
-    #U(i) = 1-dot( (m(i)-k)./m(i), p(k+1) ); # FIXME: check
+#}
+    p0(i) = 1 / ( ...
+                 sumexpn( m(i)*rho(i), m(i)-1 ) + ...		 
+		 expn(m(i)*rho(i), m(i))/(1-rho(i)) ...
+                 );
+    pm(i) = expn(m(i)*rho(i),m(i))*p0(i)/(1-rho(i));
   endfor
-  pm = (m.*rho).^m./(factorial(m).*(1-rho)).*p0;
+  ## pm = (m.*rho).^m./(factorial(m).*(1-rho)).*p0;
   Q = m .* rho .+ rho ./ (1-rho) .* pm;
   R = Q ./ X;
 endfunction

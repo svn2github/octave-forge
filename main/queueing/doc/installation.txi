@@ -498,7 +498,7 @@ q = ctmc(Q)
 @end group
 @end example
 
-@noindent @strong{€xample 2}
+@noindent @strong{Example 2}
 Compute the transient state occupancy probability after @math{n=3}
 transitions of a three state discrete time birth-death process, with
 birth probabilities @math{\lambda_{01} = 0.3} and @math{\lambda_{12} =

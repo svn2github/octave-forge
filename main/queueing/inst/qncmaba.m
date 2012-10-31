@@ -103,7 +103,7 @@ function [Xl Xu Rl Ru] = qncmaba( N, S, V, m, Z )
 
   ( ismatrix(S) && rows(S) == C ) || \
       error("S/D must be a matrix with %d rows", C);
-  all(all(S>=0)) || \
+  all(S(:)>=0) || \
       error("S/D must contain nonnegative values");
 
   K = columns(S);
@@ -113,7 +113,7 @@ function [Xl Xu Rl Ru] = qncmaba( N, S, V, m, Z )
   else
     (ismatrix(V) && size_equal(S,V) ) || \
 	error("V must be a %d x %d matrix", C, K);
-    all(all(V>=0)) || \
+    all(V(:)>=0) || \
 	error("V must contain nonnegative values");
   endif
 

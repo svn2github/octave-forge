@@ -102,7 +102,7 @@ function [U R Q X G] = qncsconvld( N, S, V )
   if ( isnumeric(S) ) 
     ( rows(S) == N && columns(S) == K) || \
         error( sprintf("S size mismatch: is %dx%d, should be %dx%d", rows(S), columns(S),K,N ) );
-    all( all(S>=0) ) || \
+    all(S(:)>=0) || \
         error( "S must be >=0" );
   endif
 

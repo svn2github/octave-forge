@@ -89,7 +89,7 @@ function [X_lower X_upper R_lower R_upper] = qnomaba( lambda, S, V )
   C = length(lambda);
   ( ismatrix(S) && rows(S)==C ) || \
       error( "S/D must be a matrix >=0 with %d rows", C );
-  all(all( S>=0 )) || \
+  all(S(:)>=0) || \
       error( "S/D must contain nonnegative values" );
   K = columns(S);
   if ( nargin < 3 )
@@ -97,7 +97,7 @@ function [X_lower X_upper R_lower R_upper] = qnomaba( lambda, S, V )
   else
     ( ismatrix(V) && size_equal(S,V) ) || \
 	error( "V must be a %d x %d matrix", C, K);
-    all(all( V>=0 )) || \
+    all(V(:)>=0) || \
 	error( "V must contain nonnegative values" );
   endif
 

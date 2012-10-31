@@ -104,7 +104,7 @@ function [U R Q X] = qncsmvald( N, S, V, Z )
       error( "N must be >= 0" );
   ( ismatrix(S) && rows(S) == K && columns(S) >= N ) || \
       error( "S size mismatch: is %dx%d, should be %dx%d", rows(S), columns(S), K, N );
-  all(all(S>=0)) || \
+  all(S(:)>=0) || \
       error( "S must be >= 0" );
 
   if ( nargin < 4 ) 

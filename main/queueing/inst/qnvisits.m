@@ -191,7 +191,7 @@ endfunction
 %! lambda = [0.1 0 0 0.1 ; 0 0 0.2 0.1];
 %! lambda_sum = sum(lambda(:));
 %! V = qnvisits(P, lambda);
-%! assert( all( all(V>=0) ) );
+%! assert( all(V(:)>=0) );
 %! for i=1:K
 %!   for c=1:C
 %!     assert(V(c,i), lambda(c,i) / lambda_sum + sum(sum(V .* P(:,:,c,i))), 1e-5);
@@ -516,7 +516,7 @@ function V = __qnvisitssingle( P, lambda )
     ##
     ## Open network
     ##
-    all( all(P>=0) ) && all( sum(P,2)<=1+1e-5 ) || \
+    all(P(:)>=0) && all( sum(P,2)<=1+1e-5 ) || \
 	error( "P is not a transition probability matrix for open networks" );
 
     ( isvector(lambda) && length(lambda) == N ) || \

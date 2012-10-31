@@ -26,15 +26,16 @@
 ## @cindex stationary probabilities
 ## @cindex CTMC
 ##
-## Compute stationary or transient state occupancy probabilities
-## for a continuous-time Markov chain.
+## Compute stationary or transient state occupancy probabilities for a continuous-time Markov chain.
 ##
-## With a single argument, compute the stationary probability vector
-## @var{p}(1), @dots{}, @var{p}(N) for a continuous-time Markov chain
-## with @math{N \times N} infinitesimal generator matrix @var{Q}. With
-## three arguments, compute the state occupancy probabilities
-## @var{p}(1), @dots{}, @var{p}(N) at time @var{t}, given initial state
-## occupancy probabilities @var{p0}(1), @dots{}, @var{p0}(N) at time 0.
+## With a single argument, compute the stationary state occupancy
+## probability vector @var{p}(1), @dots{}, @var{p}(N) for a
+## continuous-time Markov chain with state space @math{@{1, 2, @dots{},
+## N@}} and @math{N \times N} infinitesimal generator matrix @var{Q}.
+## With three arguments, compute the state occupancy probabilities
+## @var{p}(1), @dots{}, @var{p}(N) that the system is in state @math{i}
+## at time @var{t}, given initial state occupancy probabilities
+## @var{p0}(1), @dots{}, @var{p0}(N) at time 0.
 ##
 ## @strong{INPUTS}
 ##

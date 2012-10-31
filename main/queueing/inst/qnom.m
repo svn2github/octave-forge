@@ -96,14 +96,14 @@ function [U R Q X] = qnom( lambda, S, V, m )
   K = columns(S);
   (ismatrix(S) && [C,K] == size(S) ) || \
       error( "S must be a %d x %d matrix", C, K);
-  all(all( S > 0 )) || \
+  all(S(:) > 0) || \
       error( "S(c,k) must be > 0" );
   if ( nargin < 3 || isempty(V) )
     V = ones(size(S));
   else
     (ismatrix(V) && [C,K] == size(V)) || \
 	error( "V must be a %d x %d matrix", C, K);
-    all( all(V>=0) ) || \
+    all(V(:)>=0) || \
 	error( "V must be >= 0 " );
   endif
 

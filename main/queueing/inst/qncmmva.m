@@ -218,12 +218,12 @@ function [U R Q X] = __qncmmva_cs( N, S, P, m )
   endif
 
   ## Check consistency of parameters
-  all( all( S >= 0 ) ) || \
+  all(S(:) >= 0) || \
       error( "S must be >= 0" );
   all( any(S>0,2) ) || \
       error( "S must contain at least a value >0 for each row" );
-  all( all( P >= 0 ) ) || \
-      error( "V must be >=0" );
+  all(P(:)>= 0) || \
+      error( "P must be >=0" );
 
   U = R = Q = X = zeros(C,K);
 
@@ -323,11 +323,11 @@ function [U R Q X Qnm1] = __qncmmva_nocs( N, S, V, m, Z )
   endif
 
   ## Check consistency of parameters
-  all( all( S >= 0 ) ) || \
+  all(S(:) >= 0) || \
       error( "S must be >= 0" );
   all( any(S>0,2) ) || \
       error( "S must contain at least a value >0 for each row" );
-  all( all( V >= 0 ) ) || \
+  all(V(:) >= 0) || \
       error( "V must be >=0" );
 
   ## ensure that the service times for multiserver nodes
@@ -514,7 +514,7 @@ endfunction
 %! assert( Q, [ 4/19 15/19; 5/19 14/19 ], 1e-3 );
 %! assert( R .* V, [ 4/3 5; 5/2 7 ], 1e-3 );
 %! assert( diag( X ./ V )', [ 3/19 2/19 ], 1e-3 );
-%! assert( all(all(U<=1)) );
+%! assert( all(U(:)<=1) );
 %! assert( Q, R.*X, 1e-5 ); # Little's Law
 
 ## Example 8.3 p. 331, Bolch et al. Note that this is not a multiclass
@@ -580,7 +580,7 @@ endfunction
 %! assert( Q, [ 0.428 0.726 0.845; 0.108 0.158 0.734 ], 1e-3 );
 %! assert( X(1,1), 2.113, 1e-3 ); # CHECK
 %! assert( X(2,1), 0.524, 1e-3 ); # CHECK
-%! assert( all( all(U<=1) ) );
+%! assert( all(U(:)<=1) );
 %! assert( Q, R.*X, 1e-5 ); # Little's Law
 
 ## Multiclass network with two classes; however, class 2 has 0 requests.

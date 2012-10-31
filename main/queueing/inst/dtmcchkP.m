@@ -23,10 +23,11 @@
 ## @cindex DTMC
 ## @cindex discrete time Markov chain
 ##
-## Check if @var{P} is a valid transition probability matrix. If @var{P}
-## is valid, @var{r} is the size (number of rows or columns) of @var{P}.
-## If @var{P} is not a transition probability matrix, @var{r} is set to
-## zero, and @var{err} to an appropriate error string.
+## Check whether @var{P} is a valid transition probability matrix. 
+##
+## If @var{P} is valid, @var{r} is the size (number of rows or columns)
+## of @var{P}. If @var{P} is not a transition probability matrix,
+## @var{r} is set to zero, and @var{err} to an appropriate error string.
 ##
 ## @end deftypefn
 
@@ -47,7 +48,7 @@ function [result err] = dtmcchkP( P )
     return;
   endif
   
-  if (  any(any(P<-eps)) || norm( sum(P,2) - 1, "inf" ) > columns(P)*eps )
+  if (  any(P(:)<-eps) || norm( sum(P,2) - 1, "inf" ) > columns(P)*eps )
     err = "P is not a stochastic matrix";
     return;
   endif

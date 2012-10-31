@@ -175,9 +175,9 @@ function [U R Q X] = qncmmvaap( N, S, V, m, Z, tol, iter_max )
   endif
 
   ## Check consistency of parameters
-  all( all( S >= 0 ) ) || \
+  all(S(:) >= 0) || \
       error( "S contains negative values" );
-  all( all( V >= 0 ) ) || \
+  all(V(:) >= 0) || \
       error( "V contains negative values" );
 
   ## Initialize results

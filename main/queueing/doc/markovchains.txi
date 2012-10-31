@@ -31,7 +31,7 @@
 @section Discrete-Time Markov Chains
 
 Let @math{X_0, X_1, @dots{}, X_n, @dots{} } be a sequence of random
-variables defined over a discete state space @math{0, 1, 2,
+variables defined over a discete state space @math{1, 2,
 @dots{}}. The sequence @math{X_0, X_1, @dots{}, X_n, @dots{}}  is a
 @emph{stochastic process} with discrete time @math{0, 1, 2,
 @dots{}}. A @emph{Markov chain} is a stochastic process @math{@{X_n,
@@ -81,10 +81,12 @@ following two properties: (1) @math{P_{i, j} @geq{} 0} for all
 @node State occupancy probabilities (DTMC)
 @subsection State occupancy probabilities
 
-We denote with @math{{\bf \pi}(n) = \left(\pi_1(n), \pi_2(n), @dots{},
-\pi_N(n) \right)} the @emph{state occupancy probability vector} at
-step @math{n}. @math{\pi_i(n)} denotes the probability that the system
-is in state @math{i} after @math{n} transitions.
+Given a discrete-time Markov chain with state spate @math{@{1, 2,
+@dots{}, N@}}, we denote with @math{{\bf \pi}(n) = \left(\pi_1(n),
+\pi_2(n), @dots{}, \pi_N(n) \right)} the @emph{state occupancy
+probability vector} at step @math{n}, @math{n = 0, 1, @dots{}}.
+@math{\pi_i(n)} denotes the probability that the system is in state
+@math{i} after @math{n} transitions.
 
 Given the transition probability matrix @math{\bf P} and the initial
 state occupancy probability vector @math{{\bf \pi}(0) =
@@ -359,9 +361,9 @@ M_ij = 1 + >   P_ij * M_kj
 
 To compute @math{{\bf M} = [ M_{i, j}]} a different formulation is
 used.  Let @math{\bf W} be the @math{N \times N} matrix having each
-row equal to the steady-state probability vector @math{\bf \pi} for
-@math{\bf P}; let @math{\bf I} be the @math{N \times N} identity
-matrix. Define @math{\bf Z} as follows:
+row equal to the stationary state occupancy probability vector
+@math{\bf \pi} for @math{\bf P}; let @math{\bf I} be the @math{N
+\times N} identity matrix. Define @math{\bf Z} as follows:
 
 @iftex
 @tex

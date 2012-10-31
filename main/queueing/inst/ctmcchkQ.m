@@ -40,6 +40,7 @@ function [result err] = ctmcchkQ( Q )
   endif
 
   result = 0;
+  err = "";
 
   if ( !issquare(Q) )
     err = "P is not a square matrix";
@@ -53,7 +54,6 @@ function [result err] = ctmcchkQ( Q )
   endif
 
   result = rows(Q);
-  err = "";
 endfunction
 %!test
 %! Q = [0];
@@ -84,7 +84,7 @@ endfunction
 
 %!test
 %! N = 10;
-%! Q = ctmcbd(rand(1,N-1),rand(1,N-1));
+%! Q = ctmcbd(linspace(1,N-1,N-1),linspace(1,N-1,N-1));
 %! Q(1,1) += 7;
 %! [result err] = ctmcchkQ(Q);
 %! assert( result, 0 );

@@ -26,14 +26,16 @@
 ## @cindex Markov chain, stationary probabilities
 ## @cindex Markov chain, transient probabilities
 ##
-## With a single argument, compute the steady-state occupancy
+## Compute stationary or transient state occupancy probabilities for a discrete-time Markov chain.
+##
+## With a single argument, compute the stationary state occupancy
 ## probability vector @code{@var{p}(1), @dots{}, @var{p}(N)} for a
-## discrete-time Markov chain described by the @math{N \times N}
-## transition probability matrix @var{P}. With three arguments, compute
-## the state occupancy probabilities @code{@var{p}(1), @dots{},
-## @var{p}(N)} that the system is in state @math{i} after @var{n} steps,
-## given initial occupancy probability vector @var{p0}(1), @dots{},
-## @var{p0}(N).
+## discrete-time Markov chain with state space @math{@{1, 2, @dots{},
+## N@}} and with @math{N \times N} transition probability matrix
+## @var{P}. With three arguments, compute the transient state occupancy
+## vector @code{@var{p}(1), @dots{}, @var{p}(N)} that the system is in
+## state @math{i} after @var{n} steps, given initial occupancy
+## probabilities @var{p0}(1), @dots{}, @var{p0}(N).
 ##
 ## @strong{INPUTS}
 ##
@@ -61,9 +63,9 @@
 ## @table @var
 ##
 ## @item p
-## If this function is invoked with a single argument, @code{@var{p}(i)}
+## If this function is called with a single argument, @code{@var{p}(i)}
 ## is the steady-state probability that the system is in state @math{i}.
-## If this function is invoked with three arguments, @code{@var{p}(i)}
+## If this function is called with three arguments, @code{@var{p}(i)}
 ## is the probability that the system is in state @math{i}
 ## after @var{n} transitions, given the initial probabilities
 ## @code{@var{p0}(i)} that the initial state is @math{i}.

@@ -25,8 +25,7 @@
 ## @cindex bounds, asymptotic
 ## @cindex closed network, single class
 ##
-## Compute Asymptotic Bounds for throughput and response time of closed,
-## single-class networks.
+## Compute Asymptotic Bounds for throughput and response time of closed, single-class networks.
 ##
 ## Single-server and infinite-server nodes are supported.
 ## Multiple-server nodes and general load-dependent servers are not

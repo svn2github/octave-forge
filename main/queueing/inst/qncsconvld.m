@@ -95,8 +95,8 @@ function [U R Q X G] = qncsconvld( N, S, V )
   ( isscalar(N) && N>0 ) || \
       error( "N must be a positive scalar" );
   K = N; # To be compliant with the reference, we denote K as the population size
-  ( isvector(V) ) || \
-      error( "V must be a vector" );
+  ( isvector(V) && all(V>=0) ) || \
+      error( "V must be a vector >=0" );
   V = V(:)'; # Make V a row vector
   N = length(V); # Number of service centers
   if ( isnumeric(S) ) 

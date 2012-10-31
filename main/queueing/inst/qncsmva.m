@@ -125,14 +125,14 @@ function [U R Q X G] = qncsmva( N, S, V, m, Z )
     print_usage();
   endif
 
-  isscalar(N) && N >= 0 || \
+  (isscalar(N) && N >= 0) || \
       error( "N must be >= 0" );
-  isvector(S) || \
-      error( "S must be a vector" );
+  (isvector(S) && all(S>=0)) || \
+      error( "S must be a vector >= 0" );
   S = S(:)'; # make S a row vector
 
-  isvector(V) || \
-      error( "V must be a vector" );
+  (isvector(V) && all(V>=0)) || \
+      error( "V must be a vector >= 0" );
   V = V(:)'; # make V a row vector
 
   K = length(S); # Number of servers
@@ -148,10 +148,6 @@ function [U R Q X G] = qncsmva( N, S, V, m, Z )
   [err S V m] = common_size(S, V, m);
   (err == 0) || \
       error( "S, V and m are of incompatible size" );
-  all(S>=0) || \
-      error( "S must be a vector >= 0" );
-  all(V>=0) || \
-      error( "V must be a vector >= 0" );
 
   if ( nargin < 5 )
     Z = 0;

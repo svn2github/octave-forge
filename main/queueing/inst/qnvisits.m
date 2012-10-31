@@ -20,9 +20,7 @@
 ## @deftypefn {Function File} {[@var{V} @var{ch}] =} qnvisits (@var{P})
 ## @deftypefnx {Function File} {@var{V} =} qnvisits (@var{P}, @var{lambda})
 ##
-## Compute the average number of visits to the service centers of a
-## single class, open or closed Queueing Network with @math{N} service
-## centers.
+## Compute the average number of visits to the service centers of a single class, open or closed Queueing Network with @math{N} service centers.
 ##
 ## @strong{INPUTS}
 ##
@@ -63,8 +61,9 @@
 ## @item ch
 ## (For closed networks only). @code{@var{ch}(c)} is the chain number
 ## that class @math{c} belongs to. Different classes can belong to the
-## same chain. Chains are numbered @math{1, 2, @dots{}}. 
-## The total number of chains is @code{max(@var{ch})}. 
+## same chain. Chains are numbered sequentially starting from 1
+## (@math{1, 2, @dots{}}). The total number of chains is
+## @code{max(@var{ch})}.
 ##
 ## @end table
 ## 
@@ -346,14 +345,9 @@ function [V chains] = __qnvisitsmulti( P, lambda )
   chains = [];
 
   if ( nargin == 1 ) 
-    ## closed network: solve the traffic equations:
-    ## V(s,j) = sum_r sum_i V(r,i) * P(r,i,s,j), for all s,j
-    ## V(s,1) = 1 for all s
-    ##
-    ## FIXME: the constraint V(s,1) = 1 assumes that all customer
-    ## classes visit center 1, which in general could not be the case. 
-    ## A better idea would be to set V(s,i) = 1 for any center i which
-    ## is visited by class s requests. 
+    ## closed network: solve the traffic equations: V(s,j) = sum_r sum_i
+    ## V(r,i) * P(r,i,s,j), for all s,j V(s,j) = 1 for all s and for a
+    ## chosen server j visited by chain s requests (see below)
     A = reshape(P,[K*C K*C])-eye(K*C);
     b = zeros(1,K*C);
 
@@ -392,10 +386,10 @@ function [V chains] = __qnvisitsmulti( P, lambda )
 
     ## To find a solution to the linear system V(s,j) = sum_r sum_i
     ## V(r,i) P(r,i,s,j) we must set some constraints (otherwise the
-    ## system may be under defined). If node k is never visited by class
-    ## c, we set the constraint V(c,k) = 0; If node k is visited by
-    ## class c as part of chain q, we set constraints(q)=1, and let
-    ## V(c,k) = 1.
+    ## system may be under defined). If center k is never visited by
+    ## class c, we set the constraint V(c,k) = 0; If node k is visited
+    ## by class c as part of chain q, we set constraints(q)=1 and V(c,k)
+    ## = 1.
 
     constraints = zeros(1,nCH); # we put one constraint per chain 
 
@@ -435,9 +429,9 @@ function [V chains] = __qnvisitsmulti( P, lambda )
   V = max(0,V);
 endfunction
 
-## compute strongly connected components using Kosaraju's algorithm.
-## This is not as efficient as Tarjan's algorithm, as it requires two
-## graph visits.
+## compute strongly connected components using Kosaraju's algorithm,
+## which requires two DFS visits. A better solution would be to use
+## Tarjan's algorithm.
 ##
 ## In this implementation, an isolated node without self loops will NOT
 ## belong to any SCC. Although this is not formally correct from the

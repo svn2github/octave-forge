@@ -22,9 +22,7 @@
 ##
 ## @cindex @math{M/M/m} system
 ##
-## Compute utilization, response time, average number of requests in
-## service and throughput for a @math{M/M/m} queue, a queueing
-## system with @math{m} identical service centers connected to a single queue.
+## Compute utilization, response time, average number of requests in service and throughput for a @math{M/M/m} queue, a queueing system with @math{m} identical service centers connected to a single FCFS queue.
 ##
 ## @iftex
 ## The steady-state probability @math{\pi_k} that there are @math{k}
@@ -109,20 +107,18 @@ function [U R Q X p0 pm] = qsmmm( lambda, mu, m )
   if ( nargin == 2 )
     m = 1;
   endif
+  ( isvector(lambda) && isvector(mu) && isvector(m) ) || \
+      error( "the parameters must be vectors" );
   [err lambda mu m] = common_size( lambda, mu, m );
   if ( err ) 
     error( "parameters are not of common size" );
   endif
-
-  ( isvector(lambda) && isvector(mu) && isvector(m) ) || \
-      error( "the parameters must be vectors" );
-  
+  lambda = lambda(:)';
+  mu = mu(:)';
   all( m>0 ) || \
       error( "m must be >0" );
-
   all( lambda < m .* mu ) || \
       error( "Processing capacity exceeded" );
-
   X = lambda;
   U = rho = lambda ./ (m .* mu );
   Q = p0 = pm = 0*lambda;

@@ -101,7 +101,7 @@
 ## job completing service at center @math{i} is routed to center @math{j}
 ## as a class @math{s} job. @strong{If you pass this argument,
 ## class switching is allowed}, but you can not specify any external delay
-## (i.e., you can not define @var{Z}).
+## (i.e., @var{Z} must be zero).
 ##
 ## @item m
 ## If @code{@var{m}(k)<1}, then center @math{k} is assumed to be a delay
@@ -326,7 +326,7 @@ function [U R Q X Qnm1] = __qncmmva_nocs( N, S, V, m, Z )
   all(S(:) >= 0) || \
       error( "S must be >= 0" );
   all( any(S>0,2) ) || \
-      error( "S must contain at least a value >0 for each row" );
+      error( "S must contain at least one value >0 for each row" );
   all(V(:) >= 0) || \
       error( "V must be >=0" );
 

@@ -21,8 +21,7 @@
 ##
 ## @cindex @math{M/M/1} system
 ##
-## Compute utilization, response time, average number of requests
-## and throughput for a @math{M/M/1} queue.
+## Compute utilization, response time, average number of requests and throughput for a @math{M/M/1} queue.
 ##
 ## @iftex
 ## The steady-state probability @math{\pi_k} that there are @math{k}
@@ -86,13 +85,14 @@ function [U R Q X p0] = qsmm1( lambda, mu )
   if ( nargin != 2 )
     print_usage();
   endif
-  ## bring the parameters to a common size
+  ( isvector(lambda) && isvector(mu) ) || \
+      error( "lambda and mu must be vectors" );
   [ err lambda mu ] = common_size( lambda, mu );
   if ( err ) 
     error( "parameters are of incompatible size" );
   endif
-  ( isvector(lambda) && isvector(mu) ) || \
-      error( "lambda and mu must be vectors" );
+  lambda = lambda(:)';
+  mu = mu(:)';
   all( lambda > 0 ) || \
       error( "lambda must be >0" );
   all( mu > lambda ) || \

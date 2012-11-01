@@ -19,10 +19,10 @@
 ##
 ## @deftypefn {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}, @var{p0}] =} qsmminf (@var{lambda}, @var{mu})
 ##
-## Compute utilization, response time, average number of requests and
-## throughput for a @math{M/M/\infty} queue. This is a system with an
-## infinite number of identical servers. Note that a @math{M/M/\infty}
-## system is always stable, regardless the values of the arrival and
+## Compute utilization, response time, average number of requests and throughput for a @math{M/M/\infty} queue.
+##
+## The @math{M/M/\infty} system has an infinite number of identical
+## servers; this kind of system is always stable for every arrival and
 ## service rates.
 ##
 ## @cindex @math{M/M/}inf system
@@ -90,14 +90,14 @@ function [U R Q X p0] = qsmminf( lambda, mu )
   if ( nargin != 2 )
     print_usage();
   endif
-  [ err lambda mu ] = common_size( lambda, mu );
-
-  if ( err ) 
-    error( "Parameters are of incompatible size" );
-  endif
-  
   ( isvector(lambda) && isvector(mu) ) || \
       error( "lambda and mu must be vectors" );
+  [ err lambda mu ] = common_size( lambda, mu );
+  if ( err ) 
+    error( "Parameters are of incompatible size" );
+  endif  
+  lambda = lambda(:)';
+  mu = mu(:)';
   ( all( lambda>0 ) && all( mu>0 ) ) || \
       error( "lambda and mu must be >0" );
   U = Q = lambda ./ mu; # Traffic intensity.

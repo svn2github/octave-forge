@@ -1213,6 +1213,12 @@ function, respectively.
 @node QN Analysis Examples
 @section QN Analysis Examples
 
+In this section we illustrate with a few examples how the
+@code{queueing} package can be used to evaluate queueing network
+models. Further examples can be found in the demo blocks of the
+functions described in this section, and can be accessed with the
+@code{demo @emph{function}} Octave command.
+
 @subsection Closed, Single Class Network
 
 We now give a simple example on how the queueing toolbox can be used
@@ -1574,16 +1580,16 @@ The example is taken from @ref{Sch82}, and is shown in Figure
 @end float
 
 The system consists of three devices and two job classes. The CPU node
-is a PS server, while the two nodes labeled @emph{I/O} are
-FCFS. Class 1 mean service time at the CPU is 0.01; class 2 mean
-service time at the CPU is 0.05. The mean service time at node 2 is
-0.1, and is class-independent. Similarly, the mean service time at
-node 3 is 0.07. Jobs in class 1 leave the CPU and join class 2 with
-probability 0.1; jobs of class 2 leave the CPU and join class 1 with
-probability 0.2. There are @math{N=3} jobs, which are initially
-allocated to class 1. However, note that since class switching is
-allowed, the total number of jobs in each class does not remain
-constant; however the total number of jobs does.
+is a PS server, while the two nodes labeled I/O are FCFS. Class 1 mean
+service time at the CPU is 0.01; class 2 mean service time at the CPU
+is 0.05. The mean service time at node 2 is 0.1, and is
+class-independent. Similarly, the mean service time at node 3 is
+0.07. Jobs in class 1 leave the CPU and join class 2 with probability
+0.1; jobs of class 2 leave the CPU and join class 1 with probability
+0.2. There are @math{N=3} jobs, which are initially allocated to class
+1. However, note that since class switching is allowed, the total
+number of jobs in each class does not remain constant; however the
+total number of jobs does.
 
 @example
 @GETDEMO{qncmmva,3}

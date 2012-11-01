@@ -24,12 +24,11 @@
 ## @cindex normalization constant
 ## @cindex convolution algorithm
 ##
-## This function implements the @emph{convolution algorithm} for
-## computing steady-state performance measures of product-form,
-## single-class closed queueing networks. Load-independent service
-## centers, multiple servers (@math{M/M/m} queues) and IS nodes are
-## supported. For general load-dependent service centers, use the
-## @code{qncsconvld} function instead.
+## Analyze product-form, single class closed networks using the convolution algorithm.
+##
+## Load-independent service centers, multiple servers (@math{M/M/m}
+## queues) and IS nodes are supported. For general load-dependent
+## service centers, use @code{qncsconvld} instead.
 ##
 ## @strong{INPUTS}
 ##

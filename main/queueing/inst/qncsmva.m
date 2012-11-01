@@ -25,12 +25,12 @@
 ## @cindex closed network, single class
 ## @cindex normalization constant
 ##
-## Analyze closed, single class queueing networks using the exact Mean
-## Value Analysis (MVA) algorithm. The following queueing disciplines
-## are supported: FCFS, LCFS-PR, PS and IS (Infinite Server). This
-## function supports fixed-rate service centers or multiple server
-## nodes. For general load-dependent service centers, use the function
-## @code{qncsmvald} instead.
+## Analyze closed, single class queueing networks using the exact Mean Value Analysis (MVA) algorithm. 
+##
+## The following queueing disciplines are supported: FCFS, LCFS-PR, PS
+## and IS (Infinite Server). This function supports fixed-rate service
+## centers or multiple server nodes. For general load-dependent service
+## centers, use the function @code{qncsmvald} instead.
 ##
 ## Additionally, the normalization constant @math{G(n)}, @math{n=0,
 ## @dots{}, N} is computed; @math{G(n)} can be used in conjunction with

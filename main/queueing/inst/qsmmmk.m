@@ -118,7 +118,7 @@ function [U R Q X p0 pK] = qsmmmk( lambda, mu, m, K )
   endif
 
   ( isvector(lambda) && isvector(mu) && isvector(m) && isvector(K) ) || ...
-      error( "lambda, mu, m, K must be vectors of the same size" );
+      error( "lambda, mu, m, K must be vectors" );
   lambda = lambda(:)'; # make lambda a row vector
   mu = mu(:)'; # make mu a row vector
   m = m(:)'; # make m a row vector

@@ -4,9 +4,9 @@ DISTFILES=$(wildcard *.m)
 ALL:
 
 clean:
-	\rm -f *~ fntests.log
+	\rm -f *~
 
 distclean: clean
 
 dist:
-	ln $(DISTFILES) ../`cat ../fname`/inst/
+	ln $(DISTFILES) ../../`cat ../../fname`/inst/private/

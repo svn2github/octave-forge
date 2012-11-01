@@ -596,7 +596,7 @@ endfunction
 %! V(2,:) = linspace(6,3,K);
 %! N = [10 0]; # class 2 has no customers
 %! [U1 R1 Q1 X1] = qncmmva(N,S,V);
-%! [U2 R2 Q2 X2] = qnclosedsinglemva(N(1),S(1,:),V(1,:));
+%! [U2 R2 Q2 X2] = qncsmva(N(1),S(1,:),V(1,:));
 %! assert( U1(1,:), U2, 1e-5 );
 %! assert( R1(1,:), R2, 1e-5 );
 %! assert( Q1(1,:), Q2, 1e-5 );

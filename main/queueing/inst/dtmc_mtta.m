@@ -33,7 +33,7 @@ function [t N B] = dtmc_mtta( varargin )
   persistent warned = false;
   if (!warned)
     warned = true;
-    warning("qn:deprecated-function",
+    warning("qn:deprecated-function", 
 	    "dtmc_mtta is deprecated. Please use dtmcmtta instead");
   endif
   [t N B] = dtmcmtta( varargin{:} );
@@ -43,7 +43,7 @@ endfunction
 %! fail( "dtmc_mtta()" );
 
 %!test
-%! P = dtmc_bd([0 .5 .5 .5], [.5 .5 .5 0]);
+%! P = dtmcbd([0 .5 .5 .5], [.5 .5 .5 0]);
 %! [t N B] = dtmc_mtta(P);
 %! assert( t, [0 3 4 3 0], 10*eps );
 %! assert( B([2 3 4],[1 5]), [3/4 1/4; 1/2 1/2; 1/4 3/4], 10*eps );
@@ -51,7 +51,7 @@ endfunction
 %! assert( B(5,5), 1 );
 
 %!test
-%! P = dtmc_bd([0 .5 .5 .5], [.5 .5 .5 0]);
+%! P = dtmcbd([0 .5 .5 .5], [.5 .5 .5 0]);
 %! [t N B] = dtmc_mtta(P);
 %! assert( t(3), 4, 10*eps );
 %! assert( B(3,1), 0.5, 10*eps );
@@ -59,7 +59,7 @@ endfunction
 
 ## Example on p. 422 of [GrSn97]
 %!test
-%! P = dtmc_bd([0 .5 .5 .5 .5], [.5 .5 .5 .5 0]);
+%! P = dtmcbd([0 .5 .5 .5 .5], [.5 .5 .5 .5 0]);
 %! [t N B] = dtmc_mtta(P);
 %! assert( t(2:5), [4 6 6 4], 100*eps );
 %! assert( B(2:5,1), [.8 .6 .4 .2]', 100*eps );

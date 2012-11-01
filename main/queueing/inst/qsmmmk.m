@@ -140,7 +140,7 @@ function [U R Q X p0 pK] = qsmmmk( lambda, mu, m, K )
     ## Build and solve the birth-death process describing the M/M/m/k system
     birth_rate = lambda(i)*ones(1,K(i));
     death_rate = [ linspace(1,m(i),m(i))*mu(i) ones(1,K(i)-m(i))*m(i)*mu(i) ];
-    p = ctmc(ctmc_bd(birth_rate, death_rate));
+    p = ctmc(ctmcbd(birth_rate, death_rate));
     p0(i) = p(1);
     pK(i) = p(1+K(i));
     j = [1:K(i)];
@@ -186,7 +186,7 @@ endfunction
 %! [U1 R1 Q1 X1 p0] = qsmmmk( lambda, mu, m, k );
 %! birth = lambda*ones(1,k);
 %! death = [ mu*linspace(1,m,m) mu*m*ones(1,k-m) ];
-%! q = ctmc(ctmc_bd( birth, death ));
+%! q = ctmc(ctmcbd( birth, death ));
 %! U2 = dot( q, min( 0:k, m )/m );
 %! assert( U1, U2, 1e-4 );
 %! Q2 = dot( [0:k], q );

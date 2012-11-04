@@ -1,17 +1,17 @@
-Summary of important user-visible changes for queueing-2.0.0
+Summary of important user-visible changes for queueing-1.2.0
 ------------------------------------------------------------------------------
 
-** queueing-2.0.0 is a major update which includes bug fixes and new
-   features
+** queueing-1.2.0 includes many bug fixes and new features
 
 ** The documentation has been restructured, hopefully improving
    readability and overall organization
 
-** Asymptotic and balanced system bounds can be computed for
-   multiclass networks
+** Added functions to compute various kinds of performance bounds on
+   multiclass networks; balanced system, asymptotic and composite
+   bounds are supported.
 
-** New function qncmcb for computing Composite Bounds for multiclass
-   networks
+** Added function qnom for analyzing open, multiclass product-form
+   networks.
 
 ** Adopted a new scheme for naming functions; old names are still
    available for compatibility with existing scripts, but will be

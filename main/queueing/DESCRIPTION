@@ -1,6 +1,6 @@
 Name: queueing
 Version: 1.2.0
-Date: 2012-11-XX
+Date: 2012-11-05
 Author: Moreno Marzolla <marzolla@cs.unibo.it>
 Maintainer: Moreno Marzolla <marzolla@cs.unibo.it>
 Title: Octave package for Queueing Networks and Markov chains analysis

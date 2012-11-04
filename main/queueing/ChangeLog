@@ -1,12 +1,16 @@
-2012-11-XX Moreno Marzolla <marzolla@cs.unibo.it>
+2012-11-05 Moreno Marzolla <marzolla@cs.unibo.it>
 
 	* Version 1.2.0 released
 	* Restructured the documentation
 	* Reduced space requirement for qncsmva()
-	* New function naming scheme; old function names are still available for compatibility with existing scripts, but will be removed in the future.
-	* New functions qncmaba, qncmbsb, qncmcb, qnomaba for computing performance bounds on multiclass networks
+	* New function naming scheme; old function names are still
+  	  available for compatibility with existing scripts, but will be
+	  removed in the future.
+	* New functions qncmaba, qncmbsb, qncmcb, qnomaba for computing
+	  performance bounds on multiclass networks
 	* New function qnom for analyzing open multiclass networks
-	* Fixed bugs in qncsconv, qncsconvld, qncmmva, qnopensingle, qnmix and qncscmva
+	* Fixed bugs in qncsconv, qncsconvld, qncmmva, qnopensingle, qnmix
+	  and qncscmva
 
 2012-09-08 Moreno Marzolla <marzolla@cs.unibo.it>
 

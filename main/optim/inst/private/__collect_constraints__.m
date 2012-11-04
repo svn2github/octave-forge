@@ -21,6 +21,12 @@ function [mc, vc, f_gencstr, df_gencstr, user_df] = \
 
   if (isempty (cstr)) return; endif
 
+  for id = 1 : length (cstr)
+    if (ischar (cstr{id}))
+      cstr{id} = str2func (cstr{id});
+    endif
+  endfor
+
   if (ismatrix (tp = cstr{1}) || isstruct (tp))
     mc = tp;
     vc = cstr{2};

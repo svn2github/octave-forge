@@ -658,6 +658,26 @@ function [p, resid, cvg, outp] = \
     warning ("some fixed parameters outside bounds");
   endif
 
+  if (any (diffp <= 0))
+    error ("some elements of 'diffp' non-positive");
+  endif
+
+  if (cstep <= 0)
+    error ("'cstep' non-positive");
+  endif
+
+  if ((hook.TolFun = optimget (settings, "TolFun", stol_default)) < 0)
+    error ("'TolFun' negative");
+  endif
+
+  if (any (fract_prec < 0))
+    error ("some elements of 'fract_prec' negative");
+  endif
+
+  if (any (max_fract_change < 0))
+    error ("some elements of 'max_fract_change' negative");
+  endif
+
   ## dimensions of linear constraints
   if (isempty (mc))
     mc = zeros (np, 0);
@@ -683,6 +703,9 @@ function [p, resid, cvg, outp] = \
   if (any (size (weights) != size (f_pin)))
     error ("dimension of weights and residuals must match");
   endif
+  if (any (weights(:) < 0))
+    error ("some weights negative")
+  endif
 
   ## note initial values of linear constraits
   pin_cstr.inequ.lin_except_bounds = mc.' * pin + vc;
@@ -703,7 +726,6 @@ function [p, resid, cvg, outp] = \
   endif
 
   #### collect remaining settings
-  hook.TolFun = optimget (settings, "TolFun", stol_default);
   hook.MaxIter = optimget (settings, "MaxIter");
   if (ischar (hook.cpiv = optimget (settings, "cpiv", @ cpiv_bard)))
     hook.cpiv = str2func (hook.cpiv);

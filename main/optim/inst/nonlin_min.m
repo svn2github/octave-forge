@@ -129,30 +129,30 @@
 ## two entries for linear constraints are a matrix (say @code{m}) and a
 ## vector (say @code{v}), specifying linear inequality constraints of
 ## the form @code{m.' * parameters + v >= 0}. The first entry for
-## general constraints must be a differentiable vector valued function
-## (say @code{h}), specifying general inequality constraints of the form
-## @code{h (p[, idx]) >= 0}; @code{p} is the column vector of optimized
-## paraters and the optional argument @code{idx} is a logical index.
-## @code{h} has to return the values of all constraints if @code{idx} is
-## not given. It may choose to return only the indexed constraints if
-## @code{idx} is given (so computation of the other constraints can be
-## spared); in this case, the additional setting @code{inequc_f_idx} has
-## to be set to @code{true}. In gradient determination, this function
-## may be called with an informational third argument, whose content
-## depends on the function for gradient determination. If a second entry
-## for general inequality constraints is given, it must be a function
-## computing the jacobian of the constraints with respect to the
-## parameters. For this function, the description of @code{dfdp} above
-## applies, with 2 exceptions: 1) it is called with 3 arguments since it
-## has an additional argument @code{idx} --- a logical index --- at
-## second position, indicating which rows of the jacobian must be
-## returned (if the function chooses to return only indexed rows, the
-## additional setting @code{inequc_df_idx} has to be set to
-## @code{true}). 2) the default jacobian function calls @code{h} with 3
-## arguments, since the argument @code{idx} is also supplied. Note that
-## specifying linear constraints as general constraints will generally
-## waste performance, even if further, non-linear, general constraints
-## are also specified.
+## general constraints must be a differentiable column-vector valued
+## function (say @code{h}), specifying general inequality constraints of
+## the form @code{h (p[, idx]) >= 0}; @code{p} is the column vector of
+## optimized parameters and the optional argument @code{idx} is a
+## logical index. @code{h} has to return the values of all constraints
+## if @code{idx} is not given. It may choose to return only the indexed
+## constraints if @code{idx} is given (so computation of the other
+## constraints can be spared); in this case, the additional setting
+## @code{inequc_f_idx} has to be set to @code{true}. In gradient
+## determination, this function may be called with an informational
+## third argument, whose content depends on the function for gradient
+## determination. If a second entry for general inequality constraints
+## is given, it must be a function computing the jacobian of the
+## constraints with respect to the parameters. For this function, the
+## description of @code{dfdp} above applies, with 2 exceptions: 1) it is
+## called with 3 arguments since it has an additional argument
+## @code{idx}, a logical index, at second position, indicating which
+## rows of the jacobian must be returned (if the function chooses to
+## return only indexed rows, the additional setting @code{inequc_df_idx}
+## has to be set to @code{true}). 2) the default jacobian function calls
+## @code{h} with 3 arguments, since the argument @code{idx} is also
+## supplied. Note that specifying linear constraints as general
+## constraints will generally waste performance, even if further,
+## non-linear, general constraints are also specified.
 ##
 ## @code{equc}: Equality constraints. Specified the same way as
 ## inequality constraints (see @code{inequc}). The respective additional
@@ -163,13 +163,13 @@
 ## function is supplied with the package.
 ##
 ## @code{TolFun}: Minimum fractional improvement in objective function
-## in an iteration (abortion criterium). Default: .0001.
+## in an iteration (termination criterium). Default: .0001.
 ##
-## @code{MaxIter}: Maximum number of iterations (abortion criterium).
+## @code{MaxIter}: Maximum number of iterations (termination criterium).
 ## Default: backend-specific.
 ##
 ## @code{fract_prec}: Column Vector, minimum fractional change of
-## parameters in an iteration (abortion criterium if violated in two
+## parameters in an iteration (termination criterium if violated in two
 ## consecutive iterations). Default: backend-specific.
 ##
 ## @code{max_fract_change}: Column Vector, enforced maximum fractional
@@ -994,6 +994,26 @@ function [p, objf, cvg, outp] = nonlin_min (f, pin, settings)
     warning ("some fixed parameters outside bounds");
   endif
 
+  if (any (diffp <= 0))
+    error ("some elements of 'diffp' non-positive");
+  endif
+
+  if (cstep <= 0)
+    error ("'cstep' non-positive");
+  endif
+
+  if ((hook.TolFun = optimget (settings, "TolFun", stol_default)) < 0)
+    error ("'TolFun' negative");
+  endif
+
+  if (any (fract_prec < 0))
+    error ("some elements of 'fract_prec' negative");
+  endif
+
+  if (any (max_fract_change < 0))
+    error ("some elements of 'max_fract_change' negative");
+  endif
+
   ## dimensions of linear constraints
   if (isempty (mc))
     mc = zeros (np, 0);
@@ -1033,7 +1053,6 @@ function [p, objf, cvg, outp] = nonlin_min (f, pin, settings)
   endif
 
   #### collect remaining settings
-  hook.TolFun = optimget (settings, "TolFun", stol_default);
   hook.MaxIter = optimget (settings, "MaxIter");
   if (ischar (hook.cpiv = optimget (settings, "cpiv", @ cpiv_bard)))
     hook.cpiv = str2func (hook.cpiv);

@@ -65,6 +65,12 @@ function [p_res, objf, cvg, outp] = __lm_feasible__ (f, pin, hook)
   maxstep(isna (maxstep)) = max_fract_step_default;
   pprec = hook.fract_prec;
   pprec(isna (pprec)) = fract_prec_default;
+  ## keep absolute precision positive for non-null relative precision;
+  ## arbitrary value, added to parameters before multiplying with
+  ## relative precision
+  add_pprec = zeros (n, 1);
+  add_pprec(pprec > 0) = sqrt (eps);
+  ##
   verbose = strcmp (hook.Display, "iter");
 
   ## some useful variables derived from passed variables
@@ -123,7 +129,7 @@ function [p_res, objf, cvg, outp] = __lm_feasible__ (f, pin, hook)
 
     ## gradient of objective function
     old_df = df;
-    df = grad_f (p, setfield (dfdp_hook, "f", f))(:);
+    df = grad_f (p, setfield (dfdp_hook, "f", vf))(:);
 
     ## constraints, preparation of some constants
     v_cstr = f_cstr (p, ac_idx);
@@ -256,7 +262,7 @@ function [p_res, objf, cvg, outp] = __lm_feasible__ (f, pin, hook)
     G = Binv * V;
 
     ## Levenberg/Marquardt
-    fgoal = (1 - ftol) * vf;
+    fgoal = vf - (abs (vf) + sqrt (eps)) * ftol;
     for l = ltab
 
       ll = max (ll, nminL);
@@ -446,10 +452,11 @@ function [p_res, objf, cvg, outp] = __lm_feasible__ (f, pin, hook)
         endif
       endif # regaining
 
-      aprec = abs (pprec .* pbest);
+      aprec = pprec .* (abs (pbest) + add_pprec);
       if (any (abs (chg) > 0.1 * aprec)) # only worth evaluating
                                 # function if there is some
                                 # non-miniscule change
+        skipped = false;
         p_chg = p + chg;
         ## since the projection method may have slightly violated
         ## constraints due to inaccuracy, correct parameters to bounds
@@ -471,18 +478,26 @@ function [p_res, objf, cvg, outp] = __lm_feasible__ (f, pin, hook)
           pbest = p_chg;
           fbest = vf_chg;
         endif
-        if (vf_chg <= fgoal)
+        if (vf_chg < fgoal) # <, not <=, since fgoal can be equal to vf
+                                # if TolFun <= eps
           p = p_chg;
           vf = vf_chg;
           break;
         endif
+      else
+        skipped = true;
+        break;
       endif
     endfor
 
     ll = l;
 
-    aprec = abs (pprec .* pbest);
-    if (vf_chg < eps || vf_chg > fgoal)
+    aprec = pprec .* (abs (pbest) + add_pprec);
+    if (skipped)
+      cvg = 2;
+      done = true;
+    elseif (vf_chg >= fgoal) # >=, not >, since fgoal can be equal to vf
+                                # if TolFun <= eps
       cvg = 3;
       done = true;
     elseif (all (abs (chg) <= aprec) && all (abs (chgprev) <= aprec))

@@ -30,6 +30,8 @@ function [p, resid, cvg, outp] = __lm_svd__ (F, pin, hook)
     ifelse = @ scalar_ifelse;
   end
 
+  n = length (pin);
+
   %% passed constraints
   mc = hook.mc; % matrix of linear constraints
   vc = hook.vc; % vector of linear constraints
@@ -58,6 +60,12 @@ function [p, resid, cvg, outp] = __lm_svd__ (F, pin, hook)
   maxstep(isna (maxstep)) = max_fract_step_default;
   pprec = hook.fract_prec;
   pprec(isna (pprec)) = fract_prec_default;
+  ## keep absolute precision positive for non-null relative precision;
+  ## arbitrary value, added to parameters before multiplying with
+  ## relative precision
+  add_pprec = zeros (n, 1);
+  add_pprec(pprec > 0) = sqrt (eps);
+  ##
   stol = hook.TolFun;
   niter = hook.MaxIter;
   if (isempty (niter)) niter = 20; end
@@ -82,7 +90,6 @@ function [p, resid, cvg, outp] = __lm_svd__ (F, pin, hook)
   have_constraints_except_bounds = ...
       n_lcstr + n_gencstr > ...
       sum (lbound ~= -Inf) + sum (ubound ~= Inf);
-  n = length (pin);
   wtl = wt(:);
 
   nz = 20 * eps; % This is arbitrary. Constraint function will be
@@ -415,7 +422,7 @@ function [p, resid, cvg, outp] = __lm_svd__ (F, pin, hook)
                 sprintf('%d ',find(ochg ~= chg)), 'maximal fractional stepwidth enforced']);
         end
       end
-      aprec=abs(pprec.*pbest);       %---
+      aprec = pprec .* (abs (pbest) + add_pprec);
       %% ss=scalar sum of squares=sum((wt.*f)^2).
       if (any(abs(chg) > 0.1*aprec))%---  % only worth evaluating
                                 % function if there is some non-miniscule
@@ -431,6 +438,7 @@ function [p, resid, cvg, outp] = __lm_svd__ (F, pin, hook)
         %% constraints due to inaccuracy, correct parameters to bounds
         %% --- but only if no further constraints are given, otherwise
         %% the inaccuracy in honoring them might increase by this
+        skipped = false;
         if (~have_constraints_except_bounds)
           lidx = p < lbound;
           uidx = p > ubound;
@@ -455,9 +463,13 @@ function [p, resid, cvg, outp] = __lm_svd__ (F, pin, hook)
           fbest=f;
           sbest=ss;
         end
-        if (ss<=sgoal)
+        if (ss < sgoal) # <, not <=, since sgoal can be equal to sprev
+                                # if TolFun <= eps
           break;
         end
+      else
+        skipped = true;
+        break;
       end                          %---
     end
     %% printf ('epsL no.: %i\n', jjj); % for testing
@@ -465,15 +477,20 @@ function [p, resid, cvg, outp] = __lm_svd__ (F, pin, hook)
     if (verbose)
       hook.plot_cmd (f);
     end
+    if (skipped)
+      cvg = 2;
+      break;
+    end
     if (ss < eps) % in this case ss == sbest
       cvg = 3; % there is no more suitable flag for this
       break;
     end
-    if (ss>sgoal)
+    if (ss >= sgoal) # >=, not >, since sgoal can be equal to sprev if
+                                # TolFun <= eps
       cvg = 3;
       break;
     end
-    aprec=abs(pprec.*pbest);
+    aprec = pprec .* (abs (pbest) + add_pprec);
     %% [aprec, chg, chgprev]
     if (all(abs(chg) <= aprec) && all(abs(chgprev) <= aprec))
       cvg = 2;

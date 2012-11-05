@@ -1,3 +1,9 @@
+optim 1.2.2:
+------------
+
+ ** Bugfixes in nonlin_min and nonlin_residmin/nonlin_curvefit in
+    termination criteria, argument checking, and documentaion.
+
  ** Bugfix in private/__lm_feasible__.m: Wrong parantheses in checking
     of equality constraints for initial parameters (reported by Marcus
     Schmidt).

@@ -29,7 +29,7 @@
 ##              and 'h'. See also the '--comment' option.
 ##
 ##  --license   License to use. Defaults to "GPLv3+". Valid options are "GPLv3+",
-##              "LGPLv3+", "AGPLv3+", "modified BSD", "FreeBSD", "simplified BSD",
+##              "LGPLv3+", "AGPLv3+", "clear BSD", "FreeBSD", "simplified BSD",
 ##              "public domain", "X11", "Expat", "Apache2" and "ISC".
 ##
 ##  --replace   Replace existing copyright notice on the files for the new one.
@@ -286,12 +286,21 @@ given ($license) {
              );
   }
   when (/modified BSD/i)   { @text = (@BSD_header, @{$BSD_clauses[0]}, @{$BSD_clauses[1]}, @{$BSD_clauses[2]}, @BSD_disclaimer); }
-  when (/simplified BSD/i) { @text = (@BSD_header, @{$BSD_clauses[0]}, @{$BSD_clauses[1]},                     @BSD_disclaimer); }
-  when (/FreeBSD/i)        { @text = (@BSD_header, @{$BSD_clauses[0]}, @{$BSD_clauses[1]},                     @BSD_disclaimer,
-                                     "",
-                                     "The views and conclusions contained in the software and documentation are",
-                                     "those of the authors and should not be interpreted as representing official",
-                                     "policies, either expressed or implied, of the copyright holders."); }
+  when (/FreeBSD/i)        { @text = (@BSD_header, @{$BSD_clauses[0]}, @{$BSD_clauses[1]},                     @BSD_disclaimer); }
+  when (/clear BSD/i)      { @text = (
+                                      @copyR_line,
+                                      "All rights reserved.",
+                                      "",
+                                      "Redistribution and use in source and binary forms, with or without"
+                                      "modification, are permitted (subject to the limitations in the"
+                                      "disclaimer below) provided that the following conditions are met:"
+                                      "",
+                                      @{$BSD_clauses[0]},
+                                      @{$BSD_clauses[1]},
+                                      @{$BSD_clauses[2]},
+                                      "NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY",
+                                      "THIS LICENSE.",
+                                      @BSD_disclaimer); }
   when (/public domain/i)  { @text = (@author_line, "This program is granted to the public domain."); }
   default { die "Non-valid license $license."; }
 }

@@ -33,8 +33,9 @@
 %% .octaverc variable or using @code{setenv()}). If that variable is empty, the
 %% property must be provided the first time the function is called. After that
 %% it creates the environment variable (but only for the current octave session)
-%%
+%% @end table
 %% @end deftypefn
+
 function [pkgtar htmltar] = releasePKG (pkgname, varargin)
   OFPATH = getenv ('OFPATH');
   use_inputP = exist('inputParser') == 2;

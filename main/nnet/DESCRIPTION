@@ -7,6 +7,6 @@ Title: Neural Networks
 Description: A feed forward multi-layer neural network.
 Depends: octave (>= 3.0.0)
 Autoload: no
-License: GPL version 2 or later
+License: GPLv3+
 Url: http://octave.sf.net
 Url: http://octnnettb.sourceforge.net

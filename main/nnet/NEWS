@@ -1,6 +1,18 @@
 Summary of important user-visible changes for Neural Networks package 0.2.0:
 ----------------------------------------------------------------------------
 
+ ** The following functions are new:
+
+      minmax
+
+ ** The following functions have been deprecated (see their help text
+    for the recommended alternatives):
+
+      min_max
+
+ ** The new function `minmax' meant to replace `min_max' can now handle single
+    row matrices and cell arrays in a Matlab compatible way.
+
  ** The following functions have been made private:
 
       __analyzerows.m       __printBiasConnect.m     __printNumLayerDelays.m

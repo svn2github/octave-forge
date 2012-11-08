@@ -17,6 +17,10 @@
 ## @deftypefn {Function File} {} @var{Pr} = min_max (@var{Pp})
 ## @code{min_max} returns variable Pr with range of matrix rows
 ##
+## @emph{warning}: @code{min_max} has been deprecated in favor of
+## @code{minmax}. This function will be removed from future versions of the
+## 'nnet' package".
+##
 ## @example
 ## PR - R x 2 matrix of min and max values for R input elements
 ## @end example
@@ -31,6 +35,12 @@
 ## Author: Michel D. Schmid
 
 function Pr = min_max(Pp)
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "`min_max' has been deprecated in favor of `minmax'. This function will be removed from future versions of the `nnet' package");
+  endif
 
   ## check number of input args
   error(nargchk(1,1,nargin))

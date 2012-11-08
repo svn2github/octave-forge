@@ -6,7 +6,7 @@ Maintainer: Michael Schmid <michaelschmid@users.sourceforge.net>
 Title: Neural Networks
 Description: A feed forward multi-layer neural network.
 Depends: octave (>= 3.0.0)
-Autoload: yes
+Autoload: no
 License: GPL version 2 or later
 Url: http://octave.sf.net
 Url: http://octnnettb.sourceforge.net

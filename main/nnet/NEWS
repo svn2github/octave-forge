@@ -1,4 +1,24 @@
 Summary of important user-visible changes for Neural Networks package 0.2.0:
 ----------------------------------------------------------------------------
 
+ ** The following functions have been made private:
+
+      __analyzerows.m       __printBiasConnect.m     __printNumLayerDelays.m
+      __calcjacobian.m      __printBiases.m          __printNumLayers.m
+      __calcperf.m          __printB.m               __printNumOutputs.m
+      __checknetstruct.m    __printInitFcn.m         __printNumTargets.m
+      __copycoltopos1.m     __printInitParam.m       __printOutputConnect.m
+      __dlogsig.m           __printInputConnect.m    __printOutputs.m
+      __dpurelin.m          __printInputs.m          __printPerformFcn.m
+      __dradbas.m           __printInputWeights.m    __printPerformParam.m
+      __dtansig.m           __printIW.m              __printTargetConnect.m
+      __getx.m              __printLayerConnect.m    __printTargets.m
+      __init.m              __printLayers.m          __printTrainFcn.m
+      __mae.m               __printLayerWeights.m    __printTrainParam.m
+      __mse.m               __printLW.m              __randomisecols.m
+      __newnetwork.m        __printMLPHeader.m       __rerangecolumns.m
+      __optimizedatasets.m  __printNetworkType.m     __setx.m
+      __printAdaptFcn.m     __printNumInputDelays.m  __trainlm.m
+      __printAdaptParam.m   __printNumInputs.m
+
  ** Package is no longer automatically loaded.

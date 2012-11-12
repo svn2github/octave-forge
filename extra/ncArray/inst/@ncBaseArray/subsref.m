@@ -52,7 +52,7 @@ if strcmp(idx.type,'()')
 elseif strcmp(idx.type,'.')
     % load attribute
     name = idx.subs;
-    index = find(strcmp(name,{self.vinfo.Attributes(:).Name}));
+    index = strmatch(name,{self.vinfo.Attributes(:).Name});
     
     if isempty(index)
         error('variable %s has no attribute called %s',self.varname,name);

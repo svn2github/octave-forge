@@ -7,24 +7,26 @@
 %
 % Output:
 %  fname: the filename of the uncompressed file
+%
+% Global variables:
+% CACHED_DECOMPRESS_DIR (default fullfile(getenv('HOME'),'tmp','Cache')):
+%    cache directory of decompressed files
+% CACHED_DECOMPRESS_LOG_FID (default 1): file id for log message
+% CACHED_DECOMPRESS_MAX_SIZE (default 1e10): maximum size of cache in bytes.
 
 % Alexander Barth, 2012-06-13
 %
-function [fname] = cached_decompress(url)
+function [fname]=cached_decompress(url)
 
 
 global CACHED_DECOMPRESS_DIR
 global CACHED_DECOMPRESS_LOG_FID
-
+global CACHED_DECOMPRESS_MAX_SIZE
 
 cache_dir = CACHED_DECOMPRESS_DIR;
 if isempty(cache_dir)
     cache_dir = fullfile(getenv('HOME'),'tmp','Cache');
 end
-
-% do nothing if
-% file is a a remote url (begins with http:)
-% or file does not end with .gz or .bz2
 
 if beginswith(url,'http:') || ~(endswith(url,'.gz') || endswith(url,'.bz2'))
   % opendap url or not compressed file
@@ -69,7 +71,11 @@ end
 
 d=dir(cache_dir);
 cashe_size = sum([d.bytes]);
-max_cache_size = 1e10;
+max_cache_size = CACHED_DECOMPRESS_MAX_SIZE;
+
+if isempty(max_cache_size)
+  max_cache_size = 1e10;
+end
 
 if (cashe_size > max_cache_size)
     

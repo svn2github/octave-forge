@@ -1,6 +1,0 @@
-Packages which may eventually be included in the main octave 
-distribution.  As such, they should follow Octave conventions.  
-The octave-forge SVN tree should be the primary development/release 
-site.  All functions should work with the latest Octave 
-interpreter without any special compilation switches or patches
-applied.

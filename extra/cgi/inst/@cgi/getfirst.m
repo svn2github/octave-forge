@@ -1,7 +1,15 @@
+%% -*- texinfo -*-
+%% @deftypefn {Function File} {@var{val} =} getfirst(@var{cgi},@var{name})
+%% @deftypefnx {Function File} {@var{val} =} getfirst(@var{cgi},@var{name},@var{default})
+%% Returns the first CGI parameter with the given name.
+%% If the CGI parameter is not found in the query string, then the 
+%% parameter @var{default} is returned if specified or an error is raised.
+%% The object @var{cgi} was 
+%% created using the cgi() constructor.
+%% @end deftypefn
+%% @seealso{cgi}
+
 % val = getfirst(cgi,name,default)
-% Return the first CGI parameter with the given name.
-% If the CGI parameter is not found in the query string, then the 
-% parameter default is returned if specified or an error is raised.
 
 function val = getfirst(cgi,name,default)
 

@@ -1,8 +1,16 @@
-% Create a CGI object to parse CGI query string.
-% Only GET methods are currently handled.
+%% -*- texinfo -*-
+%% @deftypefn {Function File} {@var{CGI} =} cgi ()
+%% Create a CGI object to parse CGI query string from GET or POST requests.
+%% 
+%% @end deftypefn
+%% @seealso{getfirst,getlist}
+
+
 % 
-% CGI = cgi()
+% CGI = cgi();
+%
 % Parameter can be return by:
+
 % getfirst(CGI,name[,default])
 % getlist(CGI,name)
 % CGI.form.name

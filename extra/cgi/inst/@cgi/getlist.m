@@ -1,7 +1,7 @@
 %% -*- texinfo -*-
 %% @deftypefn {Function File} {@var{vals} =} getlist(@var{cgi},@var{name})
-%% Returns all CGI parameters with the given @var{name}. The object @var{cgi} was 
-%% created using the cgi() constructor.
+%% Returns all CGI parameters with the given name. The object @var{cgi} was 
+%% created using the cgi() constructor. @{vals} is a cell array of strings.
 %% @end deftypefn
 %% @seealso{cgi}
 

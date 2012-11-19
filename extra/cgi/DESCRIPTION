@@ -5,7 +5,7 @@ Author: Alexander Barth <barth.alexander@gmail.com>
 Maintainer: Alexander Barth <barth.alexander@gmail.com>
 Title: cgi
 Description: Common Gatway Interface for Octave
-Categories: IO
+Categories: Web development
 Depends: octave (>= 3.4.0)
 Autoload: yes
 License: GPL version 2 or later

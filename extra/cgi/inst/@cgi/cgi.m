@@ -11,10 +11,26 @@
 
 function retval = cgi()
 
-self.query_string = getenv('QUERY_STRING');
+self.request_method = getenv('REQUEST_METHOD');
 
 self.params = {};
 self.vals = {};
+
+if strcmp(self.request_method,'GET') || ...
+   strcmp(self.request_method,'HEAD')
+  % GET/HEAD request
+  self.query_string = getenv('QUERY_STRING');
+elseif strcmp(self.request_method,'POST')
+  % POST request
+  content_type = getenv('CONTENT_TYPE');
+  content_length = str2double(getenv('CONTENT_LENGTH'));
+  assert(content_type,'application/x-www-form-urlencoded');
+  self.query_string = fscanf(stdin,'%c',content_length);
+  %fprintf(stderr,'query_string "%s" "%s" "%d"',self.query_string,content_type,content_length);
+else
+  error('unsupported requested method',self.request_method);
+end
+
 
 % should also split at ";"
 p = strsplit(self.query_string,'&');

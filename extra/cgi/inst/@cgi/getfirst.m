@@ -7,7 +7,7 @@
 %% The object @var{cgi} was 
 %% created using the cgi() constructor.
 %% @end deftypefn
-%% @seealso{cgi}
+%% @seealso{cgi,@cgi/getlist}
 
 % val = getfirst(cgi,name,default)
 

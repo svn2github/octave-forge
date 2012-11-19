@@ -1,15 +1,13 @@
 %% -*- texinfo -*-
 %% @deftypefn {Function File} {@var{CGI} =} cgi ()
 %% Creates a CGI object to parse CGI query string from GET or POST requests.
-%% Parameter can be return by:
-%% getfirst(CGI,name[,default])
-%% getlist(CGI,name)
-%% CGI.form.name
+%% Parameter can be return by the functions getfirst and getlist or
+%% with the dot-syntax (CGI.form.name).
 %%
-%% The methods getfirst and getlist behave as the Python CGI functions
+%% The methods getfirst and getlist behave as the Python CGI functions.
 %% 
 %% @end deftypefn
-%% @seealso{getfirst,getlist}
+%% @seealso{@cgi/getfirst,@cgi/getlist}
 
 
 function retval = cgi()

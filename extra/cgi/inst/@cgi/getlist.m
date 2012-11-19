@@ -3,7 +3,7 @@
 %% Returns all CGI parameters with the given name. The object @var{cgi} was 
 %% created using the cgi() constructor. @var{vals} is a cell array of strings.
 %% @end deftypefn
-%% @seealso{cgi,@cgi/getfirst}
+%% @seealso{cgi,@@cgi/getfirst}
 
 function vals = getlist(cgi,name)
 

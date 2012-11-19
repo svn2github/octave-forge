@@ -7,7 +7,7 @@
 %% The methods getfirst and getlist behave as the Python CGI functions.
 %% 
 %% @end deftypefn
-%% @seealso{@cgi/getfirst,@cgi/getlist}
+%% @seealso{@@cgi/getfirst,@@cgi/getlist}
 
 
 function retval = cgi()

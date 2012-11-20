@@ -9,4 +9,4 @@ Categories: Web development
 Depends: octave (>= 3.4.0)
 Autoload: yes
 License: GPL version 2 or later
-Url: http://octave.sf.net
+Url: http://octave.sf.net, http://modb.oce.ulg.ac.be/mediawiki/index.php/CGI_programming_with_Octave

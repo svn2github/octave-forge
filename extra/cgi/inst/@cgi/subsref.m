@@ -1,9 +1,9 @@
 %% -*- texinfo -*-
 %% @deftypefn {Function File} {@var{val} =} subsref(@var{cgi},@var{idx})
 %% @deftypefnx {Function File} {@var{val} =} getfirst(@var{cgi},@var{name},@var{default})
-%% Dot-syntar for returning CGI parmaters
+%% Dot-syntax for returning CGI parmaters
 %%
-%% This function allows to return CGI parameters with cgi.form.name or cgi.form.('name').
+%% This function allows to return CGI parameters with CGI.form.name or CGI.form.('name').
 %% The object @var{cgi} was 
 %% created using the cgi() constructor.
 %% @end deftypefn

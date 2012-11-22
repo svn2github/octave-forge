@@ -41,6 +41,7 @@
 ## "Numerical Algorithms with C", Springer, 1996
 
 ## Paul Kienzle, 19. feb 2001,  csape supports now matrix y value
+## Nir Krakauer, 21 Nov 2012, fixed a bug with periodic boundary conditions and matrix y (noticed by Ted Rippert); added more tests to verify it won't happen again
 
 function pp = csape (x, y, cond, valc)
 
@@ -160,7 +161,7 @@ function pp = csape (x, y, cond, valc)
       fact = (z(1,2:end) + h(1) * z(end,2:end) / gamma) / ...
           (1.0 + z(1,1) + h(1) * z(end,1) / gamma);
 
-      c(2:n,idx) = z(:,2:end) - z(:,1) * fact;
+      c(2:n,:) = z(:,2:end) - z(:,1) * fact;
     endif
 
     c(1,:) = c(n,:);
@@ -224,8 +225,8 @@ function pp = csape (x, y, cond, valc)
 endfunction
 
 
-%!shared x,y,cond
-%! x = linspace(0,2*pi,15); y = sin(x);
+%!shared x,x2,y,cond
+%! x = linspace(0,2*pi,5); y = sin(x); x2 = linspace(0,2*pi,16);
 
 %!assert (ppval(csape(x,y),x), y, 10*eps);
 %!assert (ppval(csape(x,y),x'), y', 10*eps);
@@ -233,6 +234,8 @@ endfunction
 %!assert (ppval(csape(x',y'),x), y, 10*eps);
 %!assert (ppval(csape(x,[y;y]),x), \
 %!        [ppval(csape(x,y),x);ppval(csape(x,y),x)], 10*eps)
+%!assert (ppval(csape(x,[y;y]),x2), \
+%!        [ppval(csape(x,y),x2);ppval(csape(x,y),x2)], 10*eps)
 
 %!test cond='complete';
 %!assert (ppval(csape(x,y,cond),x), y, 10*eps);
@@ -241,6 +244,8 @@ endfunction
 %!assert (ppval(csape(x',y',cond),x), y, 10*eps);
 %!assert (ppval(csape(x,[y;y],cond),x), \
 %!        [ppval(csape(x,y,cond),x);ppval(csape(x,y,cond),x)], 10*eps)
+%!assert (ppval(csape(x,[y;y],cond),x2), \
+%!        [ppval(csape(x,y,cond),x2);ppval(csape(x,y,cond),x2)], 10*eps)
 
 %!test cond='variational';
 %!assert (ppval(csape(x,y,cond),x), y, 10*eps);
@@ -249,6 +254,8 @@ endfunction
 %!assert (ppval(csape(x',y',cond),x), y, 10*eps);
 %!assert (ppval(csape(x,[y;y],cond),x), \
 %!        [ppval(csape(x,y,cond),x);ppval(csape(x,y,cond),x)], 10*eps)
+%!assert (ppval(csape(x,[y;y],cond),x2), \
+%!        [ppval(csape(x,y,cond),x2);ppval(csape(x,y,cond),x2)], 10*eps)
 
 %!test cond='second';
 %!assert (ppval(csape(x,y,cond),x), y, 10*eps);
@@ -257,6 +264,8 @@ endfunction
 %!assert (ppval(csape(x',y',cond),x), y, 10*eps);
 %!assert (ppval(csape(x,[y;y],cond),x), \
 %!        [ppval(csape(x,y,cond),x);ppval(csape(x,y,cond),x)], 10*eps)
+%!assert (ppval(csape(x,[y;y],cond),x2), \
+%!        [ppval(csape(x,y,cond),x2);ppval(csape(x,y,cond),x2)], 10*eps)
 
 %!test cond='periodic';
 %!assert (ppval(csape(x,y,cond),x), y, 10*eps);
@@ -265,6 +274,8 @@ endfunction
 %!assert (ppval(csape(x',y',cond),x), y, 10*eps);
 %!assert (ppval(csape(x,[y;y],cond),x), \
 %!        [ppval(csape(x,y,cond),x);ppval(csape(x,y,cond),x)], 10*eps)
+%!assert (ppval(csape(x,[y;y],cond),x2), \
+%!        [ppval(csape(x,y,cond),x2);ppval(csape(x,y,cond),x2)], 10*eps)
 
 %!test cond='not-a-knot';
 %!assert (ppval(csape(x,y,cond),x), y, 10*eps);
@@ -273,3 +284,5 @@ endfunction
 %!assert (ppval(csape(x',y',cond),x), y, 10*eps);
 %!assert (ppval(csape(x,[y;y],cond),x), \
 %!        [ppval(csape(x,y,cond),x);ppval(csape(x,y,cond),x)], 10*eps)
+%!assert (ppval(csape(x,[y;y],cond),x2), \
+%!        [ppval(csape(x,y,cond),x2);ppval(csape(x,y,cond),x2)], 10*eps)

@@ -6,6 +6,9 @@
 % The parameter start contains the starting indices, count
 % is the number of elements and stride the increment between
 % two successive elements (default 1).
+%
+% Note: the order of dimension is reversed compared to 
+% the shell command ncdump
 
 function x = ncread(filename,varname,start,count,stride)
 

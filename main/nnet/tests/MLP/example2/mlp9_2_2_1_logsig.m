@@ -1,4 +1,4 @@
-## Copyright (C) 2006 Michel D. Schmid  <michaelschmid@users.sourceforge.net>
+## Copyright (C) 2006 Michel D. Schmid  <michael.schmid@plexso.com>
 ##
 ##
 ## This program is free software; you can redistribute it and/or modify it

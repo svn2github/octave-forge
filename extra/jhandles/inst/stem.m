@@ -88,7 +88,7 @@
 ## @seealso{bar, barh, plot}
 ## @end deftypefn
 
-## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
+## Author: Michel D. Schmid <michael.schmid@plexso.com>
 ## Adapted-by: jwe
 ## Adapted-by: Michael Goffioul <michael.goffioul@gmail.com>
 

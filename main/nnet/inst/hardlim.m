@@ -1,4 +1,4 @@
-## Copyright (C) 2007 Michel D. Schmid <michaelschmid@users.sourceforge.net>
+## Copyright (C) 2007 Michel D. Schmid <michael.schmid@plexso.com>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -20,7 +20,7 @@
 
 ## @seealso{purelin,tansig}
 
-## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
+## Author: Michel D. Schmid <michael.schmid@plexso.com>
 
 
 function a = hardlim(n)

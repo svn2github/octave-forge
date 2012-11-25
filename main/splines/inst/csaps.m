@@ -85,10 +85,6 @@ function [ret,p]=csaps(x,y,p,xi,w)
   u = (6*(1-p)*QT*diag(1 ./ w)*QT' + p*R) \ (QT*y);
   a = y - 6*(1-p)*diag(1 ./ w)*QT'*u;
 
-## note: add knots to either end of spline pp-form to ensure linear extrapolation
-  xminus = x(1) - eps(x(1));
-  xplus = x(end) + eps(x(end));
-  x = [xminus; x; xplus];
   
 ## derivatives for the piecewise cubic spline  
   aa = bb = cc = dd = zeros (n+1, m);
@@ -101,12 +97,21 @@ function [ret,p]=csaps(x,y,p,xi,w)
   bb(2:n, :) = diff(a) ./ h - (cc(2:n, :)/2).*h - (dd(2:n, :)/6).*(h.^2);
  unwind_protect_cleanup
  warning (warn_state, "Octave:broadcast");
- end_unwind_protect  
-  bb(1, :) = bb(2, :); #linear extension of splines
-  bb(n + 1, :) = bb(n, :);
+ end_unwind_protect
+
+## note: add knots to either end of spline pp-form to ensure linear extrapolation
+  xminus = x(1) - eps(x(1));
+  xplus = x(end) + eps(x(end));
+  x = [xminus; x; xplus];  
+  slope_minus = bb(2, :);
+  slope_plus = bb(n, :) + cc(n, :)*h(n-1) + (dd(n, :)/2)*h(n-1)^2;
+  bb(1, :) = slope_minus; #linear extension of splines
+  bb(n + 1, :) = slope_plus;
   aa(1, :) = a(1, :) - eps(x(1))*bb(1, :);
   
   ret = mkpp (x, cat (2, dd'(:)/6, cc'(:)/2, bb'(:), aa'(:)), size(y, 2));
+
+
 
   if ~isempty (xi)
     ret = ppval (ret, xi);
@@ -122,4 +127,10 @@ endfunction
 %!assert (csaps(x',y',1,x'), y', 10*eps);
 %!assert (csaps(x',y',1,x), y, 10*eps);
 %!assert (csaps(x,[y 2*y],1,x)', [y 2*y], 10*eps);
+%{
+x = ([1:10 10.5 11.3])'; y = sin(x);
+xx = 0:0.1:12;
+[yy, p] = csaps(x,y,1,xx);
+plot(x, y, 's', xx, yy)
 
+%}

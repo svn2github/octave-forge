@@ -121,23 +121,8 @@ end
   sigma2 = mean(MSR(:)) * (n / (n-Ht)); #estimated data error variance (wahba83)
   unc_y = sqrt(sigma2 * Hd ./ w); #uncertainty (SD) of fitted curve at each input x-value (hutchinson86)
 
-## solve for the scaled second derivatives u and for the function values a at the knots (if p = 1, a = y) 
-  u = (6*(1-p)*QT*diag(1 ./ w)*QT' + p*R) \ (QT*y);
-  a = y - 6*(1-p)*diag(1 ./ w)*QT'*u; #where y is calculated
-
-## derivatives at all but the last knot for the piecewise cubic spline
-  aa = a(1:(end-1), :);
-  cc = zeros(size(y)); 
-  cc(2:(n-1), :) = 6*p*u; #cc([1 n], :) = 0 [natural spline]
-  dd = diff(cc) ./ h;
-  cc = cc(1:(end-1), :);
-  bb = diff(a) ./ h - (cc/2).*h - (dd/6).*(h.^2);
-
-  ret = mkpp (x, cat (2, dd'(:)/6, cc'(:)/2, bb'(:), aa'(:)), size(y, 2));
-
-  if ~isempty(xi)
-    ret = ppval (ret, xi);
-  endif
+## construct the fitted smoothing spline 
+  [ret,p]=csaps(x,y,p,xi,w);
 
 endfunction
 

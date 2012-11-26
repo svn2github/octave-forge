@@ -2,7 +2,7 @@
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or
+## the Free Software Foundation; either version 2 of the License, or
 ## (at your option) any later version.
 ##
 ## This program is distributed in the hope that it will be useful,
@@ -32,13 +32,14 @@
 ## @item @var{p}=1
 ##       no smoothing: interpolation
 ## @item @var{p}<0 or not given
-##       an intermediate amount of smoothing is chosen (the smoothing term and the interpolation term are scaled to be of the same magnitude)
+##       an intermediate amount of smoothing is chosen (such that the smoothing term and the interpolation term are of the same magnitude)
+##       (csaps_sel provides other methods for automatically selecting the smoothing parameter @var{p}.)
 ## @end table
 ##
 ## Reference: Carl de Boor (1978), A Practical Guide to Splines, Springer, Chapter XIV
 ##
 ## @end deftypefn
-## @seealso{spline, csapi, ppval, gcvspl}
+## @seealso{spline, csapi, ppval, csaps_sel}
 
 ## Author: Nir Krakauer <nkrakauer@ccny.cuny.edu>
 
@@ -71,17 +72,18 @@ function [ret,p]=csaps(x,y,p,xi,w)
 
   h = diff(x);
 
-  R = spdiags([h(1:end-1) 2*(h(1:end-1) + h(2:end)) h(2:end)], [-1 0 1], n-2, n-2);
+  R = spdiags([h(1:end-1) 2*(h(1:end-1) + h(2:end)) h(2:end)], [1 0 -1], n-2, n-2);
 
   QT = spdiags([1 ./ h(1:end-1) -(1 ./ h(1:end-1) + 1 ./ h(2:end)) 1 ./ h(2:end)], [0 1 2], n-2, n);
 
 ## if not given, choose p so that trace(6*(1-p)*QT*diag(1 ./ w)*QT') = trace(pR)
   if isempty(p) || (p < 0)
-  	r = 6*trace(QT*diag(1 ./ w)*QT') / trace(R);
-  	p = 1 ./ (1 + r);
+  	r = full(6*trace(QT*diag(1 ./ w)*QT') / trace(R));
+  	p = r ./ (1 + r);
   endif
 
-## solve for the scaled second derivatives u and for the function values a at the knots (if p = 1, a = y) 
+## solve for the scaled second derivatives u and for the function values a at the knots (if p = 1, a = y; if p = 0, u(:) = 0) 
+## QT*y can also be written as (y(3:n, :) - y(2:(n-1), :)) ./ h(2:end) - (y(2:(n-1), :) - y(1:(n-2), :)) ./ h(1:(end-1))
   u = (6*(1-p)*QT*diag(1 ./ w)*QT' + p*R) \ (QT*y);
   a = y - 6*(1-p)*diag(1 ./ w)*QT'*u;
 
@@ -94,10 +96,12 @@ function [ret,p]=csaps(x,y,p,xi,w)
  warning ("off", "Octave:broadcast"); #turn off warning message for automatic broadcasting
  unwind_protect
   dd(2:n, :) = diff(cc(2:(n+1), :)) ./ h;
-  bb(2:n, :) = diff(a) ./ h - (cc(2:n, :)/2).*h - (dd(2:n, :)/6).*(h.^2);
+  %bb(2:n, :) = diff(a) ./ h - (cc(2:n, :)/2).*h - (dd(2:n, :)/6).*(h.^2);
+  bb(2:n, :) = diff(a) ./ h - (h/3) .* (cc(2:n, :) + cc(3:(n+1), :)/2);
  unwind_protect_cleanup
  warning (warn_state, "Octave:broadcast");
  end_unwind_protect
+
 
 ## note: add knots to either end of spline pp-form to ensure linear extrapolation
   xminus = x(1) - eps(x(1));
@@ -111,8 +115,6 @@ function [ret,p]=csaps(x,y,p,xi,w)
   
   ret = mkpp (x, cat (2, dd'(:)/6, cc'(:)/2, bb'(:), aa'(:)), size(y, 2));
 
-
-
   if ~isempty (xi)
     ret = ppval (ret, xi);
   endif
@@ -121,16 +123,8 @@ endfunction
 
 %!shared x,y
 %! x = ([1:10 10.5 11.3])'; y = sin(x);
-
 %!assert (csaps(x,y,1,x), y, 10*eps);
 %!assert (csaps(x,y,1,x'), y', 10*eps);
 %!assert (csaps(x',y',1,x'), y', 10*eps);
 %!assert (csaps(x',y',1,x), y, 10*eps);
 %!assert (csaps(x,[y 2*y],1,x)', [y 2*y], 10*eps);
-%{
-x = ([1:10 10.5 11.3])'; y = sin(x);
-xx = 0:0.1:12;
-[yy, p] = csaps(x,y,1,xx);
-plot(x, y, 's', xx, yy)
-
-%}

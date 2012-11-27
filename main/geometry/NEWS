@@ -10,6 +10,9 @@ geometry-1.7.0   Release Date: 2012-XX-XX  Release Manager: Juan Pablo Carbajal
    createCube drawSphericalTriangle   drawTorus   revolutionSurface
    drawVector3d   spheres
 
+** Bug Fixes:
+  - cov2ellipse  scale and orientation of axis.
+
 ===============================================================================
 geometry-1.6.0   Release Date: 2012-10-12  Release Manager: Juan Pablo Carbajal
 ===============================================================================

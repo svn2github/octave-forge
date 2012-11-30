@@ -249,8 +249,6 @@ public:
 				    const FixedComplexNDArray& a);
   friend std::istream& operator >> (std::istream& is, FixedComplexNDArray& a);
 
-  static FixedPointComplex resize_fill_value (void) 
-      { return FixedPointComplex(); }
 };
 
 

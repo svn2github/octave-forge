@@ -170,7 +170,7 @@ public:
   FixedColumnVector column (char *s) const;
 
   void resize (octave_idx_type nr, octave_idx_type nc,
-               const FixedPoint& rfv = resize_fill_value ())
+               const FixedPoint& rfv = FixedPoint ())
   {
     MArray<FixedPoint>::resize (dim_vector (nr, nc), rfv);
   }
@@ -251,8 +251,6 @@ public:
 
   friend OCTAVE_FIXED_API std::ostream& operator << (std::ostream& os, const FixedMatrix& a);
   friend OCTAVE_FIXED_API std::istream& operator >> (std::istream& is, FixedMatrix& a);
-
-  static FixedPoint resize_fill_value (void) { return FixedPoint(); }
 
 };
 

@@ -314,8 +314,6 @@ public:
   friend OCTAVE_FIXED_API std::istream& operator >> (std::istream& is, FixedComplexMatrix& a);
 
 
-  static FixedPointComplex resize_fill_value (void) 
-      { return FixedPointComplex(); }
 };
 
 OCTAVE_FIXED_API FixedComplexMatrix operator * (const FixedComplexColumnVector& a, 

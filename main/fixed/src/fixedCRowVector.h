@@ -241,7 +241,7 @@ public:
   friend std::istream& operator >> (std::istream& is, FixedComplexRowVector& a);
 
   void resize (octave_idx_type n,
-               const FixedPointComplex& rfv = Array<FixedPointComplex>::resize_fill_value ())
+               const FixedPointComplex& rfv = FixedPointComplex ())
   {
     Array<FixedPointComplex>::resize (dim_vector (1, n), rfv);
   }

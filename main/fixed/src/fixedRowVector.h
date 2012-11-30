@@ -178,7 +178,7 @@ public:
   friend std::istream& operator >> (std::istream& is, FixedRowVector& a);
 
   void resize (octave_idx_type n,
-               const FixedPoint& rfv = Array<FixedPoint>::resize_fill_value ())
+               const FixedPoint& rfv = FixedPoint ())
   {
     Array<FixedPoint>::resize (dim_vector (1, n), rfv);
   }

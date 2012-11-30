@@ -185,7 +185,6 @@ public:
   friend std::ostream& operator << (std::ostream& os, const FixedNDArray& a);
   friend std::istream& operator >> (std::istream& is, FixedNDArray& a);
 
-  static FixedPoint resize_fill_value (void) { return FixedPoint(); }
 };
 
 // FixedNDArray abs  (const FixedNDArray &x);

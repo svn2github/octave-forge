@@ -183,7 +183,7 @@ public:
                                     FixedColumnVector& a);
 
   void resize (octave_idx_type n,
-               const FixedPoint& rfv = Array<FixedPoint>::resize_fill_value ())
+               const FixedPoint& rfv = FixedPoint ())
   {
     Array<FixedPoint>::resize (dim_vector (n, 1), rfv);
   }

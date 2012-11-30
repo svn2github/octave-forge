@@ -106,7 +106,7 @@ octave_base_fixed_matrix<MT>::assign (const octave_value_list& idx,
       for (octave_idx_type i = 0; i < len; i++)
 	ra_idx(i) = idx(i).index_vector ();
 
-      matrix.assign (ra_idx, rhs, MT::resize_fill_value ());
+      matrix.assign (ra_idx, rhs, FixedPoint ());
     }
 }
 

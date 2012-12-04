@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='utf-8'?>
+<snippets language="octave">
+  <snippet>
+    <text><![CDATA[## Copyright (C) $<3: import datetime; return str(datetime.date.today().year)> - Juan Pablo Carbajal
+##
+## This progrm is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 3 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+## Author: Juan Pablo Carbajal <ajuanpi+dev@gmail.com>
+
+$0]]></text>
+    <tag>gpl</tag>
+    <description>GPL license</description>
+  </snippet>
+  <snippet>
+    <text><![CDATA[%!demo
+%! $0
+%! # -------------------------------------------------
+%! # ${1:description}]]></text>
+    <tag>demo</tag>
+    <description>Demo block</description>
+  </snippet>
+  <snippet>
+    <text><![CDATA[%!test
+%! $0]]></text>
+    <tag>test</tag>
+    <description>Test block</description>
+  </snippet>
+<snippet>
+    <text><![CDATA[## FIXME when warning for broadcasting is turned off by default, this
+## unwind_protect block should be removed
+bc_warn = warning ("query", "Octave:broadcast");
+unwind_protect
+  warning ("off", "Octave:broadcast");
+ 
+unwind_protect_cleanup
+  ## restore broadcats warning status
+  warning (bc_warn.state, "Octave:broadcast");
+end_unwind_protect]]></text>
+    <tag>broadcasting</tag>
+    <description>broadcast warnings</description>
+  </snippet>
+  <snippet>
+    <text><![CDATA[switch (tolower (option))
+ case ""
+ case ""
+ otherwise
+   error ("foo: unknow option '%s' for option", option);
+endswitch]]></text>
+    <tag>switchoption</tag>
+    <description>switch options</description>
+  </snippet>
+</snippets>

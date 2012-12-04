@@ -107,15 +107,22 @@ function [Xl Xu Rl Ru] = qncsaba( N, S, V, m, Z )
 	error( "V must contain nonnegative values" );
     V = V(:)';
   endif
-  if ( nargin < 4 || isempty(m) )
+
+  if ( nargin < 4 ) 
     m = ones(1,K);
   else
-    (isvector(m) && length(m) == K) || \
-	error( "m must be a vector with %d elements", K );
-    all(m<=1) || \
-	error( "multiple server nodes are not supported" );
-    m = m(:)';
+    isvector(m) || \
+	error( "m must be a vector" );
+    m = m(:)'; # make m a row vector
   endif
+
+  [err S V m] = common_size(S, V, m);
+  (err == 0) || \
+      error( "S, V and m are of incompatible size" );
+
+  all(m<=1) || \
+      error( "multiple server nodes are not supported" );
+
   if ( nargin < 5 || isempty(Z) )
     Z = 0;
   else
@@ -142,10 +149,10 @@ endfunction
 %! fail("qncsaba(1,[-1 2])", "nonnegative");
 %! fail("qncsaba(1,[1 2],[1 2 3])", "2 elements");
 %! fail("qncsaba(1,[1 2 3],[1 2 -1])", "nonnegative");
-%! fail("qncsaba(1,[1 2 3],[1 2 3],[1 2])", "3 elements");
+%! fail("qncsaba(1,[1 2 3],[1 2 3],[1 2])", "incompatible size");
 %! fail("qncsaba(1,[1 2 3],[1 2 3],[1 2 1])", "not supported");
 %! fail("qncsaba(1,[1 2 3],[1 2 3],[1 1 1],-1)", "nonnegative");
-%! fail("qncsaba(1,[1 2 3],[1 2 3],[1 1 1],[0 0])", "scalar");
+%! fail("qncsaba(1,[1 2 3],[1 2 3],1,[0 0])", "scalar");
 
 ## Example 9.6 p. 913 Bolch et al.
 %!test

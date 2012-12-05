@@ -11,7 +11,7 @@ Summary of important user-visible changes for specfun 1.2.0:
       zernike_polar
       zernike_R_poly
 
- ** A group functions to deal with Zernike polynomials have been implemented.
+ ** A group of functions to deal with Zernike polynomials have been implemented.
     These are a sequence of polynomials orthogonal on the unit disk. They
     are used, for example, to characterize distortions in optical systems.
 

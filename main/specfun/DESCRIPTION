@@ -1,12 +1,11 @@
 Name: Specfun
 Version: 1.1.0
 Date: 2011-12-15
-Author: Various Authors
-Maintainer: The Octave Community
+Author: various authors
+Maintainer: Octave-Forge community <maintainers@octave.org>
 Title: Specfun
 Description: Special functions including ellipitic functions, etc
 Categories: Specfun
 Depends: octave (>= 3.4.0)
-Autoload: no
-License: GPL version 3 or later and Modified BSD (see individual files)
+License: GPLv3+, modified BSD
 Url: http://octave.sf.net

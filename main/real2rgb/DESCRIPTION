@@ -1,0 +1,11 @@
+Name: real2rgb
+Version: 1.0.0
+Date: 2012-xx-xx
+Author: Oliver Woodford <o.j.woodford.98@cantab.net>
+Maintainer: Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
+Title: Extra colormap functions
+Description: Extra colormpas and manipulation function that converts intensity
+matrices into truecolor images.
+Depends: octave (>= 3.6.0)
+Autoload: no
+License: GPLv3

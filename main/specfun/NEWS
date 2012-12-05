@@ -3,7 +3,17 @@ Summary of important user-visible changes for specfun 1.2.0:
 
  ** The following functions are new:
 
-      big_factorial  lfactorial
+      big_factorial
+      lfactorial
+      zernike_cartesian
+      zernike_name
+      zernike_noll_to_mn
+      zernike_polar
+      zernike_R_poly
+
+ ** A group functions to deal with Zernike polynomials have been implemented.
+    These are a sequence of polynomials orthogonal on the unit disk. They
+    are used, for example, to characterize distortions in optical systems.
 
  ** The following functions have removed since they now are part of
     Octave core:

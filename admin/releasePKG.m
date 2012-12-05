@@ -103,7 +103,9 @@ function [pkgtar htmltar] = releasePKG (pkgname, varargin)
   pkgtar = sprintf ("%s-%s.tar", pkgname, pkgversion);
   tar (pkgtar, pkgname);
   gzip (pkgtar);
+  unix (sprintf ('rm -v %s',pkgtar)); % remove the .tar file
   pkgtar = sprintf ("%s.gz", pkgtar);
+
 
   printf ("Tared to %s\n", pkgtar);
   fflush (stdout);

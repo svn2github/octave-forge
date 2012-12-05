@@ -16,7 +16,6 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{z} =} zeta (@var{t})
 ## Compute the Riemann's Zeta function.
-## @seealso{Si}
 ## @end deftypefn
 
 function z = zeta(t)

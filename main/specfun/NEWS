@@ -20,6 +20,13 @@ Summary of important user-visible changes for specfun 1.2.0:
 
       erfcinv
 
+ ** The following functions have been deprecated (see their help text
+    for the recommended alternatives):
+
+      Ci
+      combs
+      Si
+
  ** The function `combs' (just imported from the combinatorics package)
     has been deprecated in favour of `nchoosek' from Octave-core which
     should perform faster. The only difference is that it does accept

@@ -15,25 +15,16 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{y} =} Ci (@var{z})
-## Compute the cosine integral function defined by:
-## @verbatim
-##                    Inf
-##                   /
-##           Ci(x) = | cos(t)/t dt
-##                   /
-##                   x
-## @end verbatim
-## @seealso{cosint, Si, sinint, expint, expint_Ei}
+## This function has been deprecated. Please use @code{cosint} instead which
+## has exactly the same syntax.
 ## @end deftypefn
 
-function y = Ci(z)
-  if (nargin != 1)
-    print_usage;
+function y = Ci (z)
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "`Ci' has been deprecated in favor of `cosint'. This function will be removed from future versions of the `specfun' package");
   endif
-  y = z;
-  y(z == 0) = -Inf; 
-  y(real(z) == 0 & imag(z) >0)  = 0.5*(expint_Ei(i.*y(real(z) == 0 & imag(z) >0))+expint_Ei(-i.*y(real(z) == 0 & imag(z) >0)))+ i.*pi./2;
-  y(real(z) == 0 & imag(z) <0) = 0.5*(expint_Ei(i.*y(real(z) == 0 & imag(z) <0))+expint_Ei(-i.*y(real(z) == 0 & imag(z) <0)))-i*pi./2;
-  y(real(z)>=0) = -0.5.*(expint_E1(i.*y(real(z)>=0) )+expint_E1(-i.*y(real(z)>=0) ));
-  y(real(z)<0) = -0.5.*(expint_E1(-i.*y(real(z)<0))+expint_E1(i.*y(real(z)<0)))+i*pi;
+  y = cosint (z);
 endfunction

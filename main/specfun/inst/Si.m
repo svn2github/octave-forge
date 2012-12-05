@@ -15,30 +15,16 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{y} =} Si (@var{x})
-## Compute the sine integral defined by:
-## @verbatim
-##                    x
-##                   /
-##           Si(x) = | sin(t)/t dt
-##                   /
-##                   0
-## @end verbatim
+## This function has been deprecated. Please use @code{sinint} instead which
+## has exactly the same syntax.
 ## @end deftypefn
 
-function y = Si(x)
-  if (nargin != 1)
-    print_usage;
+function y = Si (x)
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "`Si' has been deprecated in favor of `sinint'. This function will be removed from future versions of the `specfun' package");
   endif
-  y = zeros(size(x));
-  if prod(size(x)) < 101
-    for k = 1:prod(size(x))
-      y(k) = sum(besselj([0:100]+0.5,(x(k)/2)).^2);
-    endfor
-    y = y.*pi;
-  else
-    for k=0:100
-      y += besselj(k+0.5,x/2).^2;
-    endfor
-    y = y.*pi;
-  endif
+  y = sinint (z);
 endfunction

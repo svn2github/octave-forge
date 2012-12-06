@@ -76,7 +76,7 @@ function V = qncsvisits( P, r )
   if ( nargin < 2 )
     r = 1;
   else
-    issclarar(r) || \
+    isscalar(r) || \
 	error("r must be a scalar");
 
     (r>=1 && r<=N) || \

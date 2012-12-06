@@ -22,7 +22,8 @@
 ## @deftypefnx {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qncmmva (@var{N}, @var{S}, @var{V}, @var{m})
 ## @deftypefnx {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qncmmva (@var{N}, @var{S}, @var{V}, @var{m}, @var{Z})
 ## @deftypefnx {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qncmmva (@var{N}, @var{S}, @var{P})
-## @deftypefnx {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qncmmva (@var{N}, @var{S}, @var{P}, @var{m})
+## @deftypefnx {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qncmmva (@var{N}, @var{S}, @var{P}, @var{r})
+## @deftypefnx {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qncmmva (@var{N}, @var{S}, @var{P}, @var{r}, @var{m})
 ##
 ## @cindex Mean Value Analysys (MVA)
 ## @cindex closed network, multiple classes
@@ -99,10 +100,16 @@
 ## @item P
 ## @code{@var{P}(r,i,s,j)} is the probability that a class @math{r}
 ## job completing service at center @math{i} is routed to center @math{j}
-## as a class @math{s} job; the reference station for all jobs
-## is considered station 1. @strong{If you pass argument @var{P},
+## as a class @math{s} job; the reference stations for each class
+## are specified with the paramter @var{r}.
+## @strong{If you pass argument @var{P},
 ## class switching is allowed}, but you can not specify any external delay
 ## (i.e., @var{Z} must be zero).
+##
+## @item r
+## @code{@var{r}(c)} is the reference station for class @math{c}.
+## If omitted, station 1 is the reference station for all classes.
+## See @command{qncmvisits}.
 ##
 ## @item m
 ## If @code{@var{m}(k)<1}, then center @math{k} is assumed to be a delay
@@ -153,7 +160,7 @@
 ##
 ## @end table
 ##
-## @seealso{qnclosed, qncmmvaapprox}
+## @seealso{qnclosed, qncmmvaapprox, qncmvisits}
 ##
 ## @end deftypefn
 
@@ -190,9 +197,9 @@ endfunction
 
 ##############################################################################
 ## Analyze closed, multiclass QNs with class switching
-function [U R Q X] = __qncmmva_cs( N, S, P, m )
+function [U R Q X] = __qncmmva_cs( N, S, P, r, m )
   
-  if ( nargin < 3 || nargin > 4 )
+  if ( nargin < 3 || nargin > 5 )
     print_usage();
   endif
 
@@ -208,7 +215,22 @@ function [U R Q X] = __qncmmva_cs( N, S, P, m )
   ndims(P) == 4 && size(P) == [C,K,C,K] || \
       error( "P size mismatch (should be %dx%dx%dx%d)",C,K,C,K );
 
-  if ( nargin < 4 ) 
+  if ( nargin < 4 )
+    r = ones(1,C); # reference station
+  else
+
+    if (isscalar(r))
+      r = r*ones(1,C);
+    endif
+
+    ( isvector(r) && length(r) == C ) || \
+	error("r must be a vector with %d elements", C);
+    r = r(:)';
+    all( r>=1 && r<=K ) || \
+	error("elements of r are out of range [1,%d]",K);
+  endif
+
+  if ( nargin < 5 ) 
     m = ones(1,K);
   else
     isvector(m) || \
@@ -229,7 +251,7 @@ function [U R Q X] = __qncmmva_cs( N, S, P, m )
   U = R = Q = X = zeros(C,K);
 
   ## 1. Compute visit counts
-  [V ch] = qncmvisits(P);
+  [V ch] = qncmvisits(P,r);
 
   ## 2. Identify chains
   nch = max(ch);
@@ -698,9 +720,23 @@ endfunction
 ## Example from table 5, p. 23, Herb Schwetman, "Implementing the Mean
 ## Value Algorith for the Solution of Queueing Network Models",
 ## Technical Report CSD-TR-355, Department of Computer Sciences, Purdue
-## University, feb 15, 1982. Note: below, server 1 is the PS
-## node labeled "Sys 3" in the example; server 2 is the IS labeled
-## "APL1" and server e is the IS labeled "IMS2"
+## University, feb 15, 1982.
+%!test
+%! S = [1 0 .025; 0 15 .5];
+%! V = [1 0 1; 0 1 1];
+%! N = [15 5];
+%! m = [-1 -1 1];
+%! [U R Q X] = qncmmva(N,S,V,m);
+%! assert( U, [14.323 0 .358; 0 4.707 .157], 1e-3 );
+%! assert( R, [1.0 0 .047; 0 15 .934], 1e-3 );
+%! assert( Q, [14.323 0 .677; 0 4.707 .293], 1e-3 );
+%! assert( X, [14.323 0 14.323; 0 .314 .314], 1e-3 );
+
+
+## Same test as above, but using routing probabilities instead of
+## visits. Also, reordered the nodes such that server 1 is the PS node
+## labeled "Sys 3" in the example; server 2 is the IS labeled "APL1" and
+## server e is the IS labeled "IMS2"
 %!test
 %! S = [.025 1 15; .5 1 15 ];
 %! P = zeros(2,3,2,3);
@@ -708,7 +744,8 @@ endfunction
 %! P(2,1,2,3) = P(2,3,2,1) = 1;
 %! N = [15 5];
 %! m = [1 -1 -1];
-%! [U R Q X] = qncmmva(N,S,P,m);
+%! r = [1 1]; # reference station is station 1
+%! [U R Q X] = qncmmva(N,S,P,r,m);
 %! # FIXME: I replaced 14.3->14.323
 %! assert( U, [0.358 14.323 0; 0.156 0 4.707], 1e-3 );
 %! # FIXME: I replaced 14.3->14.323
@@ -805,13 +842,15 @@ endfunction
 %! ylabel("Resp. Time");
 
 %!demo
-%! S = [1 15 0.025; 1 15 0.500];
+%! S = [1 0 .025; 0 15 .5];
 %! P = zeros(2,3,2,3);
 %! P(1,1,1,3) = P(1,3,1,1) = 1;
 %! P(2,2,2,3) = P(2,3,2,2) = 1;
 %! N = [15 5];
 %! m = [-1 -1 1];
-%! [U R Q X] = qncmmva(N,S,P,m);
+%! r = [3 3]; # reference station is station 3
+%! [U R Q X] = qncmmva(N,S,P,r,m)
+
 
 ## Example shown on Figure 9: Herb Schwetman, "Implementing the Mean
 ## Value Algorith for the Solution of Queueing Network Models",
@@ -827,4 +866,4 @@ endfunction
 %! P(1,2,1,1) = P(2,2,2,1) = 1;
 %! P(1,3,1,1) = P(2,3,2,1) = 1;
 %! N = [3 0];
-%! [U R Q X] = qncmmva(N, S, P);
+%! [U R Q X] = qncmmva(N, S, P)

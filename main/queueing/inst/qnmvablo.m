@@ -82,7 +82,7 @@ endfunction
 %! P = [0 0.7 0.3; 1 0 0; 1 0 0];
 %! K = 40;
 %! [U1 R1 Q1] = qnmvablo( K, S, M, P );
-%! V = qnvisits(P);
+%! V = qncsvisits(P);
 %! [U2 R2 Q2] = qnclosedsinglemva( K, S, V );
 %! assert( U1, U2, 1e-5 );
 %! assert( R1, R2, 1e-5 );

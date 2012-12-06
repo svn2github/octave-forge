@@ -230,7 +230,7 @@ endfunction
 %! P = [0 0.3 0.7; 1 0 0; 1 0 0];
 %! S = [1 0.6 0.2];
 %! m = ones(1,3);
-%! V = qnvisits(P);
+%! V = qncsvisits(P);
 %! Z = 2;
 %! Nmax = 20;
 %! tol = 1e-5; # compensate for numerical errors
@@ -248,7 +248,7 @@ endfunction
 %!test
 %! P = [0 0.3 0.7; 1 0 0; 1 0 0];
 %! S = [1 0.6 0.2];
-%! V = qnvisits(P);
+%! V = qncsvisits(P);
 %! Nmax = 20;
 %! tol = 1e-5; # compensate for numerical errors
 %!

@@ -328,7 +328,7 @@ endfunction
 %! C = [6 6 6];
 %! S = [1 0.8 1.8];
 %! N = 6;
-%! [U1 R1 Q1 X1] = qnclosed( N, S, qnvisits(P) );
+%! [U1 R1 Q1 X1] = qnclosed( N, S, qncsvisits(P) );
 %! [U2 R2 Q2 X2] = qnmarkov( N, S, C, P );
 %! assert( U1, U2, 1e-6 );
 %! assert( R1, R2, 1e-6 );

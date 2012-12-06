@@ -79,7 +79,7 @@
 ##
 ## @end table
 ##
-## @seealso{qnopen,qnos,qnvisits}
+## @seealso{qnopen,qnos,qnomvisits}
 ##
 ## @end deftypefn
 

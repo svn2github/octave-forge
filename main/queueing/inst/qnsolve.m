@@ -754,7 +754,7 @@ endfunction
 %!        qnmknode( "m/m/m-fcfs", 0.05 ) };
 %! P = [ 0 0.5 0.5 0; 1 0 0 0; 0.6 0 0 0; 1 0 0 0 ];
 %! lambda = [0 0 0 4];
-%! [U R Q X] = qnsolve("open", sum(lambda), QQ, qnvisits(P,lambda) );
+%! [U R Q X] = qnsolve("open", sum(lambda), QQ, qnosvisits(P,lambda) );
 %! assert( X, [20 10 10 4], 1e-4 );
 %! assert( U, [0.8 0.3 0.6 0.2], 1e-2 );
 %! assert( R, [0.2 0.043 0.15 0.0625], 1e-3 );

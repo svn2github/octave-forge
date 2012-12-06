@@ -235,7 +235,7 @@ For closed models, the visit ratios satisfy the following equation:
 @iftex
 @tex
 $$\left\{\eqalign{V_j & = \sum_{i=1}^K V_i P_{i, j} \quad j=1, \ldots, K \cr
-                  V_1 & = 1}\right. $$
+                  V_r & = 1 \quad \hbox{for a selected reference station $r$}}\right. $$
 @end tex
 @end iftex
 @ifnottex
@@ -248,15 +248,32 @@ $$\left\{\eqalign{V_j & = \sum_{i=1}^K V_i P_{i, j} \quad j=1, \ldots, K \cr
 |       /___
 |        i=1
 |
-| V_1 = 1
+| V_r = 1                     for a selected reference station r
 \
 @end example
 @end ifnottex
 
-@GETHELP{qnvisits}
+Note that the set of traffic equations @math{V_j = \sum_{i=1}^K V_i
+P_{i, j}} alone can only be solved up to a multiplicative constant; to
+get a unique solution we need an additional constraint @math{V_r =
+1}. This is equivalent to define station @math{r} as the
+@emph{reference station} (the default is @math{r=1},
+@xref{doc-qncsvisits}). The choice of the reference station for closed
+networks is extremely important, since it determines the performance
+results of the whole network.  First, the network throughput is set to
+the throughput of the reference station. Second, when a job returns to
+the reference station, it is assumed that the job completed its
+activity cycle, and enters a new activity cycle. Therefore, the system
+response time is also measured with respect to the reference station.
 
+@GETHELP{qncsvisits}
+
+@GETHELP{qnosvisits}
+
+@c
+@c
+@c
 @noindent @strong{EXAMPLE}
-
 
 @float Figure,fig:qn_closed_single
 @center @image{qn_closed_single,3in}
@@ -292,10 +309,11 @@ P = | 1  0    0   |
 @end example
 @end ifnottex
 
-The visit ratios @math{V} can be computed with:
+The visit ratios @math{V} using station 1 as the reference
+station can be computed with:
 
 @example
-@GETDEMO{qnvisits,1}
+@GETDEMO{qncsvisits,1}
    @result{} V = 1.00000   0.30000   0.70000
 @end example
 
@@ -337,12 +355,12 @@ If we let @math{\lambda = 1.2}, we can compute the visit ratios
 @math{V} as follows:
 
 @example
-@GETDEMO{qnvisits,2}
+@GETDEMO{qnosvisits,1}
    @result{} V = 5.0000   1.5000   2.5000
 @end example
 
-Function @command{qnvisits} expects a vector with @math{K} elements as a
-second parameter, for open networks only. The vector contains the
+Function @command{qnosvisits} expects a vector with @math{K} elements
+as a second parameter, for open networks only. The vector contains the
 arrival rates at each individual node; since in our example external
 arrivals exist only for node @math{S_1} with rate @math{\lambda =
 1.2}, the second parameter is @code{[1.2, 0, 0]}.
@@ -829,17 +847,25 @@ customers at service center @math{j} as follows:
 
 @iftex
 @tex
-$$\left\{\eqalign{ V_{s, j} & = \sum_{r=1}^C \sum_{i=1}^K V_{r, i} P_{r, i, s, j}, \quad s=1, \ldots, K, j=1, \ldots, K \cr
-                   V_{s, 1} & = 1 \quad s=1, \ldots, K}\right. $$
+$$\left\{\eqalign{ V_{s, j} & = \sum_{r=1}^C \sum_{i=1}^K V_{r, i} P_{r, i, s, j}, \quad s=1, \ldots, C, j=1, \ldots, K \cr
+                   V_{s, r_s} & = 1 \quad s=1, \ldots, C}\right. $$
 @end tex
 @end iftex
 @ifnottex
 @group
-V_sj = sum_r sum_i V_ri P_risj    s=1,...,K, j=1,...,K
+V_sj = sum_r sum_i V_ri P_risj    s=1,...,C, j=1,...,K
+V_s r_s = 1                       s=1,...,C
 @end group
 @end ifnottex
 
-@noindent while for open networks:
+@noindent where @math{r_s} is the index of class @math{s}
+reference station; similarly to single class models, the traffic
+equation for closed multiclass networks can be solved up to
+multiplicative constants unless we choose one referenc station per
+class and set their visit ratios to 1. When multiple classes belong to
+the same chain, then only a single constraint per chain must be given.
+
+For open networks the traffic equations are as follows:
 
 @iftex
 @tex
@@ -858,6 +884,10 @@ If @math{\lambda_{s, j}} is the external arrival rate of class
 @math{s} requests to service center @math{j}, and @math{\lambda =
 \sum_s \sum_j \lambda_{s, j}} is the overall external arrival rate to
 the whole system, then @math{P_{0, s, j} = \lambda_{s, j} / \lambda}.
+
+@GETHELP{qncmvisits}
+
+@GETHELP{qnomvisits}
 
 @c
 @c Open Networks
@@ -1269,8 +1299,8 @@ visits to center @math{k}.
 @end table
 
 We can compute @math{V_k} from the routing probability matrix
-@math{P_{i, j}} using the @command{qnvisits} function
-@pxref{doc-qnvisits}.  We can analyze the network for a given
+@math{P_{i, j}} using the @command{qncsvisits} function
+@pxref{doc-qncsvisits}.  We can analyze the network for a given
 population size @math{N} (for example, @math{N=10}) as follows:
 
 @example
@@ -1278,7 +1308,7 @@ population size @math{N} (for example, @math{N=10}) as follows:
 @kbd{N = 10;}
 @kbd{S = [1 2 0.8];}
 @kbd{P = [0 0.3 0.7; 1 0 0; 1 0 0];}
-@kbd{V = qnvisits(P);}
+@kbd{V = qncsvisits(P);}
 @kbd{[U R Q X] = qnclosed( N, S, V )}
    @result{} U = 0.99139 0.59483 0.55518
    @result{} R = 7.4360  4.7531  1.7500
@@ -1361,14 +1391,14 @@ arrive at center 1 with rate @math{\lambda_1 = 0.15}; there are no
 arrivals at centers 2 and 3.
 
 Similarly to closed networks, we first need to compute the visit
-counts @math{V_k} to center @math{k}. Again, we use the
-@command{qnvisits} function as follows:
+counts @math{V_k} to center @math{k}. We use the
+@command{qnosvisits} function as follows:
 
 @example
 @group
 @kbd{P = [0 0.3 0.5; 1 0 0; 1 0 0];}
 @kbd{lambda = [0.15 0 0];}
-@kbd{V = qnvisits(P, lambda)}
+@kbd{V = qnosvisits(P, lambda)}
    @result{} V = 5.00000 1.50000 2.50000
 @end group
 @end example

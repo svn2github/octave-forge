@@ -125,7 +125,7 @@ function [U R Q X] = qncsmvablo( K, S, M, P )
   z = ones(1,N);
   lambda = 0;
   ## Computation of the visit counts
-  v = qnvisits(P);
+  v = qncsvisits(P);
   D = S .* v; # Service demand
   ## Main loop
   for k=1:K
@@ -193,7 +193,7 @@ endfunction
 %! P = [0 0.7 0.3; 1 0 0; 1 0 0];
 %! K = 40;
 %! [U1 R1 Q1] = qncsmvablo( K, S, M, P );
-%! V = qnvisits(P);
+%! V = qncsvisits(P);
 %! [U2 R2 Q2] = qncsmva( K, S, V );
 %! assert( U1, U2, 1e-5 );
 %! assert( R1, R2, 1e-5 );

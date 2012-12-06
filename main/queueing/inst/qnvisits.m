@@ -43,8 +43,8 @@
 ## networks, @code{@var{lambda}(i)} is the external arrival rate to
 ## center @math{i}. For multiple class networks,
 ## @code{@var{lambda}(r,i)} is the arrival rate of class @math{r}
-## requests to center @math{i}. If this parameter is omitted, the
-## network is assumed to be closed.
+## requests to center @math{i}. If this function is called with a single
+## argument, the network is assumed to be closed.
 ##
 ## @end table
 ##
@@ -54,9 +54,10 @@
 ##
 ## @item V
 ## For single class networks, @code{@var{V}(i)} is the average number of
-## visits to server @math{i}. For multiple class networks,
-## @code{@var{V}(r,i)} is the class @math{r} visit ratio at center
-## @math{i}.
+## visits to server @math{i}, assuming center 1 as the reference station
+## (i.e., @code{@var{V}(1) = 1}). For multiple class networks,
+## @code{@var{V}(r,i)} is the number of visits of class @math{r}
+## requests at center @math{i}.
 ##
 ## @item ch
 ## (For closed networks only). @code{@var{ch}(c)} is the chain number
@@ -73,6 +74,13 @@
 ## Web: http://www.moreno.marzolla.name/
 
 function [V ch] = qnvisits( P, varargin )
+
+  persistent warned = false;
+  if (!warned)
+    warned = true;
+    warning("qn:deprecated-function",
+	    "qnvisits is deprecated. Please use one of qncsvisits, qnosvisits, qncmvisits, qnomvisits instead");
+  endif
 
   if ( nargin < 1 || nargin > 2 )
     print_usage();

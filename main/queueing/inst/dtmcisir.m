@@ -91,7 +91,7 @@ endfunction
 %! assert( max(s), 1 );
 %! assert( min(s), 1 );
 
-## FIXME: (mosty) copied from qnvisits.m; use a better algorithm for SCC
+## FIXME: (mosty) copied from qncmvisits.m; use a better algorithm for SCC
 ## (e.g.,
 ## http://pmtksupport.googlecode.com/svn/trunk/gaimc1.0-graphAlgo/scomponents.m
 function s = __scc(G)
@@ -111,7 +111,7 @@ function s = __scc(G)
   endfor
 endfunction
 
-## FIXME: (mosty) copied from qnvisits.m
+## FIXME: (mosty) copied from qncmvisits.m
 function v = __dfs(G, s)
   assert( issquare(G) );
   N = rows(G);

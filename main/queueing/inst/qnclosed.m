@@ -77,7 +77,7 @@ endfunction
 %! m = ones(size(S));             # All centers are single-server
 %! Z = 2;                         # External delay
 %! N = 15;                        # Maximum population to consider
-%! V = qnvisits(P); # Compute number of visits from P
+%! V = qncsvisits(P);             # Compute number of visits
 %! X_bsb_lower = X_bsb_upper = X_ab_lower = X_ab_upper = X_mva = zeros(1,N);
 %! for n=1:N
 %!   [X_bsb_lower(n) X_bsb_upper(n)] = qncsbsb(n, S, V, m, Z);

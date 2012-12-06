@@ -99,7 +99,8 @@
 ## @item P
 ## @code{@var{P}(r,i,s,j)} is the probability that a class @math{r}
 ## job completing service at center @math{i} is routed to center @math{j}
-## as a class @math{s} job. @strong{If you pass this argument,
+## as a class @math{s} job; the reference station for all jobs
+## is considered station 1. @strong{If you pass argument @var{P},
 ## class switching is allowed}, but you can not specify any external delay
 ## (i.e., @var{Z} must be zero).
 ##
@@ -228,7 +229,7 @@ function [U R Q X] = __qncmmva_cs( N, S, P, m )
   U = R = Q = X = zeros(C,K);
 
   ## 1. Compute visit counts
-  [V ch] = qnvisits(P);
+  [V ch] = qncmvisits(P);
 
   ## 2. Identify chains
   nch = max(ch);
@@ -634,7 +635,7 @@ endfunction
 %! N = [40 4];
 %! S = [ 5.0 .010 .035 .035 .035 .035; \
 %!      10.0 .100 .035 .035 .035 .035 ];
-%! V = qnvisits(P);
+%! V = qncmvisits(P);
 %! [U R Q X] = qncmmva(N, S, V, [-1 1 1 1 1 1]);
 %! # FIXME: The results below were computed with JMVA; the numbers
 %! # in the paper are different (wrong?!?)!!
@@ -680,7 +681,7 @@ endfunction
 %!
 %! # Compute visits
 %!
-%! V = qnvisits(P);
+%! V = qncmvisits(P);
 %!
 %! # Define population and service times
 %! 
@@ -735,7 +736,6 @@ endfunction
 %! P(1,2,1,1) = P(2,2,2,1) = 1;
 %! P(1,3,1,1) = P(2,3,2,1) = 1;
 %! N = [3 0];
-%! V = qnvisits(P);
 %! [U R Q X] = qncmmva(N, S, P);
 %! assert( R, [.015 .133 .163; .073 .133 .163], 1e-3 );
 %! assert( X, [12.609 8.826 2.522; 6.304 1.891 3.152], 1e-3 );

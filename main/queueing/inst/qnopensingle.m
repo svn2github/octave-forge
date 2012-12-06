@@ -82,7 +82,7 @@ endfunction
 %!test
 %! lambda=[1];
 %! P=[0];
-%! V=qnvisits(P,lambda);
+%! V=qnosvisits(P,lambda);
 %! S=[0.25];
 %! [U1 R1 Q1 X1]=qnopensingle(sum(lambda),S,V); 
 %! [U2 R2 Q2 X2]=qnmm1(lambda(1),1/S(1));

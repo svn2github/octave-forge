@@ -145,7 +145,7 @@ function [U_or_pi R Q X] = qnjackson( lambda, S, P, m, k )
   endif
 
   ## Compute the arrival rates using the traffic equation:
-  l = sum(lambda)*qnvisits( P, lambda );
+  l = sum(lambda)*qnosvisits( P, lambda );
   ## Check ergodicity
   for i=1:N
     if ( m(i)>0 && l(i)>=m(i)/S(i) )      

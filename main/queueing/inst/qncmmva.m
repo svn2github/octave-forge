@@ -732,7 +732,6 @@ endfunction
 %! assert( Q, [14.323 0 .677; 0 4.707 .293], 1e-3 );
 %! assert( X, [14.323 0 14.323; 0 .314 .314], 1e-3 );
 
-
 ## Same test as above, but using routing probabilities instead of
 ## visits. Also, reordered the nodes such that server 1 is the PS node
 ## labeled "Sys 3" in the example; server 2 is the IS labeled "APL1" and
@@ -846,10 +845,10 @@ endfunction
 %! P = zeros(2,3,2,3);
 %! P(1,1,1,3) = P(1,3,1,1) = 1;
 %! P(2,2,2,3) = P(2,3,2,2) = 1;
+%! V = qncmvisits(P,[3 3]); # reference station is station 3
 %! N = [15 5];
 %! m = [-1 -1 1];
-%! r = [3 3]; # reference station is station 3
-%! [U R Q X] = qncmmva(N,S,P,r,m)
+%! [U R Q X] = qncmmva(N,S,V,m)
 
 
 ## Example shown on Figure 9: Herb Schwetman, "Implementing the Mean

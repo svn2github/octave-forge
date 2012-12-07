@@ -84,51 +84,17 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [Xl Xu Rl Ru] = qncsaba( N, S, V, m, Z )
+function [Xl Xu Rl Ru] = qncsaba( varargin ) #N, S, V, m, Z )
   
   if (nargin<2 || nargin>5)
     print_usage();
   endif
 
-  ( isscalar(N) && N > 0 ) || \
-      error( "N must be a positive integer" );
-  (isvector(S) && length(S)>0) || \
-      error( "S/D must be a nonempty vector" );
-  all(S>=0) || \
-      error( "S/D must contain nonnegative values");
-  S = S(:)';
-  K = length(S);
-  if ( nargin < 3 || isempty(V) )
-    V = ones(1,K);
-  else
-    (isvector(V) && length(V) == K) || \
-	error( "V must be a vector with %d elements", K );
-    all(V>=0) || \
-	error( "V must contain nonnegative values" );
-    V = V(:)';
-  endif
-
-  if ( nargin < 4 ) 
-    m = ones(1,K);
-  else
-    isvector(m) || \
-	error( "m must be a vector" );
-    m = m(:)'; # make m a row vector
-  endif
-
-  [err S V m] = common_size(S, V, m);
-  (err == 0) || \
-      error( "S, V and m are of incompatible size" );
+  [err N S V m Z] = qncschkparam( varargin{:} );
+  isempty(err) || error(err);
 
   all(m<=1) || \
       error( "multiple server nodes are not supported" );
-
-  if ( nargin < 5 || isempty(Z) )
-    Z = 0;
-  else
-    ( isscalar(Z) && Z >= 0 ) || \
-        error( "Z must be a nonnegative scalar" );
-  endif
 
   D = S.*V;
 
@@ -147,7 +113,7 @@ endfunction
 %! fail("qncsaba(-1,0)", "N must be");
 %! fail("qncsaba(1,[])", "nonempty");
 %! fail("qncsaba(1,[-1 2])", "nonnegative");
-%! fail("qncsaba(1,[1 2],[1 2 3])", "2 elements");
+%! fail("qncsaba(1,[1 2],[1 2 3])", "incompatible size");
 %! fail("qncsaba(1,[1 2 3],[1 2 -1])", "nonnegative");
 %! fail("qncsaba(1,[1 2 3],[1 2 3],[1 2])", "incompatible size");
 %! fail("qncsaba(1,[1 2 3],[1 2 3],[1 2 1])", "not supported");

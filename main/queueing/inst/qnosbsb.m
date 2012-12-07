@@ -75,35 +75,18 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [X_lower X_upper R_lower R_upper] = qnosbsb( lambda, S, V, m )
+function [X_lower X_upper R_lower R_upper] = qnosbsb( varargin )
   if ( nargin < 2 || nargin > 4 )
     print_usage();
   endif
-  isscalar(lambda) || error("lambda must be a scalar");
-  lambda > 0 || error("lambda must be >0");
-  ( isvector(S) && length(S)>0 ) || \
-      error( "S/D must be a nonempty vector" );
-  all(S>=0) || \
-      error("S/D must contain nonnegative values");
-  S = S(:)';
-  if ( nargin < 3 || isempty(V) )
-    D = S;
-  else
-    ( isvector(V) && length(V) == length(S) ) || \
-	error( "V must be a vector with %d elements", length(S));
-    all(V>=0) || \
-	error( "V must contain nonnegative values");
-    V = V(:)';
-    D = S .* V;
-  endif
-  if ( nargin < 4 || isempty(m) )
-    # nothing to do
-  else
-    ( isvector(m) && length(m) == length(S) ) || \
-	error("m must be a vector with %d elements", length(S));
-    all(m==1) || \
-	error("this function supports M/M/1 servers only");
-  endif
+
+  [err lambda S V m] = qnoschkparam( varargin{:} );
+  isempty(err) || error(err);
+
+  all(m==1) || \
+      error("this function supports M/M/1 servers only");
+  
+  D = S .* V;
 
   D_max = max(D);
   D_tot = sum(D);

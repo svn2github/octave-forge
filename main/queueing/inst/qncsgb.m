@@ -86,7 +86,7 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [X_lower X_upper R_upper R_lower Q_lower Q_upper] = qncsgb( N, S, V, m, Z, X_minus, X_plus )
+function [X_lower X_upper R_upper R_lower Q_lower Q_upper] = qncsgb( varargin ) 
 
   ## This implementation is based on the paper: G.Casale, R.R.Muntz,
   ## G.Serazzi. Geometric Bounds: a Noniterative Analysis Technique for
@@ -97,45 +97,30 @@ function [X_lower X_upper R_upper R_lower Q_lower Q_upper] = qncsgb( N, S, V, m,
   ## The original paper uses the symbol "L" instead of "D" to denote the
   ## loadings of service centers. In this function we adopt the same
   ## notation as the paper.
-  if ( nargin < 2 || nargin > 7 )
+  if ( nargin < 2 || ( nargin > 5 && nargin != 7 ) )
     print_usage();
   endif
-  ( isscalar(N) && N > 0 ) || \
+
+  [err N S V m Z] = qncschkparam( varargin{:} );
+  isempty(err) || error(err);
+
+  ## This function requires N>0
+  N > 0 || \
       error( "N must be >0" );
-  ( isvector(S) && length(S) > 0 && all( S >= 0 ) ) || \
-      error( "S/D must be a vector >=0" );
-  S = S(:)'; # make S a row vector
 
-  if ( nargin < 3 || isempty(V) )
-    L = S;
-  else
-    ( isvector(V) && length(V) == length(S) && all( V>=0) ) || \
-	error("V must be a vector with %d elements >=0", length(S));
-    V = V(:)';
-    L = S .* V;
-  endif
+  all(m==1) || \
+      error("this function only supports single server nodes");
 
-  if ( nargin < 4 || isempty(m) )
-    m = ones(size(S));
-  else
-    ( isvector(m) && length(m) == length(S) ) || \
-	error("m must be a vector with %d elements", length(S));
-    all(m==1) || \
-	error("this function only supports single server nodes");
-  endif
-
-  if ( nargin < 5 || isempty(Z) )
-    Z = 0;
-  else
-    ( isscalar(Z) && (Z >= 0) ) || \
-        error( "Z must be >=0" );
-  endif
+  L = S .* V;
 
   L_tot = sum(L);
   L_max = max(L);
   M = length(L);
   if ( nargin < 6 ) 
     [X_minus X_plus] = qncsaba(N,L,ones(size(L)),m,Z);
+  else
+    X_minus = varargin{6};
+    X_plus = varargin{7};
   endif
   ##[X_minus X_plus] = [0 1/L_max];
   [Q_lower Q_upper] = __compute_Q( N, L, Z, X_plus, X_minus);
@@ -189,15 +174,16 @@ endfunction
 
 %!test
 %! fail( "qncsgb( 1, [] )", "vector" );
-%! fail( "qncsgb( 1, [0 -1])", "vector" );
+%! fail( "qncsgb( 1, [0 -1])", "nonnegative" );
 %! fail( "qncsgb( 0, [1 2] )", ">0" );
-%! fail( "qncsgb( -1, [1 2])", ">0" );
+%! fail( "qncsgb( -1, [1 2])", "nonnegative" );
+%! fail( "qncsgb( 1, [1 2],1,[1 -1])", "single server" );
 
 %!# shared test function
 %!function test_gb( D, expected, Z=0 )
 %! for i=1:rows(expected)
 %!   N = expected(i,1);
-%!   [X_lower X_upper Q_lower Q_upper] = qncsgb(N,D,[],[],Z);
+%!   [X_lower X_upper Q_lower Q_upper] = qncsgb(N,D,1,1,Z);
 %!   X_exp_lower = expected(i,2);
 %!   X_exp_upper = expected(i,3);
 %!   assert( [N X_lower X_upper], [N X_exp_lower X_exp_upper], 1e-4 )
@@ -236,7 +222,7 @@ endfunction
 %! tol = 1e-5; # compensate for numerical errors
 %! ## Test case with Z>0
 %! for n=1:Nmax
-%!   [X_gb_lower X_gb_upper NC NC Q_gb_lower Q_gb_upper] = qncsgb(n, S.*V, [], [], Z);
+%!   [X_gb_lower X_gb_upper NC NC Q_gb_lower Q_gb_upper] = qncsgb(n, S.*V, 1, 1, Z);
 %!   [U R Q X] = qnclosed( n, S, V, m, Z );
 %!   X_mva = X(1)/V(1);
 %!   assert( X_gb_lower <= X_mva+tol );

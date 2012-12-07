@@ -79,12 +79,13 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [Xl Xu Rl Ru] = qncsbsb( N, S, V, m, Z )
+function [Xl Xu Rl Ru] = qncsbsb( varargin )
 
   if (nargin<2 || nargin>5)
     print_usage();
   endif
 
+#{
   ( isscalar(N) && N > 0 ) || \
       error( "N must be a positive integer" );
   (isvector(S) && length(S)>0) || \
@@ -120,6 +121,15 @@ function [Xl Xu Rl Ru] = qncsbsb( N, S, V, m, Z )
     ( isscalar(Z) && Z >= 0 ) || \
         error( "Z must be a nonnegative scalar" );
   endif
+#}
+
+  [err N S V m Z] = qncschkparam( varargin{:} );
+  isempty(err) || error(err);
+
+  all(m==1) || \
+      error( "this function supports M/M/1 servers only" );
+
+  D = S .* V;
 
   D_max = max(D);
   D_tot = sum(D);
@@ -134,8 +144,8 @@ endfunction
 %! fail("qncsbsb(-1,0)", "N must be");
 %! fail("qncsbsb(1,[])", "nonempty");
 %! fail("qncsbsb(1,[-1 2])", "nonnegative");
-%! fail("qncsbsb(1,[1 2],[1 2 3])", "2 elements");
-%! fail("qncsbsb(1,[1 2 3],[1 2 3],[1 2])", "3 elements");
+%! fail("qncsbsb(1,[1 2],[1 2 3])", "incompatible size");
+%! fail("qncsbsb(1,[1 2 3],[1 2 3],[1 2])", "incompatible size");
 %! fail("qncsbsb(1,[1 2 3],[1 2 3],[1 2 1])", "M/M/1 servers");
 %! fail("qncsbsb(1,[1 2 3],[1 2 3],[1 1 1],-1)", "nonnegative");
 %! fail("qncsbsb(1,[1 2 3],[1 2 3],[1 1 1],[0 0])", "scalar");

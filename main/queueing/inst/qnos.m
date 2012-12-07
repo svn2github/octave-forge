@@ -95,31 +95,16 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [U R Q X] = qnos( lambda, S, V, m )
+function [U R Q X] = qnos( varargin )
   if ( nargin < 3 || nargin > 4 )
     print_usage();
   endif
-  ( isscalar(lambda) && lambda>0 ) || \
-      error( "lambda must be a positive scalar" );
-  ( isvector( S ) && all(S>0) ) || \
-      error( "S must be a vector >0" );
-  S = S(:)';
-  K = length(S);
-  if ( nargin < 3 || isempty(V) )
-    V = ones(size(S));
-  else
-    ( isvector( V ) && length(V)==K && all(V>=0) ) || \
-	error( "V must be a vector with %d elements >=0", K );
-    V = V(:)';
-  endif
 
-  if ( nargin < 4 || isempty(m) )
-    m = ones(size(S));
-  else
-    (isvector(m) && (length(m) == K)) || \
-	error( "m must be a vector of %d elements", K);
-    m = m(:)';
-  endif
+  [err lambda S V m] = qnoschkparam( varargin {:} );
+  isempty(err) || error(err);
+
+  all(S>0) || \
+      error( "S must be positive" );
 
   ## If there are M/M/k servers with k>=1, compute the maximum
   ## processing capacity
@@ -155,9 +140,9 @@ endfunction
 %! fail( "qnos(lambda,S,V)","S must be");
 %! S = [1 1 1];
 %! m = [1 1];
-%! fail( "qnos(lambda,S,V,m)","m must be a vector");
+%! fail( "qnos(lambda,S,V,m)","incompatible size");
 %! V = [1 1 1 1];
-%! fail( "qnos(lambda,S,V)","3 elements");
+%! fail( "qnos(lambda,S,V)","incompatible size");
 %! fail( "qnos(1.0, [0.9 1.2], [1 1])", "exceeded at center 2");
 %! fail( "qnos(1.0, [0.9 2.0], [1 1], [1 2])", "exceeded at center 2");
 %! qnos(1.0, [0.9 1.9], [1 1], [1 2]); # should not fail

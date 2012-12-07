@@ -86,33 +86,18 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [U R Q X G] = qncsconv( N, S, V, m )
+function [U R Q X G] = qncsconv( varargin )
 
   if ( nargin < 3 || nargin > 4 )
     print_usage();
   endif
 
-  ( isscalar(N) && N>0 ) || \
-      error( "K must be a positive scalar" );
-  K = N; # To be compliant with the reference, we use K to denote the population size
-  ( isvector(S) && all(S >= 0) ) || \
-      error( "S must be a vector of positive scalars" );
-  S = S(:)'; # make S a row vector
-  N = length(S); # Number of service centers
-  ( isvector(V) && size_equal(V,S) ) || \
-      error( "V must be a vector of the same length as S" );
-  V = V(:)';
+  ## To be compliant with the reference, we use K to denote the
+  ## population size
+  [err K S V m] = qncschkparam( varargin{:} );
+  isempty(err) || error(err);
 
-  if ( nargin < 4 )
-    m = ones(1,N);
-  else
-    isvector(m) || \
-	error( "m must be a vector" );
-    m = m(:)';
-    [err m S] = common_size(m, S);
-    (err == 0) || \
-        error( "m and S have incompatible size" );
-  endif
+  N = length(S); # Number of service centers
 
   ## This implementation is based on G. Bolch, S. Greiner, H. de Meer
   ## and K. Trivedi, Queueing Networks and Markov Chains: Modeling and

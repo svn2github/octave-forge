@@ -119,42 +119,16 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [U R Q X G] = qncsmva( N, S, V, m, Z )
+function [U R Q X G] = qncsmva( varargin )
 
   if ( nargin < 3 || nargin > 5 ) 
     print_usage();
   endif
 
-  (isscalar(N) && N >= 0) || \
-      error( "N must be >= 0" );
-  (isvector(S) && all(S>=0)) || \
-      error( "S must be a vector >= 0" );
-  S = S(:)'; # make S a row vector
-
-  (isvector(V) && all(V>=0)) || \
-      error( "V must be a vector >= 0" );
-  V = V(:)'; # make V a row vector
+  [err N S V m Z] = qncschkparam( varargin{:} );
+  isempty(err) || error(err);
 
   K = length(S); # Number of servers
-
-  if ( nargin < 4 ) 
-    m = ones(1,K);
-  else
-    isvector(m) || \
-	error( "m must be a vector" );
-    m = m(:)'; # make m a row vector
-  endif
-
-  [err S V m] = common_size(S, V, m);
-  (err == 0) || \
-      error( "S, V and m are of incompatible size" );
-
-  if ( nargin < 5 )
-    Z = 0;
-  else
-    (isscalar(Z) && Z >= 0) || \
-        error( "Z must be >= 0" );
-  endif
 
   U = R = Q = X = zeros( 1, K );
   G = zeros(1,N+1); G(1) = 1;
@@ -231,8 +205,8 @@ endfunction
 
 %!test
 %! fail( "qncsmva()", "Invalid" );
-%! fail( "qncsmva( 10, [1 2], [1 2 3] )", "S, V and m" );
-%! fail( "qncsmva( 10, [-1 1], [1 1] )", ">= 0" );
+%! fail( "qncsmva( 10, [1 2], [1 2 3] )", "incompatible size" );
+%! fail( "qncsmva( 10, [-1 1], [1 1] )", "nonnegative" );
 
 ## Check if networks with only one type of server are handled correctly
 %!test

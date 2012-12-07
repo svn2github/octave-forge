@@ -75,39 +75,20 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [X_lower X_upper R_lower R_upper] = qncspb( N, S, V, m, Z )
+function [X_lower X_upper R_lower R_upper] = qncspb( varargin )
   if ( nargin < 2 || nargin > 5 )
     print_usage();
   endif
-  ( isscalar(N) && N > 0 ) || \
-      error( "N must be a positive integer" );
-  ( isvector(S) && length(S)>0 && all( S >= 0 ) ) || \
-      error( "S/D must be a vector of nonnegative floats" );
 
-  if ( nargin < 3 )
-    D = S;
-  else
-    ( isvector(V) && length(V) == length(S) && all( V>=0) ) || \
-	error("V must be a vector with %d elements >=0", length(S));
-    V = V(:)';
-    D = S .* V;
-  endif
+  [err N S V m Z] = qncschkparam( varargin{:} );
+  isempty(err) || error(err);
 
-  if ( nargin < 4 )
-    # nothing to do
-  else
-    ( isvector(m) && length(m) == length(S) ) || \
-	error("m must be a vector with %d elements", length(S));
-    all(m==1) || \
-	error("this function only supports single server nodes");
-  endif
+  ( N>0 ) || \
+      error("N must be positive");
+  all(m==1) || \
+      error("qncspb only supports single server nodes");
 
-  if ( nargin < 5 )
-    Z = 0;
-  else
-    ( isscalar(Z) && (Z >= 0) ) || \
-        error( "Z must be a nonnegative scalar" );
-  endif
+  D = S .* V;
 
   D_tot = sum(D);
   X_max = 1/max(D);
@@ -123,9 +104,9 @@ endfunction
 
 %!test
 %! fail( "qncspb( 1, [] )", "vector" );
-%! fail( "qncspb( 1, [0 -1])", "vector" );
-%! fail( "qncspb( 0, [1 2] )", "positive integer" );
-%! fail( "qncspb( -1, [1 2])", "positive integer" );
+%! fail( "qncspb( 1, [0 -1])", "nonnegative" );
+%! fail( "qncspb( 0, [1 2] )", "positive" );
+%! fail( "qncspb( -1, [1 2])", "nonnegative" );
 %! fail( "qncspb( 1, [1 2], [1,1], [2, 2])", "single server" );
 %! fail( "qncspb( 1, [1 2], [1,1], [1, 1], -1)", "nonnegative" );
 

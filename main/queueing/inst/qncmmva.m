@@ -167,30 +167,18 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [U R Q X] = qncmmva( N, S, V, varargin )
+function [U R Q X] = qncmmva( varargin )
 
   if ( nargin < 2 || nargin > 5 )
     print_usage();
   endif
 
-  ## basic sanity checks
-  isvector(N) && all( N>=0 ) || \
-      error( "N must be a vector >=0" );
-  C = length(N); ## Number of classes
-  ( ndims(S) == 2 ) || \
-      error( "S must be a matrix" );
-
-  if ( nargin == 2 )
-    V = ones(size(S));
-  endif
-
-  ( ismatrix(V) && (ndims(V) == 2 || ndims(V) == 4) ) || \
-      error("The third argument must be a 2- or 4-dimensional matrix" );
-
-  if ( ndims(V) == 2 )
-    [U R Q X] = __qncmmva_nocs( N, S, V, varargin{:} );
+  if ( nargin == 2 || ndims(varargin{3}) == 2 )
+    [err N S V m Z] = qncmchkparam( varargin{:} );
+    isempty(err) || error(err);
+    [U R Q X] = __qncmmva_nocs( N, S, V, m, Z );
   else
-    [U R Q X] = __qncmmva_cs( N, S, V, varargin{:} );
+    [U R Q X] = __qncmmva_cs( varargin{:} );
   endif
 
 endfunction
@@ -286,7 +274,7 @@ function [U R Q X] = __qncmmva_cs( N, S, P, r, m )
   endfor
 
   ## 7. Solve the equivalent network
-  [Ustar Rstar Qstar Xstar Qnm1] = __qncmmva_nocs( Nstar, Sstar, Vstar, m );
+  [Ustar Rstar Qstar Xstar Qnm1] = __qncmmva_nocs( Nstar, Sstar, Vstar, m, zeros(size(Nstar)) );
 
   ## 8. Compute solutions of the original network
   for r=1:C
@@ -311,47 +299,12 @@ endfunction
 ##
 function [U R Q X Qnm1] = __qncmmva_nocs( N, S, V, m, Z )
 
-  if ( nargin < 3 || nargin > 5 )
-    print_usage();
-  endif
+  assert( nargin == 5 );
 
-  isvector(N) && all( N>=0 ) || \
-      error( "N must be >=0" );
-  N = N(:)'; # make N a row vector
-  C = length(N); ## Number of classes
-  K = columns(S); ## Number of service centers
-  size(S) == [C,K] || \
-      error( "S size mismatch" );
-  size(V) == [C,K] || \
-      error( "V size mismatch" );
-
-  if ( nargin < 4 ) 
-    m = ones(1,K);
-  else
-    isvector(m) || \
-        error( "m must be a vector" );
-    m = m(:)'; # make m a row vector
-    length(m) == K || \
-        error( "m size mismatch (should be %d, is %d)", K, length(m) );
-  endif
-
-  if ( nargin < 5 )
-    Z = zeros(1,C);
-  else
-    isvector(Z) || \
-        error( "Z must be a vector" );
-    Z = Z(:)'; # make Z a row vector
-    length(Z) == C || \
-	error( "Z size mismatch (should be %d, is %d)", C, length(Z) );
-  endif
-
-  ## Check consistency of parameters
-  all(S(:) >= 0) || \
-      error( "S must be >= 0" );
   all( any(S>0,2) ) || \
-      error( "S must contain at least one value >0 for each row" );
-  all(V(:) >= 0) || \
-      error( "V must be >=0" );
+      error( "S must contain at least a value >0 for each row" );
+
+  [C K] = size(S);
 
   ## ensure that the service times for multiserver nodes
   ## are class-independent
@@ -503,7 +456,7 @@ endfunction
 %! S = [1 2 3; 1 2 3];
 %! N = [1 1];
 %! V = zeros(3,2,3);
-%! fail( "qncmmva(N,S,V)", "third argument" );
+%! fail( "qncmmva(N,S,V)", "size mismatch" );
 
 ## Check degenerate case (population is zero); LI servers
 %!test

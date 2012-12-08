@@ -17,9 +17,9 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{err} @var{N} @var{S} @var{V} @var{m} @var{Z}] = } qncschkparam( N, S, ... )
+## @deftypefn {Function File} {[@var{err} @var{N} @var{S} @var{V} @var{m} @var{Z}] = } qncmchkparam( N, S, ... )
 ##
-## Validate input parameters for closed, single class networks.
+## Validate input parameters for closed, multiclass network.
 ## @var{err} is the empty string on success, or a suitable error message
 ## string on failure.
 ##
@@ -28,7 +28,7 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [err N S V m Z] = qncschkparam( varargin )
+function [err N S V m Z] = qncmchkparam( varargin )
   
   err = "";
 
@@ -40,64 +40,70 @@ function [err N S V m Z] = qncschkparam( varargin )
 
   [V m Z] = deal(0);
 
-  if ( !isscalar(N) || N<0 )
-    err = "N must be a nonnegative scalar";  
+  if ( !isvector(N) || length(N)==0 )
+    err = "N must be a nonempty vector";
     return;
   endif
 
-  if ( !isvector(S) || length(S)<=0 )
-    err = "S must be a nonempty vector";
+  if ( any(N<0) )
+    err = "N must contain nonnegative values";
     return;
   endif
 
-  if ( any(S<0) )
+  N = N(:)';
+
+  C = length(N); ## Number of classes
+
+  if ( !ismatrix(S) || rows(S) != C )
+    err = sprintf("S must be a matrix with %d rows",C);
+    return;
+  endif
+
+  if ( any(S(:)<0) )
     err = "S must contain nonnegative values";
     return;
   endif
 
-  S = S(:)';
+  K = columns(S);
+
   if ( nargin < 3 )
     V = ones(size(S));
   else
     V = varargin{3};
+    if ( !ismatrix(V) || rows(V) != C || columns(V) != K )
+      err = sprintf("V must be a %d x %d matrix", C, K );
+      return;
+    endif
 
-    if ( ! isvector(V) )
-      err =  "V must be a vector";
+    if ( any(V(:)<0) )
+      err = "V must contain nonnegative values";
       return;
     endif
-    if ( any(V<0) )
-      err =  "V must contain nonnegative values";
-      return;
-    endif
-    V = V(:)';
   endif
 
   if ( nargin < 4 ) 
-    m = ones(size(S));
+    m = ones(1,K);
   else
     m = varargin{4};
-
-    if ( ! isvector(m) )
-      err = "m must be a vector";
+    if (!isvector(m) || length(m) != K ) 
+      err = sprintf("m must be a vector with %d elements", K );
       return;
     endif
     m = m(:)';
   endif
 
-  [er S V m] = common_size(S, V, m);
-  if (er != 0 )
-    err = "S, V and m are of incompatible size";
-    return;
-  endif
-
   if ( nargin < 5 )
-    Z = 0;
+    Z = zeros(1,C);
   else
     Z = varargin{5};
-
-    if ! ( isscalar(Z) && Z >= 0 )
-      err = "Z must be a nonnegative scalar";
+    if (!isvector(Z) || length(Z) != C)
+      err = sprintf("Z must be a vector with %d elements", C);
       return;
     endif
+    if ( any(Z<0) )
+      err = "Z must contain nonnegative values";
+      return;
+    endif
+    Z = Z(:)';
   endif
 endfunction

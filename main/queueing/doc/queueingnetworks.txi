@@ -255,16 +255,12 @@ $$\left\{\eqalign{V_j & = \sum_{i=1}^K V_i P_{i, j} \quad j=1, \ldots, K \cr
 
 Note that the set of traffic equations @math{V_j = \sum_{i=1}^K V_i
 P_{i, j}} alone can only be solved up to a multiplicative constant; to
-get a unique solution we need an additional constraint @math{V_r =
-1}. This is equivalent to define station @math{r} as the
+get a unique solution we impose an additional constraint @math{V_r =
+1}. This constraint is equivalent to defining station @math{r} as the
 @emph{reference station} (the default is @math{r=1},
-@xref{doc-qncsvisits}). The choice of the reference station for closed
-networks is extremely important, since it determines the performance
-results of the whole network.  First, the network throughput is set to
-the throughput of the reference station. Second, when a job returns to
-the reference station, it is assumed that the job completed its
-activity cycle, and enters a new activity cycle. Therefore, the system
-response time is also measured with respect to the reference station.
+@xref{doc-qncsvisits}). A job that returns to the reference station is
+assumed to have completed its activity cycle. The network throughput
+is set to the throughput of the reference station.
 
 @GETHELP{qncsvisits}
 
@@ -858,12 +854,11 @@ V_s r_s = 1                       s=1,...,C
 @end group
 @end ifnottex
 
-@noindent where @math{r_s} is the index of class @math{s}
-reference station; similarly to single class models, the traffic
+@noindent where @math{r_s} is the class @math{s}
+reference station. Similarly to single class models, the traffic
 equation for closed multiclass networks can be solved up to
-multiplicative constants unless we choose one referenc station per
-class and set their visit ratios to 1. When multiple classes belong to
-the same chain, then only a single constraint per chain must be given.
+multiplicative constants unless we choose one reference station for
+each closed chain class and set its visit ratio to 1.
 
 For open networks the traffic equations are as follows:
 
@@ -1192,8 +1187,8 @@ particular, see section 5.4 ("Balanced Systems Bounds").
 
 @noindent Teemu Kerola, @cite{The Composite Bound Method (CBM) for Computing
 Throughput Bounds in Multiple Class Environments}, Technical Report
-CSD-TR-475, Department of Computer Sciences, Purdue University, mar 13
-1984 (Revisted aug 27, 1984).
+CSD-TR-475, Department of Computer Sciences, Purdue University, mar 13,
+1984 (Revised aug 27, 1984).
 
 @auindex Kerola, T.
 

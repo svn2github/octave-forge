@@ -19,7 +19,7 @@
 ##
 ## @deftypefn {Function File} {@var{V} =} qnomvisits (@var{P}, @var{lambda})
 ##
-## Compute the average number of visits to the service centers of an open multiclass network.
+## Compute the average number of visits to the service centers of an open multiclass network with @math{K} service centers and @math{C} customer classes.
 ##
 ## @strong{INPUTS}
 ##
@@ -65,7 +65,7 @@ function V = qnomvisits( P, lambda )
   (K == K2 && C == C2) || \
       error( "P must be a [C,K,C,K] matrix");
 
-  [C,K] == size(lambda) || \
+  ismatrix(lambda) && [C,K] == size(lambda) || \
       error( "lambda must be a %d x %d matrix", C, K );
 
   all(lambda(:)>=0) || \

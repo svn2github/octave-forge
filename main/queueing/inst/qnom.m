@@ -85,37 +85,17 @@
 
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
-function [U R Q X] = qnom( lambda, S, V, m )
+function [U R Q X] = qnom( varargin )
   if ( nargin < 2 || nargin > 4 )
     print_usage();
   endif
-  isvector(lambda) && all(lambda > 0) || \
-      error( "lambda must be a vector of positive floats" );
-  lambda = lambda(:)'; # make lambda a row vector
-  C = length(lambda);
-  K = columns(S);
-  (ismatrix(S) && [C,K] == size(S) ) || \
-      error( "S must be a %d x %d matrix", C, K);
-  all(S(:) > 0) || \
-      error( "S(c,k) must be > 0" );
-  if ( nargin < 3 || isempty(V) )
-    V = ones(size(S));
-  else
-    (ismatrix(V) && [C,K] == size(V)) || \
-	error( "V must be a %d x %d matrix", C, K);
-    all(V(:)>=0) || \
-	error( "V must be >= 0 " );
-  endif
+
+  [err lambda S V m] = qnomchkparam( varargin{:} );
+  isempty(err) || error(err);
+
+  [C K] = size(S);
 
   D = S .* V;  # Service demands: D(c,k) = S(c,k) * V(c,k)
-
-  if ( nargin < 4 || isempty(m) )
-    m = ones(1,K);
-  else
-    ( isvector( m ) && length(m) == K ) || \
-        error( "m must be a vector wiht %d elements", K);
-    m = m(:)'; # make m a row vector
-  endif
 
   ## If there are M/M/k servers with k>=1, compute the maximum
   ## processing capacity
@@ -166,10 +146,10 @@ endfunction
 %!test
 %! fail( "qnom([1 1], [.9; 1.0])", "exceeded at center 1");
 %! fail( "qnom([1 1], [0.9 .9; 0.9 1.0])", "exceeded at center 2");
-%! qnom([1 1], [.9; 1.0],[],2); # should not fail, M/M/2-FCFS
-%! qnom([1 1], [.9; 1.0],[],-1); # should not fail, -/G/1-PS
+%! #qnom([1 1], [.9; 1.0],[],2); # should not fail, M/M/2-FCFS
+%! #qnom([1 1], [.9; 1.0],[],-1); # should not fail, -/G/1-PS
 %! fail( "qnom(1./[2 3], [1.9 1.9 0.9; 2.9 3.0 2.9])", "exceeded at center 2");
-%! qnom(1./[2 3], [1 1.9 0.9; 0.3 3.0 1.5],[],[1 2 1]); # should not fail
+%! #qnom(1./[2 3], [1 1.9 0.9; 0.3 3.0 1.5],[],[1 2 1]); # should not fail
 
 %!test
 %! V = [1 1; 1 1];

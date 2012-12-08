@@ -23,8 +23,10 @@
 ## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qncmaba (@var{N}, @var{S}, @var{V}, @var{m}, @var{Z})
 ##
 ## @cindex bounds, asymptotic
+## @cindex asymptotic bounds
 ## @cindex closed network
 ## @cindex multiclass network, closed
+## @cindex closed multiclass network
 ##
 ## Compute Asymptotic Bounds for multiclass networks.
 ## Single-server and infinite-server nodes are supported.
@@ -85,73 +87,36 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [Xl Xu Rl Ru] = qncmaba( N, S, V, m, Z )
+function [Xl Xu Rl Ru] = qncmaba( varargin )
 
   if ( nargin<2 || nargin>5 )
     print_usage();
   endif
 
-  ( isvector(N) && length(N)>0 ) || \
-      error("N must be a nonempty vector");
-  all(N >= 0) || \
-      error( "N must contain nonnegative values" );
-  sum(N)>0 || \
-      error( "The network has no requests" );
-  N = N(:)';
+  [err N S V m Z] = qncmchkparam( varargin{:} );
+  isempty(err) || error(err);
 
-  C = length(N); # number of classes
+  all(m<=1) || \
+      error("Multiple-server nodes are not supported");
 
-  ( ismatrix(S) && rows(S) == C ) || \
-      error("S/D must be a matrix with %d rows", C);
-  all(S(:)>=0) || \
-      error("S/D must contain nonnegative values");
-
-  K = columns(S);
-
-  if ( nargin<3 || isempty(V) )
-    V = ones(size(S));
+  if ( sum(N) == 0 ) # handle trivial case of empty network
+    Xl = Xu = Rl = Ru = zeros(size(S));
   else
-    (ismatrix(V) && size_equal(S,V) ) || \
-	error("V must be a %d x %d matrix", C, K);
-    all(V(:)>=0) || \
-	error("V must contain nonnegative values");
+    D = S .* V;
+    
+    Dc_single = sum(D(:,(m==1)),2)'; # class c demand on single-server nodes
+    Dc_delay = sum(D(:,(m<1)),2)'; # class c demand on delay centers
+    Dc = sum(D,2)'; # class c total demand
+    Dcmax = max(D,[],2)'; # maximum class c demand at any server
+    Xl = N ./ ( dot(N,Dc_single) .+ Dc_delay .+ Z);
+    Xu = min( 1./Dcmax, N ./ (Dc .+ Z) );
+    Rl = N ./ Xu .- Z;
+    Ru = N ./ Xl .- Z;
   endif
-
-  if ( nargin<4 || isempty(m) )
-    m = ones(1,K);
-  else
-    (isvector(m) && length(m) == K ) || \
-	error("m must be a vector with %d elements", K);
-    all(m<=1) || \
-	error("Multiple-server nodes are not supported");
-    m = m(:)';
-  endif
-
-  if ( nargin<5 || isempty(Z) )
-    Z = zeros(1,C);
-  else
-    (isvector(Z) && length(Z) == C ) || \
-	error("Z must be a vector with %d elements", C);
-    all(Z>=0) || \
-	error("Z must contain nonnegative values");
-    Z = Z(:)';
-  endif
-
-  D = S .* V;
-
-  Dc_single = sum(D(:,(m==1)),2)'; # class c demand on single-server nodes
-  Dc_delay = sum(D(:,(m<1)),2)'; # class c demand on delay centers
-  Dc = sum(D,2)'; # class c total demand
-  Dcmax = max(D,[],2)'; # maximum class c demand at any server
-  Xl = N ./ ( dot(N,Dc_single) .+ Dc_delay .+ Z);
-  Xu = min( 1./Dcmax, N ./ (Dc .+ Z) );
-  Rl = N ./ Xu .- Z;
-  Ru = N ./ Xl .- Z;
 endfunction
 
 %!test
 %! fail("qncmaba([],[])", "nonempty");
-%! fail("qncmaba([0 0], [1 2])", "no requests");
 %! fail("qncmaba([1 0], [1 2 3])", "2 rows");
 %! fail("qncmaba([1 0], [1 2 3; 4 5 -1])", "nonnegative");
 %! fail("qncmaba([1 2], [1 2 3; 4 5 6], [1 2 3])", "2 x 3");
@@ -160,6 +125,13 @@ endfunction
 %! fail("qncmaba([1 2], [1 2 3; 1 2 3], [1 2 3; 1 2 3], [1 1 2])", "not supported");
 %! fail("qncmaba([1 2], [1 2 3; 1 2 3], [1 2 3; 1 2 3], [1 1 -1],[1 2 3])", "2 elements");
 %! fail("qncmaba([1 2], [1 2 3; 1 2 3], [1 2 3; 1 2 3], [1 1 -1],[1 -2])", "nonnegative");
+
+%!test
+%! [Xl Xu Rl Ru] = qncmaba([0 0], [1 2 3; 1 2 3]);
+%! assert( all(Xl(:) == 0) );
+%! assert( all(Xu(:) == 0) );
+%! assert( all(Rl(:) == 0) );
+%! assert( all(Ru(:) == 0) );
 
 %!demo
 %! S = [10 7 5 4; \

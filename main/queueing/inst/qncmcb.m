@@ -21,9 +21,11 @@
 ## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qncmcb (@var{N}, @var{S}, @var{V})
 ##
 ## @cindex multiclass network, closed
+## @cindex closed multiclass network
 ## @cindex bounds, composite
+## @cindex composite bounds
 ##
-## Composite Bound (CB) on throughput and response time for multiclass networks.
+## Composite Bound (CB) on throughput and response time for closed multiclass networks.
 ##
 ## This function implements the Composite Bound Method described in T.
 ## Kerola, @cite{The Composite Bound Method (CBM) for Computing
@@ -71,38 +73,24 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [Xl Xu Rl Ru] = qncmcb( N, S, V )
+function [Xl Xu Rl Ru] = qncmcb( varargin )
 
   if ( nargin < 2 || nargin > 3 )
     print_usage();
   endif
 
-  ( isvector(N) && length(N)>0 ) || \
-      error("N must be a nonempty vector");
-  all(N >= 0) || \
-      error( "N must contain nonnegative values" );
-  sum(N)>0 || \
-      error( "The network has no requests" );
-  N = N(:)';
+  [err N S V m Z] = qncmchkparam( varargin{:} );
+  isempty(err) || error(err);
 
-  C = length(N); # number of classes
+  all(m == 1) || \
+      error("this function only supports single-server FCFS centers");
 
-  ( ismatrix(S) && rows(S) == C ) || \
-      error("S/D must be a matrix with %d rows", C);
-  all(S(:)>=0) || \
-      error("S/D must contain nonnegative values");
+  all(Z == 0) || \
+      error("this function does not support think time");
 
-  K = columns(S);
+  [C K] = size(S);
 
-  if ( nargin<3 )
-    D = S;
-  else
-    (ismatrix(V) && size_equal(S,V) ) || \
-	error("V must be a %d x %d matrix", C, K);
-    all(V(:)>=0) || \
-	error("V must contain nonnegative values");
-    D = S .* V;
-  endif
+  D = S .* V;
 
   [Xl] = qncmbsb(N, D);
   Xu = zeros(1,C);

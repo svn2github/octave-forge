@@ -21,25 +21,24 @@
 ## @deftypefnx {Function File} {@var{V} =} qncsvisits (@var{P}, @var{r})
 ##
 ## Compute the mean number of visits to the service centers of a
-## single class, closed network.
+## single class, closed network with @math{K} service centers.
 ##
 ## @strong{INPUTS}
 ##
 ## @table @var
 ##
 ## @item P
-## Routing probability matrix.
 ## @code{@var{P}(i,j)} is the probability that a request which completed
 ## service at center @math{i} is routed to center @math{j}. For closed
 ## networks it must hold that @code{sum(@var{P},2)==1}. The routing
-## graph myst be strongly connected, meaning that it must be possible to
-## eventually reach each node starting from each node. 
+## graph must be strongly connected, meaning that each node must be
+## reachable from every other node.
 ##
 ## @item r
-## Index of the reference station; if omitted, it is assumed
-## @code{@var{r}=1}. The traffic equations are solved by imposing the
-## condition @code{@var{V}(r) = 1}. A request returning to the reference
-## station completes its activity cycle.
+## Index of the reference station, @math{r \in @{1, @dots{}, K@}};
+## Default @code{@var{r}=1}. The traffic equations are solved by
+## imposing the condition @code{@var{V}(r) = 1}. A request returning to
+## the reference station completes its activity cycle.
 ##
 ## @end table
 ##
@@ -64,14 +63,14 @@ function V = qncsvisits( P, r )
     print_usage();
   endif
 
-  ndims(P) == 2 && issquare(P) || \
-      error("P must be a 2-dimensional square matrix");
+  issquare(P) || \
+      error("P must be a square matrix");
 
   [res err] = dtmcchkP(P);
   (res>0) || \
-      error( "P is not a transition probability matrix for closed networks" );
+      error( "invalid transition probability matrix P" );
 
-  N = rows(P);
+  K = rows(P);
 
   if ( nargin < 2 )
     r = 1;
@@ -79,27 +78,30 @@ function V = qncsvisits( P, r )
     isscalar(r) || \
 	error("r must be a scalar");
 
-    (r>=1 && r<=N) || \
-	error("r must be an integer in [%d,%d]",1,N);
+    (r>=1 && r<=K) || \
+	error("r must be an integer in the range 1 - %d",K);
   endif
 
   V = zeros(size(P));
-  A = P-eye(N);
-  b = zeros(1,N);
+  A = P-eye(K);
+  b = zeros(1,K);
   A(:,r) = 0; A(r,r) = 1;
   b(r) = 1;
   V = b/A;
-
   ## Make sure that no negative values appear (sometimes, numerical
   ## errors produce tiny negative values instead of zeros)
   V = max(0,V);
-
 endfunction
 %!test
 %! P = [-1 0; 0 0];
-%! fail( "qncsvisits(P)", "not a transition probability" );
+%! fail( "qncsvisits(P)", "invalid" );
 %! P = [1 0; 0.5 0];
-%! fail( "qncsvisits(P)", "not a transition probability" );
+%! fail( "qncsvisits(P)", "invalid" );
+%! P = [1 2 3; 1 2 3];
+%! fail( "qncsvisits(P)", "square" );
+%! P = [0 1; 1 0]; 
+%! fail( "qncsvisits(P,0)", "range" );
+%! fail( "qncsvisits(P,3)", "range" );
 
 %!test
 %!

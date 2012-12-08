@@ -21,7 +21,9 @@
 ## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qncmbsb (@var{N}, @var{S}, @var{V})
 ##
 ## @cindex bounds, balanced system
+## @cindex balanced system bounds
 ## @cindex multiclass network, closed
+## @cindex closed multiclass network
 ##
 ## Compute Balanced System Bounds for multiclass networks.
 ## Only single-server nodes are supported.
@@ -68,80 +70,46 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [Xl Xu Rl Ru] = qncmbsb( N, S, V, m, Z )
-
-  ## FIXME: parameter Z is not used, some dead code is left below
+function [Xl Xu Rl Ru] = qncmbsb( varargin )
 
   if ( nargin<2 || nargin>5 )
     print_usage();
   endif
 
-  ( isvector(N) && length(N)>0 ) || \
-      error("N must be a nonempty vector");
-  all(N >= 0) || \
-      error( "N must contain nonnegative values" );
-  sum(N)>0 || \
-      error( "The network has no requests" );
-  N = N(:)';
+  [err N S V m Z] = qncmchkparam( varargin{:} );
+  isempty(err) || error(err);
 
-  C = length(N); # number of classes
+  all(m<=1) || \
+      error("Multiple-server nodes are not supported");
 
-  ( ismatrix(S) && rows(S) == C ) || \
-      error("S/D must be a matrix with %d rows", C);
-  all(S(:)>=0) || \
-      error("S/D must contain nonnegative values");
+  all(Z == 0 ) || \
+      error("This function only supports Z=0");
 
-  K = columns(S);
-
-  if ( nargin<3 )
-    D = S;
+  if ( sum(N) == 0 ) # handle trivial case of empty network
+    Xl = Xu = Rl = Ru = zeros(size(S));
   else
-    (ismatrix(V) && size_equal(S,V) ) || \
-	error("V must be a %d x %d matrix", C, K);
-    all(V(:)>=0) || \
-	error("V must contain nonnegative values");
     D = S .* V;
+    K = columns(S);
+    
+    ## Equations from T. Kerola, The Composite Bound Method (CBM) for
+    ## Computing Throughput Bounds in Multiple Class Environments},
+    ## Technical Report CSD-TR-475, Department of Computer Sciences,
+    ## Purdue University, mar 13 1984 (Revisted aug 27, 1984), available
+    ## at
+    ## http://docs.lib.purdue.edu/cgi/viewcontent.cgi?article=1394&context=cstech
+
+    Dc = sum(D,2)';
+    D_max = max(D,[],2)';
+    D_min = min(D,[],2)';
+    Xl = N ./ (Dc .+ (sum(N)-1) .* D_max);
+    Xu = min( 1./D_max, N ./ ((K+sum(N)-1) .* D_min));
+    Rl = N ./ Xu;
+    Ru = N ./ Xl;
   endif
-
-  if ( nargin<4 )
-    m = ones(1,K);
-  else
-    (isvector(m) && length(m) == K ) || \
-	error("m must be a vector with %d elements", K);
-    all(m<=1) || \
-	error("Multiple-server nodes are not supported");
-    m = m(:)';
-  endif
-
-  if (nargin<5)
-    Z = zeros(1,C);
-  else
-    (isvector(Z) && length(Z) == C ) || \
-	error("Z must be a vector with %d elements", C);
-    all(Z>=0) || \
-	error("Z must contain nonnegative values");
-    Z = Z(:)';
-  endif
-
-  ## Equations from T. Kerola, The Composite Bound Method (CBM) for
-  ## Computing Throughput Bounds in Multiple Class Environments},
-  ## Technical Report CSD-TR-475, Department of Computer Sciences,
-  ## Purdue University, mar 13 1984 (Revisted aug 27, 1984), available
-  ## at
-  ## http://docs.lib.purdue.edu/cgi/viewcontent.cgi?article=1394&context=cstech
-
-  Dc = sum(D,2)';
-  D_max = max(D,[],2)';
-  D_min = min(D,[],2)';
-  Xl = N ./ (Dc .+ (sum(N)-1) .* D_max);
-  Xu = min( 1./D_max, N ./ ((K+sum(N)-1) .* D_min));
-  Rl = N ./ Xu;
-  Ru = N ./ Xl;
 endfunction
 
 %!test
 %! fail("qncmbsb([],[])", "nonempty");
-%! fail("qncmbsb([0 0], [1 2])", "no requests");
 %! fail("qncmbsb([1 0], [1 2 3])", "2 rows");
 %! fail("qncmbsb([1 0], [1 2 3; 4 5 -1])", "nonnegative");
 %! fail("qncmbsb([1 2], [1 2 3; 4 5 6], [1 2 3])", "2 x 3");
@@ -150,6 +118,14 @@ endfunction
 %! fail("qncmbsb([1 2], [1 2 3; 1 2 3], [1 2 3; 1 2 3], [1 1 2])", "not supported");
 %! fail("qncmbsb([1 2], [1 2 3; 1 2 3], [1 2 3; 1 2 3], [1 1 -1],[1 2 3])", "2 elements");
 %! fail("qncmbsb([1 2], [1 2 3; 1 2 3], [1 2 3; 1 2 3], [1 1 -1],[1 -2])", "nonnegative");
+%! fail("qncmbsb([1 2], [1 2 3; 1 2 3], [1 2 3; 1 2 3], [1 1 -1],[1 0])", "only supports");
+
+%!test
+%! [Xl Xu Rl Ru] = qncmbsb([0 0], [1 2 3; 1 2 3]);
+%! assert( all(Xl(:) == 0) );
+%! assert( all(Xu(:) == 0) );
+%! assert( all(Rl(:) == 0) );
+%! assert( all(Ru(:) == 0) );
 
 %!demo
 %! S = [10 7 5 4; \

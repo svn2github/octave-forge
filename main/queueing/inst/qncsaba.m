@@ -23,6 +23,7 @@
 ## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qncsaba (@var{N}, @var{S}, @var{V}, @var{m}, @var{Z})
 ##
 ## @cindex bounds, asymptotic
+## @cindex asymptotic bounds
 ## @cindex closed network, single class
 ##
 ## Compute Asymptotic Bounds for throughput and response time of closed, single-class networks.

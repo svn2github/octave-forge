@@ -20,7 +20,7 @@
 ## @deftypefn {Function File} {@var{V} =} qnosvisits (@var{P}, @var{lambda})
 ##
 ## Compute the average number of visits to the service centers of a single 
-## class open Queueing Network with @math{N} service centers.
+## class open Queueing Network with @math{K} service centers.
 ##
 ## @strong{INPUTS}
 ##
@@ -57,26 +57,24 @@ function V = qnosvisits( P, lambda )
     print_usage();
   endif
 
-  ndims(P) == 2 && issquare(P) || \
+  issquare(P) || \
       error("P must be a square matrix");
 
-  N = size(P,1);
-  V = zeros(N,N);
+  K = rows(P);
 
-  ##
-  ## Open network
-  ##
   all(P(:)>=0) && all( sum(P,2)<=1+1e-5 ) || \
-      error( "P is not a transition probability matrix for open networks" );
+      error( "invalid transition probability matrix P" );
   
-  ( isvector(lambda) && length(lambda) == N ) || \
-      error( "lambda must be a vector with %d elements", N );
+  ( isvector(lambda) && length(lambda) == K ) || \
+      error( "lambda must be a vector with %d elements", K );
+
   all( lambda>= 0 ) || \
       error( "lambda contains negative values" );
 
   lambda = lambda(:)';
-  
-  A = eye(N)-P;
+
+  V = zeros(size(P));  
+  A = eye(K)-P;
   b = lambda / sum(lambda);
   V = b/A;
   ## Make sure that no negative values appear (sometimes, numerical
@@ -84,8 +82,8 @@ function V = qnosvisits( P, lambda )
   V = max(0,V);
 endfunction
 %!test
-%! P = [1 0; 0 1]; lambda=[0 -1];
-%! fail( "qnosvisits(P,lambda)", "contains negative" );
+%! fail( "qnosvisits([0 .5; .5 0],[0 -1])", "contains negative" );
+%! fail( "qnosvisits([1 1 1; 1 1 1], [1 1])", "square" );
 
 %!test
 %!
@@ -113,5 +111,5 @@ endfunction
 %! V = qnosvisits(P,lambda);
 %! S = [2 1 2 1.8];
 %! m = [3 1 1 2];
-%! [U R Q X] = qnos( sum(lambda), S, V, m );
+%! [U R Q X] = qnos( sum(lambda), S, V, m )
 

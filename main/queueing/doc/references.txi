@@ -84,7 +84,7 @@ T. Kerola, @cite{The Composite Bound Method (CBM) for Computing
 Throughput Bounds in Multiple Class Environments},
 @uref{http://docs.lib.purdue.edu/cgi/viewcontent.cgi?article=1394&context=cstech,
 Technical Report CSD-TR-475}, Department of Computer Sciences, Purdue
-University, mar 13 1984 (Revisted aug 27, 1984).
+University, mar 13, 1984 (Revised aug 27, 1984).
 
 @item [LZGS84]
 E. D. Lazowska, J. Zahorjan, G. Scott Graham, and K. C.

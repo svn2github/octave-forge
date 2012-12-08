@@ -22,6 +22,10 @@
 ## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qncspb (@var{N}, @var{S}, @var{V}, @var{m} )
 ## @deftypefnx {Function File} {[@var{Xl}, @var{Xu}, @var{Rl}, @var{Ru}] =} qncspb (@var{N}, @var{S}, @var{V}, @var{m}, @var{Z} )
 ##
+## @cindex bounds, PB
+## @cindex PB bounds
+## @cindex closed network, single class
+##
 ## Compute PB Bounds (C. H. Hsieh and S. Lam, 1987) for single-class,
 ## closed networks.
 ##

@@ -1,4 +1,4 @@
-## Copyright (C) 2008, 2009, 2010, 2011, 2012 Moreno Marzolla
+## Copyright (C) 2012 Moreno Marzolla
 ##
 ## This file is part of the queueing toolbox.
 ##
@@ -20,7 +20,7 @@
 ## @deftypefn {Function File} {[@var{V} @var{ch}] =} qncmvisits (@var{P})
 ## @deftypefnx {Function File} {[@var{V} @var{ch}] =} qncmvisits (@var{P}, @var{r})
 ##
-## Compute the average number of visits to the service centers of a closed multiclass network.
+## Compute the average number of visits to the service centers of a closed multiclass network with @math{K} service centers and @math{C} customer classes.
 ##
 ## @strong{INPUTS}
 ##
@@ -33,12 +33,15 @@
 ## is allowed.
 ##
 ## @item r
-## @code{@var{r}(c)} is the index of class @math{c} reference station.
-## The class @math{c} visit count to server @code{@var{r}(c)} is
-## conventionally set to 1. The reference station serves two purposes:
-## its throughput is assumed to be the system throughput, and a job
-## returning to the reference station is assumed to have completed one
-## cycle. Default is station 1 for all classes.
+## @code{@var{r}(c)} is the index of class @math{c} reference station,
+## @math{r(c) \in @{1, @dots{}, K@}}, @math{c \in @{1, \@dots{}, C@}}.
+## The class @math{c} visit count to server @code{@var{r}(c)}
+## (@code{@var{V}(c,r(c))}) is conventionally set to 1. Note, however,
+## that this only holds once for every chain class @math{c} belongs to.
+## The reference station serves two purposes: its throughput is assumed
+## to be the system throughput, and a job returning to the reference
+## station is assumed to have completed one cycle. Default is station 1
+## for all classes.
 ##
 ## @end table
 ##
@@ -48,8 +51,7 @@
 ##
 ## @item V
 ## @code{@var{V}(c,i)} is the number of visits of class @math{c}
-## requests at center @math{i}. Note that @code{@var{V}(c,@var{r}(c)) =
-## 1}.
+## requests at center @math{i}.
 ##
 ## @item ch
 ## @code{@var{ch}(c)} is the chain number that class @math{c} belongs
@@ -83,7 +85,7 @@ function [V chains] = qncmvisits( P, r )
     isvector(r) && length(r) == C || \
 	error("r must be a vector with %d elements",C);
     all( r>=1 && r<=K ) || \
-	error("elements of r are out of range [1,%d]",K);
+	error("elements in r must be in the range 1 - %d",K);
     r = r(:)';
   endif
 

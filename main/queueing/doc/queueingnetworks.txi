@@ -132,11 +132,14 @@ routing probabilities.
 @table @math
 
 @item @lambda_k
-External arrival rate to service center @math{k}.
+(Open models only) External arrival rate to service center @math{k}.
 
 @item @lambda
-Overall external arrival rate to the system as a whole: @math{\lambda =
+(Open models only) Overall external arrival rate to the system as a whole: @math{\lambda =
 \sum_k \lambda_k}.
+
+@item N
+(Closed models only) Total number of requests in the system.
 
 @item S_k
 Average service time. @math{S_k} is the average service time on service
@@ -198,7 +201,8 @@ System throughput, @math{X = X_1 / V_1}
 System response time, @math{R = \sum_{k=1}^K R_k V_k}
 
 @item Q
-Average number of requests in the system, @math{Q = N-XZ}
+Average number of requests in the system, @math{Q = \sum_{k=1} Q_k}; for
+closed systems, this can be written as @math{Q = N-XZ};
 
 @end table
 

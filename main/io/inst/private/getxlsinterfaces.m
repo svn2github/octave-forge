@@ -63,6 +63,7 @@
 ## 2012-09-03 Check for matching .jar names & javaclasspath was reversed (oops)
 ## 2012-10-07 Moved common classpath entry code to private function
 ## 2012-10-24 Style fixes
+## 2012-12-18 POI 3.9 support (either xbeans.jar or xmlbeans.jar), see chk_jar_entries.m
 
 function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 
@@ -158,7 +159,7 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
       printf ("POI");
     endif
     ## Check OOXML support
-    entries = {"xbean", "poi-ooxml-schemas", "dom4j"};
+    entries = {{"xbean", "xmlbean"}, "poi-ooxml-schemas", "dom4j"};
     if (chk_jar_entries (jcp, entries) >= numel (entries)), printf (" (& OOXML)"); endif
     if (xlsinterfaces.POI)
       if (deflt), printf ("; "); else, printf ("*; "); deflt = 1; endif

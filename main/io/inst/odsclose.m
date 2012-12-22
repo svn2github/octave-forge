@@ -69,12 +69,13 @@
 ## 2012-10-12 Move most interface-specific code to ./private subfuncs
 ##     ''     Move "file ptr preserved" message to proper else clause
 ## 2012-10-23 Style fixes
+## 2012-12-18 Improved error/warning messages
 
 function [ ods ] = odsclose (ods, varargs)
 
   ## If needed warn that dangling spreadsheet pointers may be left
   if (nargout < 1)
-    warning ("return argument missing - ods invocation not reset.");
+    warning ("odsclose.m: return argument missing - ods invocation not reset.");
   endif
 
   force = 0;
@@ -88,11 +89,11 @@ function [ ods ] = odsclose (ods, varargs)
       elseif (~isempty (strfind (tolower (varargin{ii}), ".")))
         ## Apparently a file name. First some checks....
         if (ods.changed == 0 || ods.changed > 2)
-          warning ("File %s wasn't changed, new filename ignored.", ods.filename);
+          warning ("odsclose.m: file %s wasn't changed, new filename ignored.", ods.filename);
         elseif (~strcmp (xls.xtype, "UNO") && ...
                 isempty (strfind ( lower (filename), ".ods")))
           ## UNO will write any file type, all other interfaces only .ods
-            error (".ods suffix lacking in filename %s", filename);
+            error ("odsclose.m: .ods suffix lacking in filename %s", filename);
         else
           ## Preprocessing / -checking ready. 
           ## Assign filename arg to file ptr struct
@@ -123,7 +124,7 @@ function [ ods ] = odsclose (ods, varargs)
   endif
 
   if (ods.changed && ods.changed < 3)
-    error (sprintf ("Could not save file %s - read-only or in use elsewhere?",...
+    error (sprintf ("odsclose.m: could not save file %s - read-only or in use elsewhere?",...
                     ods.filename));
     if (force)
       ods = [];

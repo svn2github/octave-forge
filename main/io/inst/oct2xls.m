@@ -114,6 +114,7 @@
 ## 2012-05-22 Cast all numeric data in input array to double
 ## 2012-10-12 Moved all interface-specific subfubcs into ./private
 ## 2012-10-24 Style fixes
+## 2012-12-18 Improved error/warning messages
 ##
 ## Latest subfunc update: 2012-10-12
 
@@ -123,7 +124,7 @@ function [ xls, rstatus ] = oct2xls (obj, xls, wsh=1, crange="", spsh_opts=[])
   
   ## Validate input array, make sure it is a cell array
   if (isempty (obj))
-    warning ("Request to write empty matrix - ignored."); 
+    warning ("oct2xls: request to write empty matrix - ignored."); 
     rstatus = 1;
     return;
   elseif (isnumeric (obj))
@@ -135,7 +136,7 @@ function [ xls, rstatus ] = oct2xls (obj, xls, wsh=1, crange="", spsh_opts=[])
     error ("oct2xls: input array neither cell nor numeric array");
   endif
   if (ndims (obj) > 2)
-    error ("Only 2-dimensional arrays can be written to spreadsheet"); 
+    error ("oct2xls: only 2-dimensional arrays can be written to spreadsheet"); 
   endif
   ## Cast all numerical values to double as spreadsheets only have double/boolean/text type
   idx = cellfun (@isnumeric, obj, "UniformOutput", true);
@@ -148,7 +149,7 @@ function [ xls, rstatus ] = oct2xls (obj, xls, wsh=1, crange="", spsh_opts=[])
   test1 = test1 || isempty (xls.app);
   test1 = test1 || ~ischar (xls.xtype);
   if (test1)
-    error ("Invalid xls file pointer struct");
+    error ("oct2xls: invalid xls file pointer struct");
   endif
 
   ## Check worksheet ptr
@@ -158,7 +159,7 @@ function [ xls, rstatus ] = oct2xls (obj, xls, wsh=1, crange="", spsh_opts=[])
 
   ## Check range
   if (~isempty (crange) && ~ischar (crange))
-    error ("Character string expected for arg # 4 (range)");
+    error ("oct2xls: character string expected for arg # 4 (range)");
   elseif (isempty (crange))
     crange = "";
   endif
@@ -174,11 +175,11 @@ function [ xls, rstatus ] = oct2xls (obj, xls, wsh=1, crange="", spsh_opts=[])
     ## other options to be implemented here
 
   else
-    error ("Structure expected for arg # 5");
+    error ("oct2xls: structure expected for arg # 5");
   endif
   
   if (nargout < 1)
-    printf ("Warning: no output spreadsheet file pointer specified.\n");
+    printf ("oct2xls: warning: no output spreadsheet file pointer specified.\n");
   endif
   
   ## Select interface to be used

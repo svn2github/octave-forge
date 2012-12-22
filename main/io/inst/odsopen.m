@@ -108,6 +108,7 @@
 ## 2012-10-24 Style fixes
 ##      ''    Removed fall-back options for .sxc. Other than .xls this can be
 ##            inferred from file suffix
+## 2012-12-18 Improved error messages
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
@@ -124,7 +125,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
   if (~isempty (reqinterface))
     if ~(ischar (reqinterface) || iscell (reqinterface))
-      usage ("Arg # 3 (interface) not recognized");
+      usage ("odsopen.m: arg # 3 (interface) not recognized");
     endif
     ## Turn arg3 into cell array if needed
     if (~iscell (reqinterface)), reqinterface = {reqinterface}; endif
@@ -143,7 +144,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
         elseif (strcmp (reqintf, "UNO"))
           odsinterfaces.UNO = [];
         else 
-          usage (sprintf (["Unknown .ods interface \"%s\" requested.\n" ...
+          usage (sprintf (["odsopen.m: unknown .ods interface \"%s\" requested.\n" ...
                   "Only OTK, JOD or UNO supported\n"], reqinterface{}));
         endif
       endfor
@@ -179,7 +180,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
   fid = fopen (filename, fmode);
   if (fid < 0)
     if (~rw)                  ## Read mode requested but file doesn't exist
-      err_str = sprintf ("File %s not found\n", filename);
+      err_str = sprintf ("odsopen.m: file %s not found\n", filename);
       error (err_str)
     else        
       ## For writing we need more info:
@@ -190,7 +191,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
         rw = 3;
       else                    ## Found but not writable = error
         fclose (fid);         ## Do not forget to close the handle neatly
-        error (sprintf ("Write mode requested but file %s is not writable\n",...
+        error (sprintf ("odsopen.m: write mode requested but file %s is not writable\n",...
                         filename))
       endif
     endif
@@ -243,7 +244,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
   if (~odssupport)
     ## Below message follows after getodsinterfaces
     printf ("None.\n");
-    warning ("No support for OpenOffice.org .ods I/O"); 
+    warning ("odsopen.m: no support for OpenOffice.org .ods I/O"); 
     ods = [];
     chkintf = [];
   else

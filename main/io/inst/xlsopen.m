@@ -114,6 +114,7 @@
 ## 2012-10-07 Moved subfunc getxlsinterfaces to ./private
 ##     ''     Moved all interface-specific file open stanzas to separate ./private funcs
 ## 2012-10-24 Style fixes
+## 2012-12-18 Improved warning/error messages
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
@@ -134,7 +135,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
   endif
 
   if (~(islogical (xwrite) || isnumeric (xwrite)))
-      usage ("Numerical or logical value expected for arg ## 2 (readwrite)")
+      usage ("xlsopen.m: numerical or logical value expected for arg ## 2 (readwrite)")
   endif
 
   if (~isempty (reqinterface))
@@ -165,7 +166,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
         elseif (strcmpi (reqintf, 'UNO'))
           xlsinterfaces.UNO = [];
         else 
-          usage (sprintf (["Unknown .xls interface \"%s\" requested.\n" 
+          usage (sprintf (["xlsopen.m: unknown .xls interface \"%s\" requested.\n" 
                  "Only COM, POI, JXL, OXS or UNO supported\n"], reqinterface{}));
         endif
       endfor
@@ -198,7 +199,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
   fid = fopen (filename, fmode);
   if (fid < 0)                      ## File doesn't exist...
     if (~xwrite)                    ## ...which obviously is fatal for reading...
-      error ( sprintf ("File %s not found\n", filename));
+      error ( sprintf ("xlsopen.m: file %s not found\n", filename));
     else                            ## ...but for writing, we need more info:
       fid = fopen (filename, 'rb'); ## Check if it exists at all...
       if (fid < 0)                  ## File didn't exist yet. Simply create it
@@ -206,7 +207,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
         xwrite = 3;
       else                          ## File exists, but isn't writable => Error
         fclose (fid);  ## Do not forget to close the handle neatly
-        error (sprintf ("Write mode requested but file %s is not writable\n", filename))
+        error (sprintf ("xlsopen.m: write mode requested but file %s is not writable\n", filename))
       endif
     endif
   else
@@ -244,19 +245,19 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
   if (xlsinterfaces.POI && ~xlssupport && (chk1 || chk2))
     [ xls, xlssupport, lastintf ] = __POI_spsh_open__ (xls, xwrite, filename, xlssupport, chk1, chk2, xlsinterfaces);
   elseif ~(chk1 || chk2)
-    error ("Unsupported file format for Apache POI")
+    error ("xlsopen.m: unsupported file format for Apache POI")
   endif
 
   if (xlsinterfaces.JXL && ~xlssupport && chk1)
     [ xls, xlssupport, lastintf ] = __JXL_spsh_open__ (xls, xwrite, filename, xlssupport, chk1);
   elseif (~chk1)
-    error ("Unsupported file format for JExcelAPI")
+    error ("xlsopen.m: unsupported file format for JExcelAPI")
   endif
 
   if (xlsinterfaces.OXS && ~xlssupport && chk1)
     [ xls, xlssupport, lastintf ] = __OXS_spsh_open__ (xls, xwrite, filename, xlssupport, chk1);
   elseif (~chk1)
-    error ("Unsupported file format for OpenXLS")
+    error ("xlsopen.m: unsupported file format for OpenXLS")
   endif
 
   if (xlsinterfaces.UNO && ~xlssupport)
@@ -272,9 +273,9 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
     if (isempty (reqinterface))
       ## This message is appended after message from getxlsinterfaces()
       printf ("None.\n");
-      warning ("No support for Excel .xls I/O"); 
+      warning ("xlsopen.m: no support for Excel .xls I/O"); 
     else
-      warning ("File type not supported by %s %s %s %s %s", reqinterface{:});
+      warning ("xlsopen.m: file type not supported by %s %s %s %s %s", reqinterface{:});
     endif
     xls = [];
     ## Reset found interfaces for re-testing in the next call. Add interfaces if needed.

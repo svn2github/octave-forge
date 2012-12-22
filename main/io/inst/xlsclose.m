@@ -77,6 +77,7 @@
 ## 2012-10-12 Move most interface-specific code to ./private subfuncs
 ##     ''     Move "file ptr preserved" message to proper else clause
 ## 2012-10-24 Style fixes
+## 2012-12-18 Improved error/warning messages
 
 function [ xls ] = xlsclose (xls, varargs)
 
@@ -92,13 +93,13 @@ function [ xls ] = xlsclose (xls, varargs)
       elseif (~isempty (strfind (tolower (varargin{ii}), '.')))
         ## Apparently a file name. First some checks....
         if (xls.changed == 0 || xls.changed > 2)
-          warning ("File %s wasn't changed, new filename ignored.", xls.filename);
+          warning ("xlsclose: file %s wasn't changed, new filename ignored.", xls.filename);
         elseif (strcmp (xls.xtype, "JXL"))
-          error ("JXL doesn't support changing filename, new filename ignored.");
+          error ("xlsclose: JXL doesn't support changing filename, new filename ignored.");
         elseif (~((strcmp (xls.xtype, "COM") || strcmp (xls.xtype, "UNO")) ... 
                 && isempty (strfind ( lower (filename), ".xls"))))
           # Excel/ActiveX && OOo (UNO bridge) will write any valid filetype; POI/JXL/OXS need .xls[x]
-          error (".xls or .xlsx suffix lacking in filename %s", filename);
+          error ("xlsclose: .xls or .xlsx suffix lacking in filename %s", filename);
         else
           ## For multi-user environments, uncomment below AND relevant stanza in xlsopen
           ## In case of COM, be sure to first close the open workbook
@@ -134,7 +135,7 @@ function [ xls ] = xlsclose (xls, varargs)
   endif
 
   if (xls.changed && xls.changed < 3)
-    warning (sprintf ("File %s could not be saved. Read-only or in use elsewhere?",...
+    warning (sprintf ("xlsclose: file %s could not be saved. Read-only or in use elsewhere?",...
                       xls.filename));
     if (force)
       xls = [];

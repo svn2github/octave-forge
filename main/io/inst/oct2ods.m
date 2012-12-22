@@ -119,6 +119,7 @@
 ##     ''     Tabs replaced by double space
 ## 2012-10-12 Moved all interface-specific subfubcs into ./private
 ## 2012-10-24 Style fixes
+## 2012-12-18 Improved error/warning messages
 ##
 ## Latest subfunc update: 2012-10-12
 
@@ -128,7 +129,7 @@ function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange="", spsh_opts=[])
   
   ## Check if input array is cell
   if (isempty (c_arr))
-    warning ("Request to write empty matrix - ignored."); 
+    warning ("oct2ods: request to write empty matrix - ignored."); 
     rstatus = 1;
     return;
   elseif (isnumeric (c_arr))
@@ -140,7 +141,7 @@ function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange="", spsh_opts=[])
     error ("oct2ods: input array neither cell nor numeric array");
   endif
   if (ndims (c_arr) > 2)
-    error ("Only 2-dimensional arrays can be written to spreadsheet");
+    error ("oct2ods: only 2-dimensional arrays can be written to spreadsheet");
   endif
 
   ## Check ods file pointer struct
@@ -149,17 +150,17 @@ function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange="", spsh_opts=[])
   test1 = test1 || isempty (ods.workbook);
   test1 = test1 || isempty (ods.app);
   if test1
-    error ("Arg #2: Invalid ods file pointer struct");
+    error ("oct2ods: arg #2: Invalid ods file pointer struct");
   endif
 
   ## Check worksheet ptr
   if (~(ischar (wsh) || isnumeric (wsh)))
-    error ("Integer (index) or text (wsh name) expected for arg # 3");
+    error ("oct2ods: integer (index) or text (wsh name) expected for arg # 3");
   endif
 
   ## Check range
   if (~isempty (crange) && ~ischar (crange))
-    error ("Character string (range) expected for arg # 4");
+    error ("oct2ods: character string (range) expected for arg # 4");
   elseif (isempty (crange))
     crange = "";
   endif
@@ -175,11 +176,11 @@ function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange="", spsh_opts=[])
     ## other options to be implemented here:
  
   else
-    error ("Structure expected for arg # 5" (options));
+    error ("oct2ods: structure expected for arg # 5" (options));
   endif
   
   if (nargout < 1)
-    printf ("Warning: no output spreadsheet file pointer specified.\n");
+    printf ("oct2ods: warning: no output spreadsheet file pointer specified.\n");
   endif
 
   if (strcmp (ods.xtype, "OTK"))
@@ -190,7 +191,7 @@ function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange="", spsh_opts=[])
       case {"0.8.6", "0.8.7", "0.8.8"}
         [ ods, rstatus ] = __OTK_oct2spsh__ (c_arr, ods, wsh, crange, spsh_opts);
       otherwise
-        error ("Unsupported odfdom version");
+        error ("oct2ods: unsupported odfdom version");
     endswitch
 
   elseif (strcmp (ods.xtype, "JOD"))

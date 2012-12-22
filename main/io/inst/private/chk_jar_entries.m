@@ -16,10 +16,12 @@
 
 ## chk_jar_entries - internal function finding Java .jar names in javaclasspath
 
-## Author: Philip <Philip@DESKPRN>
+## Author: Philip Nienhuis <prnienhuis@users.sf.net>
 ## Created: 2012-10-07
 ## Updates:
 ## 2012-10-23 Style fixes
+## 2012-12-18 Add option for range of names per required entry
+##     ''     Tests added
 
 function [ retval, missing ] = chk_jar_entries (jcp, entries, dbug=0)
 
@@ -30,13 +32,16 @@ function [ retval, missing ] = chk_jar_entries (jcp, entries, dbug=0)
     for ii=1:length (jcp)
       ## Get jar (or folder/map/subdir) name from java classpath entry
       jentry = strsplit (lower (jcp{ii}), filesep){end};
-      if (~isempty (strfind (jentry, lower (entries{jj}))))
-        ++retval; 
-        found = 1;
-        if (dbug > 2)
-          fprintf ("  - %s OK\n", jentry); 
+      kk = 0;
+      while (++kk <= size (char (entries{jj}), 1) && ! found)
+        if (~isempty (strfind (jentry, lower (char (entries{jj})(kk, :)))))
+          ++retval; 
+          found = 1;
+          if (dbug > 2)
+            fprintf ("  - %s OK\n", jentry); 
+          endif
         endif
-      endif
+      endwhile
     endfor
     if (~found)
       if (dbug > 2)
@@ -47,3 +52,19 @@ function [ retval, missing ] = chk_jar_entries (jcp, entries, dbug=0)
   endfor
 
 endfunction
+
+%!test
+%! entries = {"abc", {"def", "ghi"}, "jkl"};
+%! jcp1 = {"/usr/lib/java/abcx.jar", "/usr/lib/java/defz.jar", "/usr/lib/java/jkl3.jar"};
+%! jcp1 = strrep (jcp1, "/", filesep);
+%! assert (chk_jar_entries (jcp1, entries), 3);
+
+%!test
+%! entries = {"abc", {"def", "ghi"}, "xyz"};
+%! jcp2 = {"/usr/lib/java/abcy.jar", "/usr/lib/java/ghiw.jar", "/usr/lib/java/jkl6.jar"};
+%! jcp2 = strrep (jcp2, "/", filesep);
+%! [aaa, bbb] = chk_jar_entries (jcp2, entries);
+%! assert (aaa, 2);
+%! assert (bbb, [0 0 1]);
+
+

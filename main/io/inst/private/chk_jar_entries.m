@@ -45,7 +45,12 @@ function [ retval, missing ] = chk_jar_entries (jcp, entries, dbug=0)
     endfor
     if (~found)
       if (dbug > 2)
-        printf ("  %s....jar missing\n", entries{jj});
+        if (iscellstr (entries{jj}))
+          entrtxt = sprintf ("%s/", entries{jj}{:}); entrtxt(end) = "";
+        else
+          entrtxt = entries{jj};
+        endif
+        printf ("  %s....jar missing\n", entrtxt);
       endif
       missing(jj) = 1;
     endif

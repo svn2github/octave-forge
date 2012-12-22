@@ -27,6 +27,7 @@
 ## 2012-05-21 "Double" cast moved into main func oct2xls
 ## 2012-10-12 Renamed & moved into ./private
 ## 2012-10-24 Style fixes
+## 2012-12-21 Search for exact match when searching sheet names
 
 function [ xls, rstatus ] = __UNO_oct2spsh__ (c_arr, xls, wsh, crange, spsh_opts)
 
@@ -71,13 +72,13 @@ function [ xls, rstatus ] = __UNO_oct2spsh__ (c_arr, xls, wsh, crange, spsh_opts
       elseif (wsh > numel (sh_names))
         ## New sheet to be added. First create sheet name but check if it already exists
         shname = sprintf ("Sheet%d", numel (sh_names) + 1);
-        jj = strmatch (wsh, sh_names);
+        jj = strmatch (wsh, sh_names, "exact");
         if (~isempty (jj))
           ## New sheet name already in file, try to create a unique & reasonable one
           ii = 1; filler = ""; maxtry = 5;
           while (ii <= maxtry)
             shname = sprintf ("Sheet%s%d", [filler "_"], numel (sh_names + 1));
-            if (isempty (strmatch (wsh, sh_names)))
+            if (isempty (strmatch (wsh, sh_names, "exact")))
               ii = 10;
             else
               ++ii;
@@ -95,7 +96,7 @@ function [ xls, rstatus ] = __UNO_oct2spsh__ (c_arr, xls, wsh, crange, spsh_opts
       endif
     else
       ## wsh is a sheet name. See if it exists already
-      if (isempty (strmatch (wsh, sh_names)))
+      if (isempty (strmatch (wsh, sh_names, "exact")))
         ## Not found. New sheet to be added
         newsh = 1;
       endif

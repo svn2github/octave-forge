@@ -62,6 +62,7 @@
 ## 2012-02-27 Copyright strings updated
 ## 2012-10-12 Renamed & moved into ./private
 ## 2012-10-24 Style fixes
+## 2012-12-21 Search for exact match when searching sheet names
 
 function [ xls, status ] = __COM_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
 
@@ -149,7 +150,7 @@ function [ xls, status ] = __COM_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
 					## ... or proposed new sheet name (corresp. to requested sheet *number*)
 					shnm = [shnm "_"];
 					ii = 0;			## Also check if this new augmented sheet name exists...
-					if (strmatch (shnm1, sh_name)), jj++; endif
+					if (strmatch (shnm1, sh_name, "exact")), jj++; endif
 					if (jj > 5) 	## ... but not unlimited times...
 						error (sprintf ...
                 (" > 5 sheets named [_]Sheet%d already present!", wsh));

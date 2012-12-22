@@ -22,6 +22,7 @@
 ## 2011-09-19 Try to decipher if formulas return numeric or string values
 ## 2012-10-12 Renamed & moved into ./private
 ## 2012-10-24 Style fixes
+## 2012-12-21 Search for exact match when searching sheet names
 
 function [rawarr, xls, rstatus] = __UNO_spsh2oct__  (xls, wsh, datrange, spsh_opts)
 
@@ -40,7 +41,7 @@ function [rawarr, xls, rstatus] = __UNO_spsh2oct__  (xls, wsh, datrange, spsh_op
       error ("Sheet index %d out of range 1-%d", wsh, numel (sh_names));
     endif
   else
-    ii = strmatch (wsh, sh_names);
+    ii = strmatch (wsh, sh_names, "exact");
     if (isempty (ii)), error ("Sheet '%s' not found", wsh); endif
     wsh = ii;
   endif

@@ -88,6 +88,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 %     ''     Added Java pkg inquiry (Octave) before attempting javaclasspath()
 %     ''     Updated check for odfdom version (now supports 0.8.8)
 % 2012-10-07 Moved common classpath entry code to private function
+% 2012-12-21 POI 3.9 support (w. either xmlbeans.jar or xbeans.jar)
 
   jcp = []; retval = 0;
   if (nargin < 3); path_to_ooo= ''; end %if
@@ -210,8 +211,8 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
     end %if
   end %if
   % Next, check OOXML support
-  if (dbug > 1), fprintf ('\nPOI OOXML (.xlsx) <xbean> <poi-ooxml-schemas> <dom4j>:\n'); end %if
-  entries2 = {'xbean', 'poi-ooxml-schemas', 'dom4j-1.6.1'}; 
+  if (dbug > 1), fprintf ('\nPOI OOXML (.xlsx) <xbean/xmlbean> <poi-ooxml-schemas> <dom4j>:\n'); end %if
+  entries2 = {{'xbean', 'xmlbean'}, 'poi-ooxml-schemas', 'dom4j'}; 
   % Only update retval if all classes for basic POI have been found in javaclasspath
   [jpchk2, missing2] = chk_jar_entries (jcp, entries2, dbug);
   if (jpchk1 >= numel (entries1) && jpchk2 >= numel (entries2)), retval = retval + 4; end %if
@@ -416,26 +417,26 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
     if (~ischar (path_to_jars)), printf ('Path expected for arg # 1\n'); return; end %if
     % First combine all entries
     targt = sum (missing);
-    % Search tru list of missing entries
-    for ii=1:6   % Adapt in case of future new interfaces
+    % For each interface, search tru list of missing entries
+    for ii=1:6   % Adapt number in case of future new interfaces
       tmpe = eval ([ 'entries' char(ii + '0') ]);
       tmpm = eval ([ 'missing' char(ii + '0') ]);
       if (sum (tmpm))
         for jj=1:numel (tmpe)
           if (tmpm(jj))
-            file = dir ([path_to_jars filesep tmpe{jj} '*']);
-            if (isempty (file))
-              if (dbug > 2), fprintf ('  ? %s<...>.jar ?\n', tmpe{jj}); end %if
+            if (iscellstr (tmpe{jj}))
+              rtval = 0; kk = 1;
+              while (kk <= numel (tmpe{jj}) && ! rtval)
+                jtmpe = tmpe{jj}{kk};
+                rtval = add_jars_to_jcp (path_to_jars, jtmpe, dbug);
+                ++kk;
+              end %while
             else
-              if (dbug > 2), fprintf ('  Found %s, adding it to javaclasspath ... ', file(1).name); end %if
-              try
-                javaaddpath ([path_to_jars filesep file(1).name]);
-                targt = targt - 1;
-                tmpm(jj) = 0;
-                if (dbug > 2), fprintf ('OK\n'); end %if
-              catch
-                if (dbug > 2), fprintf ('FAILED\n'); end %if
-              end %try_catch
+              rtval = add_jars_to_jcp (path_to_jars, tmpe{jj}, dbug);
+            end %if
+            if (rtval)
+              targt = targt - rtval;
+              tmpm(jj) = 0;
             end %if
           end %if
         end %for
@@ -476,6 +477,30 @@ function [ ret_dir ] = get_dir_ (base_dir, req_dir)
     end %while
     % If we get here, a dir with proper name has been found. Construct path
     ret_dir = [ base_dir filesep  ret_dir_list(idx(ii)).name ];
+  end %if
+
+end %function
+
+
+function [ retval ] = add_jars_to_jcp (path_to_jars, jarname, dbug)
+
+% Given a subdirectory path and a (sufficiently unique part of a) Java class
+% lib file (.jar), checks if it can find the file in the subdir and tries to
+% add it to the javaclasspath
+
+  retval = 0;
+  file = dir ([path_to_jars filesep jarname '*']);  %%% FIXME mult_jar
+  if (isempty (file))
+    if (dbug > 2), fprintf ('  ? %s<...>.jar ?\n', jarname); end %if
+  else
+    if (dbug > 2), fprintf ('  Found %s, adding it to javaclasspath ... ', file(1).name); end %if
+    try
+      javaaddpath ([path_to_jars filesep file(1).name]);
+      if (dbug > 2), fprintf ('OK\n'); end %if
+      retval = 1;
+    catch
+      if (dbug > 2), fprintf ('FAILED\n'); end %if
+    end %try_catch
   end %if
 
 end %function

@@ -108,6 +108,7 @@
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-06-07 Replaced all tabs by double space
 ## 2012-10-24 Style fixes
+## 2012-12-23 Fix rare occasion of xlsclose error in unwind_protect block
 
 function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
 
@@ -172,7 +173,7 @@ function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
     [xls, rstatus] = oct2xls (arr(1:nr, 1:nc), xls, wsh, topleft);
 
   unwind_protect_cleanup
-    if (xls_ok)
+    if (xls_ok && ! isempty (xls))
       xls = xlsclose (xls);
     endif
 

@@ -1,18 +1,24 @@
 Summary of important user-visible changes for releases of the io package
 
 ===============================================================================
-io-1.2.0   Release Date: 2012-10-??   Release Manager: Philip Nienhuis
+io-1.2.0   Release Date: 2012-12-??   Release Manager: Philip Nienhuis
 ===============================================================================
+This will be the last major version that is "depending" on the Java package for
+most of the spreadsheet I/O. In a next major version this will be based on
+Octave's built-in Java support.
 
 ** Bug fixes:
 --- xls2oct(POI)/__POI_spsh2oct__: now correctly evaluates formulas (as far as
     POI can handle cell formulas)
+--- Fixed sheet selection code for UNO and COM interfaces
 
 ** Moved all interface-specific subfunctions and code into ./private subdir.
    This allowed for elimination of a lot of duplicate code.
 
 ** Moved functions parse_sp_range.m, spsh_chkrange.m & spsh_prstype.m into
    ./private subdir
+
+** Support for POI 3.9 added
 
 ===============================================================================
 io-1.0.20   Release Date: 2012-09-07   Release Manager: Philip Nienhuis

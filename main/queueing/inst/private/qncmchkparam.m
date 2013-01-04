@@ -45,8 +45,8 @@ function [err N S V m Z] = qncmchkparam( varargin )
     return;
   endif
 
-  if ( any(N<0) )
-    err = "N must contain nonnegative values";
+  if ( any(N<0) || any( fix(N) != N ) )
+    err = "N must contain nonnegative integers";
     return;
   endif
 

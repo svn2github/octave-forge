@@ -207,6 +207,8 @@ endfunction
 %! fail( "qncsmva()", "Invalid" );
 %! fail( "qncsmva( 10, [1 2], [1 2 3] )", "incompatible size" );
 %! fail( "qncsmva( 10, [-1 1], [1 1] )", "nonnegative" );
+%! fail( "qncsmva( 10.3, [-1 1], [1 1] )", "integer" );
+%! fail( "qncsmva( -0.3, [-1 1], [1 1] )", "nonnegative" );
 
 ## Check if networks with only one type of server are handled correctly
 %!test

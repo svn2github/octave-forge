@@ -40,8 +40,8 @@ function [err N S V m Z] = qncschkparam( varargin )
 
   [V m Z] = deal(0);
 
-  if ( !isscalar(N) || N<0 )
-    err = "N must be a nonnegative scalar";  
+  if ( !isscalar(N) || N<0 || N != fix(N) )
+    err = "N must be a nonnegative integer";  
     return;
   endif
 

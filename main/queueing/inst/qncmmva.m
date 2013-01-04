@@ -457,6 +457,8 @@ endfunction
 %! N = [1 1];
 %! V = zeros(3,2,3);
 %! fail( "qncmmva(N,S,V)", "size mismatch" );
+%! fail( "qncmmva([0.3 1], [1 2; 3 4])", "integer");
+%! fail( "qncmmva([-1 0], [1 2; 3 4])", "nonnegative");
 
 ## Check degenerate case (population is zero); LI servers
 %!test

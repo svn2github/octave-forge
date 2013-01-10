@@ -150,6 +150,6 @@ ylabel ('Algae [n.s.]')
 xlabel ('Time [months]')
 xlim ([0, 56])
 
-legend ('Measurement DaISy', 'MOEN4 Kalman Predictor', 'MOEN4 Kalman Predictor (weak)', 'location', 'northeast')
+legend ('Measurement DaISy', 'MOEN4 Kalman Predictor', 'MOEN4 Observer', 'location', 'northeast')
 
 

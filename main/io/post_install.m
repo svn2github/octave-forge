@@ -9,6 +9,6 @@ function post_install (desc)
                   "-", octave_config_info ("api_version"), filesep, "PKG_ADD");
   [err, msg] = unlink (file);
   if (err)
-    warning ("Unable to remove PKG_ADD: %S", msg);
+    warning ("Unable to remove PKG_ADD: %s", msg);
   endif
 endfunction

@@ -1,0 +1,14 @@
+postgesql >> Postgresql.
+Connection
+ pq_connect
+ pq_close
+ pq_update_types
+Command execution
+ pq_exec_params
+Large objects
+ pq_lo_import
+ pq_lo_export
+ pq_lo_unlink
+Option setting
+ setdbopts
+ getdbopts

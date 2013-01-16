@@ -1,11 +1,11 @@
-postgesql >> Postgresql.
-Connection
+database >> Database.
+Postgresql connection
  pq_connect
  pq_close
  pq_update_types
-Command execution
+Postgresql command execution
  pq_exec_params
-Large objects
+Postgresql large objects
  pq_lo_import
  pq_lo_export
  pq_lo_unlink

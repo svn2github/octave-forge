@@ -6,5 +6,5 @@ Maintainer: Olaf Till <i7tiol@t-online.de>
 Title: Database.
 Description: Interface to SQL databases, currently only postgresql using libpq.
 Depends: octave (>= 3.6.2)
-Autoload: yes
+Autoload: no
 License: GPLv3

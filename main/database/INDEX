@@ -1,6 +1,0 @@
-database >> Database
-High-Level Interface
- sql
- default_db
-
-See the octave-db documentation at http://octave-swig.sourceforge.net/octave-db.html.

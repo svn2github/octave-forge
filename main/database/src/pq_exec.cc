@@ -102,7 +102,7 @@ Sends the string @var{command}, which should contain one or more SQL commands, o
 
 #endif // code disabled
 
-DEFUN_DLD (pq_exec_params, args, ,
+DEFUN_DLD (pq_exec_params, args, nargout,
            "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} pq_exec_params (@var{connection}, @var{command})\n\
 @deftypefnx {Loadable Function} pq_exec_params (@var{connection}, @var{command}, @var{params})\n\
@@ -181,11 +181,18 @@ Octaves @code{NA} corresponds to a Postgresql NULL value (not @code{NaN}, which 
   if (nargs == 1 && args(0).is_string () &&
       args(0).string_value () == "defaults")
     {
-      octave_value_list f_args (2);
+      octave_value_list f_args (8);
       Matrix a;
+      Cell c;
 
       f_args(0) = octave_value ("param_types");
       f_args(1) = octave_value (a);
+      f_args(2) = octave_value ("copy_in_path");
+      f_args(3) = octave_value ("");
+      f_args(4) = octave_value ("copy_out_path");
+      f_args(5) = octave_value ("");
+      f_args(6) = octave_value ("copy_in_data");
+      f_args(7) = octave_value (c);
 
       return feval ("setdbopts", f_args, 1);
     }
@@ -283,6 +290,8 @@ Octaves @code{NA} corresponds to a Postgresql NULL value (not @code{NaN}, which 
       return retval;
     }
 
+  // get option settings
+
   octave_value_list f_args (3);
 
   octave_value_list f_ret;
@@ -300,6 +309,44 @@ Octaves @code{NA} corresponds to a Postgresql NULL value (not @code{NaN}, which 
       return retval;
     }
 
+  f_args(1) = octave_value ("copy_in_path");
+  f_args(2) = octave_value ("");
+
+  f_ret = feval ("getdbopts", f_args, 1);
+  std::string cin_path = f_ret(0).string_value ();
+  if (error_state)
+    {
+      error ("could not convert copy_in_path to string");
+
+      return retval;
+    }
+
+  f_args(1) = octave_value ("copy_out_path");
+  f_args(2) = octave_value ("");
+
+  f_ret = feval ("getdbopts", f_args, 1);
+  std::string cout_path = f_ret(0).string_value ();
+  if (error_state)
+    {
+      error ("could not convert copy_out_path to string");
+
+      return retval;
+    }
+
+  f_args(1) = octave_value ("copy_in_data");
+  f_args(2) = octave_value (Cell ());
+
+  f_ret = feval ("getdbopts", f_args, 1);
+  Cell cin_data = f_ret(0).cell_value ();
+  if (error_state)
+    {
+      error ("could not convert copy_in_data to cell");
+
+      return retval;
+    }
+
+  // check option settings
+
   if (ptypes.length () != nparams)
     {
       error ("%s: if given, cell-array of parameter types must have same length as cell-array of parameters",
@@ -308,12 +355,30 @@ Octaves @code{NA} corresponds to a Postgresql NULL value (not @code{NaN}, which 
       return retval;
     }
 
+  if (nargout && ! cout_path.empty ())
+    {
+      error ("%s: copy out pathname and output argument may not be both given",
+             fname.c_str ());
+
+      return retval;
+    }
+
+  if (! cin_path.empty () && ! cin_data.is_empty ())
+    {
+      error ("%s: copy in pathname and copy in data may not be both given",
+             fname.c_str ());
+
+      return retval;
+    }
+
+  //
+
   Cell rtypes;
 
   command c (oct_pq_conn, cmd, params, ptypes, rtypes, fname);
 
   if (c.good ())
-    retval = c.process_single_result ();
+    retval = c.process_single_result (cin_path, cout_path, nargout, cin_data);
 
   return retval;
 }

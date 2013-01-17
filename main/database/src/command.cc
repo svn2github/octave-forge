@@ -22,6 +22,9 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 #include <octave/Cell.h>
 #include <octave/lo-ieee.h>
 
+#include <iostream>
+#include <fstream>
+
 #include "command.h"
 
 #define ERROR_RETURN_NO_PG_TYPE                                         \
@@ -244,7 +247,10 @@ oct_pq_conv_t *command::pgtype_from_spec (Oid oid, oct_type_t &oct_type)
   return conv;
 }
 
-octave_value command::process_single_result (void)
+octave_value command::process_single_result (const std::string &infile,
+                                             const std::string &outfile,
+                                             int nargout,
+                                             const Cell &data)
 {
   octave_value retval;
 
@@ -274,15 +280,18 @@ octave_value command::process_single_result (void)
           retval = tuples_ok_handler ();
           break;
         case PGRES_COPY_OUT:
-          retval = copy_out_handler ();
+          retval = copy_out_handler (outfile, nargout);
           break;
         case PGRES_COPY_IN:
-          retval = copy_in_handler ();
+          retval = copy_in_handler (infile, data);
           break;
         }
 
-      PQclear (res);
-      res = NULL;
+      if (res) // could have been changed by a handler
+        {
+          PQclear (res);
+          res = NULL;
+        }
     }
 
   return retval;
@@ -433,24 +442,170 @@ octave_value command::tuples_ok_handler (void)
     }
 }
 
-octave_value command::copy_out_handler (void)
+octave_value command::copy_out_handler (const std::string &outfile, int nargout)
 {
   octave_value retval;
 
-  valid = 0;
+  if (! outfile.empty ())
+    {
+      // store unchecked output in file
 
-  error ("copy-out not yet implemented");
+      std::ofstream ostr (outfile.c_str (), std::ios_base::out);
+      if (ostr.fail ())
+        error ("could not open output file %s", outfile.c_str ());
+
+      char *data;
+      int nb;
+      while ((nb = PQgetCopyData (cptr, &data, 0)) > 0)
+        {
+          if (! (ostr.fail () || ostr.bad ()))
+            {
+              ostr.write (data, nb);
+              if (ostr.bad ())
+                error ("write to file failed");
+            }
+          PQfreemem (data);
+        }
+
+      if (! error_state)
+        ostr.close ();
+
+      if (nb == -2)
+        error ("server error in copy-out: %s", PQerrorMessage (cptr));
+      else
+        {
+          PQclear (res);
+
+          if (res = PQgetResult (cptr))
+            {
+              if ((state = PQresultStatus (res)) == PGRES_FATAL_ERROR)
+                error ("server error in copy-out: %s", PQerrorMessage (cptr));
+            }
+          else
+            error ("unexpectedly got no result information");
+        }
+
+      if (error_state)
+        valid = 0;
+    }
+  else if (nargout)
+    {
+      // return output data
+
+      error ("copy-out to variable not yet implemented");
+
+      valid = 0;
+    }
+  else
+    {
+      error ("neither output argument nor filename given for copy-out");
+
+      valid = 0;
+    }
 
   return retval;
 }
 
-octave_value command::copy_in_handler (void)
+octave_value command::copy_in_handler (const std::string &infile,
+                                       const Cell &data)
 {
   octave_value retval;
 
-  valid = 0;
+#define OCT_PQ_READSIZE 4096
 
-  error ("copy-in not yet implemented");
+  char buff [OCT_PQ_READSIZE];
+
+  if (! infile.empty ())
+    {
+      // read unchecked input from file
+
+      std::ifstream istr (infile.c_str (), std::ios_base::in);
+      if (istr.fail ())
+        {
+          error ("could not open input file %s", infile.c_str ());
+
+          PQputCopyEnd (cptr, "could not open input file");
+
+          error ("%s", PQerrorMessage (cptr));
+
+          valid = 0;
+
+          return retval;
+        }
+
+      do
+        {
+          istr.read (buff, OCT_PQ_READSIZE);
+
+          if (istr.bad ())
+            {
+              error ("could not read file %s", infile.c_str ());
+
+              break;
+            }
+          else
+            {
+              int nb;
+
+              if ((nb = istr.gcount ()) > 0)
+                if (PQputCopyData (cptr, buff, nb) == -1)
+                  {
+                    error ("%s", PQerrorMessage (cptr));
+
+                    break;
+                  }
+            }
+        }
+      while (! istr.eof ());
+
+      istr.close ();
+
+      if (error_state)
+        {
+          PQputCopyEnd (cptr, "copy-in interrupted");
+
+          error ("%s", PQerrorMessage (cptr));
+        }
+      else
+        {
+          if (PQputCopyEnd (cptr, NULL) == -1)
+            error ("%s", PQerrorMessage (cptr));
+          else
+            {
+              PQclear (res);
+
+              if (res = PQgetResult (cptr))
+                {
+                  if ((state = PQresultStatus (res)) == PGRES_FATAL_ERROR)
+                    error ("server error in copy-in: %s", PQerrorMessage (cptr));
+                }
+              else
+                error ("unexpectedly got no result information");
+            }
+        }
+
+      if (error_state)
+        valid = 0;
+    }
+  else if (! data.is_empty ())
+    {
+      // read input from argument
+
+      error ("copy in from argument not yet implemented");
+
+      if (data.dims ().length () > 2)
+        {
+          error ("copy-in data must not be more than two-dimensional");
+
+          valid = 0;
+
+          return retval;
+        }
+
+      valid = 0;
+    }
+  else
+    error ("neither data nor filename given for copy-in");
 
   return retval;
 }

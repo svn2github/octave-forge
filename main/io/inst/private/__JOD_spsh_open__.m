@@ -20,18 +20,19 @@
 ## Created: 2012-10-12
 ## Updates:
 ## 2012-10-24 Style fixes
+## 2013-01-20 Adapted to ML-compatible Java calls
 
 function [ ods, odssupport, lastintf ] = __JOD_spsh_open__ (ods, rw, filename, odssupport)
 
-    file = java_new ("java.io.File", filename);
+    file = javaObject ("java.io.File", filename);
     jopendoc = "org.jopendocument.dom.spreadsheet.SpreadSheet";
     try
       if (rw > 2)
         ## Create an empty 2 x 2 default TableModel template
-        tmodel= java_new ("javax.swing.table.DefaultTableModel", 2, 2);
-        wb = java_invoke (jopendoc, "createEmpty", tmodel);
+        tmodel= javaObject ("javax.swing.table.DefaultTableModel", 2, 2);
+        wb = javaMethod ("createEmpty", jopendoc, tmodel);
       else
-        wb = java_invoke (jopendoc, "createFromFile", file);
+        wb = javaMethod ("createFromFile", jopendoc, file);
       endif
       ods.workbook = wb;
       ods.filename = filename;

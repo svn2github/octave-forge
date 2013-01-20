@@ -45,6 +45,7 @@
 ## 2010-11-12 Improved file change tracking tru ods.changed
 ## 2012-10-12 Renamed & moved into ./private
 ## 2012-10-24 Style fixes
+## 2013-01-20 Adapted to ML-compatible Java calls
 
 function [ ods, rstatus ] = __OTK_oct2ods__ (c_arr, ods, wsh, crange, spsh_opts)
 
@@ -123,7 +124,7 @@ function [ ods, rstatus ] = __OTK_oct2ods__ (c_arr, ods, wsh, crange, spsh_opts)
       sh = sheets.item(0);
     else
       ## Other sheets exist, create a new sheet. First the basics
-      sh = java_new ("org.odftoolkit.odfdom.doc.table.OdfTable", odfcont);
+      sh = javaObject ("org.odftoolkit.odfdom.doc.table.OdfTable", odfcont);
       ## Append sheet to spreadsheet ( contentRoot)
       offsprdsh.appendChild (sh);
       ## Rebuild sheets nodes
@@ -153,9 +154,9 @@ function [ ods, rstatus ] = __OTK_oct2ods__ (c_arr, ods, wsh, crange, spsh_opts)
   ## This will speed up processing later
 
     ## 1. Build empty table row template
-    row = java_new ("org.odftoolkit.odfdom.doc.table.OdfTableRow", odfcont);
+    row = javaObject ("org.odftoolkit.odfdom.doc.table.OdfTableRow", odfcont);
     ## Create an empty tablecell & append it to the row
-    scell = java_new ("org.odftoolkit.odfdom.doc.table.OdfTableCell", odfcont);
+    scell = javaObject ("org.odftoolkit.odfdom.doc.table.OdfTableCell", odfcont);
     scell = row.appendCell (scell);
     scell.setTableNumberColumnsRepeatedAttribute (1024);
     ## 2. If needed add empty filler row above the data rows & if needed add repeat count
@@ -164,14 +165,14 @@ function [ ods, rstatus ] = __OTK_oct2ods__ (c_arr, ods, wsh, crange, spsh_opts)
       if (trow > 1) row.setTableNumberRowsRepeatedAttribute (trow); endif
     endif
     ## 3. Add data rows; first one serves as a template
-    drow = java_new ("org.odftoolkit.odfdom.doc.table.OdfTableRow", odfcont);
+    drow = javaObject ("org.odftoolkit.odfdom.doc.table.OdfTableRow", odfcont);
     if (lcol > 0) 
-      scell = java_new ("org.odftoolkit.odfdom.doc.table.OdfTableCell", odfcont);
+      scell = javaObject ("org.odftoolkit.odfdom.doc.table.OdfTableCell", odfcont);
       drow.appendCell (scell);
       if (lcol > 1) scell.setTableNumberColumnsRepeatedAttribute (lcol); endif
     endif
     ## 4. Add data cell placeholders
-    scell = java_new ("org.odftoolkit.odfdom.doc.table.OdfTableCell", odfcont);
+    scell = javaObject ("org.odftoolkit.odfdom.doc.table.OdfTableCell", odfcont);
     drow.appendCell (scell);
     for jj=2:ncols
       dcell = scell.cloneNode (1);    ## Deep copy
@@ -249,10 +250,10 @@ function [ ods, rstatus ] = __OTK_oct2ods__ (c_arr, ods, wsh, crange, spsh_opts)
     elseif (rsplit < 0)
       ## New data rows to be added below existing data & table(!) rows, i.e.
       ## beyond lower end of the current sheet. Add filler row and 1st data row
-      row = java_new ("org.odftoolkit.odfdom.doc.table.OdfTableRow", odfcont);
+      row = javaObject ("org.odftoolkit.odfdom.doc.table.OdfTableRow", odfcont);
       drow = row.cloneNode (1);                ## First data row
       row.setTableNumberRowsRepeatedAttribute (-rsplit);    ## Filler row
-      scell = java_new ("org.odftoolkit.odfdom.doc.table.OdfTableCell", odfcont);
+      scell = javaObject ("org.odftoolkit.odfdom.doc.table.OdfTableCell", odfcont);
       dcell = scell.cloneNode (1);
       scell.setTableNumberColumnsRepeatedAttribute (COL_CAP);  ## Filler cell
       row.appendCell (scell);
@@ -270,8 +271,8 @@ function [ ods, rstatus ] = __OTK_oct2ods__ (c_arr, ods, wsh, crange, spsh_opts)
       ## While processing next data rows, fix table-rows if needed
       if (isempty (row) || (row.getLength () < 1))
         ## Append an empty row with just one empty cell
-        row = java_new ("org.odftoolkit.odfdom.doc.table.OdfTableRow", odfcont);
-        scell = java_new ("org.odftoolkit.odfdom.doc.table.OdfTableCell", odfcont);
+        row = javaObject ("org.odftoolkit.odfdom.doc.table.OdfTableRow", odfcont);
+        scell = javaObject ("org.odftoolkit.odfdom.doc.table.OdfTableCell", odfcont);
         scell.setTableNumberColumnsRepeatedAttribute (lcol + 1);
         row.appendCell (scell);
         sh.appendRow (row);
@@ -324,7 +325,7 @@ function [ ods, rstatus ] = __OTK_oct2ods__ (c_arr, ods, wsh, crange, spsh_opts)
         endfor
       elseif (csplit < 0)
         ## New cells to be added beyond current last cell & table-cell in row
-        dcell = java_new ("org.odftoolkit.odfdom.doc.table.OdfTableCell", odfcont);
+        dcell = javaObject ("org.odftoolkit.odfdom.doc.table.OdfTableCell", odfcont);
         scell = dcell.cloneNode (1);
         dcell.setTableNumberColumnsRepeatedAttribute (-csplit);
         row.appendCell (dcell);
@@ -339,7 +340,7 @@ function [ ods, rstatus ] = __OTK_oct2ods__ (c_arr, ods, wsh, crange, spsh_opts)
       if (~newsh)
         if (isempty (scell))
           ## Apparently end of row encountered. Add cell
-          scell = java_new ("org.odftoolkit.odfdom.doc.table.OdfTableCell", odfcont);
+          scell = javaObject ("org.odftoolkit.odfdom.doc.table.OdfTableCell", odfcont);
           scell = row.appendCell (scell);
         else
           ## If needed expand nr-cols-repeated
@@ -387,7 +388,7 @@ function [ ods, rstatus ] = __OTK_oct2ods__ (c_arr, ods, wsh, crange, spsh_opts)
           end_try_catch
         case 3  ## string
           scell.setOfficeValueTypeAttribute ("string");
-          pe = java_new ("org.odftoolkit.odfdom.doc.text.OdfTextParagraph",...
+          pe = javaObject ("org.odftoolkit.odfdom.doc.text.OdfTextParagraph",...
                           odfcont,"", c_arr{ii, jj});
           scell.appendChild (pe);
         case 4  ## Formula.  
@@ -399,13 +400,13 @@ function [ ods, rstatus ] = __OTK_oct2ods__ (c_arr, ods, wsh, crange, spsh_opts)
           try
             scell.setTableFormulaAttribute (c_arr{ii, jj});
             scell.setOfficeValueTypeAttribute ("string");
-            pe = java_new ("org.odftoolkit.odfdom.doc.text.OdfTextParagraph",...
+            pe = javaObject ("org.odftoolkit.odfdom.doc.text.OdfTextParagraph",...
                             odfcont,"", "##Recalc Formula##");
             scell.appendChild (pe);
           catch
             ++f_errs;
             scell.setOfficeValueTypeAttribute ("string");
-            pe = java_new ("org.odftoolkit.odfdom.doc.text.OdfTextParagraph",...
+            pe = javaObject ("org.odftoolkit.odfdom.doc.text.OdfTextParagraph",...
                             odfcont,"", c_arr{ii, jj});
             scell.appendChild (pe);
           end_try_catch

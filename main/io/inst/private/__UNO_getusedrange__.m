@@ -23,17 +23,18 @@
 ## 2012-03-02 Adapted code to assess nr of range blocks to ';' separator for LO3.5+
 ## 2012-10-12 Renamed & moved into ./private
 ## 2012-10-24 Style fixes
+## 2013-01-20 Adapted to ML-compatible Java calls
 
 function [ srow, erow, scol, ecol ] = __UNO_getusedrange__ (ods, ii)
 
   # Get desired sheet
   sheets = ods.workbook.getSheets ();
   sh_names = sheets.getElementNames ();
-  unotmp = java_new ("com.sun.star.uno.Type", "com.sun.star.sheet.XSpreadsheet");
+  unotmp = javaObject ("com.sun.star.uno.Type", "com.sun.star.sheet.XSpreadsheet");
   sh = sheets.getByName (sh_names(ii)).getObject.queryInterface (unotmp);
 
   ## Prepare cell range query
-  unotmp = java_new ("com.sun.star.uno.Type", "com.sun.star.sheet.XCellRangesQuery");
+  unotmp = javaObject ("com.sun.star.uno.Type", "com.sun.star.sheet.XCellRangesQuery");
   xRQ = sh.queryInterface (unotmp);
   Cellflgs = javaObject ("java.lang.Short", "23");
   ccells = xRQ.queryContentCells (Cellflgs);

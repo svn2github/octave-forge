@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -64,6 +64,7 @@
 ## 2012-10-07 Moved common classpath entry code to private function
 ## 2012-10-24 Style fixes
 ## 2012-12-18 POI 3.9 support (either xbeans.jar or xmlbeans.jar), see chk_jar_entries.m
+## 2013-01-20 Adapted to ML-compatible Java calls
 
 function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 
@@ -118,7 +119,7 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
       jcp = javaclasspath ("-all");                   ## For java pkg > 1.2.7
       if (isempty (jcp)), jcp = javaclasspath; endif  ## For java pkg < 1.2.8
       ## If we get here, at least Java works. Now check for proper version (>= 1.6)
-      jver = char (java_invoke ("java.lang.System", "getProperty", "java.version"));
+      jver = char (javaMethod ("getProperty", "java.lang.System", "java.version"));
       cjver = strsplit (jver, '.');
       if (sscanf (cjver{2}, "%d") < 6)
         warning ("\nJava version might be too old - you need at least Java 6 (v. 1.6.x.x)\n");

@@ -20,6 +20,7 @@
 ## Created: 2012-10-12
 ## Updates:
 ## 2012-10-24 Style fixes
+## 2013-01-20 Adapted to ML-compatible Java calls
 
 function [ xls ] = __OXS_spsh_close__ (xls)
 
@@ -30,8 +31,8 @@ function [ xls ] = __OXS_spsh_close__ (xls)
         fname = xls.filename;
       endif
       try
-        xlsout = java_new ("java.io.FileOutputStream", fname);
-        bufout = java_new ("java.io.BufferedOutputStream", xlsout);
+        xlsout = javaObject ("java.io.FileOutputStream", fname);
+        bufout = javaObject ("java.io.BufferedOutputStream", xlsout);
         if (xls.changed == 2) printf ("Saving file %s...\n", fname); endif
         xls.workbook.writeBytes (bufout);
         xls.workbook.close ();

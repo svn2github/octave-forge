@@ -23,6 +23,7 @@
 ## 2012-10-12 Renamed & moved into ./private
 ## 2012-10-24 Style fixes
 ## 2012-12-21 Search for exact match when searching sheet names
+## 2013-01-20 Adapted to ML-compatible Java calls
 
 function [rawarr, xls, rstatus] = __UNO_spsh2oct__  (xls, wsh, datrange, spsh_opts)
 
@@ -45,10 +46,10 @@ function [rawarr, xls, rstatus] = __UNO_spsh2oct__  (xls, wsh, datrange, spsh_op
     if (isempty (ii)), error ("Sheet '%s' not found", wsh); endif
     wsh = ii;
   endif
-  unotmp = java_new ("com.sun.star.uno.Type", "com.sun.star.sheet.XSpreadsheet");
+  unotmp = javaObject ("com.sun.star.uno.Type", "com.sun.star.sheet.XSpreadsheet");
   sh = sheets.getByName(sh_names{wsh}).getObject.queryInterface (unotmp);
 
-  unotmp = java_new ("com.sun.star.uno.Type", "com.sun.star.sheet.XCellRangesQuery");
+  unotmp = javaObject ("com.sun.star.uno.Type", "com.sun.star.sheet.XCellRangesQuery");
   xRQ = sh.queryInterface (unotmp);
   ## Get cell ranges of all rectangles containing data. Type values:
   ##java_get ("com.sun.star.sheet.CellFlags", "VALUE")      ans =  1
@@ -96,14 +97,14 @@ function [rawarr, xls, rstatus] = __UNO_spsh2oct__  (xls, wsh, datrange, spsh_op
         case 1  ## Value
           rawarr{ii-trow+2, jj-lcol+2} = XCell.getValue ();
         case 2  ## String
-          unotmp = java_new ("com.sun.star.uno.Type", "com.sun.star.text.XText");
+          unotmp = javaObject ("com.sun.star.uno.Type", "com.sun.star.text.XText");
           rawarr{ii-trow+2, jj-lcol+2} = XCell.queryInterface (unotmp).getString ();
         case 3  ## Formula
           if (spsh_opts.formulas_as_text)
             rawarr{ii-trow+2, jj-lcol+2} = XCell.getFormula ();
           else
             ## Unfortunately OOo gives no clue as to the type of formula result
-            unotmp = java_new ("com.sun.star.uno.Type", "com.sun.star.text.XText");
+            unotmp = javaObject ("com.sun.star.uno.Type", "com.sun.star.text.XText");
             rawarr{ii-trow+2, jj-lcol+2} = XCell.queryInterface (unotmp).getString ();
             tmp = str2double (rawarr{ii-trow+2, jj-lcol+2});
             ## If the string happens to contain just a number we'll assume it is numeric

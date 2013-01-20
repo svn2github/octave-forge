@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Philip Nienhuis <prnienhuis@users.sf.net>
+## Copyright (C) 2012,2013 Philip Nienhuis <prnienhuis@users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 ## Created: 2012-10-12
 ## Updates:
 ## 2012-10-23 Style fixes
+## 2013-01-20 Adapted to ML-compatible Java calls
 
 function [ xls ] = __UNO_spsh_close__ (xls, force)
 
@@ -54,19 +55,19 @@ function [ xls ] = __UNO_spsh_close__ (xls, force)
   try
     if (xls.changed && xls.changed < 3)
       ## Workaround:
-      unotmp = java_new ("com.sun.star.uno.Type", "com.sun.star.frame.XModel");
+      unotmp = javaObject ("com.sun.star.uno.Type", "com.sun.star.frame.XModel");
       xModel = xls.workbook.queryInterface (unotmp);
-      unotmp = java_new ("com.sun.star.uno.Type", "com.sun.star.util.XModifiable");
+      unotmp = javaObject ("com.sun.star.uno.Type", "com.sun.star.util.XModifiable");
       xModified = xModel.queryInterface (unotmp);
       if (xModified.isModified ())
         unotmp = ...
-          java_new ("com.sun.star.uno.Type", "com.sun.star.frame.XStorable");  # isReadonly() ?    
+          javaObject ("com.sun.star.uno.Type", "com.sun.star.frame.XStorable");  # isReadonly() ?    
         xStore = xls.app.xComp.queryInterface (unotmp);
         if (xls.changed == 2)
           ## Some trickery as Octave Java cannot create non-numeric arrays
           lProps = javaArray ("com.sun.star.beans.PropertyValue", 1);
           lProp = ...
-            java_new ("com.sun.star.beans.PropertyValue", "Overwrite", 0, true, []);
+            javaObject ("com.sun.star.beans.PropertyValue", "Overwrite", 0, true, []);
           lProps(1) = lProp;
           ## OK, store file
           if (isfield (xls, "nfilename"))
@@ -83,19 +84,19 @@ function [ xls ] = __UNO_spsh_close__ (xls, force)
     endif
     xls.changed = -1;    ## Needed for check on properly shutting down OOo
     ## Workaround:
-    unotmp = java_new ("com.sun.star.uno.Type", "com.sun.star.frame.XModel");
+    unotmp = javaObject ("com.sun.star.uno.Type", "com.sun.star.frame.XModel");
     xModel = xls.app.xComp.queryInterface (unotmp);
-    unotmp = java_new ("com.sun.star.uno.Type", "com.sun.star.util.XCloseable");
+    unotmp = javaObject ("com.sun.star.uno.Type", "com.sun.star.util.XCloseable");
     xClosbl = xModel.queryInterface (unotmp);
     xClosbl.close (true);
-    unotmp = java_new ("com.sun.star.uno.Type", "com.sun.star.frame.XDesktop");
+    unotmp = javaObject ("com.sun.star.uno.Type", "com.sun.star.frame.XDesktop");
     xDesk = xls.app.aLoader.queryInterface (unotmp);
     xDesk.terminate();
     xls.changed = 0;
   catch
     if (force)
       ## Force closing OOo
-      unotmp = java_new ("com.sun.star.uno.Type", "com.sun.star.frame.XDesktop");
+      unotmp = javaObject ("com.sun.star.uno.Type", "com.sun.star.frame.XDesktop");
       xDesk = xls.app.aLoader.queryInterface (unotmp);
       xDesk.terminate();
     else

@@ -24,6 +24,7 @@
 ## 2012-09-03 (in UNO section) replace canonicalize_file_name on non-Windows to
 ##            make_absolute_filename (see bug #36677)
 ## 2012-10-24 Style fixes
+## 2013-01-20 Adapted to ML-compatible Java calls
 
 function [ xls, xlssupport, lastintf ] = __UNO_spsh_open__ (xls, xwrite, filename, xlssupport)
 
@@ -51,15 +52,15 @@ function [ xls, xlssupport, lastintf ] = __UNO_spsh_open__ (xls, xwrite, filenam
       filename = [ "file://" fname ];
     endif
     try
-      xContext = java_invoke ("com.sun.star.comp.helper.Bootstrap", "bootstrap");
+      xContext = javaMethod ("bootstrap", "com.sun.star.comp.helper.Bootstrap");
       xMCF = xContext.getServiceManager ();
       oDesktop = xMCF.createInstanceWithContext ("com.sun.star.frame.Desktop", xContext);
       ## Workaround for <UNOruntime>.queryInterface():
-      unotmp = java_new ("com.sun.star.uno.Type", "com.sun.star.frame.XComponentLoader");
+      unotmp = javaObject ("com.sun.star.uno.Type", "com.sun.star.frame.XComponentLoader");
       aLoader = oDesktop.queryInterface (unotmp);
       ## Some trickery as Octave Java cannot create initialized arrays
       lProps = javaArray ("com.sun.star.beans.PropertyValue", 1);
-      lProp = java_new ("com.sun.star.beans.PropertyValue", "Hidden", 0, true, []);
+      lProp = javaObject ("com.sun.star.beans.PropertyValue", "Hidden", 0, true, []);
       lProps(1) = lProp;
       if (xwrite > 2)
         xComp = aLoader.loadComponentFromURL ("private:factory/scalc", "_blank", 0, lProps);
@@ -67,7 +68,7 @@ function [ xls, xlssupport, lastintf ] = __UNO_spsh_open__ (xls, xwrite, filenam
         xComp = aLoader.loadComponentFromURL (filename, "_blank", 0, lProps);
       endif
       ## Workaround for <UNOruntime>.queryInterface():
-      unotmp = java_new ("com.sun.star.uno.Type", "com.sun.star.sheet.XSpreadsheetDocument");
+      unotmp = javaObject ("com.sun.star.uno.Type", "com.sun.star.sheet.XSpreadsheetDocument");
       xSpdoc = xComp.queryInterface (unotmp);
       ## save in ods struct:
       xls.xtype = "UNO";

@@ -20,6 +20,7 @@
 ## Created: 2012-10-12
 ## Updates:
 ## 2012-10-24 Style fixes
+## 2013-01-20 Adapted to ML-compatible Java calls
 
 function [ ods, odssupport, lastintf ] = __OTK_spsh_open__ (ods, rw, filename, odssupport)
 
@@ -33,10 +34,10 @@ function [ ods, odssupport, lastintf ] = __OTK_spsh_open__ (ods, rw, filename, o
         odfvsn = " ";
         ## New in 0.8.6
         odfvsn = ...
-          java_invoke ("org.odftoolkit.odfdom.JarManifest", "getOdfdomVersion");
+          javaMethod ("getOdfdomVersion", "org.odftoolkit.odfdom.JarManifest");
       catch
         odfvsn = ...
-          java_invoke ("org.odftoolkit.odfdom.Version", "getApplicationVersion");
+          javaMethod ("getApplicationVersion", "org.odftoolkit.odfdom.Version");
       end_try_catch
       ## For odfdom-incubator (= 0.8.8+), strip extra info
       odfvsn = regexp (odfvsn, '\d\.\d\.\d', "match"){1};
@@ -46,10 +47,10 @@ function [ ods, odssupport, lastintf ] = __OTK_spsh_open__ (ods, rw, filename, o
     try
       if (rw > 2)
         ## New spreadsheet
-        wb = java_invoke ([odftk ".OdfSpreadsheetDocument"], "newSpreadsheetDocument");
+        wb = javaMethod ("newSpreadsheetDocument", [odftk ".OdfSpreadsheetDocument"]);
       else
         ## Existing spreadsheet
-        wb = java_invoke ([odftk ".OdfDocument"], "loadDocument", filename);
+        wb = javaMethod ("loadDocument", [odftk ".OdfDocument"], filename);
       endif
       ods.workbook = wb.getContentDom ();    # Reads the entire spreadsheet
       ods.xtype = "OTK";

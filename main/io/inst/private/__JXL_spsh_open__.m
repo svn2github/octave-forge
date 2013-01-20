@@ -21,6 +21,7 @@
 ## Updates (possibly from xlsopen):
 ## 2010-11-05 Bug fix: JXL fallback from POI for BIFF5 is only useful for reading
 ## 2012-10-24 Style fixes
+## 2013-01-20 Adapted to ML-compatible Java calls
 
 function [ xls, xlssupport, lastintf ] = __JXL_spsh_open__ (xls, xwrite, filename, xlssupport, chk1)
 
@@ -28,13 +29,13 @@ function [ xls, xlssupport, lastintf ] = __JXL_spsh_open__ (xls, xwrite, filenam
       error ("JXL can only read reliably from .xls files")
     endif
     try
-      xlsin = java_new ("java.io.File", filename);
+      xlsin = javaObject ("java.io.File", filename);
       if (xwrite > 2)
         ## Get handle to new xls-file
-        wb = java_invoke ("jxl.Workbook", "createWorkbook", xlsin);
+        wb = javaMethod ("createWorkbook", "jxl.Workbook", xlsin);
       else
         ## Open existing file
-        wb = java_invoke ("jxl.Workbook", "getWorkbook", xlsin);
+        wb = javaMethod ("getWorkbook", "jxl.Workbook", xlsin);
       endif
       xls.xtype = "JXL";
       xls.app = xlsin;

@@ -61,6 +61,7 @@
 ## 2012-05-21 "Double" cast moved into main func oct2xls
 ## 2012-10-12 Renamed & moved into ./private
 ## 2012-10-24 Style fixes
+## 2013-01-20 Adapted to ML-compatible Java calls
 
 function [ xls, rstatus ] = __JXL_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
 
@@ -80,8 +81,8 @@ function [ xls, rstatus ] = __JXL_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
 	## Prepare workbook pointer if needed
 	if (xls.changed == 0)			## Only for 1st call of octxls after xlsopen
 		## Create writable copy of workbook. If >2 a writable wb was made in xlsopen
-		xlsout = java_new ("java.io.File", xls.filename);
-		wb = java_invoke ("jxl.Workbook", "createWorkbook", xlsout, xls.workbook);
+		xlsout = javaObject ("java.io.File", xls.filename);
+		wb = javaMethod ("createWorkbook", "jxl.Workbook", xlsout, xls.workbook);
 		## Catch JExcelAPI bug/"feature": when switching to write mode, the file on disk
 		## is affected and the memory file MUST be written to disk to save earlier data
 		xls.changed = 1;
@@ -145,31 +146,31 @@ function [ xls, rstatus ] = __JXL_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
 			kk = jj + lcol - 2;		## JExcelAPI's column count is also 0-based
 			switch typearr(ii, jj)
 				case 1			## Numerical
-					tmp = java_new ("jxl.write.Number", kk, ll, obj{ii, jj});
+					tmp = javaObject ("jxl.write.Number", kk, ll, obj{ii, jj});
 					sh.addCell (tmp);
 				case 2			## Boolean
-					tmp = java_new ("jxl.write.Boolean", kk, ll, obj{ii, jj});
+					tmp = javaObject ("jxl.write.Boolean", kk, ll, obj{ii, jj});
 					sh.addCell (tmp);
 				case 3			## String
-					tmp = java_new ("jxl.write.Label", kk, ll, obj{ii, jj});
+					tmp = javaObject ("jxl.write.Label", kk, ll, obj{ii, jj});
 					sh.addCell (tmp);
 				case 4			## Formula
 					## First make sure formula functions are all uppercase
 					obj{ii, jj} = toupper (obj{ii, jj});
 					## There's no guarantee for formula correctness, so....
 					try		## Actually JExcelAPI flags formula errors as mere warnings :-(
-						tmp = java_new ("jxl.write.Formula", kk, ll, obj{ii, jj});
+						tmp = javaObject ("jxl.write.Formula", kk, ll, obj{ii, jj});
 						## ... while errors are actually detected in addCell(), so
 						##     that should be within the try-catch
 						sh.addCell (tmp);
 					catch
 						++f_errs;
 						## Formula error. Enter formula as text string instead
-						tmp = java_new ("jxl.write.Label", kk, ll, obj{ii, jj});
+						tmp = javaObject ("jxl.write.Label", kk, ll, obj{ii, jj});
 						sh.addCell (tmp);
 					end_try_catch
 				case 5		## Empty or NaN
-					tmp = java_new ("jxl.write.Blank", kk, ll);
+					tmp = javaObject ("jxl.write.Blank", kk, ll);
 					sh.addCell (tmp);
 				otherwise
 					## Just skip

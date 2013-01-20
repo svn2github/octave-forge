@@ -26,6 +26,7 @@
 ## 2010-11-08 Tested with POI 3.7 (OK)
 ## 2012-06-07 Fixed mixed-up lastintf assignments for POI and JXL
 ## 2012-10-24 Style fixes; added UNO to fall-back for BIFF5 formats
+## 2013-01-20 Adapted to ML-compatible Java calls
 
 function [ xls, xlssupport, lastintf ] = __POI_spsh_open__ (xls, xwrite, filename, xlssupport, chk1, chk2, xlsinterfaces)
 
@@ -33,15 +34,16 @@ function [ xls, xlssupport, lastintf ] = __POI_spsh_open__ (xls, xwrite, filenam
     try
       if (xwrite > 2)
         if (chk1)
-          wb = java_new ("org.apache.poi.hssf.usermodel.HSSFWorkbook");
+          wb = javaObject ("org.apache.poi.hssf.usermodel.HSSFWorkbook");
         elseif (chk2)
-          wb = java_new ("org.apache.poi.xssf.usermodel.XSSFWorkbook");
+          wb = javaObject ("org.apache.poi.xssf.usermodel.XSSFWorkbook");
         endif
         xls.app = "new_POI";
       else
-        xlsin = java_new ("java.io.FileInputStream", filename);
-        wb = java_invoke ("org.apache.poi.ss.usermodel.WorkbookFactory",...
-                          "create", xlsin);
+        xlsin = javaObject ("java.io.FileInputStream", filename);
+        wb = javaMethod ("create", ...
+  	                     "org.apache.poi.ss.usermodel.WorkbookFactory",...
+                         xlsin);
         xls.app = xlsin;
       endif
       xls.xtype = "POI";

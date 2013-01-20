@@ -27,12 +27,15 @@
 ## 2012-04-18 Added getUsedRange() method for JOD 1.3x and above 
 ## 2012-10-12 Renamed & moved into ./private
 ## 2012-10-24 Style fixes
+## 2013-01-20 Clarify internal code comments
 
 function [ trow, brow, lcol, rcol ] = __JOD_getusedrange__ (ods, wsh)
 
-  ## This function works by virtue of sheets in JOD actually being a Java string.
+  ## This function works for older jOpendocument (<= 1.2) by virtue of sheets
+  ## in JOD actually being a Java string.
   ## It works outside of the Java memory/heap space which is an added benefit...
-  ## (Read: this is one big dirty hack...... prone to crash Java on BIG spreadsheets)
+  ## (Read: it is one big dirty hack... prone to crash Java on BIG spreadsheets)
+  ## For newer jOpenDocument 1.3b1+ there's a newer and much faster method.
 
   if (isnumeric (wsh))
     sh = char (ods.workbook.getSheet (wsh - 1));
@@ -41,7 +44,8 @@ function [ trow, brow, lcol, rcol ] = __JOD_getusedrange__ (ods, wsh)
   endif
 
   try
-    ## Let's see if we have JOD v. 1.3x. If not, next call fails & we'll fall back to the old hack
+    ## Let's see if we have JOD v. 1.3x. If not, next call fails & we'll fall
+    ## back to the old hack
     sh_rng = char (sh.getUsedRange ());
     if (isempty (sh_rng))
       ## Empty sheet

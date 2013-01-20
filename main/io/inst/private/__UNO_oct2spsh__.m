@@ -1,4 +1,4 @@
-## Copyright (C) 2011,2012 Philip Nienhuis <prnienhuis@users.sf.net>
+## Copyright (C) 2011,2012,2013 Philip Nienhuis <prnienhuis@users.sf.net>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -28,6 +28,7 @@
 ## 2012-10-12 Renamed & moved into ./private
 ## 2012-10-24 Style fixes
 ## 2012-12-21 Search for exact match when searching sheet names
+## 2013-01-20 Adapted to ML-compatible Java calls
 
 function [ xls, rstatus ] = __UNO_oct2spsh__ (c_arr, xls, wsh, crange, spsh_opts)
 
@@ -57,10 +58,10 @@ function [ xls, rstatus ] = __UNO_oct2spsh__ (c_arr, xls, wsh, crange, spsh_opts
       --ii;
     endwhile
     ## Give remaining sheet a name
-    unotmp = java_new ("com.sun.star.uno.Type", "com.sun.star.sheet.XSpreadsheet");
+    unotmp = javaObject ("com.sun.star.uno.Type", "com.sun.star.sheet.XSpreadsheet");
     sh = sheets.getByName (sh_names{1}).getObject.queryInterface (unotmp);
     if (isnumeric (wsh)); wsh = sprintf ("Sheet%d", wsh); endif
-    unotmp = java_new ("com.sun.star.uno.Type", "com.sun.star.container.XNamed");
+    unotmp = javaObject ("com.sun.star.uno.Type", "com.sun.star.container.XNamed");
     sh.queryInterface (unotmp).setName (wsh);
   else
 
@@ -103,11 +104,11 @@ function [ xls, rstatus ] = __UNO_oct2spsh__ (c_arr, xls, wsh, crange, spsh_opts
     endif
     if (newsh)
       ## Add a new sheet. Sheet index MUST be a Java Short object
-      shptr = java_new ("java.lang.Short", sprintf ("%d", numel (sh_names) + 1));
+      shptr = javaObject ("java.lang.Short", sprintf ("%d", numel (sh_names) + 1));
       sh = sheets.insertNewByName (wsh, shptr);
     endif
     ## At this point we have a valid sheet name. Use it to get a sheet handle
-    unotmp = java_new ("com.sun.star.uno.Type", "com.sun.star.sheet.XSpreadsheet");
+    unotmp = javaObject ("com.sun.star.uno.Type", "com.sun.star.sheet.XSpreadsheet");
     sh = sheets.getByName (wsh).getObject.queryInterface (unotmp);
   endif
 
@@ -140,11 +141,11 @@ function [ xls, rstatus ] = __UNO_oct2spsh__ (c_arr, xls, wsh, crange, spsh_opts
           case 2	      ## Logical. Convert to float as OOo has no Boolean type
             XCell.setValue (double (c_arr{ii, jj}));
           case 3	      ## String
-            unotmp = java_new ("com.sun.star.uno.Type", "com.sun.star.text.XText");
+            unotmp = javaObject ("com.sun.star.uno.Type", "com.sun.star.text.XText");
             XCell.queryInterface (unotmp).setString (c_arr{ii, jj});
           case 4	      ## Formula
             if (spsh_opts.formulas_as_text)
-              unotmp = java_new ("com.sun.star.uno.Type", "com.sun.star.text.XText");
+              unotmp = javaObject ("com.sun.star.uno.Type", "com.sun.star.text.XText");
               XCell.queryInterface (unotmp).setString (c_arr{ii, jj});
             else
               XCell.setFormula (c_arr{ii, jj});

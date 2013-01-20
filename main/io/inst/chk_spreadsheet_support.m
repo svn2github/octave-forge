@@ -47,7 +47,7 @@
 
 function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo)
 
-% Copyright (C) 2009,2010,2011 Philip Nienhuis <prnienhuis at users.sf.net>
+% Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis <prnienhuis at users.sf.net>
 %
 % This program is free software; you can redistribute it and/or modify it under
 % the terms of the GNU General Public License as published by the Free Software
@@ -89,6 +89,8 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 %     ''     Updated check for odfdom version (now supports 0.8.8)
 % 2012-10-07 Moved common classpath entry code to private function
 % 2012-12-21 POI 3.9 support (w. either xmlbeans.jar or xbeans.jar)
+% 2013-01-16 Updated to Octave w built-in Java (3.7.1+)
+% 2013-01-20 Made JVM memory detector more robust wrt Java return type
 
   jcp = []; retval = 0;
   if (nargin < 3); path_to_ooo= ''; end %if
@@ -118,7 +120,9 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
   if (dbug > 1), fprintf ('  1. Checking Java JRE presence.... '); end %if
   % Try if Java is installed at all
   if (isOctave)
-    if (ispc)
+    oct_vsn = str2double (strsplit (OCTAVE_VERSION, '.'){1}) + ...
+              0.1 * str2double (strsplit (OCTAVE_VERSION, '.'){2});
+    if (ispc)str2double (strsplit (OCTAVE_VERSION, '.'){2});
       jtst = (system ('java -version 2> nul'));
     else
       jtst = (system ('java -version 2> /dev/null'));
@@ -135,7 +139,8 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
   end %if
   if (dbug > 1 && isOctave), fprintf ('  2. Checking Octave Java support... '); end %if
   try
-    if (isOctave)
+    % The following stanza is meant for older Octave w/o built-in Java
+    if (isOctave && oct_vsn < 3.7)
       % Check Java package
       [~, b] = pkg ('describe', 'java');
       if    (strcmpi (b{:}, 'Not loaded'))
@@ -144,10 +149,9 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
         if (dbug > 1); printf ('Java package is not installed.\n'); end %if
       endif
     end %if
-    jcp = javaclasspath ('-all');            % For Octave java pkg > 1.2.7
-    if (isempty (jcp)), jcp = javaclasspath; end %if  % For Octave java pkg < 1.2.8
+    jcp = javaclasspath ('-all');
     % If we get here, at least Java works.
-    if (dbug > 1 && isOctave), fprintf ('Java package seems to work OK.\n'); end %if
+    if (dbug > 1 && isOctave), fprintf ('Java seems to work OK.\n'); end %if
     % Now check for proper version (> 1.6.x.x)
     jver = char (javaMethod ('getProperty', 'java.lang.System', 'java.version'));
     cjver = strsplit (jver, '.');
@@ -171,8 +175,9 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
     if (dbug > 1)
       % Check JVM virtual memory settings
       jrt = javaMethod ('getRuntime', 'java.lang.Runtime');
-      jmem = jrt.maxMemory ();
-            if (isOctave), jmem = jmem.doubleValue(); end %if
+      jmem = jrt.maxMemory ()
+	  % Some Java versions return jmem as octave_value => convert to double
+	  if (! isnumeric (jmem)); jmem = jmem.doubleValue(); end %if
       jmem = int16 (jmem/1024/1024);
       fprintf ('  Maximum JVM memory: %5d MiB; ', jmem);
       if (jmem < 400)

@@ -1,11 +1,29 @@
 Summary of important user-visible changes for releases of the io package
 
 ===============================================================================
-io-1.2.0   Release Date: 2012-12-??   Release Manager: Philip Nienhuis
+io-1.2.1   Release Date: 2013-TBA   Release Manager: Philip Nienhuis
 ===============================================================================
-This will be the last major version that is "depending" on the Java package for
-most of the spreadsheet I/O. In a next major version this will be based on
-Octave's built-in Java support.
+** Bug fixes:
+--- post_install.m: fixed wrong format specifier in error message
+
+--- chk_spreadsheet_support: Java call to return JVM memory size returns
+    varying type dependent on Java version. Made this part of code more robust.
+    Also prepared for Octave-3.8 built-in Java support
+
+** post_install: if PKG_ADD couldn't be removed from .oct file dir, inform user
+   to add spreadsheet Java class libs manually to the javaclasspath
+
+** Replaced all calls to to-be-deprecated java_new & java_invoke calls by 
+   javaObject and javaMethod
+
+===============================================================================
+io-1.2.0   Release Date: 2012-12-27   Release Manager: Philip Nienhuis
+===============================================================================
+This will be the last major version that is "depending" on the separate Java
+package for most of the spreadsheet I/O. In a next major version this will be
+based on Octave's built-in Java support.
+Some of the spreadsheet support files in io-1.2.0 are expected not to work
+anymore in Octave-3.8+
 
 ** Bug fixes:
 --- xls2oct(POI)/__POI_spsh2oct__: now correctly evaluates formulas (as far as

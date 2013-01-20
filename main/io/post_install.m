@@ -10,5 +10,7 @@ function post_install (desc)
   [err, msg] = unlink (file);
   if (err)
     warning ("Unable to remove PKG_ADD: %s", msg);
+    printf ("For spreadsheet I/O you may need to manually add the required\n", ... 
+            "Java class libs to the javaclasspath");
   endif
 endfunction

@@ -297,107 +297,111 @@ while (indi <= size (varargin, 2))
               endif
             endwhile
           endif
-          x = cell (1+length (lines)-indl, size (dummy, 2)); 
-          empty_lines = []; cmt_lines = [];
-          while (indl <= length (lines))
-            dummy = content{indl};
-            if (all (cellfun ('size', dummy, 2) == 0))
-              empty_lines = [empty_lines indj];
-              indl = indl + 1; indj = indj + 1;
-              continue;
-            endif
-            %# does it looks like a comment line ?
-            if (regexp (dummy{1}, ['^\s*' char(35)]))
-              empty_lines = [empty_lines indj];
-              cmt_lines = strvcat (cmt_lines, horzcat (dummy{:}));
-              indl = indl + 1; indj = indj + 1;
-              continue;
-            endif
-            
-            %# try to convert to float
-            if (1)
-              the_line = cellfun (@(x) sscanf (x, "%f", locales), dummy, \
-                                  'UniformOutput', false);
-            else
-              %# this faster code requires a patch to src/file-io.cc in
-              %# the main Octave tree
-              the_line = sscanf (dummy, "%f", locales);
-              the_line = cellfun (@(x) x{1}, the_line, \
-                                  'UniformOutput', false);
-            endif
-
-            indk = 1; indm = 1;
-            while (indk <= size (the_line, 2))
-              if (isempty (the_line{indk}) || any (size (the_line{indk}) > 1)) 
-                %#if indi > 1 && indk > 1, disp('line 117 '); keyboard; %#endif
-                if (unquot)
-                  try
-                    %# remove quotes and leading space(s)
-                    x(indj, indm) = regexp (dummy{indk}, '[^''" ].*[^''"]', 'match'){1};
-                  catch
-                    %# if the previous test fails, try a simpler one
-                    in = regexp (dummy{indk}, '[^'' ]+', 'match');
-                    if (~isempty (in))
-                      x(indj, indm) = in{1};
+	  if (indl > length (lines))
+	     x = []; 
+	  else
+	    x = cell (1+length (lines)-indl, size (dummy, 2)); 
+            empty_lines = []; cmt_lines = [];
+            while (indl <= length (lines))
+              dummy = content{indl};
+              if (all (cellfun ('size', dummy, 2) == 0))
+		empty_lines = [empty_lines indj];
+		indl = indl + 1; indj = indj + 1;
+		continue;
+              endif
+              %# does it looks like a comment line ?
+              if (regexp (dummy{1}, ['^\s*' char(35)]))
+		empty_lines = [empty_lines indj];
+		cmt_lines = strvcat (cmt_lines, horzcat (dummy{:}));
+		indl = indl + 1; indj = indj + 1;
+		continue;
+              endif
+              
+              %# try to convert to float
+              if (1)
+		the_line = cellfun (@(x) sscanf (x, "%f", locales), dummy, \
+                                    'UniformOutput', false);
+              else
+		%# this faster code requires a patch to src/file-io.cc in
+		%# the main Octave tree
+		the_line = sscanf (dummy, "%f", locales);
+		the_line = cellfun (@(x) x{1}, the_line, \
+                                    'UniformOutput', false);
+              endif
+	      
+              indk = 1; indm = 1;
+              while (indk <= size (the_line, 2))
+		if (isempty (the_line{indk}) || any (size (the_line{indk}) > 1)) 
+                  %#if indi > 1 && indk > 1, disp('line 117 '); keyboard; %#endif
+                  if (unquot)
+                    try
+                      %# remove quotes and leading space(s)
+                      x(indj, indm) = regexp (dummy{indk}, '[^''" ].*[^''"]', 'match'){1};
+                    catch
+                      %# if the previous test fails, try a simpler one
+                      in = regexp (dummy{indk}, '[^'' ]+', 'match');
+                      if (~isempty (in))
+			x(indj, indm) = in{1};
                       %# else
                       %#    x(indj, indk) = [];
-                    endif
-                  end_try_catch
-                else
-                  %# no conversion possible, store and remove leading space(s)
-                  x(indj, indm) = regexp (dummy{indk}, '[^ ].*', 'match');
-                endif
-              elseif (~isempty (regexp (dummy{indk}, '[/:-]')) && ...
-                      ~isempty (datefmt))
-                %# does it look like a date ?
-                datetime = dummy{indk}; 
-                
-                if (datefields > 1)             
-                  %# concatenate the required number of fields 
-                  indc = 1;
-                  for indc = (2:datefields)
-                    datetime = cstrcat(datetime, ' ', dummy{indk+indc-1});
-                  endfor
-                else
-                  %# ensure spaces are unique
-                  datetime =  regexprep (datetime, '[ ]+', ' ');
-                endif
-                
-                try
-                  datetime = datevec (datetime, datefmt);
-                  timeval = struct ("usec", 0, "sec", floor (datetime (6)),
-                                    "min", datetime(5), "hour", datetime(4),
-                                    "mday", datetime(3), "mon", datetime(2)-1,
-                                    "year", datetime(1)-1900);
-                  timeval.usec = 1e6*(datetime(6) - timeval.sec);
-                  x(indj, indm) =  str2num (strftime ([char(37) 's'], timeval)) + ...
-                      timeval.usec * 1e-6;
-                  if (datefields > 1)
-                    %# skip fields successfully converted
-                    indk = indk + (datefields - 1);
+                      endif
+                    end_try_catch
+                  else
+                    %# no conversion possible, store and remove leading space(s)
+                    x(indj, indm) = regexp (dummy{indk}, '[^ ].*', 'match');
                   endif
-                catch
-                  %# store it as is
+		elseif (~isempty (regexp (dummy{indk}, '[/:-]')) && ...
+			~isempty (datefmt))
+                  %# does it look like a date ?
+                  datetime = dummy{indk}; 
+                  
+                  if (datefields > 1)             
+                    %# concatenate the required number of fields 
+                    indc = 1;
+                    for indc = (2:datefields)
+                      datetime = cstrcat(datetime, ' ', dummy{indk+indc-1});
+                    endfor
+                  else
+                    %# ensure spaces are unique
+                    datetime =  regexprep (datetime, '[ ]+', ' ');
+                  endif
+                  
+                  try
+                    datetime = datevec (datetime, datefmt);
+                    timeval = struct ("usec", 0, "sec", floor (datetime (6)),
+                                      "min", datetime(5), "hour", datetime(4),
+                                      "mday", datetime(3), "mon", datetime(2)-1,
+                                      "year", datetime(1)-1900);
+                    timeval.usec = 1e6*(datetime(6) - timeval.sec);
+                    x(indj, indm) =  str2num (strftime ([char(37) 's'], timeval)) + ...
+				     timeval.usec * 1e-6;
+                    if (datefields > 1)
+                      %# skip fields successfully converted
+                      indk = indk + (datefields - 1);
+                    endif
+                  catch
+                    %# store it as is
+                    x(indj, indm) = the_line{indk}; 
+                  end_try_catch
+		else
                   x(indj, indm) = the_line{indk}; 
-                end_try_catch
-              else
-                x(indj, indm) = the_line{indk}; 
-              endif
-              indk = indk + 1; indm = indm + 1;
+		endif
+		indk = indk + 1; indm = indm + 1;
+              endwhile
+              indl = indl + 1; indj = indj + 1;
             endwhile
-            indl = indl + 1; indj = indj + 1;
-          endwhile
-          
-          if (~isempty (empty_lines))
-            x(empty_lines, :) = [];
+            
+            if (~isempty (empty_lines))
+              x(empty_lines, :) = [];
+            endif
+            
+            %# detect empty columns
+            empty_lines = find (0 == sum (cellfun ('size', x, 2)));
+            if (~isempty (empty_lines))
+              x(:, empty_lines) = [];
+            endif
           endif
-          
-          %# detect empty columns
-          empty_lines = find (0 == sum (cellfun ('size', x, 2)));
-          if (~isempty (empty_lines))
-            x(:, empty_lines) = [];
-          endif
-          
+	  
           clear UTF8_BOM fid in lines indl the_line content empty_lines
           clear datetime timeval idx
         

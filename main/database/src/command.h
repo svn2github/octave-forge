@@ -72,15 +72,11 @@ public:
   {
     Cell c;
     // inlining should prevent the additional copy
-    return process_single_result ("", "", 0, c, false, c);
+    return process_single_result ("", "");
   }
 
   octave_value process_single_result (const std::string &infile,
-                                      const std::string &outfile,
-                                      int nargout,
-                                      const Cell &data,
-                                      bool cin_oids,
-                                      const Cell &cin_types);
+                                      const std::string &outfile);
 
   int good (void) {return valid;}
 
@@ -113,10 +109,9 @@ private:
 
   octave_value tuples_ok_handler (void);
 
-  octave_value copy_out_handler (const std::string &, int);
+  octave_value copy_out_handler (const std::string &);
 
-  octave_value copy_in_handler (const std::string &, const Cell &, bool oids,
-                                const Cell &cin_types);
+  octave_value copy_in_handler (const std::string &);
 
   oct_pq_conv_t *pgtype_from_octtype (const octave_value &);
 

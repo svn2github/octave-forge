@@ -12,13 +12,15 @@ pq_connect: connect to a postgresql database,
 pq_exec_params: execute an SQL command with optional parameters and
                 return result,
 
-pq_update_types: used if defined types change during connection time.
+pq_update_types: used if defined types change during connection time,
 
-pq_lo_import: import large object from client side
+pq_lo_import: import large object from client side,
 
-pq_lo_export: export large object to client side
+pq_lo_export: export large object to client side,
 
-pq_lo_unlink: delete large object
+pq_lo_unlink: delete large object,
+
+pq_close: disconnect from database.
 
 
 Features:
@@ -40,15 +42,15 @@ State:
 
 
 Alpha, but can already be useful. Not all base types implemented yet,
-also no enum types yet. Copy in and copy are not yet implemented. The
-other commands should work. The whole framework including conversion
-of composite and array types with the resulting possible recursion and
-a number of base types are implemented. Large object import, export,
-and unlink works.
+also no enum types yet. All commands should work with pq_exec_params,
+copy from stdin and copy to stdout are implemented from/to files at
+client side. The whole framework including conversion of composite and
+array types with the resulting possible recursion and a number of base
+types are implemented. Large object import, export, and unlink works.
 
-Please report bugs. If you want to implement a new type-converter
-yourself, you can do it in converters.cc and tell me (package
-maintainer) about it. See converters.h for the meaning of fields in
-the oct_pq_conv_t structure. Presently only the binary converters are
-needed, the string converters can be stubs returning an error value
-(1).
+Please report bugs. If you want to implement a new type-converter for
+a base type yourself, you can do it in converters.cc and tell me
+(package maintainer) about it. See converters.h for the meaning of
+fields in the oct_pq_conv_t structure. Presently only the binary
+converters are needed, the string converters can be stubs returning an
+error value (1).

@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Moreno Marzolla
+## Copyright (C) 2012, 2013 Moreno Marzolla
 ##
 ## This file is part of the queueing toolbox.
 ##
@@ -17,7 +17,10 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{err} @var{N} @var{S} @var{V} @var{m} @var{Z}] = } qncmchkparam( N, S, ... )
+## @deftypefn {Function File} {[@var{err} @var{Nout} @var{Sout} @var{Vout} @var{mout} @var{Zout}] = } qncmchkparam( N, S )
+## @deftypefnx {Function File} {[@var{err} @var{Nout} @var{Sout} @var{Vout} @var{mout} @var{Zout}] = } qncmchkparam( N, S, V )
+## @deftypefnx {Function File} {[@var{err} @var{Nout} @var{Sout} @var{Vout} @var{mout} @var{Zout}] = } qncmchkparam( N, S, V, m )
+## @deftypefnx {Function File} {[@var{err} @var{Nout} @var{Sout} @var{Vout} @var{mout} @var{Zout}] = } qncmchkparam( N, S, V, m, Z )
 ##
 ## Validate input parameters for closed, multiclass network.
 ## @var{err} is the empty string on success, or a suitable error message
@@ -28,17 +31,15 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [err N S V m Z] = qncmchkparam( varargin )
+function [err Nout Sout Vout mout Zout] = qncmchkparam( N, S, V, m, Z )
   
   err = "";
+  [Nout Sout Vout mout Zout] = deal(0);
 
-  assert( nargin >= 2 );
-
-  N = varargin{1};
-
-  S = varargin{2};
-
-  [V m Z] = deal(0);
+  if ( nargin < 2 || nargin > 5 )
+    err = "Wrong number of parameters (min 2, max 5)";
+    return;
+  endif
 
   if ( !isvector(N) || length(N)==0 )
     err = "N must be a nonempty vector";
@@ -50,9 +51,9 @@ function [err N S V m Z] = qncmchkparam( varargin )
     return;
   endif
 
-  N = N(:)';
+  Nout = N(:)';
 
-  C = length(N); ## Number of classes
+  C = length(Nout); ## Number of classes
 
   if ( !ismatrix(S) || rows(S) != C )
     err = sprintf("S must be a matrix with %d rows",C);
@@ -64,12 +65,13 @@ function [err N S V m Z] = qncmchkparam( varargin )
     return;
   endif
 
-  K = columns(S);
+  Sout = S;
+
+  K = columns(Sout);
 
   if ( nargin < 3 )
-    V = ones(size(S));
+    Vout = ones(size(Sout));
   else
-    V = varargin{3};
     if ( !ismatrix(V) || rows(V) != C || columns(V) != K )
       err = sprintf("V must be a %d x %d matrix", C, K );
       return;
@@ -79,23 +81,23 @@ function [err N S V m Z] = qncmchkparam( varargin )
       err = "V must contain nonnegative values";
       return;
     endif
+
+    Vout = V;
   endif
 
   if ( nargin < 4 ) 
-    m = ones(1,K);
+    mout = ones(1,K);
   else
-    m = varargin{4};
     if (!isvector(m) || length(m) != K ) 
       err = sprintf("m must be a vector with %d elements", K );
       return;
     endif
-    m = m(:)';
+    mout = m(:)';
   endif
 
   if ( nargin < 5 )
-    Z = zeros(1,C);
+    Zout = zeros(1,C);
   else
-    Z = varargin{5};
     if (!isvector(Z) || length(Z) != C)
       err = sprintf("Z must be a vector with %d elements", C);
       return;
@@ -104,6 +106,6 @@ function [err N S V m Z] = qncmchkparam( varargin )
       err = "Z must contain nonnegative values";
       return;
     endif
-    Z = Z(:)';
+    Zout = Z(:)';
   endif
 endfunction

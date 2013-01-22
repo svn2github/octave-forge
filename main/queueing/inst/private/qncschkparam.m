@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Moreno Marzolla
+## Copyright (C) 2012, 2013 Moreno Marzolla
 ##
 ## This file is part of the queueing toolbox.
 ##
@@ -17,7 +17,10 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{err} @var{N} @var{S} @var{V} @var{m} @var{Z}] = } qncschkparam( N, S, ... )
+## @deftypefn {Function File} {[@var{err} @var{Nout} @var{Sout} @var{Vout} @var{mout} @var{Zout}] = } qncschkparam( N, S )
+## @deftypefnx {Function File} {[@var{err} @var{Nout} @var{Sout} @var{Vout} @var{mout} @var{Zout}] = } qncschkparam( N, S, V )
+## @deftypefnx {Function File} {[@var{err} @var{Nout} @var{Sout} @var{Vout} @var{mout} @var{Zout}] = } qncschkparam( N, S, V, m )
+## @deftypefnx {Function File} {[@var{err} @var{Nout} @var{Sout} @var{Vout} @var{mout} @var{Zout}] = } qncschkparam( N, S, V, m, Z )
 ##
 ## Validate input parameters for closed, single class networks.
 ## @var{err} is the empty string on success, or a suitable error message
@@ -28,22 +31,22 @@
 ## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
-function [err N S V m Z] = qncschkparam( varargin )
+function [err Nout Sout Vout mout Zout] = qncschkparam( N, S, V, m, Z )
   
   err = "";
+  [Nout Sout Vout mout Zout] = deal(0);
 
-  assert( nargin >= 2 );
-
-  N = varargin{1};
-
-  S = varargin{2};
-
-  [V m Z] = deal(0);
+  if ( nargin < 2 || nargin > 5)
+    err = "Wrong number of parameters (min 2, max 5)";
+    return;
+  endif
 
   if ( !isscalar(N) || N<0 || N != fix(N) )
     err = "N must be a nonnegative integer";  
     return;
   endif
+
+  Nout = N;
 
   if ( !isvector(S) || length(S)<=0 )
     err = "S must be a nonempty vector";
@@ -55,12 +58,11 @@ function [err N S V m Z] = qncschkparam( varargin )
     return;
   endif
 
-  S = S(:)';
-  if ( nargin < 3 )
-    V = ones(size(S));
-  else
-    V = varargin{3};
+  Sout = S(:)';
 
+  if ( nargin < 3 )
+    Vout = ones(size(Sout));
+  else
     if ( ! isvector(V) )
       err =  "V must be a vector";
       return;
@@ -69,35 +71,32 @@ function [err N S V m Z] = qncschkparam( varargin )
       err =  "V must contain nonnegative values";
       return;
     endif
-    V = V(:)';
+    Vout = V(:)';
   endif
 
   if ( nargin < 4 ) 
-    m = ones(size(S));
+    mout = ones(size(Sout));
   else
-    m = varargin{4};
-
     if ( ! isvector(m) )
       err = "m must be a vector";
       return;
     endif
-    m = m(:)';
+    mout = m(:)';
   endif
 
-  [er S V m] = common_size(S, V, m);
+  [er Sout Vout mout] = common_size(Sout, Vout, mout);
   if (er != 0 )
     err = "S, V and m are of incompatible size";
     return;
   endif
 
   if ( nargin < 5 )
-    Z = 0;
+    Zout = 0;
   else
-    Z = varargin{5};
-
     if ! ( isscalar(Z) && Z >= 0 )
       err = "Z must be a nonnegative scalar";
       return;
     endif
+    Zout = Z;
   endif
 endfunction

@@ -35,7 +35,7 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 typedef std::vector<char> oct_pq_dynvec_t;
 
-typedef int (*oct_pq_to_octave_fp_t) (char *, octave_value &, int);
+typedef int (*oct_pq_to_octave_fp_t) (const char *, octave_value &, int);
 
 typedef int (*oct_pq_from_octave_fp_t) (const octave_value &, oct_pq_dynvec_t &);
 

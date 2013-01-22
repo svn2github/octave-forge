@@ -39,7 +39,7 @@ void print_conv (oct_pq_conv_t *c)
 
 /* type bool */
 
-int to_octave_str_bool (char *c, octave_value &ov, int nb)
+int to_octave_str_bool (const char *c, octave_value &ov, int nb)
 {
   bool tp = (*c == 't' ? true : false);
 
@@ -48,7 +48,7 @@ int to_octave_str_bool (char *c, octave_value &ov, int nb)
   return 0;
 }
 
-int to_octave_bin_bool (char *c, octave_value &ov, int nb)
+int to_octave_bin_bool (const char *c, octave_value &ov, int nb)
 {
   ov = octave_value (bool (*c));
 
@@ -102,12 +102,12 @@ oct_pq_conv_t conv_bool = {0, // 16
 
 /* type oid */
 
-int to_octave_str_oid (char *c, octave_value &ov, int nb)
+int to_octave_str_oid (const char *c, octave_value &ov, int nb)
 {
   return 1;
 }
 
-int to_octave_bin_oid (char *c, octave_value &ov, int nb)
+int to_octave_bin_oid (const char *c, octave_value &ov, int nb)
 {
   ov = octave_value (octave_uint32 (be32toh (*((uint32_t *) c))));
 
@@ -150,14 +150,14 @@ oct_pq_conv_t conv_oid = {0, // 26
 
 /* type float8 */
 
-int to_octave_str_float8 (char *c, octave_value &ov, int nb)
+int to_octave_str_float8 (const char *c, octave_value &ov, int nb)
 {
   // not implemented
 
   return 1;
 }
 
-int to_octave_bin_float8 (char *c, octave_value &ov, int nb)
+int to_octave_bin_float8 (const char *c, octave_value &ov, int nb)
 {
   union
   {
@@ -220,14 +220,14 @@ oct_pq_conv_t conv_float8 = {0, // 701
 
 /* type float4 */
 
-int to_octave_str_float4 (char *c, octave_value &ov, int nb)
+int to_octave_str_float4 (const char *c, octave_value &ov, int nb)
 {
   // not implemented
 
   return 1;
 }
 
-int to_octave_bin_float4 (char *c, octave_value &ov, int nb)
+int to_octave_bin_float4 (const char *c, octave_value &ov, int nb)
 {
   union
   {
@@ -290,12 +290,12 @@ oct_pq_conv_t conv_float4 = {0,
 
 /* type bytea */
 
-int to_octave_str_bytea (char *c, octave_value &ov, int nb)
+int to_octave_str_bytea (const char *c, octave_value &ov, int nb)
 {
   return 1;
 }
 
-int to_octave_bin_bytea (char *c, octave_value &ov, int nb)
+int to_octave_bin_bytea (const char *c, octave_value &ov, int nb)
 {
   uint8NDArray m (dim_vector (nb, 1));
 
@@ -354,12 +354,12 @@ oct_pq_conv_t conv_bytea = {0,
 
 /* type text */
 
-int to_octave_str_text (char *c, octave_value &ov, int nb)
+int to_octave_str_text (const char *c, octave_value &ov, int nb)
 {
   return 1;
 }
 
-int to_octave_bin_text (char *c, octave_value &ov, int nb)
+int to_octave_bin_text (const char *c, octave_value &ov, int nb)
 {
   std::string s (c, nb);
 
@@ -439,12 +439,12 @@ oct_pq_conv_t conv_bpchar = {0,
 
 /* type name */
 
-int to_octave_str_name (char *c, octave_value &ov, int nb)
+int to_octave_str_name (const char *c, octave_value &ov, int nb)
 {
   return 1;
 }
 
-int to_octave_bin_name (char *c, octave_value &ov, int nb)
+int to_octave_bin_name (const char *c, octave_value &ov, int nb)
 {
   // FIXME: should we check the string in c?
 
@@ -501,12 +501,12 @@ oct_pq_conv_t conv_name = {0,
 
 /* type int2 */
 
-int to_octave_str_int2 (char *c, octave_value &ov, int nb)
+int to_octave_str_int2 (const char *c, octave_value &ov, int nb)
 {
   return 1;
 }
 
-int to_octave_bin_int2 (char *c, octave_value &ov, int nb)
+int to_octave_bin_int2 (const char *c, octave_value &ov, int nb)
 {
   ov = octave_value (octave_int16 (int16_t (be16toh (*((int16_t *) c)))));
 
@@ -550,12 +550,12 @@ oct_pq_conv_t conv_int2 = {0, // 26
 
 /* type int4 */
 
-int to_octave_str_int4 (char *c, octave_value &ov, int nb)
+int to_octave_str_int4 (const char *c, octave_value &ov, int nb)
 {
   return 1;
 }
 
-int to_octave_bin_int4 (char *c, octave_value &ov, int nb)
+int to_octave_bin_int4 (const char *c, octave_value &ov, int nb)
 {
   ov = octave_value (octave_int32 (int32_t (be32toh (*((int32_t *) c)))));
 
@@ -599,12 +599,12 @@ oct_pq_conv_t conv_int4 = {0,
 
 /* type int8 */
 
-int to_octave_str_int8 (char *c, octave_value &ov, int nb)
+int to_octave_str_int8 (const char *c, octave_value &ov, int nb)
 {
   return 1;
 }
 
-int to_octave_bin_int8 (char *c, octave_value &ov, int nb)
+int to_octave_bin_int8 (const char *c, octave_value &ov, int nb)
 {
   ov = octave_value (octave_int64 (int64_t (be64toh (*((int64_t *) c)))));
 

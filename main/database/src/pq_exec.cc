@@ -168,6 +168,9 @@ The last column indicates whether specification of type (see above) is necessary
 @item any composite type\n\
 @tab One-dimensional cell-array with entries of types corresponding to the respective Postgresql types. Entries may also correspond to an array-type or composite type; this is allowed to lead to arbitrarily deep nesting.\n\
 @tab yes\n\
+@item any enum type\n\
+@tab string\n\
+@tab yes\n\
 @end multitable\n\
 Octaves @code{NA} corresponds to a Postgresql NULL value (not @code{NaN}, which is interpreted as a value of a float type!).\n\
 @seealso{pq_update_types}\n\

@@ -371,10 +371,10 @@ int octave_pq_connection::octave_pq_get_enum_types (void)
       t_conv->is_enum = true;
       t_conv->is_not_constant = true;
       t_conv->name = name;
-      t_conv->to_octave_str = NULL;
-      t_conv->to_octave_bin = NULL;
-      t_conv->from_octave_str = NULL;
-      t_conv->from_octave_bin = NULL;
+      t_conv->to_octave_str = &to_octave_str_text;
+      t_conv->to_octave_bin = &to_octave_bin_text;
+      t_conv->from_octave_str = &from_octave_str_text;
+      t_conv->from_octave_bin = &from_octave_bin_text;
 
       // we trust there is always an array type in the table
       oct_pq_conv_t *&by_oid = conv_map[oid], *&by_aoid = conv_map[aoid],

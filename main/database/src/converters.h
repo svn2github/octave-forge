@@ -83,6 +83,13 @@ void print_conv (oct_pq_conv_t *);
 
 extern oct_pq_conv_t *conv_ptrs[OCT_PQ_NUM_CONVERTERS];
 
+// these prototypes are needed because pointers to these functions are
+// stored in the converter structures of each found enum type
+int to_octave_str_text (const char *c, octave_value &ov, int nb);
+int to_octave_bin_text (const char *c, octave_value &ov, int nb);
+int from_octave_str_text (const octave_value &ov, oct_pq_dynvec_t &val);
+int from_octave_bin_text (const octave_value &ov, oct_pq_dynvec_t &val);
+
 // append bytes of value 'val' of type 'type' to dynamic char vector 'dv'
 #define OCT_PQ_PUT(dv, type, val)                       \
   dv.resize (dv.size () + sizeof (type));               \

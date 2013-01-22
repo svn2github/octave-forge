@@ -37,7 +37,7 @@ typedef std::vector<char> oct_pq_dynvec_t;
 
 typedef int (*oct_pq_to_octave_fp_t) (char *, octave_value &, int);
 
-typedef int (*oct_pq_from_octave_fp_t) (octave_value &, oct_pq_dynvec_t &);
+typedef int (*oct_pq_from_octave_fp_t) (const octave_value &, oct_pq_dynvec_t &);
 
 // some objects will be constants, some will be allocated
 typedef struct

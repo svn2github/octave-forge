@@ -55,7 +55,7 @@ int to_octave_bin_bool (char *c, octave_value &ov, int nb)
   return 0;
 }
 
-int from_octave_str_bool (octave_value &ov, oct_pq_dynvec_t &val)
+int from_octave_str_bool (const octave_value &ov, oct_pq_dynvec_t &val)
 {
   bool b = ov.bool_value ();
 
@@ -71,7 +71,7 @@ int from_octave_str_bool (octave_value &ov, oct_pq_dynvec_t &val)
   return 0;
 }
 
-int from_octave_bin_bool (octave_value &ov, oct_pq_dynvec_t &val)
+int from_octave_bin_bool (const octave_value &ov, oct_pq_dynvec_t &val)
 {
   bool b = ov.bool_value ();
 
@@ -114,12 +114,12 @@ int to_octave_bin_oid (char *c, octave_value &ov, int nb)
   return 0;
 }
 
-int from_octave_str_oid (octave_value &ov, oct_pq_dynvec_t &val)
+int from_octave_str_oid (const octave_value &ov, oct_pq_dynvec_t &val)
 {
   return 1;
 }
 
-int from_octave_bin_oid (octave_value &ov, oct_pq_dynvec_t &val)
+int from_octave_bin_oid (const octave_value &ov, oct_pq_dynvec_t &val)
 {
   uint32_t oid = ov.uint_value ();
 
@@ -173,14 +173,14 @@ int to_octave_bin_float8 (char *c, octave_value &ov, int nb)
   return 0;
 }
 
-int from_octave_str_float8 (octave_value &ov, oct_pq_dynvec_t &val)
+int from_octave_str_float8 (const octave_value &ov, oct_pq_dynvec_t &val)
 {
   // not implemented
 
   return 1;
 }
 
-int from_octave_bin_float8 (octave_value &ov, oct_pq_dynvec_t &val)
+int from_octave_bin_float8 (const octave_value &ov, oct_pq_dynvec_t &val)
 {
   double d = ov.double_value ();
 
@@ -243,14 +243,14 @@ int to_octave_bin_float4 (char *c, octave_value &ov, int nb)
   return 0;
 }
 
-int from_octave_str_float4 (octave_value &ov, oct_pq_dynvec_t &val)
+int from_octave_str_float4 (const octave_value &ov, oct_pq_dynvec_t &val)
 {
   // not implemented
 
   return 1;
 }
 
-int from_octave_bin_float4 (octave_value &ov, oct_pq_dynvec_t &val)
+int from_octave_bin_float4 (const octave_value &ov, oct_pq_dynvec_t &val)
 {
   double f = ov.float_value ();
 
@@ -308,12 +308,12 @@ int to_octave_bin_bytea (char *c, octave_value &ov, int nb)
   return 0;
 }
 
-int from_octave_str_bytea (octave_value &ov, oct_pq_dynvec_t &val)
+int from_octave_str_bytea (const octave_value &ov, oct_pq_dynvec_t &val)
 {
   return 1;
 }
 
-int from_octave_bin_bytea (octave_value &ov, oct_pq_dynvec_t &val)
+int from_octave_bin_bytea (const octave_value &ov, oct_pq_dynvec_t &val)
 {
   uint8NDArray b = ov.uint8_array_value ();
 
@@ -368,12 +368,12 @@ int to_octave_bin_text (char *c, octave_value &ov, int nb)
   return 0;
 }
 
-int from_octave_str_text (octave_value &ov, oct_pq_dynvec_t &val)
+int from_octave_str_text (const octave_value &ov, oct_pq_dynvec_t &val)
 {
   return 1;
 }
 
-int from_octave_bin_text (octave_value &ov, oct_pq_dynvec_t &val)
+int from_octave_bin_text (const octave_value &ov, oct_pq_dynvec_t &val)
 {
   std::string s = ov.string_value ();
 
@@ -455,12 +455,12 @@ int to_octave_bin_name (char *c, octave_value &ov, int nb)
   return 0;
 }
 
-int from_octave_str_name (octave_value &ov, oct_pq_dynvec_t &val)
+int from_octave_str_name (const octave_value &ov, oct_pq_dynvec_t &val)
 {
   return 1;
 }
 
-int from_octave_bin_name (octave_value &ov, oct_pq_dynvec_t &val)
+int from_octave_bin_name (const octave_value &ov, oct_pq_dynvec_t &val)
 {
   std::string s = ov.string_value ();
 
@@ -513,12 +513,12 @@ int to_octave_bin_int2 (char *c, octave_value &ov, int nb)
   return 0;
 }
 
-int from_octave_str_int2 (octave_value &ov, oct_pq_dynvec_t &val)
+int from_octave_str_int2 (const octave_value &ov, oct_pq_dynvec_t &val)
 {
   return 1;
 }
 
-int from_octave_bin_int2 (octave_value &ov, oct_pq_dynvec_t &val)
+int from_octave_bin_int2 (const octave_value &ov, oct_pq_dynvec_t &val)
 {
   int16_t i2 = ov.int_value ();
 
@@ -562,12 +562,12 @@ int to_octave_bin_int4 (char *c, octave_value &ov, int nb)
   return 0;
 }
 
-int from_octave_str_int4 (octave_value &ov, oct_pq_dynvec_t &val)
+int from_octave_str_int4 (const octave_value &ov, oct_pq_dynvec_t &val)
 {
   return 1;
 }
 
-int from_octave_bin_int4 (octave_value &ov, oct_pq_dynvec_t &val)
+int from_octave_bin_int4 (const octave_value &ov, oct_pq_dynvec_t &val)
 {
   int32_t i4 = ov.int_value ();
 
@@ -611,12 +611,12 @@ int to_octave_bin_int8 (char *c, octave_value &ov, int nb)
   return 0;
 }
 
-int from_octave_str_int8 (octave_value &ov, oct_pq_dynvec_t &val)
+int from_octave_str_int8 (const octave_value &ov, oct_pq_dynvec_t &val)
 {
   return 1;
 }
 
-int from_octave_bin_int8 (octave_value &ov, oct_pq_dynvec_t &val)
+int from_octave_bin_int8 (const octave_value &ov, oct_pq_dynvec_t &val)
 {
   int64_t i8 = ov.int64_scalar_value ();
 

@@ -86,8 +86,8 @@ octave_idx_type command::count_row_major_order (dim_vector &dv,
     }
 }
 
-int command::from_octave_bin_array (octave_value &oct_arr, oct_pq_dynvec_t &val,
-                                    oct_pq_conv_t *conv)
+int command::from_octave_bin_array (const octave_value &oct_arr,
+                                    oct_pq_dynvec_t &val, oct_pq_conv_t *conv)
 {
   octave_scalar_map m = oct_arr.scalar_map_value ();
   if (error_state)
@@ -194,7 +194,7 @@ int command::from_octave_bin_array (octave_value &oct_arr, oct_pq_dynvec_t &val,
   return 0;
 }
 
-int command::from_octave_bin_composite (octave_value &oct_comp,
+int command::from_octave_bin_composite (const octave_value &oct_comp,
                                         oct_pq_dynvec_t &val,
                                         oct_pq_conv_t *conv)
 {
@@ -269,8 +269,8 @@ int command::from_octave_bin_composite (octave_value &oct_comp,
   return 0;
 }
 
-int command::from_octave_str_array (octave_value &oct_arr, oct_pq_dynvec_t &val,
-                                    octave_value &type)
+int command::from_octave_str_array (const octave_value &oct_arr,
+                                    oct_pq_dynvec_t &val, octave_value &type)
 {
   // not implemented
   error ("not implemented");
@@ -279,7 +279,7 @@ int command::from_octave_str_array (octave_value &oct_arr, oct_pq_dynvec_t &val,
   return 0;
 }
 
-int command::from_octave_str_composite (octave_value &oct_comp,
+int command::from_octave_str_composite (const octave_value &oct_comp,
                                         oct_pq_dynvec_t &val,
                                         octave_value &type)
 {

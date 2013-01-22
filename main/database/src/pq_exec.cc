@@ -181,7 +181,7 @@ Octaves @code{NA} corresponds to a Postgresql NULL value (not @code{NaN}, which 
   if (nargs == 1 && args(0).is_string () &&
       args(0).string_value () == "defaults")
     {
-      octave_value_list f_args (8);
+      octave_value_list f_args (12);
       Matrix a;
       Cell c;
 
@@ -193,6 +193,10 @@ Octaves @code{NA} corresponds to a Postgresql NULL value (not @code{NaN}, which 
       f_args(5) = octave_value ("");
       f_args(6) = octave_value ("copy_in_data");
       f_args(7) = octave_value (c);
+      f_args(8) = octave_value ("copy_in_oids");
+      f_args(9) = octave_value (false);
+      f_args(10) = octave_value ("copy_in_types");
+      f_args(11) = octave_value (c);
 
       return feval ("setdbopts", f_args, 1);
     }
@@ -345,6 +349,30 @@ Octaves @code{NA} corresponds to a Postgresql NULL value (not @code{NaN}, which 
       return retval;
     }
 
+  f_args(1) = octave_value ("copy_in_oids");
+  f_args(2) = octave_value (false);
+
+  f_ret = feval ("getdbopts", f_args, 1);
+  bool cin_oids = f_ret(0).bool_value ();
+  if (error_state)
+    {
+      error ("could not convert copy_in_oids to bool");
+
+      return retval;
+    }
+
+  f_args(1) = octave_value ("copy_in_types");
+  f_args(2) = octave_value (Cell ());
+
+  f_ret = feval ("getdbopts", f_args, 1);
+  Cell cin_types = f_ret(0).cell_value ();
+  if (error_state)
+    {
+      error ("could not convert copy_in_types to cell");
+
+      return retval;
+    }
+
   // check option settings
 
   if (ptypes.length () != nparams)
@@ -371,6 +399,24 @@ Octaves @code{NA} corresponds to a Postgresql NULL value (not @code{NaN}, which 
       return retval;
     }
 
+  dim_vector cind_dv = cin_data.dims ();
+  if (cind_dv.length () > 2)
+    {
+      error ("%s: copy-in data must not be more than two-dimensional",
+             fname.c_str ());
+
+      return retval;
+    }
+
+  if (cin_types.is_empty ())
+    cin_types.resize (dim_vector (1, cind_dv(1)));
+  if (cin_types.numel () != cind_dv(1))
+    {
+      error ("%s: copy_in_types has wrong number of elements");
+
+      return retval;
+    }
+
   //
 
   Cell rtypes;
@@ -378,7 +424,8 @@ Octaves @code{NA} corresponds to a Postgresql NULL value (not @code{NaN}, which 
   command c (oct_pq_conn, cmd, params, ptypes, rtypes, fname);
 
   if (c.good ())
-    retval = c.process_single_result (cin_path, cout_path, nargout, cin_data);
+    retval = c.process_single_result
+      (cin_path, cout_path, nargout, cin_data, cin_oids, cin_types);
 
   return retval;
 }

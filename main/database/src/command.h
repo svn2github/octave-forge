@@ -72,13 +72,15 @@ public:
   {
     Cell c;
     // inlining should prevent the additional copy
-    return process_single_result ("", "", 0, c);
+    return process_single_result ("", "", 0, c, false, c);
   }
 
   octave_value process_single_result (const std::string &infile,
                                       const std::string &outfile,
                                       int nargout,
-                                      const Cell &data);
+                                      const Cell &data,
+                                      bool cin_oids,
+                                      const Cell &cin_types);
 
   int good (void) {return valid;}
 
@@ -113,25 +115,26 @@ private:
 
   octave_value copy_out_handler (const std::string &, int);
 
-  octave_value copy_in_handler (const std::string &, const Cell &);
+  octave_value copy_in_handler (const std::string &, const Cell &, bool oids,
+                                const Cell &cin_types);
 
-  oct_pq_conv_t *pgtype_from_octtype (octave_value &);
+  oct_pq_conv_t *pgtype_from_octtype (const octave_value &);
 
   oct_pq_conv_t *pgtype_from_spec (std::string &, oct_type_t &);
 
   oct_pq_conv_t *pgtype_from_spec (Oid, oct_type_t &);
 
-  int from_octave_bin_array (octave_value &oct_arr, oct_pq_dynvec_t &val,
+  int from_octave_bin_array (const octave_value &oct_arr, oct_pq_dynvec_t &val,
                              oct_pq_conv_t *);
 
-  int from_octave_bin_composite (octave_value &oct_comp, oct_pq_dynvec_t &val,
-                                 oct_pq_conv_t *);
+  int from_octave_bin_composite (const octave_value &oct_comp,
+                                 oct_pq_dynvec_t &val, oct_pq_conv_t *);
 
-  int from_octave_str_array (octave_value &oct_arr, oct_pq_dynvec_t &val,
+  int from_octave_str_array (const octave_value &oct_arr, oct_pq_dynvec_t &val,
                              octave_value &type);
 
-  int from_octave_str_composite (octave_value &oct_comp, oct_pq_dynvec_t &val,
-                                 octave_value &type);
+  int from_octave_str_composite (const octave_value &oct_comp,
+                                 oct_pq_dynvec_t &val, octave_value &type);
 
   int to_octave_bin_array (char *, octave_value &, int, oct_pq_conv_t *);
 

@@ -25,6 +25,7 @@
 #include <octave/Cell.h>
 #include <octave/lo-mappers.h>
 #include <float.h>
+#include <climits>
 #include "error.h"
 
 int __bfgsmin_obj(double &obj, const std::string f, const octave_value_list f_args, const ColumnVector theta, const int minarg)

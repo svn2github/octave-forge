@@ -62,6 +62,7 @@ function [df, S] = df_cow(df, S, col)
         %# update repetition index aliasing this one
         df._rep{col}(find (dummy == indi)) = t1;
       endif
+      keyboard
     endfor
   endfor
 

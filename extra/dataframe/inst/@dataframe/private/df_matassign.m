@@ -466,8 +466,8 @@ function df = df_matassign(df, S, indc, ncol, RHS)
           %# ignore 'column' dimension -- force colum vectors -- use a
           %# third dim just in case
           if (isempty (S.subs{1})) S.subs{1} = ':'; endif 
-          S.subs(2) = []; 
-          if (length (S.subs) < 2) 
+          S.subs(2) = [];
+	  if (length (S.subs) < 2) 
             S.subs{2} = 1; 
           endif 
           if (ncol > 1 && length (RHS) > 1)
@@ -479,14 +479,19 @@ function df = df_matassign(df, S, indc, ncol, RHS)
         endif
         Sorig = S; 
         for indi = (1:ncol)
-          try
-            [df, S] = df_cow(df, S, indc(indi));
-            df._data{indc(indi)} = fillfunc (df._data{indc(indi)}, S, indi);
+          % try
+	    lasterr('');
+            dummy= 'df_cow';
+	    [df, S] = df_cow(df, S, indc(indi));
+            dummy = 'fillfunc';
+	    df._data{indc(indi)} = fillfunc (df._data{indc(indi)}, S, indi);
             S = Sorig;
-          catch
-            disp (lasterr  ())
-            disp ('line 470 '); keyboard
-          end_try_catch
+          % catch
+	    if (~isempty(lasterr ()))
+	      disp (lasterr  ())
+              disp ('line 488 '); keyboard
+	    end
+          % end_try_catch
           # catch
           #   if ndims(df._data{indc(indi)}) > 2,
           #     %# upstream forgot to give the third dim

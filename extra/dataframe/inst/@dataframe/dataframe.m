@@ -467,7 +467,7 @@ while (indi <= size (varargin, 2))
       try
 	df = df_matassign (df, idx, indj, length (indj), x);
       catch
-	   disp ('line 443 '); keyboard
+	disp ('line 443 '); keyboard
       end_try_catch
       if (~isempty (cmt_lines))
         df._cmt = vertcat (df._cmt, cellstr (cmt_lines));

@@ -479,19 +479,17 @@ function df = df_matassign(df, S, indc, ncol, RHS)
         endif
         Sorig = S; 
         for indi = (1:ncol)
-          % try
+	  try
 	    lasterr('');
             dummy= 'df_cow';
 	    [df, S] = df_cow(df, S, indc(indi));
             dummy = 'fillfunc';
 	    df._data{indc(indi)} = fillfunc (df._data{indc(indi)}, S, indi);
             S = Sorig;
-          % catch
-	    if (~isempty(lasterr ()))
-	      disp (lasterr  ())
-              disp ('line 488 '); keyboard
-	    end
-          % end_try_catch
+          catch
+	    disp (lasterr  ())
+            disp ('line 491 '); keyboard
+	  end_try_catch
           # catch
           #   if ndims(df._data{indc(indi)}) > 2,
           #     %# upstream forgot to give the third dim

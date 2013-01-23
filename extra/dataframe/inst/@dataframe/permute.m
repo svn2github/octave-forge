@@ -24,7 +24,7 @@ function resu = permute(df, perm)
   %# $Id$
   %#
 
-  resu = dataframe ([]);
+  resu = dataframe ();
 
   if (length (df._cnt) >= length (perm))
     resu._cnt = df._cnt(perm);

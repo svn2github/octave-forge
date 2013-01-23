@@ -132,7 +132,7 @@ function resu = subsref(df, S)
                     further_deref = true;
                   case "new"
                     if (isempty (dummy))
-                      resu = dataframe([]);
+                      resu = dataframe();
                     else
                       if (~strcmp (dummy(1).type, "()"))
                         error ("Bogus constructor call");
@@ -379,7 +379,7 @@ function resu = subsref(df, S)
     if (strcmp (output_type, class (df)))
       %# disp('line 295 '); keyboard
       %# export the result as a dataframe
-      resu = dataframe ([]);
+      resu = dataframe ();
       resu._cnt(1) = nrow; resu._cnt(2) = ncol;
       if (isempty (fullindr))
         for indi = (1:ncol)

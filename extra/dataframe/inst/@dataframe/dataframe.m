@@ -419,7 +419,7 @@ while (indi <= size (varargin, 2))
     endif;
 
     if (iscell (x))
-      if (2 == length (x))
+      if (and (isvector (x), 2 == length (x)))
         %# use the intermediate value as destination column
         [indc, ncol] = df_name2idx (df._name{2}, x{1}, df._cnt(2), "column");
         if (ncol ~= 1)

@@ -28,7 +28,7 @@ function resu = df_colmeta(df)
   %# $Id: df_func.m 7943 2010-11-24 15:33:54Z cdemills $
   %#
 
-  resu = dataframe ([]);
+  resu = dataframe ();
 
   resu._cnt(2) = df._cnt(2);
   resu._name{2} = df._name{2};

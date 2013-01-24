@@ -28,7 +28,7 @@ function resu = df_allmeta(df, dim = [])
   %# $Id$
   %#
 
-  resu = dataframe ([]);
+  resu = dataframe ();
 
   if (isempty (dim)), 
     dim = df._cnt(1:2); 

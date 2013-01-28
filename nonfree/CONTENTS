@@ -1,9 +1,0 @@
-Packages which are not freely modifiable and redistributable 
-with modifications, or which depend on code which is not 
-free.  This includes functions which only permit non-commercial 
-use and functions which must be kept together as a package.  
-Functions in all other directories must be freely redistributable 
-with modifications.  Functions in non-free must be freely 
-redistributable for non-commercial use.  Functions of unknown
-license should not be included anywhere, since no license implies
-default license implies no rights to redistribute.

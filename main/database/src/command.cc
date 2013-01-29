@@ -164,7 +164,11 @@ command::command (octave_pq_connection &connection, std::string &cmd,
 
   if (valid)
     {
+      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
       res = PQexecParams (cptr, cmd.c_str (), npars, oids, vals, pl, pf, 1);
+
+      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       check_first_result ();
     }

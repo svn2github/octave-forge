@@ -23,19 +23,23 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_pq_connection, "PGconn", "PGconn")
 
 octave_pq_connection::octave_pq_connection (std::string arg)
-: postgres (0), conv_map (), name_conv_map (&map_str_cmp)
+: postgres (0), conv_map (), name_conv_map (&map_str_cmp), conn (NULL)
 {
   static bool type_registered = false;
 
   if (! type_registered) register_type ();
 
+  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
   conn = PQconnectdb (arg.c_str ());
+  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
   if (! conn || PQstatus (conn) == CONNECTION_BAD)
     {
       if (conn)
         {
+          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           PQfinish (conn);
+          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           conn = NULL;
         }
@@ -53,7 +57,9 @@ octave_pq_connection::octave_pq_connection (std::string arg)
           octave_pq_get_composite_types () ||
           octave_pq_get_enum_types ())
         {
+          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           PQfinish (conn);
+          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           conn = NULL;
 
@@ -66,7 +72,9 @@ octave_pq_connection::~octave_pq_connection (void)
 {
   if (conn)
     {
+      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       PQfinish (conn);
+      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       octave_pq_delete_non_constant_types ();
     }
@@ -76,7 +84,9 @@ void octave_pq_connection::octave_pq_close (void)
 {
   if (conn)
     {
+      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       PQfinish (conn);
+      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       octave_pq_delete_non_constant_types ();
 
@@ -403,7 +413,12 @@ int octave_pq_connection::octave_pq_refresh_types (void)
   if (octave_pq_get_composite_types () || octave_pq_get_enum_types ())
     {
       if (conn)
-        PQfinish (conn);
+        {
+          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+          PQfinish (conn);
+          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+        }
+
       conn = NULL;
       error ("octave_pq_refresh_types: could not read types");
       return 1;

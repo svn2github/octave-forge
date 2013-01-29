@@ -74,7 +74,11 @@ function [idx, nelem, subs, mask] = df_name2idx(names, subs, count, dimname, mis
       %# detect | followed by EOL 
       subs{indi} = regexprep (subs{indi}, '([^\\])\|$', "$1\\|");
       if (0 == index (subs{indi}, ':'))
-        for indj = (1:min (length (names), count)) %# sanity check
+	 %# if there's no special operator, make match strict
+	if (isempty (regexp (subs{indi}, '[\.\*\+\?\{\}\(\)\[\]\^\$\\]')))
+	  subs{indi}  = ['\b' subs{indi} '\b'];
+	endif
+	for indj = (1:min (length (names), count)) %# sanity check
           if (~isempty (regexp (names{indj}, subs{indi})))
             idx = [idx indj]; mask(indi) = true;
           endif

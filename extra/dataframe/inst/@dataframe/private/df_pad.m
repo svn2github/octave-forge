@@ -56,12 +56,15 @@ function df = df_pad(df, dim, n, coltype=[])
             case {'char'}
               dummy = {}; dummy(1:neff, 1:m) = NA;
               dummy = vertcat (df._data{indi}, dummy);
-            case { 'double' }
+            case { 'double'}
               dummy = vertcat (df._data{indi}, repmat (NA, neff, m));
+	    %# there is no 'NA' with logical values, avoid casting error
+	    case {'logical'}
+	      dummy = vertcat (df._data{indi}, repmat (false, neff, m));
             otherwise
-              dummy = cast (vertcat (df._data{indi}, repmat (NA, neff, m)), ...
+	      dummy = cast (vertcat (df._data{indi}, repmat (NA, neff, m)), ...
                             df._type{indi});
-          endswitch
+	  endswitch
           df._data{indi} = dummy;
         endif
       endfor

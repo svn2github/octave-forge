@@ -91,7 +91,7 @@ function df = df_pad(df, dim, n, coltype=[])
           df._rep(n + (indc+1:end)) = df._rep(indc+1:end);
           df._data(indc + (1:n)) = NA;
           df._rep(indc + (1:n)) = 1;
-        endif
+	endif
       else
         %# add new values after the last column
         indc = min (size (df._data, 2), df._cnt(2)); 
@@ -140,12 +140,14 @@ function df = df_pad(df, dim, n, coltype=[])
       for indi = (coltype)
         switch df._type{indi}
           case {'char'}
-            if (isa (df._data{indi}, 'char')),
+            if (isa (df._data{indi}, 'char')) %# pure char
               dummy = horzcat (df._data{indi}(:, df._rep{indi}), \
-                               {repmat(NA, df._cnt(1), 1)});
+                               repmat({NA}, df._cnt(1), 1));
+	      keyboard
             else
-              dummy = df._data{indi};
-            endif
+              dummy =  horzcat (df._data{indi}(:, df._rep{indi}), \
+				repmat({NA}, df._cnt(1), 1));
+	    endif
           case {'double'}
             dummy = horzcat (df._data{indi}(:, df._rep{indi}), \
                              repmat (NA, df._cnt(1), 1));
@@ -160,6 +162,11 @@ function df = df_pad(df, dim, n, coltype=[])
         endswitch
         df._data{indi} = dummy;
         df._rep{indi} = [df._rep{indi} length(df._rep{indi})+ones(1, n)];
+	try
+	  assert (size(df._data{indi}, 2), max(df._rep{indi}))
+	catch
+	  keyboard
+	end_try_catch
       endfor
       df =  df_thirddim (df);
     otherwise

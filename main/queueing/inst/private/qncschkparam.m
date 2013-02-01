@@ -17,10 +17,7 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{err} @var{Nout} @var{Sout} @var{Vout} @var{mout} @var{Zout}] = } qncschkparam( N, S )
-## @deftypefnx {Function File} {[@var{err} @var{Nout} @var{Sout} @var{Vout} @var{mout} @var{Zout}] = } qncschkparam( N, S, V )
-## @deftypefnx {Function File} {[@var{err} @var{Nout} @var{Sout} @var{Vout} @var{mout} @var{Zout}] = } qncschkparam( N, S, V, m )
-## @deftypefnx {Function File} {[@var{err} @var{Nout} @var{Sout} @var{Vout} @var{mout} @var{Zout}] = } qncschkparam( N, S, V, m, Z )
+## @deftypefn {Function File} {[@var{err} @var{Nout} @var{Sout} @var{Vout} @var{mout} @var{Zout}] = } qncschkparam( N, S, V, m, Z )
 ##
 ## Validate input parameters for closed, single class networks.
 ## @var{err} is the empty string on success, or a suitable error message

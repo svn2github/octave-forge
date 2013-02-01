@@ -36,12 +36,11 @@
 ## @code{@var{r}(c)} is the index of class @math{c} reference station,
 ## @math{r(c) \in @{1, @dots{}, K@}}, @math{c \in @{1, \@dots{}, C@}}.
 ## The class @math{c} visit count to server @code{@var{r}(c)}
-## (@code{@var{V}(c,r(c))}) is conventionally set to 1. Note, however,
-## that this only holds once for every chain class @math{c} belongs to.
-## The reference station serves two purposes: its throughput is assumed
-## to be the system throughput, and a job returning to the reference
-## station is assumed to have completed one cycle. Default is station 1
-## for all classes.
+## (@code{@var{V}(c,r(c))}) is conventionally set to 1. The reference
+## station serves two purposes: (i) its throughput is assumed to be the
+## system throughput, and (ii) a job returning to the reference station
+## is assumed to have completed one cycle. Default is to consider
+## station 1 as the reference station for all classes.
 ##
 ## @end table
 ##

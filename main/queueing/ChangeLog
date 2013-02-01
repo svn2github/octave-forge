@@ -1,3 +1,13 @@
+2013-02-xx Moreno Marzolla <marzolla@cs.unibo.it>
+
+	* Version 1.2.1 released
+	* Deprecated function qnvisits (stil available for backward
+  	  compatibility)
+ 	* New functions qncsvisits, qnosvisits, qncmvisits and qnomvisits
+	  replace qnvisits
+	* Added common input checking routines for functions dealing with
+	  queueing network models
+
 2012-11-05 Moreno Marzolla <marzolla@cs.unibo.it>
 
 	* Version 1.2.0 released

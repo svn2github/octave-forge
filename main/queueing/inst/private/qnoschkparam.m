@@ -17,7 +17,7 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{err} @var{lambda} @var{S} @var{V} @var{m}] = } qnoschkparam( lambda, S, ... )
+## @deftypefn {Function File} {[@var{err} @var{lambda} @var{S} @var{V} @var{m}] = } qnoschkparam( lambda, S, V, m )
 ##
 ## Validate input parameters for open, single class networks.
 ## @var{err} is the empty string on success, or a suitable error message

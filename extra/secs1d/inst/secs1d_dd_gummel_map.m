@@ -100,16 +100,15 @@ function [n, p, V, Fn, Fp, Jn, Jp, it, res] = secs1d_dd_gummel_map (x, D, Na, Nd
     mobility = mobility_model (x, Na, Nd, Nrefn, E, u0n, uminn, vsatn, betan);
     
     A = bim1a_advection_diffusion (x, mobility, 1, 1, V(:, 2));
-    M = bim1a_reaction (x, 1, Rn) + bim1a_reaction (x, II, 1);
-    
-    R = bim1a_rhs (x, 1, Gn);
+    M = bim1a_reaction (x, 1, Rn);
+    R = bim1a_rhs (x, 1, Gn) + bim1a_rhs (x, II, 1);
   
     A = A + M;
   
     n(:,3) = nin;
     n(2:end-1,3) = A(2:end-1, 2:end-1) \ (R(2:end-1) - A(2:end-1, [1 end]) * nin ([1 end]));
     Fn(:,2) = V(:,2) - log (n(:, 3));
-    Jn =  mobility .* (n(2:end, 2) .* Bp - n(1:end-1, 2) .* Bm) ./ dx; 
+    Jn =  mobility .* (n(2:end, end) .* Bp - n(1:end-1, end) .* Bm) ./ dx; 
 
     [Rn, Rp, Gn, Gp, II] = generation_recombination_model (x, n(:, end), p(:, end), 
 	                                                   E, Jn, Jp, tn, tp, theta, 
@@ -118,14 +117,14 @@ function [n, p, V, Fn, Fp, Jn, Jp, it, res] = secs1d_dd_gummel_map (x, D, Na, Nd
     mobility = mobility_model (x, Na, Nd, Nrefp, E, u0p, uminp, vsatp, betap);
 
     A = bim1a_advection_diffusion (x, mobility, 1, 1, -V(:, 2));
-    M = bim1a_reaction (x, 1, Rp) + bim1a_reaction (x, II, 1);
-    R = bim1a_rhs (x, 1, Gp);
+    M = bim1a_reaction (x, 1, Rp);
+    R = bim1a_rhs (x, 1, Gp) + bim1a_rhs (x, II, 1);
     A = A + M;
   
     p(:,3) = pin;
     p(2:end-1,3) = A(2:end-1, 2:end-1) \ (R(2:end-1) - A(2:end-1, [1 end]) * pin ([1 end]));
     Fp(:,2) = V(:,2) + log (p(:,3));
-    Jp = -mobility .* (p(2:end, 2) .* Bm - p(1:end-1, 2) .* Bp) ./ dx;
+    Jp = -mobility .* (p(2:end, end) .* Bm - p(1:end-1, end) .* Bp) ./ dx;
 
     nrfn   = norm (Fn(:,2) - Fn(:,1), inf);
     nrfp   = norm (Fp(:,2) - Fp(:,1), inf);

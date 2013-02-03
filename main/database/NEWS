@@ -1,5 +1,5 @@
-no release yet, initial commit database 1.99.0:
------------------------------------------------
+Initial release of new package database, version 2.0.0:
+-------------------------------------------------------
 
 Postgresql interface implemented. Copy of README-postgresql:
 

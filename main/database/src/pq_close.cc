@@ -25,9 +25,9 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 DEFUN_DLD (pq_close, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{id}} pq_close (@var{connection})\n\
-Text.\n\
-\n\
+@deftypefn {Loadable Function} pq_close (@var{connection})\n\
+Closes connection @var{connection} to a postgresql server.\n\
+@seealso{pq_connect}\n\
 @end deftypefn")
 {
   std::string fname ("pq_close");

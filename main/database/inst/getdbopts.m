@@ -17,10 +17,12 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} getdbopts (@var{options}, @var{parname})
 ## @deftypefnx {Function File} {} getdbopts (@var{options}, @var{parname}, @var{default})
-## Return a specific option from a structure created by
+## Return a specific setting from a structure created by
 ## @code{setdbopts}.  If @var{parname} is not a field of the @var{options}
 ## structure, return @var{default} if supplied, otherwise return an
 ## empty matrix.
+##
+## (This function uses the code of Octaves 'optimget' function.)
 ## @end deftypefn
 
 ## Copied from Octave (was 'optimget') (Olaf Till <i7tiol@t-online.de>).

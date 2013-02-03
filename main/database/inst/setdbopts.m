@@ -21,62 +21,11 @@
 ## @deftypefnx {Function File} {} setdbopts (@var{par}, @var{val}, @dots{})
 ## @deftypefnx {Function File} {} setdbopts (@var{old}, @var{par}, @var{val}, @dots{})
 ## @deftypefnx {Function File} {} setdbopts (@var{old}, @var{new})
-## Create options struct for optimization functions.
+## Create settings structure for database functions.
 ##
-## Valid parameters are:
+## Please see individual database functions for valid settings.
 ##
-## @itemize @bullet
-## @item AutoScaling
-##
-## @item ComplexEqn
-##
-## @item FinDiffType
-##
-## @item FunValCheck
-## When enabled, display an error if the objective function returns an invalid
-## value (a complex value, NaN, or Inf).  Must be set to "on" or "off"
-## [default].  Note: the functions @code{fzero} and @code{fminbnd} correctly
-## handle Inf values and only complex values or NaN will cause an error in this
-## case. 
-##
-## @item GradObj
-## When set to "on", the function to be minimized must return a second argument
-## which is the gradient, or first derivative, of the function at the point
-## @var{x}.  If set to "off" [default], the gradient is computed via finite
-## differences.
-##
-## @item Jacobian
-## When set to "on", the function to be minimized must return a second argument
-## which is the Jacobian, or first derivative, of the function at the point
-## @var{x}.  If set to "off" [default], the Jacobian is computed via finite
-## differences.
-##
-## @item MaxFunEvals
-## Maximum number of function evaluations before optimization stops.
-## Must be a positive integer.
-##
-## @item MaxIter
-## Maximum number of algorithm iterations before optimization stops.
-## Must be a positive integer.
-##
-## @item OutputFcn
-## A user-defined function executed once per algorithm iteration.
-##
-## @item TolFun
-## Termination criterion for the function output.  If the difference in the
-## calculated objective function between one algorithm iteration and the next
-## is less than @code{TolFun} the optimization stops.  Must be a positive
-## scalar.
-##
-## @item TolX
-## Termination criterion for the function input.  If the difference in @var{x},
-## the current search point, between one algorithm iteration and the next is
-## less than @code{TolX} the optimization stops.  Must be a positive scalar.
-##
-## @item TypicalX
-##
-## @item Updating
-## @end itemize
+## (This function uses the code of Octaves 'optimset' function.)
 ## @end deftypefn
 
 ## Copied from Octave (was 'optimset') (Olaf Till <i7tiol@t-online.de>).

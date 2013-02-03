@@ -22,6 +22,9 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_pq_connection, "PGconn", "PGconn")
 
+std::string pq_basetype_prefix ("pg_catalog.");
+const int pq_bpl = pq_basetype_prefix.size ();
+
 octave_pq_connection::octave_pq_connection (std::string arg)
 : postgres (0), conv_map (), name_conv_map (&map_str_cmp), conn (NULL)
 {
@@ -37,11 +40,13 @@ octave_pq_connection::octave_pq_connection (std::string arg)
     {
       if (conn)
         {
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-          PQfinish (conn);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+          PGconn *t_conn = conn;
 
           conn = NULL;
+
+          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+          PQfinish (t_conn);
+          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
         }
 
       error ("PQ connection attempt failed");
@@ -50,18 +55,25 @@ octave_pq_connection::octave_pq_connection (std::string arg)
     {
       // init name converter-map (kind of "bootstrapping")
       for (int i = 0; i < OCT_PQ_NUM_CONVERTERS; i++)
-        name_conv_map[conv_ptrs[i]->name.c_str ()] = conv_ptrs[i];
+        {
+          name_conv_map[conv_ptrs[i]->name.c_str ()] = conv_ptrs[i];
+
+          // unqualified name, may be replaced later with user-defined type
+          name_conv_map[conv_ptrs[i]->name.c_str () + pq_bpl] = conv_ptrs[i];
+        }
 
       if (octave_pq_get_postgres_oid () ||
           octave_pq_fill_base_types () ||
           octave_pq_get_composite_types () ||
           octave_pq_get_enum_types ())
         {
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-          PQfinish (conn);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+          PGconn *t_conn = conn;
 
           conn = NULL;
+
+          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+          PQfinish (t_conn);
+          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           error ("could not read types");
         }
@@ -84,13 +96,15 @@ void octave_pq_connection::octave_pq_close (void)
 {
   if (conn)
     {
+      PGconn *t_conn = conn;
+
+      conn = NULL;
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-      PQfinish (conn);
+      PQfinish (t_conn);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       octave_pq_delete_non_constant_types ();
-
-      conn = NULL;
     }
   else
     error ("PGconn object not open");
@@ -215,10 +229,11 @@ int octave_pq_connection::octave_pq_fill_base_types (void)
   for (int i = 0; i < OCT_PQ_NUM_CONVERTERS; i++)
     {
       bt_map_t::iterator bt_it;
-      if ((bt_it = bt_map.find (conv_ptrs[i]->name)) == bt_map.end ())
+      if ((bt_it = bt_map.find (conv_ptrs[i]->name.c_str () + pq_bpl)) ==
+          bt_map.end ())
         {
           error ("octave_pq_fill_base_types: type %s not found in pg_types",
-                 conv_ptrs[i]->name.c_str ());
+                 conv_ptrs[i]->name.c_str () + pq_bpl);
           return 1;
         }
       // fill in oid and aoid into static records of converters
@@ -242,13 +257,9 @@ int octave_pq_connection::octave_pq_fill_base_types (void)
 
 int octave_pq_connection::octave_pq_get_composite_types (void)
 {
-  Cell p, pt, rt (4, 1);
-  rt(0) = octave_value ("oid");
-  rt(1) = octave_value ("name");
-  rt(2) = octave_value ("oid");
-  rt(3) = octave_value ("oid");
+  Cell p, pt, rt;
 
-  std::string cmd ("select oid, typname, typarray, typrelid from pg_type where typtype = 'c';"),
+  std::string cmd ("select pg_type.oid, pg_type.typname, pg_type.typarray, pg_type.typrelid, pg_namespace.nspname, pg_type_is_visible(pg_type.oid) from pg_type join pg_namespace on pg_type.typnamespace = pg_namespace.oid where pg_type.typtype = 'c';"),
     caller ("octave_pq_get_composite_types");
 
   command c (*this, cmd, p, pt, rt, caller);
@@ -275,6 +286,8 @@ int octave_pq_connection::octave_pq_get_composite_types (void)
       Oid aoid = tpls(i, 2).int_value ();
       Oid relid = tpls(i, 3).int_value ();
       std::string name = tpls(i, 1).string_value ();
+      std::string nspace = tpls(i, 4).string_value ();
+      bool visible = tpls(i, 5).bool_value ();
       if (error_state)
         {
           error ("octave_pq_get_composite_types: could not read returned result");
@@ -291,11 +304,13 @@ int octave_pq_connection::octave_pq_get_composite_types (void)
       t_conv->is_composite = true;
       t_conv->is_enum = false;
       t_conv->is_not_constant = true;
-      t_conv->name = name;
+      t_conv->name = nspace.append (".").append (name);
       t_conv->to_octave_str = NULL;
       t_conv->to_octave_bin = NULL;
       t_conv->from_octave_str = NULL;
       t_conv->from_octave_bin = NULL;
+
+      oct_pq_conv_t *t_conv_v;
 
       oct_pq_conv_t *&by_oid = conv_map[oid],
         *&by_name = name_conv_map[t_conv->name.c_str ()];
@@ -311,6 +326,15 @@ int octave_pq_connection::octave_pq_get_composite_types (void)
 
       by_oid = by_name = t_conv;
 
+      if (visible)
+        {
+          t_conv_v = new oct_pq_conv_t (*t_conv);
+
+          t_conv_v->name = name;
+
+          name_conv_map[t_conv_v->name.c_str ()] = t_conv_v;;
+        }
+
       if (aoid)
         {
           oct_pq_conv_t *&by_aoid = conv_map[aoid];
@@ -320,6 +344,11 @@ int octave_pq_connection::octave_pq_get_composite_types (void)
               conv_map.erase (oid);
               name_conv_map.erase (t_conv->name.c_str ());
               delete t_conv;
+              if (visible)
+                {
+                  name_conv_map.erase (t_conv_v->name.c_str ());
+                  delete t_conv_v;
+                }
               return 1;
             }
 
@@ -333,12 +362,9 @@ int octave_pq_connection::octave_pq_get_composite_types (void)
 
 int octave_pq_connection::octave_pq_get_enum_types (void)
 {
-  Cell p, pt, rt (3, 1);
-  rt(0) = octave_value ("oid");
-  rt(1) = octave_value ("name");
-  rt(2) = octave_value ("oid");
+  Cell p, pt, rt;
 
-  std::string cmd ("select oid, typname, typarray from pg_type where typtype = 'e';"),
+  std::string cmd ("select pg_type.oid, pg_type.typname, pg_type.typarray, pg_namespace.nspname, pg_type_is_visible(pg_type.oid) from pg_type join pg_namespace on pg_type.typnamespace = pg_namespace.oid where pg_type.typtype = 'e';"),
     caller ("octave_pq_get_enum_types");
 
   command c (*this, cmd, p, pt, rt, caller);
@@ -364,6 +390,8 @@ int octave_pq_connection::octave_pq_get_enum_types (void)
       Oid oid = tpls(i, 0).int_value ();
       Oid aoid = tpls(i, 2).int_value ();
       std::string name = tpls(i, 1).string_value ();
+      std::string nspace = tpls(i, 3).string_value ();
+      bool visible = tpls(i, 4).bool_value ();
       if (error_state)
         {
           error ("octave_pq_get_enum_types: could not read returned result");
@@ -380,7 +408,7 @@ int octave_pq_connection::octave_pq_get_enum_types (void)
       t_conv->is_composite = false;
       t_conv->is_enum = true;
       t_conv->is_not_constant = true;
-      t_conv->name = name;
+      t_conv->name = nspace.append (".").append (name);
       t_conv->to_octave_str = &to_octave_str_text;
       t_conv->to_octave_bin = &to_octave_bin_text;
       t_conv->from_octave_str = &from_octave_str_text;
@@ -401,6 +429,14 @@ int octave_pq_connection::octave_pq_get_enum_types (void)
 
       by_oid = by_aoid = by_name = t_conv;
 
+      if (visible)
+        {
+          oct_pq_conv_t *t_conv_v = new oct_pq_conv_t (*t_conv);
+
+          t_conv_v->name = name;
+
+          name_conv_map[t_conv_v->name.c_str ()] = t_conv_v;
+        }
     }
 
   return 0;
@@ -410,16 +446,24 @@ int octave_pq_connection::octave_pq_refresh_types (void)
 {
   octave_pq_delete_non_constant_types ();
 
+  // refresh unqualified base type names, may be replaced later with
+  // user-defined types
+  for (int i = 0; i < OCT_PQ_NUM_CONVERTERS; i++)
+    name_conv_map[conv_ptrs[i]->name.c_str () + pq_bpl] = conv_ptrs[i];
+
   if (octave_pq_get_composite_types () || octave_pq_get_enum_types ())
     {
-      if (conn)
+      PGconn *t_conn = conn;
+
+      conn = NULL;
+
+      if (t_conn)
         {
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-          PQfinish (conn);
+          PQfinish (t_conn);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
         }
 
-      conn = NULL;
       error ("octave_pq_refresh_types: could not read types");
       return 1;
     }

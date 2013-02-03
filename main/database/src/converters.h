@@ -57,6 +57,31 @@ typedef struct
 }
   oct_pq_conv_t;
 
+extern std::string pq_basetype_prefix;
+
+// a wrapper class for array of pointers to converters which qualifies
+// base type names in initialization
+class oct_pq_conv_ptrs_t
+{
+public:
+
+  oct_pq_conv_ptrs_t (int n, oct_pq_conv_t **ptrs) : converters (ptrs)
+  {
+    for (int i = 0; i < n; i++)
+      {
+        std::string prefix = pq_basetype_prefix;
+
+        converters[i]->name = prefix.append (converters[i]->name);
+      }
+  }
+
+  oct_pq_conv_t *operator[] (int i) { return converters[i]; }
+
+private:
+
+  oct_pq_conv_t **converters;
+};
+
 // a wrapper class around oct_pq_conv_t* to provide a default
 // constructor which nullifies it, for efficient use of maps, where
 // checking for the presence of a key while inserting it can rely on a
@@ -81,7 +106,7 @@ private:
 // helper function for debugging
 void print_conv (oct_pq_conv_t *);
 
-extern oct_pq_conv_t *conv_ptrs[OCT_PQ_NUM_CONVERTERS];
+extern oct_pq_conv_ptrs_t conv_ptrs;
 
 // these prototypes are needed because pointers to these functions are
 // stored in the converter structures of each found enum type

@@ -662,16 +662,18 @@ oct_pq_conv_t conv_money = {0,
 
 /* end type money */
 
-oct_pq_conv_t *conv_ptrs[OCT_PQ_NUM_CONVERTERS] = {&conv_bool,
-                                                   &conv_oid,
-                                                   &conv_float8,
-                                                   &conv_float4,
-                                                   &conv_text,
-                                                   &conv_varchar,
-                                                   &conv_bpchar,
-                                                   &conv_name,
-                                                   &conv_bytea,
-                                                   &conv_int2,
-                                                   &conv_int4,
-                                                   &conv_int8,
-                                                   &conv_money};
+oct_pq_conv_t *t_conv_ptrs[OCT_PQ_NUM_CONVERTERS] = {&conv_bool,
+                                                     &conv_oid,
+                                                     &conv_float8,
+                                                     &conv_float4,
+                                                     &conv_text,
+                                                     &conv_varchar,
+                                                     &conv_bpchar,
+                                                     &conv_name,
+                                                     &conv_bytea,
+                                                     &conv_int2,
+                                                     &conv_int4,
+                                                     &conv_int8,
+                                                     &conv_money};
+
+oct_pq_conv_ptrs_t conv_ptrs (OCT_PQ_NUM_CONVERTERS, t_conv_ptrs);

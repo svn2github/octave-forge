@@ -51,9 +51,9 @@
 %% ni         = intrinsic carrier density
 %% Phims      = metal to semiconductor potential barrier
 
-esir 	       = 11.7;
+esir 	     = 11.7;
 esio2r 	     = 3.9;
-esi 	       = e0 * esir;
+esi 	     = e0 * esir;
 esio2 	     = e0 * esio2r;
 mn           = 0.26*mn0;
 mh           = 0.18*mn0;
@@ -68,16 +68,16 @@ betan        = 0.72;
 betap        = 0.76;
 Nrefn        = 8.5e22;
 Nrefp        = 6.3e22;
-vsatn        = inf;            % ref. value: 1.1e5;
-vsatp        = inf;            % ref. value: 9.5e4;
+vsatn        = 1.1e5;            % ref. value: 1.1e5;
+vsatp        = 9.5e4;            % ref. value: 9.5e4;
 
-tp           = inf;            % ref. value: 1e-6;
-tn           = inf;            % ref. value: 1e-6;
+tp           = 1e-7;            % ref. value: 1e-6;
+tn           = 1e-7;            % ref. value: 1e-6;
 
-Cn           = 0;              % ref. value: 2.8e-31*1e-12; 
-Cp           = 0;              % ref. value: 9.9e-32*1e-12;   
-an           = 0;              % ref. value: 7.03e7;
-ap           = 0;              % ref. value: 6.71e7;
+Cn           = 2.8e-31*1e-12;              % ref. value: 2.8e-31*1e-12; 
+Cp           = 9.9e-32*1e-12;              % ref. value: 9.9e-32*1e-12;   
+an           = 7.03e7;                     % ref. value: 7.03e7;
+ap           = 6.71e7;                     % ref. value: 6.71e7;
 Ecritn       = 1.231e8; 
 Ecritp       = 1.693e8;
 

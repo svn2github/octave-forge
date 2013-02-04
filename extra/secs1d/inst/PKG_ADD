@@ -1,0 +1,1 @@
+addpath (canonicalize_file_name (fullfile (fileparts (mfilename ()), "demos")))

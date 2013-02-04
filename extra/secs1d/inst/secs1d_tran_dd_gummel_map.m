@@ -64,12 +64,12 @@
 %%             res   total potential increment at each step
 
 function [n, p, V, Fn, Fp, Jn, Jp, tout, numit, res] = secs1d_tran_dd_gummel_map (x, tspan, vbcs, D, Na, Nd, pin, nin, Vin, 
-                                                                               Fnin, Fpin, l2, er, u0n, uminn,
-                                                                               vsatn, betan, Nrefn, u0p, 
-                                                                               uminp, vsatp, betap, Nrefp,
-                                                                               theta, tn, tp, Cn, Cp, an, ap, 
-		                                                               Ecritnin, Ecritpin, toll, maxit, 
-                                                                               ptoll, pmaxit)
+                                                                                  Fnin, Fpin, l2, er, u0n, uminn,
+                                                                                  vsatn, betan, Nrefn, u0p, 
+                                                                                  uminp, vsatp, betap, Nrefp,
+                                                                                  theta, tn, tp, Cn, Cp, an, ap, 
+		                                                                  Ecritnin, Ecritpin, toll, maxit, 
+                                                                                  ptoll, pmaxit)
 
   p  = pin;
   n  = nin;
@@ -103,9 +103,7 @@ function [n, p, V, Fn, Fp, Jn, Jp, tout, numit, res] = secs1d_tran_dd_gummel_map
     
     try
 
-      t = tout(++tstep) = min (t + dt, tmax)
-      vbcs{1} (t)
-      vbcs{2} (t)
+      t = tout(++tstep) = min (t + dt, tmax);
 
       if (tstep <= 2)
         Fn0 = Fn(:,tstep-1);
@@ -173,10 +171,10 @@ function [n, p, V, Fn, Fp, Jn, Jp, tout, numit, res] = secs1d_tran_dd_gummel_map
         Jp(:,tstep) = -mobility .* (p(2:end,tstep) .* Bm - p(1:end-1,tstep) .* Bp) ./ dx;
                 
         nrfn   = norm (Fn(:,tstep) - Fn0, inf);
-        assert (nrfn <= 1);
+        assert (nrfn <= 10);
 
         nrfp   = norm (Fp(:,tstep) - Fp0, inf);
-        assert (nrfp <= 1);
+        assert (nrfp <= 10);
 
         nrv    = norm (V(:,tstep)  - V0,  inf);
         res(it,tstep) = max  ([nrfn; nrfp; nrv]);
@@ -196,12 +194,20 @@ function [n, p, V, Fn, Fp, Jn, Jp, tout, numit, res] = secs1d_tran_dd_gummel_map
       dt *= 1.5;
       numit(tstep) = it;
 
+      figure (1),
+      plot (tout, Jn(1,:) + Jp(1,:))
+      drawnow
+
+      figure (2)
+      plot (tout, Jn(end,:) + Jp(end,:))
+      drawnow
+
     catch
 
       warning (lasterr)
       dt /= 2;
       t = tout(--tstep);
-
+      
     end_try_catch
 
   endwhile  
@@ -236,8 +242,26 @@ function [Rn, Rp, Gn, Gp, II] = generation_recombination_model (x, n, p, E, Jn, 
 
 endfunction
 
-
+%!function fn = vbcs_1 (t, tbar, n, ni, Vth, vbar, nbar);
+%!    fn = [0; 0];
+%!    fn(1) = t*tbar/10;
+%!    fn(2) = 0;
+%!    v  = fn + Vth * log (n / ni);
+%!    vv = v / vbar;
+%!    nn = n / nbar;
+%!    fn = vv - log (nn);
+%!endfunction
+%!function fp = vbcs_2 (t, tbar, p, ni, Vth, vbar, nbar);
+%!    fp = [0; 0];
+%!    fp(1) = t*tbar/10;
+%!    fp(2) = 0;
+%!    v  = fp - Vth * log (p / ni);
+%!    vv = v / vbar;
+%!    pp = p / nbar;
+%!    fp = vv + log (pp);
+%!endfunction
 %!demo
+%!
 %!  % physical constants and parameters
 %!  secs1d_physical_constants;
 %!  secs1d_silicon_material_properties;
@@ -324,25 +348,6 @@ endfunction
 %!  
 %!  V = Fn + Vth * log (n / ni);
 %!  
-%!  function fn = vbcs_1 (t, tbar, n, ni, Vth, vbar, nbar);
-%!    fn = [0; 0];
-%!    fn(1) = t*tbar/10;
-%!    fn(2) = 0;
-%!    v  = fn + Vth * log (n / ni);
-%!    vv = v / vbar;
-%!    nn = n / nbar;
-%!    fn = vv - log (nn);
-%!  endfunction
-%!  
-%!  function fp = vbcs_2 (t, tbar, p, ni, Vth, vbar, nbar);
-%!    fp = [0; 0];
-%!    fp(1) = t*tbar/10;
-%!    fp(2) = 0;
-%!    v  = fp - Vth * log (p / ni);
-%!    vv = v / vbar;
-%!    pp = p / nbar;
-%!    fp = vv + log (pp);
-%!  endfunction
 %!  
 %!  vbcs = {(@(t) vbcs_1 (t, tbar, n([1 end]), ni, Vth, Vbar, nbar)), (@(t) vbcs_2 (t, tbar, p([1 end]), ni, Vth, Vbar, nbar))};
 %!  

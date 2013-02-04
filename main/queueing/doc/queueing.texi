@@ -1,4 +1,4 @@
-% Copyright (C) 2008, 2009, 2010, 2011, 2012 Moreno Marzolla
+% Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013 Moreno Marzolla
 %
 % This file is part of the queueing toolbox, a Queueing Networks analysis
 % package for GNU Octave
@@ -110,7 +110,7 @@ User manual for the queueing toolbox, a GNU Octave package for queueing networks
 
 @ifnottex
 
-Copyright @copyright{} 2008, 2009, 2010, 2011, 2012 Moreno Marzolla.
+Copyright @copyright{} 2008, 2009, 2010, 2011, 2012, 2013 Moreno Marzolla.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -140,7 +140,7 @@ modified versions.
 @author Moreno Marzolla
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 2008, 2009, 2010, 2011, 2012 Moreno Marzolla (@email{marzolla@@cs.unibo.it}).
+Copyright @copyright{} 2008, 2009, 2010, 2011, 2012, 2013 Moreno Marzolla (@email{marzolla@@cs.unibo.it}).
 
 This is the first edition of the Queueing Toolbox documentation, and
 is consistent with version @value{VERSION} of the package.

@@ -17,7 +17,7 @@
 %% along with SECS1D; If not, see <http://www.gnu.org/licenses/>.
 
 %%
-%% Solve the scaled stationary bipolar DD equation system using Gummel algorithm.
+%% Solve the unscaled stationary bipolar DD equation system using Gummel algorithm.
 %%
 %% [n, p, V, Fn, Fp, Jn, Jp, it, res] = ...
 %%    secs1d_dd_gummel_map_noscale (device, material,
@@ -94,10 +94,8 @@ function [n, p, V, Fn, Fp, Jn, Jp, it, res] = ...
 
     A = bim1a_advection_diffusion (device.x, mobilityn, 
                                    constants.Vth, 1, V(:, 2) / constants.Vth);
-    M = bim1a_reaction (device.x, 1, Rn);
+    A += bim1a_reaction (device.x, 1, Rn);
     R = bim1a_rhs (device.x, 1, Gn) + bim1a_rhs (device.x, II, 1);
-  
-    A = A + M;
   
     n(:,3) = nin;
     n(2:end-1,3) = A(2:end-1, 2:end-1) \ ...
@@ -106,9 +104,9 @@ function [n, p, V, Fn, Fp, Jn, Jp, it, res] = ...
 
     A = bim1a_advection_diffusion (device.x, mobilityp,
                                    constants.Vth, 1, -V(:, 2)  / constants.Vth);
-    M = bim1a_reaction (device.x, 1, Rp);
+    A += bim1a_reaction (device.x, 1, Rp);
     R = bim1a_rhs (device.x, 1, Gp) + bim1a_rhs (device.x, II, 1);
-    A = A + M;
+
   
     p(:,3) = pin;
     p(2:end-1,3) = A(2:end-1, 2:end-1) \ ...
@@ -197,8 +195,8 @@ function [Rn, Rp, Gn, Gp, II] = generation_recombination_model (device, material
   Gn = material.ni .^ 2 .* fact;
   Gp = Gn;
 
-  II = material.an * exp(-material.Ecritn./abs(E)) .* abs (Jn) + ... 
-      material.ap * exp(-material.Ecritp./abs(E)) .* abs (Jp);
+  II = material.an * exp(-material.Ecritn./abs(E)) .* abs (Jn / constants.q) + ... 
+      material.ap * exp(-material.Ecritp./abs(E)) .* abs (Jp / constants.q);
 
 endfunction
 

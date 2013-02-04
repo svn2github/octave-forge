@@ -17,7 +17,7 @@
 %% along with SECS1D; If not, see <http://www.gnu.org/licenses/>.
 
 %%
-%% Solve the scaled stationary bipolar DD equation system using Gummel algorithm.
+%% Solve the scaled transient bipolar DD equation system using Gummel algorithm.
 %%
 %% [n, p, V, Fn, Fp, Jn, Jp, it, res] = secs1d_tran_dd_gummel_map (x, tspan, vbcs, D, Na, Nd, 
 %%                                                                 pin, nin, Vin, Fnin, 

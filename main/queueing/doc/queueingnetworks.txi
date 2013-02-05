@@ -261,8 +261,8 @@ Note that the set of traffic equations @math{V_j = \sum_{i=1}^K V_i
 P_{i, j}} alone can only be solved up to a multiplicative constant; to
 get a unique solution we impose an additional constraint @math{V_r =
 1}. This constraint is equivalent to defining station @math{r} as the
-@emph{reference station} (the default is @math{r=1},
-@xref{doc-qncsvisits}). A job that returns to the reference station is
+@emph{reference station}; the default is @math{r=1},
+@pxref{doc-qncsvisits}. A job that returns to the reference station is
 assumed to have completed its activity cycle. The network throughput
 is set to the throughput of the reference station.
 

@@ -37,7 +37,7 @@
 %%                                     electron mobility model coefficients
 %%            material.{u0p, uminp, vsatp, Nrefp}
 %%                                     hole mobility model coefficients
-%%            material.ni              intrinsic carrier density
+%%            device.ni              intrinsic carrier density
 %%            material.{tn,tp,Cn,Cp,an,ap,Ecritnin,Ecritpin}
 %%                                     generation recombination model parameters
 %%            algorithm.toll           tolerance for Gummel iterarion convergence test
@@ -114,7 +114,7 @@ function [n, p, V, Fn, Fp, Jn, Jp, tout, numit, res] = ...
 
       n0 = n(:, tstep) = n(:, tstep - 1);
       p0 = p(:, tstep) = p(:, tstep - 1);
-      V0 = V(:, tstep) = Fn0 + constants.Vth * log (n0 / material.ni);
+      V0 = V(:, tstep) = Fn0 + constants.Vth * log (n0 ./ device.ni);
 
       Jn(:,tstep) = Jn(:,tstep - 1);
       Jp(:,tstep) = Jp(:,tstep - 1);
@@ -145,7 +145,7 @@ function [n, p, V, Fn, Fp, Jn, Jp, tout, numit, res] = ...
         R = bim1a_rhs (device.x, 1, Gn + n(:, tstep-1)/dt) + bim1a_rhs (device.x, II, 1);
         
         n(2:end-1,tstep) = A(2:end-1, 2:end-1) \ (R(2:end-1) - A(2:end-1, [1 end]) * n([1 end],tstep));
-        Fn(:,tstep) = V(:,tstep) - constants.Vth * log (n(:,tstep) / material.ni);
+        Fn(:,tstep) = V(:,tstep) - constants.Vth * log (n(:,tstep) ./ device.ni);
         
         A = bim1a_advection_diffusion (device.x, mobilityp,
                                        constants.Vth, 1, -V(:,tstep)  / constants.Vth);
@@ -154,7 +154,7 @@ function [n, p, V, Fn, Fp, Jn, Jp, tout, numit, res] = ...
 
 
         p(2:end-1,tstep) = A(2:end-1, 2:end-1) \ (R(2:end-1) - A(2:end-1, [1 end]) * p([1 end], tstep));
-        Fp(:,tstep) = V(:,tstep) + constants.Vth * log (p(:,tstep)  / material.ni);
+        Fp(:,tstep) = V(:,tstep) + constants.Vth * log (p(:,tstep)  ./ device.ni);
                 
         [Jn(:,tstep), Jp(:,tstep)] = compute_currents ...
             (device, material, constants, algorithm,
@@ -189,9 +189,9 @@ function [n, p, V, Fn, Fp, Jn, Jp, tout, numit, res] = ...
       plot (tout, Jn(1,:) + Jp(1,:))
       drawnow
 
-      figure (2)
-      plot (tout, Jn(end,:) + Jp(end,:))
-      drawnow
+     %% figure (2)
+     %% plot (tout, Jn(end,:) + Jp(end,:))
+     %% drawnow
 
     catch
 
@@ -219,27 +219,33 @@ function [Jn, Jp] = compute_currents (device, material, constants, algorithm,
 
 endfunction
 
-function u = mobility_model (x, Na, Nd, Nref, E, u0, umin, vsat, beta)
-
-  Neff = Na + Nd;
-  Neff = (Neff(1:end-1) + Neff(2:end)) / 2;
-  
-  ubar = umin + (u0 - umin) ./ (1 + (Neff ./ Nref) .^ beta);
-  u    = 2 * ubar ./ (1 + sqrt (1 + 4 * (ubar .* abs (E) ./ vsat) .^ 2));
-
-endfunction
+%% function u = mobility_model (x, Na, Nd, Nref, E, u0, umin, vsat, beta)
+%% 
+%%   Neff = Na + Nd;
+%%   Neff = (Neff(1:end-1) + Neff(2:end)) / 2;
+%%   
+%%   ubar = umin + (u0 - umin) ./ (1 + (Neff ./ Nref) .^ beta);
+%%   u    = 2 * ubar ./ (1 + sqrt (1 + 4 * (ubar .* abs (E) ./ vsat) .^ 2));
+%% 
+%% endfunction
 
 function [mobilityn, mobilityp] = compute_mobilities (device, material,
                                                       constants, algorithm, E, 
                                                       V, n, p, Fn, Fp)
 
-  mobilityn = mobility_model (device.x, device.Na, device.Nd, 
-                              material.Nrefn, E, material.u0n, material.uminn, 
-                              material.vsatn, material.betan);
+  mobilityn = secs1d_mobility_model_noscale (device.x, n, p, device.Na, device.Nd, 
+                                             %material.Nrefn, 
+                                             E,
+                                             %material.u0n, material.uminn, 
+                                             %material.vsatn, material.betan
+                                             'n');
 
-  mobilityp = mobility_model (device.x, device.Na, device.Nd, 
-                              material.Nrefp, E, material.u0p, material.uminp, 
-                              material.vsatp, material.betap);
+  mobilityp = secs1d_mobility_model_noscale (device.x, n, p, device.Na, device.Nd, 
+                                             %material.Nrefn, 
+                                             E,
+                                             %material.u0n, material.uminn, 
+                                             %material.vsatn, material.betan
+                                             'p');
 
 endfunction
 
@@ -247,14 +253,14 @@ function [Rn, Rp, Gn, Gp, II] = generation_recombination_model (device, material
                                                                 constants, algorithm,
                                                                 E, Jn, Jp, V, n, p, Fn, Fp)
   
-  denomsrh   = material.tn .* (p + material.ni) + material.tp .* (n + material.ni);
+  denomsrh   = material.tn .* (p + device.ni) + material.tp .* (n + device.ni);
   factauger  = material.Cn .* n + material.Cp .* p;
   fact       = (1 ./ denomsrh + factauger);
 
   Rn = p .* fact;
   Rp = n .* fact;
 
-  Gn = material.ni .^ 2 .* fact;
+  Gn = device.ni .^ 2 .* fact;
   Gp = Gn;
 
   II = material.an * exp(-material.Ecritn./abs(E)) .* abs (Jn / constants.q) + ... 

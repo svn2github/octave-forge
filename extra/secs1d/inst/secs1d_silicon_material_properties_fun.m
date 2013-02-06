@@ -68,12 +68,12 @@ function material = secs1d_silicon_material_properties_fun (constants);
   material.u0p         = 480e-4;
   material.uminn       = 65e-4;
   material.uminp       = 47.7e-4;
-  material.betan       = 0.72;
-  material.betap       = 0.76;
+  material.betan       = 0.72; %% 1.213;
+  material.betap       = 0.76; %% 1.109;
   material.Nrefn       = 8.5e22;
   material.Nrefp       = 6.3e22;
-  material.vsatn       = 1.1e5;
-  material.vsatp       = 9.5e4;
+  material.vsatn       = 1.1e5; %% 1.07e5;
+  material.vsatp       = 9.5e4; %% 8.37e4;
 
   material.tp          = 1e-6;
   material.tn          = 1e-6;

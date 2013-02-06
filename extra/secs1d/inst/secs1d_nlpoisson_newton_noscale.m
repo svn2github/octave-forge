@@ -29,7 +29,7 @@
 %%             device.D          doping profile
 %%             algorithm.ptoll   tolerance for convergence test
 %%             algorithm.pmaxit  maximum number of Newton iterations
-%%             material.ni       intrinsic carrier density
+%%             device.ni         intrinsic carrier density
 %%             material.esi      oxide relative electric permittivity
 %%             material.esio2    oxide relative electric permittivity
 %%             constants.q       electron charge
@@ -65,8 +65,8 @@ function [V, n, p, res, niter] = ...
   V  = Vin;
   Fn = Fnin;
   Fp = Fpin;
-  n  = material.ni * exp (( V(device.sinodes) - Fn) / constants.Vth);
-  p  = material.ni * exp ((-V(device.sinodes) + Fp) / constants.Vth);
+  n  = device.ni .* exp (( V(device.sinodes) - Fn) / constants.Vth);
+  p  = device.ni .* exp ((-V(device.sinodes) + Fp) / constants.Vth);
 
   L  = bim1a_laplacian (device.x, epsilon, 1);
   
@@ -98,8 +98,8 @@ function [V, n, p, res, niter] = ...
     for dit = 1:dampit
       Vnew   = V + tk * dV;
     
-      n  = material.ni * exp (( Vnew(device.sinodes) - Fn) / constants.Vth);
-      p  = material.ni * exp ((-Vnew(device.sinodes) + Fp) / constants.Vth);
+      n  = device.ni .* exp (( Vnew(device.sinodes) - Fn) / constants.Vth);
+      p  = device.ni .* exp ((-Vnew(device.sinodes) + Fp) / constants.Vth);
 
       a  = zeros (Nnodes, 1); 
       a(device.sinodes) = (n + p) / constants.Vth;
@@ -162,7 +162,8 @@ endfunction
 %! Na = 1e22;
 %! device.D = - Na * ones (size (xsi));
 %! p = Na * ones (size (xsi));
-%! n = (material.ni^2) ./ p;
+%! device.ni = material.ni*exp(secs1d_bandgap_narrowing_model(Na,0)/constants.Vth); 
+%! n = (device.ni^2) ./ p;
 %! Fn = Fp = zeros (size (xsi));
 %! Vg =-10;
 %! Nv = 80;
@@ -173,7 +174,7 @@ endfunction
 %!     vvect(ii) = Vg; 
 %!     
 %!     V = - material.Phims + Vg * ones (size (device.x));
-%!     V(device.sinodes) = Fn + constants.Vth * log (n / material.ni);
+%!     V(device.sinodes) = Fn + constants.Vth * log (n / device.ni);
 %!     
 %!     % Solution of Nonlinear Poisson equation
 %!     

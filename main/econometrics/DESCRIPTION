@@ -1,11 +1,11 @@
 Name: Econometrics
-Version: 1.0.8
-Date: 2009-05-03
+Version: 1.1.0
+Date: 2013-02-06
 Author: Michael Creel <michael.creel@uab.es>
-Maintainer: Michael Creel <michael.creel@uab.es>
+Maintainer: Nir Krakauer <nkrakauer@ccny.cuny.edu>
 Title: Econometrics.
 Description: Econometrics functions including MLE and GMM based techniques.
 Depends: octave (>= 2.9.7), optim
-Autoload: yes
+Autoload: no
 License: GPLv3+
 Url: http://octave.sf.net

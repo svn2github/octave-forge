@@ -183,15 +183,11 @@ function [mobilityn, mobilityp] = compute_mobilities (device, material,
 
 endfunction
 
-function [Rn, Rp, Gn, Gp, II] = ...
-                       generation_recombination_model (device, material,
-                                                       constants,
-                                                       algorithm,
-                                                       E, Jn, Jp, V,
-                                                       n, p, Fn, Fp)
+function [Rn, Rp, Gn, Gp, II] = generation_recombination_model (device, material,
+                                                                constants, algorithm,
+                                                                E, Jn, Jp, V, n, p, Fn, Fp)
   
-  denomsrh   = material.tn .* (p + device.ni) + ...
-             material.tp .* (n + device.ni);
+  denomsrh   = material.tn .* (p + device.ni) + material.tp .* (n + device.ni);
   factauger  = material.Cn .* n + material.Cp .* p;
   fact       = (1 ./ denomsrh + factauger);
 
@@ -201,10 +197,8 @@ function [Rn, Rp, Gn, Gp, II] = ...
   Gn = device.ni .^ 2 .* fact;
   Gp = Gn;
 
-  II = material.an * exp(-material.Ecritn./abs(E)) .* 
-                         abs (Jn / constants.q) + ... 
-      material.ap * exp(-material.Ecritp./abs(E)) .* 
-                        abs (Jp / constants.q);
+  II = material.an * exp(-material.Ecritn./abs(E)) .* abs (Jn / constants.q) + ... 
+      material.ap * exp(-material.Ecritp./abs(E)) .* abs (Jp / constants.q);
 
 endfunction
 

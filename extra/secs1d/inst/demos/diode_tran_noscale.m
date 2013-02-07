@@ -1,9 +1,3 @@
-%pkg load secs1d secs2d
-pkg load bim
-
-clear all
-close all
-
 % physical constants and parameters
 constants = secs1d_physical_constants_fun ();
 material  = secs1d_silicon_material_properties_fun (constants);
@@ -17,8 +11,6 @@ device.x       = linspace (0, L, Nelements+1)';
 device.sinodes = [1:length(device.x)];
 
 % doping profile [m^{-3}]
-%device.Na = 1e23 * (device.x <= xm);
-%device.Nd = 1e23 * (device.x > xm);
 device.Na = 1e24 * exp(-(3*device.x/L).^2);
 device.Nd = 1e24 * exp(-(3*(device.x-L)/L).^2);
 
@@ -33,34 +25,23 @@ tspan = [tmin, tmax];
 Fn = Fp = zeros (size (device.x));
 
 %% bandgap narrowing correction
-device.ni = (material.ni)*exp(secs1d_bandgap_narrowing_model(device.Na,device.Nd)/constants.Vth);
-%device.ni = (material.ni)*ones(size(device.Na));%deactivated
-plot(device.x,device.ni);
+device.ni = (material.ni) * exp (secs1d_bandgap_narrowing_model
+                                 (device.Na, device.Nd) / constants.Vth); 
 
+%% carrier lifetime
+device.tp = secs1d_carrier_lifetime_noscale (Na, Nd, 'p');
+device.tn = secs1d_carrier_lifetime_noscale (Na, Nd, 'n');
 
 % initial guess for n, p, V, phin, phip
+p = (abs(device.D) + sqrt (abs(device.D) .^ 2 + 4 * device.ni .^2)) .* ...
+    (device.D <= 0) + device.ni.^2 ./ ...
+    (abs(device.D) + sqrt (abs(device.D) .^ 2 + 4 * device.ni .^2)) .* ...
+    (device.D > 0);
 
-n = p = device.ni;
-
-nregion= device.D > device.ni;
-pregion= device.D < -device.ni;
-
-n(nregion) = device.Nd(nregion);
-p(pregion) = device.Na(pregion);
-
-p(nregion) = (device.ni(nregion).^2 ./ n(nregion));
-n(pregion) = (device.ni(pregion).^2 ./ p(pregion));
-
-
-%%p = abs (device.D) / 2 .* (1 + sqrt (1 + 4 * (device.ni ./ abs(device.D)) .^2)) .* ...
-%%    (device.x <= xm) + device.ni.^2 ./ ...
-%%    (abs (device.D) / 2 .* (1 + sqrt (1 + 4 * (device.ni ./ abs (device.D)) .^2))) .* ...
-%%    (device.x > xm);
-%%
-%%n = abs (device.D) / 2 .* (1 + sqrt (1 + 4 * (device.ni ./ abs (device.D)) .^ 2)) .* ...
-%%    (device.x > xm) + device.ni.^2 ./ ...
-%%    (abs (device.D) / 2 .* (1 + sqrt (1 + 4 * (device.ni ./ abs (device.D)) .^2))) .* ...
-%%    (device.x <= xm);
+n = (abs(device.D) + sqrt (abs(device.D) .^ 2 + 4 * device.ni .^2)) .* ...
+    (device.D > 0) + device.ni.^2 ./ ...
+    (abs(device.D) + sqrt (abs(device.D) .^ 2 + 4 * device.ni .^2)) .* ...
+    (device.D <= 0);
 
 V = Fn + constants.Vth * log (n ./ device.ni);
 

@@ -253,19 +253,18 @@ function [Rn, Rp, Gn, Gp, II] = generation_recombination_model (device, material
                                                                 constants, algorithm,
                                                                 E, Jn, Jp, V, n, p, Fn, Fp)
   
-  denomsrh   = material.tn .* (p + device.ni) + material.tp .* (n + device.ni);
-  factauger  = material.Cn .* n + material.Cp .* p;
-  fact       = (1 ./ denomsrh + factauger);
-
-  Rn = p .* fact;
-  Rp = n .* fact;
-
-  Gn = device.ni .^ 2 .* fact;
+  [Rn_srh, Rp_srh, Gn_srh, Gp_srh] = secs1d_srh_recombination_noscale (p, n, device);
+  
+  [Rn_aug, Rp_aug, G_aug] = secs1d_auger_recombination_noscale (p, n, device);
+ 
+  Rn = Rn_srh + Rn_aug;
+  Rp = Rp_srh + Rp_aug;
+  
+  Gn = Gn_srh + G_aug;
   Gp = Gn;
 
-  II = material.an * exp(-material.Ecritn./abs(E)) .* abs (Jn / constants.q) + ... 
-      material.ap * exp(-material.Ecritp./abs(E)) .* abs (Jp / constants.q);
-
+  II =  secs1d_impact_ionization_noscale (E, Jn, Jp, constants);
+  
 endfunction
 
 

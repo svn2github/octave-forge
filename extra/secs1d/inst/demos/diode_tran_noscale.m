@@ -45,6 +45,9 @@ n = ((abs(device.D) + sqrt (abs(device.D) .^ 2 + 4 * device.ni .^2)) .* ...
 
 V = Fn + constants.Vth * log (n ./ device.ni);
 
+close all; semilogy (device.x, n, 'x-', device.x, p, 'x-', device.x, abs(device.D)); pause
+close all; semilogy (device.x, n .* p, 'x-', device.x, device.ni .^ 2); pause
+
 function fn = vbcs_1 (t);
   fn = [0; 0];
   fn(2) = t;
@@ -63,9 +66,6 @@ algorithm.maxit = 1000;
 algorithm.ptoll = 1e-12;
 algorithm.pmaxit = 1000;
 algorithm.maxnpincr = constants.Vth;
-
-close all; semilogy (device.x, n, 'x-', device.x, p, 'x-', device.x, abs(device.D)); pause
-close all; semilogy (device.x, n .* p, 'x-', device.x, device.ni .^ 2); pause
 
 %% initial guess via stationary simulation
 [nin, pin, Vin, Fnin, Fpin, Jn, Jp, it, res] = ...

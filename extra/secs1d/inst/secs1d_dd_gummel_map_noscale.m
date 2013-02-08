@@ -183,23 +183,25 @@ function [mobilityn, mobilityp] = compute_mobilities (device, material,
 
 endfunction
 
-function [Rn, Rp, Gn, Gp, II] = generation_recombination_model (device, material,
-                                                                constants, algorithm,
-                                                                E, Jn, Jp, V, n, p, Fn, Fp)
+function [Rn, Rp, Gn, Gp, II] = generation_recombination_model ...
+      (device, material, constants, algorithm, E, Jn, Jp, V, n, p, Fn, Fp)
   
-  [Rn_srh, Rp_srh, Gn_srh, Gp_srh] = secs1d_srh_recombination_noscale (p, n, device);
-  
-  [Rn_aug, Rp_aug, G_aug] = secs1d_auger_recombination_noscale (p, n, device);
+  [Rn_srh, Rp_srh, Gn_srh, Gp_srh] = secs1d_srh_recombination_noscale ...
+      (device, material, constants, algorithm, n, p);
+
+  [Rn_aug, Rp_aug, G_aug] = secs1d_auger_recombination_noscale ...
+      (device, material, constants, algorithm, n, p);
  
   Rn = Rn_srh + Rn_aug;
   Rp = Rp_srh + Rp_aug;
   
-  Gn = Gn_srh + G_aug;
-  Gp = Gn;
+  Gp = Gn = Gn_srh + G_aug;
 
-  II =  secs1d_impact_ionization_noscale (E, Jn, Jp, constants);
+  II =  secs1d_impact_ionization_noscale ...
+      (E, Jn, Jp, constants);
   
 endfunction
+
 
 
 %!demo

@@ -19,7 +19,7 @@ device.D  = device.Nd - device.Na;
 
 % time span for simulation
 tmin = 0;
-tmax = 35;
+tmax = 1;
 tspan = [tmin, tmax];
 
 Fn = Fp = zeros (size (device.x));
@@ -29,8 +29,8 @@ device.ni = (material.ni) * exp (secs1d_bandgap_narrowing_model
                                  (device.Na, device.Nd) / constants.Vth); 
 
 %% carrier lifetime
-device.tp = secs1d_carrier_lifetime_noscale (Na, Nd, 'p');
-device.tn = secs1d_carrier_lifetime_noscale (Na, Nd, 'n');
+device.tp = secs1d_carrier_lifetime_noscale (device.Na, device.Nd, 'p');
+device.tn = secs1d_carrier_lifetime_noscale (device.Na, device.Nd, 'n');
 
 % initial guess for n, p, V, phin, phip
 p = (abs(device.D) + sqrt (abs(device.D) .^ 2 + 4 * device.ni .^2)) .* ...
@@ -58,17 +58,22 @@ endfunction
 vbcs = {@vbcs_1, @vbcs_2};
 
 % tolerances for convergence checks
-algorithm.toll  = 1e-7;
+algorithm.toll  = 1e-10;
 algorithm.maxit = 1000;
 algorithm.ptoll = 1e-12;
 algorithm.pmaxit = 1000;
 algorithm.maxnpincr = constants.Vth;
+
+close all; semilogy (device.x, n, 'x-', device.x, p, 'x-', device.x, abs(device.D)); pause
+close all; semilogy (device.x, n .* p, 'x-', device.x, device.ni .^ 2); pause
 
 %% initial guess via stationary simulation
 [nin, pin, Vin, Fnin, Fpin, Jn, Jp, it, res] = ...
     secs1d_dd_gummel_map_noscale (device, material,
                                   constants, algorithm,
                                   V, n, p, Fn, Fp);  
+
+close all; semilogy (device.x, nin, 'x-', device.x, pin, 'x-'); pause
 
 %% (pseudo)transient simulation
 [n, p, V, Fn, Fp, Jn, Jp, t, it, res] = ...

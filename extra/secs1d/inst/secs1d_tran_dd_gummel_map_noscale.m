@@ -183,15 +183,7 @@ function [n, p, V, Fn, Fp, Jn, Jp, tout, numit, res] = ...
       endfor
 
       dt *= 1.5;
-      numit(tstep) = it;
-
-      figure (1),
-      plot (tout, Jn(1,:) + Jp(1,:))
-      drawnow
-
-     %% figure (2)
-     %% plot (tout, Jn(end,:) + Jp(end,:))
-     %% drawnow
+      numit(tstep) = it;      
 
     catch
 
@@ -219,15 +211,18 @@ function [Jn, Jp] = compute_currents (device, material, constants, algorithm,
 
 endfunction
 
-%% function u = mobility_model (x, Na, Nd, Nref, E, u0, umin, vsat, beta)
-%% 
-%%   Neff = Na + Nd;
-%%   Neff = (Neff(1:end-1) + Neff(2:end)) / 2;
-%%   
-%%   ubar = umin + (u0 - umin) ./ (1 + (Neff ./ Nref) .^ beta);
-%%   u    = 2 * ubar ./ (1 + sqrt (1 + 4 * (ubar .* abs (E) ./ vsat) .^ 2));
-%% 
-%% endfunction
+%% FIXME: Velocity saturation and doping dependence are not mutually exclusive, they
+%% should be combined using Mathiessen's rule!!
+
+%%function u = mobility_model (x, Na, Nd, Nref, E, u0, umin, vsat, beta)
+%%
+%%  Neff = Na + Nd;
+%%  Neff = (Neff(1:end-1) + Neff(2:end)) / 2;
+%%  
+%%  ubar = umin + (u0 - umin) ./ (1 + (Neff ./ Nref) .^ beta);
+%%  u    = 2 * ubar ./ (1 + sqrt (1 + 4 * (ubar .* abs (E) ./ vsat) .^ 2));
+%%
+%%endfunction
 
 function [mobilityn, mobilityp] = compute_mobilities (device, material,
                                                       constants, algorithm, E, 
@@ -249,21 +244,24 @@ function [mobilityn, mobilityp] = compute_mobilities (device, material,
 
 endfunction
 
-function [Rn, Rp, Gn, Gp, II] = generation_recombination_model (device, material,
-                                                                constants, algorithm,
-                                                                E, Jn, Jp, V, n, p, Fn, Fp)
+function [Rn, Rp, Gn, Gp, II] = generation_recombination_model ...
+      (device, material, constants, algorithm, E, Jn, Jp, V, n, p, Fn, Fp)
   
-  [Rn_srh, Rp_srh, Gn_srh, Gp_srh] = secs1d_srh_recombination_noscale (p, n, device);
-  
-  [Rn_aug, Rp_aug, G_aug] = secs1d_auger_recombination_noscale (p, n, device);
+  printf ("GR model\n\t")
+
+  [Rn_srh, Rp_srh, Gn_srh, Gp_srh] = secs1d_srh_recombination_noscale ...
+      (device, material, constants, algorithm, n, p);
+
+  [Rn_aug, Rp_aug, G_aug] = secs1d_auger_recombination_noscale ...
+      (device, material, constants, algorithm, n, p);
  
   Rn = Rn_srh + Rn_aug;
   Rp = Rp_srh + Rp_aug;
   
-  Gn = Gn_srh + G_aug;
-  Gp = Gn;
+  Gp = Gn = Gn_srh + G_aug;
 
-  II =  secs1d_impact_ionization_noscale (E, Jn, Jp, constants);
+  II =  secs1d_impact_ionization_noscale ...
+      (E, Jn, Jp, constants);
   
 endfunction
 

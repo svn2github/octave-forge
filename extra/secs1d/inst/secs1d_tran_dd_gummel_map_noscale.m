@@ -185,6 +185,10 @@ function [n, p, V, Fn, Fp, Jn, Jp, tout, numit, res] = ...
       dt *= 1.5;
       numit(tstep) = it;      
 
+      figure (1)
+      plot (tout, mean (Jn(:, 1:tstep) + Jp(:, 1:tstep), 1))
+      drawnow
+
     catch
 
       warning (lasterr)
@@ -204,11 +208,11 @@ function [Jn, Jp] = compute_currents (device, material, constants, algorithm,
   [Bp, Bm] = bimu_bernoulli (dV ./ constants.Vth);
 
   Jn =  constants.q * constants.Vth * mobilityn .* ...
-      (n(2:end, end) .* Bp - n(1:end-1, end) .* Bm) ./ dx; 
+      (n(2:end) .* Bp - n(1:end-1) .* Bm) ./ dx; 
 
   Jp = -constants.q * constants.Vth * mobilityp .* ...
-      (p(2:end, end) .* Bm - p(1:end-1, end) .* Bp) ./ dx; 
-
+      (p(2:end) .* Bm - p(1:end-1) .* Bp) ./ dx; 
+    
 endfunction
 
 %% FIXME: Velocity saturation and doping dependence are not mutually exclusive, they
@@ -247,8 +251,6 @@ endfunction
 function [Rn, Rp, Gn, Gp, II] = generation_recombination_model ...
       (device, material, constants, algorithm, E, Jn, Jp, V, n, p, Fn, Fp)
   
-  printf ("GR model\n\t")
-
   [Rn_srh, Rp_srh, Gn_srh, Gp_srh] = secs1d_srh_recombination_noscale ...
       (device, material, constants, algorithm, n, p);
 
@@ -263,6 +265,9 @@ function [Rn, Rp, Gn, Gp, II] = generation_recombination_model ...
   II =  secs1d_impact_ionization_noscale ...
       (E, Jn, Jp, constants);
   
+  %% II = material.an * exp (-material.Ecritn ./ abs(E)) .* abs (Jn ./ constants.q) + ...
+  %%  material.ap * exp (-material.Ecritp ./ abs(E)) .* abs (Jp ./ constants.q); 
+
 endfunction
 
 

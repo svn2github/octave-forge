@@ -18,35 +18,36 @@
 
 %% II = secs1d_impact_ionization_noscale (E, Jn, Jp)
 
-function    II = secs1d_impact_ionization_noscale (E, Jn, Jp, constants)
+function    II = secs1d_impact_ionization_noscale ...
+      (device, material, constants, algorithm, E, Jn, Jp, V, n, p, Fn, Fp)
   
-  %% FIXME: 
-  a_n       = 7.03e7;            %[m^-1]
-  b_n       = 1.231e8;           %[V * m^-1]
-  a_h_low   = 1.582e8;           %[m^-1]
-  b_h_low   = 2.036e8;           %[V * m^-1]
-  a_h_high  = 6.71e7;            %[m^-1]
-  b_h_high  = 1.639e7;           %[V * m^-1]
-  em_0      = 4.0e7;             %[V * m^-1]
-  hbarOmega = 0.063;             %[eV]
-  gam       = 1.0;
-  t_300     = 300.000;           %[K]
-  k_boltz   = 1.380658e-23;      %[J * K^-1]
+  Fava_n = abs (diff (Fn) ./ diff (device.x));
+  Fava_p = abs (diff (Fp) ./ diff (device.x));
 
+  %% FIXME: move model parameters to material properties file
+  [a_low_n, a_low_p]          = deal (7.0300e+07 ,  1.5820e+08);      # [1/m]
+  [a_high_n, a_high_p]        = deal (7.0300e+07 ,  6.7100e+07);      # [1/m]
+  [b_low_n, b_low_p]          = deal (1.2310e+08 ,  2.0360e+08);      # [V/m]
+  [b_high_n, b_high_p]        = deal (1.2310e+08 ,  1.6930e+08);      # [V/m]
+  [E0n, E0p]                  = deal (4.0000e+07 ,  4.0000e+07);      # [V/m]
+  [hbarOmega_n, hbarOmega_p]  = deal (0.063      ,  0.063     );      # [V]
   
-  Ebool = (abs(E) >= em_0);
-  a_h   = (Ebool * a_h_high) + (1 - Ebool) .* a_h_low;
-  b_h   = (Ebool * b_h_high) + (1 - Ebool) .* b_h_low;
-  
+  a_n = ifelse (Fava_n < E0n, a_low_n, a_high_n);
+  a_p = ifelse (Fava_n < E0p, a_low_p, a_high_p);
+  b_n = ifelse (Fava_p < E0n, b_low_n, b_high_n);
+  b_p = ifelse (Fava_p < E0p, b_low_p, b_high_p);
 
-  % N.B. gam is a parameter that depends on the temperature
+  %% FIXME: gamma depends on the temperature
+  gamman = gammap = 1;
+  
+  fact = zeros (size (Jn));
+  fact(Fava_n > 0) =  exp (- gamman .* b_n ./ Fava_n);
+  alpha_n = gamman * a_n .* fact;
 
-  % gam = tanh(hbarOmega / (2*K_bolz*t_300) ) / tanh (hbarOmega / (2*k_bolz*t));
-  
-  alpha_n = gam .* a_n .* exp (-gam * b_n ./ (abs (E) + 1.0 ));
-  alpha_p = gam .* a_h .* exp (-gam * b_h ./ (abs (E) + 1.0 ));
- 
-  
-  II = alpha_n .* abs (Jn) ./ constants.q + alpha_p .* abs (Jp) ./ constants.q ;
+  fact = zeros (size (Jp));
+  fact(Fava_p > 0) =  exp (- gammap .* b_p ./ Fava_p);
+  alpha_p = gammap * a_p .* fact;
+
+  II = alpha_n .* abs (Jn ./ constants.q) + alpha_p .* abs (Jp ./ constants.q);
 
 endfunction

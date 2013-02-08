@@ -19,7 +19,7 @@ device.D  = device.Nd - device.Na;
 
 % time span for simulation
 tmin = 0;
-tmax = 1;
+tmax = 29.9;
 tspan = [tmin, tmax];
 
 Fn = Fp = zeros (size (device.x));
@@ -34,19 +34,16 @@ device.tn = secs1d_carrier_lifetime_noscale (device.Na, device.Nd, 'n');
 
 % initial guess for n, p, V, phin, phip
 p = ((abs(device.D) + sqrt (abs(device.D) .^ 2 + 4 * device.ni .^2)) .* ...
-     (device.D <= 0) + device.ni.^2 ./ ...
-     (abs(device.D) + sqrt (abs(device.D) .^ 2 + 4 * device.ni .^2)) .* ...
-     (device.D > 0)) / 2;
+     (device.D <= 0)) / 2 + 2 * device.ni.^2 ./ ...
+    (abs(device.D) + sqrt (abs(device.D) .^ 2 + 4 * device.ni .^2)) .* ...
+    (device.D > 0);
 
 n = ((abs(device.D) + sqrt (abs(device.D) .^ 2 + 4 * device.ni .^2)) .* ...
-     (device.D > 0) + device.ni.^2 ./ ...
-     (abs(device.D) + sqrt (abs(device.D) .^ 2 + 4 * device.ni .^2)) .* ...
-     (device.D <= 0)) / 2;
+     (device.D > 0)) / 2 + 2 * device.ni.^2 ./ ...
+    (abs(device.D) + sqrt (abs(device.D) .^ 2 + 4 * device.ni .^2)) .* ...
+    (device.D <= 0);
 
 V = Fn + constants.Vth * log (n ./ device.ni);
-
-close all; semilogy (device.x, n, 'x-', device.x, p, 'x-', device.x, abs(device.D)); pause
-close all; semilogy (device.x, n .* p, 'x-', device.x, device.ni .^ 2); pause
 
 function fn = vbcs_1 (t);
   fn = [0; 0];

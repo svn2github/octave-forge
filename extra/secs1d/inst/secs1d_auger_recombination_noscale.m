@@ -21,6 +21,7 @@
 function [Rn, Rp, G] = secs1d_auger_recombination_noscale ...
       (device, material, constants, algorithm, n, p);
 
+  %% FIXME: move model parameters to material properties file
   Cn0 = 2.9000e-43;      %[m^6 *s^-1]
   Cp0 = 1.0280e-43;      %[m^6 *s^-1]
   Hn  = 3.46667;
@@ -31,8 +32,8 @@ function [Rn, Rp, G] = secs1d_auger_recombination_noscale ...
   Cp = Cp0 * (1.0 + Hp * exp (-p ./ NN));
   
   fact = (Cn .* n + Cp .* p);
-  Rn = p .* fact;
-  Rp = n .* fact;
-  G  = device.ni .^ 2 .* fact;
+  Rn   = p .* fact;
+  Rp   = n .* fact;
+  G    = device.ni .^ 2 .* fact;
   
 endfunction

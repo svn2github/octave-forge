@@ -263,7 +263,8 @@ function [Rn, Rp, Gn, Gp, II] = generation_recombination_model ...
   Gp = Gn = Gn_srh + G_aug;
 
   II =  secs1d_impact_ionization_noscale ...
-      (E, Jn, Jp, constants);
+      (device, material, constants, algorithm, 
+       E, Jn, Jp, V, n, p, Fn, Fp);
   
   %% II = material.an * exp (-material.Ecritn ./ abs(E)) .* abs (Jn ./ constants.q) + ...
   %%  material.ap * exp (-material.Ecritp ./ abs(E)) .* abs (Jp ./ constants.q); 

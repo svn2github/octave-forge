@@ -197,8 +197,9 @@ function [Rn, Rp, Gn, Gp, II] = generation_recombination_model ...
   
   Gp = Gn = Gn_srh + G_aug;
 
-  II = secs1d_impact_ionization_noscale ...
-      (device, material, constants, algorithm, E, Jn, Jp, V, n, p, Fn, Fp);
+  II =  secs1d_impact_ionization_noscale ...
+      (device, material, constants, algorithm, 
+       E, Jn, Jp, V, n, p, Fn, Fp);
   
 endfunction
 

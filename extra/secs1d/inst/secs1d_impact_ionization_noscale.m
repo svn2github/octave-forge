@@ -40,12 +40,10 @@ function    II = secs1d_impact_ionization_noscale ...
   %% FIXME: gamma depends on the temperature
   gamman = gammap = 1;
   
-  fact = zeros (size (Jn));
-  fact(Fava_n > 0) =  exp (- gamman .* b_n ./ Fava_n);
+  fact = ifelse (Fava_n > 0, exp (- gamman .* b_n ./ Fava_n), 0);
   alpha_n = gamman * a_n .* fact;
 
-  fact = zeros (size (Jp));
-  fact(Fava_p > 0) =  exp (- gammap .* b_p ./ Fava_p);
+  fact = ifelse (Fava_p > 0, exp (- gammap .* b_p ./ Fava_p), 0);
   alpha_p = gammap * a_p .* fact;
 
   II = alpha_n .* abs (Jn ./ constants.q) + alpha_p .* abs (Jp ./ constants.q);

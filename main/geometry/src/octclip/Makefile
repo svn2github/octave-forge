@@ -12,10 +12,10 @@ FLAGS = -Wall -Wextra
 	$(MKOCTFILE) $(FLAGS) -I. -c $<
 
 %.oct: %.cc $(CLIPOBJECT)
-	$(MKOCTFILE) $< $(CLIPOBJECT) $(FLAGS) -v  -I.
+	$(MKOCTFILE) $< $(CLIPOBJECT) $(FLAGS) -v  -I. 
 
 all: _oc_polybool.oct
-cp _oc_polybool.oct ..
+	cp _oc_polybool.oct ..
 
 clean:
 	rm -rf *.o *~

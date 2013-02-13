@@ -40,9 +40,9 @@ function polygonsimp = simplifypolygon (polygon, varargin)
   PL = polygonsimp(1:end-1,:);
   PC = polygonsimp(2:end,:);
   PR = polygonsimp([3:end 1],:);
-  a = PL - PC;
-  b = PR - PC;
-  tf = find(isParallel(a,b))+1;
+  a  = PL - PC;
+  b  = PR - PC;
+  tf = find (isParallel(a,b))+1;
   polygonsimp (tf,:) = [];
 
 endfunction

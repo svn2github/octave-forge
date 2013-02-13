@@ -68,8 +68,8 @@ function [pline idx] = simplifypolyline (pline_o, varargin)
   MaxIter   = parser.Results.MaxIter;
 
   clear parser toldef
-  msg = ["simplifypolyline: Maximum number of points reached with maximum error #g." ...
-       " Increase #s if the result is not satisfactory."];
+  msg = ["simplifypolyline: Maximum number of points reached with maximum error %g." ...
+       " Increase %s if the result is not satisfactory."];
   # ------ #
 
   [N dim] = size(pline_o);

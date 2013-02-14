@@ -19,15 +19,13 @@
 %% u = secs1d_mobility_model_noscale (x, n, p, Na, Nd, E, carrier)
 %% FIXME: add documentation!!
 
-function u = secs1d_mobility_model_noscale (x, n, p, Na, Nd, E, carrier)
+function u = secs1d_mobility_model_noscale ...
+      (device, material, constants, algorithm, E, V, n, p, Fn, Fp, carrier)
 
-  t = 300*ones(size(n));          %[K]
-  t_300 = 300;                    %[K]
-  t_elem =  .5*t(2:end) + .5*t(1:end-1);
-  
-  Neff = Na + Nd;                 %[m^-3]
-  Neff = (Neff(1:end-1) + Neff(2:end)) / 2;
-  
+  t = 300 * ones (size (n));                %[K]
+  t_300 = 300;                              %[K]
+  t_elem =  .5 * t(2:end) + .5 * t(1:end-1);
+    
   if (carrier =='n')
     %% FIXME: move parameters to material properties file
     %% Electrons reference values 
@@ -37,10 +35,10 @@ function u = secs1d_mobility_model_noscale (x, n, p, Na, Nd, E, carrier)
     alpha     = 0.0   ;         %[-]
     vsat_exp  = 0.87  ;         %[-]
     
-    beta_m = beta * (t_elem/t_300).^b_exp;
-    vsat_m = vsat * (t_elem/t_300).^(-vsat_exp);
+    beta_m = beta * (t_elem/t_300) .^ b_exp;
+    vsat_m = vsat * (t_elem/t_300) .^ (-vsat_exp);
     
-    mu_ph_nodes = mobility_model_philips_n (n,p,Na,Nd,t); %[m^2/Vs]
+    mu_ph_nodes = mobility_model_philips_n (n, p, device.Na, device.Nd, t); %[m^2/Vs]
     
   elseif (carrier =='p')
     %% %% Hole reference values 
@@ -50,16 +48,16 @@ function u = secs1d_mobility_model_noscale (x, n, p, Na, Nd, E, carrier)
     alpha     = 0.0   ;         %[-]
     vsat_exp  = 0.52  ;         %[-]
     
-    beta_m = beta * (t_elem/t_300).^b_exp;
-    vsat_m = vsat * (t_elem/t_300).^(-vsat_exp);
+    beta_m = beta * (t_elem/t_300) .^ b_exp;
+    vsat_m = vsat * (t_elem/t_300) .^ (-vsat_exp);
     
-    mu_ph_nodes = mobility_model_philips_p (n,p,Na,Nd,t); %[m^2/Vs]
+    mu_ph_nodes = mobility_model_philips_p (n, p, device.Na, device.Nd, t); %[m^2/Vs]
   else
     error ("Mobility models only defined for electons (carrier=\'n\') or holes (carrier=\'p\')")
   endif
 
   
-  muph  = .5*mu_ph_nodes(2:end) + .5*mu_ph_nodes(1:end-1);
+  muph  = .5 * mu_ph_nodes(2:end) + .5 * mu_ph_nodes(1:end-1);
   
   u     = (muph*(alpha +1)) ./ ...
       (alpha + (1 + (((alpha + 1) * muph .* abs(E)) ./ vsat_m) .^ beta_m) .^ 

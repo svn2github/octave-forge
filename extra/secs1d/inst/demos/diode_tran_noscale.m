@@ -3,23 +3,24 @@ constants = secs1d_physical_constants_fun ();
 material  = secs1d_silicon_material_properties_fun (constants);
 
 % geometry
-L  = 10e-6;          % [m] 
+L  = 50e-6;          % [m] 
 xm = L/2;
+device.W = 150e-6 * 50e-6;
 
 Nelements = 1000;
-device.x       = linspace (0, L, Nelements+1)';
+device.x  = linspace (0, L, Nelements+1)';
 device.sinodes = [1:length(device.x)];
 
 % doping profile [m^{-3}]
-device.Na = 1e24 * exp(-(3*device.x/L).^2);
-device.Nd = 1e24 * exp(-(3*(device.x-L)/L).^2);
+device.Na = 1e23 * exp (- (device.x / 2e-6) .^ 2);
+device.Nd = 1e25 * exp (- ((device.x-L) / 2.4e-6) .^ 2) + 1e19;
 
 % avoid zero doping
 device.D  = device.Nd - device.Na;  
 
 % time span for simulation
 tmin = 0;
-tmax = 29.9;
+tmax = 753;
 tspan = [tmin, tmax];
 
 Fn = Fp = zeros (size (device.x));
@@ -58,8 +59,8 @@ endfunction
 vbcs = {@vbcs_1, @vbcs_2};
 
 % tolerances for convergence checks
-algorithm.toll  = 1e-10;
-algorithm.maxit = 1000;
+algorithm.toll  = 1e-6;
+algorithm.maxit = 10;
 algorithm.ptoll = 1e-12;
 algorithm.pmaxit = 1000;
 algorithm.maxnpincr = constants.Vth;
@@ -70,12 +71,12 @@ algorithm.maxnpincr = constants.Vth;
                                   constants, algorithm,
                                   V, n, p, Fn, Fp);  
 
-close all; semilogy (device.x, nin, 'x-', device.x, pin, 'x-'); pause
+%% close all; semilogy (device.x, nin, 'x-', device.x, pin, 'x-'); pause
 
 %% (pseudo)transient simulation
 [n, p, V, Fn, Fp, Jn, Jp, t, it, res] = ...
     secs1d_tran_dd_gummel_map_noscale (device, material, constants, algorithm,
-                               Vin, nin, pin, Fnin, Fpin, tspan, vbcs);
+                                       Vin, nin, pin, Fnin, Fpin, tspan, vbcs);
 
 dV   = diff (V, [], 1);
 dx   = diff (device.x);
@@ -96,9 +97,10 @@ Ev   = -constants.Vth * log (material.Nv ./ p) + Efp;
 vvector  = Fn(end, :);
 ivector  = (Jn(end, :) + Jp(end, :));
 ivectorn = (Jn(1, :)   + Jp(1, :));
-
+ivectora = mean (Jn + Jp, 1);
+area = 150e-6 * 50e-6;
 figure (1) 
-plot (vvector, ivector, vvector, ivectorn)
+plot (vvector, area*ivector, vvector, area*ivectorn, vvector, area*ivectora)
 legend('J_L','J_0')
 drawnow
    

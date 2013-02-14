@@ -1,4 +1,4 @@
-pkg load secs1d secs2d
+pkg load secs1d
 clear all
 close all
 

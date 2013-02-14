@@ -66,7 +66,7 @@ function [n, p, V, Fn, Fp, Jn, Jp, tout, numit, res] = ...
   p  = pin;
   Fn = Fnin;
   Fp = Fpin;
-  dx  = diff (device.x);
+  dx = diff (device.x);
 
   Nnodes = numel (device.x);
   Nelements = Nnodes -1;
@@ -90,11 +90,16 @@ function [n, p, V, Fn, Fp, Jn, Jp, tout, numit, res] = ...
   tstep = 1;
   t = tout(tstep) = tmin;
   
+  resist = 1e7 * 1e-3 ^ 2;
+
   while (t < tmax)
     
     try
 
       t = tout(++tstep) = min (t + dt, tmax);
+
+      n0 = n(:, tstep - 1);
+      p0 = p(:, tstep - 1);
 
       if (tstep <= 2)
         Fn0 = Fn(:,tstep-1);
@@ -106,95 +111,38 @@ function [n, p, V, Fn, Fp, Jn, Jp, tout, numit, res] = ...
             Fp(:, tstep-1) .* (t - tout(:, tstep-2))/(tout(:, tstep-1) - tout(:, tstep-2));
       endif
 
-      Fn0([1 end]) = vbcs{1} (t);
-      Fp0([1 end]) = vbcs{2} (t);
+      Va = vbcs{1} (t);
+      Jn(:,tstep) = Jn(:,tstep-1);
+      Jp(:,tstep) = Jp(:,tstep-1);
 
-      Fn(:, tstep) = Fn0;
-      Fp(:, tstep) = Fp0;
+      Fn0([1 end]) = Va;
+      Fp0([1 end]) = Va;
 
-      n0 = n(:, tstep) = n(:, tstep - 1);
-      p0 = p(:, tstep) = p(:, tstep - 1);
-      V0 = V(:, tstep) = Fn0 + constants.Vth * log (n0 ./ device.ni);
-
-      Jn(:,tstep) = Jn(:,tstep - 1);
-      Jp(:,tstep) = Jp(:,tstep - 1);
-
-      for it = 1:algorithm.maxit
-
-        [V(:,tstep), n(:,tstep), p(:,tstep)] = ...
-            secs1d_nlpoisson_newton_noscale (device, material, constants, algorithm,
-                                             V(:,tstep), n(:,tstep), p(:,tstep), 
-                                             Fn(:,tstep), Fp(:,tstep)); 
+      V0 = Fn0 + constants.Vth * log (n0 ./ device.ni);
       
-        dV = diff (V(:, tstep));
-        E  = - dV ./ dx;
-
-        [Bp, Bm] = bimu_bernoulli (dV);
-              
-        [Rn, Rp, Gn, Gp, II] = generation_recombination_model ...
-            (device, material, constants, algorithm, E, Jn(:,tstep), Jp(:,tstep), 
-             V(:,tstep), n(:,tstep), p(:,tstep), Fn(:,tstep), Fp(:,tstep)); 
-
-        [mobilityn, mobilityp] = compute_mobilities ...
-            (device, material, constants, algorithm, E, V(:,tstep), 
-             n(:,tstep), p(:,tstep), Fn(:,tstep), Fp(:,tstep));
-
-        A = bim1a_advection_diffusion (device.x, mobilityn, 
-                                       constants.Vth, 1, V(:,tstep) / constants.Vth);
-        A += bim1a_reaction (device.x, 1, Rn + 1/dt);
-        R = bim1a_rhs (device.x, 1, Gn + n(:, tstep-1)/dt) + bim1a_rhs (device.x, II, 1);
+      [V(:,tstep), n(:,tstep), p(:,tstep), Fn(:,tstep), ...
+       Fp(:,tstep), Jn(:,tstep), Jp(:,tstep), res_, it] =...
+          __one_step__ (device, material, constants, algorithm, 
+                        V0, n0, p0, Fn0, Fp0, Jn(:,tstep), Jp(:,tstep),
+                        n(:, tstep - 1), p(:, tstep - 1), dt);      
         
-        n(2:end-1,tstep) = A(2:end-1, 2:end-1) \ (R(2:end-1) - A(2:end-1, [1 end]) * n([1 end],tstep));
-        Fn(:,tstep) = V(:,tstep) - constants.Vth * log (n(:,tstep) ./ device.ni);
-        
-        A = bim1a_advection_diffusion (device.x, mobilityp,
-                                       constants.Vth, 1, -V(:,tstep)  / constants.Vth);
-        A += bim1a_reaction (device.x, 1, Rp + 1/dt);
-        R = bim1a_rhs (device.x, 1, Gp + p(:, tstep-1)/dt) + bim1a_rhs (device.x, II, 1);
-
-
-        p(2:end-1,tstep) = A(2:end-1, 2:end-1) \ (R(2:end-1) - A(2:end-1, [1 end]) * p([1 end], tstep));
-        Fp(:,tstep) = V(:,tstep) + constants.Vth * log (p(:,tstep)  ./ device.ni);
-                
-        [Jn(:,tstep), Jp(:,tstep)] = compute_currents ...
-            (device, material, constants, algorithm,
-             mobilityn, mobilityp, V(:,tstep), n(:,tstep), p(:,tstep), 
-             Fn(:,tstep), Fp(:,tstep));
-
-        nrfn   = norm (Fn(:,tstep) - Fn0, inf);
-        assert (nrfn <= algorithm.maxnpincr);
-
-        nrfp   = norm (Fp(:,tstep) - Fp0, inf);
-        assert (nrfp <= algorithm.maxnpincr);
-
-        nrv    = norm (V(:,tstep)  - V0,  inf);
-        res(it, tstep) = max  ([nrfn; nrfp; nrv]);
-        
-        if (res(it, tstep) < algorithm.toll)
-          break
-        endif
-        
-        V0  =  V(:,tstep);
-        p0  =  p(:,tstep) ;
-        n0  =  n(:,tstep);
-        Fn0 = Fn(:,tstep);
-        Fp0 = Fp(:,tstep);  
-        
-      endfor
-
+      figure (1)
+      plot (tout, (mean (Jn(:, 1:tstep) + Jp(:, 1:tstep), 1)))
+      drawnow
+      
+      res(tstep,1:it) = res_;
       dt *= 1.5;
       numit(tstep) = it;      
-
-      figure (1)
-      plot (tout, mean (Jn(:, 1:tstep) + Jp(:, 1:tstep), 1))
-      drawnow
-
+      
     catch
-
+      
       warning (lasterr)
       dt /= 2;
       t = tout(--tstep);
-      
+      if (dt < 100*eps)
+        error ("secs1d_tran_dd_gummel_map_noscale: minimum time step reached.")
+      endif
+
     end_try_catch
     
   endwhile  
@@ -228,23 +176,14 @@ endfunction
 %%
 %%endfunction
 
-function [mobilityn, mobilityp] = compute_mobilities (device, material,
-                                                      constants, algorithm, E, 
-                                                      V, n, p, Fn, Fp)
+function [mobilityn, mobilityp] = compute_mobilities ...
+      (device, material, constants, algorithm, E, V, n, p, Fn, Fp)
 
-  mobilityn = secs1d_mobility_model_noscale (device.x, n, p, device.Na, device.Nd, 
-                                             %material.Nrefn, 
-                                             E,
-                                             %material.u0n, material.uminn, 
-                                             %material.vsatn, material.betan
-                                             'n');
+  mobilityn = secs1d_mobility_model_noscale ...
+      (device, material, constants, algorithm, E, V, n, p, Fn, Fp, 'n');
 
-  mobilityp = secs1d_mobility_model_noscale (device.x, n, p, device.Na, device.Nd, 
-                                             %material.Nrefn, 
-                                             E,
-                                             %material.u0n, material.uminn, 
-                                             %material.vsatn, material.betan
-                                             'p');
+  mobilityp = secs1d_mobility_model_noscale ...
+      (device, material, constants, algorithm, E, V, n, p, Fn, Fp, 'p');
 
 endfunction
 
@@ -262,13 +201,133 @@ function [Rn, Rp, Gn, Gp, II] = generation_recombination_model ...
   
   Gp = Gn = Gn_srh + G_aug;
 
-  II =  secs1d_impact_ionization_noscale ...
+  II = secs1d_impact_ionization_noscale ...
       (device, material, constants, algorithm, 
        E, Jn, Jp, V, n, p, Fn, Fp);
-  
-  %% II = material.an * exp (-material.Ecritn ./ abs(E)) .* abs (Jn ./ constants.q) + ...
-  %%  material.ap * exp (-material.Ecritp ./ abs(E)) .* abs (Jp ./ constants.q); 
 
 endfunction
+
+
+function [V, n, p, Fn, Fp, Jn, Jp, res, it] = __one_step__ ...
+      (device, material, constants, algorithm, V0, n0, p0, Fn0,
+       Fp0, Jn0, Jp0, n_old, p_old, dt); 
+
+  Fnref = Fn = Fn0;
+  Fpref = Fp = Fp0;
+  n  = n0;
+  p  = p0;
+  V  = V0;
+  Jn = Jn0;
+  Jp = Jp0;
+
+  dx = diff (device.x);
+  Nnodes = numel (device.x);
+  Nelements = Nnodes -1;
+  
+  for it = 1 : algorithm.maxit
+    
+    [V, n, p] = secs1d_nlpoisson_newton_noscale ...
+        (device, material, constants, algorithm, V, n, p, Fn, Fp); 
+      
+    dV = diff (V);
+    E  = - dV ./ dx;
+
+    [Bp, Bm] = bimu_bernoulli (dV);
+    
+    [Rn, Rp, Gn, Gp, II] = generation_recombination_model ...
+        (device, material, constants, algorithm, E, Jn, Jp, 
+         V, n, p, Fn, Fp);
+    
+    [mobilityn, mobilityp] = compute_mobilities ...
+        (device, material, constants, algorithm, E, V, n, p, Fn, Fp);
+
+    An = bim1a_advection_diffusion (device.x, mobilityn, constants.Vth, 
+                                   1, V / constants.Vth);
+    An += bim1a_reaction (device.x, 1, Rn + 1/dt);
+    R = bim1a_rhs (device.x, 1, Gn + n_old / dt) + ...
+        bim1a_rhs (device.x, II, 1);
+    
+    n(2:end-1) = An(2:end-1, 2:end-1) \ (R(2:end-1) - 
+                                        An(2:end-1, [1 end]) * n([1 end]));
+    Fn = V - constants.Vth * log (n ./ device.ni);
+    
+    Ap = bim1a_advection_diffusion (device.x, mobilityp, constants.Vth,
+                                   1, -V / constants.Vth);
+    Ap += bim1a_reaction (device.x, 1, Rp + 1/dt);
+    R = bim1a_rhs (device.x, 1, Gp + p_old / dt) + ...
+        bim1a_rhs (device.x, II, 1);
+    
+    
+    p(2:end-1) = Ap(2:end-1, 2:end-1) \ (R(2:end-1) -
+                                        Ap(2:end-1, [1 end]) * p([1 end]));
+    Fp = V + constants.Vth * log (p ./ device.ni);
+    
+    [Jn, Jp] = compute_currents ...
+        (device, material, constants, algorithm, mobilityn, mobilityp, 
+         V, n, p, Fn, Fp);
+    
+    nrfn   = norm (Fn - Fn0, inf);
+    assert (norm (Fn - Fnref, inf) <= algorithm.maxnpincr);
+    
+    nrfp   = norm (Fp - Fp0, inf);
+    assert (norm (Fp - Fpref, inf) <= algorithm.maxnpincr);
+    
+    nrv    = norm (V  - V0,  inf);
+    res(it) = max  ([nrfn; nrfp; nrv]);
+    
+    if (res(it) < algorithm.toll)
+      break
+    endif
+    
+    V0  =  V;
+    p0  =  p ;
+    n0  =  n;
+    Fn0 = Fn;
+    Fp0 = Fp;  
+    
+  endfor
+
+endfunction
+
+  %% compute sensitivities
+  # sielements = device.sinodes(1:end-1);
+  # epsilon = material.esio2 * ones (Nelements, 1);
+  # epsilon(sielements) = material.esi;
+  
+  # Le = bim1a_laplacian (device.x, epsilon / constants.q, 1);
+  # M  = bim1a_reaction (device.x, 1, 1);
+
+  # Ann = bim1a_advection_diffusion (device.x, mobilityn, constants.Vth, 
+  #                                  1, V / constants.Vth);
+  # Ann += bim1a_reaction (device.x, 1, Rn + 1/dt);
+  # Anp =  bim1a_reaction (device.x, 1, Rp);
+
+  # Ln =  bim1a_advection_diffusion (device.x, mobilityn, n, 1, 0);
+
+  # App = bim1a_advection_diffusion (device.x, mobilityp, constants.Vth, 
+  #                                 1, -V / constants.Vth);
+  # App += bim1a_reaction (device.x, 1, Rp + 1/dt);
+  # Apn =  bim1a_reaction (device.x, 1, Rn);
+  # Lp =  bim1a_advection_diffusion (device.x, mobilityp, p, 1, 0);
+
+  # mat = [ Le(2:end-1,2:end-1),    M(2:end-1,2:end-1),   -M(2:end-1,2:end-1);
+  #        -Ln(2:end-1,2:end-1),  Ann(2:end-1,2:end-1),  Anp(2:end-1,2:end-1);
+  #         Lp(2:end-1,2:end-1),  Apn(2:end-1,2:end-1),  App(2:end-1,2:end-1)];
+
+  # dphi = zeros (Nnodes, 1);
+  # dphi(1) = 1;
+  # dn = dp = zeros (Nnodes, 1);
+
+  # rhs = - [Le(2:end-1, 1); Ln(2:end-1, 1); Lp(2:end-1, 1)];
+  # x = (mat) \ (rhs);
+
+  # dphi(2:end-1) = x(1 : (Nnodes - 2));
+  # dn(2:end-1) = x(Nnodes - 2 + 1 : 2 * (Nnodes - 2));
+  # dp(2:end-1) = x(2 * (Nnodes - 2) + 1 : 3 * (Nnodes - 2));
+
+  # djn_dV = constants.q * (Ln(1, :) * dphi + Ann(1, :) * dn + Anp(1, :) * dp);
+  # djp_dV = constants.q * (Lp(1, :) * dphi + App(1, :) * dp + Apn(1, :) * dn);
+
+  # dj_dV =  (-djn_dV + djp_dV);
 
 

@@ -62,17 +62,17 @@ qsue         = q / esi;
 
 u0n          = 1417e-4;
 u0p          = 480e-4;
-uminn        = u0n;            % ref. value: 65e-4;
-uminp        = u0p;            % ref. value: 47.7e-4;
+uminn        = u0n;                        % ref. value: 65e-4;
+uminp        = u0p;                        % ref. value: 47.7e-4;
 betan        = 0.72;
 betap        = 0.76;
 Nrefn        = 8.5e22;
-Nrefp        = 6.3e22;
-vsatn        = 1.1e5;            % ref. value: 1.1e5;
-vsatp        = 9.5e4;            % ref. value: 9.5e4;
+Nrefp        = 6.3e22;                                 
+vsatn        = 1.1e5;                      % ref. value: 1.1e5;
+vsatp        = 9.5e4;                      % ref. value: 9.5e4;
 
-tp           = 1e-7;            % ref. value: 1e-6;
-tn           = 1e-7;            % ref. value: 1e-6;
+tp           = 1e-7;                       % ref. value: 1e-6;
+tn           = 1e-7;                       % ref. value: 1e-6;
 
 Cn           = 2.8e-31*1e-12;              % ref. value: 2.8e-31*1e-12; 
 Cp           = 9.9e-32*1e-12;              % ref. value: 9.9e-32*1e-12;   

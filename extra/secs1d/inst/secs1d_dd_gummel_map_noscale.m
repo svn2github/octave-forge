@@ -170,16 +170,14 @@ endfunction
 %%
 %%endfunction
 
-function [mobilityn, mobilityp] = compute_mobilities (device, material,
-                                                      constants, 
-                                                      algorithm, E, 
-                                                      V, n, p, Fn, Fp)
+function [mobilityn, mobilityp] = compute_mobilities ...
+      (device, material, constants, algorithm, E, V, n, p, Fn, Fp)
 
-  mobilityn = secs1d_mobility_model_noscale (device.x, n, p, device.Na, device.Nd, 
-                                             E, 'n');
+  mobilityn = secs1d_mobility_model_noscale ...
+      (device, material, constants, algorithm, E, V, n, p, Fn, Fp, 'n');
 
-  mobilityp = secs1d_mobility_model_noscale (device.x, n, p, device.Na, device.Nd, 
-                                             E, 'p');
+  mobilityp = secs1d_mobility_model_noscale ...
+      (device, material, constants, algorithm, E, V, n, p, Fn, Fp, 'p');
 
 endfunction
 

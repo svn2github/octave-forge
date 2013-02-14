@@ -97,7 +97,7 @@ function [tout, xout] = ode23s (FUN, tspan, x0, options)
   endif
   
   if (isfield (options, 'AbsTol') && ! isempty (options.AbsTol)) %user-defined absolute tolerance
-    atol = options.RelTol;
+    atol = options.AbsTol;
   else
     atol = 1.0e-6;
   endif

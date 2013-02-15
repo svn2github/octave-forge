@@ -28,7 +28,7 @@ DEFUN_DLD(__kernel_weights, args, ,"__kernel_weights: for internal use by kernel
 	Matrix evalpoints (args(1).matrix_value());
 	std::string kernel (args(2).string_value());
 
-	int n, nn, i, j, k, kk, dim;
+	int n, nn, i, j, k, dim;
 
 	n = data.rows();
 	dim = data.columns();

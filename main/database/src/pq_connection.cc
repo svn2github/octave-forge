@@ -22,8 +22,13 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_pq_connection, "PGconn", "PGconn")
 
-std::string pq_basetype_prefix ("pg_catalog.");
-const int pq_bpl = pq_basetype_prefix.size ();
+std::string &pq_basetype_prefix (void)
+{
+  static std::string prefix ("pg_catalog.");
+  return prefix;
+}
+
+const int pq_bpl = pq_basetype_prefix ().size ();
 
 octave_pq_connection::octave_pq_connection (std::string arg)
 : postgres (0), conv_map (), name_conv_map (&map_str_cmp), conn (NULL)

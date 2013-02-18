@@ -57,7 +57,7 @@ typedef struct
 }
   oct_pq_conv_t;
 
-extern std::string pq_basetype_prefix;
+std::string &pq_basetype_prefix (void);
 
 // a wrapper class for array of pointers to converters which qualifies
 // base type names in initialization
@@ -69,7 +69,7 @@ public:
   {
     for (int i = 0; i < n; i++)
       {
-        std::string prefix = pq_basetype_prefix;
+        std::string prefix = pq_basetype_prefix ();
 
         converters[i]->name = prefix.append (converters[i]->name);
       }

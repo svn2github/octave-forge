@@ -7,6 +7,5 @@ Title: OdePkg
 Description: A package for solving ordinary differential equations and more.
 Categories: Differential Equations
 Depends: octave (>= 3.2.0)
-Autoload: yes
-License: GPL version 2 or later
+License: GPLv2+
 Url: http://octave.sf.net

@@ -68,7 +68,9 @@ var = arr(dim,filenames,varname);
 
 [dims,coord] = nccoord(cached_decompress(filenames{1}),varname);
 
-if dim > length(dims)
+% add new dimension to coord if arrays are contatenated over a new dimension 
+% and if coord information already exist 
+if (dim > length(dims)) && ~isempty(coord)
     % concatenate is new dimension
     dims{dim} = catdimname;
     coord(dim).dims = {catdimname};

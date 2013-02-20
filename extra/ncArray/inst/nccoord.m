@@ -7,6 +7,9 @@
 % coord is an array of structures with the field 'name'
 % for the variable name and 'dims' with a cell-array of the
 % netcdf dimensions.
+%
+% coord is an empty structure if no coordinate information have been
+% found.
 
 % Author: Alexander Barth (barth.alexander@gmail.com)
 

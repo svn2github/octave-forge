@@ -20,7 +20,7 @@ device.D  = device.Nd - device.Na;
 
 % time span for simulation
 tmin = 0;
-tmax = 753;
+tmax = 769;
 tspan = [tmin, tmax];
 
 Fn = Fp = zeros (size (device.x));
@@ -59,7 +59,7 @@ endfunction
 vbcs = {@vbcs_1, @vbcs_2};
 
 % tolerances for convergence checks
-algorithm.toll  = 1e-6;
+algorithm.toll  = 1e-10;
 algorithm.maxit = 10;
 algorithm.ptoll = 1e-12;
 algorithm.pmaxit = 1000;

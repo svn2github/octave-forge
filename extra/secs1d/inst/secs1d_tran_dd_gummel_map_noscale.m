@@ -131,7 +131,10 @@ function [n, p, V, Fn, Fp, Jn, Jp, tout, numit, res] = ...
       drawnow
       
       res(tstep,1:it) = res_;
-      dt *= 1.5;
+      %if (tstep > 2)
+      %  dt *= (algorithm.maxnpincr - res(tstep, 1)) / (res(tstep, 1) - res(tstep-1, 1));
+      %endif
+      dt *= 2;
       numit(tstep) = it;      
       
     catch
@@ -140,7 +143,8 @@ function [n, p, V, Fn, Fp, Jn, Jp, tout, numit, res] = ...
       dt /= 2;
       t = tout(--tstep);
       if (dt < 100*eps)
-        error ("secs1d_tran_dd_gummel_map_noscale: minimum time step reached.")
+        warning ("secs1d_tran_dd_gummel_map_noscale: minimum time step reached.")
+        return
       endif
 
     end_try_catch

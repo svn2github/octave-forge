@@ -29,6 +29,17 @@ if nargin < 5
   stride = ones(1,nd);
 end
 
+% ndmat number of dimension for matlab/octave
+
+if nd == 1
+  ndmat = 2;
+  start = [1 start];
+  count = [1 count];
+  stride = [1 stride];
+else
+  ndmat = nd;
+end 
+
 % replace inf in count
 i = count == inf;
 count(i) = (sz(i)-start(i))./stride(i) + 1;
@@ -47,13 +58,14 @@ endi = start + (count-1).*stride;
 
 % subsref structure
 subsr.type = '()';
-subsr.subs = cell(1,nd);
-for i=1:nd
-  subsr.subs{nd-i+1} = start(i):stride(i):endi(i);
+subsr.subs = cell(1,ndmat);
+for i=1:ndmat
+  subsr.subs{ndmat-i+1} = start(i):stride(i):endi(i);
 end
-%start,endi
 
 x = subsref(nv,subsr);
+
+%keyboard
 
 % apply attributes
 
@@ -79,17 +91,20 @@ if ~isempty(offset)
   x = x + offset;
 end
 
-x = permute(x,[ndims(x):-1:1]);
+if nd ~= 1
+  x = permute(x,[ndims(x):-1:1]);
 
-if length(count) < 2
+  if length(count) < 2
     count(2) = 1; 
+  end
+  
+  x = reshape(x,count);
 end
 
-x = reshape(x,count);
 close(nc)
 
 
-%% Copyright (C) 2012 Alexander Barth
+%% Copyright (C) 2012,2013 Alexander Barth
 %%
 %% This program is free software; you can redistribute it and/or modify
 %% it under the terms of the GNU General Public License as published by

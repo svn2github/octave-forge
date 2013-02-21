@@ -4,7 +4,10 @@
 % vinfo = ncinfo(filename,varname)
 % return information about complete NetCDF file (filename) or about
 % the specific variable varname.
-
+%
+% vinfo.Size: the size of the netcdf variable. For vectors the Size field
+%   has only one element.
+%
 %
 function info = ncinfo(filename,varname)
 
@@ -28,12 +31,19 @@ function vinfo = ncinfo_var(nc,filename,varname)
 
 nv = nc{varname};
 
-vinfo.Size = fliplr(size(nv));
+% dimensions
+dims = fliplr(dim(nv));
+
+if length(dims) == 1
+  vinfo.Size = max(size(nv));
+else
+  vinfo.Size = fliplr(size(nv));
+end
+
 vinfo.Filename = filename;
 vinfo.Dimensions = [];
 vinfo.Name = varname;
 
-dims = fliplr(dim(nv));
 
 for i=1:length(dims)
     tmp = struct();

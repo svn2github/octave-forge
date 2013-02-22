@@ -61,8 +61,6 @@ public:
 
   int octave_pq_refresh_types (void);
 
-  int octave_pq_get_cols (Oid relid, std::vector<Oid> &);
-
   PGconn *octave_pq_get_conn (void) { return conn; }
 
   oct_pq_conv_map_t conv_map;

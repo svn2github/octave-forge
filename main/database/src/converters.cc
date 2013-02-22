@@ -33,8 +33,14 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 // helper function for debugging
 void print_conv (oct_pq_conv_t *c)
 {
-  printf ("oid: %u, aoid: %u, relid: %u, c: %i, e: %i, nc: %i, n: %s, to_s: %i, to_b: %i, fr_s: %i, fr_b: %i\n",
-          c->oid, c->aoid, c->relid, c->is_composite, c->is_enum, c->is_not_constant, c->name.c_str (), c->to_octave_str ? 1 : 0, c->to_octave_bin ? 1 : 0, c->from_octave_str ? 1 : 0, c->from_octave_bin ? 1 : 0);
+  printf ("oid: %u, aoid: %u, c: %i, e: %i, nc: %i, n: %s, to_s: %i, to_b: %i, fr_s: %i, fr_b: %i,",
+          c->oid, c->aoid, c->is_composite, c->is_enum, c->is_not_constant, c->name.c_str (), c->to_octave_str ? 1 : 0, c->to_octave_bin ? 1 : 0, c->from_octave_str ? 1 : 0, c->from_octave_bin ? 1 : 0);
+
+  printf (", el_oids:");
+  for (octave_idx_type i = 0; i < c->el_oids.size (); i++)
+    printf (" %u", c->el_oids[i]);
+
+  printf ("\n");
 }
 
 /* type bool */
@@ -88,7 +94,7 @@ int from_octave_bin_bool (const octave_value &ov, oct_pq_dynvec_t &val)
 
 oct_pq_conv_t conv_bool = {0, // 16
                            0, // 1000
-                           0,
+                           oct_pq_el_oids_t (),
                            false,
                            false,
                            false,
@@ -136,7 +142,7 @@ int from_octave_bin_oid (const octave_value &ov, oct_pq_dynvec_t &val)
 
 oct_pq_conv_t conv_oid = {0, // 26
                           0,
-                          0,
+                          oct_pq_el_oids_t (),
                           false,
                           false,
                           false,
@@ -206,7 +212,7 @@ int from_octave_bin_float8 (const octave_value &ov, oct_pq_dynvec_t &val)
 
 oct_pq_conv_t conv_float8 = {0, // 701
                              0, // 1022
-                             0,
+                             oct_pq_el_oids_t (),
                              false,
                              false,
                              false,
@@ -276,7 +282,7 @@ int from_octave_bin_float4 (const octave_value &ov, oct_pq_dynvec_t &val)
 
 oct_pq_conv_t conv_float4 = {0,
                              0,
-                             0,
+                             oct_pq_el_oids_t (),
                              false,
                              false,
                              false,
@@ -340,7 +346,7 @@ int from_octave_bin_bytea (const octave_value &ov, oct_pq_dynvec_t &val)
 
 oct_pq_conv_t conv_bytea = {0,
                             0,
-                            0,
+                            oct_pq_el_oids_t (),
                             false,
                             false,
                             false,
@@ -393,7 +399,7 @@ int from_octave_bin_text (const octave_value &ov, oct_pq_dynvec_t &val)
 
 oct_pq_conv_t conv_text = {0,
                            0,
-                           0,
+                           oct_pq_el_oids_t (),
                            false,
                            false,
                            false,
@@ -409,7 +415,7 @@ oct_pq_conv_t conv_text = {0,
 
 oct_pq_conv_t conv_varchar = {0,
                               0,
-                              0,
+                              oct_pq_el_oids_t (),
                               false,
                               false,
                               false,
@@ -425,7 +431,7 @@ oct_pq_conv_t conv_varchar = {0,
 
 oct_pq_conv_t conv_bpchar = {0,
                              0,
-                             0,
+                             oct_pq_el_oids_t (),
                              false,
                              false,
                              false,
@@ -487,7 +493,7 @@ int from_octave_bin_name (const octave_value &ov, oct_pq_dynvec_t &val)
 
 oct_pq_conv_t conv_name = {0,
                            0,
-                           0,
+                           oct_pq_el_oids_t (),
                            false,
                            false,
                            false,
@@ -535,7 +541,7 @@ int from_octave_bin_int2 (const octave_value &ov, oct_pq_dynvec_t &val)
 
 oct_pq_conv_t conv_int2 = {0, // 26
                            0,
-                           0,
+                           oct_pq_el_oids_t (),
                            false,
                            false,
                            false,
@@ -584,7 +590,7 @@ int from_octave_bin_int4 (const octave_value &ov, oct_pq_dynvec_t &val)
 
 oct_pq_conv_t conv_int4 = {0,
                            0,
-                           0,
+                           oct_pq_el_oids_t (),
                            false,
                            false,
                            false,
@@ -633,7 +639,7 @@ int from_octave_bin_int8 (const octave_value &ov, oct_pq_dynvec_t &val)
 
 oct_pq_conv_t conv_int8 = {0,
                            0,
-                           0,
+                           oct_pq_el_oids_t (),
                            false,
                            false,
                            false,
@@ -650,7 +656,7 @@ oct_pq_conv_t conv_int8 = {0,
 
 oct_pq_conv_t conv_money = {0,
                             0,
-                            0,
+                            oct_pq_el_oids_t (),
                             false,
                             false,
                             false,

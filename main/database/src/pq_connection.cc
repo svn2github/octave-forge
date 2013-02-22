@@ -264,7 +264,7 @@ int octave_pq_connection::octave_pq_get_composite_types (void)
 {
   Cell p, pt, rt;
 
-  std::string cmd ("select pg_type.oid, pg_type.typname, pg_type.typarray, pg_type.typrelid, pg_namespace.nspname, pg_type_is_visible(pg_type.oid) from pg_type join pg_namespace on pg_type.typnamespace = pg_namespace.oid where pg_type.typtype = 'c';"),
+  std::string cmd ("select pg_type.oid, pg_type.typname, pg_type.typarray, pg_type.typrelid, pg_namespace.nspname, pg_type_is_visible(pg_type.oid) as visible, array_agg(pg_attribute.atttypid), array_agg(pg_attribute.attnum) from (pg_type join pg_namespace on pg_type.typnamespace = pg_namespace.oid) join pg_attribute on pg_type.typrelid = pg_attribute.attrelid where pg_type.typtype = 'c' and pg_attribute.attnum > 0 group by pg_type.oid, pg_type.typname, pg_type,typarray, pg_type.typrelid, pg_namespace.nspname, visible;"),
     caller ("octave_pq_get_composite_types");
 
   command c (*this, cmd, p, pt, rt, caller);
@@ -287,15 +287,50 @@ int octave_pq_connection::octave_pq_get_composite_types (void)
 
   for (int i = 0; i < tpls.rows (); i++)
     {
-      Oid oid = tpls(i, 0).int_value ();
-      Oid aoid = tpls(i, 2).int_value ();
-      Oid relid = tpls(i, 3).int_value ();
+      Oid oid = tpls(i, 0).uint_value ();
+      Oid aoid = tpls(i, 2).uint_value ();
+      Oid relid = tpls(i, 3).uint_value ();
       std::string name = tpls(i, 1).string_value ();
       std::string nspace = tpls(i, 4).string_value ();
       bool visible = tpls(i, 5).bool_value ();
+      Cell r_el_oids =
+        tpls(i, 6).scalar_map_value ().contents ("data").cell_value ();
+      Cell r_el_pos =
+        tpls(i, 7).scalar_map_value ().contents ("data").cell_value ();
       if (error_state)
         {
           error ("octave_pq_get_composite_types: could not read returned result");
+          return 1;
+        }
+      octave_idx_type nel = r_el_oids.numel ();
+      if (nel != r_el_pos.numel ())
+        {
+          error ("octave_pq_get_composite_types: internal error, inconsistent content of pg_attribute?");
+
+          return 1;
+        }
+      oct_pq_el_oids_t el_oids;
+      el_oids.resize (nel);
+      for (octave_idx_type i = 0; i < nel; i++)
+        {
+          // "column" number (attnum) is one-based, so subtract 1
+          octave_idx_type pos = r_el_pos(i).idx_type_value () - 1;
+          if (! error_state)
+            {
+              if (pos >= nel)
+                {
+                  error ("octave_pq_get_composite_types: internal error (?system catalog erroneous?): column position %i greater than ncols %i for type %s, namespace %s",
+                         pos, nel, name.c_str (), nspace.c_str ());
+                  return 1;
+                }
+
+              el_oids[pos] = r_el_oids(i).uint_value ();
+            }
+        }
+      if (error_state)
+        {
+          error ("octave_pq_get_composite_types: could not fill in element oids.");
+
           return 1;
         }
 
@@ -305,7 +340,7 @@ int octave_pq_connection::octave_pq_get_composite_types (void)
       oct_pq_conv_t *t_conv = new oct_pq_conv_t;
       t_conv->oid = oid;
       t_conv->aoid = aoid;
-      t_conv->relid = relid;
+      t_conv->el_oids = el_oids;
       t_conv->is_composite = true;
       t_conv->is_enum = false;
       t_conv->is_not_constant = true;
@@ -314,8 +349,6 @@ int octave_pq_connection::octave_pq_get_composite_types (void)
       t_conv->to_octave_bin = NULL;
       t_conv->from_octave_str = NULL;
       t_conv->from_octave_bin = NULL;
-
-      oct_pq_conv_t *t_conv_v;
 
       oct_pq_conv_t *&by_oid = conv_map[oid],
         *&by_name = name_conv_map[t_conv->name.c_str ()];
@@ -331,9 +364,13 @@ int octave_pq_connection::octave_pq_get_composite_types (void)
 
       by_oid = by_name = t_conv;
 
+      oct_pq_conv_t *t_conv_v;
+
       if (visible)
         {
           t_conv_v = new oct_pq_conv_t (*t_conv);
+
+          t_conv_v->el_oids = el_oids;
 
           t_conv_v->name = name;
 
@@ -392,8 +429,8 @@ int octave_pq_connection::octave_pq_get_enum_types (void)
 
   for (int i = 0; i < tpls.rows (); i++)
     {
-      Oid oid = tpls(i, 0).int_value ();
-      Oid aoid = tpls(i, 2).int_value ();
+      Oid oid = tpls(i, 0).uint_value ();
+      Oid aoid = tpls(i, 2).uint_value ();
       std::string name = tpls(i, 1).string_value ();
       std::string nspace = tpls(i, 3).string_value ();
       bool visible = tpls(i, 4).bool_value ();
@@ -409,7 +446,7 @@ int octave_pq_connection::octave_pq_get_enum_types (void)
       oct_pq_conv_t *t_conv = new oct_pq_conv_t;
       t_conv->oid = oid;
       t_conv->aoid = aoid;
-      t_conv->relid = 0;
+      t_conv->el_oids = oct_pq_el_oids_t ();
       t_conv->is_composite = false;
       t_conv->is_enum = true;
       t_conv->is_not_constant = true;
@@ -437,6 +474,8 @@ int octave_pq_connection::octave_pq_get_enum_types (void)
       if (visible)
         {
           oct_pq_conv_t *t_conv_v = new oct_pq_conv_t (*t_conv);
+
+          t_conv_v->el_oids = oct_pq_el_oids_t ();
 
           t_conv_v->name = name;
 
@@ -474,69 +513,4 @@ int octave_pq_connection::octave_pq_refresh_types (void)
     }
   else
     return 0;
-}
-
-int octave_pq_connection::octave_pq_get_cols (Oid relid, std::vector<Oid> &oids)
-{
-  // printf ("octave_pq_get_cols(relid %u): ", relid);
-
-  Cell p (1, 1), pt (1, 1), rt (2, 1);
-  p(0) = octave_value (octave_uint32 (relid));
-  pt(0) = octave_value ("oid");
-  rt(0) = octave_value ("oid");
-  rt(1) = octave_value ("int2");
-
-  std::string cmd ("select atttypid, attnum from pg_attribute where attrelid = $1;"),
-    caller ("octave_pq_get_cols");
-
-  command c (*this, cmd, p, pt, rt, caller);
-  if (! c.good ())
-    {
-      error ("%s: could not read pg_type", caller.c_str ());
-      return 1;
-    }
-
-  octave_value res = c.process_single_result ();
-  if (error_state)
-    return 1;
-
-  Cell tpls = res.scalar_map_value ().contents ("data").cell_value ();
-  if (error_state)
-    {
-      error
-        ("%s: could not convert result data to cell", caller.c_str ());
-      return 1;
-    }
-
-  octave_idx_type r = tpls.rows ();
-
-  // printf ("%i colums, ", r);
-
-  oids.resize (r);
-
-  // "column" number (attnum) is one-based, so subtract 1
-  for (octave_idx_type i = 0; i < r; i++)
-    {
-      octave_idx_type pos = tpls(i, 1).idx_type_value () - 1;
-
-      // printf ("%u at pos %i, ", tpls(i, 0).uint_value (), pos);
-
-      if (pos >= r)
-        {
-          error ("%s: internal error (?system catalog erroneous?): column position %i greater than ncols %i for relid %u",
-                 caller.c_str (), pos, r, relid);
-          return 1;
-        }
-
-      oids[pos] = tpls(i, 0).uint_value ();
-    }
-  if (error_state)
-    {
-      error ("%s: could not convert result data", caller.c_str ());
-      return 1;
-    }
-
-  // printf ("\n");
-
-  return 0;
 }

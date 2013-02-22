@@ -39,12 +39,14 @@ typedef int (*oct_pq_to_octave_fp_t) (const char *, octave_value &, int);
 
 typedef int (*oct_pq_from_octave_fp_t) (const octave_value &, oct_pq_dynvec_t &);
 
+typedef std::vector<Oid> oct_pq_el_oids_t;
+
 // some objects will be constants, some will be allocated
 typedef struct
 {
   Oid oid; // read from server
   Oid aoid; // array oid // read from server
-  Oid relid; // pg_attribute.attrelid, zero for non-composite types
+  oct_pq_el_oids_t el_oids; // element oids, empty for non-composite types
   bool is_composite; // false for constant objects
   bool is_enum; // false for constant objects
   bool is_not_constant; // false for constant objects

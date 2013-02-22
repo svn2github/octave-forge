@@ -207,13 +207,11 @@ int command::from_octave_bin_composite (const octave_value &oct_comp,
 
   octave_idx_type nl = rec.numel ();
 
-  std::vector<Oid> oids;
-  if (conn.octave_pq_get_cols (conv->relid, oids))
-    return 1;
-
-  if (nl != oids.size ())
+  if (nl != conv->el_oids.size ())
     {
-      error ("%s: Octaves representation of a composite type has incorrect number of elements (%i, should have %i)", caller.c_str (), nl, oids.size ());
+      error ("%s: Octaves representation of a composite type has incorrect number of elements (%i, should have %i)",
+             caller.c_str (), nl, conv->el_oids.size ());
+
       return 1;
     }
 
@@ -223,7 +221,7 @@ int command::from_octave_bin_composite (const octave_value &oct_comp,
   for (int i = 0; i < nl; i++)
     {
       // element OID
-      OCT_PQ_PUT(val, uint32_t, htobe32 ((uint32_t) oids[i]))
+      OCT_PQ_PUT(val, uint32_t, htobe32 ((uint32_t) conv->el_oids[i]))
       if (rec(i).is_real_scalar () && rec(i).isna ().bool_value ())
         // a length value (uint32_t) would not have the 6 highest bits
         // set (while this has all bits set)
@@ -235,7 +233,7 @@ int command::from_octave_bin_composite (const octave_value &oct_comp,
           oct_pq_conv_t *el_conv;
           oct_type_t oct_type;
 
-          if (! (el_conv = pgtype_from_spec (oids[i], oct_type)))
+          if (! (el_conv = pgtype_from_spec (conv->el_oids[i], oct_type)))
             return 1;
 
           switch (oct_type)

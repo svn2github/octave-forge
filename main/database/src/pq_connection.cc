@@ -311,6 +311,8 @@ int octave_pq_connection::octave_pq_get_composite_types (void)
         }
       oct_pq_el_oids_t el_oids;
       el_oids.resize (nel);
+      oct_pq_conv_cache_t conv_cache;
+      conv_cache.resize (nel);
       for (octave_idx_type i = 0; i < nel; i++)
         {
           // "column" number (attnum) is one-based, so subtract 1
@@ -325,6 +327,8 @@ int octave_pq_connection::octave_pq_get_composite_types (void)
                 }
 
               el_oids[pos] = r_el_oids(i).uint_value ();
+
+              conv_cache[pos] = NULL;
             }
         }
       if (error_state)
@@ -341,6 +345,7 @@ int octave_pq_connection::octave_pq_get_composite_types (void)
       t_conv->oid = oid;
       t_conv->aoid = aoid;
       t_conv->el_oids = el_oids;
+      t_conv->conv_cache = conv_cache;
       t_conv->is_composite = true;
       t_conv->is_enum = false;
       t_conv->is_not_constant = true;
@@ -371,6 +376,8 @@ int octave_pq_connection::octave_pq_get_composite_types (void)
           t_conv_v = new oct_pq_conv_t (*t_conv);
 
           t_conv_v->el_oids = el_oids;
+
+          t_conv_v->conv_cache = conv_cache;
 
           t_conv_v->name = name;
 
@@ -447,6 +454,7 @@ int octave_pq_connection::octave_pq_get_enum_types (void)
       t_conv->oid = oid;
       t_conv->aoid = aoid;
       t_conv->el_oids = oct_pq_el_oids_t ();
+      t_conv->conv_cache = oct_pq_conv_cache_t ();
       t_conv->is_composite = false;
       t_conv->is_enum = true;
       t_conv->is_not_constant = true;
@@ -476,6 +484,8 @@ int octave_pq_connection::octave_pq_get_enum_types (void)
           oct_pq_conv_t *t_conv_v = new oct_pq_conv_t (*t_conv);
 
           t_conv_v->el_oids = oct_pq_el_oids_t ();
+
+          t_conv_v->conv_cache = oct_pq_conv_cache_t ();
 
           t_conv_v->name = name;
 

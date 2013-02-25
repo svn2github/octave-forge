@@ -233,7 +233,9 @@ int command::from_octave_bin_composite (const octave_value &oct_comp,
           oct_pq_conv_t *el_conv;
           oct_type_t oct_type;
 
-          if (! (el_conv = pgtype_from_spec (conv->el_oids[i], oct_type)))
+          if (! (el_conv = pgtype_from_spec (conv->el_oids[i],
+                                             conv->conv_cache[i],
+                                             oct_type)))
             return 1;
 
           switch (oct_type)
@@ -343,7 +345,7 @@ int command::to_octave_bin_array (char *v, octave_value &ov, int nb,
 
           if (conv->is_composite)
             {
-              if (to_octave_bin_composite (p, ov_el, nb_el))
+              if (to_octave_bin_composite (p, ov_el, nb_el, conv))
                 return 1;
             }
           else
@@ -368,7 +370,8 @@ int command::to_octave_bin_array (char *v, octave_value &ov, int nb,
   return 0;
 }
 
-int command::to_octave_bin_composite (char *v, octave_value &ov, int nb)
+int command::to_octave_bin_composite (char *v, octave_value &ov, int nb,
+                                      oct_pq_conv_t *conv)
 {
   char *p = v;
 
@@ -394,7 +397,8 @@ int command::to_octave_bin_composite (char *v, octave_value &ov, int nb)
           oct_pq_conv_t *el_conv;
           oct_type_t oct_type;
 
-          if (! (el_conv = pgtype_from_spec (oid, oct_type)))
+          if (! (el_conv = pgtype_from_spec (oid, conv->conv_cache[i],
+                                             oct_type)))
             return 1;
 
           octave_value el;
@@ -411,7 +415,7 @@ int command::to_octave_bin_composite (char *v, octave_value &ov, int nb)
               break;
 
             case composite:
-              if (to_octave_bin_composite (p, el, nb_el))
+              if (to_octave_bin_composite (p, el, nb_el, el_conv))
                 return 1;
               break;
 
@@ -444,7 +448,8 @@ int command::to_octave_str_array (char *v, octave_value &ov, int nb,
   return 0;
 }
 
-int command::to_octave_str_composite (char *v, octave_value &ov, int nb)
+int command::to_octave_str_composite (char *v, octave_value &ov, int nb,
+                                      oct_pq_conv_t *conv)
 {
   // not implemented
   error ("not implemented");

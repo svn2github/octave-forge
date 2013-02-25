@@ -251,6 +251,24 @@ oct_pq_conv_t *command::pgtype_from_spec (Oid oid, oct_type_t &oct_type)
   return conv;
 }
 
+oct_pq_conv_t *command::pgtype_from_spec (Oid oid, oct_pq_conv_t *&c_conv,
+                                          oct_type_t &oct_type)
+{
+  if (c_conv)
+    {
+      if (c_conv->aoid == oid)
+        oct_type = array;
+      else if (c_conv->is_composite)
+        oct_type = composite;
+      else
+        oct_type = simple;
+    }
+  else
+    c_conv = pgtype_from_spec (oid, oct_type);
+
+  return c_conv;
+}
+
 octave_value command::process_single_result (const std::string &infile,
                                              const std::string &outfile)
 {
@@ -380,13 +398,6 @@ octave_value command::tuples_ok_handler (void)
             }
         }
 
-      // FIXME: To avoid map-lookups of converters for elements of
-      // composite types in arbitrarily deep recursions (over
-      // composite types and possibly arrays) to be repeated in each
-      // row, build up a tree of pointers to looked up converter
-      // structures in the first row and pass branches of it, getting
-      // smaller through the recursions of type conversions, in the
-      // next rows.
       for (int i = 0; i < nt; i++) // i is row
         {
           if (PQgetisnull (res, i, j))
@@ -410,7 +421,7 @@ octave_value command::tuples_ok_handler (void)
                   break;
 
                 case composite:
-                  if ((this->*composite_to_octave) (v, ov, nb))
+                  if ((this->*composite_to_octave) (v, ov, nb, conv))
                     valid = 0;
                   break;
 

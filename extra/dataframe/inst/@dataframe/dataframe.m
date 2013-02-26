@@ -108,7 +108,7 @@ endif
 
 %# default values
 seeked = []; trigger = []; unquot = true; sep = "\t,"; cmt_lines = [];
-locales = "C"; datefmt = '';
+conv_regexp = {}; datefmt = '';
 
 if (length (varargin) > 0)	%# extract known arguments
   indi = 1;
@@ -141,7 +141,7 @@ if (length (varargin) > 0)	%# extract known arguments
           endswitch
           %# detect assignment - functions calls - ranges
           dummy = cellfun ('size', cellfun (@(x) strsplit (x, ":=("), df._name{2}, \
-                                            "UniformOutput", false), 2);
+                                           "UniformOutput", false), 2);
           if (any (dummy > 1))
             warning ('dataframe colnames taken literally and not interpreted');
           endif
@@ -160,8 +160,8 @@ if (length (varargin) > 0)	%# extract known arguments
         case 'sep',
           sep = varargin{indi + 1};
           varargin(indi:indi+1) = [];
-        case 'locales'
-          locales = varargin{indi + 1};
+        case 'conv'
+          conv_regexp = varargin{indi + 1};
           varargin(indi:indi+1) = [];
         case 'datefmt'
           datefmt = varargin{indi + 1};
@@ -255,26 +255,29 @@ while (indi <= size (varargin, 2))
             content = cellfun (@(x) strsplit (x, sep), lines, \
                                'UniformOutput', false); %# extract fields 
           endif
-          indl = 1; indj = 1; %# disp('line 151 '); keyboard
-          if (~isempty (seeked))
+          
+	  indl = 1; indj = 1; %# disp('line 151 '); keyboard
+          
+	  if (~isempty (seeked))
             while (indl <= length (lines))
               dummy = content{indl};
               if (all (cellfun ('size', dummy, 2) == 0))
                 indl = indl + 1; 
                 continue;
               endif
-              dummy = content{indl};
-	      if (~isempty (regexp (dummy{1}, seeked, 'match')))
-                break;
-              endif	      
-	      if (isempty (df._header))
-		df._header =  dummy;
-	      else
-		df._header(end+1, 1:length (dummy)) = dummy;
+              if (all (cellfun (@isempty, regexp (dummy, seeked, 'match')))) 
+		if (isempty (df._header))
+		  df._header =  dummy;
+		else
+		  df._header(end+1, 1:length (dummy)) = dummy;
+		endif
+		indl = indl + 1;
+		continue;
 	      endif
-              indl = indl + 1;
+	      break;
             endwhile
-          elseif (~isempty (trigger))
+          
+	  elseif (~isempty (trigger))
             while (indl <= length (lines))
               dummy = content{indl};
               indl = indl + 1;
@@ -286,17 +289,13 @@ while (indi <= size (varargin, 2))
 	      else
 		df._header(end+1, 1:length (dummy)) = dummy;
 	      endif
-	      if (size (dummy, 2) >= 1 && ...
-                  ~isempty (regexp (dummy{1}, trigger, 'match')))
-                break;
-              endif
-              if (size (dummy, 2) >= 2 && ...
-                  ~isempty (regexp (dummy{2}, trigger, 'match')))
-                %# was  (strcmp (dummy{1}, trigger))
-                break;
-              endif
+	      if (all (cellfun (@isempty, regexp (dummy, trigger, 'match'))))
+		continue;	
+	      endif
+	      break;
             endwhile
           endif
+
 	  if (indl > length (lines))
 	     x = []; 
 	  else
@@ -318,17 +317,12 @@ while (indi <= size (varargin, 2))
               endif
               
               %# try to convert to float
-              if (1)
-		the_line = cellfun (@(x) sscanf (x, "%f", locales), dummy, \
-                                    'UniformOutput', false);
-              else
-		%# this faster code requires a patch to src/file-io.cc in
-		%# the main Octave tree
-		the_line = sscanf (dummy, "%f", locales);
-		the_line = cellfun (@(x) x{1}, the_line, \
-                                    'UniformOutput', false);
-              endif
-	      
+	      if (~ isempty(conv_regexp))
+		dummy = regexprep (dummy, conv_regexp{});
+	      endif
+	      the_line = cellfun (@(x) sscanf (x, "%f"), dummy, \
+                                  'UniformOutput', false);
+              	      
               indk = 1; indm = 1;
               while (indk <= size (the_line, 2))
 		if (isempty (the_line{indk}) || any (size (the_line{indk}) > 1)) 
@@ -427,9 +421,9 @@ while (indi <= size (varargin, 2))
                   "to a single column"]);
         endif
         try
-          dummy = cellfun ('class', x{2}(2, :), 'UniformOutput', false);
+          dummy = cellfun (@class, x{2}(2, :), 'UniformOutput', false);
         catch
-          dummy = cellfun ('class', x{2}(1, :), 'UniformOutput', false);
+          dummy = cellfun (@class, x{2}(1, :), 'UniformOutput', false);
         end_try_catch
         df = df_pad (df, 2, [length(dummy) indc], dummy);
         x = x{2}; 

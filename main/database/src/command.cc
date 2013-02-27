@@ -270,7 +270,12 @@ oct_pq_conv_t *command::pgtype_from_spec (Oid oid, oct_pq_conv_t *&c_conv,
 }
 
 octave_value command::process_single_result (const std::string &infile,
-                                             const std::string &outfile)
+                                             const std::string &outfile,
+                                             const Cell &cdata,
+                                             const Cell &ctypes,
+                                             bool coids,
+                                             bool cin_var,
+                                             bool cout_var)
 {
   octave_value retval;
 
@@ -300,10 +305,10 @@ octave_value command::process_single_result (const std::string &infile,
           retval = tuples_ok_handler ();
           break;
         case PGRES_COPY_OUT:
-          retval = copy_out_handler (outfile);
+          retval = copy_out_handler (outfile, cout_var);
           break;
         case PGRES_COPY_IN:
-          retval = copy_in_handler (infile);
+          retval = copy_in_handler (infile, cdata, ctypes, coids, cin_var);
           break;
         }
 
@@ -455,7 +460,7 @@ octave_value command::tuples_ok_handler (void)
     }
 }
 
-octave_value command::copy_out_handler (const std::string &outfile)
+octave_value command::copy_out_handler (const std::string &outfile, bool var)
 {
   octave_value retval;
 
@@ -507,7 +512,11 @@ octave_value command::copy_out_handler (const std::string &outfile)
   return retval;
 }
 
-octave_value command::copy_in_handler (const std::string &infile)
+octave_value command::copy_in_handler (const std::string &infile,
+                                       const Cell &data,
+                                       const Cell &cin_types,
+                                       bool oids,
+                                       bool var)
 {
   octave_value retval;
 
@@ -515,9 +524,18 @@ octave_value command::copy_in_handler (const std::string &infile)
 
   char buff [OCT_PQ_READSIZE];
 
-  if (! infile.empty ())
+  if (! var)
     {
       // read unchecked input from file
+
+      if (infile.empty ())
+        {
+          error ("no input file given");
+
+          valid = 0;
+
+          return retval;
+        }
 
       std::ifstream istr (infile.c_str (), std::ios_base::in);
       if (istr.fail ())
@@ -585,7 +603,222 @@ octave_value command::copy_in_handler (const std::string &infile)
         }
     }
   else
-    error ("no filename given for copy-in");
+    {
+      // copy in from octave variable
+
+      dim_vector dv = data.dims ();
+      octave_idx_type r = dv(0);
+      octave_idx_type c = dv(1);
+
+      octave_idx_type nf = PQnfields (res);
+      if (c != nf + oids)
+        {
+          error ("variable for copy-in has %i columns, but should have %i",
+                 c, nf + oids);
+
+          PQputCopyEnd
+            (cptr, "variable for copy-in has wrong number of columns");
+        }
+      else if (! PQbinaryTuples (res))
+        {
+          error ("copy-in from variable must use binary mode");
+
+          PQputCopyEnd (cptr, "copy-in from variable must use binary mode");
+        }
+      else
+        {
+          for (octave_idx_type j = 0; j < c; j++)
+            if (! PQfformat (res, j))
+              {
+                error ("copy-in from argument must use binary mode in all columns");
+
+                PQputCopyEnd (cptr, "copy-in from argument must use binary mode in all columns");
+
+                break;
+              }
+        }
+
+      if (error_state)
+        {
+          error ("server error: %s", PQerrorMessage (cptr));
+
+          valid = 0;
+
+          return retval;
+        }
+
+#define COPY_HEADER_SIZE 19
+      char header [COPY_HEADER_SIZE];
+      memset (header, 0, COPY_HEADER_SIZE);
+      strcpy (header, "PGCOPY\n\377\r\n\0");
+      *((uint32_t *) (&header[11])) = htobe32 (uint32_t (oids) << 16);
+
+      char trailer [2];
+      *((int16_t *) (&trailer)) = htobe16 (int16_t (-1));
+
+      if (PQputCopyData (cptr, header, COPY_HEADER_SIZE) == -1)
+        {
+          PQputCopyEnd (cptr, "could not send header");
+
+          error ("server error: %s", PQerrorMessage (cptr));
+        }
+      else
+        {
+          oct_pq_conv_t *convs [c];
+          memset (convs, 0, sizeof (convs));
+          oct_type_t oct_types [c];
+
+          for (octave_idx_type i = 0; i < r; i++) // i is row
+            {
+              int16_t fc = htobe16 (int16_t (nf));
+              if (PQputCopyData (cptr, (char *) &fc, 2) == -1)
+                {
+                  error ("%s", PQerrorMessage (cptr));
+
+                  PQputCopyEnd (cptr, "error sending field count");
+
+                  error ("server error: %s", PQerrorMessage (cptr));
+
+                  break;
+                }
+
+              // j is column of argument data
+              for (octave_idx_type j = 0; j < c; j++)
+                {
+                  if (data(i, j).is_real_scalar () &&
+                      data(i, j).isna ().bool_value ())
+                    {
+                      int32_t t = htobe32 (int32_t (-1));
+                      if (PQputCopyData (cptr, (char *) &t, 4) == -1)
+                        {
+                          error ("could not send NULL in copy-in");
+
+                          break;
+                        }
+                    }
+                  else
+                    {
+                      if (! convs [j])
+                        {
+                          if ((j == 0) && oids)
+                            {
+                              std::string t ("oid");
+                              convs[0] = pgtype_from_spec (t, oct_types[0]);
+                            }
+                          else
+                            {
+                              if (cin_types(j).is_empty ())
+                                {
+                                  oct_types[j] = simple;
+
+                                  if (! (convs[j] =
+                                         pgtype_from_octtype (data(i, j))))
+                                    {
+                                      error ("could not determine type in column %i for copy-in",
+                                             j);
+
+                                      break;
+                                    }
+                                }
+                              else
+                                {
+                                  std::string s = cin_types(j).string_value ();
+                                  if (error_state)
+                                    {
+                                      error ("column type specification no string");
+
+                                      break;
+                                    }
+
+                                  if (! (convs[j] =
+                                         pgtype_from_spec (s, oct_types[j])))
+                                    {
+                                      error ("invalid column type specification");
+
+                                      break;
+                                    }
+                                }
+                            }
+                        } // ! convs [j]
+
+                      oct_pq_dynvec_t val;
+
+                      bool conversion_failed = false;
+                      switch (oct_types[j])
+                        {
+                        case simple:
+                          if (convs[j]->from_octave_bin (data(i, j), val))
+                            conversion_failed = true;
+                          break;
+
+                        case array:
+                          if (from_octave_bin_array (data(i, j), val, convs[j]))
+                            conversion_failed = true;
+                          break;
+
+                        case composite:
+                          if (from_octave_bin_composite (data(i, j), val,
+                                                         convs[j]))
+                            conversion_failed = true;
+                          break;
+
+                        default:
+                          // should not get here
+                          error ("internal error, undefined type identifier");
+                        }
+
+                      if (conversion_failed)
+                        error ("could not convert data(%i, %i) for copy-in",
+                               i, j);
+                      else
+                        {
+                          uint32_t t = htobe32 (uint32_t (val.size ()));
+                          if (PQputCopyData (cptr, (char *) &t, 4) == -1)
+                            error ("could not send data length in copy-in");
+                          else if (PQputCopyData (cptr, &(val.front ()),
+                                                  val.size ()) == -1)
+                            error ("could not send copy-in data");
+                        }
+
+                      if (error_state) break;
+                    }
+                } // columns of argument data
+
+              if (error_state)
+                {
+                  PQputCopyEnd (cptr, "error sending copy-in data");
+
+                  error ("server error: %s", PQerrorMessage (cptr));
+
+                  break;
+                }
+            } // rows of argument data
+        }
+
+      if (! error_state)
+        if (PQputCopyData (cptr, trailer, 2) == -1)
+          {
+            PQputCopyEnd (cptr, "could not send trailer");
+
+            error ("%s", PQerrorMessage (cptr));
+          }
+
+      if (! error_state)
+        if (PQputCopyEnd (cptr, NULL) == -1)
+          error ("%s", PQerrorMessage (cptr));
+        else
+          {
+            PQclear (res);
+
+            if (res = PQgetResult (cptr))
+              {
+                if ((state = PQresultStatus (res)) == PGRES_FATAL_ERROR)
+                  error ("server error in copy-in: %s", PQerrorMessage (cptr));
+              }
+            else
+              error ("unexpectedly got no result information");
+          }
+    } // copy from variable
 
   if (error_state)
     valid = 0;

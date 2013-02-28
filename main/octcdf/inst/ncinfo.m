@@ -35,7 +35,7 @@ nv = nc{varname};
 dims = fliplr(dim(nv));
 
 if length(dims) == 1
-  vinfo.Size = max(size(nv));
+  vinfo.Size = size(nv,1); % works in octave
 else
   vinfo.Size = fliplr(size(nv));
 end

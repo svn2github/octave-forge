@@ -37,8 +37,8 @@
 %% @end deftypefn
 
 function [pkgtar htmltar] = releasePKG (pkgname, varargin)
-  OFPATH = getenv ('OFPATH');
-  use_inputP = exist('inputParser') == 2;
+  OFPATH     = getenv ('OFPATH');
+  use_inputP = exist ('inputParser') == 2;
 
   if use_inputP
     parser = inputParser ();
@@ -52,8 +52,9 @@ function [pkgtar htmltar] = releasePKG (pkgname, varargin)
     parser.Results.repopath = OFPATH;
     parser.Results.outpath = pwd ();
 
-    if !isempty(opt)
+    if !isempty (opt)
       [tf indx] = ismember (fieldnames(parser.Results), opt);
+      
       opt{indx(tf)} = opt{indx(tf)};
       val{indx(tf)} = val{indx(tf)};
       for i=1:numel(opt)
@@ -75,7 +76,8 @@ function [pkgtar htmltar] = releasePKG (pkgname, varargin)
   disp(['Exporting from ' svn_repo]);
 
   export_call = ["svn export " svn_repo filesep() pkgname " " exported " --force"];
-  if system (export_call);
+  failed = system (export_call);
+  if failed
     error ("Can not export.\n");
   elseif isempty (OFPATH) || !strcmpi(svn_repo, OFPATH)
     setenv('OFPATH',parser.Results.repopath);
@@ -84,19 +86,49 @@ function [pkgtar htmltar] = releasePKG (pkgname, varargin)
               'to your .octaverc to make it permanent.' "\n\n"], ...
                            parser.Results.repopath, parser.Results.repopath);
     fflush (stdout);
-
-    % Delete .svnignore files
-    % This works only for unix
-    unix (sprintf ('find %s -name .svnignore | xargs rm -v',exported));
-    % FIXME: This prints a confusing error when no .svnignore are present.
   end
 
   printf("Exported to %s\n", exported);
   fflush(stdout);
 
+  %%% Directory setup and cleanup
+  confirm_recursive_rmdir (0, "local");
+
+  % Run bootstrap if found
+  if has_dir ("src", exported)
+    ndir = [exported filesep() "src"];
+    if has_file ("bootstrap", ndir)
+      odir = pwd ();
+      cd (ndir);
+      
+      failed = system ("./bootstrap");
+      if failed
+        cd (odir);
+        error ("Could run bootstrap.\n");
+      end
+      
+      [success, msg] = rmdir ("autom4te.cache", "s");
+      if !success
+        error (msg);
+      endif
+      cd (odir);
+    endif
+  endif
+  
+  % Remove devel, deprecated and .svnignore
+  erase_dir = {"devel","deprecated",".svnignore"};
+  for idir = 1:numel(erase_dir)
+    if has_dir (erase_dir{idir}, exported)
+      [success, msg] = rmdir ([exported filesep() erase_dir{idir}], "s");
+      if !success
+        error (msg);
+      endif
+    endif
+  endfor
+  
   % Get package version
-  desc_file = textread([exported filesep() "DESCRIPTION"],"%s");
-  [tf ind] = ismember ("Version:",desc_file);
+  desc_file  = textread ([exported filesep() "DESCRIPTION"],"%s");
+  [tf ind]   = ismember ("Version:",desc_file);
   pkgversion = desc_file{ind+1};
 
   % Compress package
@@ -178,3 +210,18 @@ function tf = checkrepopath (str)
   end
 
 endfunction
+
+function tf = has_dir (ddir, exported)
+  
+  s  = dir (exported);
+  tf = any (cellfun (@(x) strcmpi (x,ddir), {s([s.isdir]).name}));
+  
+endfunction
+
+function tf = has_file (dfile, ddir)
+  
+  s  = dir (ddir);
+  tf = any (cellfun (@(x) strcmpi (x,dfile), {s(![s.isdir]).name}));
+  
+endfunction
+

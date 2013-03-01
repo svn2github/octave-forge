@@ -10,6 +10,13 @@ io-1.2.1   Release Date: 2013-TBA   Release Manager: Philip Nienhuis
     varying type dependent on Java version. Made this part of code more robust.
     Also prepared for Octave-3.8 built-in Java support
 
+--- xlsopen.m, odsopen.m: improved matching file type to specific interfaces
+    (e.g., .sxc can only be read by JOD and UNO; .xlsx only by COM, POI-OOXML
+    and UNO)
+
+** moved common Java detection code from getods/getxlsinterfaces to separate
+   function
+
 ** post_install: if PKG_ADD couldn't be removed from .oct file dir, inform user
    to add spreadsheet Java class libs manually to the javaclasspath
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -109,6 +109,8 @@
 ##      ''    Removed fall-back options for .sxc. Other than .xls this can be
 ##            inferred from file suffix
 ## 2012-12-18 Improved error messages
+## 2012-03-01 Revamped logic for determining if file type is supported by a
+##            particular interface
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
@@ -239,13 +241,18 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
   endif
 
   ## if 
-  ##   <other interfaces here>
+  ##   <other future interfaces here>
 
-  if (~odssupport)
-    ## Below message follows after getodsinterfaces
-    printf ("None.\n");
-    warning ("odsopen.m: no support for OpenOffice.org .ods I/O"); 
+  if (! odssupport)
+    if (isempty (reqinterface))
+      ## Below message follows after getodsinterfaces found no support
+      printf ("None.\n");
+      warning ("odsopen.m: no support for OpenOffice.org .ods I/O"); 
+    else
+      warning ("odsopen.m: file type not supported by %s %s %s", upper (reqinterface{:}));
+    endif
     ods = [];
+    ## Reset found interfaces for re-testing in the next call. Add interfaces if needed.
     chkintf = [];
   else
     # From here on rw is tracked via ods.changed in the various lower

@@ -64,7 +64,8 @@
 ## 2012-10-07 Moved common classpath entry code to private function
 ## 2012-10-24 Style fixes
 ## 2012-12-18 POI 3.9 support (either xbeans.jar or xmlbeans.jar), see chk_jar_entries.m
-## 2013-01-20 Adapted to ML-compatible Java calls
+## 2013-03-01 active -> default interface
+##     ''     Moved check for Java support to separate file in private/
 
 function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 
@@ -114,28 +115,16 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
   endif
 
   if (isempty (tmp1))
-    ## Try if Java package works properly by invoking javaclasspath
-    try
-      jcp = javaclasspath ("-all");                   ## For java pkg > 1.2.7
-      if (isempty (jcp)), jcp = javaclasspath; endif  ## For java pkg < 1.2.8
-      ## If we get here, at least Java works. Now check for proper version (>= 1.6)
-      jver = char (javaMethod ("getProperty", "java.lang.System", "java.version"));
-      cjver = strsplit (jver, '.');
-      if (sscanf (cjver{2}, "%d") < 6)
-        warning ("\nJava version might be too old - you need at least Java 6 (v. 1.6.x.x)\n");
-        return
-      endif
-      ## Now check for proper entries in class path. Under *nix the classpath
-      ## must first be split up. In java 1.2.8+ javaclasspath is already a cell array
-      if (isunix && ~iscell (jcp)); jcp = strsplit (char (jcp), pathsep); endif
-      tmp1 = 1;
-    catch
+  ## Check Java support
+    [tmp1, jcp] = __chk_java_sprt__ ();
+    if (! tmp1)
       ## No Java support found
       tmp1 = 0;
       if (isempty (xlsinterfaces.POI) || isempty (xlsinterfaces.JXL)...
         || isempty (xlsinterfaces.OXS) || isempty (xlsinterfaces.UNO))
         ## Some or all Java-based interface(s) explicitly requested but no Java support
-        warning (" No working Java support found. Java pkg properly installed?");
+        warning ...
+          (" No Java support found (no Java JRE? no Java pkg installed AND loaded?)");
       endif
       ## Set Java interfaces to 0 anyway as there's no Java support
       xlsinterfaces.POI = 0;
@@ -145,7 +134,7 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
       printf ("\n");
       ## No more need to try any Java interface
       return
-    end_try_catch
+    endif
   endif
 
   ## Try Java & Apache POI
@@ -209,7 +198,7 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 
   ## ---- Other interfaces here, similar to the ones above
 
-  if (deflt), printf ("(* = active interface)\n"); endif
+  if (deflt), printf ("(* = default interface)\n"); endif
 
   ## FIXME the below stanza should be dropped once UNO is stable.
   # Echo a suitable warning about experimental status:

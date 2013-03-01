@@ -37,7 +37,7 @@
 ## Author: Philip Nienhuis
 ## Created: 2009-12-27
 ## Updates:
-## 2010-01-14
+## 2010-01-14 (yeah what was it...>
 ## 2010-01-17 Make sure proper dimensions are checked in parsed javaclasspath
 ## 2010-04-11 Introduced check on odfdom.jar version - only 0.7.5 works properly
 ## 2010-06-02 Moved in check on JOD version
@@ -66,7 +66,8 @@
 ## 2012-10-07 Moved common classpath entry code to ./private function
 ## 2012-10-07 Moved into ./private
 ## 2012-10-24 Style fixes
-## 2013-01-20 Adapted to ML-compatible Java calls
+## 2013-03-01 active -> default interface
+##     ''     Moved check for Java support to separate file in private/
 
 function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 
@@ -91,40 +92,23 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 
   if (isempty (tmp1))
   ## Check Java support
-    try
-      jcp = javaclasspath ("-all");          # For java pkg >= 1.2.8
-      if (isempty (jcp)), jcp = javaclasspath; endif  # For java pkg <  1.2.8
-      ## If we get here, at least Java works. Now check for proper version (>= 1.6)
-      jver = ...
-        char (javaMethod ('getProperty', 'java.lang.System', 'java.version'));
-      cjver = strsplit (jver, ".");
-      if (sscanf (cjver{2}, "%d") < 6)
-        warning ...
-          ("\nJava version too old - you need at least Java 6 (v. 1.6.x.x)\n");
-        return
-      endif
-      ## Now check for proper entries in class path. Under *nix the classpath
-      ## must first be split up. In java 1.2.8+ javaclasspath is already a cell array
-      if (isunix && ~iscell (jcp));
-        jcp = strsplit (char (jcp), pathsep ()); 
-      endif
-      tmp1 = 1;
-    catch
-      ## No Java support
-      tmp1 = 0;
+    [tmp1, jcp] = __chk_java_sprt__ ();
+    if (! tmp1)
+      ## No Java support found
       if (isempty (odsinterfaces.OTK) || isempty (odsinterfaces.JOD) ...
                                       || isempty (odsinterfaces.UNO))
         ## Some or all Java-based interface explicitly requested; but no Java support
         warning ...
-          (" No Java support found (no Java JRE? no Java pkg installed AND loaded?");
+          (" No Java support found (no Java JRE? no Java pkg installed AND loaded?)");
       endif
-      ## No specific Java-based interface requested. Just return
+      ## Set Java interfaces to 0 anyway as there's no Java support
       odsinterfaces.OTK = 0;
       odsinterfaces.JOD = 0;
       odsinterfaces.UNO = 0;
       printf ("\n");
+      ## No more need to try any Java interface
       return;
-    end_try_catch
+    endif
   endif
 
   ## Try Java & ODF toolkit
@@ -141,10 +125,10 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
       try
         ## New in 0.8.6
         odfvsn = ...
-          javaMethod ("getOdfdomVersion", "org.odftoolkit.odfdom.JarManifest");
+          java_invoke ("org.odftoolkit.odfdom.JarManifest", "getOdfdomVersion");
       catch
         odfvsn = ...
-          javaMethod ("getApplicationVersion", "org.odftoolkit.odfdom.Version");
+          java_invoke ("org.odftoolkit.odfdom.Version", "getApplicationVersion");
       end_try_catch
       ## For odfdom-incubator (= 0.8.8+), strip extra info
       odfvsn = regexp (odfvsn, '\d\.\d\.\d', "match"){1};
@@ -182,7 +166,7 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
   ## Try Java & UNO
   if (isempty (odsinterfaces.UNO))
     odsinterfaces.UNO = 0;
-    ## entries(1) = not a jar but a directory (<000_install_dir/program/>)
+    ## entries(1) = not a jar but a directory (<OOo_install_dir/program/>)
     entries = {"program", "unoil", "jurt", "juh", "unoloader", "ridl"};
     if (chk_jar_entries (jcp, entries) >= numel (entries))
       odsinterfaces.UNO = 1;
@@ -201,7 +185,7 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
   
   ## ---- Other interfaces here, similar to the ones above
 
-  if (deflt), printf ("(* = active interface)\n"); endif
+  if (deflt), printf ("(* = default interface)\n"); endif
 
   ## FIXME the below stanza should be dropped once UNO is stable.
   ## Echo a suitable warning about experimental status:

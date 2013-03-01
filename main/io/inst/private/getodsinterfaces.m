@@ -68,6 +68,7 @@
 ## 2012-10-24 Style fixes
 ## 2013-03-01 active -> default interface
 ##     ''     Moved check for Java support to separate file in private/
+##     ''     Fixed javaclasspath info resync in case of requested interfaces
 
 function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 
@@ -86,7 +87,14 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
     if (~tmp1)
       # Check Java support again
       tmp1 = [];
-    endif
+    else
+      ## Renew jcp (javaclasspath) as it may have been updated since last call
+      jcp = javaclasspath ("-all");                   # For java pkg >= 1.2.8
+      if (isempty (jcp)); jcp = javaclasspath; endif  # For java pkg <  1.2.8
+      if (isunix && ~iscell (jcp));
+        jcp = strsplit (char (jcp), pathsep ()); 
+      endif
+      endif
   endif
   deflt = 0;
 

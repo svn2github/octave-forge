@@ -66,6 +66,7 @@
 ## 2012-12-18 POI 3.9 support (either xbeans.jar or xmlbeans.jar), see chk_jar_entries.m
 ## 2013-03-01 active -> default interface
 ##     ''     Moved check for Java support to separate file in private/
+##     ''     Fixed javaclasspath info resync in case of requested interfaces
 
 function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 
@@ -86,6 +87,13 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
     if (~tmp1)
       ## Check Java support again
       tmp1 = [];
+    else
+      ## Renew jcp (javaclasspath) as it may have been updated since last call
+      jcp = javaclasspath ("-all");                   # For java pkg >= 1.2.8
+      if (isempty (jcp)); jcp = javaclasspath; endif  # For java pkg <  1.2.8
+      if (isunix && ~iscell (jcp));
+        jcp = strsplit (char (jcp), pathsep ()); 
+      endif
     endif
   endif
   deflt = 0;

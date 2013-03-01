@@ -43,10 +43,18 @@
 ## is desired immediately after calling odsopen(). It merely serves proper
 ## handling of file errors (e.g., "file not found" or "new file created").
 ##
-## Optional input argument @var{reqintf} can be used to override the ODS
-## interface automatically selected by odsopen. Currently implemented interfaces
-## are 'OTK' (Java/ODF Toolkit), 'JOD' (Java/jOpenDocument) and 'UNO'
-## (Java/OpenOffice.org UNO bridge).
+## Optional input argument @var{reqintf} (character string, or cellstr array)
+## can be used to override the ODS interface automatically selected by odsopen.
+## Currently implemented interfaces are 'OTK' (Java/ODF Toolkit),
+## 'JOD' (Java/jOpenDocument) and 'UNO' (Java/OpenOffice.org UNO bridge).
+## In most situations this parameter is unneeded as odsopen automatically
+## selects the most useful interface present ("default interface").
+## Depending on file type, odsopen.m can invoke other detected interfaces than
+## the default one.
+##
+## Beware:
+## The UNO interface is still experimental. While in itself reliable, it may
+## have undesired side effects on Open-/LibreOffice windows outside Octave.
 ##
 ## Examples:
 ##

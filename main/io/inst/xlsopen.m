@@ -48,17 +48,22 @@
 ## is opened for reading. If @var{readwrite} is set to True or 1, an Excel
 ## file is opened (or created) for reading & writing.
 ##
-## Optional input argument @var{reqintf} can be used to override the Excel
-## interface that otherwise is automatically selected by xlsopen. Currently
-## implemented interfaces (in order of preference) are 'COM' (Excel/COM),
-## 'POI' (Java/Apache POI), 'JXL' (Java/JExcelAPI), 'OXS' (Java/OpenXLS), or
-## 'UNO' (Java/OpenOffice.org - EXPERIMENTAL!).
+## Optional input argument @var{reqintf} (character string, or cellstr array)
+## can be used to override the Excel interface that otherwise is automatically
+## selected by xlsopen. Currently implemented interfaces (in order of built-in
+## preference) are 'COM' (Excel/ActiveX COM), 'POI' (Java/Apache POI),
+## 'JXL'(Java/JExcelAPI), 'OXS' (Java/OpenXLS), or 'UNO' (Java/OpenOffice.org).
 ## In most situations this parameter is unneeded as xlsopen automatically
-## selects the most useful interface present.
+## selects the most useful interface present ("default interface").
+## Depending on file type, xlsopen.m can invoke other detected interfaces than
+## the default one.
 ##
-## Beware: Excel invocations may be left running invisibly in case of COM
-## errors or forgetting to close the file pointer. Similarly for OpenOffice.org
+## Beware: 
+## Excel invocations may be left running invisibly in case of COM errors or
+## forgetting to close the file pointer. Similarly for OpenOffice.org
 ## which may even prevent Octave from being closed.
+## The UNO interface is still experimental. While in itself reliable, it may
+## have undesired side effects on Open-/LibreOffice windows outside Octave.
 ##
 ## Examples:
 ##

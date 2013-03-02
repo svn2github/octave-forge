@@ -7,4 +7,4 @@ Title: Database.
 Description: Interface to SQL databases, currently only postgresql using libpq.
 Depends: octave (>= 3.6.2)
 Autoload: no
-License: GPLv3
+License: GPLv3+

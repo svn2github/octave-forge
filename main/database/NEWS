@@ -1,3 +1,9 @@
+database 2.1.0:
+---------------
+
+ ** pq_exec_params: An Octave cell-array can be used as data for 'copy
+    from stdin'.
+
 database 2.0.1:
 ---------------
 

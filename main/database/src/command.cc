@@ -33,6 +33,10 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
    return NULL;                                                         \
  }
 
+#define COPY_HEADER_SIZE 19
+
+#define COUT_RESIZE_STEP 1000 // resize result only after this number of rows
+
 command::command (octave_pq_connection &connection, std::string &cmd,
                   Cell &rtypes,std::string &who) :
   valid (1), conn (connection), caller (who), res (NULL), all_fetched (0),
@@ -274,8 +278,7 @@ octave_value command::process_single_result (const std::string &infile,
                                              const Cell &cdata,
                                              const Cell &ctypes,
                                              bool coids,
-                                             bool cin_var,
-                                             bool cout_var)
+                                             bool cin_var)
 {
   octave_value retval;
 
@@ -305,7 +308,7 @@ octave_value command::process_single_result (const std::string &infile,
           retval = tuples_ok_handler ();
           break;
         case PGRES_COPY_OUT:
-          retval = copy_out_handler (outfile, cout_var);
+          retval = copy_out_handler (outfile);
           break;
         case PGRES_COPY_IN:
           retval = copy_in_handler (infile, cdata, ctypes, coids, cin_var);
@@ -460,13 +463,22 @@ octave_value command::tuples_ok_handler (void)
     }
 }
 
-octave_value command::copy_out_handler (const std::string &outfile, bool var)
+octave_value command::copy_out_handler (const std::string &outfile)
 {
   octave_value retval;
 
   if (! outfile.empty ())
     {
       // store unchecked output in file
+
+      if (outfile.empty ())
+        {
+          error ("no output file given");
+
+          valid = 0;
+
+          return retval;
+        }
 
       std::ofstream ostr (outfile.c_str (), std::ios_base::out);
       if (ostr.fail ())
@@ -504,7 +516,7 @@ octave_value command::copy_out_handler (const std::string &outfile, bool var)
         }
     }
   else
-    error ("no filename given for copy-out");
+    error ("no output file given");
 
   if (error_state)
     valid = 0;
@@ -627,12 +639,12 @@ octave_value command::copy_in_handler (const std::string &infile,
         }
       else
         {
-          for (octave_idx_type j = 0; j < c; j++)
+          for (octave_idx_type j = 0; j < nf; j++)
             if (! PQfformat (res, j))
               {
-                error ("copy-in from argument must use binary mode in all columns");
+                error ("copy-in from variable must use binary mode in all columns");
 
-                PQputCopyEnd (cptr, "copy-in from argument must use binary mode in all columns");
+                PQputCopyEnd (cptr, "copy-in from variable must use binary mode in all columns");
 
                 break;
               }
@@ -647,7 +659,6 @@ octave_value command::copy_in_handler (const std::string &infile,
           return retval;
         }
 
-#define COPY_HEADER_SIZE 19
       char header [COPY_HEADER_SIZE];
       memset (header, 0, COPY_HEADER_SIZE);
       strcpy (header, "PGCOPY\n\377\r\n\0");

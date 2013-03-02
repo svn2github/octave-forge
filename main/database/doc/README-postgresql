@@ -30,6 +30,8 @@ Features:
 
 - arbitrarily deeply nested composite- and array-types,
 
+- caches converter lookups for composite type elements,
+
 - binary data transfer,
 
 - reads postgresql system catalogs to get type information.
@@ -40,7 +42,10 @@ State:
 
 Not all base types implemented yet. All commands should work with
 pq_exec_params, copy from stdin and copy to stdout are implemented
-from/to files at client side. The whole framework including conversion
+from/to files at client side, copy from stdin is also possible from an
+Octave cell-array. There are no plans to implement copy to stdout into
+an Octave cell-array (does not safely fit into the framework, and
+select should be equivalent). The whole framework including conversion
 of composite and array types with the resulting possible recursion,
 enum types, and a number of base types are implemented. Large object
 import, export, and unlink works, also import/export from/to pipes.

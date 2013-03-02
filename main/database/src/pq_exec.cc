@@ -112,8 +112,22 @@ Sends the string @var{command}, which must contain a single SQL command, over th
 \n\
 Settings currently understood by @code{pq_exec_params}:\n\
 \n\
-@code{param_types}: One-dimensional cell-array with type specifications for parameters in @var{params}. If present, must have the same length as @var{params}. Entries may be empty if no specification is necessary (see below). Type specifications are strings corresponding to the entries returned by @code{SELECT typname FROM pg_type WHERE typarray != 0 OR typtype = 'c';}, optionally having @code{[]} appended (without space) to indicate an array. Type specifications can be schema-qualified, otherwise they refer to the visible type with that name.\n\
-@code{copy_in_path}, @code{copy_out_path}: Path to files at the client side for @code{copy from stdin} and @code{copy to stdout}, respectively.\n\
+@table @code\n\
+@item param_types\n\
+One-dimensional cell-array with type specifications for parameters in @var{params}. If present, must have the same length as @var{params}. Entries may be empty if no specification is necessary (see below). Type specifications are strings corresponding to the entries returned by @code{SELECT typname FROM pg_type WHERE typarray != 0 OR typtype = 'c';}, optionally having @code{[]} appended (without space) to indicate an array. Type specifications can be schema-qualified, otherwise they refer to the visible type with that name.\n\
+@item copy_in_path, copy_out_path\n\
+Path to files at the client side for @code{copy from stdin} and @code{copy to stdout}, respectively.\n\
+@item copy_in_from_variable\n\
+Logical scalar, default @code{false}. If @code{true}, @code{copy from stdin} uses data from an Octave variable instead of from a file.\n\
+@item copy_in_data\n\
+2-dimensional cell-array with columns of suitable type (see below) -- will be used instead of a file as data for @code{copy from stdin} if @code{copy_in_from_variable} is @code{true}.\n\
+@item copy_in_types\n\
+If some columns in @code{copy_in_data} need a type specification (see below), @code{copy_in_types} has to be set to a cell-array with type specifications, with an entry (possibly empty) for each column.\n\
+@item copy_in_with_oids\n\
+If you want to copy in with oids when using data from an Octave variable, the first column of the data must contain the OIDs and @code{copy_in_with_oids} has to be set to @code{true} (default @code{false}); @code{with oids} should be specified together with @code{copy from stdin} in the command, otherwise Postgresql will ignore the copied oids.\n\
+@end table\n\
+\n\
+There is no way to @code{copy to stdout} into an Octave variable, but a @code{select} command can be used for this purpose.\n\
 \n\
 For queries (commands potentially returning data), the output will be a structure with fields @code{data} (containing a cell array with the data, columns correspond to returned database columns, rows correspond to returned tuples) and @code{columns} (containing the column headers). For copy commands nothing is returned. For other commands, the output will be the number of affected rows in the database.\n\
 \n\
@@ -185,7 +199,7 @@ Octaves @code{NA} corresponds to a Postgresql NULL value (not @code{NaN}, which 
   if (nargs == 1 && args(0).is_string () &&
       args(0).string_value () == "defaults")
     {
-      octave_value_list f_args (16);
+      octave_value_list f_args (14);
       Matrix a;
 
       f_args(0) = octave_value ("param_types");
@@ -202,8 +216,6 @@ Octaves @code{NA} corresponds to a Postgresql NULL value (not @code{NaN}, which 
       f_args(11) = octave_value (a);
       f_args(12) = octave_value ("copy_in_from_variable");
       f_args(13) = octave_value (false);
-      f_args(14) = octave_value ("copy_out_to_variable");
-      f_args(15) = octave_value (false);
 
       return feval ("setdbopts", f_args, 1);
     }
@@ -399,19 +411,6 @@ Octaves @code{NA} corresponds to a Postgresql NULL value (not @code{NaN}, which 
       return retval;
     }
 
-  f_args(1) = octave_value ("copy_out_to_variable");
-  f_args(2) = octave_value (false);
-
-  f_ret = feval ("getdbopts", f_args, 1);
-  bool cout_to_variable = f_ret(0).bool_value ();
-  if (error_state)
-    {
-      error ("%s: could not convert copy_out_to_variable to bool",
-             fname.c_str ());
-
-      return retval;
-    }
-
   // check option settings
 
   if (ptypes.length () != nparams)
@@ -449,7 +448,7 @@ Octaves @code{NA} corresponds to a Postgresql NULL value (not @code{NaN}, which 
   if (c.good ())
     retval = c.process_single_result
       (cin_path, cout_path, cin_data, cin_types, cin_with_oids,
-       cin_from_variable, cout_to_variable);
+       cin_from_variable);
 
   return retval;
 }

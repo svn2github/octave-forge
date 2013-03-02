@@ -72,7 +72,7 @@ public:
   {
     Cell c;
     // inlining should prevent the additional copy
-    return process_single_result ("", "", c, c, false, false, false);
+    return process_single_result ("", "", c, c, false, false);
   }
 
   octave_value process_single_result (const std::string &infile,
@@ -80,8 +80,7 @@ public:
                                       const Cell &cin_data,
                                       const Cell &cin_types,
                                       bool cin_with_oids,
-                                      bool cin_from_variable,
-                                      bool cout_to_variable);
+                                      bool cin_from_variable);
 
   int good (void) {return valid;}
 
@@ -114,7 +113,7 @@ private:
 
   octave_value tuples_ok_handler (void);
 
-  octave_value copy_out_handler (const std::string &, bool);
+  octave_value copy_out_handler (const std::string &);
 
   octave_value copy_in_handler (const std::string &, const Cell &, const Cell &,
                                 bool, bool);

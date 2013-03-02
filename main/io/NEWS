@@ -1,7 +1,7 @@
 Summary of important user-visible changes for releases of the io package
 
 ===============================================================================
-io-1.2.1   Release Date: 2013-TBA   Release Manager: Philip Nienhuis
+io-1.2.1   Release Date: 2013-03-01   Release Manager: Philip Nienhuis
 ===============================================================================
 ** Bug fixes:
 --- post_install.m: fixed wrong format specifier in error message

@@ -211,18 +211,21 @@ while (indi <= size (varargin, 2))
         %# try our own method
         UTF8_BOM = char ([0xEF 0xBB 0xBF]);
         unwind_protect
-          fid = fopen (dummy);
+          in = [];
+	  fid = fopen (dummy);
           if (fid ~= -1)
             df._src{end+1, 1} = dummy;
             dummy = fgetl (fid);
-            if (~strcmp (dummy, UTF8_BOM))
-              frewind (fid);
-            endif
-            %# slurp everything and convert doubles to char, avoiding
-            %# problems with char > 127
-            in = char (fread (fid).'); 
-          else
-            in = [];
+	    if (-1 == dummy)
+	      x = []; %# file is valid but empty
+	    else  
+              if (~strcmp (dummy, UTF8_BOM))
+		frewind (fid);
+              endif
+              %# slurp everything and convert doubles to char, avoiding
+              %# problems with char > 127
+              in = char (fread (fid).');
+	    endif 
           endif
         unwind_protect_cleanup
           if (fid ~= -1) fclose (fid); endif
@@ -404,15 +407,15 @@ while (indi <= size (varargin, 2))
     endif
 
     %# fallback, avoiding a recursive call
-    idx.type = '()';
-    if (~isa (x, 'char'))
+    idx.type = '()'; indj = [];
+    if (~isa (x, 'char')) %# x may be a cell array, a simple matrix, ...
       indj = df._cnt(2)+(1:size (x, 2));
     else
       %# at this point, reading some filename failed
       error ("dataframe: can't open '%s' for reading data", x);
     endif;
 
-    if (iscell (x))
+    if (iscell (x)) %# x was filled with fields read from the CSV
       if (and (isvector (x), 2 == length (x)))
         %# use the intermediate value as destination column
         [indc, ncol] = df_name2idx (df._name{2}, x{1}, df._cnt(2), "column");
@@ -441,6 +444,7 @@ while (indi <= size (varargin, 2))
       df._over{2}(1, indj) = true;
   
     elseif (~isempty (indj))        
+      %# x is an array, generates fieldnames from names given as args
       if (1 == length (df._name{2}) && length (df._name{2}) < \
           length (indj))
         [df._name{2}(indj, 1),  df._over{2}(1, indj)] ...

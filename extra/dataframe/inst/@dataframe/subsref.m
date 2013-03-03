@@ -315,23 +315,27 @@ function resu = subsref(df, S)
         output_type = asked_output_type;
       else
         %# can the data be merged ?
-        output_type = df._data{indc(1)}(1);
-        dummy = isnumeric (df._data{indc(1)}); 
-        for indi = (2:ncol)
-          dummy = dummy & isnumeric (df._data{indc(indi)});
-          if (~strcmp (class (output_type), df._type{indc(indi)}))
-            if (dummy) 
-              %# let downclassing occur
-              output_type = horzcat (output_type, df._data{indc(indi)}(1));
-              continue; 
+	if (isempty (df))
+	   output_type = 0.0;
+	else
+	  output_type = df._data{indc(1)}(1);
+          dummy = isnumeric (df._data{indc(1)}); 
+          for indi = (2:ncol)
+            dummy = dummy & isnumeric (df._data{indc(indi)});
+            if (~strcmp (class (output_type), df._type{indc(indi)}))
+              if (dummy) 
+		%# let downclassing occur
+		output_type = horzcat (output_type, df._data{indc(indi)}(1));
+		continue; 
+              endif
+              %# unmixable args -- falls back to type of parent container 
+              error ("Selected columns %s not compatible with cat() -- use 'cell' as output format", mat2str (indc));
+              %# dead code -- suppress previous line for switching automagically the output format to df
+              output_type = class (df); 
+              break;
             endif
-            %# unmixable args -- falls back to type of parent container 
-            error ("Selected columns %s not compatible with cat() -- use 'cell' as output format", mat2str (indc));
-            %# dead code -- suppress previous line for switching automagically the output format to df
-            output_type = class (df); 
-            break;
-          endif
-        endfor
+          endfor
+	endif
         asked_output_format = class (output_type);
         output_type = "array";
       endif
@@ -546,94 +550,98 @@ function resu = subsref(df, S)
           length (S(1).subs) > 1 || \
           (isnumeric (S(1).subs{1}) && ~isvector(S(1).subs{1}))) 
         %# access-as-matrix
-        df = struct (df);        %# remove the magic, avoid recursive calls 
-        if (isempty (fullindr)) %# two index access
-          if (~isempty (asked_output_format)) %# force a conversion
-            if (strmatch (asked_output_format, 'cell'))
-              extractfunc = @(x) mat2cell\
-                  (df._data{indc(x)}(indr, df._rep{indc(x)}(inds)), \
-                   ones (nrow, 1));
-            else
-              extractfunc = @(x) cast ( df._data{indc(x)}\
-                                       (indr, df._rep{indc(x)}(inds)),\
-                                       asked_output_format);
-            endif
-          else %# let the usual downclassing occur
-            extractfunc = @(x) df._data{indc(x)}(indr, df._rep{indc(x)}(inds));
-          endif 
-          try
-            if (nseq > 1)
-              dummy = reshape (extractfunc (1), nrow, 1, []); 
-              if (size (dummy, 3) < nseq)
-                dummy = repmat (dummy, [1 1 nseq]);
+	if (isempty (df))
+	   resu = [];
+	else
+          df = struct (df);        %# remove the magic, avoid recursive calls 
+          if (isempty (fullindr)) %# two index access
+            if (~isempty (asked_output_format)) %# force a conversion
+              if (strmatch (asked_output_format, 'cell'))
+		extractfunc = @(x) mat2cell\
+			       (df._data{indc(x)}(indr, df._rep{indc(x)}(inds)), \
+				ones (nrow, 1));
+              else
+		extractfunc = @(x) cast ( df._data{indc(x)}\
+						  (indr, df._rep{indc(x)}(inds)),\
+					  asked_output_format);
               endif
-            else
-              dummy = extractfunc (1);
-            endif
-          catch
-            error ("Column %d format (%s) can't be converted to %s", \
-                   indc(1), df._type{indc(1)}, asked_output_format);
-          end_try_catch
-          if (ncol > 1)
-            %# dynamic allocation with the final type
-            resu = repmat (dummy, [1 ncol]);
-            for indi = (2:ncol)
-              try
-                if (nseq > 1)
-                  dummy = reshape (extractfunc (indi), nrow, 1, []);
-                  if (size (dummy, 3) < nseq)
-                    dummy = repmat (dummy, [1 1 nseq]);
+            else %# let the usual downclassing occur
+              extractfunc = @(x) df._data{indc(x)}(indr, df._rep{indc(x)}(inds));
+            endif 
+            try
+              if (nseq > 1)
+		dummy = reshape (extractfunc (1), nrow, 1, []); 
+		if (size (dummy, 3) < nseq)
+                  dummy = repmat (dummy, [1 1 nseq]);
+		endif
+              else
+		dummy = extractfunc (1);
+              endif
+            catch
+	      error ("Column %d format (%s) can't be converted to %s", \
+                     indc(1), df._type{indc(1)}, asked_output_format);
+            end_try_catch
+            if (ncol > 1)
+              %# dynamic allocation with the final type
+              resu = repmat (dummy, [1 ncol]);
+              for indi = (2:ncol)
+		try
+                  if (nseq > 1)
+                    dummy = reshape (extractfunc (indi), nrow, 1, []);
+                    if (size (dummy, 3) < nseq)
+                      dummy = repmat (dummy, [1 1 nseq]);
+                    endif
+                  else
+                    dummy = extractfunc (indi);
                   endif
-                else
-                  dummy = extractfunc (indi);
-                endif
-              catch
-                error ("Column %d format (%s) can't be converted to %s", \
-                       indc(indi), df._type{indc(indi)}, asked_output_format);
-              end_try_catch
-              resu(:, indi, :) = dummy;
-            endfor
-          else
-            if (strcmp (df._type{indc(1)}, 'char'))
-              resu = char (dummy);
+		catch
+                  error ("Column %d format (%s) can't be converted to %s", \
+			 indc(indi), df._type{indc(indi)}, asked_output_format);
+		end_try_catch
+		resu(:, indi, :) = dummy;
+              endfor
             else
-              resu = dummy;
+              if (strcmp (df._type{indc(1)}, 'char'))
+		resu = char (dummy);
+              else
+		resu = dummy;
+              endif
             endif
-          endif
-          if (~isempty (S) && 2 == length (S(1).subs) \
-              && all (cellfun ('isclass', S(1).subs, 'char')))
-            resu = reshape (resu, nrow, ncol*nseq);
-          endif
-        else %# one index access
-          %# disp('line 557'); keyboard
-          if (~isempty (asked_output_format)) %# force a conversion
-            if (strmatch (asked_output_format, 'cell'))
-              extractfunc = @(x, y) mat2cell (df._data{x}(:, df._rep{x}(y)), \
-                                              ones (length (y), 1));
-            else
-              extractfunc = @(x, y) cast (df._data{x}(:, df._rep{x})(y), \
-                                          asked_output_format);      
+            if (~isempty (S) && 2 == length (S(1).subs) \
+		&& all (cellfun ('isclass', S(1).subs, 'char')))
+              resu = reshape (resu, nrow, ncol*nseq);
             endif
-          else %# let the usual downclassing occur
-            extractfunc = @(x, y) df._data{x}(:, df._rep{x})(y);
+	  else %# one index access
+            %# disp('line 557'); keyboard
+            if (~isempty (asked_output_format)) %# force a conversion
+              if (strmatch (asked_output_format, 'cell'))
+		extractfunc = @(x, y) mat2cell (df._data{x}(:, df._rep{x}(y)), \
+						ones (length (y), 1));
+              else
+		extractfunc = @(x, y) cast (df._data{x}(:, df._rep{x})(y), \
+                                            asked_output_format);      
+              endif
+            else %# let the usual downclassing occur
+              extractfunc = @(x, y) df._data{x}(:, df._rep{x})(y);
+            endif
+            try
+              resu = zeros(0, class (sum (cellfun (@(x) zeros (1, class (x(1))),\
+                                                   df._data(indc)))));
+              for indi = (indc)
+		dummy = find (indi == fullindc);   %# linear global index
+		%# linear index for this matrix
+		idx = sub2ind (size (df._data{indi}), fullindr(dummy), \
+                               fullinds(dummy));
+		resu(dummy) = extractfunc (indi, idx);
+              endfor
+            catch
+              disp (lasterr); 
+              error ("Column %d format (%s) can't be converted to %s", \
+                     indi, df._type{indi}, asked_output_format);
+            end_try_catch
+            resu = reshape (resu, size (onedimidx));
           endif
-          try
-            resu = zeros(0, class (sum (cellfun (@(x) zeros (1, class (x(1))),\
-                                                 df._data(indc)))));
-            for indi = (indc)
-              dummy = find (indi == fullindc);   %# linear global index
-              %# linear index for this matrix
-              idx = sub2ind (size (df._data{indi}), fullindr(dummy), \
-                             fullinds(dummy));
-              resu(dummy) = extractfunc (indi, idx);
-            endfor
-          catch
-            disp (lasterr); 
-            error ("Column %d format (%s) can't be converted to %s", \
-                   indi, df._type{indi}, asked_output_format);
-          end_try_catch
-          resu = reshape (resu, size (onedimidx));
-        endif
+	endif
       else %# access-as-vector
         %# disp('line 548 '); keyboard
         if (~isempty (fullindr))

@@ -23,35 +23,51 @@
 ## OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 ## OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-function deriv = polynomialDerivate(poly)
-#POLYNOMIALDERIVATE Derivate a polynomial
-#
-#   DERIV = polynomialDERIVATE(POLY)
-#   POLY is a row vector of [n+1] coefficients, in the form:
-#       [a0 a1 a2 ... an]
-#   DERIV has the same format, with length n:
-#       [a1 a2*2 ... an*n]
-#
-#
-#   Example
-#   T = polynomialDerivate([2 3 4])
-#   returns:
-#   T = [3 8]
-#
-#   See also
-#   polynomialCurves2d
-#
-# ------
-# Author: David Legland
-# e-mail: david.legland@grignon.inra.fr
-# Created: 2007-02-23
-# Copyright 2007 INRA - BIA PV Nantes - MIAJ Jouy-en-Josas.
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{v} =} polynomialCurveDerivative (@var{t}, @var{xcoef},@var{ycoef})
+## @deftypefnx {Function File} {@var{v} =} polynomialCurveDerivative (@var{t}, @var{coefs})
+## Compute derivative vector of a polynomial curve
+##
+##   @var{xcoef} and @var{ycoef} are row vectors of coefficients, in the form:
+##       [a0 a1 a2 ... an]
+##   @var{v} is a 1x2 array containing direction of derivative of polynomial
+##   curve, computed for position @var{t}. If @var{t} is a vector, @var{v} has as many rows
+##   as the length of @var{t}.
+##
+##   @var{coefs} is either a 2xN matrix (one row for the coefficients of each
+##   coordinate), or a cell array.
+## 
+## @seealso{polynomialCurves2d, polynomialCurveNormal, polynomialCurvePoint,
+##   polynomialCurveCurvature}
+## @end deftypefn
 
 
-# create the derivation matrices
-matrix = diag(0:length(poly)-1);
+function v = polynomialCurveDerivative(t, varargin)
+  ## Extract input parameters
 
-# compute coefficients of first derivative polynomials
-deriv = circshift(poly*matrix, [0 -1]);
+  # polynomial coefficients for each coordinate
+  var = varargin{1};
+  if iscell(var)
+      xCoef = var{1};
+      yCoef = var{2};
+  elseif size(var, 1)==1
+      xCoef = varargin{1};
+      yCoef = varargin{2};
+  else
+      xCoef = var(1,:);
+      yCoef = var(2,:);
+  end
+  # convert to Octave polynomial convention
+  xCoef = xCoef(end:-1:1);
+  yCoef = yCoef(end:-1:1);
+      
 
+  # compute derivative of the polynomial
+  dx = polyder (xCoef);
+  dy = polyder (yCoef);
+
+  # numerical integration of the Jacobian of parametrized curve
+  v = [polyval(dx, t) polyval(dy, t)];
+
+endfunction
 

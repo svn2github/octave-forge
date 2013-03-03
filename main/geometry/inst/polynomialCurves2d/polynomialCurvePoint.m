@@ -23,67 +23,47 @@
 ## OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 ## OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-function varargout = drawPolynomialCurve(tBounds, varargin)
-#DRAWPOLYNOMIALCURVE Draw a polynomial curve approximation
-#
-#   Usage
-#   drawPolynomialCurve(BND, XCOEFS, YCOEFS)
-#   drawPolynomialCurve(BND, XCOEFS, YCOEFS, NPTS)
-#
-#   Example
-#   drawPolynomialCurve
-#
-#   See also
-#
-#
-# ------
-# Author: David Legland
-# e-mail: david.legland@grignon.inra.fr
-# Created: 2011-03-21,    using Matlab 7.9.0.529 (R2009b)
-# Copyright 2011 INRA - Cepia Software Platform.
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{point} =} polynomialCurvePoint (@var{t}, @var{xcoef},@var{ycoef})
+## @deftypefnx {Function File} {@var{point} =} polynomialCurvePoint (@var{t}, @var{coefs})
+## Compute point corresponding to a position
+##
+##   @var{xcoef} and @var{ycoef} are row vectors of coefficients, in the form:
+##       [a0 a1 a2 ... an]
+##   @var{t} is a either a scalar, or a column vector, containing values of the
+##   parametrization variable.
+##   @var{point} is a 1x2 array containing coordinate of point corresponding to
+##   position given by @var{t}. If @var{t} is a vector, @var{point} has as many rows as @var{t}.
+##
+##   @var{coefs} is either a 2xN matrix (one row for the coefficients of each
+##   coordinate), or a cell array.
+## 
+## @seealso{polynomialCurves2d, polynomialCurveLength}
+## @end deftypefn
 
+function point = polynomialCurvePoint (t, varargin)
+  ## Extract input parameters
 
-## Extract input parameters
+  # polynomial coefficients for each coordinate
+  var = varargin{1};
+  if iscell (var)
+      xCoef = var{1};
+      yCoef = var{2};
+  elseif size (var, 1)==1
+      xCoef = varargin{1};
+      yCoef = varargin{2};
+  else
+      xCoef = var(1,:);
+      yCoef = var(2,:);
+  end
 
-# parametrization bounds
-t0 = tBounds(1);
-t1 = tBounds(end);
+  ## compute length by numerical integration
 
-# polynomial coefficients for each coordinate
-var = varargin{1};
-if iscell(var)
-    xCoef = var{1};
-    yCoef = var{2};
-    varargin(1) = [];
-    
-elseif size(var, 1)==1
-    xCoef = varargin{1};
-    yCoef = varargin{2};
-    varargin(1:2) = [];
-    
-else
-    xCoef = var(1,:);
-    yCoef = var(2,:);
-    varargin(1) = [];
-end
+  # convert polynomial coefficients to polyval convention
+  cx = xCoef(end:-1:1);
+  cy = yCoef(end:-1:1);
 
-nPts = 120;
-if ~isempty(varargin)
-    nPts = varargin{1};
-end
+  # numerical integration of the Jacobian of parametrized curve
+  point = [polyval(cx, t) polyval(cy, t)];
 
-
-## Drawing the polyline approximation
-
-# generate vector of absissa
-t = linspace(t0, t1, nPts+1)';
-
-# compute corresponding positions
-pts = polynomialCurvePoint(t, xCoef, yCoef);
-
-# draw the resulting curve
-h = drawPolyline(pts);
-
-if nargout > 0
-    varargout = {h};
-end
+endfunction

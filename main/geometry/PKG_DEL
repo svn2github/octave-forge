@@ -1,6 +1,6 @@
 %1
 dirlist = {"geom2d","io","polygons2d","shape2d","octclip", "graphs",...
-           "geom3d","meshes3d"};
+           "geom3d","meshes3d","polynomialCurves2d"};
 dirname = fileparts (canonicalize_file_name (mfilename ("fullpath")));
 pp = strsplit (dirname,filesep (), true);
 arch = cstrcat (octave_config_info ("canonical_host_type"),

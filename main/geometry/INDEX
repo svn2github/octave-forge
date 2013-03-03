@@ -124,6 +124,7 @@ geometry >> Computational Geometry
  distancePointPolygon
  distancePointPolyline
  drawPolygon
+ drawPolyline
  expandPolygon
  medialAxisConvex
  oc_polybool
@@ -145,6 +146,13 @@ geometry >> Computational Geometry
  shapetransform
  curveval
  curve2polyline
+2D Polynomial curves
+ drawPolynomialCurve 
+ polynomialCurveCentroid 
+ polynomialCurveDerivative 
+ polynomialCurveFit 
+ polynomialCurvePoint 
+ polynomialCurveSetFit 
 2D Others
  beltproblem
  bisector

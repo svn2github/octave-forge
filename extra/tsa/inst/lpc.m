@@ -33,7 +33,7 @@ function [A] = lpc(Y,P,mode);
 %	$Id$
 %	Copyright (C) 1996-2002,2008 by Alois Schloegl <a.schloegl@ieee.org>
 %       This is part of the TSA-toolbox. See also 
-%       http://hci.tugraz.at/schloegl/matlab/tsa/
+%       http://pub.ist.ac.at/~schloegl/matlab/tsa/
 %
 %    This program is free software: you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

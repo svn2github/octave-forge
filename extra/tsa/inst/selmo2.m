@@ -14,7 +14,7 @@ function X = selmo2(y,Pmax);
 %	$Id$
 %	Copyright (C) 2007 by Alois Schloegl <a.schloegl@ieee.org>		
 %       This is part of the TSA-toolbox. See also 
-%       http://hci.tugraz.at/schloegl/matlab/tsa/
+%       http://pub.ist.ac.at/~schloegl/matlab/tsa/
 %       http://octave.sourceforge.net/
 %       http://biosig.sourceforge.net/
 %

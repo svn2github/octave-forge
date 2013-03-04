@@ -30,7 +30,7 @@ end;
 
 mfilename='AC2RC';
 if ~exist('durlev','file')
-        fprintf(2,'Error %s: DURLEV.M not found. \n Download TSA toolbox from http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/tsa/\n',mfilename);
+        fprintf(2,'Error %s: DURLEV.M not found. \n Download TSA toolbox from http://pub.ist.ac.at/~schloegl/matlab/tsa/\n',mfilename);
         return;
 end;
 

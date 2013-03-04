@@ -37,7 +37,7 @@ function [R, tix] = histo3(Y, W)
 %	$Id$
 %	Copyright (C) 1996-2002,2008,2011 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This is part of the TSA-toolbox. See also 
-%       http://hci.tugraz.at/schloegl/matlab/tsa/
+%       http://pub.ist.ac.at/~schloegl/matlab/tsa/
 %       http://octave.sourceforge.net/
 %       http://biosig.sourceforge.net/
 %

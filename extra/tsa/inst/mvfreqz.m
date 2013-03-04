@@ -88,7 +88,7 @@ function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, PDCF, coh,GGC,Af,GPDC,GGC2]
 %	$Id$
 %	Copyright (C) 1996-2008 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This is part of the TSA-toolbox. See also 
-%       http://hci.tugraz.at/schloegl/matlab/tsa/
+%       http://pub.ist.ac.at/~schloegl/matlab/tsa/
 %       http://octave.sourceforge.net/
 %       http://biosig.sourceforge.net/
 %

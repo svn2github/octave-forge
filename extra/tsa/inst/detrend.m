@@ -35,7 +35,7 @@ function [X,T]=detrend(t,X,p)
 %       $Id$
 %       Copyright (C) 2001,2007 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the TSA-toolbox
-%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/tsa/
+%       http://pub.ist.ac.at/~schloegl/matlab/tsa/
 %	Copyright (C) 1997, 1998, 2008 by Alois Schloegl <a.schloegl@ieee.org>
 %
 %    This program is free software: you can redistribute it and/or modify

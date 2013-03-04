@@ -22,7 +22,7 @@ function [R]=y2res(Y)
 %	Copyright (C) 1996-2005,2008 by Alois Schloegl <a.schloegl@ieee.org>
 %    	This is part of the TSA-toolbox 
 %       http://octave.sourceforge.net/
-%	http://www.dpmi.tugraz.at/~schloegl/matlab/tsa/
+%	http://pub.ist.ac.at/~schloegl/matlab/tsa/
 %
 %    This program is free software: you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

@@ -41,7 +41,7 @@ function [a,e,REV,TOC,CPUTIME,ESU] = aar(y, Mode, arg3, arg4, arg5, arg6, arg7, 
 %     ISBN 3-8265-7640-3 Shaker Verlag, Aachen, Germany. 
 %
 % More references can be found at 
-%     http://www.dpmi.tu-graz.ac.at/~schloegl/publications/
+%     http://pub.ist.ac.at/~schloegl/publications/
 
 %
 %	$Id$

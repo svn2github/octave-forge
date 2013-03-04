@@ -29,7 +29,7 @@ function [MX,res,arg3,acf] = rc2ar(rc);
 %	$Id$
 %	Copyright (c) 1996-2002,2007,2008 by Alois Schloegl <a.schloegl@ieee.org>
 %       This function is part of the TSA-toolbox
-%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/tsa/
+%       http://pub.ist.ac.at/~schloegl/matlab/tsa/
 %
 %    This program is free software: you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

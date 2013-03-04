@@ -38,7 +38,7 @@ if all(size(RC))>1,
 end;
 
 if ~exist('rc2ar','file')
-        fprintf(2,'Error %s: RC2AR.M not found. \n Download TSA toolbox from http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/tsa/\n',mfilename);
+        fprintf(2,'Error %s: RC2AR.M not found. \n Download TSA toolbox from http://pub.ist.ac.at/~schloegl/matlab/tsa/\n',mfilename);
         return;
 end;
 

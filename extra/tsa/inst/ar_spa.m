@@ -31,7 +31,7 @@ function  [w,A,B,R,P,F,ip] = ar_spa(ARP,nhz,E);
 % 	$Id$
 %	Copyright (C) 1996-2003 by Alois Schloegl <a.schloegl@ieee.org>
 %	This is part of the TSA-toolbox see also: 
-% 	   http://hci.tugraz.at/schloegl/matlab/tsa/
+% 	   http://pub.ist.ac.at/~schloegl/matlab/tsa/
 %	   http://octave.sf.net/
 %
 %    This program is free software: you can redistribute it and/or modify

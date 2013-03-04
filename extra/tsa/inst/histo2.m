@@ -28,7 +28,7 @@ function R = histo2(Y, W)
 %	$Id$
 %	Copyright (C) 1996-2002,2008,2011 by Alois Schloegl <alois.schloegl@gmail.com>	
 %    	This is part of the TSA-toolbox 
-%	http://hci.tugraz.at/~schloegl/matlab/tsa/
+%	http://pub.ist.ac.at/~schloegl/matlab/tsa/
 %
 %    This program is free software: you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

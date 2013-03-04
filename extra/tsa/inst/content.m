@@ -1,6 +1,6 @@
 % Time Series Analysis (Ver 3.10)
 % Schloegl A. (1996-2003,2008) Time Series Analysis - A Toolbox for the use with Matlab. 
-% WWW: http://hci.tugraz.at/~schloegl/matlab/tsa/
+% WWW: http://pub.ist.ac.at/~schloegl/matlab/tsa/
 %
 %	$Id$
 %	Copyright (C) 1996-2003,2008 by Alois Schloegl <a.schloegl@ieee.org>

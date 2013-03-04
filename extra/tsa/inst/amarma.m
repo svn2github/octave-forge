@@ -43,7 +43,7 @@ function [z,e,REV,ESU,V,Z,SPUR] = amarma(y, Mode, MOP, UC, z0, Z0, V0, W);
 %     Journal of neural engineering 2 (2005) 4, S. L14-L22
 %
 % More references can be found at 
-%     http://www.dpmi.tu-graz.ac.at/~schloegl/publications/
+%     http://pub.ist.ac.at/~schloegl/publications/
 
 %	$Id$
 %       Copyright (C) 1998-2002,2005,2006,2007,2008 by  Alois Schloegl <a.schloegl@ieee.org>

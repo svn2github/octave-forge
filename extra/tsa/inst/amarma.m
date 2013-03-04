@@ -1,18 +1,22 @@
 function [z,e,REV,ESU,V,Z,SPUR] = amarma(y, Mode, MOP, UC, z0, Z0, V0, W); 
 % Adaptive Mean-AutoRegressive-Moving-Average model estimation
-% [z,E,ESU,REV,V,Z,SPUR] = amarma(y, mode, MOP, UC, z0, Z0, V0, W); 
-% Estimates AAR parameters with Kalman filter algorithm
-% 	y(t) = sum_i(a(i,t)*y(t-i)) + mu(t) + E(t)
+% [z,e,ESU,REV,V,Z,SPUR] = amarma(y, mode, MOP, UC, z0, Z0, V0, W); 
+%
+% Estimates model parameters (mean and AR) with Kalman filter algorithm
+% 	y(t) = sum_i(a(i,t)*y(t-i)) + mu(t) + e(t)
+% or the more general adaptive mean-autoregressive-moving-avarage parameters
+% 	y(t) = sum_i(a(i,t)*y(t-i)) + mu(t) + e(t) + sum_i(b(i,t)*e(t-i)) 
 %
 % State space model:
 %	z(t)=G*z(t-1) + w(t)      w(t)=N(0,W) 
 %	y(t)=H*z(t)   + v(t)	  v(t)=N(0,V)	
 %
-% G = I, 
-% z = [µ(t)/(1-sum_i(a(i,t))),a_1(t-1),..,a_p(t-p),b_1(t-1),...,b_q(t-q)];
+% G = I, (identity matrix)
+% z = [mu(t)/(1-sum_i(a(i,t))),a_1(t-1),..,a_p(t-p),b_1(t-1),...,b_q(t-q)];
 % H = [1,y(t-1),..,y(t-p),e(t-1),...,e(t-q)];
 % W = E{(z(t)-G*z(t-1))*(z(t)-G*z(t-1))'}
 % V = E{(y(t)-H*z(t-1))*(y(t)-H*z(t-1))'}
+% v = e
 %
 % Input:
 %       y	Signal (AR-Process)
@@ -20,27 +24,36 @@ function [z,e,REV,ESU,V,Z,SPUR] = amarma(y, Mode, MOP, UC, z0, Z0, V0, W);
 %	    [0,0] uses V0 and W  
 %
 %       MOP     Model order [m,p,q], default [0,10,0] 
-%			m=1 includes the mean term, m=0 does not. 
-%			p and q must be positive integers
-%			it is recommended to set q=0. 
+%		   m=1 includes the mean term, m=0 does not. 
+%		   p and q must be positive integers
+%		   it is recommended to set q=0 (i.e. no moving average part)
+%		   because the optimization problem for ARMA models is 
+%		   non-linear and can have local optima. 
 %	UC	Update Coefficient, default 0
 %	z0	Initial state vector
 %	Z0	Initial Covariance matrix
 %      
 % Output:
-%	z	AR-Parameter
-%	E	error process (Adaptively filtered process)
+%	z	mean-autoregressive-moving-average-parameter
+%               mu(t)  = z(t,1:m)	adaptive mean
+%               a(t,:) = z(t,m+[1:p])	adaptive autoregressive parameters
+%               b(t,:) = z(t,m+p+[1:q]) adaptive moving average parameters
+%	e	error process (Adaptively filtered process)
 %       REV     relative error variance MSE/MSY
 %
 %
 % see also: AAR
 %
 % REFERENCE(S): 
-% [1] A. Schloegl (2000), The electroencephalogram and the adaptive autoregressive model: theory and applications. 
+% [1] A. Schl√∂gl (2000), The electroencephalogram and the adaptive autoregressive model: theory and applications. 
 %     ISBN 3-8265-7640-3 Shaker Verlag, Aachen, Germany. 
-% [2] Schlˆgl A, Lee FY, Bischof H, Pfurtscheller G
+% [2] Schl√∂gl A, Lee FY, Bischof H, Pfurtscheller G
 %     Characterization of Four-Class Motor Imagery EEG Data for the BCI-Competition 2005.
 %     Journal of neural engineering 2 (2005) 4, S. L14-L22
+% [3] A. Schl√∂gl , J. Fortin, W. Habenbacher, M. Akay.
+%     Adaptive mean and trend removal of heart rate variability using Kalman filtering
+%     Proceedings of the 23rd Annual International Conference of the IEEE Engineering in Medicine and Biology Society, 
+%     25-28 Oct. 2001, Paper #1383, ISBN 0-7803-7213-1.
 %
 % More references can be found at 
 %     http://pub.ist.ac.at/~schloegl/publications/

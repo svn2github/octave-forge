@@ -1,6 +1,18 @@
 Summary of important user-visible changes for releases of the io package
 
 ===============================================================================
+io-1.2.2   Release Date: 2013-TBA   Release Manager: Philip Nienhuis
+===============================================================================
+** Bug fixes:
+--- xlsopen.m, odsopen.m (actually silently fixed in 1.2.1): always re-read
+    javaclasspath when a Java spreadsheet interface is requested explicitly
+    (because between calls to xls-/odsopen new classes could be added to the
+    javaclasspath, this wasn't picked up properly)
+
+--- csv2cell(): Hanging when it encountered EOF w/o preceding EOL (#143 in
+    former OctDev bug tracker)
+
+===============================================================================
 io-1.2.1   Release Date: 2013-03-01   Release Manager: Philip Nienhuis
 ===============================================================================
 ** Bug fixes:

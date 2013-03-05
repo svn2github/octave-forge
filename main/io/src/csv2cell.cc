@@ -103,16 +103,17 @@ DEFUN_DLD (csv2cell, args, nargout,
   
   /* Read all the file to get number of rows */
   int nbrows = 1;
-  while (fd.tellg () < fdend)
+  while (fd.tellg () <= fdend && fd.peek() != EOF)
     {
       fd.getline (line, MAXSTRINGLENGTH);
-      while (fd.fail ())
+      while (fd.fail () && fd.peek() != EOF)
         {
           fd.clear ();
           fd.getline (line, MAXSTRINGLENGTH);
         }
       nbrows++;
     }
+  fd.clear();
 
   /* Rewind */
   fd.seekg (0, std::ios::beg);

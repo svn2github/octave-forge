@@ -13,6 +13,32 @@
 // You should have received a copy of the GNU General Public License along with
 // this program; if not, see <http://www.gnu.org/licenses/>.
 
+/*
+
+%% The following tests check EOF w/o preceding EOL & text fields in first column
+
+%!test
+csvwrite("foo.csv", "\"1\"", "DELIMITER", "");
+s = csv2cell("foo.csv"){1};
+delete ("foo.csv");
+assert (s, "1");
+
+%!test
+csvwrite("foo.csv", "\"1\",2", "DELIMITER", "");
+s = csv2cell("foo.csv");
+delete ("foo.csv");
+assert (s{1}, "1");
+assert (s{2}, 2);
+
+%!test
+csvwrite("foo.csv", "3,\"1\"", "DELIMITER", "");
+s = csv2cell("foo.csv");
+delete ("foo.csv");
+assert (s{1}, 3);
+assert (s{2}, "1");
+assert
+*/
+
 #include <fstream>
 
 #include <octave/oct.h>
@@ -93,14 +119,15 @@ DEFUN_DLD (csv2cell, args, nargout,
 
   /* Parse first to get number of columns */
   int nbcolumns = 0;
+
   for (int i = 0, len = str.length (); i <= len; i++)
-    if (((i==len) || (str [i] == sep)) && (!inside))
+    if ((i==len) || ((str[i] == sep) || (str[i] == 10)) && (!inside))
       nbcolumns++;
-    else if ((inside) && (str [i] == prot) && ((i < len) && (str [i+1] == prot)))
+    else if ((inside) && (str[i] == prot) && ((i < len) && (str[i+1] == prot)))
       ++i;
     else if (str [i] == prot)
       inside = !inside;
-  
+
   /* Read all the file to get number of rows */
   int nbrows = 1;
   while (fd.tellg () <= fdend && fd.peek() != EOF)
@@ -140,11 +167,13 @@ DEFUN_DLD (csv2cell, args, nargout,
 
       /* Explode a line into a sub cell */
       word = "";
+      // inside = (str[0] == prot);
       inside = false;
       int j = 0;
+      bool oinside = false;
       for (int k = 0, len = str.length (); k <= len; k++)
         {
-          if (((k == len) || (str [k] == sep)) && (!inside))
+          if (((k == len) || (str[k] == sep)) && (!inside))
             {
               /* Check number of columns */
               if (j == nbcolumns)
@@ -160,19 +189,24 @@ DEFUN_DLD (csv2cell, args, nargout,
               double val = strtod (word_str, &err);
 
               /* Store into the cell */
-              c (i, j++) = ((word == "") || (err != word_str+word.length())) ?
+              //c (i, j++) = ((word == "") || (err != word_str+word.length())) ?
+              c (i, j++) = ((word == "") || oinside) ?
                            octave_value (word) : octave_value (val);
               word = "";
+              oinside = false;
             }
           else if ((inside) && (str[k]==prot) && ((k<len) && (str[k+1]==prot)))
             {
-              /* Insisde a string */
+              /* Inside a string */
               word += prot;
               ++k;
             }
           else if (str[k] == prot)
-            /* Changing */
-            inside = !inside;
+            {
+              /* Changing */
+              oinside = inside;
+              inside = !inside;
+            }
           else
             word += str[k];
         }

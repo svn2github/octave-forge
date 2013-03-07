@@ -3,6 +3,7 @@
 % C = ncCatArray(dim,filenames,varname)
 % C = ncCatArray(dim,pattern,varname)
 % C = ncCatArray(dim,filenamefun,varname,range)
+% C = ncCatArray(...,'property',value)
 %
 % create a concatenated array from variables (varname) in a list of
 % netcdf files along dimension dim.Individual elements can be accessed by
@@ -13,13 +14,18 @@
 % filenamefun. In this later case, this i-th filename is
 % filenamefun(range(i)).
 %
+% Properties:
+%   'SameAttributes': false or true (default). If SameAttribute is true, 
+%     the variables' NetCDF attribute of all files are assumed to be the same.
+%     Only the attributes of the first file is loaded in this case.
+%
 % Example:
 %
 % data = ncCatArray(3,{'file-20120708.nc','file-20120709.nc'},'SST')
 %
 % data = ncCatArray(3,'file-*.nc','SST')
 %
-% data = ncCatArray(3,@(t) ['file-' datestr(t,'yyyymmdd') '.nc'],...
+% data = ncCatArray(3,@(t) ['file-' datestr(t,'yyyymmdd') '.nc'],'SST',...
 %              datenum(2012,07,08):datenum(2012,07,09));
 %
 % Note: in Octave the glob function is used to determine files matching the
@@ -32,9 +38,31 @@
 
 % Author: Alexander Barth (barth.alexander@gmail.com)
 %
-function data = ncCatArray(dim,pattern,varname,range)
+function data = ncCatArray(dim,pattern,varname,varargin)
 
 catdimname = '_cat_dim';
+SameAttributes = true;
+range = [];
+
+[reg, prop] = parseparams(varargin);
+
+if length(reg) == 1
+    range = reg{1};
+end
+
+
+for i = 1:2:length(prop)
+  if strcmp(prop{i},'SameAttributes')
+    SameAttributes = prop{i+1};
+  elseif strcmp(prop{i},'range')
+    range = prop{i+1};
+  else
+    error(['unknown property value ' prop{i}]);
+  end
+end
+
+
+% file names
 
 if iscell(pattern)
     filenames = pattern;
@@ -60,11 +88,11 @@ elseif isa(pattern, 'function_handle')
     end
 end
 
-if nargin == 3
+if isempty(range)
     range = 1:length(filenames);
 end
 
-var = arr(dim,filenames,varname);
+var = arr(dim,filenames,varname,SameAttributes);
 
 [dims,coord] = nccoord(cached_decompress(filenames{1}),varname);
 
@@ -80,7 +108,7 @@ end
 
 for i=1:length(coord)
     % coordinates do also depend on the dimension only which we concatenate
-    coord(i).val = arr(dim,filenames,coord(i).name);
+    coord(i).val = arr(dim,filenames,coord(i).name,SameAttributes);
     if dim > length(coord(i).dims)
         coord(i).dims{dim} = catdimname;
     end
@@ -91,10 +119,18 @@ data = ncArray(var,dims,coord);
 end
 
 
-function CA = arr(dim,filenames,varname)
+function CA = arr(dim,filenames,varname,SameAttributes)
 arrays = cell(1,length(filenames));
+
+if SameAttributes
+  % assume every filename has the same metadata
+  vinfo = ncinfo(cached_decompress(filenames{1}),varname);
+else
+  vinfo = [];
+end
+
 for i=1:length(filenames)
-    arrays{i} = ncBaseArray(filenames{i},varname);
+    arrays{i} = ncBaseArray(filenames{i},varname,'vinfo',vinfo);
 end
 
 CA = CatArray(dim,arrays);
@@ -103,7 +139,7 @@ end
 
 
 
-% Copyright (C) 2012 Alexander Barth <barth.alexander@gmail.com>
+% Copyright (C) 2012,2013 Alexander Barth <barth.alexander@gmail.com>
 %
 % This program is free software; you can redistribute it and/or modify
 % it under the terms of the GNU General Public License as published by

@@ -14,6 +14,7 @@
 % Properties:
 %   'tooBigToLoad': if tooBigToLoad is set to true, then only the minimum
 %   data will be loaded. However this can be quite slow.
+%   'vinfo': result from ncinfo can be specified if it is already known.
 %
 % Example:
 %
@@ -41,18 +42,22 @@
 function retval = ncBaseArray(filename,varname,varargin)
 
 self.tooBigToLoad = false;
+self.vinfo = [];
 prop = varargin;
 
 for i=1:2:length(prop)
     if strcmp(prop{i},'tooBigToLoad')
         self.tooBigToLoad = prop{i+1};
+    elseif strcmp(prop{i},'vinfo')
+        self.vinfo = prop{i+1};
     end
 end
 
 self.filename = filename;
 self.varname = varname;
-
-self.vinfo = ncinfo(cached_decompress(filename),varname);
+if isempty(self.vinfo)
+  self.vinfo = ncinfo(cached_decompress(filename),varname);
+end
 self.sz = self.vinfo.Size;
 
 self.dims = self.vinfo.Dimensions;

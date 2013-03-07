@@ -5,6 +5,10 @@ function sz = size(self,dim)
 
 sz = self.sz;
 
+if length(sz) == 1
+  sz = [sz 1];
+end
+
 if nargin == 2
     if dim > length(sz)
       sz = 1;

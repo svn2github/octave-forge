@@ -15,28 +15,70 @@
 
 /*
 
-%% The following tests check EOF w/o preceding EOL & text fields in first column
+%% Check EOF w/o preceding EOL & text fields in 1st column disguised as numeric str
+%!test
+%! f = tmpnam ();
+%! fid = fopen (f, 'w+');
+%! fprintf (fid, "\"1\"");
+%! fclose (fid);
+%! s = csv2cell (f){1};
+%! unlink (f);
+%! assert (s, "1");
 
 %!test
-csvwrite("foo.csv", "\"1\"", "DELIMITER", "");
-s = csv2cell("foo.csv"){1};
-delete ("foo.csv");
-assert (s, "1");
+%! f = tmpnam ();
+%! csvwrite(f, "\"1\",2", "DELIMITER", "");
+%! s = csv2cell(f);
+%! unlink (f);
+%! assert (s{1}, "1");
+%! assert (s{2}, 2);
 
 %!test
-csvwrite("foo.csv", "\"1\",2", "DELIMITER", "");
-s = csv2cell("foo.csv");
-delete ("foo.csv");
-assert (s{1}, "1");
-assert (s{2}, 2);
+%! f = tmpnam ();
+%! csvwrite(f, "3,\"1\"", "DELIMITER", "");
+%! s = csv2cell(f);
+%! unlink (f);
+%! assert (s{1}, 3);
+%! assert (s{2}, "1");
 
+%% Check proper string protection
 %!test
-csvwrite("foo.csv", "3,\"1\"", "DELIMITER", "");
-s = csv2cell("foo.csv");
-delete ("foo.csv");
-assert (s{1}, 3);
-assert (s{2}, "1");
-assert
+%! f = tmpnam ();
+%! fid = fopen (f, 'w+');
+%! str = ['01/03/2012,"H (Mar, 12)",26.750000,2584' "\n"];
+%! str = [str '"01/04/2012",H (Mar, 12),2330' "\n"];
+%! str = [str '"01/05/2012","H (Mar 12)",26.000000,3198' "\n"];
+%! str = [str '01/06/2012,H (Mar 12),25.500000,3045' "\n"];
+%! fprintf (fid, str);
+%! fclose (fid);
+%! s = csv2cell (f);
+%! unlink (f);
+%! assert (isnumeric ([s{1:4, 4}]), true);
+%! assert (datenum (s{1,1}, "MM/DD/YYYY"), 734871, 1e-1);
+%! assert (datenum (s{2,1}, "MM/DD/YYYY"), 734872, 1e-1);
+%! assert (iscellstr (s(1:4, 2)), true);
+%! assert (isnumeric ([s{1, 3} s{3:4, 3}]), true);
+%1 assert (ischar (s{2, 3}), true);
+
+%% Check separator and string protection arguments
+%!test
+%! f = tmpnam ();
+%! fid = fopen (f, 'w+');
+%! str = ['01/03/2012;$H (Mar; 12)$;26.750000;2584' "\n"];
+%! str = [str '$01/04/2012$;H (Mar; 12);2330' "\n"];
+%! str = [str '$01/05/2012$;$H (Mar 12)$;26.000000;3198' "\n"];
+%! str = [str '01/06/2012;H (Mar 12);25.500000;3045' "\n"];
+%! fprintf (fid, str);
+%! fclose (fid);
+%! s = csv2cell (f, ";", "$");
+%! unlink (f);
+%! assert (isnumeric ([s{1:4, 4}]), true);
+%! assert (datenum (s{1,1}, "MM/DD/YYYY"), 734871, 1e-1);
+%! assert (datenum (s{2,1}, "MM/DD/YYYY"), 734872, 1e-1);
+%! assert (iscellstr (s(1:4, 2)), true);
+%! assert (isnumeric ([s{1, 3} s{3:4, 3}]), true);
+%1 assert (ischar (s{2, 3}), true);
+
 */
 
 #include <fstream>
@@ -71,7 +113,7 @@ DEFUN_DLD (csv2cell, args, nargout,
     
   const std::string file = args (0).string_value ();
 
-  const std::string _sep = (nargin > 1) ? args (1).string_value () : ",";
+  const std::string _sep = (nargin > 1) ? args(1).string_value () : ",";
   if (_sep.length() != 1)
     {
       error ("csv2cell: separator value can only be one character\n");
@@ -79,7 +121,7 @@ DEFUN_DLD (csv2cell, args, nargout,
     }
   char sep = _sep[0];
 
-  const std::string _prot = (nargin > 2) ? args (2).string_value () : "\"";
+  const std::string _prot = (nargin > 2) ? args(2).string_value () : "\"";
   if (_prot.length() != 1)
     {
       error ("csv2cell: protector value can be only one character\n");
@@ -125,12 +167,12 @@ DEFUN_DLD (csv2cell, args, nargout,
       nbcolumns++;
     else if ((inside) && (str[i] == prot) && ((i < len) && (str[i+1] == prot)))
       ++i;
-    else if (str [i] == prot)
+    else if (str[i] == prot)
       inside = !inside;
 
   /* Read all the file to get number of rows */
   int nbrows = 1;
-  while (fd.tellg () <= fdend && fd.peek() != EOF)
+  while (fd.tellg () <= fdend && fd.peek () != EOF)
     {
       fd.getline (line, MAXSTRINGLENGTH);
       while (fd.fail () && fd.peek() != EOF)
@@ -170,6 +212,7 @@ DEFUN_DLD (csv2cell, args, nargout,
       // inside = (str[0] == prot);
       inside = false;
       int j = 0;
+      // Keep track of when just read, but not yet copied field, was inside (text)
       bool oinside = false;
       for (int k = 0, len = str.length (); k <= len; k++)
         {
@@ -187,15 +230,13 @@ DEFUN_DLD (csv2cell, args, nargout,
               const char *word_str = word.c_str ();
               char *err;
               double val = strtod (word_str, &err);
-
               /* Store into the cell */
-              //c (i, j++) = ((word == "") || (err != word_str+word.length())) ?
-              c (i, j++) = ((word == "") || oinside) ?
+              c(i, j++) = ((word == "") || oinside || (err != word_str+word.length())) ?
                            octave_value (word) : octave_value (val);
               word = "";
               oinside = false;
             }
-          else if ((inside) && (str[k]==prot) && ((k<len) && (str[k+1]==prot)))
+          else if ((inside) && (str[k] == prot) && ((k < len) && (str[k+1] == prot)))
             {
               /* Inside a string */
               word += prot;

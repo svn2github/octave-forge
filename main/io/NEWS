@@ -11,6 +11,10 @@ io-1.2.2   Release Date: 2013-TBA   Release Manager: Philip Nienhuis
 
 --- csv2cell(): Hanging when it encountered EOF w/o preceding EOL (#143 in
     former OctDev bug tracker)
+    csv2cell(): Inconsistent behavior when first field on a line is a string
+    protected by "" (see
+    http://octave.1599824.n4.nabble.com/csv2cell-inconsistent-tc4635817.html)
+    csv2cell(): Tests added for above bugs and proper SEP and PROT args
 
 ===============================================================================
 io-1.2.1   Release Date: 2013-03-01   Release Manager: Philip Nienhuis

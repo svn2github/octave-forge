@@ -1,6 +1,13 @@
 Summary of important user-visible changes for mapping 1.2.0:
 -------------------------------------------------------------------
 
+ ** The following functions are new in mapping 1.2.0:
+
+      deg2km
+
  ** The function `distance' has been greatly improved with more options
     including calculating the azimuth between points and support different
     angle units.
+
+ ** The function km2deg can accept an optional radius or the name of some
+    Solar System objects.

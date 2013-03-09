@@ -13,6 +13,41 @@
 // You should have received a copy of the GNU General Public License along with
 // this program; if not, see <http://www.gnu.org/licenses/>.
 
+/*
+
+%% Straightforward performance
+%!test
+%! arr = arr1 = num2cell (randn (3, 3));
+%! for ii=1:size (arr, 1)
+%!   arr1(ii, ii) = sprintf ("\"Val = %f\"", arr{ii, ii});
+%! endfor
+%! f = tmpnam();
+%! cell2csv (f, arr1);
+%! arr2 = csv2cell (f);
+%! unlink (f);
+%! idx = find (cellfun ("ischar", arr2));
+%! arr2(idx) = cellfun (@(x) str2double(strrep(x, "Val = ", "")), arr2(idx), "Uni", false);
+%! assert (arr, arr2, 1e-5);
+
+%% Test with SEP and PROT args
+%!test
+%! arr = arr1 = num2cell (randn (3, 3));
+%! for ii=1:size (arr, 1)
+%!   arr1(ii, ii) = sprintf ("Val = %f", arr{ii, ii});
+%! endfor
+%! arr1(2, 2) = [arr1{2, 2} ";"];
+%! f = tmpnam();
+%! cell2csv (f, arr1, ";", "&");
+%! arr2 = csv2cell (f, ";", "&");
+%! unlink (f);
+%! assert (arr2{2, 2}(end), ";");
+%! arr2(2, 2) = strrep (arr2{2, 2}, ";", "");
+%! idx = find (cellfun ("ischar", arr2));
+%! arr2(idx) = cellfun (@(x) str2double(strrep(x, "Val = ", "")), arr2(idx), "Uni", false);
+%! assert (arr, arr2, 1e-5);
+
+*/
+
 #include <fstream>
 
 #include <octave/oct.h>

@@ -54,8 +54,8 @@
 %! s = csv2cell (f);
 %! unlink (f);
 %! assert (isnumeric ([s{1:4, 4}]), true);
-%! assert (datenum (s{1,1}, "MM/DD/YYYY"), 734871, 1e-1);
-%! assert (datenum (s{2,1}, "MM/DD/YYYY"), 734872, 1e-1);
+%! ddd = datenum (s{2,1}, "dd/mm/yyyy") - datenum (s{1,1}, "dd/mm/yyyy");
+%! assert (ddd, 31.0, 1e-5);
 %! assert (iscellstr (s(1:4, 2)), true);
 %! assert (isnumeric ([s{1, 3} s{3:4, 3}]), true);
 %1 assert (ischar (s{2, 3}), true);
@@ -73,8 +73,8 @@
 %! s = csv2cell (f, ";", "$");
 %! unlink (f);
 %! assert (isnumeric ([s{1:4, 4}]), true);
-%! assert (datenum (s{1,1}, "MM/DD/YYYY"), 734871, 1e-1);
-%! assert (datenum (s{2,1}, "MM/DD/YYYY"), 734872, 1e-1);
+%! ddd = datenum (s{2,1}, "dd/mm/yyyy") - datenum (s{1,1}, "dd/mm/yyyy");
+%! assert (ddd, 31.0, 1e-5);
 %! assert (iscellstr (s(1:4, 2)), true);
 %! assert (isnumeric ([s{1, 3} s{3:4, 3}]), true);
 %1 assert (ischar (s{2, 3}), true);

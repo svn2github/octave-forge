@@ -1,19 +1,17 @@
-## Copyright (C) 2008 Alexander Barth <barth.alexander@gmail.com>
+## Copyright (C) 2008 Alexander Barth <abarth93@users.sourceforge.net>
 ##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
-## (at your option) any later version.
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free Software
+## Foundation; either version 3 of the License, or (at your option) any later
+## version.
 ##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+## details.
 ##
-## You should have received a copy of the GNU General Public License
-## along with this program; if not, write to the Free Software
-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, see <http://www.gnu.org/licenses/>.
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{lato},@var{lono}] = } reckon(@var{lat},@var{lon},@var{range},@var{azimuth})
 ## @deftypefnx {Function File} {[@var{lato},@var{lono}] = } reckon(@var{lat},@var{lon},@var{range},@var{azimuth},@var{units})
@@ -35,7 +33,7 @@ function [lato,lono] = reckon(varargin);
   units = "degrees";
 
   [reg,prop] = parseparams(varargin);
-  
+
   ## Input checking
   if length(reg) != 4
     print_usage ();
@@ -58,7 +56,7 @@ function [lato,lono] = reckon(varargin);
     endif
   endfor
 
-  if length(prop) == 1    
+  if length(prop) == 1
     units = prop{1};
   elseif length(prop) > 1
     error("reckon: wrong number of type of arguments");
@@ -68,7 +66,7 @@ function [lato,lono] = reckon(varargin);
   lon = reg{2};
   range = reg{3};
   azimuth = reg{4};
-  
+
   if strcmp(units,"degrees")
     d = pi/180;
   elseif strcmp(units,"radians")

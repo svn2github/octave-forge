@@ -1,16 +1,21 @@
 ## Copyright (C) 2004 Andrew Collier <abcollier@users.sourceforge.net>
+## Copyright (C) 2011 Alexander Barth <abarth93@users.sourceforge.net>
 ##
-## This program is free software; it is distributed in the hope that it
-## will be useful, but WITHOUT ANY WARRANTY; without even the implied
-## warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-## the GNU General Public License for more details.
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free Software
+## Foundation; either version 3 of the License, or (at your option) any later
+## version.
 ##
-## You should have received a copy of the GNU General Public License
-## along with this file; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+## details.
+##
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} [@var{dist},@var{az}] = distance(@var{pt1}, @var{pt2})
+## @deftypefn {Function File}  {} [@var{dist},@var{az}] = distance(@var{pt1}, @var{pt2})
 ## @deftypefnx {Function File} {} [@var{dist},@var{az}] = distance(@var{pt1}, @var{pt2},@var{units})
 ## @deftypefnx {Function File} {} [@var{dist},@var{az}] = distance(@var{lat1},@var{lon1},@var{lat2},@var{lon2})
 ## @deftypefnx {Function File} {} [@var{dist},@var{az}] = distance(@var{lat1},@var{lon1},@var{lat2},@var{lon2},@var{units})
@@ -51,7 +56,7 @@ function [dist,az] = distance(varargin)
 
     a = pt1(:,1);
     b = pt2(:,1);
-    C = pt2(:,2) - pt1(:,2);    
+    C = pt2(:,2) - pt1(:,2);
   elseif length(reg) == 4
     a = reg{1};
     b = reg{3};
@@ -60,7 +65,7 @@ function [dist,az] = distance(varargin)
      error('Wrong number of type of arguments');
   end
 
-  if length(prop) == 1    
+  if length(prop) == 1
     units = prop{1};
 
     if (~strcmp(units,'degrees') && ~strcmp(units,'radians'))
@@ -75,9 +80,9 @@ function [dist,az] = distance(varargin)
     b = deg2rad(b);
     C = deg2rad(C);
   end
-  
+
   dist = acos(sin(b) .* sin(a) + cos(b) .* cos(a) .* cos(C));
-  
+
   if (strcmp(units,'degrees'))
      dist = rad2deg(dist);
   end
@@ -93,18 +98,14 @@ function [dist,az] = distance(varargin)
 
     if (strcmp(units,'degrees'))
        az = rad2deg(az);
-    end     
+    end
   end
-  
+
 endfunction
 
-## http://www.mathworks.com/help/toolbox/map/ref/distance.html
-
-%!test
-%! assert(distance([37,-76], [37,-9]), 52.30942093, 1e-7)
+%!assert(distance([37,-76], [37,-9]), 52.30942093, 1e-7)
 
 %!test
 %! [d,az] = distance(0,0, 0,pi,'radians');
 %! assert(d,pi,1e-7)
 %! assert(az,pi/2,1e-7)
-

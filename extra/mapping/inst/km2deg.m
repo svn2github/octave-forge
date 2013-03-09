@@ -20,24 +20,30 @@
 ## @deftypefnx {Function File} {@var{deg} =} km2deg (@var{km}, @var{sphere})
 ## Convert distance to angle.
 ##
-## Calculates the angle @var{deg} for a distance @var{km} in a sphere with
-## @var{radius} (also in kilometers). If unspecified, radius defaults to 6371,
+## Calculates the angles @var{deg} for the distances @var{km} in a sphere with
+## @var{radius} (also in kilometers).  If unspecified, radius defaults to 6371,
 ## the mean radius of Earth.
 ##
 ## Alternatively, @var{sphere} can be one of "sun", "mercury", "venus", "earth",
 ## "moon", "mars", "jupiter", "saturn", "uranus", "neptune", or "pluto", in
 ## which case radius will be set to that object mean radius.
+##
+## @seealso{deg2km}
 ## @end deftypefn
 
 ## Author: Alexander Barth <barth.alexander@gmail.com>
 
-function a = km2deg (x, radius = "earth")
+function deg = km2deg (km, radius = "earth")
   if (nargin < 1 || nargin > 2)
     print_usage();
-  elseif (isstr (radius))
-    radius = spheres_radius (obj);
+  elseif (ischar (radius))
+    radius = spheres_radius (radius);
   elseif (! isnumeric (radius) || ! isscalar (radius))
     error ("km2deg: RADIUS must be a numeric scalar");
   endif
-  a = 180 * x/(pi*radius);
+  deg = 180 * km/(pi*radius);
 endfunction
+
+%!assert (deg2km (km2deg (10)), 10)
+%!assert (deg2km (km2deg (10, 80), 80), 10)
+%!assert (deg2km (km2deg (10, "pluto"), "pluto"), 10)

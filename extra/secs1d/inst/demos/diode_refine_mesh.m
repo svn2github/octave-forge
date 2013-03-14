@@ -1,33 +1,33 @@
-pkg load secs1d
-clear all
-close all
-
 % physical constants and parameters
 constants = secs1d_physical_constants_fun ();
 material  = secs1d_silicon_material_properties_fun (constants);
 
 % geometry
-L  = 80e-6;          % [m] 
+Nelements = 100;
+L  = 50e-6;          % [m] 
 xm = L/2;
+device.W = 150e-6 * 50e-6;
 
-Nelements      = 10;
-device.x       = linspace (0, L, Nelements+1)';
+device.x  = linspace (0, L, Nelements+1)';
 device.sinodes = [1:length(device.x)];
 
 converged = false;
 iters = 1;
-maxiters = 100;
+maxiters = 10;
 while (! converged)
 
   %% doping profile [m^{-3}]
-  device.Nd = 1e26 * exp(-((device.x)/3.5e-6).^2) + 5e19;
-  device.Na = 5e23 * exp(-((device.x)/8e-6).^2) + 1e25 * exp(-((device.x - L)/5e-6).^2);
+  device.Na = 1e23 * exp (- (device.x / 2e-6) .^ 2);
+  device.Nd = 1e25 * exp (- ((device.x-L) / 2.4e-6) .^ 2) + 1e19;
 
   %% avoid zero doping
   device.D  = device.Nd - device.Na;  
 
-
   Fn = Fp = zeros (size (device.x));
+
+  %% carrier lifetime
+  device.tp = secs1d_carrier_lifetime_noscale (device.Na, device.Nd, 'p');
+  device.tn = secs1d_carrier_lifetime_noscale (device.Na, device.Nd, 'n');
 
   %% bandgap narrowing correction
   device.ni = (material.ni) * exp (secs1d_bandgap_narrowing_model
@@ -63,9 +63,9 @@ while (! converged)
                                        constants, algorithm, 
                                        V, n, p, Fn, Fp);
   
-  els_to_refine = find ((abs (diff (log10 (nin))) > .05) 
-                        | (abs (diff (log10 (pin))) > .05) 
-                        | (abs (diff (log10 (abs (device.D)))) > .1));
+  els_to_refine = find ((abs (diff (log10 (nin))) > .02) 
+                        | (abs (diff (log10 (pin))) > .02) 
+                        | (abs (diff (log10 (abs (device.D)))) > .05));
 
   if isempty (els_to_refine)
     converged = true;
@@ -79,6 +79,7 @@ while (! converged)
   newx = (x(els_to_refine) + x(els_to_refine+1)) / 2;
   device.x = sort (vertcat (x, newx));
   device.sinodes = [1:length(device.x)];
+
 endwhile
 
-save thyristor_mesh x L
+save diode_mesh x L xm

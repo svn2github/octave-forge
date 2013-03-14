@@ -61,6 +61,8 @@ function [n, p, V, Fn, Fp, Jn, Jp, tout, numit, res] = ...
       secs1d_tran_dd_gummel_map_noscale (device, material, constants, algorithm,
                                          Vin, nin, pin, Fnin, Fpin, tspan, vbcs)
 
+  rejected = 0;
+
   V  = Vin;
   n  = nin;
   p  = pin;
@@ -120,12 +122,13 @@ function [n, p, V, Fn, Fp, Jn, Jp, tout, numit, res] = ...
 
       V0 = Fn0 + constants.Vth * log (n0 ./ device.ni);
       
+      nrfnp = 4 * algorithm.maxnpincr; %% initialize so it is not undefined in case of exception
       [V(:,tstep), n(:,tstep), p(:,tstep), Fn(:,tstep), ...
-       Fp(:,tstep), Jn(:,tstep), Jp(:,tstep), res_, it] =...
+       Fp(:,tstep), Jn(:,tstep), Jp(:,tstep), res_, it, nrfnp] =...
           __one_step__ (device, material, constants, algorithm, 
                         V0, n0, p0, Fn0, Fp0, Jn(:,tstep), Jp(:,tstep),
-                        n(:, tstep - 1), p(:, tstep - 1), dt);      
-        
+                        n(:, tstep - 1), p(:, tstep - 1), dt);  
+      assert (nrfnp <= algorithm.maxnpincr)
       figure (1)
       plot (tout, (mean (Jn(:, 1:tstep) + Jp(:, 1:tstep), 1)))
       drawnow
@@ -134,29 +137,34 @@ function [n, p, V, Fn, Fp, Jn, Jp, tout, numit, res] = ...
       %if (tstep > 2)
       %  dt *= (algorithm.maxnpincr - res(tstep, 1)) / (res(tstep, 1) - res(tstep-1, 1));
       %endif
-      dt *= 2;
+      printf ("dt incremented by %g\n", .5 * sqrt (algorithm.maxnpincr / nrfnp))
+      dt *= .5 * sqrt (algorithm.maxnpincr / nrfnp);
       numit(tstep) = it;      
       
     catch
       
       warning (lasterr)
-      dt /= 2;
+      warning ("algorithm.maxnpincr = %17.17g, nrfnp = %17.17g, dt reduced by %17.17g", 
+               algorithm.maxnpincr, nrfnp, .5 * sqrt (algorithm.maxnpincr / nrfnp))
+      dt *=  .5 * sqrt (algorithm.maxnpincr / nrfnp);
       t = tout(--tstep);
       if (dt < 100*eps)
         warning ("secs1d_tran_dd_gummel_map_noscale: minimum time step reached.")
         return
       endif
+      rejected ++ ;
 
     end_try_catch
     
   endwhile  
-  
+  rejected
 endfunction
 
 function [Jn, Jp] = compute_currents (device, material, constants, algorithm,
                                       mobilityn, mobilityp, V, n, p, Fn, Fp)
-  dV = diff (V);
+  dV  = diff (V);
   dx = diff (device.x);
+
   [Bp, Bm] = bimu_bernoulli (dV ./ constants.Vth);
 
   Jn =  constants.q * constants.Vth * mobilityn .* ...
@@ -212,7 +220,7 @@ function [Rn, Rp, Gn, Gp, II] = generation_recombination_model ...
 endfunction
 
 
-function [V, n, p, Fn, Fp, Jn, Jp, res, it] = __one_step__ ...
+function [V, n, p, Fn, Fp, Jn, Jp, res, it, nrfnp] = __one_step__ ...
       (device, material, constants, algorithm, V0, n0, p0, Fn0,
        Fp0, Jn0, Jp0, n_old, p_old, dt); 
 
@@ -229,14 +237,14 @@ function [V, n, p, Fn, Fp, Jn, Jp, res, it] = __one_step__ ...
   Nelements = Nnodes -1;
   
   for it = 1 : algorithm.maxit
-    
+
     [V, n, p] = secs1d_nlpoisson_newton_noscale ...
         (device, material, constants, algorithm, V, n, p, Fn, Fp); 
       
     dV = diff (V);
     E  = - dV ./ dx;
 
-    [Bp, Bm] = bimu_bernoulli (dV);
+    %% [Bp, Bm] = bimu_bernoulli (dV);
     
     [Rn, Rp, Gn, Gp, II] = generation_recombination_model ...
         (device, material, constants, algorithm, E, Jn, Jp, 
@@ -271,16 +279,16 @@ function [V, n, p, Fn, Fp, Jn, Jp, res, it] = __one_step__ ...
          V, n, p, Fn, Fp);
     
     nrfn   = norm (Fn - Fn0, inf);
-    assert (norm (Fn - Fnref, inf) <= algorithm.maxnpincr);
-    
     nrfp   = norm (Fp - Fp0, inf);
-    assert (norm (Fp - Fpref, inf) <= algorithm.maxnpincr);
+
+    nrfnp = max (norm (Fn - Fnref, inf), norm (Fp - Fpref, inf));
     
     nrv    = norm (V  - V0,  inf);
     res(it) = max  ([nrfn; nrfp; nrv]);
     
-    if (res(it) < algorithm.toll)
-      break
+    if (res(it) < algorithm.toll
+        || (nrfnp > algorithm.maxnpincr))
+      break;
     endif
     
     V0  =  V;

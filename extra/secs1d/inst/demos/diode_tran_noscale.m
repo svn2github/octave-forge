@@ -1,14 +1,16 @@
+
 % physical constants and parameters
 constants = secs1d_physical_constants_fun ();
 material  = secs1d_silicon_material_properties_fun (constants);
 
 % geometry
-L  = 50e-6;          % [m] 
-xm = L/2;
+diode_refine_mesh
+load diode_mesh L xm x
+# Nelements = 1000;
+# L  = 50e-6;          % [m] 
+# xm = L/2;
 device.W = 150e-6 * 50e-6;
-
-Nelements = 1000;
-device.x  = linspace (0, L, Nelements+1)';
+# device.x  = linspace (0, L, Nelements+1)';
 device.sinodes = [1:length(device.x)];
 
 % doping profile [m^{-3}]
@@ -20,7 +22,7 @@ device.D  = device.Nd - device.Na;
 
 % time span for simulation
 tmin = 0;
-tmax = 769;
+tmax = 3/500;
 tspan = [tmin, tmax];
 
 Fn = Fp = zeros (size (device.x));
@@ -48,22 +50,22 @@ V = Fn + constants.Vth * log (n ./ device.ni);
 
 function fn = vbcs_1 (t);
   fn = [0; 0];
-  fn(2) = t;
+  fn(2) = 1 * sin (500 * pi * t);
 endfunction
 
 function fp = vbcs_2 (t);
   fp = [0; 0];
-  fp(2) = t;
+  fp(2) = 1 * sin (500 * pi * t);
 endfunction
 
 vbcs = {@vbcs_1, @vbcs_2};
 
 % tolerances for convergence checks
-algorithm.toll  = 1e-10;
-algorithm.maxit = 10;
+algorithm.toll  = 1e-6;
+algorithm.maxit = 300;
 algorithm.ptoll = 1e-12;
 algorithm.pmaxit = 1000;
-algorithm.maxnpincr = constants.Vth;
+algorithm.maxnpincr = constants.Vth / 10;
 
 %% initial guess via stationary simulation
 [nin, pin, Vin, Fnin, Fpin, Jn, Jp, it, res] = ...

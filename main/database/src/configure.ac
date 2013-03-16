@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.67])
-AC_INIT([database], [2.0.0], [i7tiol@t-online.de])
+AC_INIT([database], [2.1.0], [i7tiol@t-online.de])
 AC_CONFIG_SRCDIR([__pq_connect__.cc])
 
 # Checks for programs.

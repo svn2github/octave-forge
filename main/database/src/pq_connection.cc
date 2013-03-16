@@ -45,6 +45,8 @@ octave_pq_connection::octave_pq_connection (std::string arg)
     {
       if (conn)
         {
+          error ("%s", PQerrorMessage (conn));
+
           PGconn *t_conn = conn;
 
           conn = NULL;

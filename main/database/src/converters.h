@@ -29,7 +29,7 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 #include <vector>
 #include <string>
 
-#include <postgresql/libpq-fe.h>
+#include <libpq-fe.h>
 
 #define OCT_PQ_NUM_CONVERTERS 13
 

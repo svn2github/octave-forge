@@ -7,7 +7,7 @@ pq_interface.oct: $(OBJECTS)
 
 # be on the safe side with respect to include files
 %.o: %.cc converters.h pq_connection.h command.h
-	@MKOCTFILE@ -c $<
+	@MKOCTFILE@ -I`@PG_CONFIG@ --includedir` -c $<
 
 .PHONY: clean
 clean: ; rm -f *.o *.oct

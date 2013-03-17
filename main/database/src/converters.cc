@@ -21,10 +21,10 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 #include <octave/ov-float.h>
 #include <octave/ov-uint8.h>
 
-#include <postgresql/libpq-fe.h>
+#include <libpq-fe.h>
 // FIXME: needed for NAMEDATALEN, but defining a lot of stuff which
 // might conflict with names here
-#include <postgresql/pg_config_manual.h>
+#include <pg_config_manual.h>
 
 #include "converters.h"
 

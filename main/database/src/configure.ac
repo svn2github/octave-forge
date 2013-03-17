@@ -9,14 +9,10 @@ AC_CONFIG_SRCDIR([__pq_connect__.cc])
 AC_PROG_CXX
 AC_CHECK_PROG(OCTAVE, octave, octave)
 AC_CHECK_PROG(MKOCTFILE, mkoctfile, mkoctfile)
+AC_CHECK_PROG(PG_CONFIG, pg_config, pg_config)
 
 # Checks for libraries.
 AC_CHECK_LIB([pq], [PQconnectdb])
-
-# Checks for header files.
-AC_CHECK_HEADER([postgresql/libpq-fe.h], ,[exit 1])
-AC_CHECK_HEADER([postgresql/pg_config_manual.h], ,[exit 1])
-AC_CHECK_HEADER([postgresql/libpq/libpq-fs.h], ,[exit 1])
 
 # Checks for typedefs, structures, and compiler characteristics.
 

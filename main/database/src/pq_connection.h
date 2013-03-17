@@ -23,7 +23,7 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 #include <octave/oct.h>
 
-#include <postgresql/libpq-fe.h>
+#include <libpq-fe.h>
 
 #include "converters.h"
 

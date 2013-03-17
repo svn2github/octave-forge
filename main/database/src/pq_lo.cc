@@ -24,7 +24,7 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 #include <stdio.h>
 
 #include "command.h"
-#include <postgresql/libpq/libpq-fs.h>
+#include <libpq/libpq-fs.h>
 
 // PKG_ADD: autoload ("pq_lo_import", "pq_interface.oct");
 // PKG_ADD: autoload ("pq_lo_export", "pq_interface.oct");

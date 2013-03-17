@@ -521,7 +521,7 @@ octave_value command::copy_out_handler (const std::string &outfile)
   if (error_state)
     valid = 0;
 
-  return retval;
+  return octave_value (std::string ("copy out"));
 }
 
 octave_value command::copy_in_handler (const std::string &infile,
@@ -834,7 +834,7 @@ octave_value command::copy_in_handler (const std::string &infile,
   if (error_state)
     valid = 0;
 
-  return retval;
+  return octave_value (std::string ("copy in"));
 }
 
 oct_pq_conv_t *command::pgtype_from_octtype (const octave_value &param)

@@ -1,3 +1,10 @@
+database 2.1.1:
+---------------
+
+ ** Account for system-dependence of postgresql include directories.
+
+ ** Work around problem with sequential addpath in 'pkg build'.
+
 database 2.1.0:
 ---------------
 

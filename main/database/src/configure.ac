@@ -10,6 +10,7 @@ AC_PROG_CXX
 AC_CHECK_PROG(OCTAVE, octave, octave)
 AC_CHECK_PROG(MKOCTFILE, mkoctfile, mkoctfile)
 AC_CHECK_PROG(PG_CONFIG, pg_config, pg_config)
+if test "x$PG_CONFIG" != "xpg_config"; then exit 1; fi
 
 # Checks for libraries.
 AC_CHECK_LIB([pq], [PQconnectdb])

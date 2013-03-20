@@ -213,9 +213,56 @@ while (indi <= size (varargin, 2))
       catch
         %# try our own method
         UTF8_BOM = char ([0xEF 0xBB 0xBF]);
+	%# Is it compressed ?
+	cmd = []; count = regexpi (dummy, '\.gz');
+	if (length (dummy) - count == 2)
+	  cmd = ['gzip -dc '];
+	else
+	  count = regexpi (dummy, '\.bz2');
+	  if (length (dummy) - count == 3)
+	    cmd = ['bzip2 -dc '];
+	  else
+	    count = regexpi (dummy, '\.xz');
+	    if (length (dummy) - count == 2)
+	      cmd = ['xz -dc '];
+	    else
+	      count = regexpi (dummy, '\.zip');
+	      if (length (dummy) - count == 3)
+		cmd = ['unzip -p '];
+	      else
+		count = regexpi (dummy, '\.lzo');
+		if (length (dummy) - count == 3)
+		  cmd = ['lzop -dc '];
+		endif
+	      endif
+	    endif
+	  endif
+	endif
+
+	if (isempty (cmd)) %# direct read
+	  [fid, msg] = fopen (dummy, 'rt');
+	else
+	  %# The file we read from external process must be seekable !!!
+	  tmpfile = tmpnam ();
+	  cmd = [cmd, dummy,  ' > ',  tmpfile];
+	  if (exist ('OCTAVE_VERSION', 'builtin'))
+	    [output, status] = system (cmd);
+	  else
+	    [status, output] = system (cmd);
+	  endif 
+	  if (not (0 == status))
+	    disp (sprintf ("%s exited with status %d", cmd, status));
+	  endif
+	  fid = fopen (tmpfile, 'rt');
+	  if (exist ('OCTAVE_VERSION', 'builtin'))
+	    [cmd, status] = unlink (tmpfile);
+	  else
+	    delete (tmpfile)
+	  endif
+	endif
+
         unwind_protect
           in = [];
-	  fid = fopen (dummy);
           if (fid ~= -1)
             df._src{end+1, 1} = dummy;
             dummy = fgetl (fid);
@@ -412,8 +459,8 @@ while (indi <= size (varargin, 2))
             endif
           endif
 	  
-          clear UTF8_BOM fid in lines indl the_line content empty_lines
-          clear datetime timeval idx
+          clear UTF8_BOM fid in lines indl the_line content empty_lines 
+          clear datetime timeval idx count tmpfile cmd output status
         
         endif
       end_try_catch

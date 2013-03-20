@@ -108,7 +108,7 @@ endif
 
 %# default values
 seeked = []; trigger = []; unquot = true; sep = "\t,"; cmt_lines = [];
-conv_regexp = {}; datefmt = '';
+conv_regexp = {}; datefmt = ''; verbose = false;
 
 if (length (varargin) > 0)	%# extract known arguments
   indi = 1;
@@ -165,6 +165,9 @@ if (length (varargin) > 0)	%# extract known arguments
           varargin(indi:indi+1) = [];
         case 'datefmt'
           datefmt = varargin{indi + 1};
+          varargin(indi:indi+1) = [];
+	case 'verbose'
+          verbose = varargin{indi + 1};
           varargin(indi:indi+1) = [];
 	case '--'
 	  %# stop processing args -- take the rest as filenames
@@ -239,7 +242,11 @@ while (indi <= size (varargin, 2))
           %# cut into lines -- include the EOL to have a one-to-one
           %# matching between line numbers. Use a non-greedy match.
           lines = regexp (in, ['.*?' eol], 'match');
-          dummy = cellfun (@(x) regexp (x, eol), lines); 
+	  try
+            dummy = cellfun (@(x) regexp (x, eol), lines); 
+	  catch
+	    disp('line 245 -- binary garbage in the input file ? '); keyboard
+	  end
           %# remove the EOL character(s)
           lines(1 == dummy) = {""};
           %# use a positive lookahead -- eol is not part of the match
@@ -330,7 +337,13 @@ while (indi <= size (varargin, 2))
               while (indk <= size (the_line, 2))
 		if (isempty (the_line{indk}) || any (size (the_line{indk}) > 1)) 
                   %#if indi > 1 && indk > 1, disp('line 117 '); keyboard; %#endif
-                  if (unquot)
+		  if (isempty (dummy {indk}))
+		    %# empty field, just don't care
+		    indk = indk + 1; indm = indm + 1;
+		    continue;
+		  endif
+                  
+		  if (unquot)
                     try
                       %# remove quotes and leading space(s)
                       x(indj, indm) = regexp (dummy{indk}, '[^''" ].*[^''"]', 'match'){1};
@@ -463,6 +476,10 @@ while (indi <= size (varargin, 2))
       if (ndims (x) > 2), idx.subs{3} = 1:size (x, 3); endif
       %#      df = subsasgn(df, idx, x);        <= call directly lower level
       try
+	if (verbose)
+	   printf ("Calling df_matassign, orig size: %s\n", disp (size (df)));
+	   printf ("size(x): %s\n", disp (size (x)));
+	endif
 	df = df_matassign (df, idx, indj, length (indj), x);
       catch
 	disp ('line 443 '); keyboard

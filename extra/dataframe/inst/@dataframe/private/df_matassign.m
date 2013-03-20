@@ -284,7 +284,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
       endfor
       indi = nrow;
       while (indi > 0)
-        if (eff_len(indi) < ncol)
+        if (eff_len(indi) < 1)
           nrow = nrow - 1;
           indr(end) = [];
           RHS(end, :) = [];
@@ -311,7 +311,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
     indj = 1;
     for indi = (1:ncol)
       if (indc(indi) > df._cnt(2))
-        %# perform dynamic resizing one-by-one, to get type right
+	%# perform dynamic resizing one-by-one, to get type right
         if (isempty (ctype) || length (ctype) < indc(indi))
           df = df_pad(df, 2, indc(indi)-df._cnt(2), class(RHS{1, indj}));
         else
@@ -348,9 +348,12 @@ function df = df_matassign(df, S, indc, ncol, RHS)
             endswitch
           endif
         catch
-          dummy =  unique(cellfun(@class, RHS(:, indj), ...
+	  fprintf (2, "Something went wrong while converting colum %d\n", indj);
+	  fprintf (2, "Error was: %s\n", lasterr ());
+	  dummy =  unique(cellfun(@class, RHS(:, indj), ...
                                   'UniformOutput', false));
           if (any (strmatch ("char", dummy, "exact")))
+	    fprintf (2, "Downclassing to char\n");
             %# replace the actual column, of type numeric, by a char 
             df._type{indc(indi)} = 'char';
             dummy = RHS(:, indj);
@@ -402,7 +405,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
       df._data{indc(indi)} = dummy; df._rep{indc(indi)} = 1:size (dummy, 2); 
       indj = indj + 1;
     endfor
-    
+
   else 
     %# RHS is either a numeric, either a df
     if (any (indc > min (size (df._data, 2), df._cnt(2))))

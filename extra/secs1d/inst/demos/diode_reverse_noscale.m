@@ -17,8 +17,13 @@ device.Nd = 1e23 * (device.x > xm);
 % avoid zero doping
 device.D  = device.Nd - device.Na;  
 
-% compute bandgap narrowing correction
-device.ni = material.ni * exp (secs1d_bandgap_narrowing_model (device.Na, device.Nd) / constants.Vth);
+%% bandgap narrowing correction
+device.ni = (material.ni) * exp (secs1d_bandgap_narrowing_model
+                                 (device.Na, device.Nd) / constants.Vth); 
+%% carrier lifetime
+device.tp = secs1d_carrier_lifetime_noscale (device.Na, device.Nd, 'p');
+device.tn = secs1d_carrier_lifetime_noscale (device.Na, device.Nd, 'n');
+
 % initial guess for n, p, V, phin, phip
 V_p = -1;
 V_n =  0;
@@ -50,6 +55,9 @@ algorithm.pmaxit = 1000;
       secs1d_dd_gummel_map_noscale (device, material,
                                     constants, algorithm,
                                     V, n, p, Fn, Fp);  
+
+[n_newt, p_newt, V_newt, Fn_newt, Fp_newt, Jn, Jp, it, res] = secs1d_dd_newton_noscale ...  
+    (device, material, constants, algorithm, V, n, p, Fn, Fp);
 
 % band structure
 Efn  = -Fn;

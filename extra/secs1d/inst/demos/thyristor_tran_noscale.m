@@ -102,12 +102,12 @@ close all; semilogy (device.x, nin, 'x-', device.x, pin, 'x-'); pause
 
 function fn = vbcs_1 (t);
   fn = [0; 0];
-  fn(2) = t;
+  fn(2) = 80*t;
 endfunction
 
 function fp = vbcs_2 (t);
   fp = [0; 0];
-  fp(2) = t;
+  fp(2) = 80*t;
 endfunction
 
 vbcs = {@vbcs_1, @vbcs_2};

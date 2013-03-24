@@ -157,7 +157,7 @@ function [n, p, V, Fn, Fp, Jn, Jp, tout, numit, res] = ...
     end_try_catch
     
   endwhile  
-  rejected
+  printf ("number of rejected time steps: %d\n", rejected)
 endfunction
 
 function [Jn, Jp] = compute_currents (device, material, constants, algorithm,

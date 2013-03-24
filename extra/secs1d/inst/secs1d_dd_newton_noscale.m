@@ -56,13 +56,11 @@ function [n, p, V, Fn, Fp, Jn, Jp, it, res] = secs1d_dd_newton_noscale ...
   dampcoeff  = 2;
   Nnodes     = numel (device.x);
 
-  V  = Vin;
-  n  = nin;
-  p  = pin;
+  V  = Vin; n = nin; p = pin;
 
   [res, jac] = residual_jacobian (device, material, constants, 
                                   algorithm, V, n, p);
-  keyboard
+
   normr(1)   = norm (res, inf);
   normrnew   = normr(1);
 
@@ -86,6 +84,7 @@ function [n, p, V, Fn, Fp, Jn, Jp, it, res] = secs1d_dd_newton_noscale ...
                                             algorithm, Vnew, nnew, pnew);
 
       normrnew = norm (resnew, inf);
+
       if (normrnew > normr(it))
         tk = tk / dampcoeff;
       else
@@ -99,7 +98,18 @@ function [n, p, V, Fn, Fp, Jn, Jp, it, res] = secs1d_dd_newton_noscale ...
     V = Vnew; n = nnew; p = pnew;
     normr(it+1) = normrnew;
 
-    if (normr(it+1) <= algorithm.toll)
+    resvec(it) = reldnorm    = + ...
+        norm (delta(1:Nnodes-2), inf) / norm (V, inf) + ...
+        norm (delta((Nnodes-2)+(1:Nnodes-2)), inf) / norm (n, inf) + ...
+        norm (delta(2*(Nnodes-2)+(1:Nnodes-2)), inf) / norm (p, inf);
+      
+    plotyy (
+            1:it, log10 (resvec), 
+            1:it+1, log10 (normr)
+            )
+    drawnow
+      
+    if (reldnorm <= algorithm.toll)
       break
     endif
 
@@ -114,6 +124,8 @@ function [n, p, V, Fn, Fp, Jn, Jp, it, res] = secs1d_dd_newton_noscale ...
 
   Fp = V + constants.Vth * log (p ./ device.ni);
   Fn = V - constants.Vth * log (n ./ device.ni);
+
+  res = resvec;
 
 endfunction
 
@@ -152,46 +164,50 @@ endfunction
 function [res, jac] = residual_jacobian (device, material, constants, 
                                          algorithm, V, n, p)
 
- [mobilityn, mobilityp] = compute_mobilities ...
+  [mobilityn, mobilityp] = compute_mobilities ...
       (device, material, constants, algorithm, V, n, p);
-
+  
   [Rn, Rp, Gn, Gp, II] = generation_recombination_model ...
       (device, material, constants, algorithm, mobilityn, 
        mobilityp, V, n, p);
 
-  nm         = (n(2:end) + n(1:end-1))/2;
-  pm         = (p(2:end) + p(1:end-1))/2;
+  nm         = (n(2:end) + n(1:end-1)) / 2;
+  pm         = (p(2:end) + p(1:end-1)) / 2;
 
   Nnodes     = numel (device.x);
   Nelements  = Nnodes - 1;
 
-  epsilon    = material.esi * ones (Nelements, 1);
-
+  epsilon    = material.esi * ones (Nelements, 1) / constants.q;
+  
   A11 = bim1a_laplacian (device.x, epsilon, 1);
-  A12 = bim1a_reaction (device.x, constants.q, 1);
+  A12 = bim1a_reaction (device.x, 1, 1);
   A13 = - A12;
-  R1  = A11 * V + bim1a_rhs (device.x, constants.q, n - p - device.D);
+  R1  = A11 * V + bim1a_rhs (device.x, 1, n - p - device.D);
 
   A21 = - bim1a_laplacian (device.x, mobilityn .* nm, 1);
   A22 = bim1a_advection_diffusion ...
       (device.x, mobilityn * constants.Vth, 1, 1, V / constants.Vth) + ...
       bim1a_reaction (device.x, 1, Rn);
   A23 = bim1a_reaction (device.x, 1, Rp);
-  R2  = A22 * n + bim1a_rhs (device.x, 1, Gn - Rn .* n);
+  R2  = A22 * n + bim1a_rhs (device.x, 1, Rn .* n - Gn);
 
   A31 = bim1a_laplacian (device.x, mobilityp .* pm, 1);
   A32 = bim1a_reaction (device.x, 1, Rn);
   A33 = bim1a_advection_diffusion ...
       (device.x, mobilityp * constants.Vth , 1, 1, - V / constants.Vth) + ...
       bim1a_reaction (device.x, 1, Rp);
-  R3  = A33 * p + bim1a_rhs (device.x, 1, Gp - Rp .* p);
+  R3  = A33 * p + bim1a_rhs (device.x, 1, Rp .* p - Gp);
 
-  res = [R1(2:end-1); R2(2:end-1); R3(2:end-1)];
+  N1 = norm(R1(2:end-1), inf);
+  N2 = norm(R2(2:end-1), inf);
+  N3 = norm(R3(2:end-1), inf);
 
-  jac = [A11(2:end-1, 2:end-1), A12(2:end-1, 2:end-1), A13(2:end-1, 2:end-1);
-         A21(2:end-1, 2:end-1), A22(2:end-1, 2:end-1), A23(2:end-1, 2:end-1);
-         A31(2:end-1, 2:end-1), A32(2:end-1, 2:end-1), A33(2:end-1, 2:end-1)];
+  res = [R1(2:end-1)/N1; R2(2:end-1)/N2; R3(2:end-1)/N2];
 
+  jac = [[A11(2:end-1, 2:end-1), A12(2:end-1, 2:end-1), A13(2:end-1, 2:end-1)]/N1;
+         [A21(2:end-1, 2:end-1), A22(2:end-1, 2:end-1), A23(2:end-1, 2:end-1)]/N2;
+         [A31(2:end-1, 2:end-1), A32(2:end-1, 2:end-1), A33(2:end-1, 2:end-1)]/N3];
+  
 endfunction
 
 function [Jn, Jp] = compute_currents (device, material, constants, algorithm,

@@ -25,7 +25,7 @@ device.tp = secs1d_carrier_lifetime_noscale (device.Na, device.Nd, 'p');
 device.tn = secs1d_carrier_lifetime_noscale (device.Na, device.Nd, 'n');
 
 % initial guess for n, p, V, phin, phip
-V_p = -1;
+V_p =  1;
 V_n =  0;
 
 Fp = V_p * (device.x <= xm);
@@ -45,8 +45,8 @@ n = abs (device.D) / 2 .* (1 + sqrt (1 + 4 * (device.ni ./ abs (device.D)) .^ 2)
 V = Fn + constants.Vth * log (n ./ device.ni);
 
 % tolerances for convergence checks
-algorithm.toll  = 1e-3;
-algorithm.maxit = 1000;
+algorithm.toll  = 1e-10;
+algorithm.maxit = 100;
 algorithm.ptoll = 1e-12;
 algorithm.pmaxit = 1000;
 
@@ -56,6 +56,7 @@ algorithm.pmaxit = 1000;
                                     constants, algorithm,
                                     V, n, p, Fn, Fp);  
 
+algorithm.maxit = 1000;
 [n_newt, p_newt, V_newt, Fn_newt, Fp_newt, Jn, Jp, it, res] = secs1d_dd_newton_noscale ...  
     (device, material, constants, algorithm, V, n, p, Fn, Fp);
 
@@ -65,6 +66,9 @@ Efp  = -Fp;
 Ec   = constants.Vth * log (material.Nc./n) + Efn;
 Ev   = -constants.Vth * log (material.Nv./p) + Efp;
 
-plot (device.x, Efn, device.x, Efp, device.x, Ec, device.x, Ev)
+plot (device.x, Efn, 
+      device.x, Efp, 
+      device.x, Ec, 
+      device.x, Ev)
 legend ('Efn', 'Efp', 'Ec', 'Ev')
 axis tight

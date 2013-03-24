@@ -49,6 +49,9 @@ algorithm.toll  = 1e-10;
 algorithm.maxit = 100;
 algorithm.ptoll = 1e-12;
 algorithm.pmaxit = 1000;
+algorithm.colscaling = [10 1e23 1e23];
+algorithm.rowscaling = [1e6 1e23 1e23];
+algorithm.maxnpincr = constants.Vth / 10;
 
 % solve the problem using the full DD model
 [n, p, V, Fn, Fp, Jn, Jp, it, res] = ...
@@ -66,6 +69,7 @@ Efp  = -Fp;
 Ec   = constants.Vth * log (material.Nc./n) + Efn;
 Ev   = -constants.Vth * log (material.Nv./p) + Efp;
 
+close all
 plot (device.x, Efn, 
       device.x, Efp, 
       device.x, Ec, 

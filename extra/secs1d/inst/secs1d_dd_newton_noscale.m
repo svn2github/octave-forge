@@ -69,36 +69,26 @@ function [n, p, V, Fn, Fp, Jn, Jp, it, res] = secs1d_dd_newton_noscale ...
     delta = - jac \ res;
   
     tk = 1;
-    for dit = 1 : 5
+    dv = norm (delta(1:Nnodes-2), inf);
+    if (dv > algorithm.maxnpincr)
+      tk = algorithm.maxnpincr / dv;
+    endif
 
-      Vnew          = Vin;
-      Vnew(2:end-1) = V(2:end-1) + tk * delta(1:Nnodes-2);
+    Vnew          = Vin;
+    Vnew(2:end-1) = V(2:end-1) + tk * delta(1:Nnodes-2) * algorithm.colscaling(1);
+    
+    nnew          = nin;
+    nnew(2:end-1) = n(2:end-1) + tk * delta((Nnodes-2)+(1:Nnodes-2)) * algorithm.colscaling(2);
 
-      nnew          = nin;
-      nnew(2:end-1) = n(2:end-1) + tk * delta((Nnodes-2)+(1:Nnodes-2));
+    pnew          = pin;
+    pnew(2:end-1) = p(2:end-1) + tk * delta(2*(Nnodes-2)+(1:Nnodes-2)) * algorithm.colscaling(3);
 
-      pnew          = pin;
-      pnew(2:end-1) = p(2:end-1) + tk * delta(2*(Nnodes-2)+(1:Nnodes-2));
-
-      [resnew, jacnew] = residual_jacobian (device, material, constants, 
-                                            algorithm, Vnew, nnew, pnew);
-
-      normrnew = norm (resnew, inf);
-
-      if (normrnew > normr(it))
-        tk = tk / dampcoeff;
-      else
-        jac = jacnew;
-        res = resnew;
-        break
-      endif
-
-    endfor
-
+    
     V = Vnew; n = nnew; p = pnew;
-    normr(it+1) = normrnew;
+    [res, jac] = residual_jacobian (device, material, constants, 
+                                    algorithm, V, n, p);
 
-    resvec(it) = reldnorm    = + ...
+    resvec(it) = reldnorm = + ...
         norm (delta(1:Nnodes-2), inf) / norm (V, inf) + ...
         norm (delta((Nnodes-2)+(1:Nnodes-2)), inf) / norm (n, inf) + ...
         norm (delta(2*(Nnodes-2)+(1:Nnodes-2)), inf) / norm (p, inf);
@@ -198,15 +188,19 @@ function [res, jac] = residual_jacobian (device, material, constants,
       bim1a_reaction (device.x, 1, Rp);
   R3  = A33 * p + bim1a_rhs (device.x, 1, Rp .* p - Gp);
 
-  N1 = norm(R1(2:end-1), inf);
-  N2 = norm(R2(2:end-1), inf);
-  N3 = norm(R3(2:end-1), inf);
+  N1 = algorithm.rowscaling(1);
+  N2 = algorithm.rowscaling(2);
+  N3 = algorithm.rowscaling(3);
+
+  M1 = algorithm.colscaling(1);
+  M2 = algorithm.colscaling(2);
+  M3 = algorithm.colscaling(3);
 
   res = [R1(2:end-1)/N1; R2(2:end-1)/N2; R3(2:end-1)/N2];
 
-  jac = [[A11(2:end-1, 2:end-1), A12(2:end-1, 2:end-1), A13(2:end-1, 2:end-1)]/N1;
-         [A21(2:end-1, 2:end-1), A22(2:end-1, 2:end-1), A23(2:end-1, 2:end-1)]/N2;
-         [A31(2:end-1, 2:end-1), A32(2:end-1, 2:end-1), A33(2:end-1, 2:end-1)]/N3];
+  jac = [[A11(2:end-1, 2:end-1)*M1, A12(2:end-1, 2:end-1)*M2, A13(2:end-1, 2:end-1)*M3]/N1;
+         [A21(2:end-1, 2:end-1)*M1, A22(2:end-1, 2:end-1)*M2, A23(2:end-1, 2:end-1)*M3]/N2;
+         [A31(2:end-1, 2:end-1)*M1, A32(2:end-1, 2:end-1)*M2, A33(2:end-1, 2:end-1)*M3]/N3];
   
 endfunction
 

@@ -74,10 +74,13 @@ endfunction
 vbcs = {@vbcs_1, @vbcs_2};
 
 % tolerances for convergence checks
-algorithm.toll  = 1e-6;
+algorithm.toll  = 1e-4;
 algorithm.maxit = 100;
 algorithm.ptoll = 1e-12;
 algorithm.pmaxit = 100;
+algorithm.maxnpincr = constants.Vth;
+algorithm.colscaling = [10 1e23 1e23];
+algorithm.rowscaling = [1e6 1e23 1e23];
 algorithm.maxnpincr = constants.Vth;
 
 logplot = @(x) asinh (x/2) / log(10);
@@ -93,12 +96,46 @@ pause
                                      constants, algorithm, 
                                      V, n, p, Fn, Fp);
 
-close all; semilogy (device.x, nin, 'x-', device.x, pin, 'x-'); pause
+close all; semilogy (device.x, nin, 'x-', device.x, pin, 'x-');
+hold on
+semilogy (device.x, device.Na, device.x, device.Nd);
+hold off
+pause
 
-%% (pseudo)transient simulation
+%% initial guess via (pseudo)transient simulation
 [n, p, V, Fn, Fp, Jn, Jp, t, it, res] = ...
-    secs1d_tran_dd_gummel_map_noscale (device, material, constants, algorithm,
+    secs1d_tran_dd_newton_noscale (device, material, constants, algorithm,
                                Vin, nin, pin, Fn, Fp, tspan, vbcs);
+
+Vin = V(:, end);
+nin = n(:, end);
+pin = p(:, end);
+Fnin = Fn(:, end);
+Fpin = Fp(:, end);
+
+function fn = vbcs_1 (t);
+  fn = [0; 0];
+  fn(2) = -10*t;
+endfunction
+
+function fp = vbcs_2 (t);
+  fp = [0; 0];
+  fp(2) = -10*t;
+endfunction
+
+vbcs = {@vbcs_1, @vbcs_2};
+
+%% (pseudo)transient simulation with negative applied volatage
+# [n, p, V, Fn, Fp, Jn, Jp, t, it, res] = ...
+#     secs1d_tran_dd_gummel_map_noscale (device, material, constants, algorithm,
+#                                        V(:, end), n(:, end), p(:, end), 
+#                                        Fn(:, end), Fp(:, end), tspan, vbcs);
+
+[n, p, V, Fn, Fp, Jnneg, Jpneg, t, it, res] = ...
+    secs1d_tran_dd_newton_noscale (device, material, constants, algorithm,
+                                   Vin, nin, pin, 
+                                   Fnin, Fpin, tspan, vbcs);
+vvectorneg  = Fn(end, :);
 
 function fn = vbcs_1 (t);
   fn = [0; 0];
@@ -112,33 +149,20 @@ endfunction
 
 vbcs = {@vbcs_1, @vbcs_2};
 
-%% (pseudo)transient simulation
-[n, p, V, Fn, Fp, Jn, Jp, t, it, res] = ...
-    secs1d_tran_dd_gummel_map_noscale (device, material, constants, algorithm,
-                                       V(:, end), n(:, end), p(:, end), 
-                                       Fn(:, end), Fp(:, end), tspan, vbcs);
+%% (pseudo)transient simulation with positive applied volatage
+# [n, p, V, Fn, Fp, Jn, Jp, t, it, res] = ...
+#     secs1d_tran_dd_gummel_map_noscale (device, material, constants, algorithm,
+#                                        V(:, end), n(:, end), p(:, end), 
+#                                        Fn(:, end), Fp(:, end), tspan, vbcs);
 
-dV   = diff (V, [], 1);
-dx   = diff (device.x);
-E    = -dV ./ dx;
-   
-%% band structure
-Efn  = -Fn(:, end);
-Efp  = -Fp(:, end);
-Ec   =  constants.Vth * log (material.Nc ./ n(:, end)) + Efn;
-Ev   = -constants.Vth * log (material.Nv ./ p(:, end)) + Efp;
-   
-figure (1)
-plot (device.x, Efn, device.x, Efp, device.x, Ec, device.x, Ev)
-legend ('Efn', 'Efp', 'Ec', 'Ev')
-axis tight
-drawnow
+[n, p, V, Fn, Fp, Jnpos, Jppos, t, it, res] = ...
+    secs1d_tran_dd_newton_noscale (device, material, constants, algorithm,
+                                   Vin, nin, pin, 
+                                   Fnin, Fpin, tspan, vbcs);
 
-vvector  = Fn(end, :);
-ivector  = (Jn(end, :) + Jp(end, :));
-ivectorn = (Jn(1, :)   + Jp(1, :));
+vvectorpos  = Fn(end, :);
+ivectorpos  = (Jnpos(end, :) + Jppos(end, :));
+ivectorneg  = (Jnneg(end, :) + Jpneg(end, :));
 
-figure (2) 
-plot (vvector, ivector, vvector, ivectorn)
-legend('J_L','J_0')
+plot (vvectorpos, ivectorpos, vvectorneg, ivectorneg)
 drawnow

@@ -62,33 +62,37 @@ vbcs = {@vbcs_1, @vbcs_2};
 
 % tolerances for convergence checks
 algorithm.toll  = 1e-6;
-algorithm.maxit = 300;
+algorithm.maxit = 100;
 algorithm.ptoll = 1e-12;
 algorithm.pmaxit = 1000;
-algorithm.maxnpincr = constants.Vth / 10;
+algorithm.colscaling = [10 1e23 1e23];
+algorithm.rowscaling = [1e6 1e23 1e23];
+algorithm.maxnpincr = constants.Vth;
 
 %% initial guess via stationary simulation
-[nin, pin, Vin, Fnin, Fpin, Jn, Jp, it, res] = ...
-    secs1d_dd_gummel_map_noscale (device, material,
-                                  constants, algorithm,
-                                  V, n, p, Fn, Fp);  
+[nin, pin, Vin, Fnin, Fpin, Jn, Jp, it, res] = secs1d_dd_gummel_map_noscale ...
+    (device, material, constants, algorithm, V, n, p, Fn, Fp);  
 
 %% close all; semilogy (device.x, nin, 'x-', device.x, pin, 'x-'); pause
 
 %% (pseudo)transient simulation
-[n, p, V, Fn, Fp, Jn, Jp, t, it, res] = ...
-    secs1d_tran_dd_gummel_map_noscale (device, material, constants, algorithm,
-                                       Vin, nin, pin, Fnin, Fpin, tspan, vbcs);
+% [n, p, V, Fn, Fp, Jn, Jp, t, it, res] = ...
+%     secs1d_tran_dd_gummel_map_noscale (device, material, constants, algorithm,
+%                                        Vin, nin, pin, Fnin, Fpin, tspan, vbcs);
+
+ [n, p, V, Fn, Fp, Jn, Jp, t, it, res] = ...
+     secs1d_tran_dd_newton_noscale (device, material, constants, algorithm,
+                                    Vin, nin, pin, Fnin, Fpin, tspan, vbcs);
 
 dV   = diff (V, [], 1);
 dx   = diff (device.x);
 E    = -dV ./ dx;
    
 %% band structure
-Efn  = -Fn;
-Efp  = -Fp;
-Ec   =  constants.Vth * log (material.Nc ./ n) + Efn;
-Ev   = -constants.Vth * log (material.Nv ./ p) + Efp;
+%% Efn  = -Fn;
+%% Efp  = -Fp;
+%% Ec   =  constants.Vth * log (material.Nc ./ n) + Efn;
+%% Ev  = -constants.Vth * log (material.Nv ./ p) + Efp;
    
 %## figure (1)
 %## plot (x, Efn, x, Efp, x, Ec, x, Ev)
@@ -102,7 +106,7 @@ ivectorn = (Jn(1, :)   + Jp(1, :));
 ivectora = mean (Jn + Jp, 1);
 area = 150e-6 * 50e-6;
 figure (1) 
-plot (vvector, area*ivector, vvector, area*ivectorn, vvector, area*ivectora)
+plotyy (t, vvector, t, area*ivector)
 legend('J_L','J_0')
 drawnow
    

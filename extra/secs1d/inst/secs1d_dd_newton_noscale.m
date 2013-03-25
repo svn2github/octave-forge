@@ -53,52 +53,64 @@
 function [n, p, V, Fn, Fp, Jn, Jp, it, res] = secs1d_dd_newton_noscale ...  
       (device, material, constants, algorithm, Vin, nin, pin, Fnin, Fpin)
 
-  dampcoeff  = 2;
   Nnodes     = numel (device.x);
-
   V  = Vin; n = nin; p = pin;
 
   [res, jac] = residual_jacobian (device, material, constants, 
                                   algorithm, V, n, p);
 
-  normr(1)   = norm (res, inf);
-  normrnew   = normr(1);
-
   for it = 1 : algorithm.maxit
 	    
     delta = - jac \ res;
-  
-    tk = 1;
-    dv = norm (delta(1:Nnodes-2), inf);
-    if (dv > algorithm.maxnpincr)
-      tk = algorithm.maxnpincr / dv;
+
+    dv = delta(1:Nnodes-2)                * algorithm.colscaling(1);
+    dn = delta((Nnodes-2)+(1:Nnodes-2))   * algorithm.colscaling(2);
+    dp = delta(2*(Nnodes-2)+(1:Nnodes-2)) * algorithm.colscaling(3);
+
+    ndv = norm (dv, inf);
+    ndn = norm (dn, inf);
+    ndp = norm (dp, inf);
+
+    tkv = 1;
+    if (ndv > algorithm.maxnpincr)
+      tkv = algorithm.maxnpincr / ndv;
     endif
 
-    Vnew          = Vin;
-    Vnew(2:end-1) = V(2:end-1) + tk * delta(1:Nnodes-2) * algorithm.colscaling(1);
-    
-    nnew          = nin;
-    nnew(2:end-1) = n(2:end-1) + tk * delta((Nnodes-2)+(1:Nnodes-2)) * algorithm.colscaling(2);
+    tkn = tkv;
+    [howmuch, where] = min (n(2:end-1) + tkn * dn);
+    if (howmuch <= 0)
+      tkn = - .9 * n(2:end-1)(where) / dn(where)
+    endif
 
-    pnew          = pin;
-    pnew(2:end-1) = p(2:end-1) + tk * delta(2*(Nnodes-2)+(1:Nnodes-2)) * algorithm.colscaling(3);
+    tkp = tkn;
+    [howmuch, where] = min (p(2:end-1) + tkp * dp);
+    if (howmuch <= 0)
+      tkp = - .9 * p(2:end-1)(where) / dp(where)
+    endif
 
-    
-    V = Vnew; n = nnew; p = pnew;
+    tk = min ([tkv, tkn, tkp])
+
+    V(2:end-1) += tk * dv;
+    n(2:end-1) += tk * dn;
+    p(2:end-1) += tk * dp;
+
     [res, jac] = residual_jacobian (device, material, constants, 
                                     algorithm, V, n, p);
 
-    resvec(it) = reldnorm = + ...
-        norm (delta(1:Nnodes-2), inf) / norm (V, inf) + ...
-        norm (delta((Nnodes-2)+(1:Nnodes-2)), inf) / norm (n, inf) + ...
-        norm (delta(2*(Nnodes-2)+(1:Nnodes-2)), inf) / norm (p, inf);
+    resvec(it) = reldnorm = ...
+        ndv / norm (V, inf) + ...
+        ndn / norm (n, inf) + ...
+        ndp / norm (p, inf);
       
-    plotyy (
-            1:it, log10 (resvec), 
-            1:it+1, log10 (normr)
-            )
+    figure (2)
+    semilogy (1:it, resvec)
     drawnow
-      
+
+    figure (3)
+    semilogy (device.x, n, device.x, p)
+    drawnow
+    pause
+
     if (reldnorm <= algorithm.toll)
       break
     endif

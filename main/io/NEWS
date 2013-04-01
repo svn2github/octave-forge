@@ -21,6 +21,9 @@ io-1.2.2   Release Date: 2013-TBA   Release Manager: Philip Nienhuis
 
 ** cell2csv(): Tests added incl. for proper SEP and PROT args
 
+** Added read_namelist.m and write_namelist.m, kindly contributed by
+   Darien Pardinas Diaz and Terry Duel
+
 ===============================================================================
 io-1.2.1   Release Date: 2013-03-01   Release Manager: Philip Nienhuis
 ===============================================================================

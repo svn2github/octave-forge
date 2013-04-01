@@ -5,6 +5,8 @@ File I/O
 Miscellaneous conversion functions
   object2json
   pch2mat
+  read_namelist
+  write_namelist
 CSV file functions
   cell2csv
   csv2cell

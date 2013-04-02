@@ -56,9 +56,7 @@ function u = secs1d_mobility_model_noscale ...
     error ("Mobility models only defined for electons (carrier=\'n\') or holes (carrier=\'p\')")
   endif
 
-  
   muph  = .5 * mu_ph_nodes(2:end) + .5 * mu_ph_nodes(1:end-1);
-  
   u     = (muph*(alpha +1)) ./ ...
       (alpha + (1 + (((alpha + 1) * muph .* abs(E)) ./ vsat_m) .^ beta_m) .^ 
        (1./beta_m));

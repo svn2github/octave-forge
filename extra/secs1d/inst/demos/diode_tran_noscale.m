@@ -22,7 +22,7 @@ device.D  = device.Nd - device.Na;
 
 % time span for simulation
 tmin = 0;
-tmax = 3/500;
+tmax = 3/5e3;
 tspan = [tmin, tmax];
 
 Fn = Fp = zeros (size (device.x));
@@ -50,26 +50,26 @@ V = Fn + constants.Vth * log (n ./ device.ni);
 
 function fn = vbcs_1 (t);
   fn = [0; 0];
-  fn(2) = 1 * sin (500 * pi * t);
+  fn(2) = - 30 * sin (5e3 * pi * t);
 endfunction
 
 function fp = vbcs_2 (t);
   fp = [0; 0];
-  fp(2) = 1 * sin (500 * pi * t);
+  fp(2) = - 30 * sin (5e3 * pi * t);
 endfunction
 
 vbcs = {@vbcs_1, @vbcs_2};
 
 % tolerances for convergence checks
-algorithm.toll   = 1e-10;
+algorithm.toll   = 1e-3;
 algorithm.ltol   = 1e-10;
 algorithm.maxit  = 100;
 algorithm.lmaxit  = 100;
 algorithm.ptoll  = 1e-12;
 algorithm.pmaxit = 1000;
-algorithm.colscaling = [1 1e23 1e25];
+algorithm.colscaling = [10 1e25 1e25];
 algorithm.rowscaling = [1 1e7 1e7];
-algorithm.maxnpincr  = constants.Vth;
+algorithm.maxnpincr  = 1e-2;
 
 %% initial guess via stationary simulation
 [nin, pin, Vin, Fnin, Fpin, Jn, Jp, it, res] = secs1d_dd_gummel_map_noscale ...
@@ -78,9 +78,16 @@ algorithm.maxnpincr  = constants.Vth;
 %% close all; semilogy (device.x, nin, 'x-', device.x, pin, 'x-'); pause
 
 %% (pseudo)transient simulation
-[n, p, V, Fn, Fp, Jn, Jp, t, it, res] = ...
-    secs1d_tran_dd_newton_noscale (device, material, constants, algorithm,
-                                   Vin, nin, pin, Fnin, Fpin, tspan, vbcs);
+[V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_newton (device, material, constants, algorithm,
+                                                       Vin, nin, pin, tspan, @vbcs_1);
+
+%[n, p, V, Fn, Fp, Jn, Jp, tout, numit, res] = ...
+%      secs1d_tran_dd_gummel_map_noscale (device, material, constants, algorithm,
+%                                         Vin, nin, pin, Fnin, Fpin, tspan, vbcs);
+
+%[n, p, V, Fn, Fp, Jn, Jp, tout, numit, res] = ...
+%    secs1d_tran_dd_newton_noscale (device, material, constants, algorithm,
+%                                   Vin, nin, pin, Fnin, Fpin, tspan, vbcs)
 
 dV   = diff (V, [], 1);
 dx   = diff (device.x);
@@ -99,8 +106,8 @@ E    = -dV ./ dx;
 %## drawnow
 
 vvector  = Fn(end, :);
-ivector  = (Jn(end, :) + Jp(end, :));
+ivector  = Itot (2, :);
 
-plotyy (t, vvector, t, device.W*ivector)
+plotyy (tout, vvector, tout, device.W*ivector)
 drawnow
    

@@ -61,13 +61,15 @@ endfunction
 vbcs = {@vbcs_1, @vbcs_2};
 
 % tolerances for convergence checks
-algorithm.toll  = 1e-6;
-algorithm.maxit = 100;
-algorithm.ptoll = 1e-12;
+algorithm.toll   = 1e-10;
+algorithm.ltol   = 1e-10;
+algorithm.maxit  = 100;
+algorithm.lmaxit  = 100;
+algorithm.ptoll  = 1e-12;
 algorithm.pmaxit = 1000;
-algorithm.colscaling = [10 1e23 1e23];
-algorithm.rowscaling = [1e6 1e23 1e23];
-algorithm.maxnpincr = constants.Vth;
+algorithm.colscaling = [1 1e23 1e25];
+algorithm.rowscaling = [1 1e7 1e7];
+algorithm.maxnpincr  = constants.Vth;
 
 %% initial guess via stationary simulation
 [nin, pin, Vin, Fnin, Fpin, Jn, Jp, it, res] = secs1d_dd_gummel_map_noscale ...
@@ -76,13 +78,9 @@ algorithm.maxnpincr = constants.Vth;
 %% close all; semilogy (device.x, nin, 'x-', device.x, pin, 'x-'); pause
 
 %% (pseudo)transient simulation
-% [n, p, V, Fn, Fp, Jn, Jp, t, it, res] = ...
-%     secs1d_tran_dd_gummel_map_noscale (device, material, constants, algorithm,
-%                                        Vin, nin, pin, Fnin, Fpin, tspan, vbcs);
-
- [n, p, V, Fn, Fp, Jn, Jp, t, it, res] = ...
-     secs1d_tran_dd_newton_noscale (device, material, constants, algorithm,
-                                    Vin, nin, pin, Fnin, Fpin, tspan, vbcs);
+[n, p, V, Fn, Fp, Jn, Jp, t, it, res] = ...
+    secs1d_tran_dd_newton_noscale (device, material, constants, algorithm,
+                                   Vin, nin, pin, Fnin, Fpin, tspan, vbcs);
 
 dV   = diff (V, [], 1);
 dx   = diff (device.x);
@@ -102,11 +100,7 @@ E    = -dV ./ dx;
 
 vvector  = Fn(end, :);
 ivector  = (Jn(end, :) + Jp(end, :));
-ivectorn = (Jn(1, :)   + Jp(1, :));
-ivectora = mean (Jn + Jp, 1);
-area = 150e-6 * 50e-6;
-figure (1) 
-plotyy (t, vvector, t, area*ivector)
-legend('J_L','J_0')
+
+plotyy (t, vvector, t, device.W*ivector)
 drawnow
    

@@ -291,6 +291,10 @@ function [V, n, p, Fn, Fp, Jn, Jp, res, it, nrfnp] = __one_step__ ...
       break;
     endif
     
+    figure (3)
+    semilogy (1:it, res)
+    drawnow
+
     V0  =  V;
     p0  =  p ;
     n0  =  n;

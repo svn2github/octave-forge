@@ -20,8 +20,8 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_newton (device, material
 
       [V1, n1, p1] = deal (V2, n2, p2);
 
-      res = compute_residual (device, material, constants, algorithm, V2, n2, p2, n2, p2, dt);
-      jac = compute_jacobian (device, material, constants, algorithm, V2, n2, p2, n2, p2, dt);
+      res = compute_residual (device, material, constants, algorithm, V2, n2, p2, n(:, tstep-1), p(:, tstep-1), dt);
+      jac = compute_jacobian (device, material, constants, algorithm, V2, n2, p2, n(:, tstep-1), p(:, tstep-1), dt);
       dn = dp = dV = zeros(rows (n) - 2, 1);
 
       direct = true;
@@ -96,6 +96,12 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_newton (device, material
       incr1p = norm (log (p2./p1), inf) / (norm (log (p0), inf) + log (algorithm.colscaling(3)));
 
       resnlin(in) = incr1 = max ([incr1v, incr1n, incr1p]);
+      if (in > 3 && resnlin(in) > resnlin(in-3))
+        printf ("newton step is diverging\n")
+        tstep
+        reject = true;
+        break;
+      endif
 
       incr0v = norm (V2 - V0, inf) / (norm (V0, inf) + algorithm.colscaling(1));
       incr0n = norm (log (n2./n0), inf) / (norm (log (n0), inf) + log (algorithm.colscaling(2)));
@@ -115,7 +121,7 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_newton (device, material
       endif
 
       if (incr1 < algorithm.toll)
-        printf ("iteration %d time step %d  convergence reached incr = %g\n", in, tstep, incr1)
+        printf ("iteration %d, time step %d, model time %g: convergence reached incr = %g\n", in, tstep, t, incr1)
         break;
       endif
       
@@ -160,7 +166,7 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_newton (device, material
       plot (tout, Itot);
       drawnow
 
-      dt *= .5 * sqrt (algorithm.maxnpincr / incr0)
+      dt *= .75 * sqrt (algorithm.maxnpincr / incr0)
 
     endif
       

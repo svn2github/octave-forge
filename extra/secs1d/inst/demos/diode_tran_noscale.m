@@ -22,7 +22,7 @@ device.D  = device.Nd - device.Na;
 
 % time span for simulation
 tmin = 0;
-tmax = 3/5e3;
+tmax = 2/5e3;
 tspan = [tmin, tmax];
 
 Fn = Fp = zeros (size (device.x));
@@ -50,12 +50,12 @@ V = Fn + constants.Vth * log (n ./ device.ni);
 
 function fn = vbcs_1 (t);
   fn = [0; 0];
-  fn(2) = - 30 * sin (5e3 * pi * t);
+  fn(2) = -1 * (t > 1e-4);
 endfunction
 
 function fp = vbcs_2 (t);
   fp = [0; 0];
-  fp(2) = - 30 * sin (5e3 * pi * t);
+  fp(2) = -1 * (t > 1e-4);
 endfunction
 
 vbcs = {@vbcs_1, @vbcs_2};

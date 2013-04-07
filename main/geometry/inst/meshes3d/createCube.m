@@ -25,28 +25,28 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{v},@var{e},@var{f}] =} createCube ()
-## @deftypefn {Function File} {[@var{v},@var{f}] =} createCube ()
+## @deftypefnx {Function File} {[@var{v},@var{f}] =} createCube ()
 ## @deftypefnx {Function File} {@var{mesh} =} createCube ()
 ## Create a 3D mesh representing the unit cube
 ##
-##   [V E F] = createCube 
-##   Create a unit cube, as a polyhedra representation.
-##   c has the form [V E F], where V is a 8-by-3 array with vertices
-##   coordinates, E is a 12-by-2 array containing indices of neighbour
-##   vertices, and F is a 6-by-4 array containing vertices array of each
-##   face.
+## [V E F] = createCube
+## Create a unit cube, as a polyhedra representation.
+## c has the form [V E F], where V is a 8-by-3 array with vertices
+## coordinates, E is a 12-by-2 array containing indices of neighbour
+## vertices, and F is a 6-by-4 array containing vertices array of each
+## face.
 ##
-##   [V F] = createCube;
-##   Returns only the vertices and the face vertex indices.
+## [V F] = createCube;
+## Returns only the vertices and the face vertex indices.
 ##
-##   MESH = createCube;
-##   Returns the data as a mesh structure, with fields 'vertices', 'edges'
-##   and 'faces'.
+## MESH = createCube;
+## Returns the data as a mesh structure, with fields 'vertices', 'edges'
+## and 'faces'.
 ##
-##   Example
+## Example
 ## @example
-##   [n e f] = createCube;
-##   drawMesh(n, f);
+## [n e f] = createCube;
+## drawMesh(n, f);
 ## @end example
 ##
 ## @seealso{meshes3d, drawMesh, createOctahedron, createTetrahedron,
@@ -82,4 +82,3 @@ endfunction
 %!demo
 %!   [n e f] = createCube;
 %!   drawMesh(n, f);
-

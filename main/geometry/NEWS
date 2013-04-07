@@ -1,6 +1,6 @@
 Summary of important user-visible changes for releases of the geometry package
 ===============================================================================
-geometry-1.7.0   Release Date: 2013-03-XX  Release Manager: Juan Pablo Carbajal
+geometry-1.7.0   Release Date: 2013-04-07  Release Manager: Juan Pablo Carbajal
 ===============================================================================
 
 ** Added Functions
@@ -11,7 +11,7 @@ geometry-1.7.0   Release Date: 2013-03-XX  Release Manager: Juan Pablo Carbajal
    drawVector3d   spheres   drawPolyline   drawPolynomialCurve
    polynomialCurveCentroid    polynomialCurveDerivative
    polynomialCurveFit   polynomialCurvePoint   polynomialCurveSetFit
-
+   polygonPoint polygonSubcurve
 
 ** Bug Fixes:
   - cov2ellipse  scale and orientation of axis.

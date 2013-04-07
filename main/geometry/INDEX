@@ -130,6 +130,8 @@ geometry >> Computational Geometry
  oc_polybool
  parametrize
  polygonLoops
+ polygonPoint
+ polygonSubcurve
  polygonSelfIntersections
  polylineSelfIntersections
  reversePolyline
@@ -147,12 +149,12 @@ geometry >> Computational Geometry
  curveval
  curve2polyline
 2D Polynomial curves
- drawPolynomialCurve 
- polynomialCurveCentroid 
- polynomialCurveDerivative 
- polynomialCurveFit 
- polynomialCurvePoint 
- polynomialCurveSetFit 
+ drawPolynomialCurve
+ polynomialCurveCentroid
+ polynomialCurveDerivative
+ polynomialCurveFit
+ polynomialCurvePoint
+ polynomialCurveSetFit
 2D Others
  beltproblem
  bisector

@@ -25,7 +25,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{h} =} drawPolynomialCurve (@var{bnd}, @var{xcoef}, @var{ycoef})
-## @deftypefn {Function File} {@var{h} =} drawPolynomialCurve (@var{bnd}, @var{coefs})
+## @deftypefnx {Function File} {@var{h} =} drawPolynomialCurve (@var{bnd}, @var{coefs})
 ## @deftypefnx {Function File} {@var{h} =} drawPolynomialCurve (@dots{}, @var{npts})
 ## Draw a polynomial curve approximation
 ## @end deftypefn
@@ -38,12 +38,12 @@ function varargout = drawPolynomialCurve(tBounds, varargin)
       xCoef = var{1};
       yCoef = var{2};
       varargin(1) = [];
-      
+
   elseif size(var, 1)==1
       xCoef = varargin{1};
       yCoef = varargin{2};
       varargin(1:2) = [];
-      
+
   else
       xCoef = var(1,:);
       yCoef = var(2,:);

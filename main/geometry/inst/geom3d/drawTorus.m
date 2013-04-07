@@ -39,7 +39,7 @@
 ##   figure;
 ##   drawTorus([50 50 50 30 10 30 45]);
 ##   axis equal;
-## @ end example
+## @end example
 ##
 ## @seealso{drawEllipsoid, revolutionSurface}
 ## @end deftypefn

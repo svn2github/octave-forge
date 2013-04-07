@@ -25,7 +25,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{h} =} drawCube (@var{cube})
-## @deftypefn {Function File} {[@var{x},@var{y},@var{z}] =} drawCube (@var{cube})
+## @deftypefnx {Function File} {[@var{x},@var{y},@var{z}] =} drawCube (@var{cube})
 ## Draw a 3D centered cube, eventually rotated
 ##
 ##   drawCube(CUBE)

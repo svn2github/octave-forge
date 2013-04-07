@@ -2,16 +2,16 @@
 ## Copyright (C) 2004-2011 INRA - CEPIA Nantes - MIAJ (Jouy-en-Josas)
 ## Copyright (C) 2012 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 ## All rights reserved.
-## 
+##
 ## Redistribution and use in source and binary forms, with or without
 ## modification, are permitted provided that the following conditions are met:
-## 
+##
 ##     1 Redistributions of source code must retain the above copyright notice,
 ##       this list of conditions and the following disclaimer.
 ##     2 Redistributions in binary form must reproduce the above copyright
 ##       notice, this list of conditions and the following disclaimer in the
 ##       documentation and/or other materials provided with the distribution.
-## 
+##
 ## THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ''AS IS''
 ## AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 ## IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -29,30 +29,33 @@
 ## @deftypefnx {Function File} {[@var{xc}, @var{yc}] =} polynomialCurveFit (@dots{}, @var{ti}, @var{condi})
 ## Fit a polynomial curve to a series of points
 ##
-##   @var{t} is a Nx1 vector
-##   @var{xt} and @var{yt} are coordinate for each parameter value (column vectors)
-##   @var{order} is the degree of the polynomial used for interpolation
-##   @var{xc} and @var{yc} are polynomial coefficients, given in @var{order}+1 row vectors,
-##   starting from degree 0 and up to degree @var{order}.
+## @var{t} is a Nx1 vector.
 ##
-##   @var{points} specifies coordinate of points in a Nx2 array.
+## @var{xt} and @var{yt} are coordinate for each parameter value (column vectors).
+## @var{order} is the degree of the polynomial used for interpolation.
+## @var{xc} and @var{yc} are polynomial coefficients, given in @var{order}+1 row vectors,
+## starting from degree 0 and up to degree @var{order}.
+## @var{points} specifies coordinate of points in a Nx2 array.
 ##
-##   Impose some specific conditions using @var{ti} and @var{condi}. 
-##   @var{ti} is a value of the parametrization
-##   variable. @var{condi} is a cell array, with 2 columns, and as many rows as
-##   the derivatives specified for the given @var{ti}. Format for @var{condi} is:
-##   @var{condi} = @@{X_I, Y_I; X_I', Y_I'; X_I", Y_I"; ...@@};
-##   with X_I and Y_I being the imposed coordinate at position @var{ti}, X_I' and
-##   Y_I' being the imposed first derivatives, X_I" and Y_I" the imposed
-##   second derivatives, and so on...
-##   To specify a derivative without specifying derivative with lower
-##   degree, value of lower derivative can be let empty, using '[]'
+## Impose some specific conditions using @var{ti} and @var{condi}.
+##
+## @var{ti} is a value of the parametrization variable. @var{condi} is a cell
+## array, with 2 columns, and as many rows as
+## the derivatives specified for the given @var{ti}. Format for @var{condi} is:
+##
+## @var{condi} = @{X_I, Y_I; X_I', Y_I'; X_I", Y_I"; ...@};
+##
+## with X_I and Y_I being the imposed coordinate at position @var{ti}, X_I' and
+## Y_I' being the imposed first derivatives, X_I" and Y_I" the imposed
+## second derivatives, and so on...
+## To specify a derivative without specifying derivative with lower
+## degree, value of lower derivative can be let empty, using '[]'.
 ##
 ##
-##   Requires the optimization Toolbox.
+## Requires the optimization Toolbox.
 ##
-##   Run @command{demo polynomialCurveFit} to see exaples of use.
-## 
+## Run @command{demo polynomialCurveFit} to see exaples of use.
+##
 ## @seealso{polynomialCurves2d}
 ## @end deftypefn
 
@@ -94,7 +97,7 @@ function varargout = polynomialCurveFit(t, varargin)
   # For a solution vector 'x', the following relation must hold:
   #   Aeq * x == beq,
   # with:
-  #   Aeq   Matrix M*N 
+  #   Aeq   Matrix M*N
   #   beq   column vector with length M
   # The coefficients of the Aeq matrix are initialized as follow:
   # First point and last point are considered successively. For each point,
@@ -102,7 +105,7 @@ function varargout = polynomialCurveFit(t, varargin)
   # computed using relation of the form:
   #   value = sum_i ( fact(i) * t_j^pow(i) )
   # with:
-  #   i     indice of the (i-1) derivative. 
+  #   i     indice of the (i-1) derivative.
   #   fact  row vector containing coefficient of each power of t, initialized
   #       with a row vector equals to [1 1 ... 1], and updated for each
   #       derivative by multiplying by corresponding power minus 1.
@@ -148,7 +151,7 @@ function varargout = polynomialCurveFit(t, varargin)
           # degrees of each polynomial
           powX = [zeros(1, i) 1:Dx+1-i];
           powY = [zeros(1, i) 1:Dy+1-i];
-          
+
           # update conditions for x coordinate
           if ~isempty(cond{i,1})
               Aeqx = [Aeqx ; factY.*power(ti, powX)]; ##ok<AGROW>
@@ -160,12 +163,12 @@ function varargout = polynomialCurveFit(t, varargin)
               Aeqy = [Aeqy ; factY.*power(ti, powY)]; ##ok<AGROW>
               beqy = [beqy; cond{i,2}]; ##ok<AGROW>
           end
-          
+
           # update polynomial degrees for next derivative
           factX = factX.*powX;
           factY = factY.*powY;
       end
-      
+
       varargin(1:2)=[];
   end
 
@@ -192,7 +195,7 @@ function varargout = polynomialCurveFit(t, varargin)
   # compute interpolation
   # Octave compatibility - JPi 2013
   xc = lsqlin (T, xt, zeros(1, Dx+1), 1, Aeqx, beqx)';
-  
+
   # main matrix for y coordinate, size L*(degY+1)
   T = ones(L, Dy+1);
   for i = 1:Dy
@@ -218,7 +221,7 @@ function x = lsqlin (C, d, A, b, Aeq, beq)
   H = C'*C;
   q = -C'*d;
   x0 = zeros (size(C,2),size(d,2));
-  
+
   x = qp (x0, H, q, Aeq, beq, [], [],[], A, b);
 endfunction
 
@@ -244,7 +247,7 @@ endfunction
 %!   # defines a curve (circle arc) with small perturbations
 %!   N  = 100;
 %!   t  = linspace(0, 3*pi/4, N)';
-%!   xp = cos(t) + 7e-2*randn(size(t)); 
+%!   xp = cos(t) + 7e-2*randn(size(t));
 %!   yp = sin(t) + 7e-2*randn(size(t));
 %!
 %!   # plot the points

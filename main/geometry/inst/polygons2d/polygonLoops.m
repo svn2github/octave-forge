@@ -2,16 +2,16 @@
 ## Copyright (C) 2004-2011 INRA - CEPIA Nantes - MIAJ (Jouy-en-Josas)
 ## Copyright (C) 2012 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 ## All rights reserved.
-## 
+##
 ## Redistribution and use in source and binary forms, with or without
 ## modification, are permitted provided that the following conditions are met:
-## 
+##
 ##     1 Redistributions of source code must retain the above copyright notice,
 ##       this list of conditions and the following disclaimer.
 ##     2 Redistributions in binary form must reproduce the above copyright
 ##       notice, this list of conditions and the following disclaimer in the
 ##       documentation and/or other materials provided with the distribution.
-## 
+##
 ## THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ''AS IS''
 ## AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 ## IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -73,15 +73,15 @@ function loops = polygonLoops(poly)
   while true
       # index of next intersection point
       ind = find(positions(:,1)>pos, 1, 'first');
-      
+
       # if not found, break
       if isempty(ind)
           break;
       end
-      
+
       # add portion of curve
-      loop = [loop;polygonSubcurve(poly, pos, positions(ind, 1))]; ##ok<AGROW>
-      
+      loop = [loop; polygonSubcurve(poly, pos, positions(ind, 1))]; ##ok<AGROW>
+
       # look for next intersection point
       pos = positions(ind, 2);
       positions(ind, :) = [];
@@ -108,7 +108,7 @@ function loops = polygonLoops(poly)
       loop    = [];
       pos0    = positions(1, 2);
       pos     = positions(1, 2);
-      
+
       while true
           # index of next intersection point
           ind = find(positions(:,1)>pos, 1, 'first');

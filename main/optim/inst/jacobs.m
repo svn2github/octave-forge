@@ -82,7 +82,7 @@ function Df = jacobs (x, f, hook)
       if (numel (hook.fixed) != n)
         error ("index of fixed parameters has wrong dimensions");
       endif
-      fixed = hook.fixed;
+      fixed = hook.fixed(:);
     else
       fixed = false (n, 1);
     endif
@@ -100,7 +100,7 @@ function Df = jacobs (x, f, hook)
 
   x = repmat (x(:), 1, n) + h * 1i * eye (n);
 
-  idx = find (! fixed);
+  idx = find (! fixed).';
 
   ## after first evaluation, dimensionness of 'f' is known
   t_Df = imag (f (x(:, idx(1)))(:));

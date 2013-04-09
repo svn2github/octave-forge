@@ -1,18 +1,21 @@
 //-------------------------------------------------------------------
-//   C-MEX implementation of kth element - this function is part of the NaN-toolbox.
+//   XPTOPEN is C-MEX implementation for reading various  
+//   statistical data formats including SAS/XPT, SPSS/PASW, 
+//   STATA and ARFF data formats. Basic support for writing 
+//   SAS/XPT is also supported. 
+//   Endian conversion is done automatically.
 //
 //   usage: x = xptopen(filename)
 //   usage: x = xptopen(filename,'r')
 //		read filename and return variables in struct x
-
 //   usage: xptopen(filename,'w',x)
 //		save fields of struct x in filename
-
 //   usage: x = xptopen(filename,'a',x)
 //		append fields of struct x to filename
 //
 //   References:
 //
+
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as published by
 //   the Free Software Foundation; either version 3 of the License, or
@@ -27,7 +30,7 @@
 //   along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 //    $Id$
-//    Copyright (C) 2010,2011,2012 Alois Schloegl <alois.schloegl@ist.ac.at>
+//    Copyright (C) 2010,2011,2012,2013 Alois Schloegl <alois.schloegl@ist.ac.at>
 //    This function is part of the NaN-toolbox
 //    http://pub.ist.ac.at/~schloegl/matlab/NaN/
 //

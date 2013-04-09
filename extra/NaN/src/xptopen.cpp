@@ -101,6 +101,15 @@ SPSS file format
 #  define bswap_32(x) bswap32(x)
 #  define bswap_64(x) bswap64(x)
 
+#elif defined(_APPLE_) && defined(_MACH_)
+#  include <machine/endian.h>
+#  define _BYTE_ORDER __DARWIN_BYTE_ORDER
+#  define _LITTLE_ENDIAN __DARWIN_LITTLE_ENDIAN
+#  define _BIG_ENDIAN __DARWIN_BIG_ENDIAN
+#  define bswap_16(x) __bswap16(x)
+#  define bswap_32(x) __bswap32(x)
+#  define bswap_64(x) __bswap64(x)
+
 #elif defined(__APPLE__)
 #  include <CoreFoundation/CFByteOrder.h>
 #  define __BIG_ENDIAN       4321

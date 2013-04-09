@@ -1,10 +1,10 @@
 Name: splines
-Version: 1.1.2
-Date: 2012-26-11
+Version: 1.2.0
+Date: 2013-09-04
 Author: various authors
 Maintainer: Nir Krakauer <nkrakauer@ccny.cuny.edu>
 Title: Splines.
-Description: Additional Cubic spline functions.
+Description: Additional spline functions.
 Categories: Splines
 Depends: octave (>= 3.6.0)
 Autoload: no

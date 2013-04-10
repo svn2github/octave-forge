@@ -625,8 +625,10 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
     %% simplified Eq. 7-5-13, Bard; cov of parm est, inverse; outer
     %% parantheses contain inverse of guessed covariance matrix of data
     covpinv = jac.' * Qinv * jac;
-    if (exist ('rcond') && rcond (covpinv) <= eps)
-      compute = 0;
+    if (exist ('rcond'))
+      if (rcond (covpinv) <= eps)
+        compute = 0;
+      end
     elseif (rank (covpinv) < n)
       %% above test is not equivalent to 'rcond' and may unnecessarily
       %% reject some matrices

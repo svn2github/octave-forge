@@ -1,1 +1,2 @@
 autoload ("partcnt", fullfile (fileparts (mfilename ("fullpath")), "partint.oct"));
+autoload ("partint", fullfile (fileparts (mfilename ("fullpath")), "partint.oct"));

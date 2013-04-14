@@ -14,7 +14,7 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{info} =} residmin_stat (@var{f}, @var{p}, @var{x}, @var{y}, @var{settings})
+## @deftypefn {Function File} {@var{info} =} curvefit_stat (@var{f}, @var{p}, @var{x}, @var{y}, @var{settings})
 ##
 ## Frontend for computation of statistics for fitting of values,
 ## computed by a model function, to observed values.

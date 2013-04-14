@@ -6,7 +6,7 @@ Maintainer: Teemu Ikonen   <tpikonen@pcu.helsinki.fi>
 Title: GNU Scientific Library.
 Description: Octave bindings to the GNU Scientific Library
 Depends: octave (>= 2.9.7)
-Autoload: yes
+Autoload: no
 BuildRequires: gsl-devel
 License: GPL version 2 or later
 Url: http://octave.sf.net

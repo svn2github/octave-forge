@@ -3,7 +3,7 @@ OBJECTS := __pq_connect__.o pq_close.o pq_exec.o converters.o \
            pq_update_types.o pq_lo.o
 
 pq_interface.oct: $(OBJECTS)
-	@MKOCTFILE@ -o pq_interface.oct -lpq $(OBJECTS)
+	@MKOCTFILE@ -o pq_interface.oct -L`@PG_CONFIG@ --libdir` -lpq $(OBJECTS)
 
 # be on the safe side with respect to include files
 %.o: %.cc converters.h pq_connection.h command.h

@@ -36,6 +36,7 @@
 ## 2011-05-15 Experimental UNO support added (OpenOffice.org & clones)
 ## 2011-09-18 Updated UNO data row capacity for LibreOffice 3.4+ (now 1,048,576 rows)
 ## 2012-10-23 Style fixes
+## 2012-04-17 Fix checks on xls or xls? suffix (due to Vermylen)
 
 function [ topleft, nrows, ncols, trow, lcol ] = spsh_chkrange (crange, nr, nc, intf, filename=[])
 
@@ -55,7 +56,7 @@ function [ topleft, nrows, ncols, trow, lcol ] = spsh_chkrange (crange, nr, nc, 
 	## Define max row & column capacity from interface type & file suffix
 	switch xtype
 		case { 'COM', 'POI' }
-			if (strmatch (tolower (filename(end-3:end)), '.xls'))
+			if (strmatch (tolower (filename(end-2:end)), '.xls'))
 				## BIFF5 & BIFF8
 				ROW_CAP = 65536;   COL_CAP = 256;
 			else

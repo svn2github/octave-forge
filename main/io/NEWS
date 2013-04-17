@@ -17,6 +17,8 @@ io-1.2.2   Release Date: 2013-TBA   Release Manager: Philip Nienhuis
 
 --- __UNO_oct2spsh__.m: wrong assignment in code finding existing sheetnames
 
+--- Fix checks on xls or xls? suffix (due to Vermylen)
+
 ** csv2cell(): Tests added for above bugs and proper SEP and PROT args
 
 ** cell2csv(): Tests added incl. for proper SEP and PROT args

@@ -109,6 +109,7 @@
 ## 2012-06-07 Replaced all tabs by double space
 ## 2012-10-24 Style fixes
 ## 2012-12-23 Fix rare occasion of xlsclose error in unwind_protect block
+## 2012-04-17 Fix checks on xls or xls? suffix (due to Vermylen)
 
 function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
 
@@ -122,7 +123,7 @@ function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
   elseif (nargin == 2)
     ## Assume first worksheet and full worksheet starting at A1
     wsh = 1;
-    if (strcmpi (filename(end-4:end-1), "xls"))
+    if (strcmpi (filename(end-3:end-1), "xls"))
       crange = "A1:XFD1048576";   ## OOXML has ridiculously large limits 
     else
       crange = "A1:IV65536";      ## Regular xls limits
@@ -132,7 +133,7 @@ function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
     if (isnumeric (arg3) || (isempty (findstr (arg3, ":")) && ~isempty (arg3)))
       ## Apparently a worksheet specified
       wsh = arg3;
-      if (strcmpi (filename(end-4:end-1), "xls"))
+      if (strcmpi (filename(end-3:end-1), "xls"))
         crange = "A1:XFD1048576"; ## OOXML has ridiculously large limits 
       else
         crange = "A1:IV65536";    ## Regular xls limits

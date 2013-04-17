@@ -123,6 +123,7 @@
 ## 2012-12-18 Improved warning/error messages
 ## 2012-03-01 Revamped logic for determining if file type is supported by a
 ##            particular interface
+## 2012-04-17 Fix checks on xls or xls? suffix (due to Vermylen)
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
@@ -228,8 +229,8 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
   xlsinterfaces = getxlsinterfaces (xlsinterfaces);
 
   ## Supported interfaces determined; Excel file type check moved to separate interfaces.
-  chk1 = strcmpi (filename(end-3:end), '.xls');      ## Regular (binary) BIFF 
-  chk2 = strcmpi (filename(end-4:end-1), '.xls');    ## Zipped XML / OOXML
+  chk1 = strcmpi (filename(end-2:end), '.xls');      ## Regular (binary) BIFF 
+  chk2 = strcmpi (filename(end-3:end-1), '.xls');    ## Zipped XML / OOXML
   
   ## Initialize file ptr struct
   xls = struct ("xtype",    'NONE', 

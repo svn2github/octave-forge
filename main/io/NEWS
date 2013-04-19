@@ -19,6 +19,8 @@ io-1.2.2   Release Date: 2013-TBA   Release Manager: Philip Nienhuis
 
 --- Fix checks on xls or xls? suffix (due to Vermylen)
 
+--- Temporarily commented out tests in private subdir (bug #38755)
+
 ** csv2cell(): Tests added for above bugs and proper SEP and PROT args
 
 ** cell2csv(): Tests added incl. for proper SEP and PROT args

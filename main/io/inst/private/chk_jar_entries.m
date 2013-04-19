@@ -58,18 +58,20 @@ function [ retval, missing ] = chk_jar_entries (jcp, entries, dbug=0)
 
 endfunction
 
-%!test
-%! entries = {"abc", {"def", "ghi"}, "jkl"};
-%! jcp1 = {"/usr/lib/java/abcx.jar", "/usr/lib/java/defz.jar", "/usr/lib/java/jkl3.jar"};
-%! jcp1 = strrep (jcp1, "/", filesep);
-%! assert (chk_jar_entries (jcp1, entries), 3);
-
-%!test
-%! entries = {"abc", {"def", "ghi"}, "xyz"};
-%! jcp2 = {"/usr/lib/java/abcy.jar", "/usr/lib/java/ghiw.jar", "/usr/lib/java/jkl6.jar"};
-%! jcp2 = strrep (jcp2, "/", filesep);
-%! [aaa, bbb] = chk_jar_entries (jcp2, entries);
-%! assert (aaa, 2);
-%! assert (bbb, [0 0 1]);
+## FIXME -- reinstate these tests one there if a way is found to test private
+##          functions directly
+##%!test
+##%! entries = {"abc", {"def", "ghi"}, "jkl"};
+##%! jcp1 = {"/usr/lib/java/abcx.jar", "/usr/lib/java/defz.jar", "/usr/lib/java/jkl3.jar"};
+##%! jcp1 = strrep (jcp1, "/", filesep);
+##%! assert (chk_jar_entries (jcp1, entries), 3);
+##
+##%!test
+##%! entries = {"abc", {"def", "ghi"}, "xyz"};
+##%! jcp2 = {"/usr/lib/java/abcy.jar", "/usr/lib/java/ghiw.jar", "/usr/lib/java/jkl6.jar"};
+##%! jcp2 = strrep (jcp2, "/", filesep);
+##%! [aaa, bbb] = chk_jar_entries (jcp2, entries);
+##%! assert (aaa, 2);
+##%! assert (bbb, [0 0 1]);
 
 

@@ -81,12 +81,14 @@ function [ typearr ] = spsh_prstype (obj, nrows, ncols, ctype, spsh_opts)
 
 endfunction
 
-%!test
-%! tstobj = {1.5, true, []; 'Text1', '=A1+B1', '=SQRT(A1)'; NaN, {}, 0};
-%! typarr = spsh_prstype (tstobj, 3, 3, [1 2 3 4 5], struct ("formulas_as_text", 0));
-%! assert (typarr, [1 2 5; 3 4 4; 5 5 1]);
-
-%!test
-%! tstobj = {1.5, true, []; 'Text1', '=A1+B1', '=SQRT(A1)'; NaN, {}, 0};
-%! typarr = spsh_prstype (tstobj, 3, 3, [1 2 3 4 5], struct ("formulas_as_text", 1));
-%! assert (typarr, [1 2 5; 3 3 3; 5 5 1]);
+## FIXME -- reinstate these tests one there if a way is found to test private
+##          functions directly
+## %!test
+##%! tstobj = {1.5, true, []; 'Text1', '=A1+B1', '=SQRT(A1)'; NaN, {}, 0};
+##%! typarr = spsh_prstype (tstobj, 3, 3, [1 2 3 4 5], struct ("formulas_as_text", 0));
+##%! assert (typarr, [1 2 5; 3 4 4; 5 5 1]);
+##
+##%!test
+##%! tstobj = {1.5, true, []; 'Text1', '=A1+B1', '=SQRT(A1)'; NaN, {}, 0};
+##%! typarr = spsh_prstype (tstobj, 3, 3, [1 2 3 4 5], struct ("formulas_as_text", 1));
+##%! assert (typarr, [1 2 5; 3 3 3; 5 5 1]);

@@ -99,18 +99,20 @@ function [topleft, nrows, ncols, toprow, lcol] = parse_sp_range (range_org)
   
 endfunction
 
-%!test
-%! [a b c d e] = parse_sp_range ('A1:B2');
-%! assert ([a b c d e], ['A1', 2, 2, 1, 1]);
-
-%!test
-%! [a b c d e] = parse_sp_range ('A1:AB200');
-%! assert ([a b c d e], ['A1', 200, 28, 1, 1]);
-
-%!test
-%! [a b c d e] = parse_sp_range ('cd230:iY65536');
-%! assert ([a b c d e], ['CD230', 65307, 178, 230, 82]);
-
-%!test
-%! [a b c d e] = parse_sp_range ('BvV12798 : xFd1054786');
-%! assert ([b c d e], [1041989, 14439, 12798, 1946]);
+## FIXME -- reinstate these tests one there if a way is found to test private
+##          functions directly
+##%!test
+##%! [a b c d e] = parse_sp_range ('A1:B2');
+##%! assert ([a b c d e], ['A1', 2, 2, 1, 1]);
+##
+##%!test
+##%! [a b c d e] = parse_sp_range ('A1:AB200');
+##%! assert ([a b c d e], ['A1', 200, 28, 1, 1]);
+##
+##%!test
+##%! [a b c d e] = parse_sp_range ('cd230:iY65536');
+##%! assert ([a b c d e], ['CD230', 65307, 178, 230, 82]);
+##
+##%!test
+##%! [a b c d e] = parse_sp_range ('BvV12798 : xFd1054786');
+##%! assert ([b c d e], [1041989, 14439, 12798, 1946]);

@@ -668,10 +668,12 @@ octave_value command::copy_in_handler (const std::string &infile,
       char header [COPY_HEADER_SIZE];
       memset (header, 0, COPY_HEADER_SIZE);
       strcpy (header, "PGCOPY\n\377\r\n\0");
-      *((uint32_t *) (&header[11])) = htobe32 (uint32_t (oids) << 16);
+      uint32_t tpu32 = htobe32 (uint32_t (oids) << 16);
+      memcpy (&header[11], &tpu32, 4);
 
       char trailer [2];
-      *((int16_t *) (&trailer)) = htobe16 (int16_t (-1));
+      int16_t tp16 = htobe16 (int16_t (-1));
+      memcpy (&trailer, &tp16, 2);
 
       if (PQputCopyData (cptr, header, COPY_HEADER_SIZE) == -1)
         {

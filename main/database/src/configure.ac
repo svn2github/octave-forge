@@ -7,10 +7,16 @@ AC_CONFIG_SRCDIR([__pq_connect__.cc])
 
 # Checks for programs.
 AC_PROG_CXX
+if test "$GXX" != yes; then
+AC_MSG_ERROR([This package needs the GNU C++ compiler, which wasn't found.], 1);
+fi
+  
 AC_CHECK_PROG(OCTAVE, octave, octave)
 AC_CHECK_PROG(MKOCTFILE, mkoctfile, mkoctfile)
 AC_CHECK_PROG(PG_CONFIG, pg_config, pg_config)
-if test -z "$PG_CONFIG"; then exit 1; fi
+if test -z "$PG_CONFIG"; then
+AC_MSG_ERROR([pg_config not found], 1);
+fi
 
 # Checks for libraries.
 AC_CHECK_LIB([pq], [PQconnectdb])

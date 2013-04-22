@@ -1,3 +1,8 @@
+# We rely on g++ features, configure assures CXX=g++.
+CXX := @CXX@
+
+CXXFLAGS_NSA := "$(CXXFLAGS) -g -O2 -fno-strict-aliasing"
+
 OBJECTS := __pq_connect__.o pq_close.o pq_exec.o converters.o \
            converters_arr_comp.o pq_connection.o command.o \
            pq_update_types.o pq_lo.o
@@ -5,9 +10,16 @@ OBJECTS := __pq_connect__.o pq_close.o pq_exec.o converters.o \
 pq_interface.oct: $(OBJECTS)
 	@MKOCTFILE@ -o pq_interface.oct -L`@PG_CONFIG@ --libdir` -lpq $(OBJECTS)
 
+converters.o: converters.cc converters.h wrap_endian.h
+	CXX=$(CXX) CXXFLAGS=$(CXXFLAGS_NSA) @MKOCTFILE@ -I`@PG_CONFIG@ --includedir` -c converters.cc
+
+converters_arr_comp.o: converters_arr_comp.cc converters.h wrap_endian.h \
+                       pq_connection.h command.h
+	CXX=$(CXX) CXXFLAGS=$(CXXFLAGS_NSA) @MKOCTFILE@ -I`@PG_CONFIG@ --includedir` -c converters_arr_comp.cc
+
 # be on the safe side with respect to include files
 %.o: %.cc converters.h pq_connection.h command.h
-	@MKOCTFILE@ -I`@PG_CONFIG@ --includedir` -c $<
+	CXX=$(CXX) @MKOCTFILE@ -I`@PG_CONFIG@ --includedir` -c $<
 
 .PHONY: clean
 clean: ; rm -f *.o *.oct

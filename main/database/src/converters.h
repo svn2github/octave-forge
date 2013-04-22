@@ -24,12 +24,13 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 #include <octave/oct.h>
 
 #include <stdint.h>
-#include <endian.h>
 
 #include <vector>
 #include <string>
 
 #include <libpq-fe.h>
+
+#include "wrap_endian.h"
 
 #define OCT_PQ_NUM_CONVERTERS 13
 

@@ -23,8 +23,8 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 #include <octave/lo-ieee.h>
 
 #include <stdint.h>
-#include <endian.h>
 
+#include "wrap_endian.h"
 #include "command.h"
 
 octave_idx_type command::count_row_major_order (dim_vector &dv,

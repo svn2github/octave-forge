@@ -37,7 +37,7 @@ void print_conv (oct_pq_conv_t *c)
           c->oid, c->aoid, c->is_composite, c->is_enum, c->is_not_constant, c->name.c_str (), c->to_octave_str ? 1 : 0, c->to_octave_bin ? 1 : 0, c->from_octave_str ? 1 : 0, c->from_octave_bin ? 1 : 0);
 
   printf (", el_oids:");
-  for (octave_idx_type i = 0; i < c->el_oids.size (); i++)
+  for (size_t i = 0; i < c->el_oids.size (); i++)
     printf (" %u", c->el_oids[i]);
 
   printf ("\n");

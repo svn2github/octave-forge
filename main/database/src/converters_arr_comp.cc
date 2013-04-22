@@ -207,7 +207,7 @@ int command::from_octave_bin_composite (const octave_value &oct_comp,
 
   octave_idx_type nl = rec.numel ();
 
-  if (nl != conv->el_oids.size ())
+  if (size_t (nl) != conv->el_oids.size ())
     {
       error ("%s: Octaves representation of a composite type has incorrect number of elements (%i, should have %i)",
              caller.c_str (), nl, conv->el_oids.size ());
@@ -297,8 +297,12 @@ int command::to_octave_bin_array (char *v, octave_value &ov, int nb,
 
   // ndim
   OCT_PQ_DECL_GET_INT32(ndim, p, int32_t)
-  // has NULL bitmap, this information is not used
-  OCT_PQ_DECL_GET_INT32(hasnull, p, int32_t)
+  // Has NULL bitmap. Since this information is not used, comment it
+  // out to avoid a warning and increase the pointer manually.
+  //
+  // OCT_PQ_DECL_GET_INT32(hasnull, p, int32_t)
+  p += 4;
+  //
   // element OID
   OCT_PQ_DECL_GET_INT32(oid, p, uint32_t)
 

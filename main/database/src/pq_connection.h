@@ -27,22 +27,6 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 #include "converters.h"
 
-static bool map_str_cmp (const char *c1, const char *c2)
-{
-  if (strcmp (c1, c2) < 0)
-    return true;
-  else
-    return false;
-}
-
-static bool map_string_cmp (const std::string &s1, const std::string &s2)
-{
-  if (s1.compare (s2) < 0)
-    return true;
-  else
-    return false;
-}
-
 typedef std::map<Oid, oct_pq_conv_wrapper_t> oct_pq_conv_map_t;
 
 typedef std::map<const char *, oct_pq_conv_wrapper_t,

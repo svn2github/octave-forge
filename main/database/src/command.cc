@@ -38,9 +38,9 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 #define COUT_RESIZE_STEP 1000 // resize result only after this number of rows
 
 command::command (octave_pq_connection &connection, std::string &cmd,
-                  Cell &rtypes,std::string &who) :
-  valid (1), conn (connection), caller (who), res (NULL), all_fetched (0),
-  rettypes (rtypes)
+                  Cell &rtypes,std::string &who)
+  : res (NULL), all_fetched (0), valid (1), conn (connection),
+    rettypes (rtypes), caller (who)
 {
   if (! (cptr = conn.octave_pq_get_conn ()))
     {
@@ -63,8 +63,8 @@ command::command (octave_pq_connection &connection, std::string &cmd,
 
 command::command (octave_pq_connection &connection, std::string &cmd,
                   Cell &params, Cell &ptypes, Cell &rtypes, std::string &who)
-  : valid (1), conn (connection), caller (who), res (NULL), all_fetched (1),
-    rettypes (rtypes)
+  : res (NULL), all_fetched (1), valid (1), conn (connection),
+    rettypes (rtypes), caller (who)
 {
   if (! (cptr = conn.octave_pq_get_conn ()))
     {
@@ -313,6 +313,11 @@ octave_value command::process_single_result (const std::string &infile,
         case PGRES_COPY_IN:
           retval = copy_in_handler (infile, cdata, ctypes, coids, cin_var);
           break;
+        case PGRES_NONFATAL_ERROR:
+          break;
+        default:
+          valid = 0;
+          error ("internal error, unexpected server response");
         }
 
       if (res) // could have been changed by a handler
@@ -360,7 +365,8 @@ octave_value command::tuples_ok_handler (void)
       to_octave_array_fp_t array_to_octave;
       to_octave_composite_fp_t composite_to_octave;
 
-      oct_pq_conv_t *conv;
+      oct_pq_conv_t *conv = NULL; // silence inadequate warning by
+                                  // initializing it here
       oct_type_t oct_type;
 
       // perform next block only if there are any rows, since
@@ -506,7 +512,7 @@ octave_value command::copy_out_handler (const std::string &outfile)
         {
           PQclear (res);
 
-          if (res = PQgetResult (cptr))
+          if ((res = PQgetResult (cptr)))
             {
               if ((state = PQresultStatus (res)) == PGRES_FATAL_ERROR)
                 error ("server error in copy-out: %s", PQerrorMessage (cptr));
@@ -604,7 +610,7 @@ octave_value command::copy_in_handler (const std::string &infile,
             {
               PQclear (res);
 
-              if (res = PQgetResult (cptr))
+              if ((res = PQgetResult (cptr)))
                 {
                   if ((state = PQresultStatus (res)) == PGRES_FATAL_ERROR)
                     error ("server error in copy-in: %s", PQerrorMessage (cptr));
@@ -815,20 +821,23 @@ octave_value command::copy_in_handler (const std::string &infile,
           }
 
       if (! error_state)
-        if (PQputCopyEnd (cptr, NULL) == -1)
-          error ("%s", PQerrorMessage (cptr));
-        else
-          {
-            PQclear (res);
+        {
+          if (PQputCopyEnd (cptr, NULL) == -1)
+            error ("%s", PQerrorMessage (cptr));
+          else
+            {
+              PQclear (res);
 
-            if (res = PQgetResult (cptr))
-              {
-                if ((state = PQresultStatus (res)) == PGRES_FATAL_ERROR)
-                  error ("server error in copy-in: %s", PQerrorMessage (cptr));
-              }
-            else
-              error ("unexpectedly got no result information");
-          }
+              if ((res = PQgetResult (cptr)))
+                {
+                  if ((state = PQresultStatus (res)) == PGRES_FATAL_ERROR)
+                    error ("server error in copy-in: %s",
+                           PQerrorMessage (cptr));
+                }
+              else
+                error ("unexpectedly got no result information");
+            }
+        }
     } // copy from variable
 
   if (error_state)

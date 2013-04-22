@@ -30,8 +30,24 @@ std::string &pq_basetype_prefix (void)
 
 const int pq_bpl = pq_basetype_prefix ().size ();
 
+static bool map_str_cmp (const char *c1, const char *c2)
+{
+  if (strcmp (c1, c2) < 0)
+    return true;
+  else
+    return false;
+}
+
+static bool map_string_cmp (const std::string &s1, const std::string &s2)
+{
+  if (s1.compare (s2) < 0)
+    return true;
+  else
+    return false;
+}
+
 octave_pq_connection::octave_pq_connection (std::string arg)
-: postgres (0), conv_map (), name_conv_map (&map_str_cmp), conn (NULL)
+: conv_map (), name_conv_map (&map_str_cmp), conn (NULL), postgres (0)
 {
   static bool type_registered = false;
 
@@ -266,7 +282,7 @@ int octave_pq_connection::octave_pq_get_composite_types (void)
 {
   Cell p, pt, rt;
 
-  std::string cmd ("select pg_type.oid, pg_type.typname, pg_type.typarray, pg_type.typrelid, pg_namespace.nspname, pg_type_is_visible(pg_type.oid) as visible, array_agg(pg_attribute.atttypid), array_agg(pg_attribute.attnum) from (pg_type join pg_namespace on pg_type.typnamespace = pg_namespace.oid) join pg_attribute on pg_type.typrelid = pg_attribute.attrelid where pg_type.typtype = 'c' and pg_attribute.attnum > 0 group by pg_type.oid, pg_type.typname, pg_type,typarray, pg_type.typrelid, pg_namespace.nspname, visible;"),
+  std::string cmd ("select pg_type.oid, pg_type.typname, pg_type.typarray, pg_namespace.nspname, pg_type_is_visible(pg_type.oid) as visible, array_agg(pg_attribute.atttypid), array_agg(pg_attribute.attnum) from (pg_type join pg_namespace on pg_type.typnamespace = pg_namespace.oid) join pg_attribute on pg_type.typrelid = pg_attribute.attrelid where pg_type.typtype = 'c' and pg_attribute.attnum > 0 group by pg_type.oid, pg_type.typname, pg_type,typarray, pg_type.typrelid, pg_namespace.nspname, visible;"),
     caller ("octave_pq_get_composite_types");
 
   command c (*this, cmd, p, pt, rt, caller);
@@ -291,14 +307,13 @@ int octave_pq_connection::octave_pq_get_composite_types (void)
     {
       Oid oid = tpls(i, 0).uint_value ();
       Oid aoid = tpls(i, 2).uint_value ();
-      Oid relid = tpls(i, 3).uint_value ();
       std::string name = tpls(i, 1).string_value ();
-      std::string nspace = tpls(i, 4).string_value ();
-      bool visible = tpls(i, 5).bool_value ();
+      std::string nspace = tpls(i, 3).string_value ();
+      bool visible = tpls(i, 4).bool_value ();
       Cell r_el_oids =
-        tpls(i, 6).scalar_map_value ().contents ("data").cell_value ();
+        tpls(i, 5).scalar_map_value ().contents ("data").cell_value ();
       Cell r_el_pos =
-        tpls(i, 7).scalar_map_value ().contents ("data").cell_value ();
+        tpls(i, 6).scalar_map_value ().contents ("data").cell_value ();
       if (error_state)
         {
           error ("octave_pq_get_composite_types: could not read returned result");
@@ -371,7 +386,8 @@ int octave_pq_connection::octave_pq_get_composite_types (void)
 
       by_oid = by_name = t_conv;
 
-      oct_pq_conv_t *t_conv_v;
+      oct_pq_conv_t *t_conv_v = NULL; // silence inadequate warning by
+                                      // initializing it here
 
       if (visible)
         {

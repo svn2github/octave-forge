@@ -49,6 +49,10 @@ public:
 
 private:
 
+  octave_pq_connection &oct_pq_conn;
+
+  PGconn *conn;
+
   Oid oid;
 
   FILE *fp;
@@ -58,16 +62,13 @@ private:
   int lod;
 
   bool commit;
-
-  octave_pq_connection &oct_pq_conn;
-
-  PGconn *conn;
 };
 
 pipe_to_lo::pipe_to_lo (octave_pq_connection &a_oct_pq_conn,
-                        const char *cmd, bool acommit, std::string &amsg) :
-  oct_pq_conn (a_oct_pq_conn), conn (a_oct_pq_conn.octave_pq_get_conn ()),
-  oid (0), fp (NULL), oid_valid (false), lod (-1), commit (acommit), msg (amsg)
+                        const char *cmd, bool acommit, std::string &amsg)
+  : msg (amsg), oct_pq_conn (a_oct_pq_conn),
+    conn (a_oct_pq_conn.octave_pq_get_conn ()), oid (0), fp (NULL),
+    oid_valid (false), lod (-1), commit (acommit)
 {
   BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
   oid = lo_creat (conn, INV_WRITE);
@@ -100,7 +101,8 @@ pipe_to_lo::pipe_to_lo (octave_pq_connection &a_oct_pq_conn,
 
   char buff [OCT_PQ_BUFSIZE];
 
-  int nb, pnb;
+  int nb = 0, pnb = 0; // silence inadequate warnings by initializing
+                       // them
 
   while (true)
     {
@@ -193,6 +195,10 @@ public:
 
 private:
 
+  octave_pq_connection &oct_pq_conn;
+
+  PGconn *conn;
+
   Oid oid;
 
   FILE *fp;
@@ -202,16 +208,13 @@ private:
   int lod;
 
   bool commit;
-
-  octave_pq_connection &oct_pq_conn;
-
-  PGconn *conn;
 };
 
 lo_to_pipe::lo_to_pipe (octave_pq_connection &a_oct_pq_conn, Oid aoid,
                         const char *cmd, bool acommit, std::string &amsg) :
-  oct_pq_conn (a_oct_pq_conn), conn (a_oct_pq_conn.octave_pq_get_conn ()),
-  fp (NULL), success (false), lod (-1), commit (acommit), msg (amsg), oid (aoid)
+  msg (amsg), oct_pq_conn (a_oct_pq_conn),
+  conn (a_oct_pq_conn.octave_pq_get_conn ()), oid (aoid), fp (NULL),
+  success (false), lod (-1), commit (acommit)
 {
   if (! (fp = popen (cmd, "w")))
     {
@@ -232,7 +235,8 @@ lo_to_pipe::lo_to_pipe (octave_pq_connection &a_oct_pq_conn, Oid aoid,
 
   char buff [OCT_PQ_BUFSIZE];
 
-  int nb, pnb;
+  int nb = 0, pnb = 0; // silence inadequate warnings by initializing
+                       // them
 
   while (true)
     {

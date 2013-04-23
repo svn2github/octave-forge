@@ -1,7 +1,11 @@
 # We rely on g++ features, configure assures CXX=g++.
 CXX := @CXX@
 
-CXXFLAGS_NSA := "$(CXXFLAGS) -g -O2 -fno-strict-aliasing"
+ifndef CXXFLAGS
+CXXFLAGS_NSA := "-g -O2 -fno-strict-aliasing"
+else
+CXXFLAGS_NSA := "$(CXXFLAGS) -fno-strict-aliasing"
+endif
 
 OBJECTS := __pq_connect__.o pq_close.o pq_exec.o converters.o \
            converters_arr_comp.o pq_connection.o command.o \

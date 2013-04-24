@@ -129,12 +129,18 @@ endfunction
 %! pq_exec_params (conn, "create table complex_bool_array_array (a complex_bool_array_type[]);")
 %! pq_update_types (conn);
 %! pq_exec_params (conn, "insert into complex_bool_array_array values ($1);", {struct("ndims", 1, "data", {{{true, struct("ndims", 2, "data", {{true, false; true, true}})}; {false, struct("ndims", 1, "data", {{false; true}})}}})}, setdbopts ("param_types", {"complex_bool_array_type[]"}))
+%! data = pq_exec_params (conn, "select * from complex_bool_array_array;").data;
+%! ## copy in from variable
+%! pq_exec_params (conn, "copy complex_bool_array_array from stdin with binary;", setdbopts ("copy_in_data", data, "copy_in_from_variable", true, "copy_in_types", {"complex_bool_array_type[]"}))
 %! pq_exec_params (conn, "select * from complex_bool_array_array;")
 %! ## recursive type, composite-composite-array
 %! pq_exec_params (conn, "create type complex_complex_bool_array_type as (b bool, c complex_bool_array_type);")
-%! pq_exec_params (conn, "create table complex_complex_bool_array (a complex_complex_bool_array_type);");
+%! pq_exec_params (conn, "create table complex_complex_bool_array (a complex_complex_bool_array_type);")
 %! pq_update_types (conn);
 %! pq_exec_params (conn, "insert into complex_complex_bool_array values ($1);", {{false, {true, struct("ndims", 2, "data", {{true, false; true, true}})}}}, setdbopts ("param_types", {"complex_complex_bool_array_type"}))
+%! data = pq_exec_params (conn, "select * from complex_complex_bool_array").data;
+%! ## copy in from variable
+%! pq_exec_params (conn, "copy complex_complex_bool_array from stdin with binary;", setdbopts ("copy_in_data", data, "copy_in_from_variable", true, "copy_in_types", {"complex_complex_bool_array_type"}))
 %! pq_exec_params (conn, "select * from complex_complex_bool_array")
 %! pq_exec_params (conn, "drop table complex_complex_bool_array;")
 %! pq_exec_params (conn, "drop table complex_bool_array_array;")

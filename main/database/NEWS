@@ -1,3 +1,5 @@
+ ** New function pq_conninfo.
+
  ** Fix for includes on Apple.
 
 database 2.1.1:

@@ -51,6 +51,8 @@ public:
 
   oct_pq_name_conv_map_t name_conv_map;
 
+  bool integer_datetimes;
+
 
   // Octave internal stuff
 

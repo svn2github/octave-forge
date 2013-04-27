@@ -100,6 +100,11 @@ octave_pq_connection::octave_pq_connection (std::string arg)
 
           error ("could not read types");
         }
+
+      if (strcmp (PQparameterStatus (conn, "integer_datetimes"), "on"))
+        integer_datetimes = false;
+      else
+        integer_datetimes = true;
     }
 }
 

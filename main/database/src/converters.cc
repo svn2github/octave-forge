@@ -22,9 +22,6 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 #include <octave/ov-uint8.h>
 
 #include <libpq-fe.h>
-// FIXME: needed for NAMEDATALEN, but defining a lot of stuff which
-// might conflict with names here
-#include <pg_config_manual.h>
 
 #include "converters.h"
 
@@ -481,13 +478,6 @@ int from_octave_bin_name (const octave_value &ov, oct_pq_dynvec_t &val)
     }
 
   octave_idx_type l = s.size ();
-
-  if (l >= NAMEDATALEN)
-    {
-      error ("identifier too long, must be less than %d characters",
-             NAMEDATALEN);
-      return 1;
-    }
 
   for (int i = 0; i < l; i++)
     val.push_back (s[i]);

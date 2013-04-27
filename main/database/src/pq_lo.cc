@@ -315,7 +315,7 @@ lo_to_pipe::~lo_to_pipe (void)
 
 DEFUN_DLD (pq_lo_import, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{oid}} pq_lo_import (@var{connection}, @var{path})\n\
+@deftypefn {Loadable Function} {@var{oid} =} pq_lo_import (@var{connection}, @var{path})\n\
 Imports the file in @var{path} on the client side as a large object into the database associated with @var{connection} and returns the Oid of the new large object. If @var{path} ends with a @code{|}, it is take as a shell command whose output is piped into a large object.\n\
 @end deftypefn")
 {

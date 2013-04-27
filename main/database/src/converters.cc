@@ -470,49 +470,6 @@ oct_pq_conv_t conv_bpchar = {0,
 
 /* type name */
 
-int to_octave_str_name (const octave_pq_connection &conn,
-                        const char *c, octave_value &ov, int nb)
-{
-  return 1;
-}
-
-int to_octave_bin_name (const octave_pq_connection &conn,
-                        const char *c, octave_value &ov, int nb)
-{
-  // FIXME: should we check the string in c?
-
-  std::string s (c, nb);
-
-  ov = octave_value (s);
-
-  return 0;
-}
-
-int from_octave_str_name (const octave_pq_connection &conn,
-                          const octave_value &ov, oct_pq_dynvec_t &val)
-{
-  return 1;
-}
-
-int from_octave_bin_name (const octave_pq_connection &conn,
-                          const octave_value &ov, oct_pq_dynvec_t &val)
-{
-  std::string s = ov.string_value ();
-
-  if (error_state)
-    {
-      error ("can not convert octave_value to string");
-      return 1;
-    }
-
-  octave_idx_type l = s.size ();
-
-  for (int i = 0; i < l; i++)
-    val.push_back (s[i]);
-
-  return 0;
-}
-
 oct_pq_conv_t conv_name = {0,
                            0,
                            oct_pq_el_oids_t (),
@@ -521,10 +478,10 @@ oct_pq_conv_t conv_name = {0,
                            false,
                            false,
                            "name",
-                           &to_octave_str_name,
-                           &to_octave_bin_name,
-                           &from_octave_str_name,
-                           &from_octave_bin_name};
+                           &to_octave_str_text,
+                           &to_octave_bin_text,
+                           &from_octave_str_text,
+                           &from_octave_bin_text};
 
 /* end type name */
 

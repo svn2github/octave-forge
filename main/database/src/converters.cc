@@ -24,6 +24,7 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 #include <libpq-fe.h>
 
 #include "converters.h"
+#include "pq_connection.h"
 
 // remember to adjust OCT_PQ_NUM_CONVERTERS in converters.h
 
@@ -664,6 +665,129 @@ oct_pq_conv_t conv_money = {0,
 
 /* end type money */
 
+// helpers for time types
+
+static inline octave_value time_8byte_to_octave (const char *c, bool int_dt)
+{
+  if (int_dt)
+    {
+      return octave_value (octave_int64 (int64_t (be64toh (*((int64_t *) c)))));
+    }
+  else
+    {
+      union
+      {
+        double d;
+        int64_t i;
+      }
+      swap;
+
+      swap.i = be64toh (*((int64_t *) c));
+
+      return octave_value (swap.d);
+    }
+}
+
+static inline int time_8byte_from_octave (const octave_value &ov,
+                                          oct_pq_dynvec_t &val,
+                                          bool int_dt)
+{
+  if (int_dt)
+    {
+      // don't convert automatically because of possible overflow
+      if (ov.is_float_type ())
+        {
+          error ("floating point octave_value provided for 8-byte time value, but postgresql is configured for int64");
+          return 1;
+        }
+
+      int64_t i8 = ov.int64_scalar_value ();
+
+      if (error_state)
+        {
+          error ("can not convert octave_value to int64 time value");
+          return 1;
+        }
+
+      OCT_PQ_PUT(val, int64_t, htobe64 (i8))
+
+      return 0;
+    }
+  else
+    {
+      // don't convert automatically because of possible loss of accuracy
+      if (ov.is_integer_type ())
+        {
+          error ("integer type octave_value provided for 8-byte time value, but postgresql is configured for double");
+          return 1;
+        }
+
+      union
+      {
+        double d;
+        int64_t i;
+      }
+      swap;
+
+      swap.d = ov.double_value ();
+
+      if (error_state)
+        {
+          error ("can not convert octave_value to double time value");
+          return 1;
+        }
+
+      OCT_PQ_PUT(val, int64_t, htobe64 (swap.i))
+
+      return 0;
+    }
+}
+
+// end helpers for time types
+
+/* type timestamp */
+
+int to_octave_str_timestamp (const octave_pq_connection &conn,
+                             const char *c, octave_value &ov, int nb)
+{
+  return 1;
+}
+
+int to_octave_bin_timestamp (const octave_pq_connection &conn,
+                             const char *c, octave_value &ov, int nb)
+{
+  ov = time_8byte_to_octave (c, conn.integer_datetimes);
+
+  return 0;
+}
+
+int from_octave_str_timestamp (const octave_pq_connection &conn,
+                               const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  return 1;
+}
+
+int from_octave_bin_timestamp (const octave_pq_connection &conn,
+                               const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  return (time_8byte_from_octave (ov, val, conn.integer_datetimes));
+}
+
+oct_pq_conv_t conv_timestamp = {0,
+                                0,
+                                oct_pq_el_oids_t (),
+                                oct_pq_conv_cache_t (),
+                                false,
+                                false,
+                                false,
+                                "timestamp",
+                                &to_octave_str_timestamp,
+                                &to_octave_bin_timestamp,
+                                &from_octave_str_timestamp,
+                                &from_octave_bin_timestamp};
+
+/* end type timestamp */
+
 oct_pq_conv_t *t_conv_ptrs[OCT_PQ_NUM_CONVERTERS] = {&conv_bool,
                                                      &conv_oid,
                                                      &conv_float8,
@@ -676,6 +800,7 @@ oct_pq_conv_t *t_conv_ptrs[OCT_PQ_NUM_CONVERTERS] = {&conv_bool,
                                                      &conv_int2,
                                                      &conv_int4,
                                                      &conv_int8,
-                                                     &conv_money};
+                                                     &conv_money,
+                                                     &conv_timestamp};
 
 oct_pq_conv_ptrs_t conv_ptrs (OCT_PQ_NUM_CONVERTERS, t_conv_ptrs);

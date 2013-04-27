@@ -1,3 +1,5 @@
+ ** New converter for type timestamp.
+
  ** New function pq_conninfo.
 
  ** Fix for includes on Apple.

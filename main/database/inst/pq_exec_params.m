@@ -126,6 +126,10 @@
 ## storing the 'small currency' (e.g. Cent) fraction in the last two
 ## digits
 ## @tab yes
+## @item timestamp
+## @tab 8-byte-time-value (see below), positive or negative time
+## interval from 2000-01-01 00:00.
+## @tab yes
 ## @item any array
 ## @tab Structure with fields @code{data} (holding a cell-array with
 ## entries of a type corresponding to the Postgresql element type),
@@ -150,10 +154,17 @@
 ## @tab yes
 ## @end multitable
 ##
+## 8-byte-time-value: int64 scalar, representing microseconds, if server
+## is configured for integer date/time; double scalar, representing
+## seconds, if server is configured for float date/time (deprecated).
+## There is no automatic conversion from an octave variable, an error is
+## thrown if the wrong of both types is supplied. One can use
+## @code{pq_conninfo} to query the respective server configuration.
+##
 ## Octaves @code{NA} corresponds to a Postgresql NULL value (not
 ## @code{NaN}, which is interpreted as a value of a float type!).
 ##
-## @seealso {pq_update_types}
+## @seealso {pq_update_types, pq_conninfo}
 ## @end deftypefn
 
 ## PKG_ADD: __all_db_opts__ ("pq_exec_params");

@@ -1,7 +1,7 @@
 timestamp:
 
 Timestamp (8 byte, float or int) (microseconds (int) or seconds
-(float) before or after 'midnight' 2000-01-01; does not fit range?)
+(float) before or after 2000-01-01 00:00)
 
 
 timestamptz:

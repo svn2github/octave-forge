@@ -190,14 +190,6 @@ int from_octave_str_float8 (const octave_value &ov, oct_pq_dynvec_t &val)
 
 int from_octave_bin_float8 (const octave_value &ov, oct_pq_dynvec_t &val)
 {
-  double d = ov.double_value ();
-
-  if (error_state)
-    {
-      error ("can not convert octave_value to float8 value");
-      return 1;
-    }
-
   union
   {
     double d;
@@ -205,7 +197,13 @@ int from_octave_bin_float8 (const octave_value &ov, oct_pq_dynvec_t &val)
   }
   swap;
 
-  swap.d = d;
+  swap.d = ov.double_value ();
+
+  if (error_state)
+    {
+      error ("can not convert octave_value to float8 value");
+      return 1;
+    }
 
   OCT_PQ_PUT(val, int64_t, htobe64 (swap.i))
 
@@ -261,14 +259,6 @@ int from_octave_str_float4 (const octave_value &ov, oct_pq_dynvec_t &val)
 
 int from_octave_bin_float4 (const octave_value &ov, oct_pq_dynvec_t &val)
 {
-  double f = ov.float_value ();
-
-  if (error_state)
-    {
-      error ("can not convert octave_value to float4 value");
-      return 1;
-    }
-
   union
   {
     float f;
@@ -276,7 +266,13 @@ int from_octave_bin_float4 (const octave_value &ov, oct_pq_dynvec_t &val)
   }
   swap;
 
-  swap.f = f;
+  swap.f = ov.float_value ();
+
+  if (error_state)
+    {
+      error ("can not convert octave_value to float4 value");
+      return 1;
+    }
 
   OCT_PQ_PUT(val, int32_t, htobe32 (swap.i))
 

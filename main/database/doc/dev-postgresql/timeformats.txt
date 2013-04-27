@@ -1,30 +1,31 @@
 timestamp:
 
-Timestamp (8 byte, float or int)
+Timestamp (8 byte, float or int) (microseconds (int) or seconds
+(float) before or after 'midnight' 2000-01-01; does not fit range?)
 
 
 timestamptz:
 
-TimestampTz (8 byte, float or int)
+TimestampTz (8 byte, float or int) (as timestamp)
 
 
 interval:
 
-TimeOffset (8 byte, float or int) (all except day, month, year)
+TimeOffset (8 byte, float or int) (microseconds (int) or seconds (float))
 
 int32                (days)
 
-int32                (months and years)
+int32                (months)
 
 
 time:
 
-TimeADT (8 byte, float or int)
+TimeADT (8 byte, float or int) (microseconds (int) or seconds (float) ?)
 
 
-timetz:
+timetz (don't implement?):
 
-TimeADT (8 byte, float or int) (all except month, year)
+TimeADT (8 byte, float or int) (microseconds (int) or seconds (float) ?)
 
 int32                 (timezone in seconds)
 

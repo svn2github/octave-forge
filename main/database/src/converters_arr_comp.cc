@@ -85,7 +85,8 @@ octave_idx_type command::count_row_major_order (dim_vector &dv,
     }
 }
 
-int command::from_octave_bin_array (const octave_value &oct_arr,
+int command::from_octave_bin_array (const octave_pq_connection &conn,
+                                    const octave_value &oct_arr,
                                     oct_pq_dynvec_t &val, oct_pq_conv_t *conv)
 {
   octave_scalar_map m = oct_arr.scalar_map_value ();
@@ -177,12 +178,12 @@ int command::from_octave_bin_array (const octave_value &oct_arr,
 
             if (conv->is_composite)
               {
-                if (from_octave_bin_composite (arr(i), val, conv))
+                if (from_octave_bin_composite (conn, arr(i), val, conv))
                   return 1;
               }
             else
               {
-                if (conv->from_octave_bin (arr(i), val))
+                if (conv->from_octave_bin (conn, arr(i), val))
                   return 1;
               }
 
@@ -193,7 +194,8 @@ int command::from_octave_bin_array (const octave_value &oct_arr,
   return 0;
 }
 
-int command::from_octave_bin_composite (const octave_value &oct_comp,
+int command::from_octave_bin_composite (const octave_pq_connection &conn,
+                                        const octave_value &oct_comp,
                                         oct_pq_dynvec_t &val,
                                         oct_pq_conv_t *conv)
 {
@@ -240,17 +242,17 @@ int command::from_octave_bin_composite (const octave_value &oct_comp,
           switch (oct_type)
             {
             case simple:
-              if (el_conv->from_octave_bin (rec(i), val))
+              if (el_conv->from_octave_bin (conn, rec(i), val))
                 return 1;
               break;
 
             case array:
-              if (from_octave_bin_array (rec(i), val, el_conv))
+              if (from_octave_bin_array (conn, rec(i), val, el_conv))
                 return 1;
               break;
 
             case composite:
-              if (from_octave_bin_composite (rec(i), val, el_conv))
+              if (from_octave_bin_composite (conn, rec(i), val, el_conv))
                 return 1;
               break;
 
@@ -268,7 +270,8 @@ int command::from_octave_bin_composite (const octave_value &oct_comp,
   return 0;
 }
 
-int command::from_octave_str_array (const octave_value &oct_arr,
+int command::from_octave_str_array (const octave_pq_connection &conn,
+                                    const octave_value &oct_arr,
                                     oct_pq_dynvec_t &val, octave_value &type)
 {
   // not implemented
@@ -278,7 +281,8 @@ int command::from_octave_str_array (const octave_value &oct_arr,
   return 0;
 }
 
-int command::from_octave_str_composite (const octave_value &oct_comp,
+int command::from_octave_str_composite (const octave_pq_connection &conn,
+                                        const octave_value &oct_comp,
                                         oct_pq_dynvec_t &val,
                                         octave_value &type)
 {
@@ -289,7 +293,8 @@ int command::from_octave_str_composite (const octave_value &oct_comp,
   return 0;
 }
 
-int command::to_octave_bin_array (char *v, octave_value &ov, int nb,
+int command::to_octave_bin_array (const octave_pq_connection &conn,
+                                  char *v, octave_value &ov, int nb,
                                   oct_pq_conv_t *conv)
 {
   char *p = v;
@@ -348,12 +353,12 @@ int command::to_octave_bin_array (char *v, octave_value &ov, int nb,
 
           if (conv->is_composite)
             {
-              if (to_octave_bin_composite (p, ov_el, nb_el, conv))
+              if (to_octave_bin_composite (conn, p, ov_el, nb_el, conv))
                 return 1;
             }
           else
             {
-              if (conv->to_octave_bin (p, ov_el, nb_el))
+              if (conv->to_octave_bin (conn, p, ov_el, nb_el))
                 return 1;
             }
 
@@ -373,7 +378,8 @@ int command::to_octave_bin_array (char *v, octave_value &ov, int nb,
   return 0;
 }
 
-int command::to_octave_bin_composite (char *v, octave_value &ov, int nb,
+int command::to_octave_bin_composite (const octave_pq_connection &conn,
+                                      char *v, octave_value &ov, int nb,
                                       oct_pq_conv_t *conv)
 {
   char *p = v;
@@ -408,17 +414,17 @@ int command::to_octave_bin_composite (char *v, octave_value &ov, int nb,
           switch (oct_type)
             {
             case simple:
-              if (el_conv->to_octave_bin (p, el, nb_el))
+              if (el_conv->to_octave_bin (conn, p, el, nb_el))
                 return 1;
               break;
 
             case array:
-              if (to_octave_bin_array (p, el, nb_el, el_conv))
+              if (to_octave_bin_array (conn, p, el, nb_el, el_conv))
                 return 1;
               break;
 
             case composite:
-              if (to_octave_bin_composite (p, el, nb_el, el_conv))
+              if (to_octave_bin_composite (conn, p, el, nb_el, el_conv))
                 return 1;
               break;
 
@@ -441,7 +447,8 @@ int command::to_octave_bin_composite (char *v, octave_value &ov, int nb,
 }
 
 
-int command::to_octave_str_array (char *v, octave_value &ov, int nb,
+int command::to_octave_str_array (const octave_pq_connection &conn,
+                                  char *v, octave_value &ov, int nb,
                                   oct_pq_conv_t *conv)
 {
   // not implemented
@@ -451,7 +458,8 @@ int command::to_octave_str_array (char *v, octave_value &ov, int nb,
   return 0;
 }
 
-int command::to_octave_str_composite (char *v, octave_value &ov, int nb,
+int command::to_octave_str_composite (const octave_pq_connection &conn,
+                                      char *v, octave_value &ov, int nb,
                                       oct_pq_conv_t *conv)
 {
   // not implemented

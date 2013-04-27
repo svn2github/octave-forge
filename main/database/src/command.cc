@@ -95,7 +95,6 @@ command::command (octave_pq_connection &connection, std::string &cmd,
         {
           oct_type_t oct_type;
           oct_pq_conv_t *conv;
-          oct_pq_from_octave_fp_t conv_fcn;
 
           if (ptypes(i).is_empty ())
             {
@@ -136,18 +135,17 @@ command::command (octave_pq_connection &connection, std::string &cmd,
           switch (oct_type)
             {
             case simple:
-              conv_fcn = conv->from_octave_bin;
-              if (conv_fcn (params(i), valsvec[i]))
+              if (conv->from_octave_bin (conn, params(i), valsvec[i]))
                 valid = 0;
               break;
 
             case array:
-              if (from_octave_bin_array (params(i), valsvec[i], conv))
+              if (from_octave_bin_array (conn, params(i), valsvec[i], conv))
                 valid = 0;
               break;
 
             case composite:
-              if (from_octave_bin_composite (params(i), valsvec[i], conv))
+              if (from_octave_bin_composite (conn, params(i), valsvec[i], conv))
                 valid = 0;
               break;
 
@@ -425,17 +423,17 @@ octave_value command::tuples_ok_handler (void)
               switch (oct_type)
                 {
                 case simple:
-                  if (simple_type_to_octave (v, ov, nb))
+                  if (simple_type_to_octave (conn, v, ov, nb))
                     valid = 0;
                   break;
 
                 case array:
-                  if ((this->*array_to_octave) (v, ov, nb, conv))
+                  if ((this->*array_to_octave) (conn, v, ov, nb, conv))
                     valid = 0;
                   break;
 
                 case composite:
-                  if ((this->*composite_to_octave) (v, ov, nb, conv))
+                  if ((this->*composite_to_octave) (conn, v, ov, nb, conv))
                     valid = 0;
                   break;
 
@@ -766,17 +764,18 @@ octave_value command::copy_in_handler (const std::string &infile,
                       switch (oct_types[j])
                         {
                         case simple:
-                          if (convs[j]->from_octave_bin (data(i, j), val))
+                          if (convs[j]->from_octave_bin (conn, data(i, j), val))
                             conversion_failed = true;
                           break;
 
                         case array:
-                          if (from_octave_bin_array (data(i, j), val, convs[j]))
+                          if (from_octave_bin_array (conn, data(i, j), val,
+                                                     convs[j]))
                             conversion_failed = true;
                           break;
 
                         case composite:
-                          if (from_octave_bin_composite (data(i, j), val,
+                          if (from_octave_bin_composite (conn, data(i, j), val,
                                                          convs[j]))
                             conversion_failed = true;
                           break;

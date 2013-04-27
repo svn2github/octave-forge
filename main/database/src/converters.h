@@ -36,9 +36,14 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 typedef std::vector<char> oct_pq_dynvec_t;
 
-typedef int (*oct_pq_to_octave_fp_t) (const char *, octave_value &, int);
+class octave_pq_connection;
 
-typedef int (*oct_pq_from_octave_fp_t) (const octave_value &, oct_pq_dynvec_t &);
+typedef int (*oct_pq_to_octave_fp_t) (const octave_pq_connection &,
+                                      const char *, octave_value &, int);
+
+typedef int (*oct_pq_from_octave_fp_t) (const octave_pq_connection &,
+                                        const octave_value &,
+                                        oct_pq_dynvec_t &);
 
 typedef std::vector<Oid> oct_pq_el_oids_t;
 
@@ -119,10 +124,14 @@ extern oct_pq_conv_ptrs_t conv_ptrs;
 
 // these prototypes are needed because pointers to these functions are
 // stored in the converter structures of each found enum type
-int to_octave_str_text (const char *c, octave_value &ov, int nb);
-int to_octave_bin_text (const char *c, octave_value &ov, int nb);
-int from_octave_str_text (const octave_value &ov, oct_pq_dynvec_t &val);
-int from_octave_bin_text (const octave_value &ov, oct_pq_dynvec_t &val);
+int to_octave_str_text (const octave_pq_connection &conn,
+                        const char *c, octave_value &ov, int nb);
+int to_octave_bin_text (const octave_pq_connection &conn,
+                        const char *c, octave_value &ov, int nb);
+int from_octave_str_text (const octave_pq_connection &conn,
+                          const octave_value &ov, oct_pq_dynvec_t &val);
+int from_octave_bin_text (const octave_pq_connection &conn,
+                          const octave_value &ov, oct_pq_dynvec_t &val);
 
 // append bytes of value 'val' of type 'type' to dynamic char vector 'dv'
 #define OCT_PQ_PUT(dv, type, val)                       \

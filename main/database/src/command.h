@@ -58,10 +58,12 @@ public:
   count_state;
 
   typedef int (command::*to_octave_array_fp_t)
-    (char *, octave_value &, int, oct_pq_conv_t *);
+    (const octave_pq_connection &, char *, octave_value &,
+     int, oct_pq_conv_t *);
 
   typedef int (command::*to_octave_composite_fp_t)
-    (char *, octave_value &, int, oct_pq_conv_t *);
+    (const octave_pq_connection &, char *, octave_value &,
+     int, oct_pq_conv_t *);
 
   int all_results_fetched (void)
   {
@@ -126,25 +128,33 @@ private:
 
   oct_pq_conv_t *pgtype_from_spec (Oid, oct_pq_conv_t *&, oct_type_t &);
 
-  int from_octave_bin_array (const octave_value &oct_arr, oct_pq_dynvec_t &val,
+  int from_octave_bin_array (const octave_pq_connection &conn,
+                             const octave_value &oct_arr, oct_pq_dynvec_t &val,
                              oct_pq_conv_t *);
 
-  int from_octave_bin_composite (const octave_value &oct_comp,
+  int from_octave_bin_composite (const octave_pq_connection &conn,
+                                 const octave_value &oct_comp,
                                  oct_pq_dynvec_t &val, oct_pq_conv_t *);
 
-  int from_octave_str_array (const octave_value &oct_arr, oct_pq_dynvec_t &val,
+  int from_octave_str_array (const octave_pq_connection &conn,
+                             const octave_value &oct_arr, oct_pq_dynvec_t &val,
                              octave_value &type);
 
-  int from_octave_str_composite (const octave_value &oct_comp,
+  int from_octave_str_composite (const octave_pq_connection &conn,
+                                 const octave_value &oct_comp,
                                  oct_pq_dynvec_t &val, octave_value &type);
 
-  int to_octave_bin_array (char *, octave_value &, int, oct_pq_conv_t *);
+  int to_octave_bin_array (const octave_pq_connection &conn,
+                           char *, octave_value &, int, oct_pq_conv_t *);
 
-  int to_octave_bin_composite (char *, octave_value &, int, oct_pq_conv_t *);
+  int to_octave_bin_composite (const octave_pq_connection &conn,
+                               char *, octave_value &, int, oct_pq_conv_t *);
 
-  int to_octave_str_array (char *, octave_value &, int, oct_pq_conv_t *);
+  int to_octave_str_array (const octave_pq_connection &conn,
+                           char *, octave_value &, int, oct_pq_conv_t *);
 
-  int to_octave_str_composite (char *, octave_value &, int, oct_pq_conv_t *);
+  int to_octave_str_composite (const octave_pq_connection &conn,
+                               char *, octave_value &, int, oct_pq_conv_t *);
 
   octave_idx_type count_row_major_order (dim_vector &, count_state &, bool);
 

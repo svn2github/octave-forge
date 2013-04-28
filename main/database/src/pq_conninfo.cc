@@ -71,5 +71,5 @@ Retrieves connection information for postgresql connection @var{connection}, spe
       return retval;
     }
 
-  return octave_value (oct_pq_conn.integer_datetimes);
+  return octave_value (oct_pq_conn.get_integer_datetimes ());
 }

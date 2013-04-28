@@ -667,7 +667,8 @@ oct_pq_conv_t conv_money = {0,
 
 // helpers for time types
 
-static inline octave_value time_8byte_to_octave (const char *c, bool int_dt)
+static inline octave_value time_8byte_to_octave (const char *c,
+                                                 const bool &int_dt)
 {
   if (int_dt)
     {
@@ -690,7 +691,7 @@ static inline octave_value time_8byte_to_octave (const char *c, bool int_dt)
 
 static inline int time_8byte_from_octave (const octave_value &ov,
                                           oct_pq_dynvec_t &val,
-                                          bool int_dt)
+                                          const bool &int_dt)
 {
   if (int_dt)
     {
@@ -756,7 +757,7 @@ int to_octave_str_timestamp (const octave_pq_connection &conn,
 int to_octave_bin_timestamp (const octave_pq_connection &conn,
                              const char *c, octave_value &ov, int nb)
 {
-  ov = time_8byte_to_octave (c, conn.integer_datetimes);
+  ov = time_8byte_to_octave (c, conn.get_integer_datetimes ());
 
   return 0;
 }
@@ -770,7 +771,7 @@ int from_octave_str_timestamp (const octave_pq_connection &conn,
 int from_octave_bin_timestamp (const octave_pq_connection &conn,
                                const octave_value &ov, oct_pq_dynvec_t &val)
 {
-  return (time_8byte_from_octave (ov, val, conn.integer_datetimes));
+  return (time_8byte_from_octave (ov, val, conn.get_integer_datetimes ()));
 }
 
 oct_pq_conv_t conv_timestamp = {0,
@@ -788,6 +789,23 @@ oct_pq_conv_t conv_timestamp = {0,
 
 /* end type timestamp */
 
+/* type timestamptz */
+
+oct_pq_conv_t conv_timestamptz = {0,
+                                  0,
+                                  oct_pq_el_oids_t (),
+                                  oct_pq_conv_cache_t (),
+                                  false,
+                                  false,
+                                  false,
+                                  "timestamptz",
+                                  &to_octave_str_timestamp,
+                                  &to_octave_bin_timestamp,
+                                  &from_octave_str_timestamp,
+                                  &from_octave_bin_timestamp};
+
+/* end type timestamptz */
+
 oct_pq_conv_t *t_conv_ptrs[OCT_PQ_NUM_CONVERTERS] = {&conv_bool,
                                                      &conv_oid,
                                                      &conv_float8,
@@ -801,6 +819,7 @@ oct_pq_conv_t *t_conv_ptrs[OCT_PQ_NUM_CONVERTERS] = {&conv_bool,
                                                      &conv_int4,
                                                      &conv_int8,
                                                      &conv_money,
-                                                     &conv_timestamp};
+                                                     &conv_timestamp,
+                                                     &conv_timestamptz};
 
 oct_pq_conv_ptrs_t conv_ptrs (OCT_PQ_NUM_CONVERTERS, t_conv_ptrs);

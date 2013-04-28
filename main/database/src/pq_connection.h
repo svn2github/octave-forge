@@ -51,7 +51,7 @@ public:
 
   oct_pq_name_conv_map_t name_conv_map;
 
-  bool integer_datetimes;
+  const bool &get_integer_datetimes (void) const { return integer_datetimes; }
 
 
   // Octave internal stuff
@@ -100,6 +100,9 @@ private:
 
   // returns zero on success
   int octave_pq_get_enum_types (void);
+
+  // server configuration
+  bool integer_datetimes;
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

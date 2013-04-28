@@ -127,8 +127,25 @@
 ## digits
 ## @tab yes
 ## @item timestamp
-## @tab 8-byte-time-value (see below), positive or negative time
-## interval from 2000-01-01 00:00.
+## @tab 8-byte-time-value (see below), positive or negative difference
+## to 2000-01-01 00:00
+## @tab yes
+## @item timestamptz
+## @tab as timestamp
+## @tab yes
+## @item time
+## @tab 8-byte-time-value (see below)
+## @tab yes
+## @item timetz
+## @tab 2-element cell array with 8-byte-time-value (see below, time of
+## day) and int32 scalar (time zone in seconds, negative east of UTC)
+## @tab yes
+## @item date
+## @tab int32 scalar, positive or negative difference to 2000-01-01
+## @tab yes
+## @item interval
+## @tab 3-element cell array with 8-byte-time-value (see below), int32
+## (days), and int32 (months)
 ## @tab yes
 ## @item any array
 ## @tab Structure with fields @code{data} (holding a cell-array with

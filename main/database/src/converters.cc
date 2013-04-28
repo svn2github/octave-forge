@@ -20,6 +20,7 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 #include <octave/oct.h>
 #include <octave/ov-float.h>
 #include <octave/ov-uint8.h>
+#include <octave/Cell.h>
 
 #include <libpq-fe.h>
 
@@ -806,6 +807,252 @@ oct_pq_conv_t conv_timestamptz = {0,
 
 /* end type timestamptz */
 
+/* type interval */
+
+int to_octave_str_interval (const octave_pq_connection &conn,
+                            const char *c, octave_value &ov, int nb)
+{
+  return 1;
+}
+
+int to_octave_bin_interval (const octave_pq_connection &conn,
+                            const char *c, octave_value &ov, int nb)
+{
+  Cell tp (dim_vector (3, 1));
+
+  tp(0) = time_8byte_to_octave (c, conn.get_integer_datetimes ());
+
+  c += 8;
+
+  tp(1) = octave_value (octave_int32 (int32_t (be32toh (*((int32_t *) c)))));
+
+  c += 4;
+
+  tp(2) = octave_value (octave_int32 (int32_t (be32toh (*((int32_t *) c)))));
+
+  ov = octave_value (tp);
+
+  return 0;
+}
+
+int from_octave_str_interval (const octave_pq_connection &conn,
+                              const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  return 1;
+}
+
+int from_octave_bin_interval (const octave_pq_connection &conn,
+                              const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  Cell iv = ov.cell_value ();
+  if (error_state || iv.numel () != 3)
+    {
+      error ("interval: can not convert octave_value to cell with 3 elements");
+      return 1;
+    }
+
+  if (time_8byte_from_octave (iv(0), val, conn.get_integer_datetimes ()))
+    return 1;
+
+  for (int id = 1; id < 3; id++)
+    {
+      int32_t i4 = iv(id).int_value ();
+
+      if (error_state)
+        {
+          error ("interval: can not convert octave_value to int4 value");
+          return 1;
+        }
+
+      OCT_PQ_PUT(val, int32_t, htobe32 (i4))
+    }
+
+  return 0;
+}
+
+oct_pq_conv_t conv_interval = {0,
+                               0,
+                               oct_pq_el_oids_t (),
+                               oct_pq_conv_cache_t (),
+                               false,
+                               false,
+                               false,
+                               "interval",
+                               &to_octave_str_interval,
+                               &to_octave_bin_interval,
+                               &from_octave_str_interval,
+                               &from_octave_bin_interval};
+
+/* end type interval */
+
+/* type time */
+
+int to_octave_str_time (const octave_pq_connection &conn,
+                        const char *c, octave_value &ov, int nb)
+{
+  return 1;
+}
+
+int to_octave_bin_time (const octave_pq_connection &conn,
+                        const char *c, octave_value &ov, int nb)
+{
+  ov = time_8byte_to_octave (c, conn.get_integer_datetimes ());
+
+  return 0;
+}
+
+int from_octave_str_time (const octave_pq_connection &conn,
+                          const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  return 1;
+}
+
+int from_octave_bin_time (const octave_pq_connection &conn,
+                          const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  return (time_8byte_from_octave (ov, val, conn.get_integer_datetimes ()));
+}
+
+oct_pq_conv_t conv_time = {0,
+                           0,
+                           oct_pq_el_oids_t (),
+                           oct_pq_conv_cache_t (),
+                           false,
+                           false,
+                           false,
+                           "time",
+                           &to_octave_str_time,
+                           &to_octave_bin_time,
+                           &from_octave_str_time,
+                           &from_octave_bin_time};
+
+/* end type time */
+
+/* type timetz */
+
+int to_octave_str_timetz (const octave_pq_connection &conn,
+                          const char *c, octave_value &ov, int nb)
+{
+  return 1;
+}
+
+int to_octave_bin_timetz (const octave_pq_connection &conn,
+                          const char *c, octave_value &ov, int nb)
+{
+  Cell tp (dim_vector (2, 1));
+
+  tp(0) = time_8byte_to_octave (c, conn.get_integer_datetimes ());
+
+  c += 8;
+
+  tp(1) = octave_value (octave_int32 (int32_t (be32toh (*((int32_t *) c)))));
+
+  ov = octave_value (tp);
+
+  return 0;
+}
+
+int from_octave_str_timetz (const octave_pq_connection &conn,
+                            const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  return 1;
+}
+
+int from_octave_bin_timetz (const octave_pq_connection &conn,
+                            const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  Cell iv = ov.cell_value ();
+  if (error_state || iv.numel () != 2)
+    {
+      error ("timetz: can not convert octave_value to cell with 2 elements");
+      return 1;
+    }
+
+  if (time_8byte_from_octave (iv(0), val, conn.get_integer_datetimes ()))
+    return 1;
+
+  int32_t i4 = iv(1).int_value ();
+
+  if (error_state)
+    {
+      error ("timetz: can not convert octave_value to int4 value");
+      return 1;
+    }
+
+  OCT_PQ_PUT(val, int32_t, htobe32 (i4))
+
+  return 0;
+}
+
+oct_pq_conv_t conv_timetz = {0,
+                             0,
+                             oct_pq_el_oids_t (),
+                             oct_pq_conv_cache_t (),
+                             false,
+                             false,
+                             false,
+                             "timetz",
+                             &to_octave_str_timetz,
+                             &to_octave_bin_timetz,
+                             &from_octave_str_timetz,
+                             &from_octave_bin_timetz};
+
+/* end type timetz */
+
+/* type date */
+
+int to_octave_str_date (const octave_pq_connection &conn,
+                        const char *c, octave_value &ov, int nb)
+{
+  return 1;
+}
+
+int to_octave_bin_date (const octave_pq_connection &conn,
+                        const char *c, octave_value &ov, int nb)
+{
+  ov = octave_value (octave_int32 (int32_t (be32toh (*((int32_t *) c)))));
+
+  return 0;
+}
+
+int from_octave_str_date (const octave_pq_connection &conn,
+                          const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  return 1;
+}
+
+int from_octave_bin_date (const octave_pq_connection &conn,
+                          const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  int32_t i4 = ov.int_value ();
+
+  if (error_state)
+    {
+      error ("date: can not convert octave_value to int4 value");
+      return 1;
+    }
+
+  OCT_PQ_PUT(val, int32_t, htobe32 (i4))
+
+  return 0;
+}
+
+oct_pq_conv_t conv_date = {0,
+                           0,
+                           oct_pq_el_oids_t (),
+                           oct_pq_conv_cache_t (),
+                           false,
+                           false,
+                           false,
+                           "date",
+                           &to_octave_str_date,
+                           &to_octave_bin_date,
+                           &from_octave_str_date,
+                           &from_octave_bin_date};
+
+
+/* end type date */
+
 oct_pq_conv_t *t_conv_ptrs[OCT_PQ_NUM_CONVERTERS] = {&conv_bool,
                                                      &conv_oid,
                                                      &conv_float8,
@@ -820,6 +1067,10 @@ oct_pq_conv_t *t_conv_ptrs[OCT_PQ_NUM_CONVERTERS] = {&conv_bool,
                                                      &conv_int8,
                                                      &conv_money,
                                                      &conv_timestamp,
-                                                     &conv_timestamptz};
+                                                     &conv_timestamptz,
+                                                     &conv_interval,
+                                                     &conv_time,
+                                                     &conv_timetz,
+                                                     &conv_date};
 
 oct_pq_conv_ptrs_t conv_ptrs (OCT_PQ_NUM_CONVERTERS, t_conv_ptrs);

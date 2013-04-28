@@ -23,7 +23,7 @@ time:
 TimeADT (8 byte, float or int) (microseconds (int) or seconds (float) ?)
 
 
-timetz (don't implement?):
+timetz:
 
 TimeADT (8 byte, float or int) (microseconds (int) or seconds (float) ?)
 
@@ -32,5 +32,4 @@ int32                 (timezone in seconds)
 
 date:
 
-int32
-
+int32 (difference to 2000-01-01)

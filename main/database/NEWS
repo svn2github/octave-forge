@@ -1,4 +1,5 @@
- ** New converter for type timestamp.
+ ** New converters for date/time types (timestamp, timestamptz, time,
+    timetz, date, interval).
 
  ** New function pq_conninfo.
 

@@ -17,7 +17,9 @@ pq_lo_export: export large object to client side,
 
 pq_lo_unlink: delete large object,
 
-pq_close: disconnect from database.
+pq_close: disconnect from database,
+
+pq_conninfo: get information on connection and server.
 
 
 Features:
@@ -34,7 +36,9 @@ Features:
 
 - binary data transfer,
 
-- reads postgresql system catalogs to get type information.
+- reads postgresql system catalogs to get type information,
+
+- types can be scheme-qualified.
 
 
 State:

@@ -18,7 +18,10 @@ Summary of important user-visible changes for specfun 1.2.0:
  ** The following functions have removed since they now are part of
     Octave core:
 
+      ellipj
+      ellipke
       erfcinv
+      expint
 
  ** The following functions have been deprecated (see their help text
     for the recommended alternatives):

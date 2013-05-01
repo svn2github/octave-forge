@@ -18,11 +18,11 @@
 ## 
 ## Compute the coefficients of the Chebyshev polynomial, given the 
 ## @var{order}. We calculate the Chebyshev polynomial using the recurrence
-## relations, Tn+1(x) = (2*x*Tn(x) - Tn-1(x)). The @var{kind} can set to
-## compute the first or second kind chebyshev polynomial.
+## relations Tn+1(x) = (2*x*Tn(x) - Tn-1(x)). The @var{kind} can be set to
+## compute the first or second kind Chebyshev polynomial.
 ##
-## If the value @var{x} is specified, the polynomial is also evaluated,
-## otherwise just the return the coefficients of the polynomial are returned.
+## If the value @var{x} is specified, the polynomial is evaluated at @var{x},
+## otherwise just the coefficients of the polynomial are returned.
 ## 
 ## This is NOT the generalized Chebyshev polynomial.
 ##
@@ -64,3 +64,12 @@ function h=chebyshevpoly(kind,order,val)
   endif
 
 endfunction
+
+%!test
+%!  x = logspace(-2, 2, 30);
+%!  maxdeg = 10;
+%!  for n = 1:maxdeg
+%!    assert( chebyshevpoly(1,n,cos(x)), cos(n*x), 1E3*eps )
+%!    assert( chebyshevpoly(2,n,cos(x)) .* sin(x), sin((n+1)*x), 1E3*eps )
+%!  endfor 
+

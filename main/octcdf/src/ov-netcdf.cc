@@ -380,7 +380,7 @@ dimensions can be renamed. \n\
 @seealso{ncvar,ncatt,ncdim}\n")
 {
 
-  if (args.length() > 2) {
+  if (args.length() < 1 || args.length() > 2) {
     print_usage ();
     return octave_value();
   }

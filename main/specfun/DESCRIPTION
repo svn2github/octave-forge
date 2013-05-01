@@ -6,6 +6,6 @@ Maintainer: Octave-Forge community <maintainers@octave.org>
 Title: Specfun
 Description: Special functions including ellipitic functions, etc
 Categories: Specfun
-Depends: octave (>= 3.4.0)
+Depends: octave (>= 3.8.0)
 License: GPLv3+, modified BSD
 Url: http://octave.sf.net

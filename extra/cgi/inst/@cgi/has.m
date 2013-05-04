@@ -1,6 +1,6 @@
 %% -*- texinfo -*-
 %% @deftypefn {Function File} {@var{val} =} has(@var{cgi},@var{name})
-%% Returns true of a CGI parameter with the given name exists (otherwise false).
+%% Returns true if a CGI parameter with the given name exists (otherwise false).
 %% @end deftypefn
 %% @seealso{cgi,@@cgi/getlist}
 

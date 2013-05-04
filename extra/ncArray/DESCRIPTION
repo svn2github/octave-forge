@@ -7,6 +7,5 @@ Title: ncArray
 Description: Access a single or a collection of NetCDF files as a multi-dimensional array
 Categories: IO
 Depends: octave (>= 3.4.0), octcdf (>= 1.1.5)
-Autoload: yes
-License: GPL version 2 or later
+License: GPLv2+
 Url: http://octave.sf.net, http://modb.oce.ulg.ac.be/mediawiki/index.php/ncArray

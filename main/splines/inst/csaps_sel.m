@@ -195,7 +195,7 @@ endfunction
 
 function Binv = banded_matrix_inverse(d, U, m) #given a (2m+1)-banded, symmetric n x n matrix B = U'*inv(diag(d))*U, where U is unit upper triangular with bandwidth (m+1), returns Binv, a sparse symmetric matrix containing the central 2m+1 bands of the inverse of B
 #Reference: Hutchinson and de Hoog 1985
-  Binv = diag(d);
+  Binv = sparse(diag(d));
   n = rows(U);
   for i = n:(-1):1
     p = min(m, n - i);

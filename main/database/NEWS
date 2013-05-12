@@ -1,3 +1,6 @@
+ ** New converters for geometric types (point, lseg, (line,) box,
+    circle, polygon, path).
+
  ** New converters for date/time types (timestamp, timestamptz, time,
     timetz, date, interval).
 

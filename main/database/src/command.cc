@@ -905,5 +905,23 @@ oct_pq_conv_t *command::pgtype_from_octtype (const octave_value &param)
       return conn.name_conv_map["text"];
     }
 
+  // is_real_type() is true for strings, so is_numeric_type() would
+  // still be needed if strings were not recognized above
+  if (param.is_real_type ())
+    {
+      switch (param.numel ())
+        {
+        case 2:
+          // printf ("point\n");
+          return conn.name_conv_map["point"];
+        case 3:
+          // printf ("circle\n");
+          return conn.name_conv_map["circle"];
+        case 4:
+          // printf ("lseg\n");
+          return conn.name_conv_map["lseg"];
+        }
+    }
+
   ERROR_RETURN_NO_PG_TYPE
 }

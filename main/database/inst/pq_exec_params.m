@@ -147,6 +147,29 @@
 ## @tab 3-element cell array with 8-byte-time-value (see below), int32
 ## (days), and int32 (months)
 ## @tab yes
+## @item point
+## @tab geometric point data for one point (see below)
+## @tab no
+## @item lseg
+## @tab geometric point data for two points (see below)
+## @tab no
+## @item line (not yet implemented by postgresql-9.2.4)
+## @tab as lseg
+## @tab yes
+## @item box
+## @tab as lseg
+## @tab yes
+## @item cirle
+## @tab real vector (not uint8) with 3 elements, no. 1 and 2 centre
+## coordinates, no. 3 radius
+## @tab no
+## @item polygon
+## @tab geometric point data (see below)
+## @tab yes
+## @item path
+## @tab structure with fields @code{closed} (boolean, is path closed?)
+## and @code{path} (geometric point data, see below).
+## @tab yes
 ## @item any array
 ## @tab Structure with fields @code{data} (holding a cell-array with
 ## entries of a type corresponding to the Postgresql element type),
@@ -177,6 +200,12 @@
 ## There is no automatic conversion from an octave variable, an error is
 ## thrown if the wrong of both types is supplied. One can use
 ## @code{pq_conninfo} to query the respective server configuration.
+##
+## geometric point data: any real array (but not of type uint8, for this
+## is reserved for bytea) with even number of elements. Two adjacent
+## elements (adjacent if indexed with a single index) define a pair of
+## 2D point coordinates. In converting from postgresql data, dimensions
+## of Octave geometric point data will be chosen to be (2, n_points).
 ##
 ## Octaves @code{NA} corresponds to a Postgresql NULL value (not
 ## @code{NaN}, which is interpreted as a value of a float type!).

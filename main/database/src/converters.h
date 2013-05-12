@@ -32,7 +32,7 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 #include "wrap_endian.h"
 
-#define OCT_PQ_NUM_CONVERTERS 19
+#define OCT_PQ_NUM_CONVERTERS 26
 
 typedef std::vector<char> oct_pq_dynvec_t;
 

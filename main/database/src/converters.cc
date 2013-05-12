@@ -18,6 +18,7 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <octave/oct.h>
+#include <octave/ov-struct.h>
 #include <octave/ov-float.h>
 #include <octave/ov-uint8.h>
 #include <octave/Cell.h>
@@ -1050,8 +1051,483 @@ oct_pq_conv_t conv_date = {0,
                            &from_octave_str_date,
                            &from_octave_bin_date};
 
-
 /* end type date */
+
+/* type point */
+
+int to_octave_str_point (const octave_pq_connection &conn,
+                         const char *c, octave_value &ov, int nb)
+{
+  return 1;
+}
+
+int to_octave_bin_point (const octave_pq_connection &conn,
+                         const char *c, octave_value &ov, int nb)
+{
+  ColumnVector m (2);
+
+  union
+  {
+    double d;
+    int64_t i;
+  }
+  swap;
+
+  for (int id = 0; id < 2; id++, c += 8)
+    {
+      swap.i = be64toh (*((int64_t *) c));
+
+      m(id) = swap.d;
+    }
+
+  ov = octave_value (m);
+
+  return 0;
+}
+
+int from_octave_str_point (const octave_pq_connection &conn,
+                           const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  return 1;
+}
+
+int from_octave_bin_point (const octave_pq_connection &conn,
+                           const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  NDArray m = ov.array_value ();
+
+  if (error_state || m.numel () != 2)
+    {
+      error ("can not convert octave_value to point representation");
+      return 1;
+    }
+
+  union
+  {
+    double d;
+    int64_t i;
+  }
+  swap;
+
+  for (int id = 0; id < 2; id++)
+    {
+      swap.d = m(id);
+
+      OCT_PQ_PUT(val, int64_t, htobe64 (swap.i))
+    }
+
+  return 0;
+}
+
+oct_pq_conv_t conv_point = {0,
+                            0,
+                            oct_pq_el_oids_t (),
+                            oct_pq_conv_cache_t (),
+                            false,
+                            false,
+                            false,
+                            "point",
+                            &to_octave_str_point,
+                            &to_octave_bin_point,
+                            &from_octave_str_point,
+                            &from_octave_bin_point};
+
+/* end type point */
+
+/* type lseg */
+
+int to_octave_str_lseg (const octave_pq_connection &conn,
+                        const char *c, octave_value &ov, int nb)
+{
+  return 1;
+}
+
+int to_octave_bin_lseg (const octave_pq_connection &conn,
+                        const char *c, octave_value &ov, int nb)
+{
+  Matrix m (2, 2);
+
+  union
+  {
+    double d;
+    int64_t i;
+  }
+  swap;
+
+  for (int id = 0; id < 4; id++, c += 8)
+    {
+      swap.i = be64toh (*((int64_t *) c));
+
+      m(id) = swap.d;
+    }
+
+  ov = octave_value (m);
+
+  return 0;
+}
+
+int from_octave_str_lseg (const octave_pq_connection &conn,
+                          const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  return 1;
+}
+
+int from_octave_bin_lseg (const octave_pq_connection &conn,
+                          const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  NDArray m = ov.array_value ();
+
+  if (error_state || m.numel () != 4)
+    {
+      error ("can not convert octave_value to 4 doubles");
+      return 1;
+    }
+
+  union
+  {
+    double d;
+    int64_t i;
+  }
+  swap;
+
+  for (int id = 0; id < 4; id++)
+    {
+      swap.d = m(id);
+
+      OCT_PQ_PUT(val, int64_t, htobe64 (swap.i))
+    }
+
+  return 0;
+}
+
+oct_pq_conv_t conv_lseg = {0,
+                           0,
+                           oct_pq_el_oids_t (),
+                           oct_pq_conv_cache_t (),
+                           false,
+                           false,
+                           false,
+                           "lseg",
+                           &to_octave_str_lseg,
+                           &to_octave_bin_lseg,
+                           &from_octave_str_lseg,
+                           &from_octave_bin_lseg};
+
+/* end type lseg */
+
+/* type line */
+
+oct_pq_conv_t conv_line = {0,
+                           0,
+                           oct_pq_el_oids_t (),
+                           oct_pq_conv_cache_t (),
+                           false,
+                           false,
+                           false,
+                           "line",
+                           &to_octave_str_lseg,
+                           &to_octave_bin_lseg,
+                           &from_octave_str_lseg,
+                           &from_octave_bin_lseg};
+
+/* end type line */
+
+/* type box */
+
+oct_pq_conv_t conv_box = {0,
+                          0,
+                          oct_pq_el_oids_t (),
+                          oct_pq_conv_cache_t (),
+                          false,
+                          false,
+                          false,
+                          "box",
+                          &to_octave_str_lseg,
+                          &to_octave_bin_lseg,
+                          &from_octave_str_lseg,
+                          &from_octave_bin_lseg};
+
+/* end type box */
+
+/* type circle */
+
+int to_octave_str_circle (const octave_pq_connection &conn,
+                          const char *c, octave_value &ov, int nb)
+{
+  return 1;
+}
+
+int to_octave_bin_circle (const octave_pq_connection &conn,
+                          const char *c, octave_value &ov, int nb)
+{
+  ColumnVector m (3);
+
+  union
+  {
+    double d;
+    int64_t i;
+  }
+  swap;
+
+  for (int id = 0; id < 3; id++, c += 8)
+    {
+      swap.i = be64toh (*((int64_t *) c));
+
+      m(id) = swap.d;
+    }
+
+  ov = octave_value (m);
+
+  return 0;
+}
+
+int from_octave_str_circle (const octave_pq_connection &conn,
+                            const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  return 1;
+}
+
+int from_octave_bin_circle (const octave_pq_connection &conn,
+                            const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  NDArray m = ov.array_value ();
+
+  if (error_state || m.numel () != 3)
+    {
+      error ("can not convert octave_value to circle representation");
+      return 1;
+    }
+
+  union
+  {
+    double d;
+    int64_t i;
+  }
+  swap;
+
+  for (int id = 0; id < 3; id++)
+    {
+      swap.d = m(id);
+
+      OCT_PQ_PUT(val, int64_t, htobe64 (swap.i))
+    }
+
+  return 0;
+}
+
+oct_pq_conv_t conv_circle = {0,
+                             0,
+                             oct_pq_el_oids_t (),
+                             oct_pq_conv_cache_t (),
+                             false,
+                             false,
+                             false,
+                             "circle",
+                             &to_octave_str_circle,
+                             &to_octave_bin_circle,
+                             &from_octave_str_circle,
+                             &from_octave_bin_circle};
+
+/* end type circle */
+
+/* type polygon */
+
+int to_octave_str_polygon (const octave_pq_connection &conn,
+                           const char *c, octave_value &ov, int nb)
+{
+  return 1;
+}
+
+int to_octave_bin_polygon (const octave_pq_connection &conn,
+                           const char *c, octave_value &ov, int nb)
+{
+  int32_t np = int32_t (be32toh (*((int32_t *) c)));
+
+  c += 4;
+
+  Matrix m (2, np);
+
+  union
+  {
+    double d;
+    int64_t i;
+  }
+  swap;
+
+  for (int id = 0; id < np * 2; id++, c += 8)
+    {
+      swap.i = be64toh (*((int64_t *) c));
+
+      m(id) = swap.d;
+    }
+
+  ov = octave_value (m);
+
+  return 0;
+}
+
+int from_octave_str_polygon (const octave_pq_connection &conn,
+                             const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  return 1;
+}
+
+int from_octave_bin_polygon (const octave_pq_connection &conn,
+                             const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  octave_idx_type nel;
+
+  NDArray m = ov.array_value ();
+
+  if (error_state || (nel = m.numel ()) % 2)
+    {
+      error ("can not convert octave_value to polygon representation");
+      return 1;
+    }
+
+  union
+  {
+    double d;
+    int64_t i;
+  }
+  swap;
+
+  int32_t np = nel / 2;
+
+  OCT_PQ_PUT(val, int32_t, htobe32 (np))
+
+  for (int id = 0; id < nel; id++)
+    {
+      swap.d = m(id);
+
+      OCT_PQ_PUT(val, int64_t, htobe64 (swap.i))
+    }
+
+  return 0;
+}
+
+oct_pq_conv_t conv_polygon = {0,
+                              0,
+                              oct_pq_el_oids_t (),
+                              oct_pq_conv_cache_t (),
+                              false,
+                              false,
+                              false,
+                              "polygon",
+                              &to_octave_str_polygon,
+                              &to_octave_bin_polygon,
+                              &from_octave_str_polygon,
+                              &from_octave_bin_polygon};
+
+/* end type polygon */
+
+/* type path */
+
+int to_octave_str_path (const octave_pq_connection &conn,
+                        const char *c, octave_value &ov, int nb)
+{
+  return 1;
+}
+
+int to_octave_bin_path (const octave_pq_connection &conn,
+                        const char *c, octave_value &ov, int nb)
+{
+  bool closed = bool (*(c++));
+
+  int32_t np = int32_t (be32toh (*((int32_t *) c)));
+
+  c += 4;
+
+  Matrix m (2, np);
+
+  union
+  {
+    double d;
+    int64_t i;
+  }
+  swap;
+
+  for (int id = 0; id < np * 2; id++, c += 8)
+    {
+      swap.i = be64toh (*((int64_t *) c));
+
+      m(id) = swap.d;
+    }
+
+  octave_scalar_map tp;
+  tp.assign ("closed", octave_value (closed));
+  tp.assign ("path", octave_value (m));
+
+  ov = octave_value (tp);
+
+  return 0;
+}
+
+int from_octave_str_path (const octave_pq_connection &conn,
+                          const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  return 1;
+}
+
+int from_octave_bin_path (const octave_pq_connection &conn,
+                          const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  octave_scalar_map tp = ov.scalar_map_value ();
+  if (error_state || ! tp.isfield ("closed") || ! tp.isfield ("path"))
+    {
+      error ("can not convert octave_value to path representation");
+      return 1;
+    }
+
+  octave_idx_type nel;
+
+  char closed = char (tp.contents ("closed").bool_value ());
+
+  NDArray m = tp.contents ("path").array_value ();
+
+  if (error_state || (nel = m.numel ()) % 2)
+    {
+      error ("can not convert octave_value to path representation");
+      return 1;
+    }
+
+  union
+  {
+    double d;
+    int64_t i;
+  }
+  swap;
+
+  int32_t np = nel / 2;
+
+  val.push_back (closed);
+
+  OCT_PQ_PUT(val, int32_t, htobe32 (np))
+
+  for (int id = 0; id < nel; id++)
+    {
+      swap.d = m(id);
+
+      OCT_PQ_PUT(val, int64_t, htobe64 (swap.i))
+    }
+
+  return 0;
+}
+
+oct_pq_conv_t conv_path = {0,
+                           0,
+                           oct_pq_el_oids_t (),
+                           oct_pq_conv_cache_t (),
+                           false,
+                           false,
+                           false,
+                           "path",
+                           &to_octave_str_path,
+                           &to_octave_bin_path,
+                           &from_octave_str_path,
+                           &from_octave_bin_path};
+
+/* end type path */
 
 oct_pq_conv_t *t_conv_ptrs[OCT_PQ_NUM_CONVERTERS] = {&conv_bool,
                                                      &conv_oid,
@@ -1071,6 +1547,13 @@ oct_pq_conv_t *t_conv_ptrs[OCT_PQ_NUM_CONVERTERS] = {&conv_bool,
                                                      &conv_interval,
                                                      &conv_time,
                                                      &conv_timetz,
-                                                     &conv_date};
+                                                     &conv_date,
+                                                     &conv_point,
+                                                     &conv_lseg,
+                                                     &conv_line,
+                                                     &conv_box,
+                                                     &conv_circle,
+                                                     &conv_polygon,
+                                                     &conv_path};
 
 oct_pq_conv_ptrs_t conv_ptrs (OCT_PQ_NUM_CONVERTERS, t_conv_ptrs);

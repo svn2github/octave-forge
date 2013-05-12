@@ -1529,6 +1529,61 @@ oct_pq_conv_t conv_path = {0,
 
 /* end type path */
 
+/* type unknown */
+
+// These are pseudo-converters for postgresql type 'unknown'. They do
+// nothing except signalling an error. The rationale is that the only
+// values of type 'unknown' may be NULL, in which case the converter
+// will not be called, but because a converter exists there won't be a
+// "no converter found" error thrown.
+
+int to_octave_str_unknown (const octave_pq_connection &conn,
+                           const char *c, octave_value &ov, int nb)
+{
+  error ("can not convert postgresql type 'unknown'");
+
+  return 1;
+}
+
+int to_octave_bin_unknown (const octave_pq_connection &conn,
+                           const char *c, octave_value &ov, int nb)
+{
+  error ("can not convert postgresql type 'unknown'");
+
+  return 1;
+}
+
+int from_octave_str_unknown (const octave_pq_connection &conn,
+                             const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  error ("can not convert postgresql type 'unknown'");
+
+  return 1;
+}
+
+int from_octave_bin_unknown (const octave_pq_connection &conn,
+                             const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  error ("can not convert postgresql type 'unknown'");
+
+  return 1;
+}
+
+oct_pq_conv_t conv_unknown = {0,
+                              0,
+                              oct_pq_el_oids_t (),
+                              oct_pq_conv_cache_t (),
+                              false,
+                              false,
+                              false,
+                              "unknown",
+                              &to_octave_str_unknown,
+                              &to_octave_bin_unknown,
+                              &from_octave_str_unknown,
+                              &from_octave_bin_unknown};
+
+/* end type unknown */
+
 oct_pq_conv_t *t_conv_ptrs[OCT_PQ_NUM_CONVERTERS] = {&conv_bool,
                                                      &conv_oid,
                                                      &conv_float8,
@@ -1554,6 +1609,7 @@ oct_pq_conv_t *t_conv_ptrs[OCT_PQ_NUM_CONVERTERS] = {&conv_bool,
                                                      &conv_box,
                                                      &conv_circle,
                                                      &conv_polygon,
-                                                     &conv_path};
+                                                     &conv_path,
+                                                     &conv_unknown};
 
 oct_pq_conv_ptrs_t conv_ptrs (OCT_PQ_NUM_CONVERTERS, t_conv_ptrs);

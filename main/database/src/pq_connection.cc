@@ -100,11 +100,13 @@ octave_pq_connection::octave_pq_connection (std::string arg)
 
           error ("could not read types");
         }
-
-      if (strcmp (PQparameterStatus (conn, "integer_datetimes"), "on"))
-        integer_datetimes = false;
       else
-        integer_datetimes = true;
+        {
+          if (strcmp (PQparameterStatus (conn, "integer_datetimes"), "on"))
+            integer_datetimes = false;
+          else
+            integer_datetimes = true;
+        }
     }
 }
 
@@ -219,7 +221,7 @@ int octave_pq_connection::octave_pq_fill_base_types (void)
   rt(1) = octave_value ("name");
   rt(2) = octave_value ("oid");
 
-  std::string cmd ("select oid, typname, typarray from pg_type where (typowner = $1 AND typtype = 'b' AND typarray != 0) OR typname = 'record';"),
+  std::string cmd ("select oid, typname, typarray from pg_type where (typowner = $1 AND typtype = 'b' AND typarray != 0) OR typname = 'record' OR typname = 'unknown';"),
     caller ("octave_pq_fill_base_types");
 
   command c (*this, cmd, p, pt, rt, caller);
@@ -260,7 +262,7 @@ int octave_pq_connection::octave_pq_fill_base_types (void)
       if ((bt_it = bt_map.find (conv_ptrs[i]->name.c_str () + pq_bpl)) ==
           bt_map.end ())
         {
-          error ("octave_pq_fill_base_types: type %s not found in pg_types",
+          error ("octave_pq_fill_base_types: type %s not found in pg_type",
                  conv_ptrs[i]->name.c_str () + pq_bpl);
           return 1;
         }

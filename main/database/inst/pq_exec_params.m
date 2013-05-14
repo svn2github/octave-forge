@@ -71,10 +71,13 @@
 ## For queries (commands potentially returning data), the output will be
 ## a structure with fields @code{data} (containing a cell array with the
 ## data, columns correspond to returned database columns, rows
-## correspond to returned tuples) and @code{columns} (containing the
-## column headers). For copy commands nothing is returned. For other
-## commands, the output will be the number of affected rows in the
-## database.
+## correspond to returned tuples), @code{columns} (containing the column
+## headers), and @code{types} (a  structure-vector with the postgresql
+## data types of the columns, subfields @code{name} (string with
+## typename), @code{is_array} (boolean), @code{is_composite} (boolean),
+## and @code{is_enum} (boolean)). For copy commands nothing is returned.
+## For other commands, the output will be the number of affected rows in
+## the database.
 ##
 ## Mapping of currently implemented Postgresql types to Octave types
 ##

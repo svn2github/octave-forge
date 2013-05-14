@@ -337,6 +337,11 @@ octave_value command::tuples_ok_handler (void)
 
   Cell data (nt, nf);
   Cell columns (1, nf);
+  Cell types_name (1, nf);
+  Cell types_array (1, nf);
+  Cell types_composite (1, nf);
+  Cell types_enum (1, nf);
+  octave_map types (dim_vector (1, nf));
 
   bool rtypes_given;
   int l = rettypes.length ();
@@ -367,48 +372,47 @@ octave_value command::tuples_ok_handler (void)
                                   // initializing it here
       oct_type_t oct_type;
 
-      // perform next block only if there are any rows, since
-      // otherwise no converter will be needed and we can spare a
-      // possible error of not finding a suitable one
-      if (nt > 0)
+      if (rtypes_given) // for internal reading of system tables
         {
-          if (rtypes_given) // for internal reading of system tables
-            {
-              std::string type = rettypes(j).string_value ();
-              if (error_state)
-                error ("%s: could not convert given type to string",
-                       caller.c_str ());
-              else
-                conv = pgtype_from_spec (type, oct_type);
-
-              if (error_state)
-                {
-                  valid = 0;
-                  break;
-                }
-            }
+          std::string type = rettypes(j).string_value ();
+          if (error_state)
+            error ("%s: could not convert given type to string",
+                   caller.c_str ());
           else
-            if (! (conv = pgtype_from_spec (PQftype (res, j), oct_type)))
-              {
-                valid = 0;
-                break;
-              }
+            conv = pgtype_from_spec (type, oct_type);
 
-          if (f)
+          if (error_state)
             {
-              array_to_octave = &command::to_octave_bin_array;
-              composite_to_octave = &command::to_octave_bin_composite;
-              // will be NULL for non-simple converters
-              simple_type_to_octave = conv->to_octave_bin;
-            }
-          else
-            {
-              array_to_octave = &command::to_octave_str_array;
-              composite_to_octave = &command::to_octave_str_composite;
-              // will be NULL for non-simple converters
-              simple_type_to_octave = conv->to_octave_str;
+              valid = 0;
+              break;
             }
         }
+      else
+        if (! (conv = pgtype_from_spec (PQftype (res, j), oct_type)))
+          {
+            valid = 0;
+            break;
+          }
+
+      if (f)
+        {
+          array_to_octave = &command::to_octave_bin_array;
+          composite_to_octave = &command::to_octave_bin_composite;
+          // will be NULL for non-simple converters
+          simple_type_to_octave = conv->to_octave_bin;
+        }
+      else
+        {
+          array_to_octave = &command::to_octave_str_array;
+          composite_to_octave = &command::to_octave_str_composite;
+          // will be NULL for non-simple converters
+          simple_type_to_octave = conv->to_octave_str;
+        }
+
+      types_name(j) = octave_value (conv->name);
+      types_array(j) = octave_value (oct_type == array);
+      types_composite(j) = octave_value (oct_type == composite);
+      types_enum(j) = octave_value (conv->is_enum);
 
       for (int i = 0; i < nt; i++) // i is row
         {
@@ -462,6 +466,12 @@ octave_value command::tuples_ok_handler (void)
     {
       ret.assign ("data", octave_value (data));
       ret.assign ("columns", octave_value (columns));
+
+      types.setfield ("name", types_name);
+      types.setfield ("is_array", types_array);
+      types.setfield ("is_composite", types_composite);
+      types.setfield ("is_enum", types_enum);
+      ret.assign ("types", octave_value (types));
 
       return octave_value (ret);
     }

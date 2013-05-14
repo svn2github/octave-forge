@@ -1,3 +1,7 @@
+ ** pq_exec_params: For queries, information on postgresql data types
+    of columns is also returned (but not recursively for elements of
+    composite types).
+
  ** New converters for geometric types (point, lseg, (line,) box,
     circle, polygon, path).
 

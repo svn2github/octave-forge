@@ -411,7 +411,7 @@ octave_value command::tuples_ok_handler (void)
 
       types_name(j) = octave_value (conv->name);
       types_array(j) = octave_value (oct_type == array);
-      types_composite(j) = octave_value (oct_type == composite);
+      types_composite(j) = octave_value (conv->is_composite);
       types_enum(j) = octave_value (conv->is_enum);
 
       for (int i = 0; i < nt; i++) // i is row

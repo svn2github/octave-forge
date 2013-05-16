@@ -90,6 +90,8 @@ private:
 
   typedef enum {simple, array, composite} oct_type_t;
 
+  octave_map get_elements_typeinfo (oct_pq_conv_t *conv, bool &err);
+
   void check_first_result (void)
     {
       if (! res)

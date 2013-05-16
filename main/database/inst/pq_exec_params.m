@@ -75,9 +75,11 @@
 ## headers), and @code{types} (a  structure-vector with the postgresql
 ## data types of the columns, subfields @code{name} (string with
 ## typename), @code{is_array} (boolean), @code{is_composite} (boolean),
-## and @code{is_enum} (boolean)). For copy commands nothing is returned.
-## For other commands, the output will be the number of affected rows in
-## the database.
+## @code{is_enum} (boolean), and @code{elements} (if @code{is_composite
+## == true}, structure-vector of element types, containing fields
+## corresponding to those of @code{types})). For copy commands nothing
+## is returned. For other commands, the output will be the number of
+## affected rows in the database.
 ##
 ## Mapping of currently implemented Postgresql types to Octave types
 ##

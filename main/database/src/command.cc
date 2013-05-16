@@ -176,6 +176,55 @@ command::command (octave_pq_connection &connection, std::string &cmd,
     }
 }
 
+octave_map command::get_elements_typeinfo (oct_pq_conv_t *conv, bool &err)
+{
+  int nel = conv->el_oids.size ();
+
+  octave_map ret (dim_vector (1, nel));
+  Cell types_name (1, nel);
+  Cell types_array (1, nel);
+  Cell types_composite (1, nel);
+  Cell types_enum (1, nel);
+  Cell types_elements (1, nel);
+
+  for (int i = 0; i < nel; i++)
+    {
+      oct_pq_conv_t *el_conv;
+      oct_type_t oct_type;
+
+      if (! (el_conv = pgtype_from_spec (conv->el_oids[i], conv->conv_cache[i],
+                                         oct_type)))
+        {
+          err = true;
+          return ret;
+        }
+
+      types_name(i) = octave_value (el_conv->name);
+      types_array(i) = octave_value (oct_type == array);
+      types_enum(i) = octave_value (el_conv->is_enum);
+      types_composite(i) = octave_value (el_conv->is_composite);
+      if (el_conv->is_composite)
+        {
+          bool rec_err = false;
+          types_elements(i) = octave_value (get_elements_typeinfo (el_conv,
+                                                                   rec_err));
+          if (rec_err)
+            {
+              err = true;
+              return ret;
+            }
+        }
+    }
+
+  ret.assign ("name", types_name);
+  ret.assign ("is_array", types_array);
+  ret.assign ("is_composite", types_composite);
+  ret.assign ("is_enum", types_enum);
+  ret.assign ("elements", types_elements);
+
+  return ret;
+}
+
 oct_pq_conv_t *command::pgtype_from_spec (std::string &name,
                                           oct_type_t &oct_type)
 {
@@ -341,6 +390,7 @@ octave_value command::tuples_ok_handler (void)
   Cell types_array (1, nf);
   Cell types_composite (1, nf);
   Cell types_enum (1, nf);
+  Cell types_elements (1, nf);
   octave_map types (dim_vector (1, nf));
 
   bool rtypes_given;
@@ -409,10 +459,30 @@ octave_value command::tuples_ok_handler (void)
           simple_type_to_octave = conv->to_octave_str;
         }
 
+      // prepare type information
       types_name(j) = octave_value (conv->name);
       types_array(j) = octave_value (oct_type == array);
-      types_composite(j) = octave_value (conv->is_composite);
       types_enum(j) = octave_value (conv->is_enum);
+      types_composite(j) = octave_value (conv->is_composite);
+      if (conv->is_composite)
+        {
+          // To implement here: recursively go through the elements
+          // and return respective recursive structures. This has the
+          // side effect that all converters necessary for this query
+          // will be looked up and cached (if they aren't already), so
+          // in the actual conversion of composite types only cache
+          // reads are performed, no map lookups.
+
+          bool err = false;
+
+          types_elements(j) = octave_value (get_elements_typeinfo (conv, err));
+
+          if (err)
+            {
+              valid = 0;
+              break;
+            }
+        }
 
       for (int i = 0; i < nt; i++) // i is row
         {
@@ -471,6 +541,7 @@ octave_value command::tuples_ok_handler (void)
       types.setfield ("is_array", types_array);
       types.setfield ("is_composite", types_composite);
       types.setfield ("is_enum", types_enum);
+      types.setfield ("elements", types_elements);
       ret.assign ("types", octave_value (types));
 
       return octave_value (ret);

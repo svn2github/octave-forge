@@ -1,49 +1,51 @@
-%% Copyright (c) 2012 Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
-%%
-%%    This program is free software: you can redistribute it and/or modify
-%%    it under the terms of the GNU General Public License as published by
-%%    the Free Software Foundation, either version 3 of the License, or
-%%    any later version.
-%%
-%%    This program is distributed in the hope that it will be useful,
-%%    but WITHOUT ANY WARRANTY; without even the implied warranty of
-%%    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%%    GNU General Public License for more details.
-%%
-%%    You should have received a copy of the GNU General Public License
-%%    along with this program. If not, see <http://www.gnu.org/licenses/>.
+## Copyright (c) 2012 Juan Pablo Carbajal
+##
+##    This program is free software: you can redistribute it and/or modify
+##    it under the terms of the GNU General Public License as published by
+##    the Free Software Foundation, either version 3 of the License, or
+##    any later version.
+##
+##    This program is distributed in the hope that it will be useful,
+##    but WITHOUT ANY WARRANTY; without even the implied warranty of
+##    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##    GNU General Public License for more details.
+##
+##    You should have received a copy of the GNU General Public License
+##    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-%% -*- texinfo -*-
-%% @deftypefn {Function File} {[@var{J} @var{sigma}]= } rodmassmatrix (@var{sigma},@var{l}, @var{rho})
-%% Mass matrix of one dimensional rod in 3D.
-%%
-%% Let q be the configuration vector of the rod, with the first three elements of
-%% q being the spatial coordinates (e.g. x,y,z) and the second three elements of
-%% q the rotiational coordinates (e.g. Euler angles), then the kinetical energy
-%% of the rod is given by
-%% T = 1/2 (dqdt)^T kron(J,eye(3)) dqdt
-%%
-%% @var{sigma} is between 0 and 1. Corresponds to the point in the rod that is
-%% being used to indicate the position of the rod in space.
-%% If @var{sigma} is a string then the value corresponding to the center of mass
-%% of the rod. This makes @var{J} a diagonal matrix. If @var{sigma} is a string
-%% the return value of @var{sigma} corresponds to the value pointing to the
-%% center of mass.
-%%
-%% @var{l} is the length of the rod. If omitted the rod has unit length.
-%%
-%% @var{rho} is a function handle to the density of the rod defined in the
-%% interval 0,1. The integral of this density equals the mass and is stored in
-%% @code{@var{J}(1,1)}. If omitted, the default is a uniform rod with unit mass.
-%%
-%% Run @code{demo rodmassmatrix} to see some examples.
-%%
-%% @end deftypefn
+## Author: Juan Pablo Carbajal <ajuanpi+dev@gmail.com>
+
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{J} @var{sigma}]= } rodmassmatrix (@var{sigma},@var{l}, @var{rho})
+## Mass matrix of one dimensional rod in 3D.
+##
+## Let q be the configuration vector of the rod, with the first three elements of
+## q being the spatial coordinates (e.g. x,y,z) and the second three elements of
+## q the rotiational coordinates (e.g. Euler angles), then the kinetical energy
+## of the rod is given by
+## T = 1/2 (dqdt)^T kron(J,eye(3)) dqdt
+##
+## @var{sigma} is between 0 and 1. Corresponds to the point in the rod that is
+## being used to indicate the position of the rod in space.
+## If @var{sigma} is a string then the value corresponding to the center of mass
+## of the rod. This makes @var{J} a diagonal matrix. If @var{sigma} is a string
+## the return value of @var{sigma} corresponds to the value pointing to the
+## center of mass.
+##
+## @var{l} is the length of the rod. If omitted the rod has unit length.
+##
+## @var{rho} is a function handle to the density of the rod defined in the
+## interval 0,1. The integral of this density equals the mass and is stored in
+## @code{@var{J}(1,1)}. If omitted, the default is a uniform rod with unit mass.
+##
+## Run @code{demo rodmassmatrix} to see some examples.
+##
+## @end deftypefn
 
 function [J varargout] = rodmassmatrix(sigma, l = 1, dens = @(x)1)
 
   if ischar (sigma)
-    sigma = quadgk (@(x)x.*dens(x), 0,1);
+    sigma = quadgk (@(x)x.*dens(x), 0,1) / quadgk (@(x)dens(x), 0,1);
   end
 
   u = [-sigma*l (1-sigma)*l];
@@ -55,7 +57,7 @@ function [J varargout] = rodmassmatrix(sigma, l = 1, dens = @(x)1)
   J = [m f; f iner_m];
 
   if nargout > 0
-    varargout{1} = quadgk (@(x)x.*dens(x), 0,1);
+    varargout{1} = quadgk (@(x)x.*dens(x), 0,1) / m;
   end
 
 endfunction

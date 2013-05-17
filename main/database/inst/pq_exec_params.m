@@ -164,9 +164,10 @@
 ## @item box
 ## @tab as lseg
 ## @tab yes
-## @item cirle
-## @tab real vector (not uint8) with 3 elements, no. 1 and 2 centre
-## coordinates, no. 3 radius
+## @item circle
+## @tab real vector (but the restrictions for type uint8 as in geometric
+## element type apply, as explained below) with 3 elements, no. 1 and 2
+## centre coordinates, no. 3 radius
 ## @tab no
 ## @item polygon
 ## @tab geometric point data (see below)
@@ -206,11 +207,13 @@
 ## thrown if the wrong of both types is supplied. One can use
 ## @code{pq_conninfo} to query the respective server configuration.
 ##
-## geometric point data: any real array (but not of type uint8, for this
-## is reserved for bytea) with even number of elements. Two adjacent
-## elements (adjacent if indexed with a single index) define a pair of
-## 2D point coordinates. In converting from postgresql data, dimensions
-## of Octave geometric point data will be chosen to be (2, n_points).
+## geometric point data: any real array (but if of type uint8, the
+## geometric type name must always be specified, for otherwise uint8
+## would be considered as bytea) with even number of elements. Two
+## adjacent elements (adjacent if indexed with a single index) define a
+## pair of 2D point coordinates. In converting from postgresql data,
+## dimensions of Octave geometric point data will be chosen to be (2,
+## n_points) and elements will be of format double.
 ##
 ## Octaves @code{NA} corresponds to a Postgresql NULL value (not
 ## @code{NaN}, which is interpreted as a value of a float type!).

@@ -115,7 +115,7 @@
 ## @tab string of length < @code{NAMEDATALEN} (often 64)
 ## @tab yes
 ## @item bytea
-## @tab one-dimensional array of uint8
+## @tab array of uint8, one-dimensional if converted from postgresql data
 ## @tab no
 ## @item int2
 ## @tab int16 scalar

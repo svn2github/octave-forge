@@ -348,13 +348,6 @@ int from_octave_bin_bytea (const octave_pq_connection &conn,
 {
   uint8NDArray b = ov.uint8_array_value ();
 
-  if (! error_state)
-    {
-      dim_vector dv = b.dims ();
-      if (dv.length () > 2 || (dv(0) > 1 && dv(1) > 1))
-        error ("bytea representation must be one-dimensional");
-    }
-
   if (error_state)
     {
       error ("can not convert octave_value to bytea representation");

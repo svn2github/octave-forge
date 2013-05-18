@@ -176,6 +176,18 @@
 ## @tab structure with fields @code{closed} (boolean, is path closed?)
 ## and @code{path} (geometric point data, see below).
 ## @tab yes
+## @item inet
+## @tab uint8 array of 4 or 5 elements for IPv4 or uint16 array of 8 or
+## 9 elements for IPv6. 5th or 9th element, respectively, contain number
+## of set bits in network mask, the default (if there are only 4 or 8
+## elements, respectively) is all bits set.
+## @tab yes
+## @item cidr
+## @tab as inet
+## @tab yes
+## @item macaddr
+## @tab uint8 array of 6 elements
+## @tab yes
 ## @item any array
 ## @tab Structure with fields @code{data} (holding a cell-array with
 ## entries of a type corresponding to the Postgresql element type),

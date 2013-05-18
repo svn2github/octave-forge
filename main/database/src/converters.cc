@@ -25,10 +25,15 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 #include <libpq-fe.h>
 
+#include <sys/socket.h> // for AF_INET, needed in network address types
+
 #include "converters.h"
 #include "pq_connection.h"
 
 // remember to adjust OCT_PQ_NUM_CONVERTERS in converters.h
+
+#define PGSQL_AF_INET6 (AF_INET + 1) // defined so in postgresql, no
+                                     // public header file available
 
 // helper function for debugging
 void print_conv (oct_pq_conv_t *c)
@@ -1584,6 +1589,313 @@ oct_pq_conv_t conv_unknown = {0,
 
 /* end type unknown */
 
+// helpers for network types
+
+static inline
+int to_octave_bin_cidr_inet (const char *c, octave_value &ov, bool &cidr)
+{
+  int8_t nb;
+
+  if (*(c++) == AF_INET)
+    {
+      uint8NDArray a (dim_vector (5, 1), 0);
+
+      a(4) = uint8_t (*(c++)); // number of set mask bits
+
+      cidr = *(c++);
+
+      nb = *(c++);
+
+      if (nb < 0)
+        nb = 0;
+
+      if (nb > 4)
+        {
+          error ("internal error: received too many bytes for AF_INET type");
+
+          return 1;
+        }
+
+      for (int8_t i = 0; i < nb; i++, c++)
+        a(i) = uint8_t (*c);
+
+      ov = octave_value (a);
+    }
+  else
+    {
+      uint16NDArray a (dim_vector (9, 1), 0);
+
+      a(8) = uint16_t (uint8_t (*(c++))); // number of set mask bits
+
+      cidr = *(c++);
+
+      nb = *(c++);
+
+      if (nb < 0)
+        nb = 0;
+
+      if (nb > 16)
+        {
+          error ("internal error: received too many bytes for AF_INET6 type");
+
+          return 1;
+        }
+
+      int8_t n = nb / 2;
+      bool odd = nb % 2;
+
+      for (int8_t i = 0; i < n; i++, c += 2)
+        a(i) = uint16_t (be16toh (*((uint16_t *) c)));
+
+      if (odd)
+        {
+          uint16_t tp = *c;
+
+          a(n) = uint16_t (be16toh (tp));
+        }
+
+      ov = octave_value (a);
+    }
+
+  return 0;
+}
+
+static inline
+int from_octave_bin_cidr_inet (const octave_value &ov, oct_pq_dynvec_t &val,
+                               bool cidr)
+{
+  int nl = ov.numel ();
+
+  uint8_t n_mbits;
+
+  if (nl == 4 || nl == 5)
+    {
+      uint8NDArray a = ov.uint8_array_value ();
+
+      if (error_state)
+        {
+          error ("can not convert octave_value to network type representation");
+          return 1;
+        }
+
+      if (nl == 5)
+        n_mbits = a(4).value ();
+      else
+        n_mbits = 32;
+
+      val.push_back (AF_INET);
+      val.push_back (n_mbits);
+      val.push_back (cidr);
+      val.push_back (4);
+      for (int i = 0; i < 4; i++)
+        val.push_back (a(i).value ());
+    }
+  else if (nl == 8 || nl == 9)
+    {
+      uint16NDArray a = ov.uint16_array_value ();
+
+      if (error_state)
+        {
+          error ("can not convert octave_value to network type representation");
+          return 1;
+        }
+
+      if (nl == 9)
+        n_mbits = a(8).value ();
+      else
+        n_mbits = 128;
+
+      val.push_back (PGSQL_AF_INET6);
+      val.push_back (n_mbits);
+      val.push_back (cidr);
+      val.push_back (16);
+      for (int i = 0; i < 8; i++)
+        {
+          OCT_PQ_PUT(val, uint16_t, htobe16(a(i).value ()))
+        }
+    }
+  else
+    {
+      error ("invalid network type representation");
+      return 1;
+    }
+
+  return 0;
+}
+
+// end helpers for network types
+
+/* type cidr */
+
+int to_octave_str_cidr (const octave_pq_connection &conn,
+                        const char *c, octave_value &ov, int nb)
+{
+  return 1;
+}
+
+int to_octave_bin_cidr (const octave_pq_connection &conn,
+                        const char *c, octave_value &ov, int nb)
+{
+  bool cidr = false;
+
+  if (to_octave_bin_cidr_inet (c, ov, cidr))
+    return 1;
+
+  if (! cidr)
+    {
+      error ("internal error: unexpected flag in cidr type");
+
+      return 1;
+    }
+
+  return 0;
+}
+
+int from_octave_str_cidr (const octave_pq_connection &conn,
+                          const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  return 1;
+}
+
+int from_octave_bin_cidr (const octave_pq_connection &conn,
+                          const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  return from_octave_bin_cidr_inet (ov, val, true);
+}
+
+oct_pq_conv_t conv_cidr = {0,
+                           0,
+                           oct_pq_el_oids_t (),
+                           oct_pq_conv_cache_t (),
+                           false,
+                           false,
+                           false,
+                           "cidr",
+                           &to_octave_str_cidr,
+                           &to_octave_bin_cidr,
+                           &from_octave_str_cidr,
+                           &from_octave_bin_cidr};
+
+/* end type cidr */
+
+/* type inet */
+
+int to_octave_str_inet (const octave_pq_connection &conn,
+                        const char *c, octave_value &ov, int nb)
+{
+  return 1;
+}
+
+int to_octave_bin_inet (const octave_pq_connection &conn,
+                        const char *c, octave_value &ov, int nb)
+{
+  bool cidr = false;
+
+  if (to_octave_bin_cidr_inet (c, ov, cidr))
+    return 1;
+
+  if (cidr)
+    {
+      error ("internal error: unexpected flag in inet type");
+
+      return 1;
+    }
+
+  return 0;
+}
+
+int from_octave_str_inet (const octave_pq_connection &conn,
+                          const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  return 1;
+}
+
+int from_octave_bin_inet (const octave_pq_connection &conn,
+                          const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  return from_octave_bin_cidr_inet (ov, val, false);
+}
+
+oct_pq_conv_t conv_inet = {0,
+                           0,
+                           oct_pq_el_oids_t (),
+                           oct_pq_conv_cache_t (),
+                           false,
+                           false,
+                           false,
+                           "inet",
+                           &to_octave_str_inet,
+                           &to_octave_bin_inet,
+                           &from_octave_str_inet,
+                           &from_octave_bin_inet};
+
+/* end type inet */
+
+/* type macaddr */
+
+int to_octave_str_macaddr (const octave_pq_connection &conn,
+                           const char *c, octave_value &ov, int nb)
+{
+  return 1;
+}
+
+int to_octave_bin_macaddr (const octave_pq_connection &conn,
+                           const char *c, octave_value &ov, int nb)
+{
+  uint8NDArray a (dim_vector (6, 1));
+
+  for (int i = 0; i < 6; i++, c++)
+    a(i) = uint8_t (*c);
+
+  ov = octave_value (a);
+
+  return 0;
+}
+
+int from_octave_str_macaddr (const octave_pq_connection &conn,
+                             const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  return 1;
+}
+
+int from_octave_bin_macaddr (const octave_pq_connection &conn,
+                             const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  uint8NDArray a = ov.uint8_array_value ();
+
+  if (error_state)
+    {
+      error ("can not convert octave_value to macaddr representation");
+      return 1;
+    }
+
+  if (a.numel () != 6)
+    {
+      error ("macaddr representation must have 6 elements");
+      return 1;
+    }
+
+  for (int i = 0; i < 6; i++)
+    val.push_back (a(i).value ());
+
+  return 0;
+}
+
+oct_pq_conv_t conv_macaddr = {0,
+                              0,
+                              oct_pq_el_oids_t (),
+                              oct_pq_conv_cache_t (),
+                              false,
+                              false,
+                              false,
+                              "macaddr",
+                              &to_octave_str_macaddr,
+                              &to_octave_bin_macaddr,
+                              &from_octave_str_macaddr,
+                              &from_octave_bin_macaddr};
+
+/* end type macaddr */
+
 oct_pq_conv_t *t_conv_ptrs[OCT_PQ_NUM_CONVERTERS] = {&conv_bool,
                                                      &conv_oid,
                                                      &conv_float8,
@@ -1610,6 +1922,9 @@ oct_pq_conv_t *t_conv_ptrs[OCT_PQ_NUM_CONVERTERS] = {&conv_bool,
                                                      &conv_circle,
                                                      &conv_polygon,
                                                      &conv_path,
-                                                     &conv_unknown};
+                                                     &conv_unknown,
+                                                     &conv_cidr,
+                                                     &conv_inet,
+                                                     &conv_macaddr};
 
 oct_pq_conv_ptrs_t conv_ptrs (OCT_PQ_NUM_CONVERTERS, t_conv_ptrs);

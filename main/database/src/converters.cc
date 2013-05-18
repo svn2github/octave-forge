@@ -1889,6 +1889,111 @@ oct_pq_conv_t conv_macaddr = {0,
 
 /* end type macaddr */
 
+/* type bit */
+
+int to_octave_str_bit (const octave_pq_connection &conn,
+                       const char *c, octave_value &ov, int nb)
+{
+  return 1;
+}
+
+int to_octave_bin_bit (const octave_pq_connection &conn,
+                       const char *c, octave_value &ov, int nb)
+{
+  int32_t nbits = int32_t (be32toh (*((int32_t *) c)));
+
+  c += 4;
+
+  int32_t nbytes = (nbits + 7) / 8;
+
+  uint8NDArray a (dim_vector (nbytes, 1));
+
+  for (int i = 0; i < nbytes; i++, c++)
+    a(i) = uint8_t (*c);
+
+  octave_scalar_map tp;
+  tp.assign ("bitlen", octave_value (octave_int32 (nbits)));
+  tp.assign ("bits", octave_value (a));
+
+  ov = octave_value (tp);
+
+  return 0;
+}
+
+int from_octave_str_bit (const octave_pq_connection &conn,
+                         const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  return 1;
+}
+
+int from_octave_bin_bit (const octave_pq_connection &conn,
+                         const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  octave_scalar_map tp = ov.scalar_map_value ();
+  if (error_state || ! tp.isfield ("bitlen") || ! tp.isfield ("bits"))
+    {
+      error ("can not convert octave_value to bitstring representation");
+      return 1;
+    }
+
+  int32_t nbits = tp.contents ("bitlen").int_value ();
+
+  uint8NDArray a = tp.contents ("bits").uint8_array_value ();
+
+  if (error_state || nbits < 0)
+    {
+      error ("can not convert octave_value to bitstring representation");
+      return 1;
+    }
+
+  int32_t nbytes = (nbits + 7) / 8;
+
+  if (a.numel () != nbytes)
+    {
+      error ("wrong number of elements in bitstring representation");
+      return 1;
+    }
+
+  OCT_PQ_PUT(val, int32_t, htobe32 (nbits))
+
+  for (int i = 0; i < nbytes; i++)
+    val.push_back (a(i).value ());
+
+  return 0;
+}
+
+oct_pq_conv_t conv_bit = {0,
+                          0,
+                          oct_pq_el_oids_t (),
+                          oct_pq_conv_cache_t (),
+                          false,
+                          false,
+                          false,
+                          "bit",
+                          &to_octave_str_bit,
+                          &to_octave_bin_bit,
+                          &from_octave_str_bit,
+                          &from_octave_bin_bit};
+
+/* end type bit */
+
+/* type varbit */
+
+oct_pq_conv_t conv_varbit = {0,
+                             0,
+                             oct_pq_el_oids_t (),
+                             oct_pq_conv_cache_t (),
+                             false,
+                             false,
+                             false,
+                             "varbit",
+                             &to_octave_str_bit,
+                             &to_octave_bin_bit,
+                             &from_octave_str_bit,
+                             &from_octave_bin_bit};
+
+/* end type varbit */
+
 oct_pq_conv_t *t_conv_ptrs[OCT_PQ_NUM_CONVERTERS] = {&conv_bool,
                                                      &conv_oid,
                                                      &conv_float8,
@@ -1918,6 +2023,8 @@ oct_pq_conv_t *t_conv_ptrs[OCT_PQ_NUM_CONVERTERS] = {&conv_bool,
                                                      &conv_unknown,
                                                      &conv_cidr,
                                                      &conv_inet,
-                                                     &conv_macaddr};
+                                                     &conv_macaddr,
+                                                     &conv_bit,
+                                                     &conv_varbit};
 
 oct_pq_conv_ptrs_t conv_ptrs (OCT_PQ_NUM_CONVERTERS, t_conv_ptrs);

@@ -44,19 +44,14 @@ Features:
 State:
 
 
-Not all base types implemented yet. All commands should work with
-pq_exec_params, copy from stdin and copy to stdout are implemented
-from/to files at client side, copy from stdin is also possible from an
-Octave cell-array. There are no plans to implement copy to stdout into
-an Octave cell-array (does not safely fit into the framework, and
-select should be equivalent). The whole framework including conversion
-of composite and array types with the resulting possible recursion,
-enum types, and a number of base types are implemented. Large object
-import, export, and unlink works, also import/export from/to pipes.
+All commands should work with pq_exec_params, copy from stdin and copy
+to stdout are implemented from/to files at client side, copy from
+stdin is also possible from an Octave cell-array. There are no plans
+to implement copy to stdout into an Octave cell-array (does not safely
+fit into the framework, and select should be equivalent). The whole
+framework including conversion of composite and array types with the
+resulting possible recursion, enum types, and all base types except
+uuid, xml, and textsearch types are implemented. Large object import,
+export, and unlink works, also import/export from/to pipes.
 
-Please report bugs. If you want to implement a new type-converter for
-a base type yourself, you can do it in converters.cc and tell me
-(package maintainer) about it. See converters.h for the meaning of
-fields in the oct_pq_conv_t structure. Presently only the binary
-converters are needed, the string converters can be stubs returning an
-error value (1).
+Please report bugs.

@@ -201,8 +201,9 @@ double by double, NBO \\
 path &
 602 &
 1019 &
-(2n-element float vector, and somehow code if it is closed (?)) &
-yes ((path? closed?) obsolete) &
+structure with fields ``closed'' (boolean, is path closed?) and ``path''
+(2n-element float vector) &
+yes  &
 NBO, 1 byte (closed ? 1 : 0), int32 (npts), 2n double \\
 
 polygon &
@@ -222,12 +223,12 @@ double by double, NBO \\
 inet &
 869 &
 1041 &
-4,5,16, or 17-element uint8 vector &
-yes (is an addresstype? cidr? (code this in Octave representation of value) &
-uint8: \nolinkurl{AF_INET}, any other constant means \nolinkurl{AF_INET6}; uint8: number of
-set maskbits (in element 5 or 17 of octave vector, default 32 and
-128); uint8: \nolinkurl{is_cidr}?; uint8: addrsize (4 or 16); 4x or 16x uint8:
-address (left to right) \\
+4 or 5-element uint8 vector or 8 or 9-element uint16 vector &
+yes &
+uint8: \nolinkurl{AF_INET}, \nolinkurl{AF_INET} + 1 means
+\nolinkurl{AF_INET6}; uint8: number of set maskbits (in element 5 or
+9 of octave vector, default 32 and 128); uint8: \nolinkurl{is_cidr}?;
+uint8: addrsize (4 or 16(?)); 4x or 16x uint8: address (left to right) \\
 
 cidr &
 650 &
@@ -246,9 +247,9 @@ yes &
 bit &
 1560 &
 1561 &
-string of 1 and 0 &
+structure, fields ``bitlen'' (int32) and ``bits'' (uint8 array) &
 yes &
-int32 (NBO): nbits; n times uint8 (left to right, first byte full) \\
+int32 (NBO): nbits; nbytes times uint8 (left to right, first byte full) \\
 
 varbit &
 1562 &

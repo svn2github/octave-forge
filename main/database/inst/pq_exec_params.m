@@ -188,6 +188,14 @@
 ## @item macaddr
 ## @tab uint8 array of 6 elements
 ## @tab yes
+## @item bit
+## @tab structure with fields @code{bitlen} (int32, number of valid
+## bits) and @code{bits} (uint8 array, 8 bits per entry, first entry
+## contains the leftmost bits, last entry may contain less than 8 bits)
+## @tab yes
+## @item varbit
+## @tab as bit
+## yes
 ## @item any array
 ## @tab Structure with fields @code{data} (holding a cell-array with
 ## entries of a type corresponding to the Postgresql element type),

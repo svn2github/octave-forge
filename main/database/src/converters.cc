@@ -356,7 +356,7 @@ int from_octave_bin_bytea (const octave_pq_connection &conn,
 
   octave_idx_type nl = b.numel ();
 
-  for (int i = 0; i < nl; i++)
+  for (octave_idx_type i = 0; i < nl; i++)
     val.push_back (b(i).value ());
 
   return 0;
@@ -1994,6 +1994,130 @@ oct_pq_conv_t conv_varbit = {0,
 
 /* end type varbit */
 
+/* type uuid */
+
+int to_octave_str_uuid (const octave_pq_connection &conn,
+                        const char *c, octave_value &ov, int nb)
+{
+  return 1;
+}
+
+int to_octave_bin_uuid (const octave_pq_connection &conn,
+                        const char *c, octave_value &ov, int nb)
+{
+  uint8NDArray m (dim_vector (16, 1));
+
+  uint8_t *p = (uint8_t *) m.fortran_vec ();
+  for (int i = 0; i < 16; i++, c++)
+    *(p++) = uint8_t (*c);
+
+  ov = octave_value (m);
+
+  return 0;
+}
+
+int from_octave_str_uuid (const octave_pq_connection &conn,
+                          const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  return 1;
+}
+
+int from_octave_bin_uuid (const octave_pq_connection &conn,
+                          const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  uint8NDArray b = ov.uint8_array_value ();
+
+  if (error_state)
+    {
+      error ("can not convert octave_value to uuid representation");
+      return 1;
+    }
+
+  if (b.numel () != 16)
+    {
+      error ("uuid representation must have 16 elements");
+      return 1;
+    }
+
+  for (int i = 0; i < 16; i++)
+    val.push_back (b(i).value ());
+
+  return 0;
+}
+
+oct_pq_conv_t conv_uuid = {0,
+                           0,
+                           oct_pq_el_oids_t (),
+                           oct_pq_conv_cache_t (),
+                           false,
+                           false,
+                           false,
+                           "uuid",
+                           &to_octave_str_uuid,
+                           &to_octave_bin_uuid,
+                           &from_octave_str_uuid,
+                           &from_octave_bin_uuid};
+
+/* end type uuid */
+
+/* type xml */
+
+int to_octave_str_xml (const octave_pq_connection &conn,
+                       const char *c, octave_value &ov, int nb)
+{
+  return 1;
+}
+
+int to_octave_bin_xml (const octave_pq_connection &conn,
+                       const char *c, octave_value &ov, int nb)
+{
+  std::string s (c, nb);
+
+  ov = octave_value (s);
+
+  return 0;
+}
+
+int from_octave_str_xml (const octave_pq_connection &conn,
+                         const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  return 1;
+}
+
+int from_octave_bin_xml (const octave_pq_connection &conn,
+                         const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  std::string s = ov.string_value ();
+
+  if (error_state)
+    {
+      error ("can not convert octave_value to string");
+      return 1;
+    }
+
+  octave_idx_type l = s.size ();
+
+  for (int i = 0; i < l; i++)
+    val.push_back (s[i]);
+
+  return 0;
+}
+
+oct_pq_conv_t conv_xml = {0,
+                          0,
+                          oct_pq_el_oids_t (),
+                          oct_pq_conv_cache_t (),
+                          false,
+                          false,
+                          false,
+                          "xml",
+                          &to_octave_str_text,
+                          &to_octave_bin_text,
+                          &from_octave_str_text,
+                          &from_octave_bin_text};
+
+/* end type xml */
+
 oct_pq_conv_t *t_conv_ptrs[OCT_PQ_NUM_CONVERTERS] = {&conv_bool,
                                                      &conv_oid,
                                                      &conv_float8,
@@ -2025,6 +2149,8 @@ oct_pq_conv_t *t_conv_ptrs[OCT_PQ_NUM_CONVERTERS] = {&conv_bool,
                                                      &conv_inet,
                                                      &conv_macaddr,
                                                      &conv_bit,
-                                                     &conv_varbit};
+                                                     &conv_varbit,
+                                                     &conv_uuid,
+                                                     &conv_xml};
 
 oct_pq_conv_ptrs_t conv_ptrs (OCT_PQ_NUM_CONVERTERS, t_conv_ptrs);

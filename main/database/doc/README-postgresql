@@ -51,7 +51,7 @@ to implement copy to stdout into an Octave cell-array (does not safely
 fit into the framework, and select should be equivalent). The whole
 framework including conversion of composite and array types with the
 resulting possible recursion, enum types, and all base types except
-uuid, xml, and textsearch types are implemented. Large object import,
-export, and unlink works, also import/export from/to pipes.
+textsearch types are implemented. Large object import, export, and
+unlink works, also import/export from/to pipes.
 
 Please report bugs.

@@ -1,15 +1,7 @@
  ** pq_exec_params: For queries, information on postgresql data types
     of columns is also returned.
 
- ** New converters for bit string types (bit, varbit).
-
- ** New converters for network types (cidr, inet, macaddr).
-
- ** New converters for geometric types (point, lseg, (line,) box,
-    circle, polygon, path).
-
- ** New converters for date/time types (timestamp, timestamptz, time,
-    timetz, date, interval).
+ ** Converters for all base types except text search types implemented.
 
  ** New function pq_conninfo.
 

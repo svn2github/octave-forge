@@ -86,7 +86,9 @@
 ## The last column indicates whether specification of type (see above)
 ## is necessary for conversion from Octave type to Postgresql type, i.e.
 ## if Postgresql type is not deduced from the type of the Octave
-## variable.
+## variable. As long as the Postgresql type is deduced correctly or is
+## user-specified, it is often sufficent to provide an Octave type that
+## can be converted to the Octave type given in the table.
 ##
 ## @multitable {Postgresql} {Octave type blah blah blah blah blah} {Spec.}
 ## @headitem Postgresql @tab Octave @tab Spec.
@@ -196,6 +198,12 @@
 ## @item varbit
 ## @tab as bit
 ## yes
+## @item uuid
+## @tab uint8 array of 16 elements
+## @tab yes
+## @item xml
+## @tab string
+## @tab yes
 ## @item any array
 ## @tab Structure with fields @code{data} (holding a cell-array with
 ## entries of a type corresponding to the Postgresql element type),

@@ -26,7 +26,6 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 #include <octave/Cell.h>
 
 #include "pq_connection.h"
-#include "converters.h"
 
 class
 command
@@ -50,19 +49,12 @@ public:
       }
   }
 
-  typedef struct
-  {
-    dim_vector pd, cur;
-    octave_idx_type nd;
-  }
-  count_state;
-
-  typedef int (command::*to_octave_array_fp_t)
-    (const octave_pq_connection &, char *, octave_value &,
+  typedef int (*to_octave_array_fp_t)
+    (octave_pq_connection &, char *, octave_value &,
      int, oct_pq_conv_t *);
 
-  typedef int (command::*to_octave_composite_fp_t)
-    (const octave_pq_connection &, char *, octave_value &,
+  typedef int (*to_octave_composite_fp_t)
+    (octave_pq_connection &, char *, octave_value &,
      int, oct_pq_conv_t *);
 
   int all_results_fetched (void)
@@ -87,8 +79,6 @@ public:
   int good (void) {return valid;}
 
 private:
-
-  typedef enum {simple, array, composite} oct_type_t;
 
   octave_map get_elements_typeinfo (oct_pq_conv_t *conv, bool &err);
 
@@ -121,44 +111,6 @@ private:
 
   octave_value copy_in_handler (const std::string &, const Cell &, const Cell &,
                                 bool, bool);
-
-  oct_pq_conv_t *pgtype_from_octtype (const octave_value &);
-
-  oct_pq_conv_t *pgtype_from_spec (std::string &, oct_type_t &);
-
-  oct_pq_conv_t *pgtype_from_spec (Oid, oct_type_t &);
-
-  oct_pq_conv_t *pgtype_from_spec (Oid, oct_pq_conv_t *&, oct_type_t &);
-
-  int from_octave_bin_array (const octave_pq_connection &conn,
-                             const octave_value &oct_arr, oct_pq_dynvec_t &val,
-                             oct_pq_conv_t *);
-
-  int from_octave_bin_composite (const octave_pq_connection &conn,
-                                 const octave_value &oct_comp,
-                                 oct_pq_dynvec_t &val, oct_pq_conv_t *);
-
-  int from_octave_str_array (const octave_pq_connection &conn,
-                             const octave_value &oct_arr, oct_pq_dynvec_t &val,
-                             octave_value &type);
-
-  int from_octave_str_composite (const octave_pq_connection &conn,
-                                 const octave_value &oct_comp,
-                                 oct_pq_dynvec_t &val, octave_value &type);
-
-  int to_octave_bin_array (const octave_pq_connection &conn,
-                           char *, octave_value &, int, oct_pq_conv_t *);
-
-  int to_octave_bin_composite (const octave_pq_connection &conn,
-                               char *, octave_value &, int, oct_pq_conv_t *);
-
-  int to_octave_str_array (const octave_pq_connection &conn,
-                           char *, octave_value &, int, oct_pq_conv_t *);
-
-  int to_octave_str_composite (const octave_pq_connection &conn,
-                               char *, octave_value &, int, oct_pq_conv_t *);
-
-  octave_idx_type count_row_major_order (dim_vector &, count_state &, bool);
 
   PGresult *res;
   int all_fetched;

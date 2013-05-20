@@ -36,6 +36,15 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 typedef std::vector<char> oct_pq_dynvec_t;
 
+typedef enum {simple, array, composite} pq_oct_type_t;
+
+typedef struct
+{
+  dim_vector pd, cur;
+  octave_idx_type nd;
+}
+  oct_mo_count_state;
+
 class octave_pq_connection;
 
 typedef int (*oct_pq_to_octave_fp_t) (const octave_pq_connection &,
@@ -117,6 +126,11 @@ private:
   oct_pq_conv_t *conv;
 };
 
+typedef std::map<Oid, oct_pq_conv_wrapper_t> oct_pq_conv_map_t;
+
+typedef std::map<const char *, oct_pq_conv_wrapper_t,
+  bool (*) (const char *, const char *)> oct_pq_name_conv_map_t;
+
 // helper function for debugging
 void print_conv (oct_pq_conv_t *);
 
@@ -132,6 +146,49 @@ int from_octave_str_text (const octave_pq_connection &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val);
 int from_octave_bin_text (const octave_pq_connection &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val);
+
+oct_pq_conv_t *pgtype_from_octtype (octave_pq_connection &conn,
+                                    const octave_value &);
+
+oct_pq_conv_t *pgtype_from_spec (octave_pq_connection &, std::string &,
+                                 pq_oct_type_t &);
+
+oct_pq_conv_t *pgtype_from_spec (octave_pq_connection &, Oid,
+                                 pq_oct_type_t &);
+
+oct_pq_conv_t *pgtype_from_spec (octave_pq_connection &, Oid,
+                                 oct_pq_conv_t *&, pq_oct_type_t &);
+
+octave_idx_type count_row_major_order (dim_vector &, oct_mo_count_state &,
+                                       bool);
+
+int from_octave_bin_array (octave_pq_connection &conn,
+                           const octave_value &oct_arr, oct_pq_dynvec_t &val,
+                           oct_pq_conv_t *);
+
+int from_octave_bin_composite (octave_pq_connection &conn,
+                               const octave_value &oct_comp,
+                               oct_pq_dynvec_t &val, oct_pq_conv_t *);
+
+int from_octave_str_array (octave_pq_connection &conn,
+                           const octave_value &oct_arr, oct_pq_dynvec_t &val,
+                           octave_value &type);
+
+int from_octave_str_composite (octave_pq_connection &conn,
+                               const octave_value &oct_comp,
+                               oct_pq_dynvec_t &val, octave_value &type);
+
+int to_octave_bin_array (octave_pq_connection &conn,
+                         char *, octave_value &, int, oct_pq_conv_t *);
+
+int to_octave_bin_composite (octave_pq_connection &conn,
+                             char *, octave_value &, int, oct_pq_conv_t *);
+
+int to_octave_str_array (octave_pq_connection &conn,
+                         char *, octave_value &, int, oct_pq_conv_t *);
+
+int to_octave_str_composite (octave_pq_connection &conn,
+                             char *, octave_value &, int, oct_pq_conv_t *);
 
 // append bytes of value 'val' of type 'type' to dynamic char vector 'dv'
 #define OCT_PQ_PUT(dv, type, val)                       \

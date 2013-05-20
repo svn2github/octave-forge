@@ -27,11 +27,6 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 #include "converters.h"
 
-typedef std::map<Oid, oct_pq_conv_wrapper_t> oct_pq_conv_map_t;
-
-typedef std::map<const char *, oct_pq_conv_wrapper_t,
-  bool (*) (const char *, const char *)> oct_pq_name_conv_map_t;
-
 class
 octave_pq_connection : public octave_base_value
 {

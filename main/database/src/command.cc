@@ -26,12 +26,7 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 #include <fstream>
 
 #include "command.h"
-
-#define ERROR_RETURN_NO_PG_TYPE                                         \
- {                                                                      \
-   error ("could not determine postgresql type for Octave parameter");  \
-   return NULL;                                                         \
- }
+#include "converters.h"
 
 #define COPY_HEADER_SIZE 19
 
@@ -93,14 +88,14 @@ command::command (octave_pq_connection &connection, std::string &cmd,
         }
       else
         {
-          oct_type_t oct_type;
+          pq_oct_type_t oct_type;
           oct_pq_conv_t *conv;
 
           if (ptypes(i).is_empty ())
             {
               oct_type = simple;
 
-              if (! (conv = pgtype_from_octtype (params(i))))
+              if (! (conv = pgtype_from_octtype (conn, params(i))))
                 {
                   valid = 0;
                   break;
@@ -120,7 +115,7 @@ command::command (octave_pq_connection &connection, std::string &cmd,
                   break;
                 }
 
-              if (! (conv = pgtype_from_spec (s, oct_type)))
+              if (! (conv = pgtype_from_spec (conn, s, oct_type)))
                 {
                   valid = 0;
                   break;
@@ -190,10 +185,10 @@ octave_map command::get_elements_typeinfo (oct_pq_conv_t *conv, bool &err)
   for (int i = 0; i < nel; i++)
     {
       oct_pq_conv_t *el_conv;
-      oct_type_t oct_type;
+      pq_oct_type_t oct_type;
 
-      if (! (el_conv = pgtype_from_spec (conv->el_oids[i], conv->conv_cache[i],
-                                         oct_type)))
+      if (! (el_conv = pgtype_from_spec (conn, conv->el_oids[i],
+                                         conv->conv_cache[i], oct_type)))
         {
           err = true;
           return ret;
@@ -223,101 +218,6 @@ octave_map command::get_elements_typeinfo (oct_pq_conv_t *conv, bool &err)
   ret.assign ("elements", types_elements);
 
   return ret;
-}
-
-oct_pq_conv_t *command::pgtype_from_spec (std::string &name,
-                                          oct_type_t &oct_type)
-{
-  oct_pq_conv_t *conv = NULL;
-
-  // printf ("pgtype_from_spec(%s): simple ", name.c_str ());
-
-  oct_type = simple; // default
-  int l;
-  while (name.size () >= 2 && ! name.compare (l = name.size () - 2, 2, "[]"))
-    {
-      name.erase (l, 2);
-      oct_type = array;
-
-      // printf ("array ");
-    }
-
-  oct_pq_name_conv_map_t::iterator iter;
-
-  if ((iter = conn.name_conv_map.find (name.c_str ())) ==
-      conn.name_conv_map.end ())
-    error ("%s: no converter found for type %s", caller.c_str (),
-           name.c_str ());
-  else
-    {
-      // printf ("(looked up in name map) ");
-
-      conv = iter->second;
-
-      if (oct_type == array && ! conv->aoid)
-        {
-          error ("%s: internal error, type %s, specified as array, has no array type in system catalog", name.c_str ());
-          return conv;
-        }
-
-      if (! (oct_type == array) && conv->is_composite)
-        {
-          oct_type = composite;
-
-          // printf ("composite ");
-        }
-    }
-
-  // printf ("\n");
-
-  return conv;
-}
-
-oct_pq_conv_t *command::pgtype_from_spec (Oid oid, oct_type_t &oct_type)
-{
-  // printf ("pgtype_from_spec(%u): ", oid);
-
-  oct_pq_conv_t *conv = NULL;
-
-  oct_pq_conv_map_t::iterator iter;
-  
-  if ((iter = conn.conv_map.find (oid)) == conn.conv_map.end ())
-    {
-      error ("%s: no converter found for element oid %u",
-             caller.c_str (), oid);
-      return conv;
-    }
-  conv = iter->second;
-  // printf ("(looked up %s in oid map) ", conv->name.c_str ());
-
-  if (conv->aoid == oid)
-    oct_type = array;
-  else if (conv->is_composite)
-    oct_type = composite;
-  else
-    oct_type = simple;
-
-  // printf ("oct_type: %i\n", oct_type);
-
-  return conv;
-}
-
-oct_pq_conv_t *command::pgtype_from_spec (Oid oid, oct_pq_conv_t *&c_conv,
-                                          oct_type_t &oct_type)
-{
-  if (c_conv)
-    {
-      if (c_conv->aoid == oid)
-        oct_type = array;
-      else if (c_conv->is_composite)
-        oct_type = composite;
-      else
-        oct_type = simple;
-    }
-  else
-    c_conv = pgtype_from_spec (oid, oct_type);
-
-  return c_conv;
 }
 
 octave_value command::process_single_result (const std::string &infile,
@@ -420,7 +320,7 @@ octave_value command::tuples_ok_handler (void)
 
       oct_pq_conv_t *conv = NULL; // silence inadequate warning by
                                   // initializing it here
-      oct_type_t oct_type;
+      pq_oct_type_t oct_type;
 
       if (rtypes_given) // for internal reading of system tables
         {
@@ -429,7 +329,7 @@ octave_value command::tuples_ok_handler (void)
             error ("%s: could not convert given type to string",
                    caller.c_str ());
           else
-            conv = pgtype_from_spec (type, oct_type);
+            conv = pgtype_from_spec (conn, type, oct_type);
 
           if (error_state)
             {
@@ -438,7 +338,7 @@ octave_value command::tuples_ok_handler (void)
             }
         }
       else
-        if (! (conv = pgtype_from_spec (PQftype (res, j), oct_type)))
+        if (! (conv = pgtype_from_spec (conn, PQftype (res, j), oct_type)))
           {
             valid = 0;
             break;
@@ -446,15 +346,15 @@ octave_value command::tuples_ok_handler (void)
 
       if (f)
         {
-          array_to_octave = &command::to_octave_bin_array;
-          composite_to_octave = &command::to_octave_bin_composite;
+          array_to_octave = &to_octave_bin_array;
+          composite_to_octave = &to_octave_bin_composite;
           // will be NULL for non-simple converters
           simple_type_to_octave = conv->to_octave_bin;
         }
       else
         {
-          array_to_octave = &command::to_octave_str_array;
-          composite_to_octave = &command::to_octave_str_composite;
+          array_to_octave = &to_octave_str_array;
+          composite_to_octave = &to_octave_str_composite;
           // will be NULL for non-simple converters
           simple_type_to_octave = conv->to_octave_str;
         }
@@ -502,12 +402,12 @@ octave_value command::tuples_ok_handler (void)
                   break;
 
                 case array:
-                  if ((this->*array_to_octave) (conn, v, ov, nb, conv))
+                  if (array_to_octave (conn, v, ov, nb, conv))
                     valid = 0;
                   break;
 
                 case composite:
-                  if ((this->*composite_to_octave) (conn, v, ov, nb, conv))
+                  if (composite_to_octave (conn, v, ov, nb, conv))
                     valid = 0;
                   break;
 
@@ -764,7 +664,7 @@ octave_value command::copy_in_handler (const std::string &infile,
         {
           oct_pq_conv_t *convs [c];
           memset (convs, 0, sizeof (convs));
-          oct_type_t oct_types [c];
+          pq_oct_type_t oct_types [c];
 
           for (octave_idx_type i = 0; i < r; i++) // i is row
             {
@@ -801,7 +701,8 @@ octave_value command::copy_in_handler (const std::string &infile,
                           if ((j == 0) && oids)
                             {
                               std::string t ("oid");
-                              convs[0] = pgtype_from_spec (t, oct_types[0]);
+                              convs[0] = pgtype_from_spec (conn, t,
+                                                           oct_types[0]);
                             }
                           else
                             {
@@ -810,7 +711,8 @@ octave_value command::copy_in_handler (const std::string &infile,
                                   oct_types[j] = simple;
 
                                   if (! (convs[j] =
-                                         pgtype_from_octtype (data(i, j))))
+                                         pgtype_from_octtype (conn,
+                                                              data(i, j))))
                                     {
                                       error ("could not determine type in column %i for copy-in",
                                              j);
@@ -829,7 +731,8 @@ octave_value command::copy_in_handler (const std::string &infile,
                                     }
 
                                   if (! (convs[j] =
-                                         pgtype_from_spec (s, oct_types[j])))
+                                         pgtype_from_spec (conn, s,
+                                                           oct_types[j])))
                                     {
                                       error ("invalid column type specification");
 
@@ -926,83 +829,4 @@ octave_value command::copy_in_handler (const std::string &infile,
     valid = 0;
 
   return octave_value (std::string ("copy in"));
-}
-
-oct_pq_conv_t *command::pgtype_from_octtype (const octave_value &param)
-{
-  // printf ("pgtype_from_octtype: ");
-
-  if (param.is_bool_scalar ())
-    {
-      // printf ("bool\n");
-      return conn.name_conv_map["bool"];
-    }
-  else if (param.is_real_scalar ())
-    {
-      if (param.is_double_type ())
-        {
-          // printf ("float8\n");
-          return conn.name_conv_map["float8"];
-        }
-      else if (param.is_single_type ())
-        {
-          // printf ("float4\n");
-          return conn.name_conv_map["float4"];
-        }
-    }
-
-  if (param.is_scalar_type ())
-    {
-      if (param.is_int16_type ())
-        {
-          // printf ("int2\n");
-          return conn.name_conv_map["int2"];
-        }
-      else if (param.is_int32_type ())
-        {
-          // printf ("int4\n");
-          return conn.name_conv_map["int4"];
-        }
-      else if (param.is_int64_type ())
-        {
-          // printf ("int8\n");
-          return conn.name_conv_map["int8"];
-        }
-      else if (param.is_uint32_type ())
-        {
-          // printf ("oid\n");
-          return conn.name_conv_map["oid"];
-        }
-    }
-
-  if (param.is_uint8_type ())
-    {
-      // printf ("bytea\n");
-      return conn.name_conv_map["bytea"];
-    }
-  else if (param.is_string ())
-    {
-      // printf ("text\n");
-      return conn.name_conv_map["text"];
-    }
-
-  // is_real_type() is true for strings, so is_numeric_type() would
-  // still be needed if strings were not recognized above
-  if (param.is_real_type ())
-    {
-      switch (param.numel ())
-        {
-        case 2:
-          // printf ("point\n");
-          return conn.name_conv_map["point"];
-        case 3:
-          // printf ("circle\n");
-          return conn.name_conv_map["circle"];
-        case 4:
-          // printf ("lseg\n");
-          return conn.name_conv_map["lseg"];
-        }
-    }
-
-  ERROR_RETURN_NO_PG_TYPE
 }

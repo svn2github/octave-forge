@@ -24,10 +24,194 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 #include <stdint.h>
 
-#include "command.h"
+#include "converters.h"
+#include "pq_connection.h"
 
-octave_idx_type command::count_row_major_order (dim_vector &dv,
-                                                count_state &state, bool init)
+#define ERROR_RETURN_NO_PG_TYPE                                         \
+ {                                                                      \
+   error ("could not determine postgresql type for Octave parameter");  \
+   return NULL;                                                         \
+ }
+
+oct_pq_conv_t *pgtype_from_spec (octave_pq_connection &conn,
+                                 std::string &name,
+                                 pq_oct_type_t &oct_type)
+{
+  oct_pq_conv_t *conv = NULL;
+
+  // printf ("pgtype_from_spec(%s): simple ", name.c_str ());
+
+  oct_type = simple; // default
+  int l;
+  while (name.size () >= 2 && ! name.compare (l = name.size () - 2, 2, "[]"))
+    {
+      name.erase (l, 2);
+      oct_type = array;
+
+      // printf ("array ");
+    }
+
+  oct_pq_name_conv_map_t::iterator iter;
+
+  if ((iter = conn.name_conv_map.find (name.c_str ())) ==
+      conn.name_conv_map.end ())
+    error ("no converter found for type %s",
+           name.c_str ());
+  else
+    {
+      // printf ("(looked up in name map) ");
+
+      conv = iter->second;
+
+      if (oct_type == array && ! conv->aoid)
+        {
+          error ("%s: internal error, type %s, specified as array, has no array type in system catalog", name.c_str ());
+          return conv;
+        }
+
+      if (! (oct_type == array) && conv->is_composite)
+        {
+          oct_type = composite;
+
+          // printf ("composite ");
+        }
+    }
+
+  // printf ("\n");
+
+  return conv;
+}
+
+oct_pq_conv_t *pgtype_from_spec (octave_pq_connection &conn, Oid oid,
+                                 pq_oct_type_t &oct_type)
+{
+  // printf ("pgtype_from_spec(%u): ", oid);
+
+  oct_pq_conv_t *conv = NULL;
+
+  oct_pq_conv_map_t::iterator iter;
+  
+  if ((iter = conn.conv_map.find (oid)) == conn.conv_map.end ())
+    {
+      error ("no converter found for element oid %u", oid);
+      return conv;
+    }
+  conv = iter->second;
+  // printf ("(looked up %s in oid map) ", conv->name.c_str ());
+
+  if (conv->aoid == oid)
+    oct_type = array;
+  else if (conv->is_composite)
+    oct_type = composite;
+  else
+    oct_type = simple;
+
+  // printf ("oct_type: %i\n", oct_type);
+
+  return conv;
+}
+
+oct_pq_conv_t *pgtype_from_spec (octave_pq_connection &conn, Oid oid,
+                                 oct_pq_conv_t *&c_conv,
+                                 pq_oct_type_t &oct_type)
+{
+  if (c_conv)
+    {
+      if (c_conv->aoid == oid)
+        oct_type = array;
+      else if (c_conv->is_composite)
+        oct_type = composite;
+      else
+        oct_type = simple;
+    }
+  else
+    c_conv = pgtype_from_spec (conn, oid, oct_type);
+
+  return c_conv;
+}
+
+oct_pq_conv_t *pgtype_from_octtype (octave_pq_connection &conn,
+                                    const octave_value &param)
+{
+  // printf ("pgtype_from_octtype: ");
+
+  if (param.is_bool_scalar ())
+    {
+      // printf ("bool\n");
+      return conn.name_conv_map["bool"];
+    }
+  else if (param.is_real_scalar ())
+    {
+      if (param.is_double_type ())
+        {
+          // printf ("float8\n");
+          return conn.name_conv_map["float8"];
+        }
+      else if (param.is_single_type ())
+        {
+          // printf ("float4\n");
+          return conn.name_conv_map["float4"];
+        }
+    }
+
+  if (param.is_scalar_type ())
+    {
+      if (param.is_int16_type ())
+        {
+          // printf ("int2\n");
+          return conn.name_conv_map["int2"];
+        }
+      else if (param.is_int32_type ())
+        {
+          // printf ("int4\n");
+          return conn.name_conv_map["int4"];
+        }
+      else if (param.is_int64_type ())
+        {
+          // printf ("int8\n");
+          return conn.name_conv_map["int8"];
+        }
+      else if (param.is_uint32_type ())
+        {
+          // printf ("oid\n");
+          return conn.name_conv_map["oid"];
+        }
+    }
+
+  if (param.is_uint8_type ())
+    {
+      // printf ("bytea\n");
+      return conn.name_conv_map["bytea"];
+    }
+  else if (param.is_string ())
+    {
+      // printf ("text\n");
+      return conn.name_conv_map["text"];
+    }
+
+  // is_real_type() is true for strings, so is_numeric_type() would
+  // still be needed if strings were not recognized above
+  if (param.is_real_type ())
+    {
+      switch (param.numel ())
+        {
+        case 2:
+          // printf ("point\n");
+          return conn.name_conv_map["point"];
+        case 3:
+          // printf ("circle\n");
+          return conn.name_conv_map["circle"];
+        case 4:
+          // printf ("lseg\n");
+          return conn.name_conv_map["lseg"];
+        }
+    }
+
+  ERROR_RETURN_NO_PG_TYPE
+}
+
+octave_idx_type count_row_major_order (dim_vector &dv,
+                                       oct_mo_count_state &state, bool init)
 {
   if (init)
     {
@@ -85,21 +269,20 @@ octave_idx_type command::count_row_major_order (dim_vector &dv,
     }
 }
 
-int command::from_octave_bin_array (const octave_pq_connection &conn,
-                                    const octave_value &oct_arr,
-                                    oct_pq_dynvec_t &val, oct_pq_conv_t *conv)
+int from_octave_bin_array (octave_pq_connection &conn,
+                           const octave_value &oct_arr,
+                           oct_pq_dynvec_t &val, oct_pq_conv_t *conv)
 {
   octave_scalar_map m = oct_arr.scalar_map_value ();
   if (error_state)
     {
-      error ("%s: Postgresql array parameter no Octave structure",
-             caller.c_str ());
+      error ("Postgresql array parameter no Octave structure");
       return 1;
     }
 
   if (! m.isfield ("ndims") || ! m.isfield ("data"))
     {
-      error ("%s: field 'ndims' or 'data' missing in parameter for Postgresql array", caller.c_str ());
+      error ("field 'ndims' or 'data' missing in parameter for Postgresql array");
       return 1;
     }
 
@@ -107,7 +290,7 @@ int command::from_octave_bin_array (const octave_pq_connection &conn,
   Cell arr = m.contents ("data").cell_value ();
   if (error_state || nd_pq < 0)
     {
-      error ("%s: 'ndims' and 'data' could not be converted to non-negative integer and cell-array in parameter for Postgresql array", caller.c_str ());
+      error ("'ndims' and 'data' could not be converted to non-negative integer and cell-array in parameter for Postgresql array");
       return 1;
     }
 
@@ -119,7 +302,7 @@ int command::from_octave_bin_array (const octave_pq_connection &conn,
       lb = m.contents ("lbounds").row_vector_value ();
       if (error_state)
         {
-          error ("%s: could not convert given enumeration bases for array to row vector", caller.c_str ());
+          error ("could not convert given enumeration bases for array to row vector");
           return 1;
         }
     }
@@ -163,7 +346,7 @@ int command::from_octave_bin_array (const octave_pq_connection &conn,
       OCT_PQ_PUT(val, int32_t, htobe32 ((int32_t) lb(i)))
     }
   // elements
-  count_state state;
+  oct_mo_count_state state;
   count_row_major_order (d, state, true); // initialize counter
   for (int i = 0, ti = 0; ti < nl;
        ti++, i = count_row_major_order (d, state, false))
@@ -194,15 +377,15 @@ int command::from_octave_bin_array (const octave_pq_connection &conn,
   return 0;
 }
 
-int command::from_octave_bin_composite (const octave_pq_connection &conn,
-                                        const octave_value &oct_comp,
-                                        oct_pq_dynvec_t &val,
-                                        oct_pq_conv_t *conv)
+int from_octave_bin_composite (octave_pq_connection &conn,
+                               const octave_value &oct_comp,
+                               oct_pq_dynvec_t &val,
+                               oct_pq_conv_t *conv)
 {
   Cell rec (oct_comp.cell_value ());
   if (error_state)
     {
-      error ("%s: Octaves representation of a composite type could not be converted to cell-array", caller.c_str ());
+      error ("Octaves representation of a composite type could not be converted to cell-array");
       return 1;
     }
 
@@ -210,8 +393,8 @@ int command::from_octave_bin_composite (const octave_pq_connection &conn,
 
   if (size_t (nl) != conv->el_oids.size ())
     {
-      error ("%s: Octaves representation of a composite type has incorrect number of elements (%i, should have %i)",
-             caller.c_str (), nl, conv->el_oids.size ());
+      error ("Octaves representation of a composite type has incorrect number of elements (%i, should have %i)",
+             nl, conv->el_oids.size ());
 
       return 1;
     }
@@ -232,9 +415,10 @@ int command::from_octave_bin_composite (const octave_pq_connection &conn,
           OCT_PQ_SET_UINT32_PLACEHOLDER(val, temp_pos)
 
           oct_pq_conv_t *el_conv;
-          oct_type_t oct_type;
+          pq_oct_type_t oct_type;
 
-          if (! (el_conv = pgtype_from_spec (conv->el_oids[i],
+          if (! (el_conv = pgtype_from_spec (conn,
+                                             conv->el_oids[i],
                                              conv->conv_cache[i],
                                              oct_type)))
             return 1;
@@ -258,8 +442,7 @@ int command::from_octave_bin_composite (const octave_pq_connection &conn,
 
             default:
               // should not get here
-              error ("%s: internal error, undefined type identifier",
-                     caller.c_str ());
+              error ("internal error, undefined type identifier");
               return 1;
             }
 
@@ -270,9 +453,9 @@ int command::from_octave_bin_composite (const octave_pq_connection &conn,
   return 0;
 }
 
-int command::from_octave_str_array (const octave_pq_connection &conn,
-                                    const octave_value &oct_arr,
-                                    oct_pq_dynvec_t &val, octave_value &type)
+int from_octave_str_array (octave_pq_connection &conn,
+                           const octave_value &oct_arr,
+                           oct_pq_dynvec_t &val, octave_value &type)
 {
   // not implemented
   error ("not implemented");
@@ -281,10 +464,10 @@ int command::from_octave_str_array (const octave_pq_connection &conn,
   return 0;
 }
 
-int command::from_octave_str_composite (const octave_pq_connection &conn,
-                                        const octave_value &oct_comp,
-                                        oct_pq_dynvec_t &val,
-                                        octave_value &type)
+int from_octave_str_composite (octave_pq_connection &conn,
+                               const octave_value &oct_comp,
+                               oct_pq_dynvec_t &val,
+                               octave_value &type)
 {
   // not implemented
   error ("not implemented");
@@ -293,9 +476,9 @@ int command::from_octave_str_composite (const octave_pq_connection &conn,
   return 0;
 }
 
-int command::to_octave_bin_array (const octave_pq_connection &conn,
-                                  char *v, octave_value &ov, int nb,
-                                  oct_pq_conv_t *conv)
+int to_octave_bin_array (octave_pq_connection &conn,
+                         char *v, octave_value &ov, int nb,
+                         oct_pq_conv_t *conv)
 {
   char *p = v;
 
@@ -313,8 +496,8 @@ int command::to_octave_bin_array (const octave_pq_connection &conn,
   // check element OID
   if (oid != conv->oid)
     {
-      error ("%s: element oid %i sent by server does not match element oid %i expected for array with oid %i",
-             caller.c_str (), oid, conv->oid, conv->aoid);
+      error ("element oid %i sent by server does not match element oid %i expected for array with oid %i",
+             oid, conv->oid, conv->aoid);
       return 1;
     }
 
@@ -336,7 +519,7 @@ int command::to_octave_bin_array (const octave_pq_connection &conn,
   // elements
   octave_idx_type nl = dv.numel ();
   Cell c (dv);
-  count_state state;
+  oct_mo_count_state state;
   count_row_major_order (dv, state, true); // initialize counter
   for (int i = 0, ti = 0; ti < nl;
        ti++, i = count_row_major_order (dv, state, false))
@@ -378,9 +561,9 @@ int command::to_octave_bin_array (const octave_pq_connection &conn,
   return 0;
 }
 
-int command::to_octave_bin_composite (const octave_pq_connection &conn,
-                                      char *v, octave_value &ov, int nb,
-                                      oct_pq_conv_t *conv)
+int to_octave_bin_composite (octave_pq_connection &conn,
+                             char *v, octave_value &ov, int nb,
+                             oct_pq_conv_t *conv)
 {
   char *p = v;
 
@@ -404,9 +587,9 @@ int command::to_octave_bin_composite (const octave_pq_connection &conn,
           uint32_t nb_el = uint32_t (null_id);
 
           oct_pq_conv_t *el_conv;
-          oct_type_t oct_type;
+          pq_oct_type_t oct_type;
 
-          if (! (el_conv = pgtype_from_spec (oid, conv->conv_cache[i],
+          if (! (el_conv = pgtype_from_spec (conn, oid, conv->conv_cache[i],
                                              oct_type)))
             return 1;
 
@@ -430,8 +613,7 @@ int command::to_octave_bin_composite (const octave_pq_connection &conn,
 
             default:
               // should not get here
-              error ("%s: internal error, undefined type identifier",
-                     caller.c_str ());
+              error ("internal error, undefined type identifier");
               return 1;
             }
 
@@ -447,9 +629,9 @@ int command::to_octave_bin_composite (const octave_pq_connection &conn,
 }
 
 
-int command::to_octave_str_array (const octave_pq_connection &conn,
-                                  char *v, octave_value &ov, int nb,
-                                  oct_pq_conv_t *conv)
+int to_octave_str_array (octave_pq_connection &conn,
+                         char *v, octave_value &ov, int nb,
+                         oct_pq_conv_t *conv)
 {
   // not implemented
   error ("not implemented");
@@ -458,9 +640,9 @@ int command::to_octave_str_array (const octave_pq_connection &conn,
   return 0;
 }
 
-int command::to_octave_str_composite (const octave_pq_connection &conn,
-                                      char *v, octave_value &ov, int nb,
-                                      oct_pq_conv_t *conv)
+int to_octave_str_composite (octave_pq_connection &conn,
+                             char *v, octave_value &ov, int nb,
+                             oct_pq_conv_t *conv)
 {
   // not implemented
   error ("not implemented");

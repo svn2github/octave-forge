@@ -32,7 +32,7 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 #include "wrap_endian.h"
 
-#define OCT_PQ_NUM_CONVERTERS 34
+#define OCT_PQ_NUM_CONVERTERS 35
 
 typedef std::vector<char> oct_pq_dynvec_t;
 
@@ -181,16 +181,16 @@ int from_octave_str_composite (const octave_pq_connection &conn,
                                oct_pq_dynvec_t &val, octave_value &type);
 
 int to_octave_bin_array (const octave_pq_connection &conn,
-                         char *, octave_value &, int, oct_pq_conv_t *);
+                         const char *, octave_value &, int, oct_pq_conv_t *);
 
-int to_octave_bin_composite (const octave_pq_connection &conn,
-                             char *, octave_value &, int, oct_pq_conv_t *);
+int to_octave_bin_composite (const octave_pq_connection &conn, const char *,
+                             octave_value &, int, oct_pq_conv_t *);
 
 int to_octave_str_array (const octave_pq_connection &conn,
-                         char *, octave_value &, int, oct_pq_conv_t *);
+                         const char *, octave_value &, int, oct_pq_conv_t *);
 
-int to_octave_str_composite (const octave_pq_connection &conn,
-                             char *, octave_value &, int, oct_pq_conv_t *);
+int to_octave_str_composite (const octave_pq_connection &conn, const char *,
+                             octave_value &, int, oct_pq_conv_t *);
 
 // append bytes of value 'val' of type 'type' to dynamic char vector 'dv'
 #define OCT_PQ_PUT(dv, type, val)                       \

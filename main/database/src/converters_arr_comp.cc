@@ -477,10 +477,10 @@ int from_octave_str_composite (const octave_pq_connection &conn,
 }
 
 int to_octave_bin_array (const octave_pq_connection &conn,
-                         char *v, octave_value &ov, int nb,
+                         const char *v, octave_value &ov, int nb,
                          oct_pq_conv_t *conv)
 {
-  char *p = v;
+  const char *p = v;
 
   // ndim
   OCT_PQ_DECL_GET_INT32(ndim, p, int32_t)
@@ -562,10 +562,10 @@ int to_octave_bin_array (const octave_pq_connection &conn,
 }
 
 int to_octave_bin_composite (const octave_pq_connection &conn,
-                             char *v, octave_value &ov, int nb,
+                             const char *v, octave_value &ov, int nb,
                              oct_pq_conv_t *conv)
 {
-  char *p = v;
+  const char *p = v;
 
   // ncols
   OCT_PQ_DECL_GET_INT32(nl, p, int32_t)
@@ -630,7 +630,7 @@ int to_octave_bin_composite (const octave_pq_connection &conn,
 
 
 int to_octave_str_array (const octave_pq_connection &conn,
-                         char *v, octave_value &ov, int nb,
+                         const char *v, octave_value &ov, int nb,
                          oct_pq_conv_t *conv)
 {
   // not implemented
@@ -641,7 +641,7 @@ int to_octave_str_array (const octave_pq_connection &conn,
 }
 
 int to_octave_str_composite (const octave_pq_connection &conn,
-                             char *v, octave_value &ov, int nb,
+                             const char *v, octave_value &ov, int nb,
                              oct_pq_conv_t *conv)
 {
   // not implemented

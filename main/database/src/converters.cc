@@ -2118,6 +2118,108 @@ oct_pq_conv_t conv_xml = {0,
 
 /* end type xml */
 
+/* type record */
+
+int to_octave_str_record (const octave_pq_connection &conn,
+                          const char *c, octave_value &ov, int nb)
+{
+  return 1;
+}
+
+int to_octave_bin_record (const octave_pq_connection &conn,
+                          const char *v, octave_value &ov, int nb)
+{
+  const char *p = v;
+
+  // ncols
+  OCT_PQ_DECL_GET_INT32(nl, p, int32_t)
+
+  // elements
+  Cell c (nl, 1);
+  for (int i = 0; i < nl; i++)
+    {
+      // element OID
+      OCT_PQ_DECL_GET_INT32(oid, p, uint32_t)
+
+      OCT_PQ_DECL_GET_INT32(null_id, p, int32_t)
+
+      if (null_id == -1)
+        // NULL
+        c(i) = octave_value (octave_NA);
+      else
+        {
+          uint32_t nb_el = uint32_t (null_id);
+
+          oct_pq_conv_t *el_conv;
+          pq_oct_type_t oct_type;
+
+          if (! (el_conv = pgtype_from_spec (conn, oid, oct_type)))
+            return 1;
+
+          octave_value el;
+          switch (oct_type)
+            {
+            case simple:
+              if (el_conv->to_octave_bin (conn, p, el, nb_el))
+                return 1;
+              break;
+
+            case array:
+              if (to_octave_bin_array (conn, p, el, nb_el, el_conv))
+                return 1;
+              break;
+
+            case composite:
+              if (to_octave_bin_composite (conn, p, el, nb_el, el_conv))
+                return 1;
+              break;
+
+            default:
+              // should not get here
+              error ("'record' converter: internal error, undefined type identifier");
+              return 1;
+            }
+
+          p += nb_el;
+
+          c(i) = el;
+        }
+    }
+
+  ov = octave_value (c);
+
+  return 0;
+}
+
+int from_octave_str_record (const octave_pq_connection &conn,
+                            const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  return 1;
+}
+
+int from_octave_bin_record (const octave_pq_connection &conn,
+                            const octave_value &ov, oct_pq_dynvec_t &val)
+{
+  error ("Type 'record' can't be sent to postgresql.");
+
+  return 1;
+}
+
+oct_pq_conv_t conv_record = {0,
+                             0,
+                             oct_pq_el_oids_t (),
+                             oct_pq_conv_cache_t (),
+                             false,
+                             false,
+                             false,
+                             "record",
+                             &to_octave_str_record,
+                             &to_octave_bin_record,
+                             &from_octave_str_record,
+                             &from_octave_bin_record};
+
+/* end type record */
+
 oct_pq_conv_t *t_conv_ptrs[OCT_PQ_NUM_CONVERTERS] = {&conv_bool,
                                                      &conv_oid,
                                                      &conv_float8,
@@ -2151,6 +2253,7 @@ oct_pq_conv_t *t_conv_ptrs[OCT_PQ_NUM_CONVERTERS] = {&conv_bool,
                                                      &conv_bit,
                                                      &conv_varbit,
                                                      &conv_uuid,
-                                                     &conv_xml};
+                                                     &conv_xml,
+                                                     &conv_record};
 
 oct_pq_conv_ptrs_t conv_ptrs (OCT_PQ_NUM_CONVERTERS, t_conv_ptrs);

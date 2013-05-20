@@ -33,7 +33,7 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
    return NULL;                                                         \
  }
 
-oct_pq_conv_t *pgtype_from_spec (octave_pq_connection &conn,
+oct_pq_conv_t *pgtype_from_spec (const octave_pq_connection &conn,
                                  std::string &name,
                                  pq_oct_type_t &oct_type)
 {
@@ -51,7 +51,7 @@ oct_pq_conv_t *pgtype_from_spec (octave_pq_connection &conn,
       // printf ("array ");
     }
 
-  oct_pq_name_conv_map_t::iterator iter;
+  oct_pq_name_conv_map_t::const_iterator iter;
 
   if ((iter = conn.name_conv_map.find (name.c_str ())) ==
       conn.name_conv_map.end ())
@@ -61,7 +61,7 @@ oct_pq_conv_t *pgtype_from_spec (octave_pq_connection &conn,
     {
       // printf ("(looked up in name map) ");
 
-      conv = iter->second;
+      conv = iter->second.get_copy ();
 
       if (oct_type == array && ! conv->aoid)
         {
@@ -82,21 +82,21 @@ oct_pq_conv_t *pgtype_from_spec (octave_pq_connection &conn,
   return conv;
 }
 
-oct_pq_conv_t *pgtype_from_spec (octave_pq_connection &conn, Oid oid,
+oct_pq_conv_t *pgtype_from_spec (const octave_pq_connection &conn, Oid oid,
                                  pq_oct_type_t &oct_type)
 {
   // printf ("pgtype_from_spec(%u): ", oid);
 
   oct_pq_conv_t *conv = NULL;
 
-  oct_pq_conv_map_t::iterator iter;
+  oct_pq_conv_map_t::const_iterator iter;
   
   if ((iter = conn.conv_map.find (oid)) == conn.conv_map.end ())
     {
       error ("no converter found for element oid %u", oid);
       return conv;
     }
-  conv = iter->second;
+  conv = iter->second.get_copy ();
   // printf ("(looked up %s in oid map) ", conv->name.c_str ());
 
   if (conv->aoid == oid)
@@ -111,7 +111,7 @@ oct_pq_conv_t *pgtype_from_spec (octave_pq_connection &conn, Oid oid,
   return conv;
 }
 
-oct_pq_conv_t *pgtype_from_spec (octave_pq_connection &conn, Oid oid,
+oct_pq_conv_t *pgtype_from_spec (const octave_pq_connection &conn, Oid oid,
                                  oct_pq_conv_t *&c_conv,
                                  pq_oct_type_t &oct_type)
 {
@@ -130,7 +130,7 @@ oct_pq_conv_t *pgtype_from_spec (octave_pq_connection &conn, Oid oid,
   return c_conv;
 }
 
-oct_pq_conv_t *pgtype_from_octtype (octave_pq_connection &conn,
+oct_pq_conv_t *pgtype_from_octtype (const octave_pq_connection &conn,
                                     const octave_value &param)
 {
   // printf ("pgtype_from_octtype: ");
@@ -138,19 +138,19 @@ oct_pq_conv_t *pgtype_from_octtype (octave_pq_connection &conn,
   if (param.is_bool_scalar ())
     {
       // printf ("bool\n");
-      return conn.name_conv_map["bool"];
+      return conn.name_conv_map.find ("bool")->second.get_copy ();
     }
   else if (param.is_real_scalar ())
     {
       if (param.is_double_type ())
         {
           // printf ("float8\n");
-          return conn.name_conv_map["float8"];
+          return conn.name_conv_map.find ("float8")->second.get_copy ();
         }
       else if (param.is_single_type ())
         {
           // printf ("float4\n");
-          return conn.name_conv_map["float4"];
+          return conn.name_conv_map.find ("float4")->second.get_copy ();
         }
     }
 
@@ -159,34 +159,34 @@ oct_pq_conv_t *pgtype_from_octtype (octave_pq_connection &conn,
       if (param.is_int16_type ())
         {
           // printf ("int2\n");
-          return conn.name_conv_map["int2"];
+          return conn.name_conv_map.find ("int2")->second.get_copy ();
         }
       else if (param.is_int32_type ())
         {
           // printf ("int4\n");
-          return conn.name_conv_map["int4"];
+          return conn.name_conv_map.find ("int4")->second.get_copy ();
         }
       else if (param.is_int64_type ())
         {
           // printf ("int8\n");
-          return conn.name_conv_map["int8"];
+          return conn.name_conv_map.find ("int8")->second.get_copy ();
         }
       else if (param.is_uint32_type ())
         {
           // printf ("oid\n");
-          return conn.name_conv_map["oid"];
+          return conn.name_conv_map.find ("oid")->second.get_copy ();
         }
     }
 
   if (param.is_uint8_type ())
     {
       // printf ("bytea\n");
-      return conn.name_conv_map["bytea"];
+      return conn.name_conv_map.find ("bytea")->second.get_copy ();
     }
   else if (param.is_string ())
     {
       // printf ("text\n");
-      return conn.name_conv_map["text"];
+      return conn.name_conv_map.find ("text")->second.get_copy ();
     }
 
   // is_real_type() is true for strings, so is_numeric_type() would
@@ -197,13 +197,13 @@ oct_pq_conv_t *pgtype_from_octtype (octave_pq_connection &conn,
         {
         case 2:
           // printf ("point\n");
-          return conn.name_conv_map["point"];
+          return conn.name_conv_map.find ("point")->second.get_copy ();
         case 3:
           // printf ("circle\n");
-          return conn.name_conv_map["circle"];
+          return conn.name_conv_map.find ("circle")->second.get_copy ();
         case 4:
           // printf ("lseg\n");
-          return conn.name_conv_map["lseg"];
+          return conn.name_conv_map.find ("lseg")->second.get_copy ();
         }
     }
 
@@ -269,7 +269,7 @@ octave_idx_type count_row_major_order (dim_vector &dv,
     }
 }
 
-int from_octave_bin_array (octave_pq_connection &conn,
+int from_octave_bin_array (const octave_pq_connection &conn,
                            const octave_value &oct_arr,
                            oct_pq_dynvec_t &val, oct_pq_conv_t *conv)
 {
@@ -377,7 +377,7 @@ int from_octave_bin_array (octave_pq_connection &conn,
   return 0;
 }
 
-int from_octave_bin_composite (octave_pq_connection &conn,
+int from_octave_bin_composite (const octave_pq_connection &conn,
                                const octave_value &oct_comp,
                                oct_pq_dynvec_t &val,
                                oct_pq_conv_t *conv)
@@ -453,7 +453,7 @@ int from_octave_bin_composite (octave_pq_connection &conn,
   return 0;
 }
 
-int from_octave_str_array (octave_pq_connection &conn,
+int from_octave_str_array (const octave_pq_connection &conn,
                            const octave_value &oct_arr,
                            oct_pq_dynvec_t &val, octave_value &type)
 {
@@ -464,7 +464,7 @@ int from_octave_str_array (octave_pq_connection &conn,
   return 0;
 }
 
-int from_octave_str_composite (octave_pq_connection &conn,
+int from_octave_str_composite (const octave_pq_connection &conn,
                                const octave_value &oct_comp,
                                oct_pq_dynvec_t &val,
                                octave_value &type)
@@ -476,7 +476,7 @@ int from_octave_str_composite (octave_pq_connection &conn,
   return 0;
 }
 
-int to_octave_bin_array (octave_pq_connection &conn,
+int to_octave_bin_array (const octave_pq_connection &conn,
                          char *v, octave_value &ov, int nb,
                          oct_pq_conv_t *conv)
 {
@@ -561,7 +561,7 @@ int to_octave_bin_array (octave_pq_connection &conn,
   return 0;
 }
 
-int to_octave_bin_composite (octave_pq_connection &conn,
+int to_octave_bin_composite (const octave_pq_connection &conn,
                              char *v, octave_value &ov, int nb,
                              oct_pq_conv_t *conv)
 {
@@ -629,7 +629,7 @@ int to_octave_bin_composite (octave_pq_connection &conn,
 }
 
 
-int to_octave_str_array (octave_pq_connection &conn,
+int to_octave_str_array (const octave_pq_connection &conn,
                          char *v, octave_value &ov, int nb,
                          oct_pq_conv_t *conv)
 {
@@ -640,7 +640,7 @@ int to_octave_str_array (octave_pq_connection &conn,
   return 0;
 }
 
-int to_octave_str_composite (octave_pq_connection &conn,
+int to_octave_str_composite (const octave_pq_connection &conn,
                              char *v, octave_value &ov, int nb,
                              oct_pq_conv_t *conv)
 {

@@ -50,11 +50,11 @@ public:
   }
 
   typedef int (*to_octave_array_fp_t)
-    (octave_pq_connection &, char *, octave_value &,
+    (const octave_pq_connection &, char *, octave_value &,
      int, oct_pq_conv_t *);
 
   typedef int (*to_octave_composite_fp_t)
-    (octave_pq_connection &, char *, octave_value &,
+    (const octave_pq_connection &, char *, octave_value &,
      int, oct_pq_conv_t *);
 
   int all_results_fetched (void)

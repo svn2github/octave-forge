@@ -121,6 +121,8 @@ public:
 
   oct_pq_conv_t *&operator->(void) { return conv; }
 
+  oct_pq_conv_t *get_copy (void) const { return conv; }
+
 private:
 
   oct_pq_conv_t *conv;
@@ -147,47 +149,47 @@ int from_octave_str_text (const octave_pq_connection &conn,
 int from_octave_bin_text (const octave_pq_connection &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val);
 
-oct_pq_conv_t *pgtype_from_octtype (octave_pq_connection &conn,
+oct_pq_conv_t *pgtype_from_octtype (const octave_pq_connection &conn,
                                     const octave_value &);
 
-oct_pq_conv_t *pgtype_from_spec (octave_pq_connection &, std::string &,
+oct_pq_conv_t *pgtype_from_spec (const octave_pq_connection &, std::string &,
                                  pq_oct_type_t &);
 
-oct_pq_conv_t *pgtype_from_spec (octave_pq_connection &, Oid,
+oct_pq_conv_t *pgtype_from_spec (const octave_pq_connection &, Oid,
                                  pq_oct_type_t &);
 
-oct_pq_conv_t *pgtype_from_spec (octave_pq_connection &, Oid,
+oct_pq_conv_t *pgtype_from_spec (const octave_pq_connection &, Oid,
                                  oct_pq_conv_t *&, pq_oct_type_t &);
 
 octave_idx_type count_row_major_order (dim_vector &, oct_mo_count_state &,
                                        bool);
 
-int from_octave_bin_array (octave_pq_connection &conn,
+int from_octave_bin_array (const octave_pq_connection &conn,
                            const octave_value &oct_arr, oct_pq_dynvec_t &val,
                            oct_pq_conv_t *);
 
-int from_octave_bin_composite (octave_pq_connection &conn,
+int from_octave_bin_composite (const octave_pq_connection &conn,
                                const octave_value &oct_comp,
                                oct_pq_dynvec_t &val, oct_pq_conv_t *);
 
-int from_octave_str_array (octave_pq_connection &conn,
+int from_octave_str_array (const octave_pq_connection &conn,
                            const octave_value &oct_arr, oct_pq_dynvec_t &val,
                            octave_value &type);
 
-int from_octave_str_composite (octave_pq_connection &conn,
+int from_octave_str_composite (const octave_pq_connection &conn,
                                const octave_value &oct_comp,
                                oct_pq_dynvec_t &val, octave_value &type);
 
-int to_octave_bin_array (octave_pq_connection &conn,
+int to_octave_bin_array (const octave_pq_connection &conn,
                          char *, octave_value &, int, oct_pq_conv_t *);
 
-int to_octave_bin_composite (octave_pq_connection &conn,
+int to_octave_bin_composite (const octave_pq_connection &conn,
                              char *, octave_value &, int, oct_pq_conv_t *);
 
-int to_octave_str_array (octave_pq_connection &conn,
+int to_octave_str_array (const octave_pq_connection &conn,
                          char *, octave_value &, int, oct_pq_conv_t *);
 
-int to_octave_str_composite (octave_pq_connection &conn,
+int to_octave_str_composite (const octave_pq_connection &conn,
                              char *, octave_value &, int, oct_pq_conv_t *);
 
 // append bytes of value 'val' of type 'type' to dynamic char vector 'dv'

@@ -1,3 +1,6 @@
+database 2.2.0
+--------------
+
  ** pq_exec_params: For queries, information on postgresql data types
     of columns is also returned.
 

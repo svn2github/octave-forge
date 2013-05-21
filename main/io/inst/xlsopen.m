@@ -125,6 +125,7 @@
 ##            particular interface
 ## 2012-04-17 Fix checks on xls or xls? suffix (due to Vermylen)
 ## 2012-04-21 Revert xls/xlsx type check (was good as it stood)
+## 2013-05-16 Fix wrong fallback to JXL of OOXML
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
@@ -252,20 +253,34 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
     [ xls, xlssupport, lastintf ] = __COM_spsh_open__ (xls, xwrite, filename, xlssupport);
   endif
 
-  if (xlsinterfaces.POI && (chk1 || chk2) && ! xlssupport)
-    [ xls, xlssupport, lastintf ] = __POI_spsh_open__ (xls, xwrite, filename, xlssupport, chk1, chk2, xlsinterfaces);
+  if (! xlssupport)
+    if (xlsinterfaces.POI && (chk1 || chk2))
+      [ xls, xlssupport, lastintf ] = __POI_spsh_open__ (xls, xwrite, filename, xlssupport, chk1, chk2, xlsinterfaces);
+    elseif ~(chk1 || chk2)
+      error ("xlsopen.m: unsupported file format for Apache POI")
+    endif
   endif
 
-  if (xlsinterfaces.JXL && chk1 && ! xlssupport)
-    [ xls, xlssupport, lastintf ] = __JXL_spsh_open__ (xls, xwrite, filename, xlssupport, chk1);
+  if (! xlssupport)
+    if (xlsinterfaces.JXL && chk1)
+      [ xls, xlssupport, lastintf ] = __JXL_spsh_open__ (xls, xwrite, filename, xlssupport, chk1);
+    elseif (~chk1)
+      error ("xlsopen.m: unsupported file format for JExcelAPI")
+    endif
   endif
 
-  if (xlsinterfaces.OXS && chk1 && ! xlssupport)
+  if (! xlssupport)
+    if (xlsinterfaces.OXS && chk1)
       [ xls, xlssupport, lastintf ] = __OXS_spsh_open__ (xls, xwrite, filename, xlssupport, chk1);
+    elseif (~chk1)
+      error ("xlsopen.m: unsupported file format for OpenXLS")
+    endif
   endif
 
-  if (xlsinterfaces.UNO && ! xlssupport)
-    [ xls, xlssupport, lastintf ] = __UNO_spsh_open__ (xls, xwrite, filename, xlssupport);
+  if (! xlssupport)
+    if (xlsinterfaces.UNO)
+      [ xls, xlssupport, lastintf ] = __UNO_spsh_open__ (xls, xwrite, filename, xlssupport);
+    endif
   endif
 
   ## if 

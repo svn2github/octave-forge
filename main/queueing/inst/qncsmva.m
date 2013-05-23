@@ -71,11 +71,12 @@
 ## @table @var
 ##
 ## @item U
-## If @math{k} is a FCFS, LCFS-PR or PS node (@code{@var{m}(k) == 1}),
-## then @code{@var{U}(k)} is the utilization of center @math{k}. If
-## @math{k} is an IS node (@code{@var{m}(k) < 1}), then
-## @code{@var{U}(k)} is the @emph{traffic intensity} defined as
-## @code{@var{X}(k)*@var{S}(k)}.
+## If @math{k} is a FCFS, LCFS-PR or PS node (@code{@var{m}(k) @geq{}
+## 1}), then @code{@var{U}(k)} is the utilization of center @math{k},
+## @math{0 @leq{} U(k) @leq{} 1}. If @math{k} is an IS node
+## (@code{@var{m}(k) < 1}), then @code{@var{U}(k)} is the @emph{traffic
+## intensity} defined as @code{@var{X}(k)*@var{S}(k)}. In this case the
+## value of @code{@var{U}(k)} may be greater than one.
 ##
 ## @item R
 ## @code{@var{R}(k)} is the response time at center @math{k}.
@@ -176,6 +177,18 @@ function [U R Q X G] = qncsmva( varargin )
   U(i_single) = X(i_single) .* S(i_single);
   U(i_delay) = X(i_delay) .* S(i_delay);
   U(i_multi) = X(i_multi) .* S(i_multi) ./ m(i_multi);
+
+  if ( (any(U(i_multi)<-1000*eps) || any(U(i_multi)>1+1000*eps)) && any(m>1) )
+    warning("qn:numerical-instability",
+	    ["****\n" \
+	     "Some utilizations for M/M/1 or M/M/m centers are outside the\n" \
+	     "valid range [0,1]. Since the network contains multiple-server nodes\n" \
+	     "he problem is likely due to numerical instability of the Mean\n" \
+	     "Value Analysis algorithm. Note that this is an intrinsic problem\n" \
+	     "of MVA, not of the implementation used in this toolbox.\n" \
+	     "****\n"]);
+  endif
+    
 endfunction
 
 #{

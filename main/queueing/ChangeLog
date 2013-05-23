@@ -1,3 +1,9 @@
+2013-05-XX Moreno Marzolla <marzolla@cs.unibo.it>
+
+	* Version 1.2.2 released
+	* Fixed bug in qncmmva: utilization for M/M/m centers, m>1, was not correctly scaled to [0,1]
+	* Added warning to qncsmva to inform user about potential loss of accuracy due to load-dependent servers
+
 2013-02-05 Moreno Marzolla <marzolla@cs.unibo.it>
 
 	* Version 1.2.1 released

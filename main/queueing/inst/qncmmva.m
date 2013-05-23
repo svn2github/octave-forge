@@ -133,11 +133,13 @@
 ## @table @var
 ##
 ## @item U
-## If @math{k} is a FCFS, LCFS-PR or PS node, then @code{@var{U}(c,k)}
-## is the class @math{c} utilization at center
-## @math{k}. If @math{k} is an IS node, then @code{@var{U}(c,k)} is the
-## class @math{c} @emph{traffic intensity} at center @math{k},
-## defined as @code{@var{U}(c,k) = @var{X}(c,k)*@var{S}(c,k)}. 
+## If @math{k} is a FCFS, LCFS-PR or PS node (@code{@var{m}(k) @geq{}
+## 1}), then @code{@var{U}(c,k)} is the class @math{c} utilization at
+## center @math{k}, @math{0 @leq{} U(c,k) @leq{} 1}. If @math{k} is an
+## IS node, then @code{@var{U}(c,k)} is the class @math{c} @emph{traffic
+## intensity} at center @math{k}, defined as @code{@var{U}(c,k) =
+## @var{X}(c,k)*@var{S}(c,k)}. In this case the value of
+## #code{@var{U}(c,k)} may be greater than one.
 ##
 ## @item R
 ## @code{@var{R}(c,k)} is the class @math{c} response time at
@@ -427,7 +429,7 @@ function [U R Q X Qnm1] = __qncmmva_nocs( N, S, V, m, Z )
     endwhile
     Q = Q_next;
   endfor
-  U = diag(X)*D; # U(c,k) = X(c)*D(c,k)
+  U = diag(X)*D ./ max(1,m); # U(c,k) = X(c)*D(c,k)
   Q = diag(X)*(R.*V);
   X = diag(X)*V;
 endfunction

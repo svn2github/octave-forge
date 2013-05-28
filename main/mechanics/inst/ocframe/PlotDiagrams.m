@@ -35,7 +35,7 @@ function PlotDiagrams(joints,members,dist,point,MemF,diagram,divisions,scale)
 	end
 	if (diagram=="M")
 		if (nargin<8)
-			scale=2/max(max(abs(MemF(:,[3,6]))))
+			scale=2/max(max(abs(MemF(:,[3,6]))));
 		end
 		%plot frame first
 		newplot();

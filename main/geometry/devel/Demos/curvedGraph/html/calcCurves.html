@@ -1,0 +1,212 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML is auto-generated from an M-file.
+To make changes, update the M-file and republish this document.
+      --><title>calcCurves</title><meta name="generator" content="MATLAB 7.9"><meta name="date" content="2013-03-04"><meta name="m-file" content="calcCurves"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Startup image</a></li><li><a href="#3">Fit polynomials</a></li></ul></div><pre class="codeinput"><span class="comment">%DEMOCURVEDGRAPH compute curved boundary graph</span>
+</pre><h2>Startup image<a name="2"></a></h2><pre class="codeinput"><span class="comment">% load images</span>
+img = imread(<span class="string">'imageSeg.tif'</span>);
+figure;
+imshow(img);
+</pre><img vspace="5" hspace="5" src="calcCurves_01.png" alt=""> <h2>Fit polynomials<a name="3"></a></h2><pre class="codeinput"><span class="comment">% polynomial degree</span>
+deg = 2;
+
+<span class="comment">% compute coefficient for each curve that is boundary between two regions</span>
+coefs = polynomialCurveSetFit(~img, deg);
+
+<span class="comment">% prepare display</span>
+figure;
+imshow(img)
+hold <span class="string">on</span>;
+
+<span class="comment">% draw curves as overlays</span>
+<span class="keyword">for</span> i = 1:length(coefs)
+    h = drawPolynomialCurve([0 1], coefs{i});
+    set(h, <span class="string">'linewidth'</span>, 2, <span class="string">'color'</span>, <span class="string">'b'</span>);
+<span class="keyword">end</span>
+
+<span class="comment">% draw only curves</span>
+figure;
+imshow(ones(size(img)));
+hold <span class="string">on</span>;
+<span class="keyword">for</span> i = 1:length(coefs)
+    h = drawPolynomialCurve([0 1], coefs{i});
+    set(h, <span class="string">'linewidth'</span>, 2, <span class="string">'color'</span>, <span class="string">'b'</span>);
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">     1
+
+     2
+
+     3
+
+     4
+
+     5
+
+     6
+
+     7
+
+     8
+
+     9
+
+    10
+
+    11
+
+    12
+
+    13
+
+    14
+
+    15
+
+    16
+
+    17
+
+    18
+
+    19
+
+    20
+
+    21
+
+    22
+
+    23
+
+    24
+
+    25
+
+    26
+
+    27
+
+    28
+
+    29
+
+    30
+
+    31
+
+    32
+
+    33
+
+    34
+
+    35
+
+    36
+
+    37
+
+</pre><img vspace="5" hspace="5" src="calcCurves_02.png" alt=""> <img vspace="5" hspace="5" src="calcCurves_03.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.9<br></p></div><!--
+##### SOURCE BEGIN #####
+%DEMOCURVEDGRAPH compute curved boundary graph
+
+
+%% Startup image
+
+% load images
+img = imread('imageSeg.tif');
+figure; 
+imshow(img);
+
+
+%% Fit polynomials
+
+% polynomial degree
+deg = 2;
+
+% compute coefficient for each curve that is boundary between two regions
+coefs = polynomialCurveSetFit(~img, deg);
+
+% prepare display
+figure;
+imshow(img)
+hold on;
+
+% draw curves as overlays
+for i = 1:length(coefs)
+    h = drawPolynomialCurve([0 1], coefs{i});
+    set(h, 'linewidth', 2, 'color', 'b');
+end
+
+% draw only curves
+figure; 
+imshow(ones(size(img)));
+hold on;
+for i = 1:length(coefs)
+    h = drawPolynomialCurve([0 1], coefs{i});
+    set(h, 'linewidth', 2, 'color', 'b');
+end
+
+##### SOURCE END #####
+--></body></html>

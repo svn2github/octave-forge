@@ -284,7 +284,7 @@ function [U R Q X] = __qncmmva_cs( N, S, P, r, m )
       R(r,k) = S(r,k) * (1 + Qnm1(ch(r),k)*(m(k)==1));
       X(r,k) = alpha(r,k) * Xstar(ch(r),k);
       Q(r,k) = X(r,k) * R(r,k);
-      U(r,k) = S(r,k) * X(r,k);
+      U(r,k) = S(r,k) * X(r,k) / max(1,m(k));
     endfor
   endfor
 
@@ -429,7 +429,7 @@ function [U R Q X Qnm1] = __qncmmva_nocs( N, S, V, m, Z )
     endwhile
     Q = Q_next;
   endfor
-  U = diag(X)*D ./ max(1,m); # U(c,k) = X(c)*D(c,k)
+  U = diag(X)*D ./ max(1,repmat(m,C,1)); # U(c,k) = X(c)*D(c,k)
   Q = diag(X)*(R.*V);
   X = diag(X)*V;
 endfunction

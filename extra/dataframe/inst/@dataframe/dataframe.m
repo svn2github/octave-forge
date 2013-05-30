@@ -373,79 +373,87 @@ while (indi <= size (varargin, 2))
 		continue;
               endif
               
-              %# try to convert to float
-	      if (~ isempty(conv_regexp))
-		dummy = regexprep (dummy, conv_regexp{});
-	      endif
-	      the_line = cellfun (@(x) sscanf (x, "%f"), dummy, \
-                                  'UniformOutput', false);
-              	      
-              indk = 1; indm = 1;
-              while (indk <= size (the_line, 2))
-		if (isempty (the_line{indk}) || any (size (the_line{indk}) > 1)) 
-                  %#if indi > 1 && indk > 1, disp('line 117 '); keyboard; %#endif
-		  if (isempty (dummy {indk}))
-		    %# empty field, just don't care
-		    indk = indk + 1; indm = indm + 1;
-		    continue;
-		  endif
-                  
-		  if (unquot)
-                    try
-                      %# remove quotes and leading space(s)
-                      x(indj, indm) = regexp (dummy{indk}, '[^''" ].*[^''"]', 'match'){1};
-                    catch
-                      %# if the previous test fails, try a simpler one
-                      in = regexp (dummy{indk}, '[^'' ]+', 'match');
-                      if (~isempty (in))
-			x(indj, indm) = in{1};
-                      %# else
-                      %#    x(indj, indk) = [];
-                      endif
-                    end_try_catch
-                  else
-                    %# no conversion possible, store and remove leading space(s)
-                    x(indj, indm) = regexp (dummy{indk}, '[^ ].*', 'match');
-                  endif
-		elseif (~isempty (regexp (dummy{indk}, '[/:-]')) && ...
-			~isempty (datefmt))
-                  %# does it look like a date ?
-                  datetime = dummy{indk}; 
-                  
-                  if (datefields > 1)             
-                    %# concatenate the required number of fields 
-                    indc = 1;
-                    for indc = (2:datefields)
-                      datetime = cstrcat(datetime, ' ', dummy{indk+indc-1});
-                    endfor
-                  else
-                    %# ensure spaces are unique
-                    datetime =  regexprep (datetime, '[ ]+', ' ');
-                  endif
-                  
-                  try
-                    datetime = datevec (datetime, datefmt);
-                    timeval = struct ("usec", 0, "sec", floor (datetime (6)),
-                                      "min", datetime(5), "hour", datetime(4),
-                                      "mday", datetime(3), "mon", datetime(2)-1,
-                                      "year", datetime(1)-1900);
-                    timeval.usec = 1e6*(datetime(6) - timeval.sec);
-                    x(indj, indm) =  str2num (strftime ([char(37) 's'], timeval)) + ...
-				     timeval.usec * 1e-6;
-                    if (datefields > 1)
-                      %# skip fields successfully converted
-                      indk = indk + (datefields - 1);
-                    endif
-                  catch
-                    %# store it as is
-                    x(indj, indm) = the_line{indk}; 
-                  end_try_catch
-		else
-                  x(indj, indm) = the_line{indk}; 
+	      if (all (cellfun (@isempty, regexp (dummy, trigger, 'match'))))
+		%# it does not look like the trigger. Good.
+		%# try to convert to float
+		if (~ isempty(conv_regexp))
+		  dummy = regexprep (dummy, conv_regexp{});
 		endif
-		indk = indk + 1; indm = indm + 1;
-              endwhile
-              indl = indl + 1; indj = indj + 1;
+		the_line = cellfun (@(x) sscanf (x, "%f"), dummy, \
+                                    'UniformOutput', false);
+              	
+		indk = 1; indm = 1;
+		while (indk <= size (the_line, 2))
+		  if (isempty (the_line{indk}) || any (size (the_line{indk}) > 1)) 
+                    %#if indi > 1 && indk > 1, disp('line 117 '); keyboard; %#endif
+		    if (isempty (dummy {indk}))
+		      %# empty field, just don't care
+		      indk = indk + 1; indm = indm + 1;
+		      continue;
+		    endif
+                    
+		    if (unquot)
+                      try
+			%# remove quotes and leading space(s)
+			x(indj, indm) = regexp (dummy{indk}, '[^''" ].*[^''"]', 'match'){1};
+                      catch
+			%# if the previous test fails, try a simpler one
+			in = regexp (dummy{indk}, '[^'' ]+', 'match');
+			if (~isempty (in))
+			  x(indj, indm) = in{1};
+			%# else
+			%#    x(indj, indk) = [];
+			endif
+                      end_try_catch
+                    else
+                      %# no conversion possible, store and remove leading space(s)
+                      x(indj, indm) = regexp (dummy{indk}, '[^ ].*', 'match');
+                    endif
+		  elseif (~isempty (regexp (dummy{indk}, '[/:-]')) && ...
+			  ~isempty (datefmt))
+                    %# does it look like a date ?
+                    datetime = dummy{indk}; 
+                    
+                    if (datefields > 1)             
+                      %# concatenate the required number of fields 
+                      indc = 1;
+                      for indc = (2:datefields)
+			datetime = cstrcat(datetime, ' ', dummy{indk+indc-1});
+                      endfor
+                    else
+                      %# ensure spaces are unique
+                      datetime =  regexprep (datetime, '[ ]+', ' ');
+                    endif
+                    
+                    try
+                      datetime = datevec (datetime, datefmt);
+                      timeval = struct ("usec", 0, "sec", floor (datetime (6)),
+					"min", datetime(5), "hour", datetime(4),
+					"mday", datetime(3), "mon", datetime(2)-1,
+					"year", datetime(1)-1900);
+                      timeval.usec = 1e6*(datetime(6) - timeval.sec);
+                      x(indj, indm) =  str2num (strftime ([char(37) 's'], timeval)) + ...
+				       timeval.usec * 1e-6;
+                      if (datefields > 1)
+			%# skip fields successfully converted
+			indk = indk + (datefields - 1);
+                      endif
+                    catch
+                      %# store it as is
+                      x(indj, indm) = the_line{indk}; 
+                    end_try_catch
+		  else
+                    x(indj, indm) = the_line{indk}; 
+		  endif
+		  indk = indk + 1; indm = indm + 1;
+		endwhile
+		indl = indl + 1; indj = indj + 1;
+	      else
+		%# trigger seen again. Throw last value and abort processing.
+		x(end, :) = [];
+		fprintf (2, "Trigger seen a second time, stopping processing\n");
+		break
+	      end
             endwhile
             
             if (~isempty (empty_lines))
@@ -527,7 +535,7 @@ while (indi <= size (varargin, 2))
 	   printf ("Calling df_matassign, orig size: %s\n", disp (size (df)));
 	   printf ("size(x): %s\n", disp (size (x)));
 	endif
-	df = df_matassign (df, idx, indj, length (indj), x);
+	df = df_matassign (df, idx, indj, length (indj), x, trigger);
       catch
 	disp ('line 443 '); keyboard
       end_try_catch

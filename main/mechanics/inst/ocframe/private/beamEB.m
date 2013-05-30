@@ -15,7 +15,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} beamEB() 
+## @deftypefn {Function File} {} beamEB (@var{L}, @var{b}, @var{div}, @var{pointloads}, @var{distributedloads}, @var{E}, @var{I}, @var{k}) 
 ## Beam on an elastic bed. (Winkler)
 ## NOT READY YET!
 ## @end deftypefn
@@ -35,12 +35,15 @@ function [v,M,V] = beamEB(L, b, div, pointloads, distributedloads, E, I, k)
 		#point loads are spread over the interval 
 		for index=1:rows(pointloads)
 			if (pointloads(index,1) < x + small && pointloads(index,1) > x - delta - small)
-				q(i) = pointloads(index,2)/delta;
+				q(i) = pointloads(index,2);  %% TODO: best method: q as kN/m or as kN ??? (see further)
 			endif
 		endfor
 		#dist loads
 		for index=1:rows(distributedloads)
-			#TODO: 
+			if (distributedloads(index,1) > x - delta - small && distributedloads(index,3) < x + small )
+				# point lays in the distributed load
+				# TODO: complete
+			endif
 		endfor
 		x+=delta;
 	endfor
@@ -56,7 +59,7 @@ function [v,M,V] = beamEB(L, b, div, pointloads, distributedloads, E, I, k)
 			A(node-1,node)   =-2;
 			A(node-1,node+1) = 1;
 			# V = 0 = v'''  
-			# (using −1/2 	1 	0 	−1 	1/2 	: http://en.wikipedia.org/wiki/Finite_difference_coefficient)
+			# (using −1/2 1 0 −1 1/2: http://en.wikipedia.org/wiki/Finite_difference_coefficient)
 			A(node-2,node-2) = -1/2;
 			A(node-2,node-1) = 1;
 			A(node-2,node) = 0;
@@ -69,7 +72,7 @@ function [v,M,V] = beamEB(L, b, div, pointloads, distributedloads, E, I, k)
 			A(node+1,node)   =-2;
 			A(node+1,node+1) = 1;
 			# V = 0 = v''' constraint on row "node"  
-			# (using −1/2 	1 	0 	−1 	1/2 	: http://en.wikipedia.org/wiki/Finite_difference_coefficient)
+			# (using −1/2 1 0 −1 1/2: http://en.wikipedia.org/wiki/Finite_difference_coefficient)
 			A(node+2,node-2) = -1/2;
 			A(node+2,node-1) = 1;
 			A(node+2,node) = 0;
@@ -79,11 +82,11 @@ function [v,M,V] = beamEB(L, b, div, pointloads, distributedloads, E, I, k)
 		# normal node:  EI v'''' + b k v = q
 		# pattern for v'''' around node: 1 -4 6 -4 1
 		# source: Abramowitz and Stegun
-		A(node, node-2) = 1/delta^4;
-		A(node, node-1) = -4/delta^4;
-		A(node, node) = 6/delta^4 + b*k/(E*I);
-		A(node, node+1) = -4/delta^4;
-		A(node, node+2) = 1/delta^4;
+		A(node, node-2) = 1/delta^4*delta;
+		A(node, node-1) = -4/delta^4*delta;
+		A(node, node) = (6/delta^4 + b*k/(E*I))*delta;
+		A(node, node+1) = -4/delta^4*delta;
+		A(node, node+2) = 1/delta^4*delta;
 		
 		B(node,1) = q(node-2)/(E*I);
 	endfor
@@ -107,5 +110,5 @@ function [v,M,V] = beamEB(L, b, div, pointloads, distributedloads, E, I, k)
 	V = V(3:NN-2);
 endfunction
 
-#[v,M,V]=beamEB(15,1,500,[3,500;6.50,800],[],30.0e6, 1*1.077^3/12, 20.0e-3/0.01^3);
+#[v,M,V]=beamEB(15,1,500,[3,500;6.50,800],[],30.0e6, 1*1.077^3/12, 20.0e-3/0.01^3); # from berekeningvanconstructies.be
 

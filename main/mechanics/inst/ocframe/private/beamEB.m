@@ -1,4 +1,4 @@
-## Copyright (C) 2010 Johan Beke
+## Copyright (C) 2013 Johan Beke
 ##
 ## This software is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -15,27 +15,73 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} beamEB (@var{L}, @var{b}, @var{div}, @var{pointloads}, @var{distributedloads}, @var{E}, @var{I}, @var{k}) 
-## Beam on an elastic bed. (Winkler)
-## NOT READY YET!
+## @deftypefn {Function File} {[@var{xcoord},@var{v},@var{M},@var{V}] =} beamEB (@var{L}, @var{b}, @var{div}, @var{pointloads}, @var{distributedloads}, @var{E}, @var{I}, @var{k}) 
+##
+##
+## The finite difference method is used to solve the beam differential equation
+## of a beam on an elastic bedding: v'''' + b*k*v/EI = p/EI
+##
+## INPUT:
+##
+## 	@var{L}: length of the beam
+##
+## 	@var{b}: width of the beam
+##
+## 	@var{div}: number of divisions
+##
+## 	@var{pointloads}: list of point loads [position from begin, load; ...]
+## 	positive load is downwards
+##
+## 	@var{distributedloads}: list of distributed loads [a, q1, b, q2 ; ...]
+## 	a: start of load (position from begin)
+## 	b: end of load (position from begin)
+## 	q1 and q2: load and start and begin
+##
+## 	@var{E}: modulus of elasticity
+##
+## 	@var{I}: moment of inertia
+##
+## 	@var{k}: bedding constant
+## 
+##
+## OUTPUT:
+##
+## 	@var{xcoord}: x coordinate of the results
+##
+## 	@var{v}: displacement at x
+##
+## 	@var{M}: moment at x
+##
+## 	@var{V}: shear forces at x
+##
+## NOTE: units must be compatible for all variables
 ## @end deftypefn
 
-function [v,M,V] = beamEB(L, b, div, pointloads, distributedloads, E, I, k)
+function [xcoord,v,M,V] = beamEB(L, b, div, pointloads, distributedloads, E, I, k)
 	#number of nodes
-	NN = div + 1 + 4;
+	NN = div + 1 + 4; # one node extra for divisions. 2 extra at each side for end constraints
 	#length of one division
 	delta = L / div;
-	#vector with the load (delta/2 at both size of the point)
-	q = zeros(1, NN-1);
-
+	#vector with the load function
+	q = zeros(1, NN);
+	#x coordinates of the results
+	xcoord = zeros(1, NN);
 	#load the vector q
-	x = delta/2;
+	x1 = 0;
+	x2 = delta;
+	
 	small= 10e-15;
-	for i=1:NN-2
-		#point loads are spread over the interval 
+	
+	for i=3:NN-2
+		#point loads
+		xcoord(i) = x1;
 		for index=1:rows(pointloads)
-			if (pointloads(index,1) < x + small && pointloads(index,1) > x - delta - small)
-				q(i) = pointloads(index,2);  %% TODO: best method: q as kN/m or as kN ??? (see further)
+			x = pointloads(index,1);
+			if (x1 - small < x && x < x2 + small )
+				#point load between node i and i+1
+				#load divide proportional over the nodes
+				q(i) = pointloads(index,2) * (x2-x)/delta;
+				q(i+1) = pointloads(index,2) * (x-x1)/delta;
 			endif
 		endfor
 		#dist loads
@@ -45,7 +91,8 @@ function [v,M,V] = beamEB(L, b, div, pointloads, distributedloads, E, I, k)
 				# TODO: complete
 			endif
 		endfor
-		x+=delta;
+		x1+=delta;
+		x2+=delta;
 	endfor
 	# create and solve the system of finite differences
 	A = zeros(NN,NN);
@@ -92,6 +139,7 @@ function [v,M,V] = beamEB(L, b, div, pointloads, distributedloads, E, I, k)
 	endfor
 
 	#solve with LU decomposition
+	#TODO: check why singular for large number of divisions
 	[L,U,P]=lu(A);
 	v=inv(U)*inv(L)*B;
 
@@ -108,7 +156,8 @@ function [v,M,V] = beamEB(L, b, div, pointloads, distributedloads, E, I, k)
 	v = v(3:NN-2);
 	M = M(3:NN-2);
 	V = V(3:NN-2);
+	xcoord = xcoord(3:NN-2);
 endfunction
 
-#[v,M,V]=beamEB(15,1,500,[3,500;6.50,800],[],30.0e6, 1*1.077^3/12, 20.0e-3/0.01^3); # from berekeningvanconstructies.be
+#[x,v,M,V]=beamEB(15,1,500,[3,500;6.50,800],[],30.0e6, 1*1.077^3/12, 20.0e-3/0.01^3); # from berekeningvanconstructies.be
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Nir Krakauer
+## Copyright (C) 2012-2013 Nir Krakauer
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
 ##
 ## Outside the range of @var{x}, the cubic spline is a straight line
 ##
-## @var{x} and @var{w} should be n by 1 in size; @var{y} should be n by m; @var{xi} should be k by 1; the values in @var{x} should be distinct; the values in @var{w} should be nonzero
+## @var{x} and @var{w} should be n by 1 in size; @var{y} should be n by m; @var{xi} should be k by 1; the values in @var{x} should be distinct and in ascending order; the values in @var{w} should be nonzero
 ##
 ## @table @asis
 ## @item @var{p}=0
@@ -39,7 +39,7 @@
 ## Reference: Carl de Boor (1978), A Practical Guide to Splines, Springer, Chapter XIV
 ##
 ## @end deftypefn
-## @seealso{spline, csapi, ppval, csaps_sel}
+## @seealso{spline, csapi, ppval, dedup, csaps_sel}
 
 ## Author: Nir Krakauer <nkrakauer@ccny.cuny.edu>
 
@@ -56,13 +56,16 @@ function [ret,p]=csaps(x,y,p,xi,w)
   endif
 
   if(columns(x) > 1)
-    x = x.';
-    y = y.';
-    w = w.';
+    x = x';
+    y = y';
+    w = w';
   endif
 
-  [x,i] = sort(x);
-  y = y(i, :);
+  h = diff(x);
+  if any(h <= 0)
+	error('x must be strictly increasing; use dedup to achieve this')
+  endif
+
 
   [n m] = size(y); #should also be that n = numel(x);
   
@@ -70,7 +73,6 @@ function [ret,p]=csaps(x,y,p,xi,w)
     w = ones(n, 1);
   end
 
-  h = diff(x);
 
   R = spdiags([h(1:end-1) 2*(h(1:end-1) + h(2:end)) h(2:end)], [1 0 -1], n-2, n-2);
 

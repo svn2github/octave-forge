@@ -23,11 +23,11 @@
 ## The chosen cubic spline with natural boundary conditions @var{pp}(@var{x}) minimizes @var{p} Sum_i @var{w}_i*(@var{y}_i - @var{pp}(@var{x}_i))^2  +  (1-@var{p}) Int @var{pp}''(@var{x}) d@var{x}.
 ## A selection criterion @var{crit} is used to find a suitable value for @var{p} (between 0 and 1); possible values for @var{crit} are `aicc' (corrected Akaike information criterion, the default); `aic' (original Akaike information criterion); `gcv' (generalized cross validation). If @var{crit} is a scalar instead of a string, then @var{p} is chosen to so that the mean square scaled residual Mean_i (@var{w}_i*(@var{y}_i - @var{pp}(@var{x}_i))^2) is approximately equal to @var{crit}.
 ##
-## @var{x} and @var{w} should be @var{n} by 1 in size; @var{y} should be @var{n} by @var{m}; @var{xi} should be @var{k} by 1; the values in @var{x} should be distinct; the values in @var{w} should be nonzero.
+## @var{x} and @var{w} should be @var{n} by 1 in size; @var{y} should be @var{n} by @var{m}; @var{xi} should be @var{k} by 1; the values in @var{x} should be distinct and in ascending order; the values in @var{w} should be nonzero.
 ##
 ## Returns the selected @var{p}, the estimated data scatter (variance from the smooth trend) @var{sigma2}, and the estimated uncertainty (SD) of the smoothing spline fit at each @var{x} value, @var{unc_y}.
 ##
-## The optimization uses singular value decomposition of an @var{n} by @var{n} matrix for small @var{n} in order to quickly compute the residual size and model degrees of freedom for many @var{p} values for the optimization (Craven and Wahba 1979), while for large @var{n} (currently >300) an asymptotically more computation and storage efficient method that takes advantage of the sparsity of the problem's coefficient matrices is used (Hutchinson and de Hoog 1985).
+## For small @var{n}, the optimization uses singular value decomposition of an @var{n} by @var{n} matrix  in order to quickly compute the residual size and model degrees of freedom for many @var{p} values for the optimization (Craven and Wahba 1979). For large @var{n} (currently >300), an asymptotically more computation and storage efficient method that takes advantage of the sparsity of the problem's coefficient matrices is used (Hutchinson and de Hoog 1985).
 ##
 ## References: 
 ##
@@ -42,7 +42,7 @@
 ## Grace Wahba (1983), Bayesian ``confidence intervals'' for the cross-validated smoothing spline, J Royal Statistical Society, 45B:133-150
 ##
 ## @end deftypefn
-## @seealso{csaps, spline, csapi, ppval, gcvspl}
+## @seealso{csaps, spline, csapi, ppval, dedup, gcvspl}
 
 ## Author: Nir Krakauer <nkrakauer@ccny.cuny.edu>
 
@@ -59,13 +59,10 @@ function [ret,p,sigma2,unc_y]=csaps_sel(x,y,xi,w,crit)
   endif
 
   if(columns(x) > 1)
-    x = x.';
-    y = y.';
-    w = w.';
+    x = x';
+    y = y';
+    w = w';
   endif
-
-  [x,i] = sort(x);
-  y = y(i, :);
 
   n = numel(x);
   
@@ -88,6 +85,9 @@ function [ret,p,sigma2,unc_y]=csaps_sel(x,y,xi,w,crit)
   end
 
   h = diff(x);
+  if any(h <= 0)
+	error('x must be strictly increasing; use dedup to achieve this')
+  endif
 
   R = spdiags([h(1:end-1) 2*(h(1:end-1) + h(2:end)) h(2:end)], [-1 0 1], n-2, n-2);
 
@@ -211,10 +211,10 @@ endfunction
 
 %!shared x,y,ret,p,sigma2,unc_y
 %! x = [0:0.01:1]'; y = sin(x);
-%! [ret,p,sigma2,unc_y]=csaps_sel(x,y,x);
-%!assert (1-p, 0, 1E-6);
+%! [ret,p,sigma2,unc_y] = csaps_sel(x,y,x);
+%!assert (1 - p, 0, 1E-6);
 %!assert (sigma2, 0, 1E-10);
-%!assert (ret-y, zeros(size(y)), 1E-4);
+%!assert (ret - y, zeros(size(y)), 1E-4);
 %!assert (unc_y, zeros(size(unc_y)), 1E-5);
 
 %{
@@ -233,4 +233,16 @@ rand("seed", pi+1)
 y = x .^ 2 +  0.5*(rand(size(x))-0.5)./ sqrt(w);
 tic; [ret,p,sigma2,unc_y]=csaps_sel(x,y,x,w); toc
 
+#unequal spacing of points
+rand("seed", e)
+for i = 1:50
+n = 200;
+x = sort(rand(n, 1));
+xx = [0:0.01:1]';
+y = sin(10*x) + 0.05*randn(n, 1);
+[ret,p,sigma2,unc_y]=csaps_sel(x,y,xx);
+%plot(x, y, 's', xx, ret, xx, sin(10*xx))
+rmse(i) = rms(ret - sin(10*xx)); #p = 0.99979, rmse = 0.0113
+end
+mean(rmse) #new: 0.0146; old: 0.0146 (not significantly different
 %}

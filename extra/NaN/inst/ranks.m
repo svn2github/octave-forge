@@ -51,8 +51,8 @@ function r = ranks(X,DIM,Mode)
 % + computational effort is O(n.log(n)) instead of O(n^2)
 % + memory effort is O(n.log(n)), instead of O(n^2). 
 %     Now, the ranks of 8000 elements can be easily calculated
-% + NaN's in the input yield NaN in the output 
-% + compatible with this software and Matlab
+% + NaNs in the input yield NaN in the output 
+% + compatible with Octave and Matlab
 % + traditional method is also implemented for comparison. 
 
 
@@ -67,15 +67,24 @@ if isempty(Mode),
 	Mode='advanced   '; 
 end;
 
-sz = size(X);
+sz_orig = size (X);
+X = squeeze (X); %remove singleton dimensions for convenience
+nd = ndims (X);
 if (~DIM)
-	 DIM = find(sz>1,1);
-end;	 
-[N,M] = size(X);
-if (DIM==2),
-        X = X';
-	[N,M] = size(X);
-end; 
+	 DIM = 1;
+endif
+if DIM > 1 %shift the array so that the dimension to sort over is first
+  perm = [DIM 1:(DIM-1) (DIM+1):nd];
+  X = permute (X, perm);
+endif
+if nd > 2  %convert X to 2-D if it has >2 dimensions
+  sz = size(X);
+  N = sz(1);
+  M = prod(sz(2:end));
+  X = reshape(X, N, M);
+else
+  [N,M] = size(X);
+endif
 
 if strcmp(Mode(1:min(11,length(Mode))),'traditional'), % traditional, needs O(m.n^2)
 % this method was originally implemented by: KH <Kurt.Hornik@ci.tuwien.ac.at>
@@ -164,6 +173,27 @@ elseif strcmp(Mode,'=='),
         r(isnan(X)) = nan;
 end;
 
-if (DIM==2)
-	r=r';
-end;	
+%reshape r to match the input X
+if nd > 2
+  r = reshape (r, sz);
+endif
+if (DIM > 1)
+	r = ipermute (r, perm);
+endif
+r = reshape (r, sz_orig); %restore any singleton dimensions
+
+
+%!shared z, r1, r2
+%! z = magic (4);
+%! r1 = [4   1   1   4; 2   3   3   2; 3   2   2   3; 1   4   4   1];
+%! r2 = [4   1   2   3; 1   4   3   2; 3   2   1   4; 2   3   4   1];
+%!assert (ranks(z), r1);
+%!assert (ranks(z, 2), r2);
+%! z = nan(2, 2, 2);  
+%! z(:, :, 1) = [1 2; 3 4];
+%! z(:, :, 2) = [4 3; 2 1];
+%! r1 = cat(3, [1 1; 2 2], [2 2; 1 1]);
+%! r2 = cat(3, [1 2; 1 2], [2 1; 2 1]);
+%!assert (ranks(z), r1);
+%!assert (ranks(z, 2), r2);
+%!assert (ranks(z, 3), r1);

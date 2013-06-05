@@ -3,7 +3,7 @@ constants = secs1d_physical_constants_fun ();
 material  = secs1d_silicon_material_properties_fun (constants);
 
 % geometry
-Nelements = 3000;
+Nelements = 300;
 L  = 1e-6;          % [m] 
 xm = L/2;
 device.W = 1e-6 * 1e-6;
@@ -19,7 +19,7 @@ device.D  = device.Nd - device.Na;
 
 % time span for simulation
 tmin  = 0;
-tmax  = 10;
+tmax  = 1;
 tspan = [tmin, tmax];
 
 Fn = Fp = zeros (size (device.x));
@@ -45,21 +45,22 @@ n = ((abs(device.D) + sqrt (abs(device.D) .^ 2 + 4 * device.ni .^2)) .* ...
 
 V = Fn + constants.Vth * log (n ./ device.ni);
 
-function [g, j] = vbcs (t, dt);
-  g = -[10; 10];
-  j = [t*10 0];
+function [g, j, r] = vbcs (t, dt);
+  g = [1; 1];
+  j = -[0 -t];
+  r = [1e3 0];
 endfunction
 
 % tolerances for convergence checks
-algorithm.toll       = 1e-7;
+algorithm.toll       = 1e-6;
 algorithm.ltol       = 1e-10;
-algorithm.maxit      = 5;
+algorithm.maxit      = 100;
 algorithm.lmaxit     = 100;
 algorithm.ptoll      = 1e-12;
 algorithm.pmaxit     = 1000;
 algorithm.colscaling = [10 1e21 1e21 .1];
 algorithm.rowscaling = [1  1e-7 1e-7 .1];
-algorithm.maxnpincr  = 1e-3;
+algorithm.maxnpincr  = 1e-1;
 
 %% initial guess via stationary simulation
 [nin, pin, Vin, Fnin, Fpin, Jn, Jp, it, res] = secs1d_dd_gummel_map_noscale ...
@@ -78,6 +79,6 @@ E    = -dV ./ dx;
 vvector  = Fn(end, :);
 ivector  = Itot (2, :);
 
-plotyy (tout, vvector, tout, device.W*ivector)
+plotyy (tout, vvector, tout, ivector)
 drawnow
    

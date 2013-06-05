@@ -201,6 +201,7 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_newton_res (device, mate
       
       Itot(:, tstep) *= device.W;
 
+
       figure (2)
       plot (tout, Itot);
       drawnow
@@ -243,8 +244,8 @@ function res = compute_residual ...
   res{3} = A33 * p + bim1a_rhs (device.x, 1, (Rp + 1/dt) .* p - (Gp + p0 * 1/ dt));
 
 
-  I1  = - constants.q * (A22(1,:) * n + A33(1,:) * p);
-  I2  = - constants.q * (A22(end,:) * n +  A33(end,:) * p);
+  I1  = - constants.q * (A22(1,:) * n - A33(1,:) * p);
+  I2  = - constants.q * (A22(end,:) * n -  A33(end,:) * p);
   
   if (columns (V) >= 2)
     I1 += constants.e0 * material.esir * ...
@@ -317,8 +318,10 @@ function jac = compute_jacobian ...
 
   
   jac{4,1} = sparse(2, Nnodes);
-  jac{4,2} = - ri(1) * device.W * constants.q * A22([1 end], 2:end-1);
-  jac{4,3} =   ri(2) * device.W * constants.q * A33([1 end], 2:end-1);
+  jac{4,2}(1,:) = - ri(1) * device.W * constants.q * A22(1, 2:end-1);
+  jac{4,2}(2,:) = - ri(2) * device.W * constants.q * A22(end, 2:end-1);
+  jac{4,3}(1,:) =   ri(1) * device.W * constants.q * A33(1, 2:end-1);
+  jac{4,3}(2,:) =   ri(2) * device.W * constants.q * A33(end, 2:end-1);
   jac{4,4} = spdiags (gi(:), 0, 2, 2);
 
 endfunction

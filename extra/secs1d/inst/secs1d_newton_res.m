@@ -4,9 +4,11 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_newton_res (device, mate
   Nnodes = numel (device.x);
   dt = (tspan(2) - tspan(1)) / 20;  
   t(tstep = 1) = tspan (1);
-  [V, n, p] = deal (Vin, nin, pin);
+  [V, n, p] = deal (Vin, nin, pin);  
+  F = V([1 end], 1) - constants.Vth * log (n([1 end], 1) ...
+                                           ./ device.ni([1 end], :));
   M = bim1a_reaction (device.x, 1, 1);
-
+  
   while (t < tspan(2))
 
     reject = false;        
@@ -15,8 +17,8 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_newton_res (device, mate
 
     [gi, ji] = va (t, dt);
     [V0, n0, p0, F0] = predict (device, material, constants, ...
-                                algorithm, V, n, p, tstep, tout, gi, ji);
-
+                                algorithm, V, n, p, F, tstep, tout, gi, ji);
+    
     [V2, n2, p2, F2] = deal (V0, n0, p0, F0);
 
     for in = 1 : algorithm.maxit
@@ -58,8 +60,8 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_newton_res (device, mate
       ## else
 
       J = [([algorithm.colscaling(1)*jac{1,1}, ...
-             algorithm.colscaling(2)*jac{1,2}(2:end-1, 2:end-1), ...
-             algorithm.colscaling(3)*jac{1,3}(2:end-1, 2:end-1), ...
+             algorithm.colscaling(2)*jac{1,2}(:, 2:end-1), ...
+             algorithm.colscaling(3)*jac{1,3}(:, 2:end-1), ...
              algorithm.colscaling(4)*jac{1,4}]/algorithm.rowscaling(1)); ...                        
              ##                   
            ([algorithm.colscaling(1)*jac{2,1}(2:end-1, :), ...
@@ -85,10 +87,10 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_newton_res (device, mate
 
       delta = - J \ f;
 
-      dV = delta                             * algorithm.colscaling(1);
+      dV = delta (1:Nnodes)                  * algorithm.colscaling(1);
       dn = delta (Nnodes+1:2*(Nnodes)-2)     * algorithm.colscaling(2);
       dp = delta (2*(Nnodes)-1:3*(Nnodes)-4) * algorithm.colscaling(3);
-      dF = delta (3*(Nnodes)-4:end)          * algorithm.colscaling(4);
+      dF = delta (3*(Nnodes)-3:end)          * algorithm.colscaling(4);
 
       ## endif
 
@@ -110,7 +112,7 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_newton_res (device, mate
         tkp = .9 * min (p1(2:end-1) ./ abs (dp))
       endif
 
-      tk = min ([tkv, tkn, tkp])
+      tk = min ([tkv, tkn, tkp]);
       if (tk <= 0)
         error ("relaxation parameter too small")
       endif
@@ -173,8 +175,7 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_newton_res (device, mate
 
       Fp(:, tstep) = V2 + constants.Vth * log (p2 ./ device.ni);
       Fn(:, tstep) = V2 - constants.Vth * log (n2 ./ device.ni);        
-      [V(:, tstep), n(:, tstep), p(:, tstep), F(:, tstep)] = ...
-      deal (V2, n2, p2, F);
+      [V(:, tstep), n(:, tstep), p(:, tstep), F(:, tstep)] = deal (V2, n2, p2, F2);
 
       [mobilityn, mobilityp] = compute_mobilities ...
           (device, material, constants, algorithm, V2, n2, p2);  
@@ -227,8 +228,8 @@ function res = compute_residual ...
   
   A11 = bim1a_laplacian (device.x, epsilon, 1);
   res{1} = A11 * V + bim1a_rhs (device.x, 1, constants.q * (n - p - device.D));
-  res{1}(1) = A11(1,1) (V(1) + constants.Vth*log(p(1)./device.ni(1))-F(1));
-  res{1}(end) = A11(end,end) (V(end)+constants.Vth*log(p(end)./device.ni(end))-F(end));
+  res{1}(1) = A11(1,1) * (V(1) + constants.Vth*log(p(1)./device.ni(1))-F(1));
+  res{1}(end) = A11(end,end) * (V(end)+constants.Vth*log(p(end)./device.ni(end))-F(end));
 
   A22 = bim1a_advection_diffusion ...
       (device.x, mobilityn * constants.Vth, 1, 1, V / constants.Vth);
@@ -240,17 +241,20 @@ function res = compute_residual ...
 
 
   I1  = - constants.q * A22(1,:) * n + constants.q * A33(1,:) * p;
-  I1 += constants.e0 * material.esir * ...
-        ((V(2, tstep) - V(1, tstep)) -
-         (V(2, tstep-1) - V(1, tstep-1))) / ...
-        (device.x(2) - device.x(1));
-  I1 *= device.W;
-
   I2  = - constants.q * A22(end,:) * n + constants.q * A33(end,:) * p;
-  I2 += constants.e0 * material.esir * ...
-        ((V(end, tstep) - V(end-1, tstep)) -
-         (V(end, tstep-1) - V(end-1, tstep-1))) / ...
-        (device.x(end) - device.x(end-1));
+  
+  if (columns (V) >= 2)
+    I1 += constants.e0 * material.esir * ...
+          ((V(2, end) - V(1, end)) -
+           (V(2, end-1) - V(1, end-1))) / ...
+          (device.x(2) - device.x(1));
+    I2 += constants.e0 * material.esir * ...
+          ((V(end, end) - V(end-1, end)) -
+           (V(end, end-1) - V(end-1, end-1))) / ...
+          (device.x(end) - device.x(end-1));
+  endif
+
+  I1 *= device.W;
   I2 *= device.W;
 
   res{4} = [gi(1)*F(1)+ji(1)+I1;
@@ -377,9 +381,9 @@ function [Rn, Rp, Gn, Gp, II] = generation_recombination_model ...
 
 endfunction
 
-function [V0, n0, p0] = predict (device, material, constants, ...
-                                 algorithm, V, n, p, F, tstep, ...
-                                 tout, gi, ji)
+function [V0, n0, p0, F0] = predict (device, material, constants, ...
+                                     algorithm, V, n, p, F, tstep, ...
+                                     tout, gi, ji)
 
   if (tstep > 2)
 
@@ -391,12 +395,15 @@ function [V0, n0, p0] = predict (device, material, constants, ...
     Fn(:, 2) = V(:, it(2)) - constants.Vth * log (n(:, it(2)) ./ device.ni);
 
     dFndt = diff (Fn, 1, 2) ./ diff (tout(it));
+    dFdt  = diff (F(:, it(1:2)), 1, 2) ./ diff (tout(it));
 
     Fn0 = Fn(:, 2) + dFndt * dt;
+    F0 = F(:, it(2)) + dFdt * dt;
 
   else
 
     Fn0 = V(:, tstep-1) - constants.Vth * log (n(:, tstep-1) ./ device.ni);
+    F0  = F(:, tstep-1);
 
   endif
 
@@ -406,5 +413,5 @@ function [V0, n0, p0] = predict (device, material, constants, ...
   %Fn0([1 end]) = va (tout (tstep));
 
   V0 = Fn0 + constants.Vth * log (n0 ./ device.ni);
-
+  
 endfunction

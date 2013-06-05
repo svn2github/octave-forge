@@ -79,9 +79,9 @@ algorithm.maxit = 100;
 algorithm.ptoll = 1e-12;
 algorithm.pmaxit = 100;
 algorithm.maxnpincr = constants.Vth;
-algorithm.colscaling = [10 1e23 1e23];
-algorithm.rowscaling = [1e6 1e23 1e23];
-algorithm.maxnpincr = constants.Vth;
+algorithm.colscaling = [1 1e23 1e23];
+algorithm.rowscaling = [1 1e7 1e7];
+algorithm.maxnpincr = constants.Vth / 10;
 
 logplot = @(x) asinh (x/2) / log(10);
 close all; plot (device.x, logplot (device.D)); 
@@ -105,7 +105,7 @@ pause
 %% initial guess via (pseudo)transient simulation
 [n, p, V, Fn, Fp, Jn, Jp, t, it, res] = ...
     secs1d_tran_dd_newton_noscale (device, material, constants, algorithm,
-                               Vin, nin, pin, Fn, Fp, tspan, vbcs);
+                                       Vin, nin, pin, Fn, Fp, tspan, vbcs);
 
 Vin = V(:, end);
 nin = n(:, end);
@@ -115,12 +115,12 @@ Fpin = Fp(:, end);
 
 function fn = vbcs_1 (t);
   fn = [0; 0];
-  fn(2) = -10*t;
+  fn(2) = -10*2*t/7;
 endfunction
 
 function fp = vbcs_2 (t);
   fp = [0; 0];
-  fp(2) = -10*t;
+  fp(2) = -10*2*t/7;
 endfunction
 
 vbcs = {@vbcs_1, @vbcs_2};
@@ -157,8 +157,8 @@ vbcs = {@vbcs_1, @vbcs_2};
 
 [n, p, V, Fn, Fp, Jnpos, Jppos, t, it, res] = ...
     secs1d_tran_dd_newton_noscale (device, material, constants, algorithm,
-                                   Vin, nin, pin, 
-                                   Fnin, Fpin, tspan, vbcs);
+                                       Vin, nin, pin, 
+                                       Fnin, Fpin, tspan, vbcs);
 
 vvectorpos  = Fn(end, :);
 ivectorpos  = (Jnpos(end, :) + Jppos(end, :));

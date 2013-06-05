@@ -16,7 +16,8 @@
 %% You should have received a copy of the GNU General Public License
 %% along with SECS1D; If not, see <http://www.gnu.org/licenses/>.
 
-%% II = secs1d_impact_ionization_noscale (E, Jn, Jp)
+%% II = secs1d_impact_ionization_noscale ...
+%%      (device, material, constants, algorithm, E, Jn, Jp, V, n, p, Fn, Fp)
 
 function    II = secs1d_impact_ionization_noscale ...
       (device, material, constants, algorithm, E, Jn, Jp, V, n, p, Fn, Fp)

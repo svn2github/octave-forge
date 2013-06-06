@@ -189,12 +189,12 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_newton_res (device, mate
 
       Itot(:, tstep)  = Jn([1 end], tstep) + Jp([1 end], tstep);
 
-      Itot(1, tstep) += constants.e0 * material.esir * ...
+      Itot(1, tstep) += (1/dt) * constants.e0 * material.esir * ...
           ((V(2, tstep) - V(1, tstep)) -
            (V(2, tstep-1) - V(1, tstep-1))) / ...
           (device.x(2) - device.x(1));
 
-      Itot(2, tstep) += constants.e0 * material.esir * ...
+      Itot(2, tstep) += (1/dt) * constants.e0 * material.esir * ...
           ((V(end, tstep) - V(end-1, tstep)) -
            (V(end, tstep-1) - V(end-1, tstep-1))) / ...
           (device.x(end) - device.x(end-1));
@@ -248,11 +248,11 @@ function res = compute_residual ...
   I2  = - constants.q * (A22(end,:) * n -  A33(end,:) * p);
   
   if (columns (V) >= 2)
-    I1 += constants.e0 * material.esir * ...
+    I1 += (1/dt) * constants.e0 * material.esir * ...
           ((V(2, end) - V(1, end)) -
            (V(2, end-1) - V(1, end-1))) / ...
           (device.x(2) - device.x(1));
-    I2 += constants.e0 * material.esir * ...
+    I2 += (1/dt) * constants.e0 * material.esir * ...
           ((V(end, end) - V(end-1, end)) -
            (V(end, end-1) - V(end-1, end-1))) / ...
           (device.x(end) - device.x(end-1));
@@ -316,13 +316,14 @@ function jac = compute_jacobian ...
       bim1a_reaction (device.x, 1, Rp + 1/dt);
   jac{3,4} = sparse (Nnodes, 2);
 
+
+  A41 = bim1a_laplacian (device.x, 
+                         (-mobilityn .* nm + mobilityp .* pm), 1);
   
-  jac{4,1} = sparse(2, Nnodes);
-  jac{4,2}(1,:) = - ri(1) * device.W * constants.q * A22(1, 2:end-1);
-  jac{4,2}(2,:) = - ri(2) * device.W * constants.q * A22(end, 2:end-1);
-  jac{4,3}(1,:) =   ri(1) * device.W * constants.q * A33(1, 2:end-1);
-  jac{4,3}(2,:) =   ri(2) * device.W * constants.q * A33(end, 2:end-1);
-  jac{4,4} = spdiags (gi(:), 0, 2, 2);
+  jac{4,1} =   diag (ri(:)) * device.W * constants.q * A41 ([1, end], :) ;
+  jac{4,2} = - diag (ri(:)) * device.W * constants.q * A22([1 end], 2:end-1);
+  jac{4,3} =   diag (ri(:)) * device.W * constants.q * A33([1 end], 2:end-1);
+  jac{4,4} =   spdiags (gi(:), 0, 2, 2);
 
 endfunction
 

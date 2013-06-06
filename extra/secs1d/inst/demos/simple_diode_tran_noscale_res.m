@@ -19,7 +19,7 @@ device.D  = device.Nd - device.Na;
 
 % time span for simulation
 tmin  = 0;
-tmax  = 1;
+tmax  = 10;
 tspan = [tmin, tmax];
 
 Fn = Fp = zeros (size (device.x));
@@ -48,11 +48,11 @@ V = Fn + constants.Vth * log (n ./ device.ni);
 function [g, j, r] = vbcs (t, dt);
   g = [1; 1];
   j = -[0 -t];
-  r = [1e3 0];
+  r = [1e4 0e4];
 endfunction
 
 % tolerances for convergence checks
-algorithm.toll       = 1e-6;
+algorithm.toll       = 1e-3;
 algorithm.ltol       = 1e-10;
 algorithm.maxit      = 100;
 algorithm.lmaxit     = 100;
@@ -60,7 +60,7 @@ algorithm.ptoll      = 1e-12;
 algorithm.pmaxit     = 1000;
 algorithm.colscaling = [10 1e21 1e21 .1];
 algorithm.rowscaling = [1  1e-7 1e-7 .1];
-algorithm.maxnpincr  = 1e-1;
+algorithm.maxnpincr  = 1e-2;
 
 %% initial guess via stationary simulation
 [nin, pin, Vin, Fnin, Fpin, Jn, Jp, it, res] = secs1d_dd_gummel_map_noscale ...

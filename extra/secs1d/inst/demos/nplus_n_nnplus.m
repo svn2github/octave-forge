@@ -15,7 +15,7 @@ device.D       = loaded_mesh.D;          % [m^-3]
 device.Na      = loaded_mesh.Na;         % [m^-3] 
 device.Nd      = loaded_mesh.Nd;         % [m^-3] 
 device.W       = 1e-12;                  % [m^2]
-tspan          = [0 60];
+tspan          = [0 300];
 
 device.sinodes = [1:length(device.x)];
 
@@ -44,7 +44,7 @@ V = Fn + constants.Vth * log (n ./ device.ni);
 
 
 % tolerances for convergence checks
-algorithm.toll       = 1e-6;
+algorithm.toll       = 1e-4;
 algorithm.ltol       = 1e-10;
 algorithm.maxit      = 100;
 algorithm.lmaxit     = 100;
@@ -52,7 +52,7 @@ algorithm.ptoll      = 1e-12;
 algorithm.pmaxit     = 1000;
 algorithm.colscaling = [10 1e21 1e21 1];
 algorithm.rowscaling = [1  1e-7 1e-7 1];
-algorithm.maxnpincr  = 1e-3;
+algorithm.maxnpincr  = 1e-2;
 
 secs1d_logplot (device.x, device.D);
 drawnow
@@ -90,7 +90,7 @@ legend ('Efn', 'Efp', 'Ec', 'Ev')
 axis tight
 drawnow
 
-vvector  = Fn(end, :);
+vvector  = Fn(1, :);
 ivector  = (Jn(end, :) + Jp(end, :));
 ivectorn = (Jn(1, :)   + Jp(1, :));
 
@@ -98,3 +98,6 @@ figure (2)
 plot (vvector, ivector, vvector, ivectorn)
 legend('J_L','J_0')
 drawnow
+
+figure (3)
+plot (vvector, Itot)

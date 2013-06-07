@@ -1082,7 +1082,7 @@ DEFUN_DLD (fdiag, args, ,
 "Note that if all of the elements of the original vector have the same fixed\n"
 "point representation, then the zero elements in the matrix are created with\n"
 "the same representation. Otherwise the zero elements are created with the\n"
-"equivalent of the fixed point value @code{fixed(0,0,0)}.n"
+"equivalent of the fixed point value @code{fixed(0,0,0)}.\n"
 "@end deftypefn\n"
 "@seealso{diag}")
 {

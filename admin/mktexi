@@ -136,8 +136,8 @@ if ( open(IN,$file) ) {
 	      if (! $firstcat) {
 	        print "\@end table\n";
 	      }
-	      print "\n\@section Functions Alphabetically\n";
 	      print "\@end iftex\n\n";
+	      print "\n\@section Functions Alphabetically\n";
 	    } else {
 	      # Get the list of functions to index
 	      my $indline;

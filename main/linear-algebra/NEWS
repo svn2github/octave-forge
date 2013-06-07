@@ -5,6 +5,8 @@ Summary of important user-visible changes for linear-algebra 2.2.1:
       nmf_pg doesn't use text_waitbar by default. Miscellanoues package is
       not required.
 
+      nmf_bpas now respects the verbose option
+
  ** Makefile fixed to work with non-standard linker options e.g on
     Apple.
 

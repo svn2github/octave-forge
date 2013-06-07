@@ -163,7 +163,9 @@ function [W, H, iter, HIS] = nmf_bpas (A, k , varargin)
 ###
 
 # Verbosity
-  display(par);
+  if (par.verbose)
+    display (par);
+  endif
 ### Done till here Sun Mar 25 19:00:26 2012
 
     HIS = 0;
@@ -271,7 +273,9 @@ function [W, H, iter, HIS] = nmf_bpas (A, k , varargin)
     final.relative_error = norm(A-W*H,'fro')/norm(A,'fro');
     final.W_density = length(find(W>0))/(m*k);
     final.H_density = length(find(H>0))/(n*k);
-    display(final);
+    if (par.verbose)
+      display (final);
+    endif
 
 endfunction
 

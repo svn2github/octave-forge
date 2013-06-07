@@ -15,7 +15,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} PlotDiagrams(@var{joints}, @var{members}, @var{dist}, @var{point}, @var{MemF}, @var{diagram}, @var{divisions}, @var{scale}) 
+## @deftypefn {Function File} {} PlotDiagrams (@var{joints}, @var{members}, @var{dist}, @var{point}, @var{MemF}, @var{diagram}, @var{divisions}, @var{scale}) 
 ##
 ## This function plots the internal forces for all members. The force to be plotted can be selected with @var{diagram} 
 ## which will be "M", "S" or "N" for the moment, shear or normal forces.

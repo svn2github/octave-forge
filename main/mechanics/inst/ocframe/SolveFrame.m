@@ -15,7 +15,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{Reactions}, @var{Displacements}, @var{MemF}] = } SolveFrame(@var{joints}, @var{members}, @var{nodeloads}, @var{dist}, @var{point})
+## @deftypefn {Function File} {[@var{Reactions}, @var{Displacements}, @var{MemF}] = } SolveFrame (@var{joints}, @var{members}, @var{nodeloads}, @var{dist}, @var{point})
 ##
 ##
 ## Solves a 2D frame with the matrix displacement method for

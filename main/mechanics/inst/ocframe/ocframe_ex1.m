@@ -1,5 +1,5 @@
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} ocframe_ex1() 
+## @deftypefn {Function File} {} ocframe_ex1 () 
 ## Example of a planar frame.
 ##
 ## @end deftypefn

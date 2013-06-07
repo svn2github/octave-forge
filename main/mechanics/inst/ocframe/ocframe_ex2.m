@@ -1,5 +1,5 @@
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} ocframe_ex2() 
+## @deftypefn {Function File} {} ocframe_ex2 () 
 ## Example of a beam.
 ##
 ## @end deftypefn

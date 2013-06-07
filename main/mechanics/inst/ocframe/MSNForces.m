@@ -15,12 +15,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{x}, @var{M}, @var{S}, @var{N}] =} MSNForces(@var{joints}, @var{members}, @var{dist}, @var{point}, @var{MemF}, @var{membernum}, @var{divisions}) 
+## @deftypefn {Function File} {[@var{x}, @var{M}, @var{S}, @var{N}] = } MSNForces (@var{joints}, @var{members}, @var{dist}, @var{point}, @var{MemF}, @var{membernum}, @var{divisions}) 
 ## 
 ## This function returns the internal forces of a member for each position x. The member
 ## is divided in 20 subelements if the argument is not given. The used sign convention is displayed in the help file.
 ##
 ## Input parameters are similar as with SolveFrame and PlotFrame with extra arguments:
+##
 ##    membernum = Number of the member to calculate
 ##    divisions = Number of divisions for the member
 ##

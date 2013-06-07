@@ -15,7 +15,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} PlotFrame(@var{joints}, @var{members}, @var{D}, @var{factor}) 
+## @deftypefn {Function File} {} PlotFrame (@var{joints}, @var{members}, @var{D}, @var{factor}) 
 ##
 ##
 ## Plots a 2D frame (with displacements if needed) using

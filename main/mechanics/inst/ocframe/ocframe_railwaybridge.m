@@ -1,5 +1,5 @@
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} ocframe_railwaybridge() 
+## @deftypefn {Function File} {} ocframe_railwaybridge () 
 ## Example taken from a real railwaybridge.
 ##
 ## @end deftypefn

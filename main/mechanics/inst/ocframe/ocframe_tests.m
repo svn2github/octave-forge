@@ -1,5 +1,5 @@
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} ocframe_tests() 
+## @deftypefn {Function File} {} ocframe_tests () 
 ## Various tests for the entire package.
 ## Test 1, 2 & 3 are simple beams (tested for reactions and internal forces)
 ## Test 4 & 5 are frames (tested for reactions)

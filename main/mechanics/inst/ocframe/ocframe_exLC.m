@@ -1,5 +1,5 @@
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} ocframe_exLC() 
+## @deftypefn {Function File} {} ocframe_exLC () 
 ## Example of a beam with generation of eurocode ULS
 ## load cases
 ##

@@ -15,18 +15,34 @@
 
 ## -*- texinfo -*-
 ## @deftypefn{Function File} {@var{C} =} circulant_make_matrix (@var{v})
+## Produce a full circulant matrix given the first column.
 ##
-## Produce a full circulant matrix given the first column@*
-## Given an @var{n}*1 vector @var{v}, returns the @var{n}*@var{n} circulant matrix @var{C} where @var{v} is the left column and all other columns are downshifted versions of @var{v}
+## @emph{Note:} this function has been deprecated and will be removed in the
+## future.  Instead, use @code{gallery} with the the @code{circul} option.
+## To obtain the exactly same matrix, transpose the result, i.e., replace
+## @code{circulant_make_matrix (@var{v})} with
+## @code{gallery ("circul", @var{v})'}.
 ##
-## Note: If the first row @var{r} of a circulant matrix is given, the first column @var{v} can be obtained as @code{v = r([1 end:-1:2])}
+## Given an @var{n}*1 vector @var{v}, returns the @var{n}*@var{n} circulant
+## matrix @var{C} where @var{v} is the left column and all other columns are
+## downshifted versions of @var{v}.
+##
+## Note: If the first row @var{r} of a circulant matrix is given, the first
+## column @var{v} can be obtained as @code{v = r([1 end:-1:2])}.
 ##
 ## Reference: Gene H. Golub and Charles F. Van Loan, Matrix Computations, 3rd Ed., Section 4.7.7
 ##
-## @seealso{circulant_matrix_vector_product, circulant_eig, circulant_inv}
+## @seealso{gallery, circulant_matrix_vector_product, circulant_eig, circulant_inv}
 ## @end deftypefn
 
 function C = circulant_make_matrix(v)
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "`circulant_make_matrix (V)' has been deprecated in favor of `gallery (\"circul\", V)''. This function will be removed from future versions of the `linear-algebra' package");
+  endif
 
   n = numel(v);
   C = ones(n, n);

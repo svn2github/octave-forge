@@ -24,7 +24,7 @@
 ##
 ## Reference: Robert M. Gray, Toeplitz and Circulant Matrices: A Review, Now Publishers, http://ee.stanford.edu/~gray/toeplitz.pdf, Chapter 3
 ##
-## @seealso{circulant_make_matrix, circulant_matrix_vector_product, circulant_inv}
+## @seealso{gallery, circulant_matrix_vector_product, circulant_inv}
 ## @end deftypefn
 
 function [a, b] = circulant_eig (v)
@@ -61,6 +61,6 @@ endfunction
 
 %!shared v,C,vs,lambda
 %! v = [1 2 3]';
-%! C = circulant_make_matrix(v);
+%! C = gallery("circul", v)';
 %! [vs lambda] = circulant_eig(v);
 %!assert (vs*lambda, C*vs, 100*eps);

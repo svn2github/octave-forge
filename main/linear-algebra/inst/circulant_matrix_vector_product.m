@@ -25,7 +25,7 @@
 ##
 ## Reference: Gene H. Golub and Charles F. Van Loan, Matrix Computations, 3rd Ed., Section 4.7.7
 ##
-## @seealso{circulant_make_matrix, circulant_eig, circulant_inv}
+## @seealso{gallery, circulant_eig, circulant_inv}
 ## @end deftypefn
 
 function y = circulant_matrix_vector_product (v, x)

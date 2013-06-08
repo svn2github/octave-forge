@@ -10,6 +10,9 @@ Summary of important user-visible changes for linear-algebra 2.2.1:
  ** Makefile fixed to work with non-standard linker options e.g on
     Apple.
 
+ ** The function circulant_make_matrix has been deprecated and will
+    be removed from future versions of the linear-algebra package.
+
 Summary of important user-visible changes for linear-algebra 2.2.0:
 -------------------------------------------------------------------
 

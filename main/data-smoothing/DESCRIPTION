@@ -8,5 +8,5 @@ Description: Algorithms for smoothing noisy data
 Categories: Data-smoothing
 Depends: octave (>= 3.6.0), optim (>= 1.0.3)
 Autoload: no
-License: GPL version 3 or later
+License: GPLv3+
 Url: http://octave.sf.net

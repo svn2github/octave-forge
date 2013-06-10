@@ -1,5 +1,5 @@
-#!/usr/bin/perl -w
-## Copyright (C) 2011 Carnë Draug <carandraug+dev@gmail.com>
+#!/usr/bin/perl
+## Copyright (C) 2011-2013 Carnë Draug <carandraug+dev@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -16,6 +16,7 @@
 
 use 5.010;                      # Use Perl 5.10
 use strict;                     # Enforce some good programming rules
+use warnings;
 use LWP::Simple qw(get);        # get web pages easily
 
 ## This perl script tries to list all the inactive users of the project,
@@ -38,8 +39,8 @@ use LWP::Simple qw(get);        # get web pages easily
 ## Configuration variables
 ################################################################################
 my $repo_path   = '~/development/octave-forge/';  # path for the repository
-my $date_limit  = '2010-08-07';                   # give date in format YYYY-MM-DD
-my $sf_dev_list = 'http://sourceforge.net/project/memberlist.php?group_id=2888';  # URL for sourceforge project member list
+my $date_limit  = '2012-06-10';                   # give date in format YYYY-MM-DD
+my $sf_dev_list = 'http://sourceforge.net/p/octave/_members/';  # URL for sourceforge project member list
 
 ################################################################################
 ## No configuration beyond this point
@@ -86,12 +87,12 @@ sub get_member_list {
   foreach my $line (@lines) {
     ## usernames in the html page can be found in the string
     ##
-    ## <td align="middle"><a href="/users/USERNAME_IS_HERE/">
+    ## <td><a href="/u/USERNAME_IS_HERE/">USERNAME_IS_HERE</a></td>
     ##
     ## The following regexp retrieves usernames as long as they're:
     ##    1)  \w  alphanumeric plus underscore
     ##    2)  \-  and a dash
-    if ($line =~ m/<td align=\"middle\"><a href=\"\/users\/((\w|\-)+)\/\">/ ) {
+    if ($line =~ m/<td><a href=\"\/u\/((\w|\-)+)\/\">((\w|\-)+)<\/a><\/td>/ ) {
       $names{$1} = 1; # any value is good, we only care for the key
     }
   }

@@ -135,8 +135,9 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
       incr1v = norm (V2 - V1, inf) / (norm (V0, inf) + algorithm.colscaling(1));
       incr1n = norm (log (n2./n1), inf) / (norm (log (n0), inf) + log (algorithm.colscaling(2)));
       incr1p = norm (log (p2./p1), inf) / (norm (log (p0), inf) + log (algorithm.colscaling(3)));
+      incr1F = norm (F2 - F1, inf) / (norm (F0, inf) + algorithm.colscaling(4));
 
-      resnlin(in) = incr1 = max ([incr1v, incr1n, incr1p]);
+      resnlin(in) = incr1 = max ([incr1v, incr1n, incr1p, incr1F]);
       if (in > 3 && resnlin(in) > resnlin(in-3))
         printf ("newton step is diverging\n")
         tstep
@@ -147,8 +148,9 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
       incr0v = norm (V2 - V0, inf) / (norm (V0, inf) + algorithm.colscaling(1));
       incr0n = norm (log (n2./n0), inf) / (norm (log (n0), inf) + log (algorithm.colscaling(2)));
       incr0p = norm (log (p2./p0), inf) / (norm (log (p0), inf) + log (algorithm.colscaling(3)));
+      incr0F = norm (F2 - F0, inf) / (norm (F0, inf) + algorithm.colscaling(4));
 
-      incr0 = max ([incr0v, incr0n, incr0p]);
+      incr0 = max ([incr0v, incr0n, incr0p, incr0F]);
       
       figure (1)
       semilogy (1:in, resnlin(1:in));

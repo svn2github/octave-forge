@@ -13,6 +13,7 @@ xm = L/2;
 Nelements      = 10;
 device.x       = linspace (0, L, Nelements+1)';
 device.sinodes = [1:length(device.x)];
+device.W       = 100e-6 * 100e-6;
 
 converged = false;
 iters = 1;
@@ -81,4 +82,4 @@ while (! converged)
   device.sinodes = [1:length(device.x)];
 endwhile
 
-save thyristor_mesh x L
+save thyristor_mesh device L

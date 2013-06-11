@@ -19,7 +19,7 @@ device.D  = device.Nd - device.Na;
 
 % time span for simulation
 tmin  = 0;
-tmax  = 10;
+tmax  = 1e-4;
 tspan = [tmin, tmax];
 
 Fn = Fp = zeros (size (device.x));
@@ -47,7 +47,7 @@ V = Fn + constants.Vth * log (n ./ device.ni);
 
 function [g, j, r] = vbcs (t, dt);
   g = [1;   1];
-  j = -[0;   sin(2*pi*t/10)];
+  j = -[0;   sin(2*pi*t/1e-4)];
   r = [0;   0];
 endfunction
 

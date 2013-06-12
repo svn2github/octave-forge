@@ -1,4 +1,4 @@
-MKOCTFILE = mkoctfile -Wall
+MKOCTFILE ?= mkoctfile -Wall
 
 PROGS = $(patsubst %.cc,%.oct,$(wildcard *.cc))
 

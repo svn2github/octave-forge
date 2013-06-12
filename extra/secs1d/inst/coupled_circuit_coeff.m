@@ -34,30 +34,27 @@
 ## Author: davide <davide@davide-K53SV>
 ## Created: 2013-06-10
 
-function [ g, j, r ] = coupled_circuit_coeff (A, B, C, dt, x)
+function [g, j, r] = coupled_circuit_coeff (A, B, C, dt, x)
 
-freq = 1/dt;
+  freq = 1/dt;
+  
+  a12 = A(1,2:end);
+  a22 = A(2:end,2:end);
 
-%a{1,1} = A(1,1); % 0 by design
-a{1,2} = A(1,2:end);
-%a{2,1} = A(2:end,1); % 0 by design
-a{2,2} = A(2:end,2:end);
+  b11 = B(1,1);
+  b12 = B(1,2:end);
+  b21 = B(2:end,1);
+  b22 = B(2:end,2:end);
 
-b{1,1} = B(1,1);
-b{1,2} = B(1,2:end);
-b{2,1} = B(2:end,1);
-b{2,2} = B(2:end,2:end);
+  e11 = b11;
+  e12 = a12 / dt + b12;
+  e21 = b21;
+  e22 = a22 / dt + b22;
+  f1 = C(1);
+  f2 = C(2:end);
 
-e{1,1} = b{1,1};
-e{1,2} = a{1,2}*freq+b{1,2};
-e{2,1} = b{2,1};
-e{2,2} = a{2,2}*freq+b{2,2};
-f{1} = C(1);
-f{2} = C(2:end);
+  g = e11 - e12 * (e22 \ e21);
+  j = f1 - e12 * (e22 \ f2) + (-a12 + e12 * (e22 \ a22)) * x / dt;
+  r = 1;
 
-g = e{1,1} - e{1,2} * (e{2,2} \ e{2,1});
-j = f{1} - e{1,2} * (e{2,2} \ f{2}) + freq*( -a{1,2} + e{1,2} * (e{2,2} \ a{2,2})) * x;
-r = 1;
-
-return
 endfunction

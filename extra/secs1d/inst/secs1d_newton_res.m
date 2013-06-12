@@ -7,8 +7,10 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
   dt = (tspan(2) - tspan(1)) / 20;  
   t(tstep = 1) = tspan (1);
   [V, n, p] = deal (Vin, nin, pin);  
-  F = V([1 end], 1) - constants.Vth * log (n([1 end], 1) ...
-                                           ./ device.ni([1 end], :));
+  F = V([1 end], 1) - constants.Vth * ...
+                      log (n([1 end], 1) ./ device.ni([1 end], :));
+  [x1, x2] = upd (t, dt, F(1), F(2));
+
   M = bim1a_reaction (device.x, 1, 1);
 
   [x1, x2] = upd(t, dt, F(1), F(2));
@@ -18,7 +20,7 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
     reject = false;
     t = tout(++tstep) = min (t + dt, tspan(2)); 
     incr0 = 4 * algorithm.maxnpincr;
-
+    
     [gi, ji, ri] = va (t, dt, x1, x2);
     [V0, n0, p0, F0] = predict (device, material, constants, ...
                                 algorithm, V, n, p, F, tstep, ...
@@ -182,6 +184,7 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
 
     else
 
+      [x1, x2] = upd (t, dt, F(1), F(2));
       Fp(:, tstep) = V2 + constants.Vth * log (p2 ./ device.ni);
       Fn(:, tstep) = V2 - constants.Vth * log (n2 ./ device.ni);        
       [V(:, tstep), n(:, tstep), p(:, tstep), F(:, tstep)] = deal (V2, n2, p2, F2);

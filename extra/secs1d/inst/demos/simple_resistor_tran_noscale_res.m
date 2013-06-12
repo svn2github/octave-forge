@@ -71,10 +71,11 @@ function [x1, x2] = update_states (t, dt, F1)
 
      x1 = e22 \ (a22 * x1 / dt - b21 * F1 - f2);
      x2 = [];
+   endif
 endfunction
 
 % tolerances for convergence checks
-algorithm.toll       = 1e-6;
+algorithm.toll       = 1e-3;
 algorithm.ltol       = 1e-10;
 algorithm.maxit      = 100;
 algorithm.lmaxit     = 100;
@@ -82,7 +83,7 @@ algorithm.ptoll      = 1e-08;
 algorithm.pmaxit     = 1000;
 algorithm.colscaling = [10 1e21 1e21 1];
 algorithm.rowscaling = [1e7 1e-7 1e-7 1];
-algorithm.maxnpincr  = 5e-2;
+algorithm.maxnpincr  = 1e-1;
 
 %% compute resistance
 u = secs1d_mobility_model_noscale ...

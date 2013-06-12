@@ -92,9 +92,21 @@ if isempty(range)
     range = 1:length(filenames);
 end
 
-var = arr(dim,filenames,varname,SameAttributes);
+% get all file information
+finfos = cell(length(filenames),1);
 
-[dims,coord] = nccoord(cached_decompress(filenames{1}),varname);
+if SameAttributes
+  % assume all files have the same ncinfo as the first one
+  finfos(:) = ncinfo(cached_decompress(filenames{1}));
+else
+  for i=1:length(filenames)
+    finfos{i} = ncinfo(cached_decompress(filenames{i}));
+  end
+end
+
+var = arr(dim,filenames,varname,finfos);
+
+[dims,coord] = nccoord(finfos{1},varname);
 
 % add new dimension to coord if arrays are contatenated over a new dimension 
 % and if coord information already exist 
@@ -107,8 +119,18 @@ end
 
 
 for i=1:length(coord)
-    % coordinates do also depend on the dimension only which we concatenate
-    coord(i).val = arr(dim,filenames,coord(i).name,SameAttributes);
+    % the number of the dimension might be different
+    % find in coord(i).dims the index of the dimension called  dims{dim}
+    dimc = find(strcmp(coord(i).dims,dims{dim}));
+    
+    if isempty(dimc)      
+      vinfo = varinfo(finfos{1},varname);
+      coord(i).val = ncBaseArray(filenames{1},coord(i).name,'vinfo',vinfo);
+    else    
+      % coordinates do also depend on the dimension over which we concatenate
+      coord(i).val = arr(dimc,filenames,coord(i).name,finfos);
+    end
+    
     if dim > length(coord(i).dims)
         coord(i).dims{dim} = catdimname;
     end
@@ -119,24 +141,21 @@ data = ncArray(var,dims,coord);
 end
 
 
-function CA = arr(dim,filenames,varname,SameAttributes)
+function CA = arr(dim,filenames,varname,finfos)
 arrays = cell(1,length(filenames));
 
-if SameAttributes
-  % assume every filename has the same metadata
-  vinfo = ncinfo(cached_decompress(filenames{1}),varname);
-else
-  vinfo = [];
-end
-
 for i=1:length(filenames)
-    arrays{i} = ncBaseArray(filenames{i},varname,'vinfo',vinfo);
+  vinfo = varinfo(finfos{i},varname);
+  arrays{i} = ncBaseArray(filenames{i},varname,'vinfo',vinfo);
 end
 
 CA = CatArray(dim,arrays);
 end
 
-
+function vinfo = varinfo(fileinfo,varname)
+  index = find(strcmp({fileinfo.Variables(:).Name},varname));
+  vinfo = fileinfo.Variables(index);
+end
 
 
 % Copyright (C) 2012,2013 Alexander Barth <barth.alexander@gmail.com>

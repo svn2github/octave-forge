@@ -1,9 +1,10 @@
 % Coordinates of a NetCDF variable.
 %
-% coord = nccoord(filename,varname)
+% [dims,coord] = nccoord(filename,varname)
 % get coordinates of the variable varname in the
 % netcdf file called filename. The netcdf is assumed to 
 % follow the CF convention.
+% dims is a cell-array of the dimensions of varname
 % coord is an array of structures with the field 'name'
 % for the variable name and 'dims' with a cell-array of the
 % netcdf dimensions.
@@ -15,8 +16,15 @@
 
 function [dims,coord] = nccoord(filename,varname)
 
-finfo = ncinfo(filename);
-vinfo = ncinfo(filename,varname);
+if ischar(filename)
+  finfo = ncinfo(filename);
+else
+  finfo = filename;
+end
+
+% get variable info
+index = find(strcmp({finfo.Variables(:).Name},varname));
+vinfo = finfo.Variables(index);
 
 % determine coordinates
 % using CF convention

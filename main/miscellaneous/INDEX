@@ -1,6 +1,5 @@
 miscellaneous >> Miscellaneous functions
 miscellaneous
- apply
  asci
  cell2cell
  chebyshevpoly
@@ -13,15 +12,14 @@ miscellaneous
  infoskeleton
  laguerrepoly
  legendrepoly
- map
  match
  normc
  normr
  nze
- partarray
  partcnt
  partint
  peano_curve
+ physical_constant
  publish
  read_options
  reduce
@@ -29,8 +27,8 @@ miscellaneous
  sample
  slurp_file
  solvesudoku
- temp_name
  text_waitbar
+ textable
  truncate
  units
  zagzig

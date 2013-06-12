@@ -19,7 +19,7 @@ device.D  = device.Nd - device.Na;
 
 % time span for simulation
 tmin  = 0;
-tmax  = 1e-3;
+tmax  = 20;
 tspan = [tmin, tmax];
 
 Fn = Fp = zeros (size (device.x));
@@ -46,42 +46,34 @@ n = ((abs(device.D) + sqrt (abs(device.D) .^ 2 + 4 * device.ni .^2)) .* ...
 V = Fn + constants.Vth * log (n ./ device.ni);
 
 function [g, j, r] = vbcs (t, dt, x1)
-  persistent A1 B1 C1 %A2 B2 C2 
+  persistent A1 B1 C1
+  %in this case  it's not necessary for A2 B2 C2
   if (isempty (A1))
-    load ("circuit_matrices")
+    load ("resistor_circuit_matrices")
   endif
   C1(5) = -min(t,1);
-  [g(1) j(1) r(1)] = decomposematrixes (A1, B1, C1, dt, x1);
-  %[g(2) j(2) r(2)] = decomposematrixes (A2, B2, C2, dt, x2);
+  [g(1) j(1) r(1)] = coupled_circuit_coeff (A1, B1, C1, dt, x1);
   g(2) = 1;   j(2) = 0;   r(2) = 0;
 endfunction
 
-function x1 = update_states (t, dt, F1)
-   persistent A1 B1 C1 x1 %A2 B2 C2 x2
+function [x1, x2] = update_states (t, dt, F1)
+   persistent A1 B1 C1 x1 
+   %in this case  it's not necessary for A2 B2 C2 x2
    if (isempty (A1))
-     load ("circuit_matrices")
+     load ("resistor_circuit_matrices")
    endif
 
    C1(5) = -min(t,1);
-   freq = 1/dt;
+   freq = 1 / dt;
    
    a{2,2} = A1(2:end,2:end);
    b{2,1} = B1(2:end,1);
    b{2,2} = B1(2:end,2:end);
-   e{2,2} = a{2,2}*freq+b{2,2};
+   e{2,2} = a{2,2} * freq + b{2,2};
    f{2} = C1(2:end);
 
-   e22inv = inv(e{2,2});
-   x1 = e22inv * ( freq*a{2,2}*x1 - b{2,1}*F1 - f{2} )
-   
-   %% a{2,2} = A2(2:end,2:end);
-   %% b{2,1} = B2(2:end,1);
-   %% b{2,2} = B2(2:end,2:end);
-   %% e{2,2} = a{2,2}*freq+b{2,2};
-   %% f{2} = C2(2:end);
-
-   %% e22inv = inv(e{2,2});
-   %% x2 = e22inv * ( freq*a{2,2}*x2 - b{2,1}*F2 - f{2} )
+   x1 = e{2,2} \ (freq*a{2,2}*x1 - b{2,1}*F1 - f{2});
+   x2=[];
 endfunction
 
 % tolerances for convergence checks
@@ -89,11 +81,11 @@ algorithm.toll       = 1e-8;
 algorithm.ltol       = 1e-10;
 algorithm.maxit      = 100;
 algorithm.lmaxit     = 100;
-algorithm.ptoll      = 1e-12;
+algorithm.ptoll      = 1e-08;
 algorithm.pmaxit     = 1000;
 algorithm.colscaling = [10 1e21 1e21 1];
 algorithm.rowscaling = [1e7 1e-7 1e-7 1];
-algorithm.maxnpincr  = 1e-7;
+algorithm.maxnpincr  = 1e-5;
 
 %% compute resistance
 u = secs1d_mobility_model_noscale ...
@@ -111,7 +103,7 @@ close all; secs1d_logplot (device.x, device.D, 'x-'); pause
 
 %% (pseudo)transient simulation
 [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_newton_res (device, material, constants, algorithm,
-                                                           Vin, nin, pin, tspan, @vbcs);
+                                                           Vin, nin, pin, tspan, @vbcs, @update_states);
 
 dV   = diff (V, [], 1);
 dx   = diff (device.x);

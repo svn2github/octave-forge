@@ -14,7 +14,7 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## [ g, j, r ] = decomposematrixes (A, B, C, dt, x)
+## [ g, j, r ] = coupled_circuit_coeff (A, B, C, dt, x)
 ## 
 ## Compute coefficients of circuit-device coupling of the form:
 ##
@@ -34,7 +34,7 @@
 ## Author: davide <davide@davide-K53SV>
 ## Created: 2013-06-10
 
-function [ g, j, r ] = decomposematrixes (A, B, C, dt, x)
+function [ g, j, r ] = coupled_circuit_coeff (A, B, C, dt, x)
 
 freq = 1/dt;
 

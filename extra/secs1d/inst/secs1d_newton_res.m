@@ -1,6 +1,6 @@
 function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
          secs1d_newton_res (device, material, constants, algorithm,
-                            Vin, nin, pin, tspan, va)  
+                            Vin, nin, pin, tspan, va, upd)  
 
   rejected = 0;
   Nnodes = numel (device.x);
@@ -10,14 +10,16 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
   F = V([1 end], 1) - constants.Vth * log (n([1 end], 1) ...
                                            ./ device.ni([1 end], :));
   M = bim1a_reaction (device.x, 1, 1);
+
+  [x1, x2] = upd(t, dt, F(1), F(2));
   
   while (t < tspan(2))
 
-    reject = false;        
+    reject = false;
     t = tout(++tstep) = min (t + dt, tspan(2)); 
     incr0 = 4 * algorithm.maxnpincr;
 
-    [gi, ji, ri] = va (t, dt);
+    [gi, ji, ri] = va (t, dt, x1, x2);
     [V0, n0, p0, F0] = predict (device, material, constants, ...
                                 algorithm, V, n, p, F, tstep, ...
                                 tout, gi, ji, ri);
@@ -209,11 +211,13 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
       figure (2)
       plotyy (tout, Itot(2, :), tout, Fn(end, :)- Fn(1, :));
       drawnow
+    
+      [x1, x2] = upd(t, dt, F(1), F(2));
 
       dt *= .75 * sqrt (algorithm.maxnpincr / incr0)
 
     endif
-    
+
   endwhile %% time step
   printf ("total number of rejected time steps: %d\n", rejected)
 endfunction

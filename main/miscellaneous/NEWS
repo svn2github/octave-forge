@@ -9,9 +9,6 @@ miscellaneous-1.X.X   Release Date: 201X-XX-XX  Release Manager:
 
       apply       map         partarray   temp_name
 
- ** Bug fixes
-    - partint was not being loaded by PKG_ADD
-
 ===============================================================================
 miscellaneous-1.2.0   Release Date: 2012-10-16  Release Manager: Carnë Draug
 ===============================================================================

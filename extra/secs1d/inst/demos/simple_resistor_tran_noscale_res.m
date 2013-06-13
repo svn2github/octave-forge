@@ -58,24 +58,27 @@ endfunction
 
 
 function [x1, x2] = update_states (t, dt, F1)
-   persistent A1 B1 C1 x1 %A2 B2 C2 x2
-   if (isempty (A1))
-     load ("resistor_circuit_matrices")
-   else
-     C1(4) = -min(t,1);
-     a22 = A1(2:end,2:end);
-     b21 = B1(2:end,1);
-     b22 = B1(2:end,2:end);
-     e22 = a22/dt+b22;
-     f2 = C1(2:end);
-
-     x1 = e22 \ (a22 * x1 / dt - b21 * F1 - f2);
-     x2 = [];
-   endif
+  persistent A1 B1 C1 x1 x2 %A2 B2 C2 x2
+  persistent a22 b21 b22
+  if (isempty (A1))
+    load ("resistor_circuit_matrices")
+    x2 = [];
+    a22 = A1(2:end,2:end);
+    b21 = B1(2:end,1);
+    b22 = B1(2:end,2:end);
+  else
+    C1(4) = -min(t,1);
+    e22 = a22/dt+b22;
+    P = spdiags(1 ./ max(abs(e22),[],2));
+    f2 = C1(2:end);
+    w  = P * (((a22 * x1) / dt) - f2 - b21 * F1);
+    eprec = P * e22;
+    x1 = eprec \ w;
+  endif
 endfunction
 
 % tolerances for convergence checks
-algorithm.toll       = 1e-3;
+algorithm.toll       = 1e-06;
 algorithm.ltol       = 1e-10;
 algorithm.maxit      = 100;
 algorithm.lmaxit     = 100;
@@ -83,7 +86,7 @@ algorithm.ptoll      = 1e-08;
 algorithm.pmaxit     = 1000;
 algorithm.colscaling = [10 1e21 1e21 1];
 algorithm.rowscaling = [1e7 1e-7 1e-7 1];
-algorithm.maxnpincr  = 1e-1;
+algorithm.maxnpincr  = 5e-5;
 
 %% compute resistance
 u = secs1d_mobility_model_noscale ...

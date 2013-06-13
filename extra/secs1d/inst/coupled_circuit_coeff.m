@@ -50,11 +50,16 @@ function [g, j, r] = coupled_circuit_coeff (A, B, C, dt, x)
   e12 = a12 / dt + b12;
   e21 = b21;
   e22 = a22 / dt + b22;
-  f1 = C(1);
-  f2 = C(2:end);
+  c1 = C(1);
+  c2 = C(2:end);
 
-  g = e11 - e12 * (e22 \ e21);
-  j = f1 - e12 * (e22 \ f2) + (-a12 + e12 * (e22 \ a22)) * x / dt;
+  P = spdiags(1 ./ max(abs(e22),[],2));
+  eprec = P * e22;
+  w = (P * ((a22 * x) / dt - c2));
+
+  g = e11 - e12 * (eprec \ (P * e21));
+  j = c1 - (a12 * x) / dt + ...
+      (e12 * (eprec \ w));
   r = 1;
 
 endfunction

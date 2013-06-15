@@ -31,7 +31,12 @@ end
 
 % ndmat number of dimension for matlab/octave
 
-if nd == 1
+if nd == 0
+  ndmat = 2;
+  start = [1 1];
+  count = [1 1];
+  stride = [1 1];  
+elseif nd == 1
   ndmat = 2;
   start = [1 start];
   count = [1 count];
@@ -97,7 +102,7 @@ if nd ~= 1
   if length(count) < 2
     count(2) = 1; 
   end
-  
+
   x = reshape(x,count);
 end
 

@@ -28,6 +28,22 @@ if nargin < 5
   stride = ones(1,nd);
 end
 
+% ndmat number of dimension for matlab/octave
+
+if nd == 0
+  ndmat = 2;
+  start = [1 1];
+  count = [1 1];
+  stride = [1 1];  
+elseif nd == 1
+  ndmat = 2;
+  start = [1 start];
+  count = [1 count];
+  stride = [1 stride];
+else
+  ndmat = nd;
+end 
+
 % end index
 
 endi = start + (sz-1).*stride;

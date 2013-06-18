@@ -1,7 +1,0 @@
-doc.info
-*.d
-*.o
-PKG_ADD
-*.octlink
-*.oct
-fixedversion.h

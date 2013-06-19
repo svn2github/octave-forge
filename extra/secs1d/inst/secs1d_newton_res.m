@@ -4,7 +4,8 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
 
   rejected = 0;
   Nnodes = numel (device.x);
-  dt = (tspan(2) - tspan(1)) / 20;  
+  dt0 = (tspan(2) - tspan(1)) / 200;
+  dt = dt0;
   t(tstep = 1) = tspan (1);
   [V, n, p] = deal (Vin, nin, pin);  
   F = V([1 end], 1) - constants.Vth * ...
@@ -156,9 +157,9 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
 
       incr0 = max ([incr0v, incr0n, incr0p, incr0F]);
       
-      figure (1)
-      semilogy (1:in, resnlin(1:in));
-      drawnow        
+%%%       figure (1)
+%%%       semilogy (1:in, resnlin(1:in));
+%%%       drawnow        
 
       if (incr0 > algorithm.maxnpincr)
         printf ("newton step too large\n")
@@ -217,9 +218,11 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
     
       [x1, x2] = upd(t, dt, F(1), F(2));
 
-      dt *= .75 * sqrt (algorithm.maxnpincr / incr0)
+      dt *= min (.75 * sqrt (algorithm.maxnpincr / incr0), (dt0 / dt))
 
     endif
+    
+    pause
 
   endwhile %% time step
   printf ("total number of rejected time steps: %d\n", rejected)

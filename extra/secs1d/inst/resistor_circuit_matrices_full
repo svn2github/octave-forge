@@ -1,0 +1,53 @@
+# Created by Octave 3.6.2, Tue Jun 11 18:10:01 2013 CEST <davide@davide-K53SV>
+# name: A1
+# type: matrix
+# rows: 7
+# columns: 7
+ 0 0 0 0 1 0 0
+ 0 0 0 0 -1 0 0
+ 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0
+ 0 0 0 0 0 1 0
+ 0 0 0 0 0 0 0
+
+
+# name: B1
+# type: matrix
+# rows: 7
+# columns: 7
+ 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 1
+ 0 0 0 1 0 0 -1
+ 0 0 1 0 0 0 0
+ -1.16e-05 1.16e-05 0 0 1 0 0
+ 0 -1 1 0 0 0 0
+ 0 0 0 0 0 1 -86000
+
+
+# name: C1
+# type: matrix
+# rows: 7
+# columns: 1
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+
+
+# name: x1
+# type: matrix
+# rows: 7
+# columns: 1
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+
+

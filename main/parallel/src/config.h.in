@@ -1,5 +1,0 @@
-/* Define as 1 if Octave version is <= 3.2.4. */
-#undef OCTAVE_LE_3_2_4
-
-/* some manual configuration */
-#define N_CONNECT_RETRIES 10

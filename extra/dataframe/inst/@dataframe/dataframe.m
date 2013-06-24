@@ -107,7 +107,7 @@ else
 endif
 
 %# default values
-seeked = []; trigger = []; unquot = true; sep = "\t,"; cmt_lines = [];
+seeked = ''; trigger = ''; unquot = true; sep = "\t,"; cmt_lines = [];
 conv_regexp = {}; datefmt = ''; verbose = false;
 
 if (length (varargin) > 0)	%# extract known arguments
@@ -244,6 +244,7 @@ while (indi <= size (varargin, 2))
 	else
 	  %# The file we read from external process must be seekable !!!
 	  tmpfile = tmpnam ();
+	  dummy = strcat ('''', dummy, '''');
 	  cmd = [cmd, dummy,  ' > ',  tmpfile];
 	  if (exist ('OCTAVE_VERSION', 'builtin'))
 	    [output, status] = system (cmd);
@@ -372,7 +373,7 @@ while (indi <= size (varargin, 2))
 		indl = indl + 1; indj = indj + 1;
 		continue;
               endif
-              
+	      
 	      if (all (cellfun (@isempty, regexp (dummy, trigger, 'match'))))
 		%# it does not look like the trigger. Good.
 		%# try to convert to float
@@ -391,8 +392,7 @@ while (indi <= size (varargin, 2))
 		      indk = indk + 1; indm = indm + 1;
 		      continue;
 		    endif
-                    
-		    if (unquot)
+                    if (unquot)
                       try
 			%# remove quotes and leading space(s)
 			x(indj, indm) = regexp (dummy{indk}, '[^''" ].*[^''"]', 'match'){1};
@@ -469,7 +469,7 @@ while (indi <= size (varargin, 2))
 	  
           clear UTF8_BOM fid in lines indl the_line content empty_lines 
           clear datetime timeval idx count tmpfile cmd output status
-        
+
         endif
       end_try_catch
     endif

@@ -1,4 +1,4 @@
-## Copyright (C) 2008, 2009, 2010, 2011, 2012 Moreno Marzolla
+## Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013 Moreno Marzolla
 ##
 ## This file is part of the queueing toolbox.
 ##
@@ -106,11 +106,16 @@
 ##
 ## @end table
 ##
-## @quotation Note
-## In presence of load-dependent servers (i.e., if @code{@var{m}(i)>1}
+## @quotation Note on numerical stability
+## In presence of load-dependent servers (e.g., if @code{@var{m}(i)>1}
 ## for some @math{i}), the MVA algorithm is known to be numerically
 ## unstable. Generally this problem manifests itself as negative
-## response times produced by this function.
+## response times or utilizations. This is not a problem with the
+## @code{queueing} toolbox, but with the Mean Value Analysis algorithm,
+## and therefore has currently no easy workaround (aoart from using a
+## different solution technique, if available). This function prints a
+## warning if it detects numerical problems; you can disable the warning
+## with the command @code{warning("off", "qn:numerical-instability")}.
 ## @end quotation
 ##
 ## @seealso{qncsmvald,qncscmva}
@@ -178,15 +183,9 @@ function [U R Q X G] = qncsmva( varargin )
   U(i_delay) = X(i_delay) .* S(i_delay);
   U(i_multi) = X(i_multi) .* S(i_multi) ./ m(i_multi);
 
-  if ( (any(U(i_multi)<-1000*eps) || any(U(i_multi)>1+1000*eps)) && any(m>1) )
+  if ( any(U<-1000*eps) || any(U>1+1000*eps) || any(R<-1000*eps) )
     warning("qn:numerical-instability",
-	    ["****\n" \
-	     "Some utilizations for M/M/1 or M/M/m centers are outside the\n" \
-	     "valid range [0,1]. Since the network contains multiple-server nodes\n" \
-	     "he problem is likely due to numerical instability of the Mean\n" \
-	     "Value Analysis algorithm. Note that this is an intrinsic problem\n" \
-	     "of MVA, not of the implementation used in this toolbox.\n" \
-	     "****\n"]);
+	    "Numerical instability detected. Type 'help(qncsmva)' for details");
   endif
     
 endfunction

@@ -1,10 +1,10 @@
-2013-05-XX Moreno Marzolla <marzolla@cs.unibo.it>
+2013-06-XX Moreno Marzolla <marzolla@cs.unibo.it>
 
 	* Version 1.2.2 released
-	* Fixed bug in qncmmva: utilization for M/M/m centers, m>1, was not correctly scaled to [0,1]
-	* Added warning to qncsmva to inform user about potential loss of accuracy due to load-dependent servers
+	* Fixed bug in qncmmva: utilization for M/M/m centers was not correctly scaled to [0,1] when m>1
+	* Added warning to qncsmva and qncmmva to detect numerical instability
 
-2013-02-05 Moreno Marzolla <marzolla@cs.unibo.it>
+2013-02-05 Moreno Marzolla
 
 	* Version 1.2.1 released
 	* Deprecated function qnvisits (stil available for backward
@@ -14,7 +14,7 @@
 	* Added common input checking routines for functions dealing with
 	  queueing network models
 
-2012-11-05 Moreno Marzolla <marzolla@cs.unibo.it>
+2012-11-05 Moreno Marzolla
 
 	* Version 1.2.0 released
 	* Restructured the documentation
@@ -28,13 +28,13 @@
 	* Fixed bugs in qncsconv, qncsconvld, qncmmva, qnopensingle, qnmix
 	  and qncscmva
 
-2012-09-08 Moreno Marzolla <marzolla@cs.unibo.it>
+2012-09-08 Moreno Marzolla
 
 	* Version 1.1.1 released
 	* Increased tolerance in tests for dtmc_fpt and dtmc_mtta
 	* Disabled autoloading of this package on Octave startup
 
-2012-04-05 Moreno Marzolla <marzolla@cs.unibo.it>
+2012-04-05 Moreno Marzolla
 
 	* Version 1.1.0 released
 	* Fixed bug in qnvisits() which made the function behave incorrectly
@@ -57,26 +57,29 @@
 	* dtmc_taexps() added
 	* Miscellaneous fixes/improvements to the documentation
 
-2012-02-04 Moreno Marzolla <marzolla@cs.unibo.it>
+2012-02-04 Moreno Marzolla
 
 	* Version 1.0.0 released under the name "queueing" (initial
 	  contribution to octave-forge)
 	* The documentation has been updated to reflect the new package name
 	* Some minor code cleanup
 
-2012-01-19 Moreno Marzolla <marzolla@cs.unibo.it>
+2012-01-19 Moreno Marzolla
 
 	* Version 0.8.11 released
-	* Fixed input validation bug in qnclosedmultimvaapprox(); many thanks to Yves Durand for the patch
+	* Fixed input validation bug in qnclosedmultimvaapprox(); many
+	  thanks to Yves Durand for the patch
 	* Renamed ctmc_bd_solve() to ctmc_bd()
-	* Optimized qnclosedmultimva() implementation (the new version should be approximately ~4 times faster than the old one)
+	* Optimized qnclosedmultimva() implementation (the new version
+	  should be approximately ~4 times faster than the old one)
 
-2011-11-16 Moreno Marzolla <marzolla@cs.unibo.it>
+2011-11-16 Moreno Marzolla
 
 	* Version 0.8.10 released
-	* Fixed bug in qnopen() (failed on a network with a single node); many thanks to Marco Guazzone for the patch
+	* Fixed bug in qnopen() (failed on a network with a single node);
+ 	  many thanks to Marco Guazzone for the patch
 
-2011-08-03 Moreno Marzolla <marzolla@cs.unibo.it>
+2011-08-03 Moreno Marzolla
 
 	* Version 0.8.9 released
 	* qnvisits() now supports multiclass open and closed networks
@@ -85,12 +88,12 @@
 	* qnclosedsinglemva() accepts models with zero population size
 	* qnclosedmultimva() supports class switching
 
-2011-06-27 Moreno Marzolla <marzolla@cs.unibo.it>
+2011-06-27 Moreno Marzolla
 
 	* Version 0.8.8 released
 	* Fixed incompatibility with GNU Octave 3.4.2
 
-2011-06-23 Moreno Marzolla <marzolla@cs.unibo.it>
+2011-06-23 Moreno Marzolla
 
 	* Version 0.8.7 released
 	* Renamed ctmc_solve() to ctmc()
@@ -103,62 +106,65 @@
 	* Added function dtmc_fpt()
 	* Added function ctmc_fpt()
 
-2011-05-15 Moreno Marzolla <marzolla@cs.unibo.it>
+2011-05-15 Moreno Marzolla
 
 	* Version 0.8.6 released
 	* Fixed documentation
-	* Fixed error in demo function of ctmc_exps() differing from the documentation
+	* Fixed error in demo function of ctmc_exps() differing from the
+	  documentation
 	* Added function qnclosedsinglemvaapprox()
 
-2011-01-24 Moreno Marzolla <marzolla@cs.unibo.it>
+2011-01-24 Moreno Marzolla
 
 	* Version 0.8.5 released
 	* More sanity checke in qnopenwingle()
 	* Added include of <cstdio> in gethelp.cc
 
-2010-06-23 Moreno Marzolla <marzolla@cs.unibo.it>
+2010-06-23 Moreno Marzolla
 
 	* Version 0.8.4 released
 	* Minor fixes to the documentation
 
-2010-05-13 Moreno Marzolla <marzolla@cs.unibo.it>
+2010-05-13 Moreno Marzolla
 
 	* Version 0.8.3 released
-	* Changed version number as octave is unable to install a package with version of the form x.y.z.w
+	* Changed version number as octave is unable to install a package
+	  with version of the form x.y.z.w
 	* Various fixes to the documentation
 
-2010-03-18 Moreno Marzolla <marzolla@cs.unibo.it>
+2010-03-18 Moreno Marzolla
 
 	* Version 0.8.2.3 released
-	* Better handling of row or column vector parameters in qnclosedsinglemva(), qnclosedmultimva()
+	* Better handling of row or column vector parameters in
+	  qnclosedsinglemva(), qnclosedmultimva()
 	* Various fixes to the documentation
 
-2010-02-02 Moreno Marzolla <marzolla@cs.unibo.it>
+2010-02-02 Moreno Marzolla
 
 	* Version 0.8.2.2 released
 	* Fixed error in ctmc_solve()
 
-2009-12-06 Moreno Marzolla <marzolla@cs.unibo.it>
+2009-12-06 Moreno Marzolla
 
 	* Version 0.8.2.1 released
 	* Fixed documentation
 
-2009-10-05 Moreno Marzolla <moreno.marzolla@pd.infn.it>
+2009-10-05 Moreno Marzolla
 
 	* Version 0.8.2 released
 	* Fixed documentation
 	* Moved untested scripts to the broken/ directory
 
-2009-09-26 Moreno Marzolla <moreno.marzolla@pd.infn.it>
+2009-09-26 Moreno Marzolla
 
 	* Added "Getting Started" section to documentation (work in progress).
 	* Version 0.8.1 released.
 	* Added qnmg1.m qnmh1.m (thanks to Dmitry Kolesnikov).
 	* Fixed demo function for qnconvolution.m
-	* Support for passing a function handle as the parameter S in 
+	* Support for passing a function handle as the parameter S in
 	  qnconvolutionld.m and wqnclosedsinglemvald.m
 
-2009-08-22 Moreno Marzolla <moreno.marzolla@pd.infn.it>
+2009-08-22 Moreno Marzolla
 
 	* Version 0.8.0 released
 	* Added ctmc_mtta.m, ctmc_exps.m
@@ -166,46 +172,48 @@
 	* Improved the documentation
 	* Various sanity checks added to functions
 
-2009-08-12 Moreno Marzolla <moreno.marzolla@pd.infn.it>
+2009-08-12 Moreno Marzolla
 
 	* Version 0.7.5 released
 	* Improved documentation
 	* Improved function tests
 	* Added qnconvolutionld.m qnammm.m ctmc_bd_solve.m
-	* Fixed computation of the utilization for multiple-server nodes in qnclosedsinglemva
-	* Added handling of parameter Z in qnclosedmultimva and qnclosedmultimvaapprox
+	* Fixed computation of the utilization for multiple-server nodes
+	  in qnclosedsinglemva
+	* Added handling of parameter Z in qnclosedmultimva and
+	  qnclosedmultimvaapprox
 
-2009-07-11 Moreno Marzolla <moreno.marzolla@pd.infn.it>
+2009-07-11 Moreno Marzolla
 
 	* Version 0.7.4 released
 	* Improved documentation of qnclosedsinglemva.m
 
-2009-07-02 Moreno Marzolla <moreno.marzolla@pd.infn.it>
+2009-07-02 Moreno Marzolla
 
 	* Version 0.7.3 released
 	* Fixed qnclosedsinglemvaapprox: X(c,k) was actually being
-	returned as X(c)
+ 	  returned as X(c)
 	* Fixed documentation for qnmmm
 	* Fixed computation of R in qnmmmk.m and qnmm1k.m
 
-2009-04-15 Moreno Marzolla <moreno.marzolla@pd.infn.it>
+2009-04-15 Moreno Marzolla
 
 	* Version 0.7.2 released
 	* Added qnclosedsinglemvald.m
 	* Fixed computation of p(i,j) and Response Time in qnclosedsinglemva
 	* Updated documentation for qnclosedsinglemva, qnclosedmultimva,
-	qnclosedsinglemvald, qnjackson, qnopenmulti
+	  qnclosedsinglemvald, qnjackson, qnopenmulti
 	* Added sanity check on the stochastic matrix P in qnvisits
 
-2009-04-12 Moreno Marzolla <moreno.marzolla@pd.infn.it>
+2009-04-12 Moreno Marzolla
 
 	* Version 0.7.1 released
 	* Fixed documentation of qnmm1k.m and qnmmmk.m
 	* Fixed tests for qnmm1k.m
 	* Fixed documentation for qnclosedmultimva
-	* Added support for infinite-server nodes to Jackson networks; 
+	* Added support for infinite-server nodes to Jackson networks;
 	  also, modified the function signature for qnjackson.m
 
-2009-03-21 Moreno Marzolla <moreno.marzolla@pd.infn.it>
+2009-03-21 Moreno Marzolla
 
 	* Version 0.7.0 released

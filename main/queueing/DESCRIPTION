@@ -1,8 +1,8 @@
 Name: queueing
-Version: 1.2.1
-Date: 2013-02-05
-Author: Moreno Marzolla <marzolla@cs.unibo.it>
-Maintainer: Moreno Marzolla <marzolla@cs.unibo.it>
+Version: 1.2.2
+Date: 2013-06-28
+Author: Moreno Marzolla <moreno.marzolla@unibo.it>
+Maintainer: Moreno Marzolla <moreno.marzolla@unibo.it>
 Title: Octave package for Queueing Networks and Markov chains analysis
 Description: The queueing package provides functions for queueing
  networks and Markov chains analysis. This package can be used to

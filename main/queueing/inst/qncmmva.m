@@ -162,6 +162,18 @@
 ##
 ## @end table
 ##
+## @quotation Note on numerical stability
+## In presence of load-dependent servers (e.g., if @code{@var{m}(i)>1}
+## for some @math{i}), the MVA algorithm is known to be numerically
+## unstable. Generally this problem manifests itself as negative
+## response times or utilizations. This is not a problem with the
+## @code{queueing} toolbox, but with the Mean Value Analysis algorithm,
+## and therefore has currently no easy workaround (aoart from using a
+## different solution technique, if available). This function prints a
+## warning if it detects numerical problems; you can disable the warning
+## with the command @code{warning("off", "qn:numerical-instability")}.
+## @end quotation
+##
 ## @seealso{qnclosed, qncmmvaapprox, qncmvisits}
 ##
 ## @end deftypefn
@@ -287,6 +299,12 @@ function [U R Q X] = __qncmmva_cs( N, S, P, r, m )
       U(r,k) = S(r,k) * X(r,k) / max(1,m(k));
     endfor
   endfor
+
+  ## 9. Check for numerical instability
+  if ( any(U(:)<-1000*eps) || any(U(:)>1+1000*eps) || any(R(:)<-1000*eps) )
+    warning("qn:numerical-instability",
+	    "Numerical instability detected. Type 'help(qncmmva)' for details");
+  endif
 
 endfunction
 
@@ -432,6 +450,13 @@ function [U R Q X Qnm1] = __qncmmva_nocs( N, S, V, m, Z )
   U = diag(X)*D ./ max(1,repmat(m,C,1)); # U(c,k) = X(c)*D(c,k)
   Q = diag(X)*(R.*V);
   X = diag(X)*V;
+
+  ## Check for numerical instability
+  if ( any(U(:)<-1000*eps) || any(U(:)>1+1000*eps) || any(R(:) < -1000*eps ) )
+    warning("qn:numerical-instability",
+	    "Numerical instability detected. Type 'help(qncmmva)' for details");
+  endif
+
 endfunction
 
 ##############################################################################

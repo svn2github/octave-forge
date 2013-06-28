@@ -1,8 +1,8 @@
 Name: PROGNAME
 Version: VERSIONNUM
 Date: VERSIONDATE
-Author: Moreno Marzolla <marzolla@cs.unibo.it>
-Maintainer: Moreno Marzolla <marzolla@cs.unibo.it>
+Author: Moreno Marzolla <moreno.marzolla@unibo.it>
+Maintainer: Moreno Marzolla <moreno.marzolla@unibo.it>
 Title: Octave package for Queueing Networks and Markov chains analysis
 Description: The queueing package provides functions for queueing
  networks and Markov chains analysis. This package can be used to

@@ -2,8 +2,8 @@
                         The Octave queueing toolbox
 ===============================================================================
 
-Copyright (C) 2008, 2009, 2010, 2011, 2012
-Moreno Marzolla <marzolla (at) cs.unibo.it>
+Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013
+Moreno Marzolla <moreno.marzolla (at) unibo.it>
 
 The queueing toolbox ("queueing", in short) is a collection of GNU
 Octave scripts for numerical evaluation of queueing network

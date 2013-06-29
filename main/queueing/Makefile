@@ -6,7 +6,7 @@ DISTNAME=$(PROGNAME)-$(VERSIONNUM)
 SUBDIRS=inst doc test devel
 DISTFILES=COPYING NEWS DESCRIPTION
 DISTSUBDIRS=inst inst/private doc
-OCTAVE_DIST=~/src/octave-3.6.1/run-octave
+OCTAVE_DIST=~/src/octave-3.6.4/run-octave
 
 .PHONY: clean check
 

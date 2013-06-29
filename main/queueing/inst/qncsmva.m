@@ -183,9 +183,9 @@ function [U R Q X G] = qncsmva( varargin )
   U(i_delay) = X(i_delay) .* S(i_delay);
   U(i_multi) = X(i_multi) .* S(i_multi) ./ m(i_multi);
 
-  if ( any(U<-1000*eps) || any(U>1+1000*eps) || any(R<-1000*eps) )
+  if ( any(U<0) || any(R<0) )
     warning("qn:numerical-instability",
-	    "Numerical instability detected. Type 'help(qncsmva)' for details");
+	    "Numerical instability detected. Type 'help qncsmva' for details");
   endif
     
 endfunction

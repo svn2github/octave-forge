@@ -170,6 +170,11 @@ the service center @math{k}. This quantity will be described shortly.
 Service center utilization. @math{U_k} is the utilization of service
 center @math{k}. The utilization is defined as the fraction of time in
 which the resource is busy (i.e., the server is processing requests).
+If center @math{k} is a single-server or multiserver node, then
+@math{0 @leq{} U_k @leq{} 1}. If center @math{k} is an infinite server
+node (delay center), then @math{U_k} denotes the @emph{traffic
+intensity} and is defined as @math{U_k = X_k S_k}; in this case the
+utilization may be greater than one.
 
 @item R_k
 Average response time. @math{R_k} is the average response time of
@@ -723,7 +728,7 @@ In multiple class QN models, we assume that there exist @math{C}
 different classes of requests. Each request from class @math{c} spends
 on average time @math{S_{c, k}} in service at service center
 @math{k}. For open models, we denote with @math{{\bf \lambda} =
-\lambda_{ck}} the arrival rates, where @math{\lambda_{c, k}} is the
+\lambda_{c, k}} the arrival rates, where @math{\lambda_{c, k}} is the
 external arrival rate of class @math{c} customers at service center
 @math{k}. For closed models, we denote with @math{{\bf N} = (N_1, N_2,
 \ldots, N_C)} the population vector, where @math{N_c} is the number of
@@ -771,8 +776,15 @@ of class @math{c} requests to center @math{k}.
 
 @item U_{c, k}
 Utilization of service center @math{k} by class @math{c} requests. The
-utilization is defined as the fraction of time in which the resource is
-busy (i.e., the server is processing requests).
+utilization is defined as the fraction of time in which the resource
+is busy (i.e., the server is processing requests).  If center @math{k}
+is a single-server or multiserver node, then @math{0 @leq{} U_{c, k}
+@leq{} 1}. If center @math{k} is an infinite server node (delay
+center), then @math{U_{c, k}} denotes the @emph{traffic intensity} and
+is defined as @math{U_{c, k} = X_{c, k} S_{c, k}}; in this case the
+utilization may be greater than one.
+
+
 
 @item R_{c, k}
 Average response time experienced by class @math{c} requests on service

@@ -315,31 +315,6 @@ endfunction
 %! [V ch] = qnvisits(P);
 %! assert( ch, [1 1] );
 
-%!demo
-%! P = [0 0.3 0.7; \
-%!      1 0   0  ; \
-%!      1 0   0  ];
-%! V = qnvisits(P)
-
-%!demo
-%! p = 0.3;
-%! lambda = 1.2
-%! P = [0 0.3 0.5; \
-%!      1 0   0  ; \
-%!      1 0   0  ];
-%! V = qnvisits(P,[1.2 0 0])
-
-%!demo
-%! P = [ 0 0.4 0.6 0; \
-%!       0.2 0 0.2 0.6; \
-%!       0 0 0 1; \
-%!       0 0 0 0 ];
-%! lambda = [0.1 0 0 0.3];
-%! V = qnvisits(P,lambda);
-%! S = [2 1 2 1.8];
-%! m = [3 1 1 2];
-%! [U R Q X] = qnos( sum(lambda), S, V, m );
-
 ##############################################################################
 ## Solve the visit equation for multiclass networks with class switching
 ## P(r,i,s,j) is the probability that a class-r customer on service

@@ -139,7 +139,7 @@
 ## IS node, then @code{@var{U}(c,k)} is the class @math{c} @emph{traffic
 ## intensity} at center @math{k}, defined as @code{@var{U}(c,k) =
 ## @var{X}(c,k)*@var{S}(c,k)}. In this case the value of
-## #code{@var{U}(c,k)} may be greater than one.
+## @code{@var{U}(c,k)} may be greater than one.
 ##
 ## @item R
 ## @code{@var{R}(c,k)} is the class @math{c} response time at
@@ -301,9 +301,9 @@ function [U R Q X] = __qncmmva_cs( N, S, P, r, m )
   endfor
 
   ## 9. Check for numerical instability
-  if ( any(U(:)<-1000*eps) || any(U(:)>1+1000*eps) || any(R(:)<-1000*eps) )
+  if ( any(U(:)<0) || any(R(:)<0) )
     warning("qn:numerical-instability",
-	    "Numerical instability detected. Type 'help(qncmmva)' for details");
+	    "Numerical instability detected. Type 'help qncmmva' for details");
   endif
 
 endfunction
@@ -452,9 +452,9 @@ function [U R Q X Qnm1] = __qncmmva_nocs( N, S, V, m, Z )
   X = diag(X)*V;
 
   ## Check for numerical instability
-  if ( any(U(:)<-1000*eps) || any(U(:)>1+1000*eps) || any(R(:) < -1000*eps ) )
+  if ( any(U(:)<0) || any(R(:)<0) )
     warning("qn:numerical-instability",
-	    "Numerical instability detected. Type 'help(qncmmva)' for details");
+	    "Numerical instability detected. Type 'help qncmmva' for details");
   endif
 
 endfunction

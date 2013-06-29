@@ -225,6 +225,8 @@ endfunction
 %! maxN = 90; # Max population size
 %! Rmva = Rconv = Rcmva = zeros(1,maxN); # Results
 %! S = 4; Z = 10; m = 8;
+%! old = warning("query","qn:numerical-instability");
+%! warning("off","qn:numerical-instability");
 %! for N=1:maxN
 %!   [U R] = qncsmva(N,S,1,m,Z);		# Use MVA
 %!   Rmva(N) = R(1);
@@ -238,6 +240,7 @@ endfunction
 %!   [U R] = qncscmva(N,[],Scmva,1,Z);		# Use CMVA
 %!   Rcmva(N) = R(1);
 %! endfor
+%! warning(old.state,"qn:numerical-instability");
 %! plot(1:maxN, Rmva, ";MVA;", \
 %!      1:maxN, Rconv, ";Convolution;", \
 %!      1:maxN, Rcmva, ";CNVA;", "linewidth",2);

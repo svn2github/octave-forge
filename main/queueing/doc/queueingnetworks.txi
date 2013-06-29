@@ -778,8 +778,9 @@ of class @math{c} requests to center @math{k}.
 Utilization of service center @math{k} by class @math{c} requests. The
 utilization is defined as the fraction of time in which the resource
 is busy (i.e., the server is processing requests).  If center @math{k}
-is a single-server or multiserver node, then @math{0 @leq{} U_{c, k}
-@leq{} 1}. If center @math{k} is an infinite server node (delay
+is a single-server or multiserver node, then 
+@math{0 \leq U_{c, k} \leq 1}. 
+If center @math{k} is an infinite server node (delay
 center), then @math{U_{c, k}} denotes the @emph{traffic intensity} and
 is defined as @math{U_{c, k} = X_{c, k} S_{c, k}}; in this case the
 utilization may be greater than one.

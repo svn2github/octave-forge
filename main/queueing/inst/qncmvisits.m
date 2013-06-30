@@ -286,17 +286,6 @@ endfunction
 %! [V ch] = qncmvisits(P);
 %! assert( ch, [1 1] );
 
-%!demo
-%! P = [ 0 0.4 0.6 0; \
-%!       0.2 0 0.2 0.6; \
-%!       0 0 0 1; \
-%!       0 0 0 0 ];
-%! lambda = [0.1 0 0 0.3];
-%! V = qncmvisits(P,lambda);
-%! S = [2 1 2 1.8];
-%! m = [3 1 1 2];
-%! [U R Q X] = qnos( sum(lambda), S, V, m );
-
 ## compute strongly connected components using Kosaraju's algorithm,
 ## which requires two DFS visits. A better solution would be to use
 ## Tarjan's algorithm.

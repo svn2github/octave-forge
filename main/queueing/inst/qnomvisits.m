@@ -109,4 +109,3 @@ endfunction
 %!     assert(V(c,i), lambda(c,i) / lambda_sum + sum(sum(V .* P(:,:,c,i))), 1e-5);
 %!   endfor
 %! endfor
-

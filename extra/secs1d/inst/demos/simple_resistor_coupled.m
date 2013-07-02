@@ -3,7 +3,7 @@ constants = secs1d_physical_constants_fun ();
 material  = secs1d_silicon_material_properties_fun (constants);
 
 % geometry
-Nelements = 10;
+Nelements = 9;
 L  = 100e-6;          % [m] 
 xm = L/2;
 device.W = 1e-6 * 1e-6;
@@ -51,11 +51,11 @@ function [Ahere, Bhere, Chere, rhere, xhere, contacts] = vbcs (t)
   %in this case  it's not necessary for A2 B2 C2
   if (isempty (A1))
     load ("resistor_circuit_matrices_full")
-    r1 = 0 * x1; r1(1) = 1
-    Ahere = [A1, zeros(size(C1)); zeros(size(C1))', 0]
-    Bhere = [B1, zeros(size(C1)); zeros(size(C1))', 1]
-    xhere = [x1; 0]
-    rhere = [r1, zeros(size(x1)); 0, 0]
+    r1 = 0 * x1; r1(1) = 1;
+    Ahere = [A1, zeros(size(C1)); zeros(size(C1))', 0];
+    Bhere = [B1, zeros(size(C1)); zeros(size(C1))', 1];
+    xhere = [x1; 0];
+    rhere = [r1, zeros(size(x1)); 0, 0];
     contacts = [1, numel(x1) + 1];
   endif
   C1(4) = -min(t,1);
@@ -71,6 +71,8 @@ algorithm.ptoll      = 1e-08;
 algorithm.pmaxit     = 1000;
 algorithm.colscaling = [10 1e21 1e21 1];
 algorithm.rowscaling = [1e7 1e-7 1e-7 1];
+%%algorithm.colscaling = [1 1e-20 1e-20 1];
+%%algorithm.rowscaling = [1e-20 1e23 1e23 1e-00];
 algorithm.maxnpincr  = 1.0e-5;
 
 %% compute resistance
@@ -85,9 +87,17 @@ R_0 = sum (bim1a_rhs (device.x, 1 ./ (constants.q * u), 1 ./ n)) / device.W
 [nin, pin, Vin, Fnin, Fpin, Jn, Jp, it, res] = secs1d_dd_gummel_map_noscale ...
     (device, material, constants, algorithm, V, n, p, Fn, Fp);  
 
-close all; %secs1d_logplot (device.x, device.D, 'x-'); 
+%close all; %secs1d_logplot (device.x, device.D, 'x-'); 
 pause
 
+%% Vin = (device.x-xm)/(3*max(device.x));
+%% pin = device.Na;
+%% nin = device.Nd;
+
+%% (pseudo)transient simulation
+[V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_coupled_circuit_newton_reordered2 ...
+                                           (device, material, constants, algorithm,
+                                            Vin, nin, pin, tspan, @vbcs);
 %% (pseudo)transient simulation
 [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_coupled_circuit_newton ...
                                           (device, material, constants, algorithm,
@@ -97,8 +107,8 @@ pause
 %dx   = diff (device.x);
 %E    = -dV ./ dx;
    
-vvector  = (Fn (1, :) - Fn (end, :));
-ivector  = Itot (2, :);
+%vvector  = (Fn (1, :) - Fn (end, :));
+%ivector  = Itot (2, :);
 
 %R_1 = diff (vvector) ./ diff (ivector);
 

@@ -132,7 +132,7 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
                  '\n tstep #', num2str(tstep), ...
                  '\n----------\n'])
         reject = true;
-        pause
+        %pause
         break;
       endif
 
@@ -148,7 +148,7 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
                  'problems on ', tags{whichone}, ...
                  '\n','tstep #', num2str(tstep), ...
                  '\n----------\n'])
-        pause
+        %pause
         reject = true;
         break;
       endif
@@ -255,46 +255,46 @@ function res_full = compute_residual ...
   res3 = A33 * p + bim1a_rhs (device.x, 1, (Rp + 1/deltat) .* p - (Gp + p0 * 1/ deltat));
   res3([1, end]) = (p([1, end]) - p0([1, end])).*([A33(1, 1); A33(end, end)]);
 
-  I1  = - constants.q * (A22(1,:) * n - A33(1,:) * p);
-  I2  = - constants.q * (A22(end,:) * n -  A33(end,:) * p);
+%%   I1  = - constants.q * (A22(1,:) * n - A33(1,:) * p);
+%%   I2  = - constants.q * (A22(end,:) * n -  A33(end,:) * p);
+%%   
+%%   %% if (columns (V) >= 2)
+%%     I1 += (1/deltat) * constants.e0 * material.esir * ...
+%%           ((V(2) - V(1)) -
+%%            (V0(2) - V0(1))) / ...
+%%           (device.x(2) - device.x(1));
+%%     I2 += (1/deltat) * constants.e0 * material.esir * ...
+%%           ((V(end) - V(end-1)) -
+%%            (V0(end) - V0(end-1))) / ...
+%%           (device.x(end) - device.x(end-1));
+%%   %% endif
+%% 
+%%   [I1;I2]
+%% 
+%%   res4 = (A * (F - F0)) / deltat ...
+%%          + B * F ...
+%%          + C ...
+%%          + r * ([I1; I2] * device.W);
+
+  Jn = -constants.q * A22([1, end], :) * n;
+  Jp =  constants.q * A33([1, end], :) * p;
   
-  %% if (columns (V) >= 2)
-    I1 += (1/deltat) * constants.e0 * material.esir * ...
-          ((V(2) - V(1)) -
-           (V0(2) - V0(1))) / ...
-          (device.x(2) - device.x(1));
-    I2 += (1/deltat) * constants.e0 * material.esir * ...
-          ((V(end) - V(end-1)) -
-           (V0(end) - V0(end-1))) / ...
-          (device.x(end) - device.x(end-1));
-  %% endif
+  Jd = ((constants.e0 * material.esir) / deltat) * ...
+       ((V([1, end-1]) - V([2, end])) - ...
+        (V0([1, end-1]) - V0([2, end]))) ./ ...
+       (device.x([1, end-1]) - device.x([2, end]));
+       %(device.x([2, end]) - device.x([1, end-1]));
+  
+  Jtot = Jn + Jp + Jd
 
-  [I1;I2]
-
-  res4 = (A * (F - F0)) / deltat ...
+  circuit_scaling = eye(size(A));% sparse(diag(1 ./ max(abs(A / deltat + B), [], 2)));
+  res4 = ((A * (F - F0)) / deltat ...
          + B * F ...
          + C ...
-         + r * ([I1; I2] * device.W);
+         + r * Jtot(:) * device.W);
+  %res4(contacts) += [1; 0] .* Jtot * device.W;
 
-%%   Jn = -constants.q * A22([1, end], :) * n;
-%%   Jp =  constants.q * A33([1, end], :) * p;
-%%   
-%%   Jd = ((constants.e0 * material.esir) / deltat) * ...
-%%        ((V([1, end-1]) - V([2, end])) - ...
-%%         (V0([1, end-1]) - V0([2, end]))) ./ ...
-%%        (device.x([1, end-1]) - device.x([2, end]));
-%%        %(device.x([2, end]) - device.x([1, end-1]));
-%%   
-%%   Jtot = Jn + Jp + Jd
-%% 
-%%   circuit_scaling = eye(size(A));% sparse(diag(1 ./ max(abs(A / deltat + B), [], 2)));
-%%   res4 = ((A * (F - F0)) / deltat ...
-%%          + B * F ...
-%%          + C); ...
-%%          %+ r * Jtot(:) * device.W);
-%%   res4(contacts) += [1; 0] .* Jtot * device.W;
-%% 
-%%   res4 = circuit_scaling * res4;
+  res4 = circuit_scaling * res4;
 
   res_full = zeros(totN, 1);
   res_full(indexing1) = res1 / algorithm.rowscaling(1);

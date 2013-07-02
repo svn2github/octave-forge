@@ -99,16 +99,16 @@ pause
                                            (device, material, constants, algorithm,
                                             Vin, nin, pin, tspan, @vbcs);
 %% (pseudo)transient simulation
-[V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_coupled_circuit_newton ...
-                                          (device, material, constants, algorithm,
-                                           Vin, nin, pin, tspan, @vbcs);
+%[V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_coupled_circuit_newton ...
+%                                          (device, material, constants, algorithm,
+%                                           Vin, nin, pin, tspan, @vbcs);
 
 %dV   = diff (V, [], 1);
 %dx   = diff (device.x);
 %E    = -dV ./ dx;
    
-%vvector  = (Fn (1, :) - Fn (end, :));
-%ivector  = Itot (2, :);
+vvector  = (Fn (1, :) - Fn (end, :));
+ivector  = Itot (2, :);
 
 %R_1 = diff (vvector) ./ diff (ivector);
 

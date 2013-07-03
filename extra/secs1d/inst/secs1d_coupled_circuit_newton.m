@@ -134,7 +134,7 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
       incr0F = norm (F2 - F0, inf) / (norm (F0, inf) + algorithm.colscaling(4));
 
       [incr0, whichone] = max ([incr0v, incr0n, incr0p, incr0F]);
-      
+
       if (incr0 > algorithm.maxnpincr)
         printf (['----------\nnewton step too large\n',...
                  'problems on', tags{whichone},'\n',...
@@ -143,6 +143,12 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
         reject = true;
         break;
       endif
+
+      figure (1)
+      semilogy (1:in, resnlin(1:in),'bo-');
+      xlim([1,15]);
+      ylim([5e-9,5e-2]);
+      drawnow        
 
       if (incr1 < algorithm.toll)
         printf ('iteration %d, time step %d, model time %g: convergence reached incr = %g\n', in, tstep, t, incr1)

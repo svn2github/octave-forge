@@ -19,7 +19,7 @@ device.D  = device.Nd - device.Na;
 
 % time span for simulation
 tmin  = 0;
-tmax  = 50;
+tmax  = 20;% 50;
 tspan = [tmin, tmax];
 
 Fn = Fp = zeros (size (device.x));
@@ -96,10 +96,13 @@ pause
 [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_coupled_circuit_newton_reordered2 ...
                                            (device, material, constants, algorithm,
                                             Vin, nin, pin, tspan, @vbcs);
+
+pause
+
 %% (pseudo)transient simulation
-%[V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_coupled_circuit_newton ...
-%                                          (device, material, constants, algorithm,
-%                                           Vin, nin, pin, tspan, @vbcs);
+[V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_coupled_circuit_newton ...
+                                          (device, material, constants, algorithm,
+                                           Vin, nin, pin, tspan, @vbcs);
 
 %dV   = diff (V, [], 1);
 %dx   = diff (device.x);

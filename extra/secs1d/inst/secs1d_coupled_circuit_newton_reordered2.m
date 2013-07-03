@@ -16,10 +16,15 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
   [A, B, C, r, F, contacts] = va (t);
   Nextvars  = numel(F);
 
-  indexing1 = 1:3:3*Nnodes;
-  indexing2 = 2:3:3*Nnodes;
-  indexing3 = 3:3:3*Nnodes;
-  indexing4 = (1:Nextvars) + 3 * Nnodes;
+  %%% node ordering
+  indexing.V = 1:3:3*Nnodes;
+  indexing.n = 2:3:3*Nnodes;
+  indexing.p = 3:3:3*Nnodes;
+  %%% staggered ordering
+  %% indexing.V = 1:Nnodes;
+  %% indexing.n = (1:Nnodes) + Nnodes;
+  %% indexing.p = (1:Nnodes) + 2 * Nnodes;
+  indexing.ext = (1:Nextvars) + 3 * Nnodes;
   
   M = bim1a_reaction (device.x, 1, 1);
 
@@ -45,11 +50,11 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
                               algorithm, V2, n2, p2, F2, 
                               V(:, tstep-1), n(:, tstep-1),
                               p(:, tstep-1), F(:, tstep-1), 
-                              dt, A, B, C, r, contacts); 
+                              dt, A, B, C, r, contacts, indexing); 
 
       jac = compute_jacobian (device, material, constants, 
                               algorithm, V2, n2, p2, F2, 
-                              dt, A, B, C, r, contacts);
+                              dt, A, B, C, r, contacts, indexing);
 
       J = sparse(rows(jac{1, 1}), columns(jac{1, 1}));
 
@@ -64,10 +69,10 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
       dn = dp = dV = zeros(rows (n), 1);
       dF = zeros (numel(F), 1);
 
-      dV = delta (indexing1) * algorithm.colscaling(1);
-      dn = delta (indexing2) * algorithm.colscaling(2);
-      dp = delta (indexing3) * algorithm.colscaling(3);
-      dF = delta (indexing4) * algorithm.colscaling(4);
+      dV = delta (indexing.V) * algorithm.colscaling(1);
+      dn = delta (indexing.n) * algorithm.colscaling(2);
+      dp = delta (indexing.p) * algorithm.colscaling(3);
+      dF = delta (indexing.ext) * algorithm.colscaling(4);
 
       tkv = 1; 
       tkn = 1;
@@ -136,10 +141,13 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
         reject = true;
         break;
       endif
-      
+
       figure (1)
-      semilogy (resnlin(1:in));
-      %drawnow;
+      semilogy (1:in, resnlin(1:in),'bo-');
+      xlim([1,15]);
+      ylim([5e-9,5e-2]);
+      drawnow        
+
       if (incr1 < algorithm.toll)
         printf ("fixed point iteration %d, time step %d, ", in, tstep);
         printf ("model time %g: convergence reached incr = %g ", t, incr1);
@@ -208,21 +216,16 @@ function res_full = compute_residual ...
                       (device, material, constants, 
                        algorithm, V, n, p, F, 
                        V0, n0, p0, F0, deltat, 
-                       A, B, C, r, contacts)
+                       A, B, C, r, contacts, indexing)
 
   Nnodes    = numel (device.x);
   Nelements = Nnodes - 1;
   Nextvars  = numel(F);
 
-  %%% node ordering
-  indexing1 = 1:3:3*Nnodes;
-  indexing2 = 2:3:3*Nnodes;
-  indexing3 = 3:3:3*Nnodes;
-  %%% staggered ordering
-  ## indexing1 = 1:Nnodes;
-  ## indexing2 = (1:Nnodes) + Nnodes;
-  ## indexing3 = (1:Nnodes) + 2 * Nnodes;
-  indexing4 = (1:Nextvars) + 3 * Nnodes;
+  indexing1 = indexing.V;
+  indexing2 = indexing.n; 
+  indexing3 = indexing.p;
+  indexing4 = indexing.ext; 
   totN = indexing4(end);
   
   [mobilityn, mobilityp] = compute_mobilities ...
@@ -291,7 +294,7 @@ endfunction
 function Jacob = compute_jacobian ...
                  (device, material, constants, 
                   algorithm, V, n, p, F, 
-                  deltat, A, B, C, r, contacts)
+                  deltat, A, B, C, r, contacts, indexing)
 
   Nnodes    = numel (device.x);
   Nelements = Nnodes - 1;
@@ -308,15 +311,10 @@ function Jacob = compute_jacobian ...
 
   epsilon    = material.esi * ones (Nelements, 1);
   
-  %%% node ordering
-  indexing1 = 1:3:3*Nnodes;
-  indexing2 = 2:3:3*Nnodes;
-  indexing3 = 3:3:3*Nnodes;
-  %%% staggered ordering
-  ## indexing1 = 1:Nnodes;
-  ## indexing2 = (1:Nnodes) + Nnodes;
-  ## indexing3 = (1:Nnodes) + 2 * Nnodes;
-  indexing4 = (1:Nextvars) + 3 * Nnodes;
+  indexing1 = indexing.V;
+  indexing2 = indexing.n; 
+  indexing3 = indexing.p;
+  indexing4 = indexing.ext; 
   totN = indexing4(end);
 
   Cscale = algorithm.colscaling;

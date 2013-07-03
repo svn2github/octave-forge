@@ -3,7 +3,7 @@ constants = secs1d_physical_constants_fun ();
 material  = secs1d_silicon_material_properties_fun (constants);
 
 % geometry
-Nelements = 9;
+Nelements = 99;
 L  = 100e-6;          % [m] 
 xm = L/2;
 device.W = 1e-6 * 1e-6;
@@ -70,10 +70,8 @@ algorithm.lmaxit     = 100;
 algorithm.ptoll      = 1e-08;
 algorithm.pmaxit     = 1000;
 algorithm.colscaling = [10 1e21 1e21 1];
-algorithm.rowscaling = [1e7 1e-7 1e-7 1];
-%%algorithm.colscaling = [1 1e-20 1e-20 1];
-%%algorithm.rowscaling = [1e-20 1e23 1e23 1e-00];
-algorithm.maxnpincr  = 1.0e-5;
+algorithm.rowscaling = [1e0 1e-7 1e-7 1];
+algorithm.maxnpincr  = 1.0e-2;
 
 %% compute resistance
 u = secs1d_mobility_model_noscale ...

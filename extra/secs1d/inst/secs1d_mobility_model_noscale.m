@@ -16,15 +16,23 @@
 %% You should have received a copy of the GNU General Public License
 %% along with SECS1D; If not, see <http://www.gnu.org/licenses/>.
 
-%% u = secs1d_mobility_model_noscale (x, n, p, Na, Nd, E, carrier)
+%% u = secs1d_mobility_model_noscale (device, material, constants, algorithm, E, V, n, p, Fn, Fp, carrier)
 %% FIXME: add documentation!!
 
 function u = secs1d_mobility_model_noscale ...
       (device, material, constants, algorithm, E, V, n, p, Fn, Fp, carrier)
-
+  
+  if (isfield(device, "msh"))
+    meshelems = device.msh.t;
+  else %1D case
+    meshelems = [1:(numel(device.x) - 1); 
+             2: numel(device.x); 
+             1:(numel(device.x) - 1)];
+  end
   t = 300 * ones (size (n));                %[K]
   t_300 = 300;                              %[K]
-  t_elem =  .5 * t(2:end) + .5 * t(1:end-1);
+  %t_elem =  .5 * t(2:end) + .5 * t(1:end-1);
+  t_elem = sum(t(meshelems(1:end-1, :)),1)(:) / (rows(meshelems) - 1);
     
   if (carrier =='n')
     %% FIXME: move parameters to material properties file
@@ -56,7 +64,8 @@ function u = secs1d_mobility_model_noscale ...
     error ("Mobility models only defined for electons (carrier=\'n\') or holes (carrier=\'p\')")
   endif
 
-  muph  = .5 * mu_ph_nodes(2:end) + .5 * mu_ph_nodes(1:end-1);
+  %%muph  = .5 * mu_ph_nodes(2:end) + .5 * mu_ph_nodes(1:end-1);
+  muph = sum(mu_ph_nodes(meshelems(1:end-1, :)),1)(:) / (rows(meshelems) - 1);
   u     = (muph*(alpha +1)) ./ ...
       (alpha + (1 + (((alpha + 1) * muph .* abs(E)) ./ vsat_m) .^ beta_m) .^ 
        (1./beta_m));

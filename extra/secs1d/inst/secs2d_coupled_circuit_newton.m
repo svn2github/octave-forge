@@ -1,30 +1,39 @@
 function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
-         secs1d_coupled_circuit_newton_reordered2 ...
+         secs2d_coupled_circuit_newton ...
            (device, material, constants, algorithm, 
             Vin, nin, pin, tspan, va)    
   
   tags = {'V', 'n', 'p', 'F'};
   rejected = 0;
-  Nnodes = numel (device.x);
-
+  nnodes = columns (device.mesh.p);
 
   dt = (tspan(2) - tspan(1)) / 1000;
   t(tstep = 1) = tspan (1);
 
   [V, n, p] = deal (Vin, nin, pin);  
   
-  [A, B, C, r, F, contacts] = va (t);
+  [A, B, C, r, F, pins] = va (t);
   Nextvars  = numel(F);
+  inodes = 1:nnodes;
+  for iii = 1 : numel (pins);
+    dnodes{iii} = bim2c_unknowns_on_side (msh, device.contacts{iii});
+    if isempty(dnodes{iii});
+      error("Error: circuit pin \#%d is not connected to the device. Check mesh boundary labeling.", iii)
+    endif
+    inodes = setdiff (inodes, dnodes{iii});
+  endfor
+
+
 
   %%% node ordering
-  indexing.V = 1:3:3*Nnodes;
-  indexing.n = 2:3:3*Nnodes;
-  indexing.p = 3:3:3*Nnodes;
+  indexing.V = 1:3:3*nnodes;
+  indexing.n = 2:3:3*nnodes;
+  indexing.p = 3:3:3*nnodes;
   %%% staggered ordering
-  %% indexing.V = 1:Nnodes;
-  %% indexing.n = (1:Nnodes) + Nnodes;
-  %% indexing.p = (1:Nnodes) + 2 * Nnodes;
-  indexing.ext = (1:Nextvars) + 3 * Nnodes;
+  %% indexing.V = 1:nnodes;
+  %% indexing.n = (1:nnodes) + nnodes;
+  %% indexing.p = (1:nnodes) + 2 * nnodes;
+  indexing.ext = (1:Nextvars) + 3 * nnodes;
   
   M = bim1a_reaction (device.x, 1, 1);
 
@@ -50,11 +59,11 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
                               algorithm, V2, n2, p2, F2, 
                               V(:, tstep-1), n(:, tstep-1),
                               p(:, tstep-1), F(:, tstep-1), 
-                              dt, A, B, C, r, contacts, indexing); 
+                              dt, A, B, C, r, pins, indexing); 
 
       jac = compute_jacobian (device, material, constants, 
                               algorithm, V2, n2, p2, F2, 
-                              dt, A, B, C, r, contacts, indexing);
+                              dt, A, B, C, r, pins, indexing);
 
       J = sparse(rows(jac{1, 1}), columns(jac{1, 1}));
 
@@ -109,8 +118,8 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
                (norm (log (n0), inf) + log (algorithm.colscaling(2)));
       incr0p = norm (log (p2./p0), inf) / ...
                (norm (log (p0), inf) + log (algorithm.colscaling(3)));
-      incr0F = norm (F2(contacts) - F0(contacts), inf) / ...
-               (norm (F0(contacts), inf) + algorithm.colscaling(4));
+      incr0F = norm (F2(pins) - F0(pins), inf) / ...
+               (norm (F0(pins), inf) + algorithm.colscaling(4));
 
       [incr0, whichone] = max ([incr0v, incr0n, incr0p, incr0F]);
       if (incr0 > algorithm.maxnpincr)
@@ -129,8 +138,8 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
       incr1p = norm (log (p2./p1), inf) / ...
                (norm (log (p0), inf) + log (algorithm.colscaling(3)));
 
-      incr1F = norm (F2(contacts) - F1(contacts), inf) / ...
-               (norm (F0(contacts), inf) + algorithm.colscaling(4));
+      incr1F = norm (F2(pins) - F1(pins), inf) / ...
+               (norm (F0(pins), inf) + algorithm.colscaling(4));
       
       [incr1, whichone] = max ([incr1v, incr1n, incr1p, incr1F]);
       resnlin(in) = incr1;
@@ -216,10 +225,10 @@ function res_full = compute_residual ...
                       (device, material, constants, 
                        algorithm, V, n, p, F, 
                        V0, n0, p0, F0, deltat, 
-                       A, B, C, r, contacts, indexing)
+                       A, B, C, r, pins, indexing)
 
-  Nnodes    = numel (device.x);
-  Nelements = Nnodes - 1;
+  nnodes    = numel (device.x);
+  Nelements = nnodes - 1;
   Nextvars  = numel(F);
 
   indexing1 = indexing.V;
@@ -245,10 +254,10 @@ function res_full = compute_residual ...
   res1 += bim1a_rhs (device.x, 1, constants.q * (n - p - device.D));
   res1(1)   = A11(1, 1) * (V(1) + constants.Vth *
                                   log (p(1) ./ device.ni(1)) - 
-                           F(contacts(1)));
+                           F(pins(1)));
   res1(end) = A11(end, end) * (V(end) + constants.Vth *
                                         log (p(end) ./ device.ni(end)) -
-                               F(contacts(2)));
+                               F(pins(2)));
 
   A22 = bim1a_advection_diffusion ...
           (device.x, mobilityn * constants.Vth, 
@@ -292,10 +301,10 @@ endfunction
 function Jacob = compute_jacobian ...
                  (device, material, constants, 
                   algorithm, V, n, p, F, 
-                  deltat, A, B, C, r, contacts, indexing)
+                  deltat, A, B, C, r, pins, indexing)
 
-  Nnodes    = numel (device.x);
-  Nelements = Nnodes - 1;
+  nnodes    = numel (device.x);
+  Nelements = nnodes - 1;
   Nextvars  = numel(F);
   [mobilityn, mobilityp] = ...
   compute_mobilities (device, material, constants, algorithm, V, n, p);
@@ -335,7 +344,7 @@ function Jacob = compute_jacobian ...
   Jacob{1, 3} = sparse(indexing1(iii), indexing3(jjj), 
                        -Cscale(3) * vvv / Rscale(1), totN, totN);
   
-  Jacob{1, 4} = sparse (indexing1([1, Nnodes]), indexing4(contacts), 
+  Jacob{1, 4} = sparse (indexing1([1, nnodes]), indexing4(pins), 
                         Cscale(4) * [-JVV(1, 1); -JVV(end, end)] / 
                         Rscale(1), totN, totN);
   

@@ -52,11 +52,11 @@ function [Ahere, Bhere, Chere, rhere, xhere, contacts] = vbcs (t)
   rhere = [0, 0; 0, 0];
   contacts = [1, 2];
   C1 = sin(2*pi*t/1e-4);
-  Chere = [C1; 0]
+  Chere = [C1; 0];
 endfunction
 
 % tolerances for convergence checks
-algorithm.toll       = 1e-3;
+algorithm.toll       = 1e-5;
 algorithm.ltol       = 1e-10;
 algorithm.maxit      = 100;
 algorithm.lmaxit     = 100;
@@ -64,7 +64,7 @@ algorithm.ptoll      = 1e-12;
 algorithm.pmaxit     = 1000;
 algorithm.colscaling = [10 1e21 1e21 .1];
 algorithm.rowscaling = [1  1e-7 1e-7 .1];
-algorithm.maxnpincr  = 1e-3;
+algorithm.maxnpincr  = 1e-2;
 
 %% initial guess via stationary simulation
 [nin, pin, Vin, Fnin, Fpin, Jn, Jp, it, res] = secs1d_dd_gummel_map_noscale ...
@@ -72,11 +72,11 @@ algorithm.maxnpincr  = 1e-3;
 
 close all; secs1d_logplot (device.x, device.D, 'x-'); pause
 
-%% (pseudo)transient simulation
-[V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_coupled_circuit_newton ...
-                                           (device, material, constants, algorithm,
-                                            Vin, nin, pin, tspan, @vbcs);
-
+%%%% (pseudo)transient simulation
+%%[V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_coupled_circuit_newton ...
+%%                                           (device, material, constants, algorithm,
+%%                                            Vin, nin, pin, tspan, @vbcs);
+%%
 pause
 
 %% (pseudo)transient simulation

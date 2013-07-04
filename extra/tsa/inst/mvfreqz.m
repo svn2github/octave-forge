@@ -1,6 +1,6 @@
-function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, PDCF, coh,GGC,Af,GPDC,GGC2]=mvfreqz(B,A,C,N,Fs)
+function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, PDCF, coh,GGC,Af,GPDC,GGC2, DCOH]=mvfreqz(B,A,C,N,Fs)
 % MVFREQZ multivariate frequency response
-% [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF,pCOH2,PDCF,coh,GGC,Af,GPDC] = mvfreqz(B,A,C,f,Fs)
+% [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF,pCOH2,PDCF,coh,GGC,Af,GPDC,GGC2,DCOH] = mvfreqz(B,A,C,f,Fs)
 % [...]  = mvfreqz(B,A,C,N,Fs)
 %  
 % INPUT: 
@@ -49,6 +49,7 @@ function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, PDCF, coh,GGC,Af,GPDC,GGC2]
 % Af	Frequency transform of A(z), abs(Af.^2) is the non-normalized PDC [11]
 % PDCF 	Partial Directed Coherence Factor [2]
 % GPDC 	Generalized Partial Directed Coherence [9,10]
+% DCOH  directed coherence or Generalized DTF (GDTF) [12] (equ. 11a)
 %
 % see also: FREQZ, MVFILTER, MVAR
 % 
@@ -84,9 +85,15 @@ function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, PDCF, coh,GGC,Af,GPDC,GGC2]
 % [11] M. Eichler
 %	On the evaluation of informatino flow in multivariate systems by the directed transfer function
 %	Biol. Cybern. 94: 469-482, 2006. 	
+% [12] L. Faes, S. Erla, and G. Nollo, (2012)
+%	Measuring Connectivity in Linear Multivariate Processes: Definitions, Interpretation, and Practical Analysis
+%	Computational and Mathematical Methods in Medicine Volume 2012 (2012), Article ID 140513, 18 pages
+%	doi:10.1155/2012/140513
+
 
 %	$Id$
-%	Copyright (C) 1996-2008 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 1996-2008 by Alois Schloegl <alois.schloegl@gmail.com>	
+%	Copyright (C) 2013 Martin Billinger	
 %       This is part of the TSA-toolbox. See also 
 %       http://pub.ist.ac.at/~schloegl/matlab/tsa/
 %       http://octave.sourceforge.net/
@@ -147,6 +154,7 @@ PDCF = zeros(K1,K1,N);
 pCOH = zeros(K1,K1,N);
 GGC=zeros(K1,K1,N);
 GGC2=zeros(K1,K1,N);
+DCOH=zeros(K1,K1,N);
 invC=inv(C);
 tmp1=zeros(1,K1);
 tmp2=zeros(1,K1);
@@ -156,7 +164,8 @@ detG = zeros(N,1);
 
 %D = sqrtm(C);
 %iD= inv(D);
-ddc2 = diag(diag(C).^(-1/2)); 
+ddc2 = diag(diag(C).^(-1/2));
+ddc2i = diag(diag(C).^(1/2)); 
 for n=1:N,
         atmp = zeros(K1);
         for k = 1:p+1,
@@ -175,6 +184,7 @@ for n=1:N,
         S(:,:,n)  = h(:,:,n)*C*h(:,:,n)'/Fs;        
         S1(:,:,n) = h(:,:,n)*h(:,:,n)';        
         ctmp = ddc2*atmp;	%% used for GPDC 
+        dtmp = h(:,:,n) * ddc2i; %% used for directed coherence (DCOH)
         for k1 = 1:K1,
                 tmp = squeeze(atmp(:,k1));
                 tmp1(k1) = sqrt(tmp'*tmp);
@@ -185,12 +195,17 @@ for n=1:N,
 
                 tmp = squeeze(ctmp(:,k1));
                 tmp3(k1) = sqrt(tmp'*tmp);
+                
+                tmp = dtmp(k1,:);
+                tmp4(k1) = sqrt(tmp*tmp');
         end;
         
         PDCF(:,:,n)  = abs(atmp)./tmp2(ones(1,K1),:);
         PDC(:,:,n)   = abs(atmp)./tmp1(ones(1,K1),:);
         GPDC(:,:,n)  = abs(ctmp)./tmp3(ones(1,K1),:);
         %PDC3(:,:,n) = abs(atmp)./tmp3(:,ones(1,K1));
+        
+        DCOH(:,:,n) = abs(dtmp) ./ tmp4(ones(1,K1),:)';
         
         g = atmp/btmp;        
         G(:,:,n) = g'*invC*g;

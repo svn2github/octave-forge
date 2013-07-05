@@ -22,8 +22,23 @@
 function    II = secs1d_impact_ionization_noscale ...
       (device, material, constants, algorithm, E, Jn, Jp, V, n, p, Fn, Fp)
   
-  Fava_n = abs (diff (Fn) ./ diff (device.x));
-  Fava_p = abs (diff (Fp) ./ diff (device.x));
+  if isfield(device, "msh")
+    if (rows(device.msh.t) == 3)
+      [Ex,Ey] = bim2c_pde_gradient(device.msh, Fn);
+      Fava_n = sqrt(Ex .^ 2 + Ey .^ 2)(:);
+      [Ex,Ey] = bim2c_pde_gradient(device.msh, Fp);
+      Fava_p = sqrt(Ex .^ 2 + Ey .^ 2)(:);
+    else if (rows(device.msh.t) == 4)
+      [Ex,Ey,Ez] = bim3c_pde_gradient(device.msh, Fn);
+      Fava_n = sqrt(Ex .^ 2 + Ey .^ 2 + Ez .^ 2)(:);
+      [Ex,Ey,Ez] = bim3c_pde_gradient(device.msh, Fp);
+      Fava_p = sqrt(Ex .^ 2 + Ey .^ 2 + Ez .^ 2)(:);
+    end
+  else
+    Fava_n = abs (diff (Fn) ./ diff (device.x));
+    Fava_p = abs (diff (Fp) ./ diff (device.x));
+  end
+
 
   %% FIXME: move model parameters to material properties file
   [a_low_n, a_low_p]          = deal (7.0300e+07 ,  1.5820e+08);      # [1/m]

@@ -5,7 +5,7 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
   
   tags = {'V', 'n', 'p', 'F'};
   rejected = 0;
-  nnodes = columns (device.mesh.p);
+  nnodes = columns (device.msh.p);
 
   dt = (tspan(2) - tspan(1)) / 1000;
   t(tstep = 1) = tspan (1);
@@ -15,15 +15,15 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
   [A, B, C, r, F, pins] = va (t);
   Nextvars  = numel(F);
   inodes = 1:nnodes;
+  dnodes = sparse(numel(device.contacts), nnodes);
   for iii = 1 : numel (pins);
-    dnodes{iii} = bim2c_unknowns_on_side (msh, device.contacts{iii});
-    if isempty(dnodes{iii});
-      error("Error: circuit pin \#%d is not connected to the device. Check mesh boundary labeling.", iii)
+    this_dnodes = bim2c_unknowns_on_side (device.msh, device.contacts(iii));
+    if (sum(this_dnodes);
+      error("circuit pin #%d is not connected to the device. Check mesh boundary labeling.", iii)
     endif
-    inodes = setdiff (inodes, dnodes{iii});
+    inodes = setdiff (inodes, this_dnodes);
+    dnodes(iii, this_dnodes) = 1;
   endfor
-
-
 
   %%% node ordering
   indexing.V = 1:3:3*nnodes;
@@ -35,8 +35,6 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
   %% indexing.p = (1:nnodes) + 2 * nnodes;
   indexing.ext = (1:Nextvars) + 3 * nnodes;
   
-  M = bim1a_reaction (device.x, 1, 1);
-
   while (t < tspan(2))
 
     reject = false;
@@ -59,11 +57,13 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
                               algorithm, V2, n2, p2, F2, 
                               V(:, tstep-1), n(:, tstep-1),
                               p(:, tstep-1), F(:, tstep-1), 
-                              dt, A, B, C, r, pins, indexing); 
+                              dt, A, B, C, r, pins,
+                              indexing, dnodes, inodes); 
 
       jac = compute_jacobian (device, material, constants, 
                               algorithm, V2, n2, p2, F2, 
-                              dt, A, B, C, r, pins, indexing);
+                              dt, A, B, C, r, pins,
+                              indexing, dnodes, inodes);
 
       J = sparse(rows(jac{1, 1}), columns(jac{1, 1}));
 
@@ -197,12 +197,12 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
       Itot(1, tstep) += (1/dt) * constants.e0 * material.esir * ...
                         ((V(2, tstep) - V(1, tstep)) -
                          (V(2, tstep-1) - V(1, tstep-1))) / ...
-                        (device.x(2) - device.x(1));
+                        (device.msh(2) - device.msh(1));
 
       Itot(2, tstep) += (1/dt) * constants.e0 * material.esir * ...
                         ((V(end, tstep) - V(end-1, tstep)) -
                          (V(end, tstep-1) - V(end-1, tstep-1))) / ...
-                        (device.x(end) - device.x(end-1));
+                        (device.msh(end) - device.msh(end-1));
       
       Itot(:, tstep) *= device.W;
 
@@ -225,10 +225,11 @@ function res_full = compute_residual ...
                       (device, material, constants, 
                        algorithm, V, n, p, F, 
                        V0, n0, p0, F0, deltat, 
-                       A, B, C, r, pins, indexing)
+                       A, B, C, r, pins,
+                       indexing, dnodes, inodes);
 
-  nnodes    = numel (device.x);
-  Nelements = nnodes - 1;
+  nnodes    = columns (device.msh.p);
+  Nelements = columns (device.msh.t);
   Nextvars  = numel(F);
 
   indexing1 = indexing.V;
@@ -248,38 +249,37 @@ function res_full = compute_residual ...
   
   epsilon = material.esi * ones (Nelements, 1);
   
-  A11 = bim1a_laplacian (device.x, epsilon, 1);
-
+  A11 = bim2a_laplacian (device.msh, epsilon, 1);
   res1  = A11 * V;
-  res1 += bim1a_rhs (device.x, 1, constants.q * (n - p - device.D));
-  res1(1)   = A11(1, 1) * (V(1) + constants.Vth *
-                                  log (p(1) ./ device.ni(1)) - 
-                           F(pins(1)));
-  res1(end) = A11(end, end) * (V(end) + constants.Vth *
-                                        log (p(end) ./ device.ni(end)) -
-                               F(pins(2)));
+  res1 += bim2a_rhs (device.msh, 1, constants.q * (n - p - device.D));
 
-  A22 = bim1a_advection_diffusion ...
-          (device.x, mobilityn * constants.Vth, 
+  A22 = bim2a_advection_diffusion ...
+          (device.msh, mobilityn * constants.Vth, 
            1, 1, V / constants.Vth);
   res2 = A22 * n;
-  res2 += bim1a_rhs (device.x, 1, 
+  res2 += bim2a_rhs (device.msh, 1, 
                      (Rn  + 1/deltat) .* n - (Gn + n0 * 1/ deltat));
-  res2([1, end]) = (n([1, end]) - n0([1, end])) .* ...
-                   ([A22(1, 1); A22(end, end)]);
 
-  A33 = bim1a_advection_diffusion ...
-          (device.x, mobilityp * constants.Vth , 
+  A33 = bim2a_advection_diffusion ...
+          (device.msh, mobilityp * constants.Vth , 
            1, 1, - V / constants.Vth);
   res3  = A33 * p;
-  res3 += bim1a_rhs (device.x, 1, (Rp + 1/deltat) .* p - 
+  res3 += bim2a_rhs (device.msh, 1, (Rp + 1/deltat) .* p - 
                                   (Gp + p0 * 1/ deltat));
-  res3([1, end]) = (p([1, end]) - p0([1, end])) .* ...
-                   ([A33(1, 1); A33(end, end)]);
-
-  Jn = -constants.q * A22([1, end], :) * n;
-  Jp =  constants.q * A33([1, end], :) * p;
-  Jd = A11([1, end], :) * ((V-V0) / deltat);
+  for iii = 1 : numel(pins)
+    thisdnodes = find(dnodes(iii,:));
+    res1(thisdnodes) = diag(A11(thisdnodes,thisdnodes)) .* ...
+            (V(thisdnodes) + 
+             constants.Vth * log (p(thisdnodes) ./ device.ni(thisdnodes)) -
+             F(pins(iii)));
+    res2(thisdnodes) = diag(A22(thisdnodes,thisdnodes)) .* ...
+            (n(thisdnodes) - n0(thisdnodes));
+    res3(thisdnodes) = diag(A33(thisdnodes,thisdnodes)) .* ...
+            (p(thisdnodes) - p0(thisdnodes));
+    Jn(iii) = sum(-constants.q * A22(thisdnodes,:) * n);
+    Jp(iii) = sum(constants.q * A33(thisdnodes, :) * p);
+    Jd(iii) = sum(A11(thisdnodes, :) * ((V-V0) / deltat));
+  endfor
 
   Jtot = Jn + Jp + Jd;
 
@@ -287,7 +287,7 @@ function res_full = compute_residual ...
   res4 = ((A * (F - F0)) / deltat ...
          + B * F ...
          + C ...
-         + r * Jtot(:) * device.W);
+         + r * Jtot(:) * device.thickness);
   res4 = circuit_scaling * res4;
 
   res_full = zeros(totN, 1);
@@ -301,10 +301,13 @@ endfunction
 function Jacob = compute_jacobian ...
                  (device, material, constants, 
                   algorithm, V, n, p, F, 
-                  deltat, A, B, C, r, pins, indexing)
+                  deltat, A, B, C, r, pins,
+                  indexing, dnodes, inodes);
 
-  nnodes    = numel (device.x);
-  Nelements = nnodes - 1;
+  nnodes    = columns (device.msh.p);
+  Nelements = columns (device.msh.t);
+  alldnodes = setdiff (1:nnodes, inodes);
+
   Nextvars  = numel(F);
   [mobilityn, mobilityp] = ...
   compute_mobilities (device, material, constants, algorithm, V, n, p);
@@ -313,8 +316,8 @@ function Jacob = compute_jacobian ...
   generation_recombination_model (device, material, constants, algorithm, 
                                   mobilityn, mobilityp, V, n, p);
 
-  nm         = 2 ./ (1 ./ n(2:end) + 1 ./ n(1:end-1));
-  pm         = 2 ./ (1 ./ p(2:end) + 1 ./ p(1:end-1));
+  nm = 3 ./ sum(1 ./ n(device.msh.t(1:end-1, :)),1);
+  pm = 3 ./ sum(1 ./ p(device.msh.t(1:end-1, :)),1);
 
   epsilon    = material.esi * ones (Nelements, 1);
   
@@ -327,16 +330,17 @@ function Jacob = compute_jacobian ...
   Cscale = algorithm.colscaling;
   Rscale = algorithm.rowscaling;
 
-  A11 = bim1a_laplacian (device.x, epsilon, 1);
-  JVV = A11;
-  JVV(1, 2:end) = 0;
-  JVV(end, 1:end-1) = 0;
+  A11 = bim2a_laplacian (device.msh, epsilon, 1);
+  aaa = diag(A11);
+  JVV = sparse(alldnodes,alldnodes,aaa(alldnodes),nnodes,nnodes);
+  JVV += A11(inodes,:);
+  
   [iii, jjj, vvv] = find (JVV);
   Jacob{1, 1} = sparse(indexing1(iii), indexing1(jjj), 
                        Cscale(1) * vvv / Rscale(1), totN, totN);
 
-  JVn = constants.q * bim1a_reaction (device.x, 1, 1);
-  JVn([1, end], :) = 0;
+  JVn = constants.q * bim1a_reaction (device.msh, 1, 1);
+  JVn(alldnodes, :) = 0;
   [iii, jjj, vvv] = find (JVn);
   Jacob{1, 2} = sparse(indexing1(iii), indexing2(jjj), 
                        Cscale(2) * vvv / Rscale(1), totN, totN);
@@ -344,51 +348,56 @@ function Jacob = compute_jacobian ...
   Jacob{1, 3} = sparse(indexing1(iii), indexing3(jjj), 
                        -Cscale(3) * vvv / Rscale(1), totN, totN);
   
-  Jacob{1, 4} = sparse (indexing1([1, nnodes]), indexing4(pins), 
-                        Cscale(4) * [-JVV(1, 1); -JVV(end, end)] / 
+
+  Jacob{1, 4} = sparse (indexing1(alldnodes), indexing4(pins), 
+                        Cscale(4) * (-JVV * dnodes) / 
                         Rscale(1), totN, totN);
   
-  A21 = - bim1a_laplacian (device.x, mobilityn .* nm, 1);
-  JnV = A21; JnV([1,end],:) = 0;
+  A21 = - bim1a_laplacian (device.msh, mobilityn .* nm, 1);
+  JnV = A21; JnV(alldnodes,:) = 0;
   [iii, jjj, vvv] = find (JnV);
   Jacob{2, 1} = sparse(indexing2(iii), indexing1(jjj), 
                        Cscale(1) * vvv / Rscale(2), totN, totN);
 
-  A22 = bim1a_advection_diffusion (device.x, mobilityn * constants.Vth, 
+  A22 = bim1a_advection_diffusion (device.msh, mobilityn * constants.Vth, 
                                    1, 1, V / constants.Vth);
   
-  Jnn = A22 + bim1a_reaction (device.x, 1, Rn + (1 / deltat));
-  Jnn(1, 2:end) = 0; Jnn(end, 1:end-1) = 0; 
+  Jnn = A22 + bim1a_reaction (device.msh, 1, Rn + (1 / deltat));
+  aaa = diag(Jnn);
+  Jnn(alldnodes,:) = 0;
+  Jnn += sparse(alldnodes,alldnodes,aaa(alldnodes),nnodes,nnodes);
   [iii, jjj, vvv] = find (Jnn);
   Jacob{2, 2} = sparse(indexing2(iii), indexing2(jjj),
                        Cscale(2) * vvv / Rscale(2), totN, totN);
   
-  Jnp = bim1a_reaction (device.x, 1, Rp);
-  Jnp([1, end], :) = 0; 
+  Jnp = bim1a_reaction (device.msh, 1, Rp);
+  Jnp(alldnodes, :) = 0; 
   [iii, jjj, vvv] = find (Jnp);
   Jacob{2, 3} = sparse(indexing2(iii), indexing3(jjj), 
                        Cscale(3) * vvv / Rscale(2), totN, totN);
   
   Jacob{2, 4} = sparse (totN, totN);
 
-  A31 = bim1a_laplacian (device.x, mobilityp .* pm, 1);
-  JpV = A31; JpV([1,end],:) = 0;
+  A31 = bim1a_laplacian (device.msh, mobilityp .* pm, 1);
+  JpV = A31; JpV(alldnodes,:) = 0;
   [iii, jjj, vvv] = find (JpV);
   Jacob{3, 1} = sparse(indexing3(iii), indexing1(jjj), 
                        Cscale(1) * vvv / Rscale(3), totN, totN);
 
-  Jpn = bim1a_reaction (device.x, 1, Rn);
-  Jpn([1, end], :) = 0;
+  Jpn = bim1a_reaction (device.msh, 1, Rn);
+  Jpn(alldnodes, :) = 0;
   [iii, jjj, vvv] = find (Jpn);
   Jacob{3, 2} = sparse(indexing3(iii), indexing2(jjj), 
                        Cscale(2) * vvv / Rscale(3), totN, totN);
 
 
-  A33 = bim1a_advection_diffusion (device.x, mobilityp * constants.Vth, 
+  A33 = bim1a_advection_diffusion (device.msh, mobilityp * constants.Vth, 
                                    1, 1, - V / constants.Vth);
-
-  Jpp = A33 + bim1a_reaction (device.x, 1, Rp + (1 / deltat));
-  Jpp(1, 2:end) = 0; Jpp(end, 1:end-1) = 0;
+  
+  Jpp = A33 + bim1a_reaction (device.msh, 1, Rp + (1 / deltat));
+  aaa = diag(Jpp);
+  Jpp(alldnodes,:) = 0;
+  Jpp += sparse(alldnodes,alldnodes,aaa(alldnodes),nnodes,nnodes);
   [iii, jjj, vvv] = find (Jpp);
   Jacob{3, 3} = sparse(indexing3(iii), indexing3(jjj), 
                        Cscale(3) * vvv / Rscale(3), totN, totN);
@@ -397,20 +406,20 @@ function Jacob = compute_jacobian ...
 
   circuit_scaling = eye(size(A));
 
-  JxV = sparse (circuit_scaling * r * device.W * ...
-        (A11([1, end], :) + constants.q * (- A21([1, end], :) + A31([1, end], :))));
+  JxV = sparse (circuit_scaling * r * dnodes * device.W * ...
+        (A11(alldnodes, :) + constants.q * (- A21(alldnodes, :) + A31(alldnodes, :))));
   [iii, jjj, vvv]  = find (JxV);
   Jacob{4, 1} = sparse(indexing4(iii), indexing1(jjj), 
                        Cscale(1) * vvv / Rscale(4), totN, totN);
   
-  Jxn = sparse (circuit_scaling * r * device.W * 
-                (-constants.q) * A22([1, end], :));
+  Jxn = sparse (circuit_scaling * r * dnodes * device.W * 
+                (-constants.q) * A22(alldnodes, :));
   [iii, jjj, vvv] = find(Jxn);
   Jacob{4, 2} = sparse(indexing4(iii), indexing2(jjj), 
                        Cscale(2) * vvv / Rscale(4), totN, totN);
   
-  Jxp = sparse (circuit_scaling * r * device.W * constants.q * 
-                A33([1, end], :));
+  Jxp = sparse (circuit_scaling * r * dnodes * device.W *
+                   constants.q * A33(alldnodes, :));
   [iii, jjj, vvv] = find(Jxp);
   Jacob{4, 3} = sparse(indexing4(iii), indexing3(jjj), 
                        Cscale(3) * vvv / Rscale(4), totN, totN);
@@ -425,16 +434,22 @@ endfunction
 function [Jn, Jp] = compute_currents ...
                       (device, material, constants, algorithm, 
                        mobilityn, mobilityp, V, n, p, Fn, Fp)
-  dV  = diff (V);
-  dx = diff (device.x);
 
-  [Bp, Bm] = bimu_bernoulli (dV ./ constants.Vth);
+  [Ex,Ey] = bim2c_pde_gradient(device.msh, -Vin) / constants.Vth;
+  [dndx,dndy] = bim2c_pde_gradient(device.msh, n);
+  [dpdx,dpdy] = bim2c_pde_gradient(device.msh, p);
+  nelemental = sum(n(device.msh.t(1:end-1, :)),1)(:) / 3;
+  pelemental = sum(p(device.msh.t(1:end-1, :)),1)(:) / 3;
 
-  Jn =  constants.q * constants.Vth * mobilityn .* ...
-        (n(2:end) .* Bp - n(1:end-1) .* Bm) ./ dx; 
+  Jn.x = constants.q * constants.Vth * mobilityn .* ...
+        (dndx + Ex .* nelemental) ; 
+  Jn.y = constants.q * constants.Vth * mobilityn .* ...
+        (dndy + Ey .* nelemental) ; 
 
-  Jp = -constants.q * constants.Vth * mobilityp .* ...
-        (p(2:end) .* Bm - p(1:end-1) .* Bp) ./ dx; 
+  Jp.x = constants.q * constants.Vth * mobilityp .* ...
+        (- dpdx + Ex .* pelemental) ; 
+  Jp.y = constants.q * constants.Vth * mobilityp .* ...
+        (- dpdx + Ex .* pelemental) ; 
   
 endfunction
 
@@ -445,14 +460,17 @@ function [mobilityn, mobilityp] = compute_mobilities ...
   Fp = V + constants.Vth * log (p ./ device.ni);
   Fn = V - constants.Vth * log (n ./ device.ni);
 
-  E = -diff (V) ./ diff (device.x);
+  [E.x,E.y] = bim2c_pde_gradient(device.msh, -Vin);
+  E.x = E.x(:);
+  E.y = E.y(:);
+  E.mag=sqrt((E.x) .^ 2 + (E.y) .^ 2)(:);
 
   mobilityn = secs1d_mobility_model_noscale ...
-                (device, material, constants, algorithm, E, 
+                (device, material, constants, algorithm, E.mag, 
                  V, n, p, Fn, Fp, 'n');
 
   mobilityp = secs1d_mobility_model_noscale ...
-                (device, material, constants, algorithm, E, 
+                (device, material, constants, algorithm, E.mag, 
                  V, n, p, Fn, Fp, 'p');
 
 endfunction
@@ -478,7 +496,11 @@ function [Rn, Rp, Gn, Gp, II] = generation_recombination_model ...
   Fp = V + constants.Vth * log (p ./ device.ni);
   Fn = V - constants.Vth * log (n ./ device.ni);
 
-  E = -diff (V) ./ diff (device.x);
+  [E.x,E.y] = bim2c_pde_gradient(device.msh, -Vin);
+  E.x = E.x(:);
+  E.y = E.y(:);
+  E.mag=sqrt((E.x) .^ 2 + (E.y) .^ 2)(:);
+  
 
   [Jn, Jp] = compute_currents ...
                (device, material, constants, algorithm, 
@@ -486,7 +508,7 @@ function [Rn, Rp, Gn, Gp, II] = generation_recombination_model ...
 
   II = secs1d_impact_ionization_noscale ...
          (device, material, constants, algorithm, 
-          E, Jn, Jp, V, n, p, Fn, Fp);
+          E.mag, Jn.mag, Jp.mag, V, n, p, Fn, Fp);
 
 endfunction
 

@@ -19,8 +19,10 @@ device.thickness = 1e-6;% [m]
 device.msh = bim2c_mesh_properties (
                 msh2m_structured_mesh (
                   L*xdiv, W*ydiv, 
-                  1, [0, 2, 0, 1] % first pin on left edge, second on right edge
+                  1, 1:4
                   ));
+% first pin on left edge, second on right edge
+device.contacts = [0, 2, 0, 1];
 device.x = ((device.msh).p(1, :)).';
 
 device.sinodes = [1:numel(device.x)];
@@ -60,9 +62,9 @@ nin = ((abs(device.D) + sqrt (abs(device.D) .^ 2 + 4 * device.ni .^2)) .* ...
 
 Vin = Fn + constants.Vth * log (nin ./ device.ni);
 
-function [Ahere, Bhere, Chere, rhere, xhere, contacts] = vbcs (t)
+function [Ahere, Bhere, Chere, rhere, xhere, pins] = vbcs (t)
   persistent A1 B1 C1 x1
-  persistent Ahere Bhere Chere rhere xhere contacts
+  persistent Ahere Bhere Chere rhere xhere pins
   %in this case  it's not necessary for A2 B2 C2
   if (isempty (A1))
     load ("resistor_circuit_matrices_full")
@@ -71,7 +73,7 @@ function [Ahere, Bhere, Chere, rhere, xhere, contacts] = vbcs (t)
     Bhere = [B1, zeros(size(C1)); zeros(size(C1))', 1];
     xhere = [x1; 0];
     rhere = [r1, zeros(size(x1)); 0, 0];
-    contacts = [1, numel(x1) + 1];
+    pins = [1, numel(x1) + 1];
   endif
   C1(4) = -min(t,1);
   Chere = [C1; 0];

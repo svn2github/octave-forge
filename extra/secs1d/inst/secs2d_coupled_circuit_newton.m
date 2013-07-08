@@ -210,7 +210,7 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
           Jp_pins(iii) = sum(constants.q * A33(thisdnodes, :) * p(:, tstep));
           Jd_pins(iii) = sum(A11(thisdnodes, :) * (V(:, tstep)-V(:, max(tstep-1,0)) / dt));
       endfor
-      Itot = (Jn_pins + Jp_pins + Jd_pins)(:) * device.thickness;
+      Itot(:, tstep) = (Jn_pins + Jp_pins + Jd_pins)(:) * device.thickness;
       
       figure (2)
       plotyy (tout, Itot(2, :), tout, F(pins(2), :) - F(pins(1), :));

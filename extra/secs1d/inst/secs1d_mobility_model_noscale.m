@@ -31,7 +31,6 @@ function u = secs1d_mobility_model_noscale ...
   end
   t = 300 * ones (size (n));                %[K]
   t_300 = 300;                              %[K]
-  %t_elem =  .5 * t(2:end) + .5 * t(1:end-1);
   t_elem = sum(t(meshelems(1:end-1, :)),1)(:) / (rows (meshelems) - 1);
     
   if (carrier =='n')
@@ -64,7 +63,6 @@ function u = secs1d_mobility_model_noscale ...
     error ("Mobility models only defined for electons (carrier=\'n\') or holes (carrier=\'p\')")
   endif
 
-  %%muph  = .5 * mu_ph_nodes(2:end) + .5 * mu_ph_nodes(1:end-1);
   muph = sum(mu_ph_nodes(meshelems(1:end-1, :)),1)(:) / (rows (meshelems) - 1);
   u     = (muph*(alpha +1)) ./ ...
       (alpha + (1 + (((alpha + 1) * muph .* abs(E)) ./ vsat_m) .^ beta_m) .^ 

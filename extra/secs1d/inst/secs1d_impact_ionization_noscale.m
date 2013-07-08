@@ -29,7 +29,6 @@ function    II = secs1d_impact_ionization_noscale ...
       [Ex,Ey] = bim2c_pde_gradient (device.msh, Fp);
       Fava_p = sqrt(Ex .^ 2 + Ey .^ 2)(:);
     elseif (rows (device.msh.t) == 5)
-      %% error("no 3d gradient computation routine available")
       [Ex,Ey,Ez] = bim3c_pde_gradient (device.msh, Fn);
       Fava_n = sqrt(Ex .^ 2 + Ey .^ 2 + Ez .^ 2)(:);
       [Ex,Ey,Ez] = bim3c_pde_gradient (device.msh, Fp);

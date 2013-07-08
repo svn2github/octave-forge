@@ -6,7 +6,7 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
   tags = {'V', 'n', 'p', 'F'};
   rejected = 0;
   nnodes = columns (device.msh.p);
-
+  Nelements = columns(device.msh.t);
   dt = (tspan(2) - tspan(1)) / 1000;
   t(tstep = 1) = tspan (1);
 
@@ -14,12 +14,16 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
   
   [A, B, C, r, F, pins] = va (t);
   Nextvars  = numel(F);
+  
   inodes = 1:nnodes;
   dnodes = sparse(numel(device.contacts), nnodes);
   for iii = 1 : numel (pins);
-    this_dnodes = bim2c_unknowns_on_side (device.msh, device.contacts(iii));
-    if (sum(this_dnodes);
-      error("circuit pin #%d is not connected to the device. Check mesh boundary labeling.", iii)
+    this_dnodes = bim2c_unknowns_on_side (
+                   device.msh, device.contacts(iii));
+    if (! sum(this_dnodes));
+      error((["circuit pin #%d is not connected",
+              " to the device. Check mesh bound"
+              "ary labeling."])'(:)', iii)
     endif
     inodes = setdiff (inodes, this_dnodes);
     dnodes(iii, this_dnodes) = 1;
@@ -192,23 +196,24 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
                                         algorithm, mobilityn, 
                                         mobilityp, V2, n2, p2);
 
-      Itot(:, tstep)  = Jn([1 end], tstep) + Jp([1 end], tstep);
-
-      Itot(1, tstep) += (1/dt) * constants.e0 * material.esir * ...
-                        ((V(2, tstep) - V(1, tstep)) -
-                         (V(2, tstep-1) - V(1, tstep-1))) / ...
-                        (device.msh(2) - device.msh(1));
-
-      Itot(2, tstep) += (1/dt) * constants.e0 * material.esir * ...
-                        ((V(end, tstep) - V(end-1, tstep)) -
-                         (V(end, tstep-1) - V(end-1, tstep-1))) / ...
-                        (device.msh(end) - device.msh(end-1));
+      A11 = bim2a_laplacian (device.msh, material.esi * ones (Nelements, 1), 1);
+      A22 = bim2a_advection_diffusion ...
+              (device.msh, mobilityn * constants.Vth, 
+               1, 1, V(:, tstep) / constants.Vth);
+      A33 = bim2a_advection_diffusion ...
+              (device.msh, mobilityp * constants.Vth , 
+               1, 1, - V(:, tstep) / constants.Vth);
+                                        
+      for iii = 1 : numel(pins)
+          thisdnodes = find(dnodes(iii,:));
+          Jn_pins(iii) = sum(-constants.q * A22(thisdnodes,:) * n(:, tstep));
+          Jp_pins(iii) = sum(constants.q * A33(thisdnodes, :) * p(:, tstep));
+          Jd_pins(iii) = sum(A11(thisdnodes, :) * (V(:, tstep)-V(:, max(tstep-1,0)) / dt));
+      endfor
+      Itot = (Jn_pins + Jp_pins + Jd_pins)(:) * device.thickness;
       
-      Itot(:, tstep) *= device.W;
-
-
       figure (2)
-      plotyy (tout, Itot(2, :), tout, Fn(end, :)- Fn(1, :));
+      plotyy (tout, Itot(2, :), tout, F(pins(2), :) - F(pins(1), :));
       drawnow
     
       dt *= .8 * sqrt (algorithm.maxnpincr / incr0);
@@ -316,8 +321,8 @@ function Jacob = compute_jacobian ...
   generation_recombination_model (device, material, constants, algorithm, 
                                   mobilityn, mobilityp, V, n, p);
 
-  nm = 3 ./ sum(1 ./ n(device.msh.t(1:end-1, :)),1);
-  pm = 3 ./ sum(1 ./ p(device.msh.t(1:end-1, :)),1);
+  nm = 3 ./ sum(1 ./ n(device.msh.t(1:3, :)),1)(:);
+  pm = 3 ./ sum(1 ./ p(device.msh.t(1:3, :)),1)(:);
 
   epsilon    = material.esi * ones (Nelements, 1);
   
@@ -333,13 +338,13 @@ function Jacob = compute_jacobian ...
   A11 = bim2a_laplacian (device.msh, epsilon, 1);
   aaa = diag(A11);
   JVV = sparse(alldnodes,alldnodes,aaa(alldnodes),nnodes,nnodes);
-  JVV += A11(inodes,:);
+  JVV(inodes,:) += A11(inodes,:);
   
   [iii, jjj, vvv] = find (JVV);
   Jacob{1, 1} = sparse(indexing1(iii), indexing1(jjj), 
                        Cscale(1) * vvv / Rscale(1), totN, totN);
 
-  JVn = constants.q * bim1a_reaction (device.msh, 1, 1);
+  JVn = constants.q * bim2a_reaction (device.msh, 1, 1);
   JVn(alldnodes, :) = 0;
   [iii, jjj, vvv] = find (JVn);
   Jacob{1, 2} = sparse(indexing1(iii), indexing2(jjj), 
@@ -348,21 +353,20 @@ function Jacob = compute_jacobian ...
   Jacob{1, 3} = sparse(indexing1(iii), indexing3(jjj), 
                        -Cscale(3) * vvv / Rscale(1), totN, totN);
   
-
-  Jacob{1, 4} = sparse (indexing1(alldnodes), indexing4(pins), 
-                        Cscale(4) * (-JVV * dnodes) / 
-                        Rscale(1), totN, totN);
+  Jacob{1, 4} = sparse (totN, totN);
+  Jacob{1, 4}(indexing1, indexing4(pins)) += ... 
+              Cscale(4) * (-diag(aaa) * dnodes') / Rscale(1);
   
-  A21 = - bim1a_laplacian (device.msh, mobilityn .* nm, 1);
+  A21 = - bim2a_laplacian (device.msh, mobilityn .* nm, 1);
   JnV = A21; JnV(alldnodes,:) = 0;
   [iii, jjj, vvv] = find (JnV);
   Jacob{2, 1} = sparse(indexing2(iii), indexing1(jjj), 
                        Cscale(1) * vvv / Rscale(2), totN, totN);
 
-  A22 = bim1a_advection_diffusion (device.msh, mobilityn * constants.Vth, 
+  A22 = bim2a_advection_diffusion (device.msh, mobilityn * constants.Vth, 
                                    1, 1, V / constants.Vth);
   
-  Jnn = A22 + bim1a_reaction (device.msh, 1, Rn + (1 / deltat));
+  Jnn = A22 + bim2a_reaction (device.msh, 1, Rn + (1 / deltat));
   aaa = diag(Jnn);
   Jnn(alldnodes,:) = 0;
   Jnn += sparse(alldnodes,alldnodes,aaa(alldnodes),nnodes,nnodes);
@@ -370,7 +374,7 @@ function Jacob = compute_jacobian ...
   Jacob{2, 2} = sparse(indexing2(iii), indexing2(jjj),
                        Cscale(2) * vvv / Rscale(2), totN, totN);
   
-  Jnp = bim1a_reaction (device.msh, 1, Rp);
+  Jnp = bim2a_reaction (device.msh, 1, Rp);
   Jnp(alldnodes, :) = 0; 
   [iii, jjj, vvv] = find (Jnp);
   Jacob{2, 3} = sparse(indexing2(iii), indexing3(jjj), 
@@ -378,23 +382,23 @@ function Jacob = compute_jacobian ...
   
   Jacob{2, 4} = sparse (totN, totN);
 
-  A31 = bim1a_laplacian (device.msh, mobilityp .* pm, 1);
+  A31 = bim2a_laplacian (device.msh, mobilityp .* pm, 1);
   JpV = A31; JpV(alldnodes,:) = 0;
   [iii, jjj, vvv] = find (JpV);
   Jacob{3, 1} = sparse(indexing3(iii), indexing1(jjj), 
                        Cscale(1) * vvv / Rscale(3), totN, totN);
 
-  Jpn = bim1a_reaction (device.msh, 1, Rn);
+  Jpn = bim2a_reaction (device.msh, 1, Rn);
   Jpn(alldnodes, :) = 0;
   [iii, jjj, vvv] = find (Jpn);
   Jacob{3, 2} = sparse(indexing3(iii), indexing2(jjj), 
                        Cscale(2) * vvv / Rscale(3), totN, totN);
 
 
-  A33 = bim1a_advection_diffusion (device.msh, mobilityp * constants.Vth, 
+  A33 = bim2a_advection_diffusion (device.msh, mobilityp * constants.Vth, 
                                    1, 1, - V / constants.Vth);
   
-  Jpp = A33 + bim1a_reaction (device.msh, 1, Rp + (1 / deltat));
+  Jpp = A33 + bim2a_reaction (device.msh, 1, Rp + (1 / deltat));
   aaa = diag(Jpp);
   Jpp(alldnodes,:) = 0;
   Jpp += sparse(alldnodes,alldnodes,aaa(alldnodes),nnodes,nnodes);
@@ -406,20 +410,23 @@ function Jacob = compute_jacobian ...
 
   circuit_scaling = eye(size(A));
 
-  JxV = sparse (circuit_scaling * r * dnodes * device.W * ...
-        (A11(alldnodes, :) + constants.q * (- A21(alldnodes, :) + A31(alldnodes, :))));
+  JxV = sparse (circuit_scaling * r * dnodes * device.thickness * ...
+        (A11 + constants.q * (- A21 + A31)));
+        %(A11(alldnodes, :) + constants.q * (- A21(alldnodes, :) + A31(alldnodes, :))));
   [iii, jjj, vvv]  = find (JxV);
   Jacob{4, 1} = sparse(indexing4(iii), indexing1(jjj), 
                        Cscale(1) * vvv / Rscale(4), totN, totN);
-  
-  Jxn = sparse (circuit_scaling * r * dnodes * device.W * 
-                (-constants.q) * A22(alldnodes, :));
+
+  Jxn = sparse (circuit_scaling * r * dnodes * device.thickness * 
+                (-constants.q) * A22);
+                %(-constants.q) * A22(alldnodes, :));
   [iii, jjj, vvv] = find(Jxn);
   Jacob{4, 2} = sparse(indexing4(iii), indexing2(jjj), 
                        Cscale(2) * vvv / Rscale(4), totN, totN);
   
-  Jxp = sparse (circuit_scaling * r * dnodes * device.W *
-                   constants.q * A33(alldnodes, :));
+  Jxp = sparse (circuit_scaling * r * dnodes * device.thickness *
+                   constants.q * A33);
+                   %constants.q * A33(alldnodes, :));
   [iii, jjj, vvv] = find(Jxp);
   Jacob{4, 3} = sparse(indexing4(iii), indexing3(jjj), 
                        Cscale(3) * vvv / Rscale(4), totN, totN);
@@ -435,21 +442,23 @@ function [Jn, Jp] = compute_currents ...
                       (device, material, constants, algorithm, 
                        mobilityn, mobilityp, V, n, p, Fn, Fp)
 
-  [Ex,Ey] = bim2c_pde_gradient(device.msh, -Vin) / constants.Vth;
+  [Ex,Ey] = bim2c_pde_gradient(device.msh, -V / constants.Vth);
   [dndx,dndy] = bim2c_pde_gradient(device.msh, n);
   [dpdx,dpdy] = bim2c_pde_gradient(device.msh, p);
-  nelemental = sum(n(device.msh.t(1:end-1, :)),1)(:) / 3;
-  pelemental = sum(p(device.msh.t(1:end-1, :)),1)(:) / 3;
+  nelemental = sum(n(device.msh.t(1:3, :)),1)(:) / 3;
+  pelemental = sum(p(device.msh.t(1:3, :)),1)(:) / 3;
 
   Jn.x = constants.q * constants.Vth * mobilityn .* ...
-        (dndx + Ex .* nelemental) ; 
+        (dndx(:) + Ex(:) .* nelemental) ;
   Jn.y = constants.q * constants.Vth * mobilityn .* ...
-        (dndy + Ey .* nelemental) ; 
+        (dndy(:) + Ey(:) .* nelemental) ; 
+  Jn.mag = sqrt(Jn.x .^2 + Jn.y .^2);
 
   Jp.x = constants.q * constants.Vth * mobilityp .* ...
-        (- dpdx + Ex .* pelemental) ; 
+        (- dpdx(:) + Ex(:) .* pelemental) ; 
   Jp.y = constants.q * constants.Vth * mobilityp .* ...
-        (- dpdx + Ex .* pelemental) ; 
+        (- dpdx(:) + Ey(:) .* pelemental) ; 
+  Jp.mag = sqrt(Jp.x .^2 + Jp.y .^2);
   
 endfunction
 
@@ -460,7 +469,7 @@ function [mobilityn, mobilityp] = compute_mobilities ...
   Fp = V + constants.Vth * log (p ./ device.ni);
   Fn = V - constants.Vth * log (n ./ device.ni);
 
-  [E.x,E.y] = bim2c_pde_gradient(device.msh, -Vin);
+  [E.x,E.y] = bim2c_pde_gradient(device.msh, -V);
   E.x = E.x(:);
   E.y = E.y(:);
   E.mag=sqrt((E.x) .^ 2 + (E.y) .^ 2)(:);
@@ -496,7 +505,7 @@ function [Rn, Rp, Gn, Gp, II] = generation_recombination_model ...
   Fp = V + constants.Vth * log (p ./ device.ni);
   Fn = V - constants.Vth * log (n ./ device.ni);
 
-  [E.x,E.y] = bim2c_pde_gradient(device.msh, -Vin);
+  [E.x,E.y] = bim2c_pde_gradient(device.msh, -V);
   E.x = E.x(:);
   E.y = E.y(:);
   E.mag=sqrt((E.x) .^ 2 + (E.y) .^ 2)(:);

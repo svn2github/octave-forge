@@ -32,7 +32,7 @@ function u = secs1d_mobility_model_noscale ...
   t = 300 * ones (size (n));                %[K]
   t_300 = 300;                              %[K]
   %t_elem =  .5 * t(2:end) + .5 * t(1:end-1);
-  t_elem = sum(t(meshelems(1:end-1, :)),1)(:) / (rows(meshelems) - 1);
+  t_elem = sum(t(meshelems(1:end-2, :)),1)(:) / (rows(meshelems) - 1);
     
   if (carrier =='n')
     %% FIXME: move parameters to material properties file
@@ -65,7 +65,7 @@ function u = secs1d_mobility_model_noscale ...
   endif
 
   %%muph  = .5 * mu_ph_nodes(2:end) + .5 * mu_ph_nodes(1:end-1);
-  muph = sum(mu_ph_nodes(meshelems(1:end-1, :)),1)(:) / (rows(meshelems) - 1);
+  muph = sum(mu_ph_nodes(meshelems(1:end-2, :)),1)(:) / (rows(meshelems) - 1);
   u     = (muph*(alpha +1)) ./ ...
       (alpha + (1 + (((alpha + 1) * muph .* abs(E)) ./ vsat_m) .^ beta_m) .^ 
        (1./beta_m));

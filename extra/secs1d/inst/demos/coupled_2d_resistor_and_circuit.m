@@ -7,8 +7,8 @@ constants = secs1d_physical_constants_fun ();
 material  = secs1d_silicon_material_properties_fun (constants);
 
 % geometry
-NelementsX = 3;
-NelementsY = 3;
+NelementsX = 30;
+NelementsY = 5;
 xdiv = linspace(0,1,NelementsX+1);
 ydiv = linspace(0,1,NelementsY+1);
 
@@ -22,7 +22,7 @@ device.msh = bim2c_mesh_properties (
                   1, 1:4
                   ));
 % first pin on left edge, second on right edge
-device.contacts = [0, 2, 0, 1];
+device.contacts = [4, 2];
 device.x = ((device.msh).p(1, :)).';
 
 device.sinodes = [1:numel(device.x)];
@@ -112,7 +112,7 @@ R_0 = sum(bim2a_rhs (device.msh, 1, 1 ./ (nin .* u_nodes))) ...
 pause
 
 %% (pseudo)transient simulation
-[V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs2d_coupled_circuit_newton_reordered ...
+[V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs2d_coupled_circuit_newton ...
                                            (device, material, constants, algorithm,
                                             Vin, nin, pin, tspan, @vbcs);
 %% (pseudo)transient simulation

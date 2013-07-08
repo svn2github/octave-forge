@@ -6,7 +6,7 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
   tags = {'V', 'n', 'p', 'F'};
   rejected = 0;
   nnodes = columns (device.msh.p);
-  Nelements = columns(device.msh.t);
+  Nelements = columns (device.msh.t);
   dt = (tspan(2) - tspan(1)) / 1000;
   t(tstep = 1) = tspan (1);
 
@@ -445,8 +445,8 @@ function [Jn, Jp] = compute_currents ...
   [Ex,Ey] = bim2c_pde_gradient(device.msh, -V / constants.Vth);
   [dndx,dndy] = bim2c_pde_gradient(device.msh, n);
   [dpdx,dpdy] = bim2c_pde_gradient(device.msh, p);
-  nelemental = sum(n(device.msh.t(1:3, :)),1)(:) / 3;
-  pelemental = sum(p(device.msh.t(1:3, :)),1)(:) / 3;
+  nelemental = sum (n(device.msh.t(1:3, :)), 1)(:) / 3;
+  pelemental = sum (p(device.msh.t(1:3, :)), 1)(:) / 3;
 
   Jn.x = constants.q * constants.Vth * mobilityn .* ...
         (dndx(:) + Ex(:) .* nelemental) ;

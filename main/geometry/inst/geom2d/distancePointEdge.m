@@ -71,7 +71,7 @@ function [dist, tp] = distancePointEdge(point, edge, opt=[])
   delta = dx .* dx + dy .* dy;
   mask = delta < eps;
   delta(mask) = 1;
-  warning ('off', 'Octave:broadcast');
+  warning ('off', 'Octave:broadcast','local');
   tp = ((point(:, 1) - edge(1, :)) .* dx + (point(:, 2) - edge(2, :)) .* dy) ./ delta;
   tp(:,mask) = 0;
 
@@ -86,7 +86,7 @@ function [dist, tp] = distancePointEdge(point, edge, opt=[])
   # compute distance between point and its projection on the edge
   dist = sqrt((point(:,1) - p0x) .^ 2 + (point(:,2) - p0y) .^ 2);
 
-  warning ('on', 'Octave:broadcast');
+  warning ('on', 'Octave:broadcast','local');
 
   ## backwards compatibility
   if opt

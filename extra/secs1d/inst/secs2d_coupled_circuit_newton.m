@@ -217,7 +217,7 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
       drawnow
     
       dt *= .8 * sqrt (algorithm.maxnpincr / incr0);
-      printf (" estimate for next time step size: dt = %g \n", dt);
+      printf ("\nestimate for next time step size: dt = %g \n", dt);
     endif
 
   endwhile %% time step

@@ -3,19 +3,36 @@ constants = secs1d_physical_constants_fun ();
 material  = secs1d_silicon_material_properties_fun (constants);
 
 % geometry
-Nelements = 500;
-L  = 1e-6;          % [m] 
-xm = L/2;
-device.W = 1e-6 * 1e-6;
-device.x  = linspace (0, L, Nelements+1)';
+Nelements = 3000;
+L  = 50e-6;          % [m] 
+W  = 150e-6;
+D  = 50e-6;
+
+xm = D/2;
+device.W = W * L;
+device.x  = linspace (0, D, Nelements+1)';
 device.sinodes = [1:length(device.x)];
 
 % doping profile [m^{-3}]
-device.Na = 1e23 * exp ( - .5 * device.x.^2 / xm^2);
-device.Nd = 1e23 * exp ( - .5 * (device.x - L) .^2 / xm^2);
+%device.Na = 1e23 * exp ( - .5 * device.x.^2 / xm^2);
+%device.Nd = 1e23 * exp ( - .5 * (device.x - L) .^2 / xm^2);
+device.Na = 1e23 * exp (-.5 * ((D - device.x)/ 2.0e-6) .^ 2);
+device.Nd = 1e25 * exp (-.5 * ((0 - device.x)/ 2.4e-6) .^ 2) + 1e19;
+
 
 % avoid zero doping
-device.D  = device.Nd - device.Na;  
+device.D  = device.Nd - device.Na;
+
+%% close all
+%% figure(99)
+%% hold on
+%% secs1d_logplot (device.x, device.D, 'x-'); 
+%% secs1d_logplot (device.x, device.Na, 'xg-'); 
+%% secs1d_logplot (device.x, device.Nd, 'xr-'); 
+%% 
+%% pause
+
+
 
 % time span for simulation
 tmin  = 0;
@@ -45,14 +62,22 @@ n = ((abs(device.D) + sqrt (abs(device.D) .^ 2 + 4 * device.ni .^2)) .* ...
 
 V = Fn + constants.Vth * log (n ./ device.ni);
 
-function [Ahere, Bhere, Chere, rhere, xhere, contacts] = vbcs (t)
-  Ahere = zeros(2);
-  Bhere = eye(2);
-  xhere = [0; 0];
-  rhere = [0, 0; 0, 0];
+function [A, B, C, r, x, contacts] = vbcs (t)
+  A = zeros(2);
+  B = eye(2);
+  C = [sin(2*pi*t/1e-4); 0];
+  x = [0; 0];
+  r = [0, 0; 0, 0];
   contacts = [1, 2];
-  C1 = sin(2*pi*t/1e-4);
-  Chere = [C1; 0];
+endfunction
+
+function [A, B, C, r, x, contacts] = vbcs0 (t)
+  A = zeros(2);
+  B = eye(2);
+  C = [0; 0];
+  x = [0; 0];
+  r = [0, 0; 0, 0];
+  contacts = [1, 2];
 endfunction
 
 % tolerances for convergence checks
@@ -64,13 +89,48 @@ algorithm.ptoll      = 1e-12;
 algorithm.pmaxit     = 1000;
 algorithm.colscaling = [10 1e21 1e21 .1];
 algorithm.rowscaling = [1  1e-7 1e-7 .1];
-algorithm.maxnpincr  = 1e-2;
+algorithm.maxnpincr  = 1e2;
 
 %% initial guess via stationary simulation
-[nin, pin, Vin, Fnin, Fpin, Jn, Jp, it, res] = secs1d_dd_gummel_map_noscale ...
-    (device, material, constants, algorithm, V, n, p, Fn, Fp);  
+%% [ng, pg, Vg, Fnin, Fpin, Jn, Jp, it, res] = secs1d_dd_gummel_map_noscale ...
+%%      (device, material, constants, algorithm, V, n, p, Fn, Fp);
 
-close all; secs1d_logplot (device.x, device.D, 'x-'); pause
+%% 
+%% figure(99)
+%% subplot(3,1,1)
+%% plot(device.x, Vin, 'g-.', device.x, V, 'r--');
+%% grid on
+%% legend("Gum", "Est");
+%% subplot(3,1,2)
+%% semilogy(device.x, nin, 'g-.', device.x, n, 'r--');
+%% grid on
+%% legend("Gum", "Est");
+%% subplot(3,1,3)
+%% semilogy(device.x, pin, 'g-.', device.x, p, 'r--');
+%% grid on
+%% legend("Gum", "Est");
+%% 
+
+[Vin, nin, pin, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_coupled_circuit_newton_reordered2 ...
+                                          (device, material, constants, algorithm,
+                                           V, n, p, tspan, @vbcs0);
+
+%% figure(99)
+%% subplot(3,1,1)
+%% plot(device.x, Vin(:,end), 'og-.', device.x, Vg, 'r--');
+%% grid on
+%% legend("Newt", "Gum");
+%% subplot(3,1,2)
+%% semilogy(device.x, nin(:,end), 'og-.', device.x, ng, 'r--');
+%% grid on
+%% legend("Newt", "Gum");
+%% subplot(3,1,3)
+%% semilogy(device.x, pin(:,end), 'og-.', device.x, pg, 'r--');
+%% grid on
+%% legend("Newt", "Gum");
+
+%[nin, pin, Vin] = deal (n, p, V);  
+
 
 %%%% (pseudo)transient simulation
 %%[V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_coupled_circuit_newton ...
@@ -80,9 +140,10 @@ close all; secs1d_logplot (device.x, device.D, 'x-'); pause
 pause
 
 %% (pseudo)transient simulation
+algorithm.maxnpincr  = 1e-2;
 [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_coupled_circuit_newton_reordered2 ...
                                           (device, material, constants, algorithm,
-                                           Vin, nin, pin, tspan, @vbcs);
+                                          Vin(:,end), nin(:,end), pin(:,end), tspan, @vbcs);
 
 % dV   = diff (V, [], 1);
 % dx   = diff (device.x);

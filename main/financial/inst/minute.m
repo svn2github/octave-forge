@@ -1,4 +1,5 @@
 ## Copyright (C) 2008 Bill Denney <bill@denney.ws>
+## Copyright (C) 2013 Carnë Draug <carandraug@octave.org>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -14,17 +15,27 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {m =} minute (Date)
+## @deftypefn  {Function File} {} minute (@var{date})
+## @deftypefnx {Function File} {} minute (@var{date}, @var{f})
+## Return minutes of a date.
 ##
-## Returns the minute from a serial date number or a date string.
+## For a given @var{date} in a serial date number or date string format,
+## returns its minutes.  The optional variable @var{f}, specifies the
+## format string used to interpret date strings.
 ##
 ## @seealso{date, datevec, now, hour, second}
 ## @end deftypefn
 
-function t = minute (dates)
+function t = minute (varargin)
 
-  t = datevec (dates);
-  t = t (:,6);
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+  elseif (nargin >= 2 && ! ischar (varargin{2}))
+    error ("minute: F must be a string");
+  endif
 
+  t = datevec (varargin{:})(:,5);
 endfunction
 
+%!assert (minute (451482.906781456), 45)
+%!assert (minute ("1967-09-21 11:56:34", "yyyy-mm-dd HH:MM:SS"), 56)

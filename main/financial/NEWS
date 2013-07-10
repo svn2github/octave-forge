@@ -10,6 +10,11 @@ Summary of important user-visible changes for financial 0.X.X:
     falls on a Saturday (Saturday holidays should be shifted to the
     previous Friday except when it crosses a calendar year).
 
+ ** The function month now also returns a string with the 3 letter
+    abbreviation of the month number. The functions, year, month, day,
+    hour, minute, and second, all accept an optional input argument
+    to specify the format of an input date string.
+
 Summary of important user-visible changes for financial 0.4.0:
 -------------------------------------------------------------------
 

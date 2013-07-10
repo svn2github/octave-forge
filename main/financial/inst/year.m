@@ -1,4 +1,5 @@
 ## Copyright (C) 2008 Bill Denney <bill@denney.ws>
+## Copyright (C) 2013 Carnë Draug <carandraug@octave.org>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -14,17 +15,27 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {y =} year (Date)
+## @deftypefn  {Function File} {} year (@var{date})
+## @deftypefnx {Function File} {} year (@var{date}, @var{f})
+## Return year of a date.
 ##
-## Returns the year from a serial date number or a date string.
+## For a given @var{date} in a serial date number or date string format,
+## returns its year.  The optional variable @var{f}, specifies the
+## format string used to interpret date strings.
 ##
 ## @seealso{date, datevec, now, day, month}
 ## @end deftypefn
 
-function t = year (dates)
+function t = year (varargin)
 
-  t = datevec (dates);
-  t = t (:,1);
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+  elseif (nargin >= 2 && ! ischar (varargin{2}))
+    error ("year: F must be a string");
+  endif
 
+  t = datevec (varargin{:})(:,1);
 endfunction
 
+%!assert (year (523383), 1432);
+%!assert (year ("12-02-34", "mm-dd-yy"), 1934);

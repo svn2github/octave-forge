@@ -1,4 +1,5 @@
 ## Copyright (C) 2008 Bill Denney <bill@denney.ws>
+## Copyright (C) 2013 Carnë Draug <carandraug@octave.org>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -14,17 +15,27 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {s =} second (Date)
+## @deftypefn  {Function File} {} second (@var{date})
+## @deftypefnx {Function File} {} second (@var{date}, @var{f})
+## Return seconds of a date.
 ##
-## Returns the second from a serial date number or a date string.
+## For a given @var{date} in a serial date number or date string format,
+## returns its seconds.  The optional variable @var{f}, specifies the
+## format string used to interpret date strings.
 ##
 ## @seealso{date, datevec, now, hour, minute}
 ## @end deftypefn
 
-function t = second (dates)
+function t = second (varargin)
 
-  t = datevec (dates);
-  t = t (:,6);
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+  elseif (nargin >= 2 && ! ischar (varargin{2}))
+    error ("second: F must be a string");
+  endif
 
+  t = datevec (varargin{:})(:,6);
 endfunction
 
+%!assert (second (451482.906781456), 45.918, 0.01)
+%!assert (second ("1967-09-21 11:56:34", "yyyy-mm-dd HH:MM:SS"), 34)

@@ -1,4 +1,5 @@
 ## Copyright (C) 2008 Bill Denney <bill@denney.ws>
+## Copyright (C) 2013 Carnë Draug <carandraug@octave.org>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -14,18 +15,27 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {dom =} day (Date)
+## @deftypefn  {Function File} {} day (@var{date})
+## @deftypefnx {Function File} {} day (@var{date}, @var{f})
+## Return hours of a date.
 ##
-## Returns the day of the month from a serial date number or a date
-## string.
+## For a given @var{date} in a serial date number or date string format,
+## returns its day.  The optional variable @var{f}, specifies the
+## format string used to interpret date strings.
 ##
 ## @seealso{date, datevec, now, month, year}
 ## @end deftypefn
 
-function t = day (dates)
+function t = day (varargin)
 
-  t = datevec (dates);
-  t = t (:,3);
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+  elseif (nargin >= 2 && ! ischar (varargin{2}))
+    error ("day: F must be a string");
+  endif
 
+  t = datevec (varargin{:})(:,3);
 endfunction
 
+%!assert (day (523383), 21);
+%!assert (day ("12-02-34", "mm-dd-yy"), 2);

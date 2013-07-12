@@ -92,7 +92,7 @@ pause
 %% nin = device.Nd;
 
 %% (pseudo)transient simulation
-[V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_coupled_circuit_newton_reordered2 ...
+[V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_coupled_circuit_newton_reordered ...
                                            (device, material, constants, algorithm,
                                             Vin, nin, pin, tspan, @vbcs);
 

@@ -1,5 +1,5 @@
 function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
-         secs1d_coupled_circuit_newton_reordered2 ...
+         secs1d_coupled_circuit_newton_reordered ...
            (device, material, constants, algorithm, 
             Vin, nin, pin, tspan, va)    
   
@@ -10,6 +10,7 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
 
   dt = (tspan(2) - tspan(1)) / 1000;
   t(tstep = 1) = tspan (1);
+  logdtvec(tstep) = 1;
 
   [V, n, p] = deal (Vin, nin, pin);  
   
@@ -28,7 +29,7 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
   
   M = bim1a_reaction (device.x, 1, 1);
 
-  while (t < tspan(2))
+  while ((t < tspan(2)) && (rejected < 300))
 
     reject = false;
     t = tout(++tstep) = min (t + dt, tspan(2)); 
@@ -196,14 +197,17 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
                         (device.x(end) - device.x(end-1));
       
       Itot(:, tstep) *= device.W;
-
+      
+      logdtvec(tstep) = log10 (dt);
 
       figure (2)
       plotyy (tout, Itot(2, :), tout, Fn(end, :)- Fn(1, :));
+      %plotyy (tout, logdtvec, tout, Fn(end, :)- Fn(1, :));
       drawnow
     
       dt *= .8 * sqrt (algorithm.maxnpincr / incr0);
       printf ("\nestimate for next time step size: dt = %g \n", dt);
+
     endif
 
   endwhile %% time step
@@ -255,7 +259,8 @@ function res_full = compute_residual ...
            1, 1, V / constants.Vth);
   res2 = A22 * n;
   res2 += bim1a_rhs (device.x, 1, 
-                     (Rn  + 1/deltat) .* n - (Gn + n0 * 1/ deltat));
+                     (Rn  + 1/deltat) .* n - (Gn + n0 * 1/ deltat)) + ...
+          bim1a_rhs (device.x, - II, 1);
   res2([1, end]) = (n([1, end]) - n0([1, end])) .* ...
                    ([A22(1, 1); A22(end, end)]);
 
@@ -263,8 +268,9 @@ function res_full = compute_residual ...
           (device.x, mobilityp * constants.Vth , 
            1, 1, - V / constants.Vth);
   res3  = A33 * p;
-  res3 += bim1a_rhs (device.x, 1, (Rp + 1/deltat) .* p - 
-                                  (Gp + p0 * 1/ deltat));
+  res3 += bim1a_rhs (device.x, 1,
+                     (Rp + 1/deltat) .* p - (Gp + p0 * 1/ deltat)) + ...
+          bim1a_rhs (device.x, - II, 1);
   res3([1, end]) = (p([1, end]) - p0([1, end])) .* ...
                    ([A33(1, 1); A33(end, end)]);
 

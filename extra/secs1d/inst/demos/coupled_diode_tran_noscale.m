@@ -64,10 +64,13 @@ V = Fn + constants.Vth * log (n ./ device.ni);
 
 function [A, B, C, r, x, contacts] = vbcs (t)
   A = zeros(2);
-  B = eye(2);
-  C = [sin(2*pi*t/1e-4); 0];
+  B = ([0, 0; 0, 1]);
+  %B = eye(2);
+  %C = [sin(2*pi*t/1e-4); 0];
+  C = [-t; 0];
   x = [0; 0];
-  r = [0, 0; 0, 0];
+  r = [1, 0; 0, 0];
+  %r = [0, 0; 0, 0];
   contacts = [1, 2];
 endfunction
 
@@ -111,7 +114,7 @@ algorithm.maxnpincr  = 1e2;
 %% legend("Gum", "Est");
 %% 
 
-[Vin, nin, pin, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_coupled_circuit_newton_reordered2 ...
+[Vin, nin, pin, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_coupled_circuit_newton_reordered ...
                                           (device, material, constants, algorithm,
                                            V, n, p, tspan, @vbcs0);
 
@@ -140,8 +143,8 @@ algorithm.maxnpincr  = 1e2;
 pause
 
 %% (pseudo)transient simulation
-algorithm.maxnpincr  = 1e-2;
-[V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_coupled_circuit_newton_reordered2 ...
+algorithm.maxnpincr  = 1e-0;
+[V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_coupled_circuit_newton_reordered ...
                                           (device, material, constants, algorithm,
                                           Vin(:,end), nin(:,end), pin(:,end), tspan, @vbcs);
 

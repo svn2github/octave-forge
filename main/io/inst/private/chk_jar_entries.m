@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Philip Nienhuis <prnienhuis@users.sf.net>
+## Copyright (C) 2012,2013 Philip Nienhuis <prnienhuis@users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 ## 2012-10-23 Style fixes
 ## 2012-12-18 Add option for range of names per required entry
 ##     ''     Tests added
+## 2012-07-18 Fix multiple equivalent jar entries bug (padding w. spaces overlooked)
 
 function [ retval, missing ] = chk_jar_entries (jcp, entries, dbug=0)
 
@@ -34,7 +35,7 @@ function [ retval, missing ] = chk_jar_entries (jcp, entries, dbug=0)
       jentry = strsplit (lower (jcp{ii}), filesep){end};
       kk = 0;
       while (++kk <= size (char (entries{jj}), 1) && ! found)
-        if (~isempty (strfind (jentry, lower (char (entries{jj})(kk, :)))))
+        if (~isempty (strfind (jentry, strtrim (lower (char (entries{jj})(kk, :))))))
           ++retval; 
           found = 1;
           if (dbug > 2)

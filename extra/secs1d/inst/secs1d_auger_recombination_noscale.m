@@ -16,7 +16,8 @@
 %% You should have received a copy of the GNU General Public License
 %% along with SECS1D; If not, see <http://www.gnu.org/licenses/>.
 
-%% [Rn, Rp] = secs1d_auger_recombination_noscale (p, n, device)
+%% [Rn, Rp, G] = secs1d_auger_recombination_noscale ...
+%%      (device, material, constants, algorithm, n, p);
 
 function [Rn, Rp, G] = secs1d_auger_recombination_noscale ...
       (device, material, constants, algorithm, n, p);

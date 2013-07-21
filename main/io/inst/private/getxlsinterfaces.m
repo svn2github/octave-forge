@@ -67,6 +67,7 @@
 ## 2013-03-01 active -> default interface
 ##     ''     Moved check for Java support to separate file in private/
 ##     ''     Fixed javaclasspath info resync in case of requested interfaces
+## 2013-07-18 Add Fedora naming scheme to POI jar entries (official ones are symlinks)
 
 function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 
@@ -149,7 +150,7 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
   if (isempty (xlsinterfaces.POI))
     xlsinterfaces.POI = 0;
     ## Check basic .xls (BIFF8) support
-    entries = {"poi-3", "poi-ooxml-3"};
+    entries = {{"apache-poi.", "poi-3"}, {"apache-poi-ooxml.", "poi-ooxml-3"}};
     ## Only under *nix we might use brute force: e.g., strfind (classname, classpath);
     ## under Windows we need the following more subtle, platform-independent approach:
     if (chk_jar_entries (jcp, entries) >= numel (entries))
@@ -157,7 +158,7 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
       printf ("POI");
     endif
     ## Check OOXML support
-    entries = {{"xbean", "xmlbean"}, "poi-ooxml-schemas", "dom4j"};
+    entries = {{"xbean", "xmlbean"}, {"apache-poi-ooxml-schemas", "poi-ooxml-schemas"}, "dom4j"};
     if (chk_jar_entries (jcp, entries) >= numel (entries)), printf (" (& OOXML)"); endif
     if (xlsinterfaces.POI)
       if (deflt), printf ("; "); else, printf ("*; "); deflt = 1; endif

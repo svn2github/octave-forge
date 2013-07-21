@@ -91,6 +91,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 % 2012-12-21 POI 3.9 support (w. either xmlbeans.jar or xbeans.jar)
 % 2013-01-16 Updated to Octave w built-in Java (3.7.1+)
 % 2013-01-20 Made JVM memory detector more robust wrt Java return type
+% 2013-07-18 Add Fedora naming scheme to POI jar entries (official ones are symlinks)
 
   jcp = []; retval = 0;
   if (nargin < 3); path_to_ooo= ''; end %if
@@ -202,7 +203,8 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 
   % Try Java & Apache POI. First Check basic .xls (BIFF8) support
   if (dbug > 1), fprintf ('\nBasic POI (.xls) <poi-3> <poi-ooxml>:\n'); end %if
-  entries1 = {'poi-3', 'poi-ooxml-3'}; missing1 = zeros (1, numel (entries1));
+  entries1 = {{"apache-poi.", "poi-3"}, {"apache-poi-ooxml.", "poi-ooxml-3"}}; 
+  missing1 = zeros (1, numel (entries1));
   % Only under *nix we might use brute force: e.g., strfind (javaclasspath, classname)
   % as javaclasspath is one long string. Under Windows however classpath is a cell array
   % so we need the following more subtle, platform-independent approach:
@@ -217,7 +219,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
   end %if
   % Next, check OOXML support
   if (dbug > 1), fprintf ('\nPOI OOXML (.xlsx) <xbean/xmlbean> <poi-ooxml-schemas> <dom4j>:\n'); end %if
-  entries2 = {{'xbean', 'xmlbean'}, 'poi-ooxml-schemas', 'dom4j'}; 
+  entries2 = {{"xbean", "xmlbean"}, {"apache-poi-ooxml-schemas", "poi-ooxml-schemas"}, "dom4j"}; 
   % Only update retval if all classes for basic POI have been found in javaclasspath
   [jpchk2, missing2] = chk_jar_entries (jcp, entries2, dbug);
   if (jpchk1 >= numel (entries1) && jpchk2 >= numel (entries2)), retval = retval + 4; end %if

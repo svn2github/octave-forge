@@ -1,6 +1,17 @@
 Summary of important user-visible changes for releases of the io package
 
 ===============================================================================
+io-1.2.3   Release Date: 2013-07-TBA   Release Manager: Philip Nienhuis
+===============================================================================
+** Bug fixes:
+
+--- private/chk_jar_entries.m: trim multiple entries to avoid padded spaces
+
+*** private/getxlsinterfaces.m: add multiple jar entries for POI cf. Fedora
+    naming (actually a Fedora packing complication)
+*** chk_spreadsheet_support.m: same as getxlsinterfaces.m
+
+===============================================================================
 io-1.2.2   Release Date: 2013-05-21   Release Manager: Philip Nienhuis
 ===============================================================================
 ** Bug fixes:

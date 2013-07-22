@@ -68,16 +68,18 @@ function [coefs lblBranches] = polynomialCurveSetFit(seg, varargin)
   for i=1:length(struct)
       nodes(i, [2 1]) = struct(i).Centroid;
   end
-  figure(1)
+
+# debug
+#  figure(1)
 #  subplot(1,2,1)
 #  imshow(seg);
 #  hold on
 #  plot(nodes(:,1),nodes(:,2),'og')
 #  subplot(1,2,2)
-  imshow(imgNodes);
-  hold on
-  plot(nodes(:,1),nodes(:,2),'og')
-  keyboard
+#  imshow(imgNodes);
+#  hold on
+#  plot(nodes(:,1),nodes(:,2),'og')
+#  keyboard
 
   # enleve les bords de l'image
   seg([1 end], :) = 0;
@@ -152,20 +154,20 @@ function [coefs lblBranches] = polynomialCurveSetFit(seg, varargin)
           0, {points(1,1), points(1,2)},...
           1, {points(end,1), points(end,2)});
 
-
-      plot(points(:,1),points(:,2),'or')
-      hold on
-      drawPolynomialCurve ([0 1], xc,yc);
-      axis tight
-      v = axis();
-      hold off
-      imshow (~imgBranch)
-      hold on
-      plot(points(:,1),points(:,2),'or')
-      drawPolynomialCurve ([0 1], xc,yc);
-      axis xy
-      axis (v);
-      pause
+#debug
+#      plot(points(:,1),points(:,2),'or')
+#      hold on
+#      drawPolynomialCurve ([0 1], xc,yc);
+#      axis tight
+#      v = axis();
+#      hold off
+#      imshow (~imgBranch)
+#      hold on
+#      plot(points(:,1),points(:,2),'or')
+#      drawPolynomialCurve ([0 1], xc,yc);
+#      axis xy
+#      axis (v);
+#      pause
 
       # stores result
       coefs{i} = [xc;yc];

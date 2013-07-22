@@ -5,7 +5,7 @@ Author: David Legland <david.legland@grignon.inra.fr>, Jose Luis Garcia Pallero 
 Maintainer: Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 Title: Computational Geometry
 Description: Library for geometric computing extending MatGeom functions. Useful to create, transform, manipulate and display geometric primitives.
-Depends: octave (>= 3.4.0), general (>= 1.3.0)
+Depends: octave (>= 3.6.0), general (>= 1.3.0)
 Autoload: no
 License: GPLv3+, FreeBSD
 Url: http://octave.sf.net, http://matgeom.sf.net, http://davis.wpi.edu/~matt/courses/clipping/, https://bitbucket.org/jgpallero/octclip

@@ -63,14 +63,17 @@ n = ((abs(device.D) + sqrt (abs(device.D) .^ 2 + 4 * device.ni .^2)) .* ...
 V = Fn + constants.Vth * log (n ./ device.ni);
 
 function [A, B, C, r, x, contacts] = vbcs (t)
-  A = zeros(2);
-  B = ([0, 0; 0, 1]);
-  %B = eye(2);
-  %C = [sin(2*pi*t/1e-4); 0];
-  C = [-t; 0];
-  x = [0; 0];
+  A = zeros (2);
+  %% %% Voltage controlled
+  %% B = eye(2);
+  %% C = [sin(2*pi*t/1e-4); 0];
+  %% r = [0, 0; 0, 0];
+  %% Current controlled
+  B = diag ([0, 1]);
+  C = [100000 * t; 0];
   r = [1, 0; 0, 0];
-  %r = [0, 0; 0, 0];
+  %%
+  x = [0; 0];
   contacts = [1, 2];
 endfunction
 
@@ -94,67 +97,39 @@ algorithm.colscaling = [10 1e21 1e21 .1];
 algorithm.rowscaling = [1  1e-7 1e-7 .1];
 algorithm.maxnpincr  = 1e2;
 
-%% initial guess via stationary simulation
-%% [ng, pg, Vg, Fnin, Fpin, Jn, Jp, it, res] = secs1d_dd_gummel_map_noscale ...
-%%      (device, material, constants, algorithm, V, n, p, Fn, Fp);
+[Vin, nin, pin, Fn, Fp, Jn, Jp, Itot, tout] = ...
+                secs1d_coupled_circuit_newton_reordered ...
+                  (device, material, constants, algorithm,
+                  V, n, p, tspan, @vbcs0);
 
-%% 
 %% figure(99)
 %% subplot(3,1,1)
 %% plot(device.x, Vin, 'g-.', device.x, V, 'r--');
 %% grid on
-%% legend("Gum", "Est");
+%% legend("Newt", "Est");
 %% subplot(3,1,2)
 %% semilogy(device.x, nin, 'g-.', device.x, n, 'r--');
 %% grid on
-%% legend("Gum", "Est");
+%% legend("Newt", "Est");
 %% subplot(3,1,3)
 %% semilogy(device.x, pin, 'g-.', device.x, p, 'r--');
 %% grid on
-%% legend("Gum", "Est");
-%% 
+%% legend("Newt", "Est");
 
-[Vin, nin, pin, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_coupled_circuit_newton_reordered ...
-                                          (device, material, constants, algorithm,
-                                           V, n, p, tspan, @vbcs0);
-
-%% figure(99)
-%% subplot(3,1,1)
-%% plot(device.x, Vin(:,end), 'og-.', device.x, Vg, 'r--');
-%% grid on
-%% legend("Newt", "Gum");
-%% subplot(3,1,2)
-%% semilogy(device.x, nin(:,end), 'og-.', device.x, ng, 'r--');
-%% grid on
-%% legend("Newt", "Gum");
-%% subplot(3,1,3)
-%% semilogy(device.x, pin(:,end), 'og-.', device.x, pg, 'r--');
-%% grid on
-%% legend("Newt", "Gum");
-
-%[nin, pin, Vin] = deal (n, p, V);  
-
-
-%%%% (pseudo)transient simulation
-%%[V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_coupled_circuit_newton ...
-%%                                           (device, material, constants, algorithm,
-%%                                            Vin, nin, pin, tspan, @vbcs);
-%%
 pause
 
-%% (pseudo)transient simulation
+%%
 algorithm.maxnpincr  = 1e-0;
-[V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_coupled_circuit_newton_reordered ...
-                                          (device, material, constants, algorithm,
-                                          Vin(:,end), nin(:,end), pin(:,end), tspan, @vbcs);
+[V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
+                secs1d_coupled_circuit_newton_reordered ...
+                  (device, material, constants, algorithm,
+                  Vin(:,end), nin(:,end), pin(:,end), tspan, @vbcs);
 
-% dV   = diff (V, [], 1);
-% dx   = diff (device.x);
-% E    = -dV ./ dx;
-   
 vvector  = (Fn(end, :) - Fn(1, :));
-ivector  = Itot (2, :);
+ivector  = Itot (1, :);
 
-plotyy (tout, vvector, tout, ivector)
+close all
+%plotyy (tout, vvector, tout, ivector)
+plot (vvector, ivector)
 drawnow
    

@@ -100,7 +100,7 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
         tkp = .9 * min (p1 ./ abs (dp));
       endif
 
-      tk = min ([tkv, tkn, tkp])
+      tk = min ([tkv, tkn, tkp]);
       if (tk <= 0)
         error ("relaxation parameter too small, die!")
       endif
@@ -194,7 +194,8 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
       [Jn(:, tstep), Jp(:, tstep)] = compute_currents ...
                                        (device, material, constants, 
                                         algorithm, mobilityn, 
-                                        mobilityp, V2, n2, p2);
+                                        mobilityp, V2, n2, p2,
+                                        Fn(:, tstep), Fp(:, tstep));
 
       A11 = bim3a_osc_laplacian (device.msh, material.esi * ones (Nelements, 1));
       A22 = bim3a_osc_advection_diffusion ...
@@ -508,7 +509,7 @@ function [Rn, Rp, Gn, Gp, II] = generation_recombination_model ...
 
   [Jn, Jp] = compute_currents ...
                (device, material, constants, algorithm, 
-                mobilityn, mobilityp, V, n, p);
+                mobilityn, mobilityp, V, n, p, Fn, Fp);
 
   II = secs1d_impact_ionization_noscale ...
          (device, material, constants, algorithm, 

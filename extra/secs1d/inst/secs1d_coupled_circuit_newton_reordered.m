@@ -29,7 +29,7 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
   
   M = bim1a_reaction (device.x, 1, 1);
 
-  while ((t < tspan(2)) && (rejected < 300))
+  while (t < tspan(2)) % while ((t < tspan(2)) && (rejected < 300))
 
     reject = false;
     t = tout(++tstep) = min (t + dt, tspan(2)); 
@@ -79,13 +79,13 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
       tkn = 1;
       where = (n1 + dn <= 0);
       if (any (where))
-        tkn = .9 * min (n1 ./ abs (dn))
+        tkn = .9 * min (n1 ./ abs (dn));
       endif
 
       tkp = 1;
       where = (p1 + dp <= 0);
       if (any (where))       
-        tkp = .9 * min (p1 ./ abs (dp))
+        tkp = .9 * min (p1 ./ abs (dp));
       endif
 
       tk = min ([tkv, tkn, tkp]);
@@ -115,7 +115,7 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
 
       [incr0, whichone] = max ([incr0v, incr0n, incr0p, incr0F]);
       if (incr0 > algorithm.maxnpincr)
-        printf ("at time step %d, fixed point iteration %d, the ", tstep, in);
+        printf ("at time step %d, Newton iteration %d, the ", tstep, in);
         printf ("increment in %s has grown too large\n", tags{whichone});
         reject = true;
         break;
@@ -136,8 +136,9 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
       [incr1, whichone] = max ([incr1v, incr1n, incr1p, incr1F]);
       resnlin(in) = incr1;
       if (in > 3 && resnlin(in) > resnlin(in-3))
-        printf ("at time step %d, fixed point iteration %d, ", tstep, in);
+        printf ("at time step %d, Newton iteration %d, ", tstep, in);
         printf ("the Newton algorithm is diverging: ");
+        printf ("\n                                 ");
         printf ("the increment in %s is not decreasing\n", tags{whichone});
         reject = true;
         break;
@@ -145,13 +146,13 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
 
       figure (1)
       semilogy (1:in, resnlin(1:in),'bo-');
-      xlim([1,15]);
-      ylim([5e-9,5e-2]);
+      xlim ([1,5]);
+      ylim (1e3 * [5e-9,5e-2]);
       drawnow        
 
       if (incr1 < algorithm.toll)
         printf ("fixed point iteration %d, time step %d, ", in, tstep);
-        printf ("model time %g: convergence reached incr = %g ", t, incr1);
+        printf ("\n    model time %g: convergence reached incr = %g ", t, incr1);
         break;
       endif
 
@@ -201,11 +202,22 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
       logdtvec(tstep) = log10 (dt);
 
       figure (2)
-      plotyy (tout, Itot(2, :), tout, Fn(end, :)- Fn(1, :));
+      subplot (2, 1, 1)
+      [ax, h1, h2] = plotyy (tout, Itot(2, :), tout, Fn(end, :)- Fn(1, :));
+      set (h1, "marker", ".")
+      set (h2, "marker", ".")
+      subplot (2, 1, 2)
+      [ax, h1, h2] = plotyy (device.x, V(:, end), 
+                             device.x, [n(:, end), p(:, end)],
+                             @plot, @semilogy);
+      set (h1, "marker", ".")     
+      set (h2, "marker", ".")                            
+      grid on
       %plotyy (tout, logdtvec, tout, Fn(end, :)- Fn(1, :));
       drawnow
     
-      dt *= .8 * sqrt (algorithm.maxnpincr / incr0);
+      exponent = .25;
+      dt *= .8 * (algorithm.maxnpincr / incr0) ^ exponent;
       printf ("\nestimate for next time step size: dt = %g \n", dt);
 
     endif
@@ -236,11 +248,24 @@ function res_full = compute_residual ...
                            (device, material, constants, 
                             algorithm, V, n, p);  
   
-  [Rn, Rp, Gn, Gp, II] = generation_recombination_model ...
+  [Rn, Rp, Gn, Gp] = generation_recombination_model ...
                            (device, material, constants, 
                             algorithm, mobilityn, mobilityp, 
                             V, n, p);
-  
+
+  [un0, up0] = compute_mobilities ...
+                           (device, material, constants, 
+                            algorithm, V0, n0, p0);  
+  Fp0 = V0 + constants.Vth * log (p0 ./ device.ni);
+  Fn0 = V0 - constants.Vth * log (n0 ./ device.ni);
+  E0 = -diff (V0) ./ diff (device.x);
+  [Jn0, Jp0] = compute_currents ...
+               (device, material, constants, algorithm, 
+                un0, up0, V0, n0, p0);
+  II0 = secs1d_impact_ionization_noscale ...
+         (device, material, constants, algorithm, 
+          E0, Jn0, Jp0, V0, n0, p0, Fn0, Fp0);
+
   epsilon = material.esi * ones (Nelements, 1);
   
   A11 = bim1a_laplacian (device.x, epsilon, 1);
@@ -260,7 +285,7 @@ function res_full = compute_residual ...
   res2 = A22 * n;
   res2 += bim1a_rhs (device.x, 1, 
                      (Rn  + 1/deltat) .* n - (Gn + n0 * 1/ deltat)) + ...
-          bim1a_rhs (device.x, - II, 1);
+          bim1a_rhs (device.x, - II0, 1);
   res2([1, end]) = (n([1, end]) - n0([1, end])) .* ...
                    ([A22(1, 1); A22(end, end)]);
 
@@ -270,7 +295,7 @@ function res_full = compute_residual ...
   res3  = A33 * p;
   res3 += bim1a_rhs (device.x, 1,
                      (Rp + 1/deltat) .* p - (Gp + p0 * 1/ deltat)) + ...
-          bim1a_rhs (device.x, - II, 1);
+          bim1a_rhs (device.x, - II0, 1);
   res3([1, end]) = (p([1, end]) - p0([1, end])) .* ...
                    ([A33(1, 1); A33(end, end)]);
 

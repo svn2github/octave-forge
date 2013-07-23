@@ -196,6 +196,7 @@ geometry >> Computational Geometry
  intersectPlaneSphere
  normalizePlane
  planeNormal
+ planePoint
  planePosition
  projPointOnPlane
 3D Meshes

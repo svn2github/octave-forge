@@ -79,7 +79,7 @@ function [Ahere, Bhere, Chere, rhere, xhere, pins] = vbcs (t)
     Bhere = [B1, zeros(size(C1)); zeros(size(C1))', 1];
     xhere = [x1; 0];
     rhere = [r1, zeros(size(x1)); 0, 0];
-    pins = [1, numel(x1) + 1];
+    pins = [1, (numel(x1) + 1)];
   endif
   C1(4) = -min(t,1);
   Chere = [C1; 0];

@@ -49,7 +49,7 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
     
     [V0, n0, p0, F0] = predict (device, material, constants, 
                                 algorithm, V, n, p, F, tstep,
-                                tout, A, B, C, r);
+                                tout);
     
     [V2, n2, p2, F2] = deal (V0, n0, p0, F0);
 
@@ -187,15 +187,14 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
       [V(:, tstep), n(:, tstep), p(:, tstep), F(:, tstep)] = ...
       deal (V2, n2, p2, F2);
 
-      [mobilityn, mobilityp] = compute_mobilities ...
+      [mobilityn, mobilityp] = __secs3d_newton_compute_mobilities__ ...
                                  (device, material, constants, 
                                   algorithm, V2, n2, p2);  
 
-      [Jn(:, tstep), Jp(:, tstep)] = compute_currents ...
-                                       (device, material, constants, 
-                                        algorithm, mobilityn, 
-                                        mobilityp, V2, n2, p2,
-                                        Fn(:, tstep), Fp(:, tstep));
+      [Jn(:, tstep), Jp(:, tstep)] = ...
+      __secs3d_newton_compute_currents__ ...
+        (device, material, constants, algorithm, mobilityn, 
+         mobilityp, V2, n2, p2, Fn(:, tstep), Fp(:, tstep));
 
       A11 = bim3a_osc_laplacian (device.msh, material.esi * ones (Nelements, 1));
       A22 = bim3a_osc_advection_diffusion ...
@@ -228,89 +227,9 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
 endfunction
 
 
-function [Jn, Jp] = compute_currents ...
-                      (device, material, constants, algorithm, 
-                       mobilityn, mobilityp, V, n, p, Fn, Fp)
-
-  [Fnx,Fny,Fnz] = bim3c_pde_gradient (device.msh, Fn);
-  [Fpx,Fpy,Fpz] = bim3c_pde_gradient (device.msh, Fp);
-
-  nelemental = sum (n(device.msh.t(1:4, :)), 1)(:) / 4;
-  pelemental = sum (p(device.msh.t(1:4, :)), 1)(:) / 4;
-
-  tmp  = -constants.q * mobilityn .* nelemental;
-  Jn.x = tmp(:) .* Fnx(:);
-  Jn.y = tmp(:) .* Fny(:); 
-  Jn.z = tmp(:) .* Fnz(:);
- 
-  Jn.mag = sqrt (Jn.x .^2 + Jn.y .^2 + Jn.z .^2);
-
-  tmp  = -constants.q * mobilityp .* pelemental;
-  Jp.x = tmp(:) .* Fpx(:);
-  Jp.y = tmp(:) .* Fpy(:);
-  Jp.z = tmp(:) .* Fpz(:);
-
-  Jp.mag = sqrt (Jp.x .^2 + Jp.y .^2 + Jp.z .^2);
-  
-endfunction
-
-function [mobilityn, mobilityp] = compute_mobilities ...
-                                    (device, material, constants, 
-                                     algorithm, V, n, p)
-
-  Fp = V + constants.Vth * log (p ./ device.ni);
-  Fn = V - constants.Vth * log (n ./ device.ni);
-
-  [Ex,Ey,Ez] = bim3c_pde_gradient(device.msh, -V);
-  Emag=sqrt(Ex .^ 2 + Ey .^ 2 + Ez .^ 2)(:);
-
-  mobilityn = secs1d_mobility_model_noscale ...
-                (device, material, constants, algorithm, Emag, 
-                 V, n, p, Fn, Fp, 'n');
-
-  mobilityp = secs1d_mobility_model_noscale ...
-                (device, material, constants, algorithm, Emag, 
-                 V, n, p, Fn, Fp, 'p');
-
-endfunction
-
-function [Rn, Rp, Gn, Gp, II] = generation_recombination_model ...
-                                  (device, material, constants,
-                                   algorithm, mobilityn, mobilityp, 
-                                   V, n, p)
-  
-  [Rn_srh, Rp_srh, Gn_srh, Gp_srh] = secs1d_srh_recombination_noscale ...
-                                       (device, material, constants, 
-                                        algorithm, n, p);
-
-  [Rn_aug, Rp_aug, G_aug] = secs1d_auger_recombination_noscale ...
-                              (device, material, constants, 
-                               algorithm, n, p);
-  
-  Rn = Rn_srh + Rn_aug;
-  Rp = Rp_srh + Rp_aug;
-  
-  Gp = Gn = Gn_srh + G_aug;
-
-  Fp = V + constants.Vth * log (p ./ device.ni);
-  Fn = V - constants.Vth * log (n ./ device.ni);
-
-  [Ex,Ey,Ez] = bim3c_pde_gradient(device.msh, -V);
-  Emag=sqrt(Ex .^ 2 + Ey .^ 2 + Ez .^ 2)(:);
-
-  [Jn, Jp] = compute_currents ...
-               (device, material, constants, algorithm, 
-                mobilityn, mobilityp, V, n, p, Fn, Fp);
-
-  II = secs1d_impact_ionization_noscale ...
-         (device, material, constants, algorithm, 
-          Emag, Jn.mag, Jp.mag, V, n, p, Fn, Fp);
-
-endfunction
-
 function [V0, n0, p0, F0] = predict (device, material, constants, 
                                      algorithm, V, n, p, F, tstep,
-                                     tout, A, B, C, r)
+                                     tout)
 
   if (tstep > 2)
 

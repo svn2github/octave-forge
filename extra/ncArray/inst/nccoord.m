@@ -6,8 +6,8 @@
 % follow the CF convention.
 % dims is a cell-array of the dimensions of varname
 % coord is an array of structures with the field 'name'
-% for the variable name and 'dims' with a cell-array of the
-% netcdf dimensions.
+% for the variable name, 'dims' with a cell-array of the
+% netcdf dimensions, the units and NetCDF-CF standard name.
 %
 % coord is an empty structure if no coordinate information have been
 % found.
@@ -32,7 +32,7 @@ vinfo = finfo.Variables(index);
 dims = {vinfo.Dimensions(:).Name};
 
 % create empty coord array with the fields name and dims
-coord = struct('name',{},'dims',{});
+coord = struct('name',{},'dims',{},'standard_name',{},'units',{});
 
 % check the coordinate attribute
 if ~isempty(vinfo.Attributes)
@@ -66,12 +66,23 @@ if isempty(find(strcmp(name,{coord(:).name}),1))
     % check if name is variable
     index = find(strcmp(name,{finfo.Variables(:).Name}));
     if ~isempty(index)
+        vinfo = finfo.Variables(index);
         c.name = name;
-        d = finfo.Variables(index).Dimensions;
+        d = vinfo.Dimensions;
         c.dims = {d(:).Name};
-        % does not work in octave
-        %c.dims = {finfo.Variables(index).Dimensions(:).Name};
-        %keyboard
+
+        % get standard_name attribute if present
+        i = find(strcmp('standard_name',{vinfo.Attributes(:).Name}));
+        if ~isempty(i)
+          c.standard_name = vinfo.Attributes(i).Value;
+        end
+
+        % get units attribute if present
+        i = find(strcmp('units',{vinfo.Attributes(:).Name}));
+        if ~isempty(i)
+          c.units = vinfo.Attributes(i).Value;
+        end
+        
         coord(end+1) = c;
     end
 end
@@ -79,7 +90,7 @@ end
 end
 
 
-% Copyright (C) 2012 Alexander Barth <barth.alexander@gmail.com>
+% Copyright (C) 2012, 2013 Alexander Barth <barth.alexander@gmail.com>
 %
 % This program is free software; you can redistribute it and/or modify
 % it under the terms of the GNU General Public License as published by

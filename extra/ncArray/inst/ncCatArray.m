@@ -124,7 +124,7 @@ for i=1:length(coord)
     dimc = find(strcmp(coord(i).dims,dims{dim}));
     
     if isempty(dimc)      
-      vinfo = varinfo(finfos{1},varname);
+      vinfo = varinfo(finfos{1},coord(i).name);
       coord(i).val = ncBaseArray(filenames{1},coord(i).name,'vinfo',vinfo);
     else    
       % coordinates do also depend on the dimension over which we concatenate

@@ -52,10 +52,11 @@ function [A, B, C, r, x, contacts] = vbcs (t, xin = 0)
   if (isempty (Alin))
     input = prs_iff ("resistor_circuit")
     [Alin, Blin, Clin] = asm_initialize_system (input, xin);
-    contacts = input.namesn;
-    numpins = columns (contacts);
-    r = sparse (1:numpins, contacts, ones (size (contacts)), 
-        rows (xin), numpins);
+    contacts = input.namesn
+    numtotvars = numel(Clin);
+    numpins = numel (contacts);
+    r = sparse (contacts(:), (1:numpins)(:), ones (size (contacts(:))), 
+        numtotvars, numpins);
   endif
   % build a dummy initial guess for the state vector if needed
   if (isscalar (xin) || isempty(xin))

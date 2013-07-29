@@ -3,7 +3,7 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs1d_newton (device, material
   rejected = 0;
   Nnodes = numel (device.x);
   dt = (tspan(2) - tspan(1)) / 20;  
-  t(tstep = 1) = tspan (1);
+  tout(tstep = 1) = t = tspan (1);
   [V, n, p] = deal (Vin, nin, pin);
   M = bim1a_reaction (device.x, 1, 1);
 

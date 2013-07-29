@@ -8,7 +8,7 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
   nnodes = columns (device.msh.p);
   Nelements = columns (device.msh.t);
   dt = (tspan(2) - tspan(1)) / 1000;
-  t(tstep = 1) = tspan (1);
+  tout(tstep = 1) = t = tspan (1);
 
   [V, n, p] = deal (Vin, nin, pin);  
   

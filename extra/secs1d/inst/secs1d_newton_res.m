@@ -6,7 +6,7 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
   Nnodes = numel (device.x);
   dt0 = (tspan(2) - tspan(1)) / 200;
   dt = dt0;
-  t(tstep = 1) = tspan (1);
+  tout(tstep = 1) = t = tspan (1);
   [V, n, p] = deal (Vin, nin, pin);  
   F = V([1 end], 1) - constants.Vth * ...
                       log (n([1 end], 1) ./ device.ni([1 end], :));

@@ -91,13 +91,13 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
       tkn = 1;
       where = (n1 + dn <= 0);
       if (any (where))
-        tkn = .9 * min (n1 ./ abs (dn));
+        tkn = .9 * min (n1(where) ./ abs (dn(where)));
       endif
 
       tkp = 1;
       where = (p1 + dp <= 0);
       if (any (where))       
-        tkp = .9 * min (p1 ./ abs (dp));
+        tkp = .9 * min (p1(where) ./ abs (dp(where)));
       endif
 
       tk = min ([tkv, tkn, tkp]);

@@ -75,7 +75,12 @@ for j=1:self.na
     subset = subsref(self.arrays{j},idx_local{j});
     
     % set subset in global array B
-    B = subsasgn(B,idx_global{j},subset);
+    % this is slow, why?
+    %B = subsasgn(B,idx_global{j},subset);
+    
+    % however this quite fast
+    idxa = idx_global{j}.subs;   
+    B(idxa{:}) = subset;
 end
 
 end

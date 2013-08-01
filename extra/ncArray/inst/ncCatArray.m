@@ -97,7 +97,12 @@ finfos = cell(length(filenames),1);
 
 if SameAttributes
   % assume all files have the same ncinfo as the first one
-  finfos(:) = ncinfo(cached_decompress(filenames{1}));
+  tmp = ncinfo(cached_decompress(filenames{1}));
+  for i=1:length(filenames)
+    finfos{i} = tmp;
+  end
+  % octave allows the following, but not matlab
+  %finfos(:) = tmp;
 else
   for i=1:length(filenames)
     finfos{i} = ncinfo(cached_decompress(filenames{i}));

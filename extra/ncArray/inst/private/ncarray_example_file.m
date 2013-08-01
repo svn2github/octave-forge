@@ -1,41 +1,71 @@
 function ncarray_example_file(filename,data)
 
-nc = netcdf(filename,'c');
+if ~isempty(which('nccreate')) && ~isempty(which('ncwriteatt')) && ...
+      ~isempty(which('ncwrite'))
+  % use matlab netcdf high level interface
 
-% dimensions
+  % Variables
+  nccreate(filename,'lon','Format','classic','Datatype','single',...
+           'Dimensions',{'x',220, 'y',144});
+  ncwriteatt(filename,'lon','long_name','Longitude')
+  ncwriteatt(filename,'lon','units','degrees_east')
+  
+  nccreate(filename,'lat','Datatype','single','Dimensions',{'x',220, 'y',144});
+  ncwriteatt(filename,'lat','long_name','Latitude')
+  ncwriteatt(filename,'lat','units','degrees_north')
+  
+  nccreate(filename,'time','Datatype','single','Dimensions',{'time',1});
+  ncwriteatt(filename,'time','long_name','Time')
+  ncwriteatt(filename,'time','units','days since 1858-11-17 00:00:00 GMT')
+  
+  nccreate(filename,'SST','Datatype','single','Dimensions',...
+           {'x',220, 'y',144, 'time',1});
+  ncwriteatt(filename,'SST','missing_value',single(9999))
+  ncwriteatt(filename,'SST','_FillValue',single(9999))
+  ncwriteatt(filename,'SST','units','degC')
+  ncwriteatt(filename,'SST','long_name','Sea Surface Temperature')
+  ncwriteatt(filename,'SST','coordinates','lat lon')
 
-nc('x') = size(data,1);
-nc('y') = size(data,2);
-nc('time') = size(data,3);
+  ncwrite(filename,'SST',data);  
+else
+  % use octcdf interface
 
-% variables
+  nc = netcdf(filename,'c');
 
-nc{'lon'} = ncfloat('y','x');  % 31680 elements 
-nc{'lon'}.long_name = ncchar('Longitude');
-nc{'lon'}.units = ncchar('degrees_east');
+  % dimensions
+  
+  nc('x') = size(data,1);
+  nc('y') = size(data,2);
+  nc('time') = size(data,3);
 
-nc{'lat'} = ncfloat('y','x');  % 31680 elements 
-nc{'lat'}.long_name = ncchar('Latitude');
-nc{'lat'}.units = ncchar('degrees_north');
+  % variables
 
-nc{'time'} = ncfloat('time');  % 1 elements 
-nc{'time'}.long_name = ncchar('Time');
-nc{'time'}.units = ncchar('days since 1858-11-17 00:00:00 GMT');
+  nc{'lon'} = ncfloat('y','x');  % 31680 elements 
+  nc{'lon'}.long_name = ncchar('Longitude');
+  nc{'lon'}.units = ncchar('degrees_east');
+  
+  nc{'lat'} = ncfloat('y','x');  % 31680 elements 
+  nc{'lat'}.long_name = ncchar('Latitude');
+  nc{'lat'}.units = ncchar('degrees_north');
 
-nc{'SST'} = ncfloat('time','y','x');  % 31680 elements 
-nc{'SST'}.missing_value = ncfloat(9999);
-nc{'SST'}.FillValue_ = ncfloat(9999);
-nc{'SST'}.units = ncchar('degC');
-nc{'SST'}.long_name = ncchar('Sea Surface Temperature');
-nc{'SST'}.coordinates = ncchar('lat lon');
+  nc{'time'} = ncfloat('time');  % 1 elements 
+  nc{'time'}.long_name = ncchar('Time');
+  nc{'time'}.units = ncchar('days since 1858-11-17 00:00:00 GMT');
+  
+  nc{'SST'} = ncfloat('time','y','x');  % 31680 elements 
+  nc{'SST'}.missing_value = ncfloat(9999);
+  nc{'SST'}.FillValue_ = ncfloat(9999);
+  nc{'SST'}.units = ncchar('degC');
+  nc{'SST'}.long_name = ncchar('Sea Surface Temperature');
+  nc{'SST'}.coordinates = ncchar('lat lon');
 
-% global attributes
+  % global attributes
+  
+  nc{'SST'}(:) = permute(data,[3 2 1]);
+  close(nc)
+end
 
-nc{'SST'}(:) = permute(data,[3 2 1]);
-close(nc)
-
-
-% Copyright (C) 2012 Alexander Barth <barth.alexander@gmail.com>
+% Copyright (C) 2012,2013 Alexander Barth <barth.alexander@gmail.com>
 %
 % This program is free software; you can redistribute it and/or modify
 % it under the terms of the GNU General Public License as published by

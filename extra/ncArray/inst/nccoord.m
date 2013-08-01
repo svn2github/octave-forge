@@ -40,7 +40,8 @@ if ~isempty(vinfo.Attributes)
   if ~isempty(index)
     tmp = strsplit(vinfo.Attributes(index).Value,' ');
     
-    for i=1:length(tmp)
+    % order should not be siginficant
+    for i=length(tmp):-1:1
         coord = addcoord(coord,tmp{i},finfo);
     end
   end
@@ -70,7 +71,9 @@ if isempty(find(strcmp(name,{coord(:).name}),1))
         c.name = name;
         d = vinfo.Dimensions;
         c.dims = {d(:).Name};
-
+        c.standard_name = [];
+        c.units = [];
+        
         % get standard_name attribute if present
         i = find(strcmp('standard_name',{vinfo.Attributes(:).Name}));
         if ~isempty(i)

@@ -23,7 +23,7 @@ end
 % catch expressions like:
 % data(:,:,:).coord
 
-if length(idx) == 2 && strcmp(idx(2).type,'.') && strcmp(idx(2).subs,'coord')    
+if length(idx) == 2 && strcmp(idx(2).type,'.') && strcmp(idx(2).subs,'coord')
     for i=1:length(self.coord)
         % get indeces of the dimensions of the i-th coordinate which are also
         % coordinate of the variable

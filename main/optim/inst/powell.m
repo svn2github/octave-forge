@@ -107,7 +107,7 @@ function [p, obj_value, convergence, iters, nevs] = powell (f, p0, options);
   xi = optimget (options, 'SearchDirections');
   if (! isempty (xi))
     if (isvector (xi)) # assume that xi is is n*1 or 1*n
-      xi = diag (x);
+      xi = diag (xi);
     endif
     xi_set = 1;
   endif

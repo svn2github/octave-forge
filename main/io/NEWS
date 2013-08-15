@@ -1,15 +1,20 @@
 Summary of important user-visible changes for releases of the io package
 
 ===============================================================================
-io-1.2.3   Release Date: 2013-07-TBA   Release Manager: Philip Nienhuis
+io-1.2.3   Release Date: 2013-08-15   Release Manager: Philip Nienhuis
 ===============================================================================
 ** Bug fixes:
 
 --- private/chk_jar_entries.m: trim multiple entries to avoid padded spaces
 
 *** private/getxlsinterfaces.m: add multiple jar entries for POI cf. Fedora
-    naming (actually a Fedora packing complication)
+    naming (actually a Fedora packaging complication)
+
 *** chk_spreadsheet_support.m: same as getxlsinterfaces.m
+
+*** Tested odfdom-0.6-incubator (odfdom-0.8.9): too buggy to support :-(
+    Updated doc/READ-ODS.html and added checks to chk_spreadsheet_support.m
+    and private/getodsinterfaces.m
 
 ===============================================================================
 io-1.2.2   Release Date: 2013-05-21   Release Manager: Philip Nienhuis

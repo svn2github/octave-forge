@@ -24,6 +24,7 @@
 %%       real: real part of the number
 %%       imag: imaginary part of the number
 %%   char: A string enclosed by double quotes representing that character
+%%   logical: text sring "true" or "false" (w/o double quotes)
 %% And will map more complex octave values this other way:
 %%   struct: an object with properties equal to the struct's field names
 %%     and value equal to the json counterpart of that field
@@ -47,6 +48,7 @@
 %% 2011-01-23 Added support for especial chars and escaped sequences
 %% 2011-04-01 Fixed error: Column vectors not working correctly
 %% 2011-09-08 (Philip Nienhuis) layout & style changes cf. Octave coding style
+%% 2011-08-13 (Keith Sheppard) Added logical types to object2json (bug #39429)
 
 function json = object2json (object)
   
@@ -97,6 +99,13 @@ function json = object2json (object)
         % so we must be sure that every other sequence gets replaced
         object = replace_non_JSON_escapes (object);
         json = [ '"', object, '"' ];
+
+      case 'logical'
+        if object
+          json = 'true';
+        else
+          json = 'false';
+        endif
 
       otherwise
         % We don't know what is it so we'll put the class name

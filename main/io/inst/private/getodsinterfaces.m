@@ -69,6 +69,7 @@
 ## 2013-03-01 active -> default interface
 ##     ''     Moved check for Java support to separate file in private/
 ##     ''     Fixed javaclasspath info resync in case of requested interfaces
+## 2013-08-13 Tested odfdom 0.8.9 (odfdom-0.6-incubator); found it doesn't work :-(
 
 function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 
@@ -127,7 +128,7 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
     ## under Windows we need the following more subtle, platform-independent approach:
     if (chk_jar_entries (jcp, entries) >= numel (entries))    
       ## Apparently all requested classes present.
-      ## Only now we can check for proper odfdom version (only 0.7.5 & 0.8.6+ work OK).
+      ## Only now we can check for proper odfdom version (only 0.7.5 & 0.8.6-0.8.8 work OK).
       ## The odfdom team deemed it necessary to change the version call so we need this:
       odfvsn = " ";
       try
@@ -142,11 +143,11 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
       odfvsn = regexp (odfvsn, '\d\.\d\.\d', "match"){1};
       if  ~(strcmp (odfvsn, "0.7.5") || strcmp (odfvsn, "0.8.6") ...
          || strcmp (odfvsn, "0.8.7") || strfind (odfvsn, "0.8.8"))
-        warning ("\nodfdom version %s is not supported - use v. 0.8.6 or later\n", odfvsn);
+        warning ("\nodfdom version %s is not supported - use v. 0.8.6, 0.8.7 or 0.8.8\n", odfvsn);
       else
         if (strcmp (odfvsn, "0.7.5"))
           warning (["odfdom v. 0.7.5 support won't be maintained " ...
-                    "- please upgrade to 0.8.6 or higher."]); 
+                    "- please upgrade to 0.8.8"]); 
         endif
         odsinterfaces.OTK = 1;
         printf ("OTK");

@@ -15,10 +15,10 @@
 	<b>ODS support for Octave</b></font></font></u>
 </p>
 <p align="center"><font face="Arial, sans-serif"><font size="2">
-	Copyright © 2009 - 2012 Philip Nienhuis &lt;prnienhuis at users.sf.net&gt;</font></font>
+	Copyright © 2009 - 2013 Philip Nienhuis &lt;prnienhuis at users.sf.net&gt;</font></font>
 </p>
 	<p align="center"><font face="Arial, sans-serif"><font size="2">
-	This version October 14, 2012</font></font>
+	This version August 15, 2013</font></font>
 </p>
     <p><font face="Arial, sans-serif"><font size="2">
 	<i>(ODS = Open Document Format spreadsheet data format, used by e.g., OpenOffice.org.)</i></font></font>
@@ -103,7 +103,7 @@
     	<li>
 	<p align="left"><font face="Arial, sans-serif"><font size="2"><b>jopendocument</b></font></font><font face="Arial, sans-serif"><font size="2">&lt;version&gt;</font></font><font face="Arial, sans-serif"><font size="2"><b>.jar</b></font></font><font face="Arial, sans-serif"><font size="2">.
     	Get it from <a href="http://www.jopendocument.org/">http://www.jopendocument.org</a></font></font></p><p align="left">
-    	<font face="Arial, sans-serif"><font size="2">(jOpenDocument 1.2 (final) is the most recent one and recommended for Octave)</font></font>
+    	<font face="Arial, sans-serif"><font size="2">(jOpenDocument 1.3 (final) is the most recent one and recommended for Octave)</font></font>
 	</p>
 	</li>
 </ul>
@@ -523,7 +523,7 @@
     	</dt><dt><font face="Arial, sans-serif"><font size="2"><b>ODFDOM versions</b></font></font></dt><dt>
     	<br>
     	</dt><dt><font face="Arial, sans-serif"><font size="2">I have tried various
-    	odfdom version. As to 0.8 &amp; 0.8.5, while the API has been
+    	odfdom versions. As to 0.8 &amp; 0.8.5, while the API has been
     	simplified enormously (finally one can address cells by spreadsheet
     	address rather than find out yourself by parsing the
     	table-column/-row/-cell structure), many irrecoverable bugs have
@@ -531,15 +531,17 @@
     	</dt><dt><font face="Arial, sans-serif"><font size="2">In addition
     	processing ODS files became significantly slower (up to 7 times!).</font></font></dt><dt>
     	<br>
-    	</dt><dt><font face="Arial, sans-serif"><font size="2">End of August 2010 I
-    	have implemented support for odfdom-0.8.6.jar – that version
+    	</dt><dt><font face="Arial, sans-serif"><font size="2">End of August 2010 
+      there's implemented support for odfdom-0.8.6.jar – that version
     	is at last sufficiently reliable to use. The few remaining bugs and
     	limitations could easily be worked around by diving in the older
     	TableTable API. Later on (early 2011) version 0.8.7 has been tested
-	too - this needed a few adjustments; clearly the odfdom API (currently at main
+	too - this needed a few adjustments. Early 2012 odfdom-0.8.8 (from odfdom-0.5-incubator)
+  was accepted. Aug. 2013 odfdom-0.8.9 (odfdom-0.6-incubator) was tested but
+  alas, it doesn't work; clearly the odfdom API (currently at main
 	version 0) is not stable yet.</font></font></dt><dt>
     	<font face="Arial, sans-serif"><font size="2">So at the moment
-    	(June 2012 = last I looked) only odfdom versions <b>0.7.5</b>,
+    	(August 2012 = last I looked) only odfdom versions <b>0.7.5</b>,
     	<b>0.8.6</b>, <b>0.8.7</b> and <b>0.8.8</b>(-incubator) are supported.
   </font></font></dt><dt><br></dt>
   <dt><font face="Arial, sans-serif"><font size="2">If you want to
@@ -553,7 +555,7 @@
     	<font face="Arial, sans-serif"><font size="2">oct2ods.m (revision
     	7159)</font></font></li></ul>
     	<p><font face="Arial, sans-serif"><font size="2">Enjoy!</font></font></p><p align="center"><font face="Arial, sans-serif"><font size="2">Philip
-    	Nienhuis, October 14, 2012</font></font></p><dl><dd><p align="center">
+    	Nienhuis, August 15, 2013</font></font></p><dl><dd><p align="center">
     	<br>
     </p></dd></dl>
     </body></html>

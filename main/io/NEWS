@@ -12,6 +12,8 @@ io-1.2.3   Release Date: 2013-08-15   Release Manager: Philip Nienhuis
 
 *** chk_spreadsheet_support.m: same as getxlsinterfaces.m
 
+*** Added logical types to object2json (by Keith Sheppard, bug #39429)
+
 *** Tested odfdom-0.6-incubator (odfdom-0.8.9): too buggy to support :-(
     Updated doc/READ-ODS.html and added checks to chk_spreadsheet_support.m
     and private/getodsinterfaces.m

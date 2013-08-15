@@ -91,7 +91,8 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 % 2012-12-21 POI 3.9 support (w. either xmlbeans.jar or xbeans.jar)
 % 2013-01-16 Updated to Octave w built-in Java (3.7.1+)
 % 2013-01-20 Made JVM memory detector more robust wrt Java return type
-% 2013-07-18 Add Fedora naming scheme to POI jar entries (official ones are symlinks)
+% 2013-07-18 Add Fedora naming scheme to POI jar entries (the "old" ones are symlinks)
+% 2013-08-13 Tested odfdom 0.8.9 (odfdom-0.6-incubator); found it doesn't work :-(
 
   jcp = []; retval = 0;
   if (nargin < 3); path_to_ooo= ''; end %if
@@ -262,7 +263,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
   entries5 = {'odfdom', 'xercesImpl'}; missing5 = zeros (1, numel (entries5));
   [jpchk, missing5] = chk_jar_entries (jcp, entries5, dbug);
   if (jpchk >= numel (entries5))    % Apparently all requested classes present.
-    % Only now we can check for proper odfdom version (only 0.7.5 & 0.8.6 work OK).
+    % Only now we can check for proper odfdom version (only 0.7.5 & 0.8.6-0.8.8 work OK).
     % The odfdom team deemed it necessary to change the version call so we need this:
     odfvsn = ' ';
     try
@@ -274,7 +275,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
     end %try_catch
     if ~(strcmp (odfvsn, '0.7.5') || strcmp (odfvsn, '0.8.6') || strcmp (odfvsn, '0.8.7')
       || ~isempty (strfind (odfvsn, '0.8.8')))
-      warning ('  *** odfdom version (%s) is not supported - use v. 0.8.6 or newer\n', odfvsn);
+      warning ('  *** odfdom version (%s) is not supported - use v. 0.8.6, 0.8.7 or 0.8.8\n', odfvsn);
     else  
       if (dbug > 1), fprintf ('  => ODFtoolkit (OTK) OK.\n'); end %if
       retval = retval + 32;

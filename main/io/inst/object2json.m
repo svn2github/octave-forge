@@ -196,3 +196,15 @@ function object = replace_non_JSON_escapes (object)
   object = regexprep (object, '(?<!\\)\\(?=(\\\\)*(?!([\"\\\/bfnrt]|([u][0-9A-Fa-f]{4}))+?))', "\\\\");
 
 endfunction
+
+
+%!test
+%! assert(object2json([logical(1), logical(0)]), '[true,false]');
+
+%!test
+%! car.name = 'Mzd R8';
+%! car.speedsamples = [98, 33, 50; 56, 120, 102; 77, 82, 93];
+%! car.toofast = car.speedsamples >= 90;
+%! car.leased = logical(1);
+%! car.european = logical(0);
+%! assert(object2json(car), '{"name":"Mzd R8","speedsamples":[[98,33,50],[56,120,102],[77,82,93]],"toofast":[[true,false,false],[false,true,true],[false,false,true]],"leased":true,"european":false}');

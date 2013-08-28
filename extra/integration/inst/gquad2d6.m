@@ -1,4 +1,4 @@
-function vol = gquad6(fun,xlow,xhigh,ylow,yhigh)
+function vol = gquad2d6(fun,xlow,xhigh,ylow,yhigh)
 %
 %usage:  vol = gquad6(fun,xlow,xhigh,ylow,yhigh)
 %

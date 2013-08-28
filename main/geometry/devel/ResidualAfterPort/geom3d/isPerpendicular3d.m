@@ -23,7 +23,7 @@
 ## OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 ## OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-function b = isPerpendicular (v1, v2, varargin)
+function b = isPerpendicular3d (v1, v2, varargin)
 #ISPERPENDICULAR3D Check orthogonality of two 3D vectors
 #
 #   B = isPerpendicular (V1, V2)

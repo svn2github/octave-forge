@@ -21,7 +21,7 @@
 ## @seealso{@@kronprod/uminus}
 ## @end deftypefn
 
-function KP = uplus (KP)
+function KP = uminus (KP)
   if (nargin != 1)
     print_usage ();
   endif

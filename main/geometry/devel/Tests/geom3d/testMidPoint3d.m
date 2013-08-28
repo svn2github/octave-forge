@@ -1,4 +1,4 @@
-function test_suite = testMidPoint(varargin) ##ok<STOUT>
+function test_suite = testMidPoint3d(varargin) ##ok<STOUT>
 # One-line description here, please.
 #   output = testMidPoint(input)
 #

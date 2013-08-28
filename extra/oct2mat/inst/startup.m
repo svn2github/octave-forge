@@ -18,7 +18,7 @@
 % This is part of the "Free Toolboxes for Matlab" (freetb4matlab)
 % suggested by Soren Hauberg Apr 2010
 
-if (~exist (OCTAVE_VERSION),'builtin')
+if (~exist ('OCTAVE_VERSION', 'builtin'))
      %% We are in Matlab
      inst_dir = fileparts (mfilename ('fullpath'));
      addpath (fullfile (inst_dir, 'basics'));

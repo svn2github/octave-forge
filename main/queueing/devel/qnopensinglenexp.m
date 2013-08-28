@@ -93,7 +93,7 @@ function qnopensinglenexp( l0, c20ir, P, mu, m, c2ir )
   c2Ai = c2Di = zeros(1,N);
   while 1==1
     ## merging
-    c2Air(i,:) = 1./lir(i,:) .* sum( c2ijr(j,i,:)
+    c2Air(i,:) = 1./lir(i,:) .* sum( c2ijr(j,i,:));
     ## flow
   endwhile
 		      

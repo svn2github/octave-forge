@@ -44,8 +44,7 @@ function sig=shannonfanodeco(hcode,dict)
     error('usage: shannonfanoenco(sig,dict)');
   end
   if (max(hcode) > 1 || min(hcode) < 0)
-    error("hcode has elements that are outside alphabet set ...
-	Cannot decode.");
+    error("hcode has elements that are outside alphabet set. Cannot decode.");
   end
   
 # TODO:

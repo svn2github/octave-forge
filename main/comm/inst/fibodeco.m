@@ -61,8 +61,7 @@ function num=fibodeco(code)
   L_C=length(code);
 
   if (nargin < 1)
-    error("Usage:fibodec(cell-array vectors), where each vector is +ve sequence of numbers ...
-	      either 1 or 0");
+    error("Usage:fibodec(cell-array vectors), where each vector is +ve sequence of numbers either 1 or 0");
   end
 
   for j=1:L_C

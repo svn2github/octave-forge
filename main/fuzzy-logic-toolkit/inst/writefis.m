@@ -132,9 +132,8 @@ function fid = open_output_file (filename, use_gui)
   ## choose an output filename.
 
   if (use_gui)
-    system_command = sprintf ("zenity --file-selection --filename=%s ...
-                              --save --confirm-overwrite; ...
-                              echo $file", filename);
+    system_command = sprintf ("zenity --file-selection --filename=%s --save --confirm-overwrite; echo $file",
+                              filename);
     [dialog_error, filename] = system (file=system_command);
     if (dialog_error)
       puts ("Type 'help writefis' for more information.\n");

@@ -53,8 +53,7 @@ function [rcode,K,Ltot]=riceenco(sig,K)
   end
 
   if (min(sig) < 0)
-    error("signal has elements that are outside alphabet set ...
-	. Accepts only non-negative numbers. Cannot encode.");
+    error("signal has elements that are outside alphabet set. Accepts only non-negative numbers. Cannot encode.");
   end
 
     

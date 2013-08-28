@@ -39,8 +39,7 @@ function sf_code=shannonfanoenco(sig,dict)
     error('usage: huffmanenco(sig,dict)');
   end
   if (max(sig) > length(dict)) || ( min(sig) < 1)
-    error("signal has elements that are outside alphabet set ...
-	Cannot encode.");
+    error("signal has elements that are outside alphabet set. Cannot encode.");
   end
   sf_code=[dict{sig}];
   return

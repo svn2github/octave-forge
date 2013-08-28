@@ -58,8 +58,7 @@ function op_num=fiboenco(num)
      %	 34      21      13   8       5       3       2       1];
      
      if(nargin < 1) || (min(num) <= 0 || max(num) > 608)
-       error("Usage:fiboenco(num), where num is +ve sequence of numbers ...
-       and less than equal to 608");
+       error("Usage:fiboenco(num), where num is +ve sequence of numbers and less than equal to 608");
      end
      f= [ 233   144    89    55    34    21    13     8     5     3     2     1];
      

@@ -28,5 +28,5 @@ function retval = iscomplex (KP)
     error ("iscomplex: input argument must be of class 'kronprod'");
   endif
   
-  retval = (iscomplex (KP.A) || iscomplex (KP.B);
+  retval = (iscomplex (KP.A) || iscomplex (KP.B));
 endfunction

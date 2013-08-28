@@ -27,7 +27,7 @@ function a = mrdivide (a, b)
 
   elseif isreal (b)
 
-    a.q_wrap = a.q_wrap / b);
+    a.q_wrap = a.q_wrap / b;
 
   end
 

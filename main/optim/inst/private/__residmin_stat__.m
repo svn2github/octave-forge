@@ -49,24 +49,24 @@ function ret = __residmin_stat__ (f, pfin, settings, hook)
   cstep_default = 1e-20;
 
   if (nargin == 1 && ischar (f) && strcmp (f, "defaults"))
-    ret = optimset ("param_config", [], \
-		    "param_order", [], \
-		    "param_dims", [], \
-		    "f_pstruct", false, \
-		    "dfdp_pstruct", false, \
-		    "dfdp", [], \
-		    "diffp", [], \
-		    "diff_onesided", [], \
-		    "complex_step_derivative", false, \
-		    "cstep", cstep_default, \
-		    "fixed", [], \
-		    "weights", [], \
-		    "residuals", [], \
-		    "covd", [], \
-		    "objf", [], \ # no default, e.g. "wls"
-		    "ret_dfdp", false, \
-		    "ret_covd", false, \
-		    "ret_covp", false, \
+    ret = optimset ("param_config", [], ...
+		    "param_order", [], ...
+		    "param_dims", [], ...
+		    "f_pstruct", false, ...
+		    "dfdp_pstruct", false, ...
+		    "dfdp", [], ...
+		    "diffp", [], ...
+		    "diff_onesided", [], ...
+		    "complex_step_derivative", false, ...
+		    "cstep", cstep_default, ...
+		    "fixed", [], ...
+		    "weights", [], ...
+		    "residuals", [], ...
+		    "covd", [], ...
+		    "objf", [], ... # no default, e.g. "wls"
+		    "ret_dfdp", false, ...
+		    "ret_covd", false, ...
+		    "ret_covp", false, ...
 		    "ret_corp", false);
     return;
   endif
@@ -107,7 +107,7 @@ function ret = __residmin_stat__ (f, pfin, settings, hook)
     error ("both 'complex_step_derivative' and 'dfdp' are set");
   endif
 
-  any_vector_conf = ! (isempty (diffp) && isempty (diff_onesided) && \
+  any_vector_conf = ! (isempty (diffp) && isempty (diff_onesided) && ...
 		       isempty (fixed));
 
   ## correct "_pstruct" settings if functions are not supplied
@@ -118,8 +118,8 @@ function ret = __residmin_stat__ (f, pfin, settings, hook)
   if (p_struct || ! isempty (pconf) || f_pstruct || dfdp_pstruct)
     if (isempty (pord))
       if (p_struct)
-	if (any_vector_conf || \
-	    ! ((f_pstruct || isempty (f)) && \
+	if (any_vector_conf || ...
+	    ! ((f_pstruct || isempty (f)) && ...
 	       (dfdp_pstruct || isempty (dfdp))))
 	  error ("no parameter order specified and constructing a parameter order from the structure of parameters can not be done since not all configuration or given functions are structure based");
 	else
@@ -138,15 +138,15 @@ function ret = __residmin_stat__ (f, pfin, settings, hook)
     endif
     if (isempty (pdims))
       if (p_struct)
-	pdims = cellfun \
+	pdims = cellfun ...
 	    (@ size, fields2cell (pfin, pord), "UniformOutput", false);
       else
 	pdims = num2cell (ones (nnames, 2), 2);
       endif
     else
       pdims = pdims(:);
-      if (p_struct && \
-	  ! all (cellfun (@ (x, y) prod (size (x)) == prod (y), \
+      if (p_struct && ...
+	  ! all (cellfun (@ (x, y) prod (size (x)) == prod (y), ...
 			  struct2cell (pfin), pdims)))
 	error ("given param_dims and dimensions of parameters do not match");
       endif
@@ -159,13 +159,13 @@ function ret = __residmin_stat__ (f, pfin, settings, hook)
     if (any (pnel > 1))
       pnonscalar = true;
       cpnel = num2cell (pnel);
-      prepidx = cat (1, cellfun \
-		     (@ (x, n) x(ones (1, n), 1), \
-		      num2cell ((1:nnames).'), cpnel, \
+      prepidx = cat (1, cellfun ...
+		     (@ (x, n) x(ones (1, n), 1), ...
+		      num2cell ((1:nnames).'), cpnel, ...
 		      "UniformOutput", false){:});
       epord = pord(prepidx, 1);
-      psubidx = cat (1, cellfun \
-		     (@ (n) (1:n).', cpnel, \
+      psubidx = cat (1, cellfun ...
+		     (@ (n) (1:n).', cpnel, ...
 		      "UniformOutput", false){:});
     else
       pnonscalar = false; # some less expensive interfaces later
@@ -185,14 +185,14 @@ function ret = __residmin_stat__ (f, pfin, settings, hook)
       error ("number of initial parameters not correct");
     endif
   endif
-  if (ismatrix (dfdp) && ! ischar (dfdp) && ! isempty (dfdp) && \
+  if (ismatrix (dfdp) && ! ischar (dfdp) && ! isempty (dfdp) && ...
       np == 0)
     np = columns (dfdp);
   endif
 
   plabels = num2cell (num2cell ((1:np).'));
   if (! isempty (pord))
-    plabels = cat (2, plabels, num2cell (epord), \
+    plabels = cat (2, plabels, num2cell (epord), ...
 		   num2cell (num2cell (psubidx)));
   endif
 
@@ -214,7 +214,7 @@ function ret = __residmin_stat__ (f, pfin, settings, hook)
 
     ## supplement parameter names lacking in param_config
     nidx = ! isfield (pconf, pord);
-    pconf = cell2fields ({struct()}(ones (1, sum (nidx))), \
+    pconf = cell2fields ({struct()}(ones (1, sum (nidx))), ...
 			 pord(nidx), 2, pconf);
 
     pconf = structcat (1, fields2cell (pconf, pord){:});
@@ -228,9 +228,9 @@ function ret = __residmin_stat__ (f, pfin, settings, hook)
     if (isfield (pconf, "diffp"))
       idx = ! fieldempty (pconf, "diffp");
       if (pnonscalar)
-	diffp(idx(prepidx)) = \
-	    cat (1, cellfun (@ (x, n) reshape (x, n, 1), \
-			     {pconf(idx).diffp}.', cpnel(idx), \
+	diffp(idx(prepidx)) = ...
+	    cat (1, cellfun (@ (x, n) reshape (x, n, 1), ...
+			     {pconf(idx).diffp}.', cpnel(idx), ...
 			     "UniformOutput", false){:});
       else
 	diffp(idx) = [pconf.diffp];
@@ -242,10 +242,10 @@ function ret = __residmin_stat__ (f, pfin, settings, hook)
     if (isfield (pconf, "diff_onesided"))
       idx = ! fieldempty (pconf, "diff_onesided");
       if (pnonscalar)
-	diff_onesided(idx(prepidx)) = \
-	    logical \
-	    (cat (1, cellfun (@ (x, n) reshape (x, n, 1), \
-			      {pconf(idx).diff_onesided}.', cpnel(idx), \
+	diff_onesided(idx(prepidx)) = ...
+	    logical ...
+	    (cat (1, cellfun (@ (x, n) reshape (x, n, 1), ...
+			      {pconf(idx).diff_onesided}.', cpnel(idx), ...
 			     "UniformOutput", false){:}));
       else
 	diff_onesided(idx) = logical ([pconf.diff_onesided]);
@@ -255,10 +255,10 @@ function ret = __residmin_stat__ (f, pfin, settings, hook)
     if (isfield (pconf, "fixed"))
       idx = ! fieldempty (pconf, "fixed");
       if (pnonscalar)
-	fixed(idx(prepidx)) = \
-	    logical \
-	    (cat (1, cellfun (@ (x, n) reshape (x, n, 1), \
-			      {pconf(idx).fixed}.', cpnel(idx), \
+	fixed(idx(prepidx)) = ...
+	    logical ...
+	    (cat (1, cellfun (@ (x, n) reshape (x, n, 1), ...
+			      {pconf(idx).fixed}.', cpnel(idx), ...
 			     "UniformOutput", false){:}));
       else
 	fixed(idx) = logical ([pconf.fixed]);
@@ -305,8 +305,8 @@ function ret = __residmin_stat__ (f, pfin, settings, hook)
   ## parameters
   if (p_struct)
     if (pnonscalar)
-      pfin = cat (1, cellfun (@ (x, n) reshape (x, n, 1), \
-			      fields2cell (pfin, pord), cpnel, \
+      pfin = cat (1, cellfun (@ (x, n) reshape (x, n, 1), ...
+			      fields2cell (pfin, pord), cpnel, ...
 			      "UniformOutput", false){:});
     else
       pfin = cat (1, fields2cell (pfin, pord){:});
@@ -316,13 +316,13 @@ function ret = __residmin_stat__ (f, pfin, settings, hook)
   ## model function
   if (f_pstruct)
     if (pnonscalar)
-      f = @ (p, varargin) \
-	  f (cell2struct \
-	     (cellfun (@ reshape, mat2cell (p, ppartidx), \
-		       pdims, "UniformOutput", false), \
+      f = @ (p, varargin) ...
+	  f (cell2struct ...
+	     (cellfun (@ reshape, mat2cell (p, ppartidx), ...
+		       pdims, "UniformOutput", false), ...
 	      pord, 1), varargin{:});
     else
-      f = @ (p, varargin) \
+      f = @ (p, varargin) ...
 	  f (cell2struct (num2cell (p), pord, 1), varargin{:});
     endif
   endif
@@ -362,19 +362,19 @@ function ret = __residmin_stat__ (f, pfin, settings, hook)
   endif
   if (dfdp_pstruct)
     if (pnonscalar)
-      dfdp = @ (p, hook) \
-	  cat (2, \
-	       fields2cell \
-	       (dfdp (cell2struct \
-		      (cellfun (@ reshape, mat2cell (p, ppartidx), \
-				pdims, "UniformOutput", false), \
-		       pord, 1), hook), \
+      dfdp = @ (p, hook) ...
+	  cat (2, ...
+	       fields2cell ...
+	       (dfdp (cell2struct ...
+		      (cellfun (@ reshape, mat2cell (p, ppartidx), ...
+				pdims, "UniformOutput", false), ...
+		       pord, 1), hook), ...
 		pord){:});
     else
-      dfdp = @ (p, hook) \
-	  cat (2, \
-	       fields2cell \
-	       (dfdp (cell2struct (num2cell (p), pord, 1), hook), \
+      dfdp = @ (p, hook) ...
+	  cat (2, ...
+	       fields2cell ...
+	       (dfdp (cell2struct (num2cell (p), pord, 1), hook), ...
 		pord){:});
     endif
   endif
@@ -382,23 +382,23 @@ function ret = __residmin_stat__ (f, pfin, settings, hook)
   ## parameter-related configuration for jacobian function
   if (dfdp_pstruct)
     if(pnonscalar)
-      s_diffp = cell2struct \
-	  (cellfun (@ reshape, mat2cell (diffp, ppartidx), \
+      s_diffp = cell2struct ...
+	  (cellfun (@ reshape, mat2cell (diffp, ppartidx), ...
 		    pdims, "UniformOutput", false), pord, 1);
-      s_diff_onesided = cell2struct \
-	  (cellfun (@ reshape, mat2cell (diff_onesided, ppartidx), \
+      s_diff_onesided = cell2struct ...
+	  (cellfun (@ reshape, mat2cell (diff_onesided, ppartidx), ...
 		    pdims, "UniformOutput", false), pord, 1);
-      s_plabels = cell2struct \
-	  (num2cell \
-	   (cat (2, cellfun \
-		 (@ (x) cellfun \
-		  (@ reshape, mat2cell (cat (1, x{:}), ppartidx), \
-		   pdims, "UniformOutput", false), \
-		  num2cell (plabels, 1), "UniformOutput", false){:}), \
-	    2), \
+      s_plabels = cell2struct ...
+	  (num2cell ...
+	   (cat (2, cellfun ...
+		 (@ (x) cellfun ...
+		  (@ reshape, mat2cell (cat (1, x{:}), ppartidx), ...
+		   pdims, "UniformOutput", false), ...
+		  num2cell (plabels, 1), "UniformOutput", false){:}), ...
+	    2), ...
 	   pord, 1);
-      s_orig_fixed = cell2struct \
-	  (cellfun (@ reshape, mat2cell (fixed, ppartidx), \
+      s_orig_fixed = cell2struct ...
+	  (cellfun (@ reshape, mat2cell (fixed, ppartidx), ...
 		    pdims, "UniformOutput", false), pord, 1);
     else
       s_diffp = cell2struct (num2cell (diffp), pord, 1);
@@ -486,7 +486,7 @@ function ret = __residmin_stat__ (f, pfin, settings, hook)
 
     ## jacobian of model function
     if (! isempty (dfdp))
-      dfdp = @ (p, hook) \
+      dfdp = @ (p, hook) ...
 	  dfdp (assign (pfin, nonfixed, p), hook)(:, nonfixed);
     endif
     
@@ -494,17 +494,17 @@ function ret = __residmin_stat__ (f, pfin, settings, hook)
 
   #### supplement constants to jacobian function
   if (dfdp_pstruct)
-    dfdp = @ (p, hook) \
-	dfdp (p, cell2fields \
-	      ({s_diffp, s_diff_onesided, s_plabels, s_fixed, cstep}, \
-	       {"diffp", "diff_onesided", "plabels", "fixed", "h"}, \
+    dfdp = @ (p, hook) ...
+	dfdp (p, cell2fields ...
+	      ({s_diffp, s_diff_onesided, s_plabels, s_fixed, cstep}, ...
+	       {"diffp", "diff_onesided", "plabels", "fixed", "h"}, ...
 	       2, hook));
   else
     if (! isempty (dfdp))
-      dfdp = @ (p, hook) \
-	  dfdp (p, cell2fields \
-		({diffp, diff_onesided, plabels, fixed, cstep}, \
-		 {"diffp", "diff_onesided", "plabels", "fixed", "h"}, \
+      dfdp = @ (p, hook) ...
+	  dfdp (p, cell2fields ...
+		({diffp, diff_onesided, plabels, fixed, cstep}, ...
+		 {"diffp", "diff_onesided", "plabels", "fixed", "h"}, ...
 		 2, hook));
     endif
   endif
@@ -596,7 +596,7 @@ function funs = map_objf (objf)
       funs.covd = str2func ("__covd_wls__");
       funs.covp_corp = str2func ("__covp_corp_wls__");
     otherwise
-      error ("no statistics implemented for objective function '%s'", \
+      error ("no statistics implemented for objective function '%s'", ...
 	     objf);
   endswitch
 

@@ -143,7 +143,7 @@ function [nb] = dxfwrite (filename, varargin)
     layspec = sprintf("8\nCurve%d\n", nb);
 
     ## List of vertex
-    fprintf(fid, ["0\nVERTEX\n", layspec, \
+    fprintf(fid, ["0\nVERTEX\n", layspec, ...
                   "10\n",FMT,"\n", "20\n",FMT,"\n", "30\n",FMT,"\n"], pl.');
 
     ## End of polyline

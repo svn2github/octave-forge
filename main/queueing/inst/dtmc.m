@@ -87,22 +87,22 @@ function p = dtmc( P, n, p0 )
 
   [N err] = dtmcchkP(P);
   
-  ( N>0 ) || \
+  ( N>0 ) || ...
       error( err );
 
   if ( nargin == 1 ) # steady-state analysis
     A = P-eye(N);
     A(:,N) = 1; # add normalization condition
-    rank( A ) == N || \
+    rank( A ) == N || ...
 	warning( "dtmc(): P is reducible" );
     
     b = [ zeros(1,N-1) 1 ];
     p = b/A;
   else # transient analysis
-    ( isscalar(n) && n>=0 ) || \
+    ( isscalar(n) && n>=0 ) || ...
 	error( "n must be >=0" );
 
-    ( isvector(p0) && length(p0) == N && all(p0>=0) && abs(sum(p0)-1.0)<N*eps ) || \
+    ( isvector(p0) && length(p0) == N && all(p0>=0) && abs(sum(p0)-1.0)<N*eps ) || ...
         error( "p0 must be a probability vector" );   
 
     p0 = p0(:)'; # make p0 a row vector

@@ -79,10 +79,10 @@ function [Xl Xu Rl Ru] = qncmbsb( varargin )
   [err N S V m Z] = qncmchkparam( varargin{:} );
   isempty(err) || error(err);
 
-  all(m<=1) || \
+  all(m<=1) || ...
       error("Multiple-server nodes are not supported");
 
-  all(Z == 0 ) || \
+  all(Z == 0 ) || ...
       error("This function only supports Z=0");
 
   if ( sum(N) == 0 ) # handle trivial case of empty network

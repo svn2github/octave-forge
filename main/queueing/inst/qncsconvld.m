@@ -92,17 +92,17 @@ function [U R Q X G] = qncsconvld( N, S, V )
     print_usage();
   endif
 
-  ( isscalar(N) && N>0 ) || \
+  ( isscalar(N) && N>0 ) || ...
       error( "N must be a positive scalar" );
   K = N; # To be compliant with the reference, we denote K as the population size
-  ( isvector(V) && all(V>=0) ) || \
+  ( isvector(V) && all(V>=0) ) || ...
       error( "V must be a vector >=0" );
   V = V(:)'; # Make V a row vector
   N = length(V); # Number of service centers
   if ( isnumeric(S) ) 
-    ( rows(S) == N && columns(S) == K) || \
+    ( rows(S) == N && columns(S) == K) || ...
         error( sprintf("S size mismatch: is %dx%d, should be %dx%d", rows(S), columns(S),K,N ) );
-    all(S(:)>=0) || \
+    all(S(:)>=0) || ...
         error( "S must be >=0" );
   endif
 

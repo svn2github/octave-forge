@@ -81,23 +81,23 @@ function [X_lower X_upper R_lower R_upper] = qnomaba( lambda, S, V )
   if ( nargin < 2 || nargin > 3 )
     print_usage();
   endif
-  (isvector(lambda) && length(lambda)>0) || \
+  (isvector(lambda) && length(lambda)>0) || ...
       error( "lambda must be a nonempty vector" );
-  all(lambda > 0) || \
+  all(lambda > 0) || ...
       error( "lambda must contain nonnegative values" );
   lambda = lambda(:)';
   C = length(lambda);
-  ( ismatrix(S) && rows(S)==C ) || \
+  ( ismatrix(S) && rows(S)==C ) || ...
       error( "S/D must be a matrix >=0 with %d rows", C );
-  all(S(:)>=0) || \
+  all(S(:)>=0) || ...
       error( "S/D must contain nonnegative values" );
   K = columns(S);
   if ( nargin < 3 )
     V = ones(size(S));
   else
-    ( ismatrix(V) && size_equal(S,V) ) || \
+    ( ismatrix(V) && size_equal(S,V) ) || ...
 	error( "V must be a %d x %d matrix", C, K);
-    all(V(:)>=0) || \
+    all(V(:)>=0) || ...
 	error( "V must contain nonnegative values" );
   endif
 

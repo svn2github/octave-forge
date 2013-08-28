@@ -75,8 +75,8 @@ function [p_res, objf, cvg, outp] = __lm_feasible__ (f, pin, hook)
 
   ## some useful variables derived from passed variables
   n_lcstr = size (vc, 1);
-  have_constraints_except_bounds = \
-      n_lcstr + n_gencstr > \
+  have_constraints_except_bounds = ...
+      n_lcstr + n_gencstr > ...
       sum (lbound != -Inf) + sum (ubound != Inf);
   ac_idx = true (n_lcstr + n_gencstr, 1); # index of all constraints
   nc_idx = false (n_lcstr + n_gencstr, 1); # none of all constraints
@@ -209,8 +209,8 @@ function [p_res, objf, cvg, outp] = __lm_feasible__ (f, pin, hook)
         ## difference of derivatives of new and old active constraints,
         ## multiplied by multipliers, as used for BFGS update (lb set
         ## below previously)
-        dch = (dca_new_id(:, bidx_old_id) - \
-               dca_old_id(:, bidx_old_id)) * \
+        dch = (dca_new_id(:, bidx_old_id) - ...
+               dca_old_id(:, bidx_old_id)) * ...
             lb(old_l_idx);
       
         y = df - old_df - dch;
@@ -314,7 +314,7 @@ function [p_res, objf, cvg, outp] = __lm_feasible__ (f, pin, hook)
       hstep = mcit * chg;
       idx = hstep < 0;
       if (any (idx))
-        k = min (1, min (- (vci(idx) + mcit(idx, :) * p) ./ \
+        k = min (1, min (- (vci(idx) + mcit(idx, :) * p) ./ ...
                          hstep(idx)));
       endif
       ##
@@ -322,11 +322,11 @@ function [p_res, objf, cvg, outp] = __lm_feasible__ (f, pin, hook)
       if (n_gencstr)
         c_tp = gc_idx & (c_nonbinding | c_inact);
         if (any (c_tp) && any (f_cstr (p + k * chg, c_tp) < 0))
-          [k, fval, info] = \
-              fzero (@ (x) min (cat (1, \
-                                     f_cstr (p + x * chg, c_tp), \
-                                     k - x, \
-                                     ifelse (x < 0, -Inf, Inf))), \
+          [k, fval, info] = ...
+              fzero (@ (x) min (cat (1, ...
+                                     f_cstr (p + x * chg, c_tp), ...
+                                     k - x, ...
+                                     ifelse (x < 0, -Inf, Inf))), ...
                      0);
           if (info != 1 || abs (fval) >= nz)
             error ("could not find stepwidth to satisfy inactive and non-binding general inequality constraints");
@@ -354,7 +354,7 @@ function [p_res, objf, cvg, outp] = __lm_feasible__ (f, pin, hook)
           c_tp2 = c_binding;
           ## once (any(tp)==false), it would not get true again even
           ## with the following assignment
-          if (any (tp) && \
+          if (any (tp) && ...
               any (tp = f_cstr (ptp1, c_tp1) < nz))
             ## keep only the first true entry in tp
             tp(tp) = logical (cat (1, 1, zeros (sum (tp) - 1, 1)));
@@ -366,7 +366,7 @@ function [p_res, objf, cvg, outp] = __lm_feasible__ (f, pin, hook)
             cadd = caddt.';
             C = dct(c_binding, :) * R * cadd;
             Ct = C.';
-            T = [btbl, btbl * C; \
+            T = [btbl, btbl * C; ...
                  -Ct * btbl, caddt * R * cadd - Ct * btbl * C];
             btbl = gjp (T, size (T, 1));
           endif
@@ -388,15 +388,15 @@ function [p_res, objf, cvg, outp] = __lm_feasible__ (f, pin, hook)
             nt_niter--;
           endwhile
 
-          if (nt_nosuc || \
-              any (abs (chg) > abs (p .* maxstep)) || \
+          if (nt_nosuc || ...
+              any (abs (chg) > abs (p .* maxstep)) || ...
               any (f_cstr (ptp2, c_tp0) < -nz))
             ## if (nt_nosuc), regaining did not converge, else,
             ## regaining violated type 3 and 4.
             nt_nosuc = true;
             ptp1 = (p + ptp1) / 2;
           endif
-          if (! nt_nosuc && \
+          if (! nt_nosuc && ...
               any ((tp = f_cstr (ptp2, c_unbinding)) < 0))
             [discarded, id] = min(tp);
             tid = find (ridx);
@@ -447,7 +447,7 @@ function [p_res, objf, cvg, outp] = __lm_feasible__ (f, pin, hook)
         limit = abs (maxstep(idx) .* p(idx));
         chg(idx) = min (max (chg(idx), - limit), limit);
         if (verbose && any (ochg != chg))
-          printf ("Change in parameter(s): %s:maximal fractional stepwidth enforced", \
+          printf ("Change in parameter(s): %s:maximal fractional stepwidth enforced", ...
                   sprintf ("%d ", find (ochg != chg)));
         endif
       endif # regaining

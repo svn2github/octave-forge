@@ -67,12 +67,12 @@ ws = es = "";
 
 ## Check for unknown options
 ## All known options
-opn = [" DerivativeCheck Diagnostics DiffMaxChange DiffMinChange",\
-       " Display GoalsExactAchieve GradConstr GradObj Hessian HessMult",\
-       " HessPattern HessUpdate Jacobian JacobMult JacobPattern",\
-       " LargeScale LevenbergMarquardt LineSearchType MaxFunEvals MaxIter",\
-       " MaxPCGIter MeritFunction MinAbsMax PrecondBandWidth TolCon",\
-       " TolFun TolPCG TolX TypicalX ",\
+opn = [" DerivativeCheck Diagnostics DiffMaxChange DiffMinChange",...
+       " Display GoalsExactAchieve GradConstr GradObj Hessian HessMult",...
+       " HessPattern HessUpdate Jacobian JacobMult JacobPattern",...
+       " LargeScale LevenbergMarquardt LineSearchType MaxFunEvals MaxIter",...
+       " MaxPCGIter MeritFunction MinAbsMax PrecondBandWidth TolCon",...
+       " TolFun TolPCG TolX TypicalX ",...
        " MinEquiv Backend "];
 
 for [v,k] = opt
@@ -82,11 +82,11 @@ for [v,k] = opt
 end
 ## Check for ignored options
 ## All ignored options
-iop = [" DerivativeCheck DiffMaxChange DiffMinChange",\
-       " Display GoalsExactAchieve GradConstr HessMult",\
-       " HessPattern HessUpdate JacobMult JacobPattern",\
-       " LargeScale LevenbergMarquardt LineSearchType",\
-       " MaxPCGIter MeritFunction MinAbsMax PrecondBandWidth TolCon",\
+iop = [" DerivativeCheck DiffMaxChange DiffMinChange",...
+       " Display GoalsExactAchieve GradConstr HessMult",...
+       " HessPattern HessUpdate JacobMult JacobPattern",...
+       " LargeScale LevenbergMarquardt LineSearchType",...
+       " MaxPCGIter MeritFunction MinAbsMax PrecondBandWidth TolCon",...
        " TolPCG TypicalX "];
 for [v,k] = opt
   if ! findstr ([" ",k," "],iop)
@@ -102,10 +102,10 @@ end
 
 opm = struct();		# minimize() options
 
-equiv = struct ("TolX"       , "utol"   , "TolFun"     , "ftol",\
-		"MaxFunEvals", "maxev"  , "MaxIter"    , "maxit",\
-		"GradObj"    , "jac"    , "Hessian"    , "hess",\
-		"Display"    , "verbose", "Diagnostics", "verbose",\
+equiv = struct ("TolX"       , "utol"   , "TolFun"     , "ftol",...
+		"MaxFunEvals", "maxev"  , "MaxIter"    , "maxit",...
+		"GradObj"    , "jac"    , "Hessian"    , "hess",...
+		"Display"    , "verbose", "Diagnostics", "verbose",...
 		"Backend"    , "backend");
 
 for [v,k] = equiv

@@ -87,9 +87,9 @@ function [X_lower X_upper R_lower R_upper] = qncspb( varargin )
   [err N S V m Z] = qncschkparam( varargin{:} );
   isempty(err) || error(err);
 
-  ( N>0 ) || \
+  ( N>0 ) || ...
       error("N must be positive");
-  all(m==1) || \
+  all(m==1) || ...
       error("qncspb only supports single server nodes");
 
   D = S .* V;

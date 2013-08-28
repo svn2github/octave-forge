@@ -72,7 +72,7 @@ end				# Otherwise, use defaults, def'd above
 if a>b, tmp=a; a=b; b=tmp; end
 
 if narg > length (args),
-  printf ("brent_line_min : narg==%i > length (args)==%i",\
+  printf ("brent_line_min : narg==%i > length (args)==%i",...
     narg, length (args));
   keyboard
 end
@@ -123,7 +123,7 @@ args{narg} = x+ s*dx; gs = feval( f, args );
 nev++;
 
 if verbose,
-  printf ("[a,s,b]=[%.3e,%.3e,%.3e], [ga,gs,gb]=[%.3e,%.3e,%.3e]\n",\
+  printf ("[a,s,b]=[%.3e,%.3e,%.3e], [ga,gs,gb]=[%.3e,%.3e,%.3e]\n",...
 	  a,s,b,ga,gs,gb);
 end
 
@@ -147,7 +147,7 @@ while ( b-a > maxerr ) && nev < maxev,
 				# look linear 
   ## mydet = sum (l([2 3 1]).*f([3 1 2])-l([3 1 2]).*f([2 3 1]))
   mydet = sum ([s b a].*[gb ga gs] - [b a s].*[gs gb ga]);
-  if min (b-s, s-a) > 10*seps && abs (mydet) > 10*seps && \
+  if min (b-s, s-a) > 10*seps && abs (mydet) > 10*seps && ...
 	(t = poly_2_ex ([a,s,b], [ga, gs, gb])) < b && t > a,
 
 				# t has already been set
@@ -212,7 +212,7 @@ while ( b-a > maxerr ) && nev < maxev,
   end
 
   if verbose,
-    printf ("[a,s,b]=[%.3e,%.3e,%.3e], [ga,gs,gb]=[%.3e,%.3e,%.3e]\n",\
+    printf ("[a,s,b]=[%.3e,%.3e,%.3e], [ga,gs,gb]=[%.3e,%.3e,%.3e]\n",...
 	    a,s,b,ga,gs,gb);
   end
   ## keyboard

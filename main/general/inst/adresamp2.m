@@ -24,7 +24,7 @@
 ## Author : Jaroslav Hajek <highegg@gmail.com>
 
 function [xs, ys] = adresamp2 (x, y, n, eps)
-  if (! isvector (x) || ! size_equal (x, y) || ! isscalar (n) \
+  if (! isvector (x) || ! size_equal (x, y) || ! isscalar (n) ...
       || ! isscalar (eps))
     print_usage ();
   endif

@@ -14,7 +14,7 @@ function g = g_locate (g, newloc)
 
   found_origin = found_size = 0;
   for i = 1:length (g.cmds)
-    [dums,dume,dumte,dumm,toks] = \
+    [dums,dume,dumte,dumm,toks] = ...
 	regexp (g.cmds{i}, '^set\s*(origin|size)\s*([^,\s]+)\s*,\s*([^,\s]+)');
     if length (toks)
       args = [str2num(toks{1}{2}), str2num(toks{1}{3})];
@@ -33,11 +33,11 @@ function g = g_locate (g, newloc)
   endfor
 
   if ! found_size && any ((newloc(1:2)) || any (newloc(3:4)!= 1))
-    g.cmds = {sprintf("set size %g,%g",newloc(3:4)),\
+    g.cmds = {sprintf("set size %g,%g",newloc(3:4)),...
 	     g.cmds{:}};
   endif
   if ! found_origin && any (newloc(3:4)!= 1)
-    g.cmds = {sprintf("set origin %g,%g",newloc(1:2)),\
+    g.cmds = {sprintf("set origin %g,%g",newloc(1:2)),...
 	     g.cmds{:}};
   endif
   

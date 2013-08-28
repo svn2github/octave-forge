@@ -58,17 +58,17 @@ function V = qnomvisits( P, lambda )
     print_usage();
   endif
 
-  ndims(P) == 4 || \
+  ndims(P) == 4 || ...
       error("P must be a 4-dimensional matrix");
 
   [C, K, C2, K2] = size( P );
-  (K == K2 && C == C2) || \
+  (K == K2 && C == C2) || ...
       error( "P must be a [C,K,C,K] matrix");
 
-  ismatrix(lambda) && [C,K] == size(lambda) || \
+  ismatrix(lambda) && [C,K] == size(lambda) || ...
       error( "lambda must be a %d x %d matrix", C, K );
 
-  all(lambda(:)>=0) || \
+  all(lambda(:)>=0) || ...
       error(" lambda contains negative values" );
 
   ## solve the traffic equations: V(s,j) = lambda(s,j) / lambda + sum_r

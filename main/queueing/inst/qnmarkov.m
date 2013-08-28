@@ -153,24 +153,24 @@ function [U R Q X] = qnmarkov( x, S, C, P, m )
     size_equal(m,S) || error( "m must have the same langth as S" );
   endif
 
-  ( [K,K] == size(P) && all( all(P>=0)) && all(sum(P,2) <= 1)) || \
+  ( [K,K] == size(P) && all( all(P>=0)) && all(sum(P,2) <= 1)) || ...
       error( "P must be SxS and nonnegative" );
 
   if ( isscalar(x) )
     is_open = false;
     N = x; # closed network
-    ( N < sum(C) ) || \
+    ( N < sum(C) ) || ...
         error( "The population size exceeds the network capacity" );
-    all( abs(sum(P,2)-1) < 1000*eps ) || \
+    all( abs(sum(P,2)-1) < 1000*eps ) || ...
         error( "P for closed networks cannot have exit nodes" );
   else
     is_open = true;
     lambda = x; # open network
-    size_equal(lambda, S ) || \
+    size_equal(lambda, S ) || ...
         error( "lambda must have the same langth as S" );
   endif
 
-  ( all(m > 0) && all(m <= C) ) || \
+  ( all(m > 0) && all(m <= C) ) || ...
       error( "Capacities C must be greater or equal than m" );
 
   q_size = prod( C+1 ); # number of states of the system

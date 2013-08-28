@@ -136,7 +136,7 @@ function cw_list = huffmandict (sym, source_prob, togglecode = 0, minvar = 0)
     %first-position (greedy?) possible.
     %
     for i=1:(L-2)
-      if((minvar && stage_curr.prob_list(i)<=nprob) || \
+      if((minvar && stage_curr.prob_list(i)<=nprob) || ...
           stage_curr.prob_list(i) < nprob)
         break;
       end

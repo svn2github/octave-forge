@@ -62,7 +62,7 @@ for i=1:nopt
     tk_cmd( sprintf("set val_%d %f", i, val) );
     tk_cmd( sprintf("scale .master.s%d -from %f -to %f \
 		-resolution %f 	-label {%s} -variable val_%d \
-		-showvalue 1", \
+		-showvalue 1", ...
 		     i, min_val, max_val, inc_val, desc, i) );
     tk_cmd( sprintf("pack .master.s%d -side left", i) );
 

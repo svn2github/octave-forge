@@ -124,11 +124,11 @@ function [U R Q X p0 pm pk] = qnmmmk_alt( lambda, mu, m, k)
 
   ( isvector(lambda) && isvector(mu) && isvector(m) && isvector(k) ) || ...
       error( "lambda, mu, m, k must be vectors of the same size" );
-  all( k>0 ) || \
+  all( k>0 ) || ...
       error( "k must be strictly positive" );
-  all( m>0 ) && all( m <= k ) || \
+  all( m>0 ) && all( m <= k ) || ...
       error( "m must be in the range 1:k" );
-  all( lambda>0 ) && all( mu>0 ) || \
+  all( lambda>0 ) && all( mu>0 ) || ...
       error( "lambda and mu must be >0" );
   
   rho = lambda ./ mu;

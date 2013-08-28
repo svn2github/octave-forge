@@ -86,7 +86,7 @@ function [V ch] = qnvisits( P, varargin )
     print_usage();
   endif
 
-  ( ndims(P) == 2 || ndims(P) == 4 ) || \
+  ( ndims(P) == 2 || ndims(P) == 4 ) || ...
       error("P must be a 2- or 4-dimensional matrix");
 
   if ( ndims(P) == 2 ) 
@@ -322,7 +322,7 @@ endfunction
 ## is the arrival rate of class-r customers on service center i
 function [V chains] = __qnvisitsmulti( P, lambda )
   [C, K, C2, K2] = size( P );
-  (K == K2 && C == C2) || \
+  (K == K2 && C == C2) || ...
       error( "P must be a [C,K,C,K] matrix");
 
   chains = [];
@@ -345,7 +345,7 @@ function [V chains] = __qnvisitsmulti( P, lambda )
         if ( chains(c) == 0 )
           chains(c) = CH(c,k);
         else
-          ( CH(c,k) == 0 || chains(c) == CH(c,k) ) || \
+          ( CH(c,k) == 0 || chains(c) == CH(c,k) ) || ...
               error("Class %d belongs to different chains",c);
         endif
       endfor
@@ -399,7 +399,7 @@ function [V chains] = __qnvisitsmulti( P, lambda )
     ## lambda + sum_r sum_i V(r,i) * P(r,i,s,j), for all s,j where
     ## lambda is defined as sum_r sum_i lambda(r,i)
   
-    [C,K] == size(lambda) || \
+    [C,K] == size(lambda) || ...
         error( "lambda size mismatch" );
     
     ## solve the traffic equation
@@ -469,7 +469,7 @@ function V = __qnvisitssingle( P, lambda )
 
   persistent epsilon = 10*eps;
 
-  issquare(P)  || \
+  issquare(P)  || ...
       error( "P must be a square matrix" );
 
   N = size(P,1);
@@ -480,7 +480,7 @@ function V = __qnvisitssingle( P, lambda )
     ## Closed network
     ##
     [res err] = dtmcchkP(P);
-    (res>0) || \
+    (res>0) || ...
         error( "P is not a transition probability matrix for closed networks" );
 
     A = P-eye(N);
@@ -493,12 +493,12 @@ function V = __qnvisitssingle( P, lambda )
     ##
     ## Open network
     ##
-    all(P(:)>=0) && all( sum(P,2)<=1+1e-5 ) || \
+    all(P(:)>=0) && all( sum(P,2)<=1+1e-5 ) || ...
 	error( "P is not a transition probability matrix for open networks" );
 
-    ( isvector(lambda) && length(lambda) == N ) || \
+    ( isvector(lambda) && length(lambda) == N ) || ...
         error( "lambda size mismatch" );
-    all( lambda>= 0 ) || \
+    all( lambda>= 0 ) || ...
         error( "lambda contains negative values" );
 
     A = eye(N)-P;

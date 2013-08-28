@@ -90,7 +90,7 @@ tlev = mytic ();
 
 if verbose,
   printf("d2_min should find in one iteration + one more to check\n");
-  printf(["d2_min :  niter=%-4d  nev=%-4d  nobs=%-4d  nparams=%-4d\n",\
+  printf(["d2_min :  niter=%-4d  nev=%-4d  nobs=%-4d  nparams=%-4d\n",...
 	  "  time=%-8.3g errx=%-8.3g   minv=%-8.3g\n"],...
          nev([2,1]), R, P, tlev, max (abs (xlev-truep)), vlev);
 end

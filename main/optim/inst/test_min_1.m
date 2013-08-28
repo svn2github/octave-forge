@@ -23,10 +23,10 @@ ok = 1;
 if ! exist ("verbose"), verbose = 0; end
 
 if verbose
-  printf ("\n   Testing '%s' on a quadratic programming problem\n\n",\
+  printf ("\n   Testing '%s' on a quadratic programming problem\n\n",...
 	  optim_func);
-  printf (["     Set 'optim_func' to the name of the optimization\n",\
-	   "     function you want to test (must have same synopsis\n",\
+  printf (["     Set 'optim_func' to the name of the optimization\n",...
+	   "     function you want to test (must have same synopsis\n",...
 	   "     as 'bfgs')\n\n"]);
 end
 
@@ -65,8 +65,8 @@ end
 xinit = 10*randn(N,1) ;
 
 if verbose,
-  printf (["   Dimension is %i\n",\
-	   "   Condition is %f\n"],\
+  printf (["   Dimension is %i\n",...
+	   "   Condition is %f\n"],...
 	  N, cond (metric));
   fflush (stdout);
 end
@@ -81,7 +81,7 @@ endif
 [x,v,niter] = feval (optim_func, "testfunc", xinit2, ctl);
 
 if verbose 
-  printf ("nev=%d  N=%d  errx=%8.3g   errv=%8.3g\n",\
+  printf ("nev=%d  N=%d  errx=%8.3g   errv=%8.3g\n",...
 	  niter(1),N,max(abs( x-truemin )),v-offset);
 end
 

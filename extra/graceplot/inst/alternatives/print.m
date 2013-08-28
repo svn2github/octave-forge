@@ -341,19 +341,19 @@ function print(varargin)
 	__grcmd__(sprintf("device \"%s\" op \"grayscale\"", grdevname));
       endif
 
-    elseif( strcmp(dev, "pnm") || strcmp(dev, "pbm") \
+    elseif( strcmp(dev, "pnm") || strcmp(dev, "pbm") ...
 	   || strcmp(dev, "pgm") || strcmp(dev, "ppm") )
       grdevname = "PNM";
       __grcmd__(sprintf("hardcopy device \"%s\"", grdevname));      
       __grcmd__(sprintf("device \"%s\" op \"rawbits:off\"", grdevname));
       if(strcmp(dev, "pbm"))
-	__grcmd__(sprintf("device \"%s\" op \"format:pbm\"", \
+	__grcmd__(sprintf("device \"%s\" op \"format:pbm\"", ...
 			  grdevname));
       elseif(strcmp(dev, "pgm"))
-	__grcmd__(sprintf("device \"%s\" op \"format:pgm\"", \
+	__grcmd__(sprintf("device \"%s\" op \"format:pgm\"", ...
 			  grdevname));
       elseif(strcmp(dev, "ppm"))
-	__grcmd__(sprintf("device \"%s\" op \"format:ppm\"", \
+	__grcmd__(sprintf("device \"%s\" op \"format:ppm\"", ...
 			  grdevname));
       endif
 

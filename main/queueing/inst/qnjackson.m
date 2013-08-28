@@ -120,27 +120,27 @@ function [U_or_pi R Q X] = qnjackson( lambda, S, P, m, k )
   if ( nargin < 3 || nargin > 5 )
     print_usage();
   endif
-  ( isvector(lambda) && all(lambda>=0) ) || \
+  ( isvector(lambda) && all(lambda>=0) ) || ...
       error( "lambda must be a vector >= 0" );
   lambda=lambda(:)'; # make lambda a row vector
   N = length(lambda);
-  isvector(S) || \
+  isvector(S) || ...
       error( "S must be a vector" );
   S = S(:)'; # make S a row vector
-  size_equal(lambda,S) || \
+  size_equal(lambda,S) || ...
       error( "lambda and S must of be of the same length" );
-  all(S>0) || \
+  all(S>0) || ...
       error( "S must be >0" );
-  [N,N] == size(P) || \
+  [N,N] == size(P) || ...
       error(" P must be a matrix of size length(lambda) x length(lambda)" );  
-  all(all(P>=0)) && all(sum(P,2)<=1) || \
+  all(all(P>=0)) && all(sum(P,2)<=1) || ...
       error( "P is not a transition probability matrix" );
 
   if ( nargin < 4 || isempty(m) )
     m = ones(1,N);
   else
     [errorcode, lambda, m] = common_size(lambda, m);
-    ( isvector(m) && (errorcode==0) ) || \
+    ( isvector(m) && (errorcode==0) ) || ...
         error("m and lambda must have the same length" );
   endif
 
@@ -157,9 +157,9 @@ function [U_or_pi R Q X] = qnjackson( lambda, S, P, m, k )
 
   if ( nargin == 5 )
 
-    ( isvector(k) && size_equal(lambda,k) ) || \
+    ( isvector(k) && size_equal(lambda,k) ) || ...
         error( "k must be a vector of the same size as lambda" );
-    all(k>=0) || \
+    all(k>=0) || ...
         error( "k must be nonnegative" );
 
     ## compute occupancy probability
@@ -168,11 +168,11 @@ function [U_or_pi R Q X] = qnjackson( lambda, S, P, m, k )
     U_or_pi(i) = (1-rho(i)).*rho(i).^k(i);
     for i=find(m>1) # M/M/k queues
       k = [0:m(i)-1];
-      pizero = 1 / (sum( (m(i)*rho(i)).^k ./ factorial(k)) + \
-                    (m(i)*rho(i))^m(i) / (factorial(m(i))*(1-rho(i))) \
+      pizero = 1 / (sum( (m(i)*rho(i)).^k ./ factorial(k)) + ...
+                    (m(i)*rho(i))^m(i) / (factorial(m(i))*(1-rho(i))) ...
                     );      
       ## Compute the marginal probabilities
-      U_or_pi(i) = pizero * (m(i)^min(k(i),m(i))) * (rho(i)^k(i)) / \
+      U_or_pi(i) = pizero * (m(i)^min(k(i),m(i))) * (rho(i)^k(i)) / ...
           factorial(min(m(i),k(i)));
     endfor
     i = find(m<1); # infinite server nodes

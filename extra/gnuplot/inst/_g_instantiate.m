@@ -52,7 +52,7 @@ function g = _g_instantiate (g, varargin)
     g.cmds
     end_of_lines
     keyboard
-    error ("g.cmds has %i elements, but cmd_str has %i lines",\
+    error ("g.cmds has %i elements, but cmd_str has %i lines",...
 	   length (g.cmds), length (end_of_lines) - 1);
   endif
   for i = 1:length(end_of_lines)-1

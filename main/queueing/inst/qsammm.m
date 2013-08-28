@@ -74,12 +74,12 @@ function [U R Q X p0 pm] = qsammm( lambda, mu )
     print_usage();
   endif
 
-  ( isscalar(lambda) && isvector(mu) ) || \
+  ( isscalar(lambda) && isvector(mu) ) || ...
       error( "the parameters must be vectors" );
 
   m = length(mu); # number of servers
 
-  all( lambda < sum(mu) ) || \
+  all( lambda < sum(mu) ) || ...
       error( "Processing capacity exceeded" );
 
   X = lambda;

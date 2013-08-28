@@ -130,8 +130,8 @@ function [odata,it,res] = QDDGOXgummelmap (imesh,Dsides,Simesh,Sinodes,Sielement
         fprintf(1,"solving non linear poisson equation\n\n");
       endif
 
-      [V(:,3),n(:,2),p(:,2)]   = QDDGOXnlpoisson (imesh,Dsides,Sinodes,[SiDnodes,Intnodes] ,Sielements,\
-						  V(:,2),n(:,1),p(:,1),Fn(:,1),Fp(:,1),G(:,2)+FDn,Gp(:,2)+FDp,D,\
+      [V(:,3),n(:,2),p(:,2)]   = QDDGOXnlpoisson (imesh,Dsides,Sinodes,[SiDnodes,Intnodes] ,Sielements,...
+						  V(:,2),n(:,1),p(:,1),Fn(:,1),Fp(:,1),G(:,2)+FDn,Gp(:,2)+FDp,D,...
 						  idata.l2,idata.l2ox,ptoll,pmaxit,verbose-1);
       n([SiDnodes,Intnodes],2) = idata.n([SiDnodes,Intnodes]);
       p([SiDnodes,Intnodes],2) = idata.p([SiDnodes,Intnodes]);
@@ -152,7 +152,7 @@ function [odata,it,res] = QDDGOXgummelmap (imesh,Dsides,Simesh,Sinodes,Sielement
 
       if (options.holes==1)
         p(Intnodes,2) = idata.p(Intnodes);
-        wp            = QDDGOXcompdens(Simesh,[SiDsides,Intsides],sqrt(p(:,2)),-V(Sinodes,3) - FDp,\
+        wp            = QDDGOXcompdens(Simesh,[SiDsides,Intsides],sqrt(p(:,2)),-V(Sinodes,3) - FDp,...
 				       -Fp(:,1),idata.dp2,ptoll,pmaxit,verbose-1);
         p(:,2)        = wp.^2;
 
@@ -177,8 +177,8 @@ function [odata,it,res] = QDDGOXgummelmap (imesh,Dsides,Simesh,Sinodes,Sielement
         FDp(SiDnodes)            = idata.FDp(SiDnodes);
       endif
 
-      bohmdeltav = norm(G(:,3)-G(:,2),inf) +\
-          norm(Gp(:,3)-Gp(:,2),inf) +\
+      bohmdeltav = norm(G(:,3)-G(:,2),inf) +...
+          norm(Gp(:,3)-Gp(:,2),inf) +...
           norm(V(:,3)-V(:,2),inf);
       
 
@@ -207,10 +207,10 @@ function [odata,it,res] = QDDGOXgummelmap (imesh,Dsides,Simesh,Sinodes,Sielement
       fprintf (1,"\n\nupdating electron qfl\n\n");
     endif
 
-    mob    = Ufielddepmob(Simesh,idata.un,Fn(:,1), \
+    mob    = Ufielddepmob(Simesh,idata.un,Fn(:,1), ...
 			  idata.vsatn,idata.mubn);
-    n(:,3) = DDGOXelectron_driftdiffusion(Simesh,SiDsides,n(:,2),p(:,2),\
-					  V(Sinodes,3)+G(:,3)+FDn,mob,\
+    n(:,3) = DDGOXelectron_driftdiffusion(Simesh,SiDsides,n(:,2),p(:,2),...
+					  V(Sinodes,3)+G(:,3)+FDn,mob,...
 					  tn,tp,idata.n0,idata.p0);
 
 
@@ -231,8 +231,8 @@ function [odata,it,res] = QDDGOXgummelmap (imesh,Dsides,Simesh,Sinodes,Sielement
     endif
 
     mob    = Ufielddepmob(Simesh,idata.up,Fp(:,1),idata.vsatp,idata.mubp);
-    p(:,3) = DDGOXhole_driftdiffusion(Simesh,SiDsides,n(:,3),p(:,2),\
-				      V(Sinodes,3)+Gp(:,3)+FDp,mob,\
+    p(:,3) = DDGOXhole_driftdiffusion(Simesh,SiDsides,n(:,3),p(:,2),...
+				      V(Sinodes,3)+Gp(:,3)+FDp,mob,...
 				      tn,tp,idata.n0,idata.p0);
 
 

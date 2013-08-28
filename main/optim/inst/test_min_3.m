@@ -65,8 +65,8 @@ endfunction
 if verbose
   printf ("   Checking that extra arguments are accepted\n\n");
 
-  printf (["     Set 'optim_func' to the name of the optimization\n",\
-	   "     function you want to test (must have same synopsis\n",\
+  printf (["     Set 'optim_func' to the name of the optimization\n",...
+	   "     function you want to test (must have same synopsis\n",...
 	   "     as 'bfgs')\n\n"]);
 
   printf ("   Tested function : %s\n",optim_func);
@@ -88,7 +88,7 @@ mytic() ;
 if strcmp(optim_func,"bfgsmin")
 	ctl = {-1,2,1,1};
 endif
-[xlev,vlev,nlev] = feval \
+[xlev,vlev,nlev] = feval ...
     (optim_func, "ff", {xinit, obsmat, obses}, ctl);
 tlev = mytic() ;
 
@@ -100,7 +100,7 @@ if max (abs(xlev-truep)) > 1e-4,
   ok = 0;
 end
 if verbose,
-  printf ("  Costs :     init=%8.3g, final=%8.3g, best=%8.3g\n",\
+  printf ("  Costs :     init=%8.3g, final=%8.3g, best=%8.3g\n",...
 	  ff(xinit,obsmat,obses), vlev, ff(truep,obsmat,obses));    
 end
 if verbose

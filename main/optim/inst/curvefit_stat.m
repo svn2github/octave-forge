@@ -47,7 +47,7 @@ function ret = curvefit_stat (f, pfin, x, y, settings)
     ## sometime in 3.3.54+, if I remember right
     optimget = @ __optimget__;
   endif
-  if (! isempty (dfdp = optimget (settings, "dfdp")) && \
+  if (! isempty (dfdp = optimget (settings, "dfdp")) && ...
       ! (ismatrix (dfdp) && ! ischar (dfdp)))
     if (ischar (dfdp))
       dfdp = str2func (dfdp);
@@ -58,7 +58,7 @@ function ret = curvefit_stat (f, pfin, x, y, settings)
     f = @ (p) f (p, x);
   endif
 
-  ret = __residmin_stat__ \
+  ret = __residmin_stat__ ...
       (f, pfin, settings, struct ("observations", y));
 
 endfunction

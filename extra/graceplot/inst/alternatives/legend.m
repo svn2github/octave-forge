@@ -184,7 +184,7 @@ function legend (varargin)
       otherwise
         warning ("incorrect pos");
     endswitch;
-  elseif (isvector (pos_leg)) && (length (pos_leg) == 2) && \
+  elseif (isvector (pos_leg)) && (length (pos_leg) == 2) && ...
         (all(isreal(pos_leg)))
     __grcmd__(sprintf("legend %f,%f", pos_leg(1), pos_leg(2)));
   else

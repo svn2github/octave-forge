@@ -77,15 +77,15 @@ function Q = ctmcbd( birth, death )
     print_usage();
   endif
 
-  ( isvector( birth ) && isvector( death ) ) || \
+  ( isvector( birth ) && isvector( death ) ) || ...
       error( "birth and death must be vectors" );
   birth = birth(:); # make birth a column vector
   death = death(:); # make death a column vector
-  size_equal( birth, death ) || \
+  size_equal( birth, death ) || ...
       error( "birth and death rates must have the same length" );
-  all( birth >= 0 ) || \
+  all( birth >= 0 ) || ...
       error( "birth rates must be >= 0" );
-  all( death >= 0 ) || \
+  all( death >= 0 ) || ...
       error( "death rates must be >= 0" );
 
   ## builds the infinitesimal generator matrix

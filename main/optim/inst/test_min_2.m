@@ -80,8 +80,8 @@ endfunction
 if verbose
   printf ("\n   Testing %s on a quadratic problem\n\n", optim_func);
 
-  printf (["     Set 'optim_func' to the name of the optimization\n",\
-	   "     function you want to test (must have same synopsis\n",\
+  printf (["     Set 'optim_func' to the name of the optimization\n",...
+	   "     function you want to test (must have same synopsis\n",...
 	   "     as 'bfgs')\n\n"]);
 
   printf ("  Nparams = P = %i,  Nobses = R = %i\n",P,R);
@@ -111,7 +111,7 @@ elseif verbose,  printf ("ok 1\n");
 end
 
 if verbose,
-  printf ("  Costs :     init=%8.3g, final=%8.3g, best=%8.3g\n",\
+  printf ("  Costs :     init=%8.3g, final=%8.3g, best=%8.3g\n",...
 	  ff(xinit), vlev, ff(truep));    
 end
 if verbose

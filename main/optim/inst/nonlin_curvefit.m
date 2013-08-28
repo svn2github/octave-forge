@@ -63,7 +63,7 @@ function [p, fy, cvg, outp] = nonlin_curvefit (f, pin, x, y, settings)
     settings.dfdp =  @ (p, varargin) dfdp (p, x, varargin{:});
   endif
 
-  [p, fy, cvg, outp] = __nonlin_residmin__ \
+  [p, fy, cvg, outp] = __nonlin_residmin__ ...
       (@ (p) f (p, x), pin, settings, struct ("observations", y));
 
   fy += y;

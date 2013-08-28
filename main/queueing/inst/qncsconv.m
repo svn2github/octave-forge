@@ -197,7 +197,7 @@ endfunction
 ## Applications", Wiley, 1998. This function has been vectorized,
 ## and accepts a vector as parameter j.
 function result = F(i,j,v,S,m)
-  isscalar(i) || \
+  isscalar(i) || ...
       error( "i must be a scalar" );
   k_i = j;
   if ( m(i) == 1 )

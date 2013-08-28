@@ -86,8 +86,8 @@ function hook = __covp_corp_wls__ (hook)
     ## respective indices. In the same run, use them to further fill in
     ## corp as described below.
     for id = 1 : (cb = columns (basis))
-      if (any (idx = \
-	       all (basis(:, (1 : cb) != id) == 0, 2) & \
+      if (any (idx = ...
+	       all (basis(:, (1 : cb) != id) == 0, 2) & ...
 	       basis(:, id) != 0))
 	vec = sign (basis(idx, id));
 

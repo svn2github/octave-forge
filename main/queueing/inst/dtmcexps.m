@@ -76,7 +76,7 @@ function L = dtmcexps ( P, varargin )
 
   [K err] = dtmcchkP(P);
 
-  (K>0) || \
+  (K>0) || ...
       error(err);
 
   if ( nargin == 2 )
@@ -86,13 +86,13 @@ function L = dtmcexps ( P, varargin )
     p0 = varargin{2};
   endif
 
-  ( isvector(p0) && length(p0) == K && all(p0>=0) && abs(sum(p0)-1.0)<epsilon ) || \
+  ( isvector(p0) && length(p0) == K && all(p0>=0) && abs(sum(p0)-1.0)<epsilon ) || ...
       error( "p0 must be a state occupancy probability vector" );
 
   p0 = p0(:)'; # make p0 a row vector
 
   if ( nargin == 3 )
-    isscalar(n) && n>=0 || \
+    isscalar(n) && n>=0 || ...
 	error("n must be >=0");
     n = fix(n);
     L = zeros(sizeof(p0));

@@ -29,8 +29,8 @@
 function mob=Udopdepmob (mesh,mu,par,D);
 
   NI  = sum(D(mesh.t(1:3,:)),1)'/3;
-  mob = par(1)*exp(-par(4)./NI) \
-      + (mu-par(2))./(1+(NI/par(5)).^par(7)) \
+  mob = par(1)*exp(-par(4)./NI) ...
+      + (mu-par(2))./(1+(NI/par(5)).^par(7)) ...
       - par(3)./(1+(par(6)./NI).^par(8));
 
 endfunction

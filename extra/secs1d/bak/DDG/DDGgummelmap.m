@@ -84,13 +84,13 @@ for i=1:1:maxit
       fprintf(1,"solving non linear poisson equation\n\n");
     endif
 
-    [vout(:,2),electron_density(:,2),hole_density(:,2)] =\
+    [vout(:,2),electron_density(:,2),hole_density(:,2)] =...
 	DDGnlpoisson (x,[1:Nnodes],vout(:,1),electron_density(:,1),hole_density(:,1),fermin(:,1),fermip(:,1),D,idata.l2,ptoll,pmaxit,verbose);
 	
     if (verbose>1)
       fprintf (1,"\n\nupdating electron qfl\n\n");
     endif
-    electron_density(:,3)=\
+    electron_density(:,3)=...
 	DDGelectron_driftdiffusion(vout(:,2), x, electron_density(:,2),hole_density(:,2),idata.nis,idata.tn,idata.tp,idata.un);
     
     fermin(:,2) = DDGn2phin(vout(:,2),electron_density(:,3));
@@ -101,7 +101,7 @@ for i=1:1:maxit
       fprintf(1,"updating hole qfl\n\n");
     endif
 
-    hole_density(:,3) = \
+    hole_density(:,3) = ...
     DDGhole_driftdiffusion(vout(:,2), x, hole_density(:,2),electron_density(:,2),idata.nis,idata.tn,idata.tp,idata.up);
 
     fermip(:,2) = DDGp2phip(vout(:,2),hole_density(:,3));

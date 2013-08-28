@@ -126,7 +126,7 @@ function [Xl Xu Rl Ru] = qncsbsb( varargin )
   [err N S V m Z] = qncschkparam( varargin{:} );
   isempty(err) || error(err);
 
-  all(m==1) || \
+  all(m==1) || ...
       error( "this function supports M/M/1 servers only" );
 
   D = S .* V;

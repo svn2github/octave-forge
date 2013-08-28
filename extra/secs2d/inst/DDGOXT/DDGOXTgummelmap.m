@@ -71,8 +71,8 @@ function [odata,it,res] = DDGOXTgummelmap (imesh,Dsides,Simesh,Sinodes,Sielement
       fprintf(1,"solving non linear poisson equation\n");
     endif
     
-    [V(:,2),n(:,2),p(:,2)] = DDGOXnlpoisson (imesh,Dsides,Sinodes,SiDnodes,Sielements,\
-					     V(:,1),n(:,1),p(:,1),Fn(:,1),Fp(:,1),D,\
+    [V(:,2),n(:,2),p(:,2)] = DDGOXnlpoisson (imesh,Dsides,Sinodes,SiDnodes,Sielements,...
+					     V(:,1),n(:,1),p(:,1),Fn(:,1),Fp(:,1),D,...
 					     idata.l2,idata.l2ox,ptoll,pmaxit,verbose-1);
     V(Dnodes,2)            = idata.V(Dnodes);
     
@@ -81,8 +81,8 @@ function [odata,it,res] = DDGOXTgummelmap (imesh,Dsides,Simesh,Sinodes,Sielement
     endif
 
     mob     = Ufielddepmob(Simesh,idata.un,Fn(:,1),idata.vsatn,idata.mubn);
-    n(:,3)  = DDGOXTelectron_driftdiffusion(Simesh,SiDsides,[n(:,2),nold],[p(:,2),pold],\
-					    V(Sinodes,2),mob,\
+    n(:,3)  = DDGOXTelectron_driftdiffusion(Simesh,SiDsides,[n(:,2),nold],[p(:,2),pold],...
+					    V(Sinodes,2),mob,...
 					    idata.tn,idata.tp,idata.ni,idata.ni,weight);		
     Fn(:,2) = V(Sinodes,2) - log(n(:,3));
 
@@ -105,8 +105,8 @@ function [odata,it,res] = DDGOXTgummelmap (imesh,Dsides,Simesh,Sinodes,Sielement
     endif
     
     mob     = Ufielddepmob(Simesh,idata.up,Fp(:,1),idata.vsatp,idata.mubp);
-    p(:,3)  = DDGOXThole_driftdiffusion(Simesh,SiDsides,[n(:,3),nold],[p(:,2),pold],\
-					V(Sinodes,2),mob,\
+    p(:,3)  = DDGOXThole_driftdiffusion(Simesh,SiDsides,[n(:,3),nold],[p(:,2),pold],...
+					V(Sinodes,2),mob,...
 					idata.tn,idata.tp,idata.ni,idata.ni,weight);
 
     Fp(:,2) = V(Sinodes,2) + log(p(:,3));

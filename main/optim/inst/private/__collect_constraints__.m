@@ -13,7 +13,7 @@
 ## You should have received a copy of the GNU General Public License
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
-function [mc, vc, f_gencstr, df_gencstr, user_df] = \
+function [mc, vc, f_gencstr, df_gencstr, user_df] = ...
       __collect_constraints__ (cstr, do_cstep, context)
 
   mc = vc = f_gencstr = df_gencstr = [];
@@ -61,7 +61,7 @@ function [mc, vc, f_gencstr, df_gencstr, user_df] = \
     if (ischar (f_gencstr))
       f_gencstr = str2func (f_gencstr);
     endif
-    f_gencstr = @ (varargin) \
+    f_gencstr = @ (varargin) ...
 	tf_gencstr (f_gencstr, varargin{:});
 
     if (user_df)
@@ -71,7 +71,7 @@ function [mc, vc, f_gencstr, df_gencstr, user_df] = \
       if (ischar (df_gencstr))
 	df_gencstr = str2func (df_gencstr);
       endif
-      df_gencstr = @ (p, func, idx, hook) \
+      df_gencstr = @ (p, func, idx, hook) ...
 	  df_gencstr (p, idx, hook);
     else
       if (do_cstep)

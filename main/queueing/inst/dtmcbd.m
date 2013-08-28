@@ -78,17 +78,17 @@ function P = dtmcbd( b, d )
     print_usage();
   endif
 
-  ( isvector( b ) && isvector( d ) ) || \
+  ( isvector( b ) && isvector( d ) ) || ...
       error( "birth and death must be vectors" );
   b = b(:); # make b a column vector
   d = d(:); # make d a column vector
-  size_equal( b, d ) || \
+  size_equal( b, d ) || ...
       error( "birth and death vectors must have the same length" );
-  all( b >= 0 ) || \
+  all( b >= 0 ) || ...
       error( "birth probabilities must be >= 0" );
-  all( d >= 0 ) || \
+  all( d >= 0 ) || ...
       error( "death probabilities must be >= 0" );
-  all( ([b; 0] + [0; d]) <= 1 ) || \
+  all( ([b; 0] + [0; d]) <= 1 ) || ...
       error( "d(i)+b(i+1) must be <= 1");
 
   P = diag( b, 1 ) + diag( d, -1 );

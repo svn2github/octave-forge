@@ -66,14 +66,14 @@ function g = g_ez (varargin)
   while cnt < N
     cmd = varargin{cnt};
     if !ischar (cmd)
-      error ("Expecting string, got a '%s' as %ith argument",\
+      error ("Expecting string, got a '%s' as %ith argument",...
 	     typeinfo(cmd),cnt); 
     end
 
 				# It's a filename
-    if length (cmd) > 3 \
-      && (strcmp (cmd(end-3:end), ".eps") \
-	  || strcmp (cmd(end-3:end), ".fig")\
+    if length (cmd) > 3 ...
+      && (strcmp (cmd(end-3:end), ".eps") ...
+	  || strcmp (cmd(end-3:end), ".fig")...
 	  || strcmp (cmd(end-3:end), ".png"))
 #	  || strcmp (cmd(end-3:end), ".ppm")\
 #	  || strcmp (cmd(end-3:end), ".pgm")\
@@ -88,7 +88,7 @@ function g = g_ez (varargin)
       case {"title", "xlabel", "ylabel", "x2label", "y2label"},
 	str = varargin{++cnt};
 	if !ischar (str),
-	  error ("Option '%s' requires a char argument; got a %s",\
+	  error ("Option '%s' requires a char argument; got a %s",...
 		 cmd, typeinfo (str));
 	endif
 	#str = strrep (str,"%","\\%")
@@ -104,16 +104,16 @@ function g = g_ez (varargin)
 
 	str = varargin{++cnt};
 	if !ischar (str),
-	  error ("Option '%s' requires a char argument; got a %s",\
+	  error ("Option '%s' requires a char argument; got a %s",...
 		 cmd, typeinfo (str));
 	endif
 	pos = varargin{++cnt};
 	if !isnumeric (pos),
-	  error ("Option '%s' requires a 1 x 2 matrix argument; got a %s",\
+	  error ("Option '%s' requires a 1 x 2 matrix argument; got a %s",...
 		 cmd, typeinfo (pos));
 	endif
 	if length (pos) != 2
-	  error ("Option '%s' requires a 1 x 2 matrix argument; got %s",\
+	  error ("Option '%s' requires a 1 x 2 matrix argument; got %s",...
 		 cmd, sprintf("%i x",size (pos))(1:end-2));
 	endif
 	labels = {labels{:},str};
@@ -145,7 +145,7 @@ function g = g_ez (varargin)
 
     	  data = varargin{++cnt};
 	  if !isnumeric (data)
-	    error ("Argument after 'plot' should be numeric. Got '%s'.",\
+	    error ("Argument after 'plot' should be numeric. Got '%s'.",...
 		   typeinfo(data));
 	  endif
 	  orig_data_size = size (data);
@@ -165,11 +165,11 @@ function g = g_ez (varargin)
 		    tmp = tmp';
 		  end
 		end
-		if rows (data) == rows (tmp) \
+		if rows (data) == rows (tmp) ...
 		      && columns (data) == 1
 		  data = data*ones(1,columns(tmp)); # Replicate abscissa data
 		else
-		  error ("First 'plot' arg is %i x %i, while 2nd is %i x %i\n",\
+		  error ("First 'plot' arg is %i x %i, while 2nd is %i x %i\n",...
 			 orig_data_size, size (tmp));
 		endif
 	      endif
@@ -200,8 +200,8 @@ function g = g_ez (varargin)
 				# Labels passed as a vector: turn into a cell
 	  if isnumeric (try_arg) && ! isempty (try_arg)
 	    if numel (try_arg) > rows (data)
-	      error (["Don't know what to do with third numeric argument of size",\
-		      sprintf(" %i",size(try_arg)),". Plot has has %i points"],\
+	      error (["Don't know what to do with third numeric argument of size",...
+		      sprintf(" %i",size(try_arg)),". Plot has has %i points"],...
 		     rows(data));
 	    end
 	    try_arg = num2cell (try_arg);
@@ -263,10 +263,10 @@ function g = g_ez (varargin)
 	      end
 	      boxData = boxplot_data (the_data);
 	      boxWid = 0.1;
-	      data = [data;\
-		      [  data1(i)+boxWid*[1 -1 -1 1 1 -1 -1]/2;\
-		       boxData.quantiles([3  3  2 2 4  4  3])']';\
-		      [         data1(i)*[1 1 1 1];\
+	      data = [data;...
+		      [  data1(i)+boxWid*[1 -1 -1 1 1 -1 -1]/2;...
+		       boxData.quantiles([3  3  2 2 4  4  3])']';...
+		      [         data1(i)*[1 1 1 1];...
 		       boxData.quantiles([1 2 4 5])']';];
 	      stops = [stops, [7 9 11]+11*(i-1)];
 	    end
@@ -329,9 +329,9 @@ function g = g_ez (varargin)
   if length (args.cmds), g = g_cmd (g, args.cmds{:}); endif
 
 				# set all in g.cmds
-  tmp = {"title", \
-	 "xrange", "yrange", "y2range", "x2range", \
-	 "xlabel", "ylabel", "x2label", "y2label", \
+  tmp = {"title", ...
+	 "xrange", "yrange", "y2range", "x2range", ...
+	 "xlabel", "ylabel", "x2label", "y2label", ...
 	 "grid", "xgrid", "ygrid"};
   for i = 1:length(tmp)
     if isfield (args, tmp{i})
@@ -361,7 +361,7 @@ function g = g_ez (varargin)
 	  rng = [inf,-inf];
 	  for i = 1:nplots
 	    if all (img_indices != i)
-	      rng = [min(rng(1), min (plots{i}(:,1))), \
+	      rng = [min(rng(1), min (plots{i}(:,1))), ...
 		     max(rng(2), max (plots{i}(:,1)))];
 	    end
 	  end

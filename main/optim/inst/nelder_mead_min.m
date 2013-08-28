@@ -192,7 +192,7 @@ while nev <= maxev,
 				# Eventually print some info
   if verbose && nev > nextprint && ! done 
 
-    printf("nev=%-5d   imin=%-3d   ymin=%-8.3g  done=%i\n",\
+    printf("nev=%-5d   imin=%-3d   ymin=%-8.3g  done=%i\n",...
 	   nev,imin,ymin,done) ;
 
     nextprint = nextprint + 100 ;
@@ -215,7 +215,7 @@ while nev <= maxev,
       jumplen = 10 * max (max (u) - min (u));
       
       u += jumplen * randn (size (u));
-      for i = 1:N+1, y(i) = \
+      for i = 1:N+1, y(i) = ...
 	    feval (f, args{1:narg-1},reshape(u(i,:),R,C),args{narg+1:length(args)});
       end
       nev += N+1;
@@ -229,7 +229,7 @@ while nev <= maxev,
 	v = ymin ;
       end
       if verbose,
-	printf("nev=%-5d   imin=%-3d   ymin=%-8.3g  done=%i. Done\n",\
+	printf("nev=%-5d   imin=%-3d   ymin=%-8.3g  done=%i. Done\n",...
 	       nev,imin,ymin,done) ;
       end
       return
@@ -312,7 +312,7 @@ while nev <= maxev,
       elseif imin == N+1, ii = 1:N;
       else                ii = [1:imin-1,imin+1:N+1]; end
       for i = ii
-	y(i) = \
+	y(i) = ...
 	    ynew = feval (f, args{1:narg-1},reshape(u(i,:),R,C),args{narg+1:length(args)});
       end
       ##      'contraction'

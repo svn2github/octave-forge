@@ -161,8 +161,8 @@ if !isnan (isnan (scl)) && scl < 1
   ## printf ("Scaling up by %i\n",scl);
   scl0 = round (1/scl);
   if is_col
-    im = reshape ([kron(im(1:3:end,:), ones (scl0))(:),\
-		   kron(im(2:3:end,:), ones (scl0))(:),\
+    im = reshape ([kron(im(1:3:end,:), ones (scl0))(:),...
+		   kron(im(2:3:end,:), ones (scl0))(:),...
 		   kron(im(3:3:end,:), ones (scl0))(:)]', R*scl0,C*scl0);
 
   else
@@ -194,7 +194,7 @@ if ! isempty (vrange)
     imax = vrange(4:6);
     irng = imax - imin;
   else
-    error ("range should have 2 or 6 elements; got %s",\
+    error ("range should have 2 or 6 elements; got %s",...
 	   sprintf("%i x ",size(vrange))(1:end-3));
   end
 else
@@ -262,7 +262,7 @@ if show_range && !is_col
 				# Image w/ room for image and scale below
   scale_im0 = ones(scale_R/2,1)*linspace(0,255,scale_C);
   if invert, scale_im0 = 255 - scale_im0; end
-  scale_im = [255+zeros(scale_R/2,scale_C);\
+  scale_im = [255+zeros(scale_R/2,scale_C);...
 	     scale_im0];
   tn = [tempname(),".pgm"];
   if imin && abs(log10(abs(imin)))>5, ado = sprintf ("%.3g",imin);
@@ -281,13 +281,13 @@ if show_range && !is_col
   
   psz = round(8*scale_C/128);
   
-  ado = sprintf ("-annotate +%i+%i \"%s\"",\
-		 2,\
-		 psz,\
+  ado = sprintf ("-annotate +%i+%i \"%s\"",...
+		 2,...
+		 psz,...
 		 ado);
-  aup = sprintf ("-annotate +%i+%i \"%s\"",\
-		 scale_C-length(aup)*round(5*psz/10)-3,\
-		 psz,\
+  aup = sprintf ("-annotate +%i+%i \"%s\"",...
+		 scale_C-length(aup)*round(5*psz/10)-3,...
+		 psz,...
 		 aup);
 
 
@@ -299,7 +299,7 @@ if show_range && !is_col
   padded_im = 255*ones (R+scale_R,pC);
 
   padded_im(1:R,floor((pC-C)/2)+(1:C)) = im;
-  padded_im(R+1:R+scale_R,floor((pC-scale_C)/2)+(1:scale_C)) = \
+  padded_im(R+1:R+scale_R,floor((pC-scale_C)/2)+(1:scale_C)) = ...
       double (scale_im);
   im = padded_im;
 endif
@@ -321,7 +321,7 @@ if colormap && !is_col
   if show_range			# Get the text back in bw
     im(3*R+(1:3*scale_R),1:floor((pC-scale_C)/2)) = 255;
     im(3*R+(1:3*scale_R),floor((pC+scale_C)/2):end) = 255;
-    im(3*R+(1:3*scale_R/2),floor((pC-scale_C)/2)+(1:scale_C)) = \
+    im(3*R+(1:3*scale_R/2),floor((pC-scale_C)/2)+(1:scale_C)) = ...
 	kron (double (scale_im(1:scale_R/2,:)),ones(3,1));
   endif
 
@@ -342,15 +342,15 @@ wopts = "";
 i = 1;
 while i < length (text)
   if !isnumeric (text{i}),   
-    error ("Arg of type '%s' where numeric required, in 'text' option",\
+    error ("Arg of type '%s' where numeric required, in 'text' option",...
 	   typeinfo(text{i})); 
   end
   if length (text{i}) != 2 && length (text{i}) != 3
-    error ("Position argument has size %s (should have 2 or 3 elements)",\
+    error ("Position argument has size %s (should have 2 or 3 elements)",...
 	   sprintf("%i x ",size(text{i})(1:end-3)));
   endif
   if !ischar    (text{i+1}), 
-    error ("Arg of type '%s' where string required, in 'text' option",\
+    error ("Arg of type '%s' where string required, in 'text' option",...
 	   typeinfo(text{i+1})); 
   endif
   if !length (text{i+1}), i+=2; continue; endif
@@ -377,8 +377,8 @@ while i < length (text)
   bbh = 0.98*bbh + 0.01*bbh([1 1 2]) + 0.01*bbh([2 3 3]);
   [dummy,tmp] = min (bbh);
   ##im(txtbb(1):txtbb(3),txtbb(2):txtbb(4)) = 0;
-  fillColorStr = {"-fill \"#000000\" ",\
-		  "-fill \"#A0A0A0\" ",\
+  fillColorStr = {"-fill \"#000000\" ",...
+		  "-fill \"#A0A0A0\" ",...
 		  "-fill \"#ffffff\" "}{tmp};
   
   wopts = [wopts, fillColorStr];
@@ -395,16 +395,16 @@ while i <= length (line)
   ll = line{i}(:);
   lll = length(ll);
   if !isnumeric (ll)
-    error ("%ith 'line' argument is of type '%s', not numeric",\
+    error ("%ith 'line' argument is of type '%s', not numeric",...
 	   i, typeinfo(line{i})); 
   endif
 
   if lll < 4
-    error ("%ith 'line' argument has %i elements, 4 at least are needed",\
+    error ("%ith 'line' argument has %i elements, 4 at least are needed",...
 	   i, lll);
   endif
   if lll > 8
-    error ("%ith 'line' argument has %i elements, 8 at most are taken",\
+    error ("%ith 'line' argument has %i elements, 8 at most are taken",...
 	   i, lll)
   endif
   rgb = [nan,nan,nan];
@@ -442,8 +442,8 @@ if do_show || filename || length(wopts)
 
 	     # If I save, should I do sthing for transparency?
   nanmaskfile = "";
-  if filename && any (nanmask(:))\
-    && (strcmp (filename(end-3:end), ".png")\
+  if filename && any (nanmask(:))...
+    && (strcmp (filename(end-3:end), ".png")...
 	|| strcmp (filename(end-3:end), ".gif"))
 
     nanmaskfile = "tmp-mask.pgm"
@@ -460,21 +460,21 @@ if do_show || filename || length(wopts)
     RC3 = prod (size(im));
     RC = size(im)./[3 1];
 
-    imwrite (filename, \
-	     reshape(uint8 (im(1:3:RC3)),RC),\
-	     reshape(uint8 (im(2:3:RC3)),RC),\
-	     reshape(uint8 (im(3:3:RC3)),RC),\
+    imwrite (filename, ...
+	     reshape(uint8 (im(1:3:RC3)),RC),...
+	     reshape(uint8 (im(2:3:RC3)),RC),...
+	     reshape(uint8 (im(3:3:RC3)),RC),...
 	     wopts);
     
   end
 	     # If there's transparency, do a separate call to convert
   if length(nanmaskfile)
-    ["convert ",filename," ",\
-	     "tmp-mask.pgm -quality 100 +matte -compose CopyOpacity ",\
+    ["convert ",filename," ",...
+	     "tmp-mask.pgm -quality 100 +matte -compose CopyOpacity ",...
 	     filename]
     system (["cp ",filename," tmp-im.png"])
-    system (["convert ",filename," ",\
-	     "tmp-mask.pgm -quality 100 +matte -compose CopyOpacity ",\
+    system (["convert ",filename," ",...
+	     "tmp-mask.pgm -quality 100 +matte -compose CopyOpacity ",...
 	     filename]);
   endif
   if do_show

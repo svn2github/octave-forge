@@ -47,7 +47,7 @@ function [result err] = ctmcchkQ( Q )
     return;
   endif
   
-  if (any(Q(~logical(eye(size(Q))))<0) || \ # there is any negative non-diagonal element
+  if (any(Q(~logical(eye(size(Q))))<0) || ... # there is any negative non-diagonal element
       norm( sum(Q,2), "inf" ) > epsilon )
     err = "Q is not an infinitesimal generator matrix";
     return;

@@ -97,12 +97,12 @@
 
 function Q = qnmknode( node, S, varargin )
 
-  ischar(node) || \
+  ischar(node) || ...
       error( "Parameter \"node\" must be a string" );
 
   node = tolower(node);
 
-  isvector(S) || ismatrix(S) || \
+  isvector(S) || ismatrix(S) || ...
       error( "Parameter \"S\" must be a vector" );
   m = 1;
   s2 = ones( size(S) );
@@ -124,21 +124,21 @@ function Q = qnmknode( node, S, varargin )
     endif
   elseif ( strcmp(node, "-/g/1-lcfs-pr") )
     ## -/G/1-LCFS-PR node
-    ( 2 == nargin || 3 == nargin ) || \
+    ( 2 == nargin || 3 == nargin ) || ...
 	print_usage();
     if ( 3 == nargin ) 
       s2 = varargin{1};
     endif
   elseif ( strcmp(node, "-/g/1-ps") )
     ## -/G/1-PS (processor sharing) node
-    ( 2 == nargin || 3 == nargin ) || \
+    ( 2 == nargin || 3 == nargin ) || ...
 	print_usage();
     if ( 3 == nargin )
       s2 = varargin{1};
     endif
   elseif ( strcmp(node, "-/g/inf") )
     ## -/G/inf (Infinite Server) node
-    ( 2 == nargin || 3 == nargin ) || \
+    ( 2 == nargin || 3 == nargin ) || ...
 	print_usage();
     if ( 3 == nargin )
       s2 = varargin{1};
@@ -146,9 +146,9 @@ function Q = qnmknode( node, S, varargin )
   else
     error( "Unknown node type \"%s\". node type must be one of \"m/m/m-fcfs\", \"-/g/1-lcfs-pr\", \"-/g/1-ps\" and \"-/g/inf\"", node );
   endif
-  ( isnumeric(m) && m>=1 ) || \
+  ( isnumeric(m) && m>=1 ) || ...
       error("m must be >=1");
-  ( isnumeric(s2) && s2>= 0 ) || \
+  ( isnumeric(s2) && s2>= 0 ) || ...
       error("s2 must be >=0");
   Q = struct( "node", node, "m", m, "S", S, "s2", s2, "c", rows(S), "comment", "" );
 endfunction

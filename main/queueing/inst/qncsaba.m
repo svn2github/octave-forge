@@ -94,7 +94,7 @@ function [Xl Xu Rl Ru] = qncsaba( varargin ) #N, S, V, m, Z )
   [err N S V m Z] = qncschkparam( varargin{:} );
   isempty(err) || error(err);
 
-  all(m<=1) || \
+  all(m<=1) || ...
       error( "multiple server nodes are not supported" );
 
   D = S.*V;

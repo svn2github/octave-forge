@@ -27,7 +27,7 @@ path = argv(){2};
 ##############################################################################
 function dump_help(func)
   text = get_help_text(func);
-  !isempty(text) || \
+  !isempty(text) || ...
     error("Help text for %s not found", func);
 
   ## from __makeinfo__.m in Octave
@@ -46,7 +46,7 @@ endfunction
 ##############################################################################
 function dump_demo( func, n )
   [code, idx] = test (func, "grabdemo" );
-  (n <= length(idx)) || \
+  (n <= length(idx)) || ...
       error("Demo not found");
   printf("@verbatim\n%s\n@end verbatim\n",code(idx(n)+1:idx(n+1)-1));
 endfunction

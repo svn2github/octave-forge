@@ -136,33 +136,33 @@ function [U R Q X] = qncmmvaap( N, S, V, m, Z, tol, iter_max )
     print_usage();
   endif
 
-  isvector(N) && all( N>=0 ) || \
+  isvector(N) && all( N>=0 ) || ...
       error( "N must be a vector of positive integers" );
   N = N(:)'; # make N a row vector
   C = length(N); ## Number of classes
   K = columns(S); ## Number of service centers
-  size(S) == [C,K] || \
+  size(S) == [C,K] || ...
       error( "S size mismatch" );
-  size(V) == [C,K] || \
+  size(V) == [C,K] || ...
       error( "V size mismatch" );
 
   if ( nargin < 4 || isempty(m) )
     m = ones(1,K);
   else
-    isvector(m) || \
+    isvector(m) || ...
 	error( "m must be a vector");
     m = m(:)'; # make m a row vector
-    ( length(m) == K && all( m <= 1 ) ) || \
+    ( length(m) == K && all( m <= 1 ) ) || ...
         error( "m must be <= 1 and have %d elements", K );
   endif
 
   if ( nargin < 5 || isempty(Z) )
     Z = zeros(1,C);
   else
-    isvector(Z) || \
+    isvector(Z) || ...
 	error( "Z must be a vector" );
     Z = Z(:)'; # make Z a row vector
-    ( length(Z) == C && all(Z >= 0 ) ) || \
+    ( length(Z) == C && all(Z >= 0 ) ) || ...
 	error( "Z must be >= 0 and have %d elements", C );
   endif
 
@@ -175,9 +175,9 @@ function [U R Q X] = qncmmvaap( N, S, V, m, Z, tol, iter_max )
   endif
 
   ## Check consistency of parameters
-  all(S(:) >= 0) || \
+  all(S(:) >= 0) || ...
       error( "S contains negative values" );
-  all(V(:) >= 0) || \
+  all(V(:) >= 0) || ...
       error( "V contains negative values" );
 
   ## Initialize results

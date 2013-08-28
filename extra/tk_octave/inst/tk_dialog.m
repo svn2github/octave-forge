@@ -45,8 +45,8 @@ if (! (ischar(title) & ischar(text) & ischar(bitmap) & is_scalar(default)))
 	return
 endif
 
-if (!(strcmp(bitmap, "error") || strcmp(bitmap, "hourglass") || \
-	strcmp(bitmap, "info") || strcmp(bitmap, "questhead") || \
+if (!(strcmp(bitmap, "error") || strcmp(bitmap, "hourglass") || ...
+	strcmp(bitmap, "info") || strcmp(bitmap, "questhead") || ...
 	strcmp(bitmap, "question") || strcmp(bitmap, "warning")))
 	error("'bitmap' must be one of 'error', 'hourglass', 'info', \
 'questhead', 'question', 'warning'");

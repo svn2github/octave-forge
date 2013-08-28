@@ -84,7 +84,7 @@ function w = QDDGOXcompdens(mesh,Dsides,win,vin,fermiin,d2,toll,maxit,verbose);
   converged = 0;
   for jnewt =1:ceil(maxit/VErank)
     for k=1:VErank
-      [w(:,k+1),converged,G,L,Bmat] = \
+      [w(:,k+1),converged,G,L,Bmat] = ...
 	  onenewtit(w(:,k),G,fermiin,vin,L,Bmat,jnewt,mesh,Dnodes,Varnodes,Dvals,Nnodes,Nelements,toll);
       if converged
 	break

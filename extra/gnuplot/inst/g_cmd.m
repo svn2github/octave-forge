@@ -70,14 +70,14 @@ function g = g_cmd (g, varargin)
 	if nPrintArgs < 0	# Not provided: search for end label
 
 	  label = ["/",label];	# End label
-	  while lastPrintArg<=length(varargin)                  \
-		&& (   !ischar (varargin{lastPrintArg})         \
+	  while lastPrintArg<=length(varargin)                  ...
+		&& (   !ischar (varargin{lastPrintArg})         ...
 		    || !strcmp (varargin{lastPrintArg}, label))
 	    lastPrintArg++;
 	  endwhile
 
 	  if lastPrintArg > length(varargin)
-	    warning ("g_cmd_PRINTF_NOT_CLOSED",\
+	    warning ("g_cmd_PRINTF_NOT_CLOSED",...
 		     "Can't find closing label for '%s'",cmds);
 	    i = lastPrintArg;
 	  else
@@ -136,19 +136,19 @@ function g = g_cmd (g, varargin)
 	  g2.cmds = {g2.cmds{1:i2-1}};
 	endif
 	if 0
-	  g.cmds = {g.cmds{:}, \
-	 	   ["cd '",g2.dir,"'"],\
-	 		 g2.cmds{:},\
+	  g.cmds = {g.cmds{:}, ...
+	 	   ["cd '",g2.dir,"'"],...
+	 		 g2.cmds{:},...
 	 	   ["cd '",g.dir,"'"]};
 	endif
 	if 1
 	  #printf ("Insert at %i\n",insert_pos);
 	  #g2.cmds
 	  #g.cmds
-	  g.cmds = csplice (g.cmds, insert_pos, 0, \
-			   {["cd '",g2.dir,"'"],   \
-			    g2.cmds{:},             \
-			    ["cd '",g.dir,"'"]\
+	  g.cmds = csplice (g.cmds, insert_pos, 0, ...
+			   {["cd '",g2.dir,"'"],   ...
+			    g2.cmds{:},             ...
+			    ["cd '",g.dir,"'"]...
 			    });
 	  insert_pos += 2 + length (g2.cmds);
 	  #g.cmds
@@ -161,7 +161,7 @@ function g = g_cmd (g, varargin)
 	error ("Command %i is a struct but not a 'gnuplot_object'\n", i);
       endif
     else
-      error ("Command %i is neither string nor struct, but a",\
+      error ("Command %i is neither string nor struct, but a",...
 	     i, typeinfo (varargin{i}));
     endif
   endwhile
@@ -180,7 +180,7 @@ function g = g_cmd (g, varargin)
       if isfield (g.values, "title")
 	multiplot_cmd = [multiplot_cmd," '",g.values.title,"'"];
       endif
-      g.cmds = {multiplot_cmd,\
+      g.cmds = {multiplot_cmd,...
 	       g.cmds{:}};
     endif
   endif

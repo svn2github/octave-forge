@@ -97,28 +97,28 @@ function [U R Q X] = qnopenmultig( l0, c20, mu, c2, P, m )
     print_usage();
   endif
 
-  ismatrix(l0) || \
+  ismatrix(l0) || ...
       usage("lambda must be a matrix");
   
   C = rows(l0);
   K = columns(l0);
 
-  size(c20) == size(l0) || \
+  size(c20) == size(l0) || ...
       usage("c20 must have the same size of lambda");
 
-  size(mu) == size(l0) || \
+  size(mu) == size(l0) || ...
       usage("mu must have the same size of lambda");
 
-  size(c2) == size(l0) || \
+  size(c2) == size(l0) || ...
       usage("c2 must have the same size of lambda");
 
-  ismatrix(P) && ndims(P) == 4 && [C,K,C,K] == size(P) || \
+  ismatrix(P) && ndims(P) == 4 && [C,K,C,K] == size(P) || ...
       usage("Wrong size of matrix P (I was expecting %dx%dx%dx%d)", C, K, C, K);
 
   if ( nargin < 6 )
     m = ones(1,K);
   else
-    ( isvector( m ) && length(m) == K && all( m >= 1 ) ) || \
+    ( isvector( m ) && length(m) == K && all( m >= 1 ) ) || ...
         usage( "m must be >= 1" );
     m = m(:)'; # make m a row vector
   endif

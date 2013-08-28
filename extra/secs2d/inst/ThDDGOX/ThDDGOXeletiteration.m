@@ -65,9 +65,9 @@ function [odata,nrm]=ThDDGOXeletiteration(imesh,Dsides,Simesh,Sinodes,Sielements
     Fnshift =  log(idata.ni) .* (1-Tn);
     Fpshift = -log(idata.ni) .* (1-Tp);
     
-    [V(:,2),n(:,2),p(:,2)] = ThDDGOXnlpoisson (imesh,Dsides,Sinodes,SiDnodes,Sielements,\
-					       V(:,1),Tn,Tp,\
-					       n(:,1),p(:,1),Fn(:,1)+Fnshift,Fp(:,1)+Fpshift,D,\
+    [V(:,2),n(:,2),p(:,2)] = ThDDGOXnlpoisson (imesh,Dsides,Sinodes,SiDnodes,Sielements,...
+					       V(:,1),Tn,Tp,...
+					       n(:,1),p(:,1),Fn(:,1)+Fnshift,Fp(:,1)+Fpshift,D,...
 					       idata.l2,idata.l2ox,ptoll,pmaxit,verbose-1);
     V(Dnodes,2)            = idata.V(Dnodes);
     
@@ -82,8 +82,8 @@ function [odata,nrm]=ThDDGOXeletiteration(imesh,Dsides,Simesh,Sinodes,Sielements
     mobp0   = idata.mobp0(imesh,Simesh,Sinodes,Sielements,odata);
     mobn1   = idata.mobn1(imesh,Simesh,Sinodes,Sielements,odata);
     mobp1   = idata.mobp1(imesh,Simesh,Sinodes,Sielements,odata);
-    n(:,3)  = ThDDGOXelectron_driftdiffusion(Simesh,SiDnodes,n(:,2),p(:,2),\
-					     V(Sinodes,2),Tn,mobn0,mobn1,\
+    n(:,3)  = ThDDGOXelectron_driftdiffusion(Simesh,SiDnodes,n(:,2),p(:,2),...
+					     V(Sinodes,2),Tn,mobn0,mobn1,...
 					     idata.tn,idata.tp,idata.ni,idata.ni);
     
     Fn(:,2) = V(Sinodes,2) - Tn .* log(n(:,3)) - Fnshift;
@@ -95,8 +95,8 @@ function [odata,nrm]=ThDDGOXeletiteration(imesh,Dsides,Simesh,Sinodes,Sielements
       fprintf(1,"\t***\tupdating hole qfl\n");
     endif
     
-    p(:,3) = ThDDGOXhole_driftdiffusion(Simesh,SiDnodes,n(:,3),p(:,2),\
-					V(Sinodes,2),Tp,mobp0,mobp1,\
+    p(:,3) = ThDDGOXhole_driftdiffusion(Simesh,SiDnodes,n(:,3),p(:,2),...
+					V(Sinodes,2),Tp,mobp0,mobp1,...
 					idata.tn,idata.tp,idata.ni,idata.ni);
     
     Fp(:,2)        = V(Sinodes,2) + Tp .* log(p(:,3)) - Fpshift;

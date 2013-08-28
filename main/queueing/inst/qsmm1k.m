@@ -94,7 +94,7 @@ function [U R Q X p0 pK] = qsmm1k( lambda, mu, K )
     print_usage();
   endif
 
-  ( isvector(lambda) && isvector(mu) && isvector(K) ) || \
+  ( isvector(lambda) && isvector(mu) && isvector(K) ) || ...
       error( "lambda, mu, K must be vectors of the same size" );
 
   [err lambda mu K] = common_size( lambda, mu, K );
@@ -102,9 +102,9 @@ function [U R Q X p0 pK] = qsmm1k( lambda, mu, K )
     error( "Parameters are not of common size" );
   endif
 
-  all( K>0 ) || \
+  all( K>0 ) || ...
       error( "K must be >0" );
-  ( all( lambda>0 ) && all( mu>0 ) ) || \
+  ( all( lambda>0 ) && all( mu>0 ) ) || ...
       error( "lambda and mu must be >0" );
 
   U = R = Q = X = p0 = pK = 0*lambda;

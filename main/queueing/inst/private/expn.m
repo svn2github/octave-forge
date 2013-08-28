@@ -23,9 +23,9 @@
 ##
 ## @end deftypefn
 function r = expn( a, n )
-  n>=0 || \
+  n>=0 || ...
       error("n must be nonnegative");
-  a>0 || \
+  a>0 || ...
       error("a must be positive");
   tmp = cumprod( [1 a./(1:n)] );
   r = tmp(n+1);

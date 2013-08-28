@@ -133,14 +133,14 @@ function [p_res, objf, cvg, outp] = __siman__ (f, pin, hook)
         ividx = (ac(ineq_idx) < 0);
         if (any (evidx) || any (ividx))
           nv = sum (evidx) + sum (ividx);
-          if (sum (lbvidx = (new_p < lbound)) + \
-              sum (ubvidx = (new_p > ubound)) == \
+          if (sum (lbvidx = (new_p < lbound)) + ...
+              sum (ubvidx = (new_p > ubound)) == ...
               nv)
             ## special case only bounds violated, set back to bound
             new_p(lbvidx) = lbound(lbvidx);
             new_p(ubvidx) = ubound(ubvidx);
-          elseif (nv == 1 && \
-                  sum (t_eq = (abs (ac(leq_idx)) >= nz)) + \
+          elseif (nv == 1 && ...
+                  sum (t_eq = (abs (ac(leq_idx)) >= nz)) + ...
                   sum (t_inequ = (ac(lineq_idx) < 0)) == 1)
             ## special case only one linear constraint violated, set
             ## back perpendicularly to constraint
@@ -155,18 +155,18 @@ function [p_res, objf, cvg, outp] = __siman__ (f, pin, hook)
             ## 'new_p' minimal, using quadratic programming, or
             ## sequential quadratic programming for nonlinear
             ## constraints
-            [new_p, discarded, sqp_info] = \
-                sqp (new_p, \
-                     {@(x)sumsq(x-new_p), \
-                      @(x)2*(x-new_p), \
-                      @(x)sqp_hessian}, \
-                     {@(x)f_cstr(x,eq_idx), \
-                      @(x)df_cstr(x,eq_idx, \
-                                  setfield(hook,"f", \
-                                           f_cstr(x,ac_idx)))}, \
-                     {@(x)f_cstr(x,ineq_idx), \
-                      @(x)df_cstr(x,ineq_idx, \
-                                  setfield(hook,"f", \
+            [new_p, discarded, sqp_info] = ...
+                sqp (new_p, ...
+                     {@(x)sumsq(x-new_p), ...
+                      @(x)2*(x-new_p), ...
+                      @(x)sqp_hessian}, ...
+                     {@(x)f_cstr(x,eq_idx), ...
+                      @(x)df_cstr(x,eq_idx, ...
+                                  setfield(hook,"f", ...
+                                           f_cstr(x,ac_idx)))}, ...
+                     {@(x)f_cstr(x,ineq_idx), ...
+                      @(x)df_cstr(x,ineq_idx, ...
+                                  setfield(hook,"f", ...
                                            f_cstr(x,ac_idx)))});
             if (sqp_info != 101)
               cvg = 0;
@@ -177,7 +177,7 @@ function [p_res, objf, cvg, outp] = __siman__ (f, pin, hook)
         endif
       else
         n_retry_constr = 0;
-        while (any (abs ((ac = f_cstr (new_p, ac_idx))(eq_idx)) >= nz) \
+        while (any (abs ((ac = f_cstr (new_p, ac_idx))(eq_idx)) >= nz) ...
                || any (ac(ineq_idx) < 0))
           new_p = p + max_rand_step .* (2 * rand (sizep) - 1);
           n_retry_constr++;

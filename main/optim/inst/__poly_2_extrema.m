@@ -35,7 +35,7 @@ m = (l(2) - l(1))/(l(3) - l(1));
 d = (2*(f(1)*(m-1)+f(2)-f(3)*m));
 if abs (d) < eps,
   printf ("poly_2_ex : divisor is small (solution at infinity)\n");
-  printf ("%8.3e %8.3e %8.3e, %8.3e %8.3e\n",\
+  printf ("%8.3e %8.3e %8.3e, %8.3e %8.3e\n",...
 	  f(1), diff (f), diff (sort (l)));
 
   ex = (2*(l(1)>l(2))-1)*inf;

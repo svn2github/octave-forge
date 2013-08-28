@@ -100,32 +100,32 @@ function [U R Q X] = qncscmva( N, S, Sld, V, Z )
     print_usage();
   endif
 
-  isscalar(N) && N >= 0 || \
+  isscalar(N) && N >= 0 || ...
       error("N must be a positive scalar");
 
-  (isempty(S) || isvector(S)) || \
+  (isempty(S) || isvector(S)) || ...
       error("S must be a vector");
   S = S(:)'; # make S a row vector
   M = length(S)+1; # total number of service centers (excluding the delay center)
   
-  isvector(Sld) && length(Sld) == N && all(Sld>=0) || \
+  isvector(Sld) && length(Sld) == N && all(Sld>=0) || ...
       error("Sld must be a vector with %d elements >= 0", N);
   Sld = Sld(:)'; # Make Sld a row vector
 
-  isvector(V) && length(V) == M && all(V>=0) || \
+  isvector(V) && length(V) == M && all(V>=0) || ...
       error("V must be a vector with %d elements", M);
   V = V(:)'; # Make V a row vector
 
   ## The reference paper assumes queue M (LD center) as reference.
   ## Therefore, we need to rescale V
 
-  V(M) > 0 || \
+  V(M) > 0 || ...
       error("V(M) must be >0");
 
   V = V / V(M);
 
   if ( nargin == 5 )
-    isscalar(Z) && Z>=0 || \
+    isscalar(Z) && Z>=0 || ...
 	error("Z must be nonnegative");
   else
     Z = 0;

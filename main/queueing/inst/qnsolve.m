@@ -104,7 +104,7 @@ function [U R Q X] = qnsolve( network_type, varargin )
     print_usage();
   endif
 
-  ischar(network_type) || \
+  ischar(network_type) || ...
       error("First parameter must be a string");
 
   network_type = tolower(network_type);
@@ -138,26 +138,26 @@ function [U R Q X] = __qnsolve_open_single( lambda, QQ, V )
     print_usage();
   endif
 
-  ( isscalar(lambda) && (lambda>0) ) || \
+  ( isscalar(lambda) && (lambda>0) ) || ...
       error( "lambda must be a scalar > 0" );
   
-  iscell(QQ) || \
+  iscell(QQ) || ...
       error( "QQ must be a cell array" );
 
   N = length(QQ);
 
-  ( isvector(V) && length(V) == N ) || \
+  ( isvector(V) && length(V) == N ) || ...
       error( "V must be a vector of length %d", N );
 
   V = V(:); # make V a row vector
-  all(V>=0) || \
+  all(V>=0) || ...
       error( "V must be >= 0" );
 
   ## Initialize vectors
   S = zeros(size(V));
   m = ones(size(V));
   for i=1:N
-    QQ{i}.c == 1 || \
+    QQ{i}.c == 1 || ...
 	error( "Multiclass networks are not supported by this function" );
     S(i) = QQ{i}.S;
     if __is_li(QQ{i})
@@ -182,22 +182,22 @@ function [U R Q X] = __qnsolve_open_multi( lambda, QQ, V )
   if ( nargin != 3 )
     print_usage();
   endif
-  isvector(lambda) && all(lambda > 0) || \
+  isvector(lambda) && all(lambda > 0) || ...
       error( "lambda must be a vector >0" );
   lambda = lambda(:)'; # make lambda a row vector
-  iscell(QQ) || \
+  iscell(QQ) || ...
       error( "QQ must be a cell array" );
   C = length(lambda);
   K = length(QQ);
-  [C,K] == size(V) || \
+  [C,K] == size(V) || ...
       error( "V size mismatch" );
-  all( all( V>= 0 ) ) || \
+  all( all( V>= 0 ) ) || ...
       error( "V must be >= 0 " );
 
   S = zeros(C,K);
   m = ones(1,K);
   for i=1:K
-    QQ{i}.c == C || \
+    QQ{i}.c == C || ...
 	error( "Wrong number of classes for center %d (is %d, should be %d)", i, QQ{i}.c, C );
     S(:,i) = QQ{i}.S(:);
     if __is_li(QQ{i})
@@ -233,22 +233,22 @@ function [U R Q X] = __qnsolve_closed_single( N, QQ, V, Z )
     error();
   endif
 
-  isscalar(N) || \
+  isscalar(N) || ...
       error( "Multiclass networks are not supported by this function" );
 
-  iscell(QQ) || \
+  iscell(QQ) || ...
       error( "QQ must be a cell array" );
 
   if ( nargin < 4 ) 
     Z = 0;
   else
-    isscalar(Z) && Z >= 0 || \
+    isscalar(Z) && Z >= 0 || ...
         error( "Z must be >= 0" );
   endif
 
   K = length(QQ);
   
-  ( isvector(V) && length(V) == K ) || \
+  ( isvector(V) && length(V) == K ) || ...
       error( "V must be a vector of length %d", K );
 
   found_ld = false;
@@ -262,7 +262,7 @@ function [U R Q X] = __qnsolve_closed_single( N, QQ, V, Z )
   if ( found_ld )
     S = zeros(K, N);
     for k=1:K
-      ( QQ{k}.c == 1 ) || \
+      ( QQ{k}.c == 1 ) || ...
 	  error( "Multiclass networks are not supported by this function" );
       if __is_li(QQ{k})
 	S(k,:) = QQ{k}.S;
@@ -281,7 +281,7 @@ function [U R Q X] = __qnsolve_closed_single( N, QQ, V, Z )
     S = zeros(1,K);
     m = ones(1,K);
     for k=1:K
-      ( QQ{k}.c == 1 ) || \
+      ( QQ{k}.c == 1 ) || ...
 	  error( "Multiclass networks are not supported by this function" );
       S(k) = QQ{k}.S;
       if __is_li(QQ{k})
@@ -413,45 +413,45 @@ function [U R Q X] = __qnsolve_closed_multi( N, QQ, V, Z )
     print_usage();
   endif
 
-  isvector(N) && all( N>0 ) || \
+  isvector(N) && all( N>0 ) || ...
       error( "N must be >0" );
 
-  iscell(QQ) || \
+  iscell(QQ) || ...
       error( "QQ must be a cell array" );
 
   C = length(N); ## Number of classes
   K = length(QQ); ## Number of service centers
-  size(V) == [C,K] || \
+  size(V) == [C,K] || ...
       error( "V size mismatch" );
 
   if ( nargin < 4 )
     Z = zeros(1,C);
   else
-    isvector(Z) && length(Z) == C || \
+    isvector(Z) && length(Z) == C || ...
 	error( "Z size mismatch" );
   endif
 
   ## Check consistence of parameters
-  all( all( V >= 0 ) ) || \
+  all( all( V >= 0 ) ) || ...
       error( "V must be >=0" );
 
   ## Initialize vectors
   i_single = i_multi = i_delay = i_ld = [];
   S = zeros(C,K);
   for i=1:K
-    ( QQ{i}.c == C ) || \
+    ( QQ{i}.c == C ) || ...
 	error( "Service center %d has wrong number of classes (is %d, should be %d)", i, QQ{i}.c, C );
 
     if __is_li(QQ{i})
       i_single = [i_single i];
-      ( !strcmpi( QQ{i}.node, "m/m/m-fcfs" ) || all( QQ{i}.S(1) == QQ{i}.S )) || \
+      ( !strcmpi( QQ{i}.node, "m/m/m-fcfs" ) || all( QQ{i}.S(1) == QQ{i}.S )) || ...
 	  error( "Service times at FIFO node %d are not class-independent", i );
     elseif __is_multi(QQ{i})
       i_multi = [i_multi i];
     elseif __is_is(QQ{i})
       i_delay = [i_delay i];
     elseif __is_ld(QQ{i})
-      columns( QQ{i}.S ) == sum(N) || \
+      columns( QQ{i}.S ) == sum(N) || ...
 	  error( "Load-dependent center %d has insufficient data (is %d, should be %d", i, columns(QQ{i}.S), sum(N) );
       i_ld = [i_ld i];
     else
@@ -592,9 +592,9 @@ function [U R Q X] = __qnsolve_mixed( lambda, N, QQ, V )
   if ( nargin != 4 )
     print_usage();
   endif
-  ( isvector(lambda) && isvector(N) && size_equal(lambda,N) ) || \
+  ( isvector(lambda) && isvector(N) && size_equal(lambda,N) ) || ...
       error( "lambda and N must be vectors of the same size" );
-  ( iscell(QQ) && length(QQ) == length(lambda) ) || \
+  ( iscell(QQ) && length(QQ) == length(lambda) ) || ...
       error( "QQ size mismatch (is %d, should be %d)", length(QQ), length(lambda) );
 
   C = length(lambda); # number of classes
@@ -631,9 +631,9 @@ endfunction
 ##############################################################################
 ## return true iff Q is a single-server, load-dependent node
 function result = __is_ld( Q )
-  result = ( (strcmp(Q.node, "m/m/m-fcfs") || \
-	      strcmp(Q.node, "-/g/1-lcfs-pr") || \
-	      strcmp(Q.node, "-/g/1-ps" ) ) && \
+  result = ( (strcmp(Q.node, "m/m/m-fcfs") || ...
+	      strcmp(Q.node, "-/g/1-lcfs-pr") || ...
+	      strcmp(Q.node, "-/g/1-ps" ) ) && ...
 	    columns( Q.S ) > 1 );
 endfunction
 
@@ -652,20 +652,20 @@ function __prettyprint( N, lambda, QQ, V, U, R, Q, X )
   if ( errorcode)
     error( "N and lambda are of incompatible size" );
   endif
-  ( isvector(N) && isvector(lambda) && size_equal(lambda,N) ) || \
+  ( isvector(N) && isvector(lambda) && size_equal(lambda,N) ) || ...
       error( "N and lambda must be vector of the same length" );
   C = length(N);  
   K = length(QQ); # number of service centers
 
-  [C,K] == size(V) || \
+  [C,K] == size(V) || ...
       error( "V size mismatch" );
-  [C,K] == size(U) || \
+  [C,K] == size(U) || ...
       error( "U size mismatch" );
-  [C,K] == size(R) || \
+  [C,K] == size(R) || ...
       error( "R size mismatch" );
-  [C,K] == size(Q) || \
+  [C,K] == size(Q) || ...
       error( "Q size mismatch" );
-  [C,K] == size(X) || \
+  [C,K] == size(X) || ...
       error( "X size mismatch" );
 
   for c=1:C     

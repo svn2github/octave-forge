@@ -11,10 +11,10 @@
 
 function res = g_config (varargin)
 
-persistent g_config_struct = \
-    struct ("gnuplot_program", "gnuplot",\
-	    "png_viewer",  "eog",\
-	    "eps_viewer",  "gv",\
+persistent g_config_struct = ...
+    struct ("gnuplot_program", "gnuplot",...
+	    "png_viewer",  "eog",...
+	    "eps_viewer",  "gv",...
 	    "gnuplot_version", nan);
 
 if all (numel (varargin) != [1 2])

@@ -128,12 +128,12 @@ function [xb, yb] = bar (x, y)
     endif
     __grnewset__();
     [cur_figure, cur_graph, cur_set] = __grgetstat__();
-    __grcmd__(sprintf("focus g%i; g%i type bar; autoscale onread xyaxes", \
+    __grcmd__(sprintf("focus g%i; g%i type bar; autoscale onread xyaxes", ...
 		      cur_graph, cur_graph));
     __grcmd__(sprintf("g%i.s%i line type 0", cur_graph, cur_set));
     ## simple heuristics to set the bar width to be approximately correct
     bar_width = 42.0 / size(gr_mat,1) / 1.5
-    __grcmd__(sprintf("g%i.s%i symbol size %g", cur_graph, cur_set,\
+    __grcmd__(sprintf("g%i.s%i symbol size %g", cur_graph, cur_set,...
 		      bar_width));
     __grsendmat__(gr_mat, "bar");
   else

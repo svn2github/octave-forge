@@ -101,7 +101,7 @@ function [U R Q X] = qnom( varargin )
   ## processing capacity
   m(m<1) = -1; # avoids division by zero in next line
   [Umax kmax] = max(lambda * D ./ m);
-  (Umax < 1) || \
+  (Umax < 1) || ...
       error( "Processing capacity exceeded at center %d", kmax );
 
   U = R = Q = X = zeros(C,K);

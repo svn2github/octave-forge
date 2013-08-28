@@ -52,11 +52,11 @@ endfunction
 
 
 if verbose
-  printf ("\n   Testing that %s accepts struct control variable\n\n",\
+  printf ("\n   Testing that %s accepts struct control variable\n\n",...
 	  optim_func);
 
-  printf (["     Set 'optim_func' to the name of the optimization\n",\
-	   "     function you want to test (must have same synopsis\n",\
+  printf (["     Set 'optim_func' to the name of the optimization\n",...
+	   "     function you want to test (must have same synopsis\n",...
 	   "     as 'bfgsmin')\n\n"]);
 
   printf ("  Nparams = N = %i\n",N);

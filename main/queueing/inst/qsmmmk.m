@@ -129,11 +129,11 @@ function [U R Q X p0 pK] = qsmmmk( lambda, mu, m, K )
     error( "Parameters are not of common size" );
   endif
 
-  all( K>0 ) || \
+  all( K>0 ) || ...
       error( "k must be strictly positive" );
-  all( m>0 ) && all( m <= K ) || \
+  all( m>0 ) && all( m <= K ) || ...
       error( "m must be in the range 1:k" );
-  all( lambda>0 ) && all( mu>0 ) || \
+  all( lambda>0 ) && all( mu>0 ) || ...
       error( "lambda and mu must be >0" );
   U = R = Q = X = p0 = pK = 0*lambda;
   for i=1:length(lambda)

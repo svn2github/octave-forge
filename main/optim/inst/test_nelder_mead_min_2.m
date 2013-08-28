@@ -22,7 +22,7 @@ if ! exist ("verbose"), verbose = 0; end
 if ! exist ("inspect"), inspect = 0; end
 
 if verbose,
-  printf (["test_nelder_mead_2\n",\
+  printf (["test_nelder_mead_2\n",...
 	   "  Check whether nelder_mead_min accepts options properly\n\n"]);
 end
 

@@ -69,7 +69,7 @@ function result = dtmcfpt( P )
 
   [N err] = dtmcchkP(P);
 
-  ( N>0 ) || \
+  ( N>0 ) || ...
       error(err);
 
   if ( any(diag(P) == 1) ) 

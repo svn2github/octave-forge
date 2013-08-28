@@ -177,9 +177,9 @@ while niter <= maxout
   [v,d,h] = feval (d2f, args{1:narg-1},reshape(x,sz),args{narg+1:end}); 
   nev(2)++;
 
-  if prudent && niter <= 1 && \
-	(! isnumeric (v) || isnan (v) || any (size (v)>1) || \
-	 ! isnumeric (d) || length (d(:)) != N || \
+  if prudent && niter <= 1 && ...
+	(! isnumeric (v) || isnan (v) || any (size (v)>1) || ...
+	 ! isnumeric (d) || length (d(:)) != N || ...
 	 ! isnumeric (h) || any (size (h) != N))
     error ("Function '%s' returns inadequate output", d2f);
   end
@@ -302,7 +302,7 @@ while niter <= maxout
   if verbose || rem(niter,max(report,1)) == 1
     if vold,
       if verbose
-	printf ("d2_min : Inner loop : vbest=%8.5g, vbest/vold=%8.5g\n",\
+	printf ("d2_min : Inner loop : vbest=%8.5g, vbest/vold=%8.5g\n",...
 		vbest,vbest/vold);
       end
     else
@@ -319,7 +319,7 @@ while niter <= maxout
       nev(1)++;
 
       if abs (tmpv-vbest) > eps
-	printf ("d2_min : Whoa! Value at xbest changed by %g\n",\
+	printf ("d2_min : Whoa! Value at xbest changed by %g\n",...
 		abs(tmpv-vbest));
       end
     end
@@ -341,7 +341,7 @@ while niter <= maxout
         tmpv = feval (f, args{1:narg-1},reshape(x,sz),args{2:end});
         nev(1)++;
 	if abs (tmpv-vbest) > max (min (100*eps,0.00001*abs(vbest)), eps) ,
-	  printf ("d2_min : Whoa! Value changes by %g after eval (code)\n",\
+	  printf ("d2_min : Whoa! Value changes by %g after eval (code)\n",...
 		  abs (tmpv-vbest));
 	end
       end

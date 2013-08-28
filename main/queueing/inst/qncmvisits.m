@@ -71,19 +71,19 @@ function [V chains] = qncmvisits( P, r )
     print_usage();
   endif
 
-  ndims(P) == 4 || \
+  ndims(P) == 4 || ...
       error("P must be a 4-dimensional matrix");
 
   [C, K, C2, K2] = size( P );
-  (K == K2 && C == C2) || \
+  (K == K2 && C == C2) || ...
       error( "P must be a [C,K,C,K] matrix");
 
   if ( nargin < 2)
     r = ones(1,C);
   else
-    isvector(r) && length(r) == C || \
+    isvector(r) && length(r) == C || ...
 	error("r must be a vector with %d elements",C);
-    all( r>=1 && r<=K ) || \
+    all( r>=1 && r<=K ) || ...
 	error("elements in r must be in the range 1 - %d",K);
     r = r(:)';
   endif
@@ -104,7 +104,7 @@ function [V chains] = qncmvisits( P, r )
       if ( chains(c) == 0 )
         chains(c) = CH(c,k);
       else
-        ( CH(c,k) == 0 || chains(c) == CH(c,k) ) || \
+        ( CH(c,k) == 0 || chains(c) == CH(c,k) ) || ...
             error("Class %d belongs to different chains",c);
       endif
     endfor

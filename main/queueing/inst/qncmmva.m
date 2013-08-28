@@ -205,16 +205,16 @@ function [U R Q X] = __qncmmva_cs( N, S, P, r, m )
     print_usage();
   endif
 
-  isvector(N) && all( N>=0 ) || \
+  isvector(N) && all( N>=0 ) || ...
       error( "N must be >=0" );
   N = N(:)'; # make N a row vector
   C = length(N); ## Number of classes
-  ( ndims(S) == 2 ) || \
+  ( ndims(S) == 2 ) || ...
       error( "S must be a matrix" );
   K = columns(S); ## Number of service centers
-  size(S) == [C,K] || \
+  size(S) == [C,K] || ...
       error( "S size mismatch (is %dx%d, should be %dx%d)", rows(S), columns(S), C, K );
-  ndims(P) == 4 && size(P) == [C,K,C,K] || \
+  ndims(P) == 4 && size(P) == [C,K,C,K] || ...
       error( "P size mismatch (should be %dx%dx%dx%d)",C,K,C,K );
 
   if ( nargin < 4 )
@@ -225,29 +225,29 @@ function [U R Q X] = __qncmmva_cs( N, S, P, r, m )
       r = r*ones(1,C);
     endif
 
-    ( isvector(r) && length(r) == C ) || \
+    ( isvector(r) && length(r) == C ) || ...
 	error("r must be a vector with %d elements", C);
     r = r(:)';
-    all( r>=1 && r<=K ) || \
+    all( r>=1 && r<=K ) || ...
 	error("elements of r are out of range [1,%d]",K);
   endif
 
   if ( nargin < 5 ) 
     m = ones(1,K);
   else
-    isvector(m) || \
+    isvector(m) || ...
         error( "m must be a vector" );
     m = m(:)'; # make m a row vector
-    length(m) == K || \
+    length(m) == K || ...
         error( "m size mismatch (should be %d, is %d)", K, length(m) );
   endif
 
   ## Check consistency of parameters
-  all(S(:) >= 0) || \
+  all(S(:) >= 0) || ...
       error( "S must be >= 0" );
-  all( any(S>0,2) ) || \
+  all( any(S>0,2) ) || ...
       error( "S must contain at least a value >0 for each row" );
-  all(P(:)>= 0) || \
+  all(P(:)>= 0) || ...
       error( "P must be >=0" );
 
   U = R = Q = X = zeros(C,K);
@@ -321,7 +321,7 @@ function [U R Q X Qnm1] = __qncmmva_nocs( N, S, V, m, Z )
 
   assert( nargin == 5 );
 
-  all( any(S>0,2) ) || \
+  all( any(S>0,2) ) || ...
       error( "S must contain at least a value >0 for each row" );
 
   [C K] = size(S);
@@ -329,7 +329,7 @@ function [U R Q X Qnm1] = __qncmmva_nocs( N, S, V, m, Z )
   ## ensure that the service times for multiserver nodes
   ## are class-independent
   for k=find(m>1)
-    all( S(:,k) == S(1,k) ) || \
+    all( S(:,k) == S(1,k) ) || ...
         error( "Service times for FCFS node %d are not class-independent", k );
   endfor
 

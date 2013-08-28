@@ -107,7 +107,7 @@ function [U R Q X p0 pm] = qsmmm( lambda, mu, m )
   if ( nargin == 2 )
     m = 1;
   endif
-  ( isvector(lambda) && isvector(mu) && isvector(m) ) || \
+  ( isvector(lambda) && isvector(mu) && isvector(m) ) || ...
       error( "the parameters must be vectors" );
   [err lambda mu m] = common_size( lambda, mu, m );
   if ( err ) 
@@ -115,9 +115,9 @@ function [U R Q X p0 pm] = qsmmm( lambda, mu, m )
   endif
   lambda = lambda(:)';
   mu = mu(:)';
-  all( m>0 ) || \
+  all( m>0 ) || ...
       error( "m must be >0" );
-  all( lambda < m .* mu ) || \
+  all( lambda < m .* mu ) || ...
       error( "Processing capacity exceeded" );
   X = lambda;
   U = rho = lambda ./ (m .* mu );

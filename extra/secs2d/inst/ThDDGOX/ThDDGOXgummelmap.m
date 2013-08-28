@@ -50,8 +50,8 @@ function [odata,ith,res] = ThDDGOXgummelmap (imesh,Dsides,Simesh,Sinodes,Sieleme
       fprintf(1,"\n***\n***\tupdating potentials\n***\n");
     endif
     
-    [eletdata,innrm1]=ThDDGOXeletiteration(imesh,Dsides,\
-					   Simesh,Sinodes,Sielements,SiDsides,\
+    [eletdata,innrm1]=ThDDGOXeletiteration(imesh,Dsides,...
+					   Simesh,Sinodes,Sielements,SiDsides,...
 					   eletdata,eltol,elmaxit,ptol,pmaxit,verbose);
     eletnrm      = [eletnrm,innrm1];
     thermdata.n  = eletdata.n;
@@ -62,8 +62,8 @@ function [odata,ith,res] = ThDDGOXgummelmap (imesh,Dsides,Simesh,Sinodes,Sieleme
       fprintf(1,"\n***\n***\tupdating temperatures\n***\n");
     endif
     
-    [thermdata,innrm] = ThDDGOXthermaliteration(imesh,Dsides,\
-						Simesh,Sinodes,Sielements,SiDsides,\
+    [thermdata,innrm] = ThDDGOXthermaliteration(imesh,Dsides,...
+						Simesh,Sinodes,Sielements,SiDsides,...
 						thermdata,thtol,thmaxit,2);
 
 

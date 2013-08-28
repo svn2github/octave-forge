@@ -56,7 +56,7 @@
 ## Web: http://www.moreno.marzolla.name/
 
 function H = qncmnpop( N )
-  (isvector(N) && all( N > 0 ) ) || \
+  (isvector(N) && all( N > 0 ) ) || ...
       error( "N must be a vector of strictly positive integers" );
   N = N(:)'; # make N a row vector
   Ns = sum(N);

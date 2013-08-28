@@ -87,7 +87,7 @@ function [x, fval, info, output] = vfzero (fun, x0, options = struct ())
 
   ## Get default options if requested.
   if (nargin == 1 && ischar (fun) && strcmp (fun, 'defaults'))
-    x = optimset ("MaxIter", Inf, "MaxFunEvals", Inf, "TolX", 1e-8, \
+    x = optimset ("MaxIter", Inf, "MaxFunEvals", Inf, "TolX", 1e-8, ...
     "OutputFcn", [], "FunValCheck", "off");
     return;
   endif
@@ -195,7 +195,7 @@ function [x, fval, info, output] = vfzero (fun, x0, options = struct ())
     type1idx &= not_ready;
     exclidx = type1idx;
     ## Secant step.
-    idx = type1idx & \
+    idx = type1idx & ...
 	(tidx = abs (fa) <= 1e3*abs (fb) & abs (fb) <= 1e3*abs (fa));
     c(idx) = u(idx) - (a(idx) - b(idx)) ./ (fa(idx) - fb(idx)) .* fu(idx);
     ## Bisection step.
@@ -207,7 +207,7 @@ function [x, fval, info, output] = vfzero (fun, x0, options = struct ())
     ## itype == 2 or 3
     type23idx = not_ready & ! exclidx & (itype == 2 | itype == 3);
     exclidx |= type23idx;
-    uidx = cellfun (@ (x) length (unique (x)), \
+    uidx = cellfun (@ (x) length (unique (x)), ...
 		    num2cell ([fa, fb, fd, fe], 2)) == 4;
     oidx = sign (c - a) .* sign (c - b) > 0;
     ## Inverse cubic interpolation.
@@ -236,8 +236,8 @@ function [x, fval, info, output] = vfzero (fun, x0, options = struct ())
     for i = 1:3
       tidx &= i <= itype;
       taidx = tidx(idx);
-      pc = a0(taidx)(:) + (a1(taidx)(:) + \
-			   a2(taidx)(:).*(c(tidx) - b(tidx))(:)) \
+      pc = a0(taidx)(:) + (a1(taidx)(:) + ...
+			   a2(taidx)(:).*(c(tidx) - b(tidx))(:)) ...
 	  .*(c(tidx) - a(tidx))(:);
       pdc = a1(taidx)(:) + a2(taidx)(:).*(2*c(tidx) - a(tidx) - b(tidx))(:);
       tidx0 = tidx;
@@ -272,7 +272,7 @@ function [x, fval, info, output] = vfzero (fun, x0, options = struct ())
     nidx = not_ready & ! (idx = b - a <= 2*delta);
     idx &= not_ready;
     c(idx) = (a(idx) + b(idx))/2;
-    c(nidx) = max (a(nidx) + delta(nidx), \
+    c(nidx) = max (a(nidx) + delta(nidx), ...
 		   min (b(nidx) - delta(nidx), c(nidx)));
 
     ## Calculate new point.
@@ -338,8 +338,8 @@ function [x, fval, info, output] = vfzero (fun, x0, options = struct ())
 
   ## Check solution for a singularity by examining slope
   idx = not_ready & info == 1 & (b - a) != 0;
-  idx(idx, 1) &= \
-      abs ((fb(idx, 1) - fa(idx, 1))./(b(idx, 1) - a(idx, 1)) \
+  idx(idx, 1) &= ...
+      abs ((fb(idx, 1) - fa(idx, 1))./(b(idx, 1) - a(idx, 1)) ...
 	   ./ slope0(idx, 1)) > max (1e6, 0.5/(eps+tolx));
   info(idx) = - 5;
 

@@ -68,9 +68,9 @@ function g = g_plot (g, varargin)
   while i <= length (varargin)
     opt = varargin{i++};
     ll = length(opt);
-    if ll>=4 \
-	  && (strcmp (opt(ll-3:ll), ".eps")    \
-	      || strcmp (opt(ll-3:ll), ".fig") \
+    if ll>=4 ...
+	  && (strcmp (opt(ll-3:ll), ".eps")    ...
+	      || strcmp (opt(ll-3:ll), ".fig") ...
 	      || strcmp (opt(ll-3:ll), ".png"))
       
       if do_eps || do_fig || do_png,
@@ -95,7 +95,7 @@ function g = g_plot (g, varargin)
 	keep([i-2,i-1]) = 0;
 
     elseif strcmp (opt, "-display")
-      if i > length (varargin) \
+      if i > length (varargin) ...
 	    || (i == length(varargin) && !isnumeric (varargin{i}))
 	do_display = 1;
 	keep([i-1]) = 0;
@@ -104,7 +104,7 @@ function g = g_plot (g, varargin)
 	keep([i-2,i-1]) = 0;
       endif
     elseif strcmp (opt, "-color")
-      if i > length (varargin) \
+      if i > length (varargin) ...
 	    || (i == length(varargin) && !isnumeric (varargin{i}))
 	do_color = 1;
 	keep([i-1]) = 0;
@@ -152,11 +152,11 @@ function g = g_plot (g, varargin)
   if do_color, colorStr = "color"; else colorStr = "monochrome"; end
   if do_eps
 
-    pre_cmd = {sprintf("set term postscript eps %s size %.1fcm,%.1fcm 20",colorStr,geometry),\
+    pre_cmd = {sprintf("set term postscript eps %s size %.1fcm,%.1fcm 20",colorStr,geometry),...
 	       ["set out '",outputFile,"'"]};
 
   elseif do_fig
-    pre_cmd = {sprintf("set term fig big landscape metric %s fontsize 20 ",colorStr),\
+    pre_cmd = {sprintf("set term fig big landscape metric %s fontsize 20 ",colorStr),...
 	       ["set out '",outputFile,"'"]};
 
   elseif do_png
@@ -172,18 +172,18 @@ function g = g_plot (g, varargin)
 		pcolors = "xffffff x000000 x000000 x000000 x808080 xA0A0A0 xE0E0E0 x404040 xC0C0C0 x202020";
       end
 	end
-    pre_cmd = {sprintf("set term png truecolor size %i, %i %s",geometry, pcolors),\
+    pre_cmd = {sprintf("set term png truecolor size %i, %i %s",geometry, pcolors),...
 	       ["set out '",outputFile,"'"]};
 
   elseif wait_for_q		# Not eps and -wait
 
-    pre_cmd = {pre_cmd{:},\
-	       "set mouse",\
-	       "set mouse labels",\
-	       "set mouse verbose"\
+    pre_cmd = {pre_cmd{:},...
+	       "set mouse",...
+	       "set mouse labels",...
+	       "set mouse verbose"...
 	       };
 
-    pos_cmd = {pos_cmd{:},\
+    pos_cmd = {pos_cmd{:},...
 	       "pause -1"};
 
     ## FIXME: gnuplot croaks w/ warning: Mousing not active, even if I've set mouse..
@@ -230,7 +230,7 @@ function g = g_plot (g, varargin)
   fclose (fid);
 
   ##system (["cat ",cmdfname]);
-  gnuplot_command = [g_config("gnuplot_program")," ",gnuplot_options,\
+  gnuplot_command = [g_config("gnuplot_program")," ",gnuplot_options,...
 		     " ",cmdfname];
   
   output_file = [g.dir,"/gnuplot-output.txt"];

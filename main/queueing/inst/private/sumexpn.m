@@ -41,9 +41,9 @@
 ##
 ## @end deftypefn
 function r = sumexpn( a, n )
-  n>=0 || \
+  n>=0 || ...
       error("n must be nonnegative");
-  a>0 || \
+  a>0 || ...
       error("a must be positive");
   r = sum(cumprod([1 a./(1:n)]));
 endfunction

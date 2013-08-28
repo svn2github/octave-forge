@@ -82,10 +82,10 @@ function [Xl Xu Rl Ru] = qncmcb( varargin )
   [err N S V m Z] = qncmchkparam( varargin{:} );
   isempty(err) || error(err);
 
-  all(m == 1) || \
+  all(m == 1) || ...
       error("this function only supports single-server FCFS centers");
 
-  all(Z == 0) || \
+  all(Z == 0) || ...
       error("this function does not support think time");
 
   [C K] = size(S);

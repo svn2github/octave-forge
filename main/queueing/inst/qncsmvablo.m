@@ -89,26 +89,26 @@ function [U R Q X] = qncsmvablo( K, S, M, P )
   if ( nargin != 4 ) 
     print_usage();
   endif
-  ( isscalar(K) && K > 0 ) || \
+  ( isscalar(K) && K > 0 ) || ...
       error( "K must be a positive integer" );
-  isvector(S) && all(S>0) || \
+  isvector(S) && all(S>0) || ...
       error ("S must be a vector > 0");
   S = S(:)'; # make S a row vector
   N = length(S);
-  ( isvector(M) && length(M) == N ) || \
+  ( isvector(M) && length(M) == N ) || ...
       error( "M must be a vector with %d elements", N );
-  all( M >= 1) || \
+  all( M >= 1) || ...
       error( "M must be >= 1");
   M = M(:)'; # make M a row vector
 
-  (K < sum(M)) || \
+  (K < sum(M)) || ...
       error( "The population size K=%d exceeds the total system capacity %d", K, sum(M) );
 
   [na err] = dtmcchkP(P);
-  ( na>0 ) || \
+  ( na>0 ) || ...
       error( err );
 
-  rows(P) == N || \
+  rows(P) == N || ...
       error("The number of rows of P must be equal to the length of S");
 
   ## Note: in this implementation we make use of the same notation found

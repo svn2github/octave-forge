@@ -72,10 +72,10 @@ function t = ctmcmtta( Q, p )
 
   [N err] = ctmcchkQ(Q);
 
-  (N>0) || \
+  (N>0) || ...
       error(err);
 
-  ( isvector(p) && length(p) == N && all(p>=0) && abs(sum(p)-1.0)<epsilon ) || \
+  ( isvector(p) && length(p) == N && all(p>=0) && abs(sum(p)-1.0)<epsilon ) || ...
       error( "p must be a probability vector" );
   p = p(:)';
 

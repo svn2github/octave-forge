@@ -103,14 +103,14 @@ function [U R Q X] = qnos( varargin )
   [err lambda S V m] = qnoschkparam( varargin {:} );
   isempty(err) || error(err);
 
-  all(S>0) || \
+  all(S>0) || ...
       error( "S must be positive" );
 
   ## If there are M/M/k servers with k>=1, compute the maximum
   ## processing capacity
   m(m<1) = -1; # avoids division by zero in next line
   [Umax kmax] = max( lambda * S .* V ./ m );
-  (Umax < 1) || \
+  (Umax < 1) || ...
       error( "Processing capacity exceeded at center %d", kmax );
 
   l = lambda*V; # arrival rates

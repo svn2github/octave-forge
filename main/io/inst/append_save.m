@@ -71,8 +71,8 @@ function [ return_value ] = append_save ( filename,
 
   env1 = who;
   
-  eval([ "load -force ", \
-	option, " ",    \
+  eval([ "load -force ", ...
+	option, " ",    ...
 	filename ] );
 
   env2 = who;
@@ -158,8 +158,8 @@ function [ return_value ] = append_save ( filename,
 
   ## Finally, save all of the variables into the target file:
 
-  eval( [ "save ", \
-	   option, " ",  \
+  eval( [ "save ", ...
+	   option, " ",  ...
 	   filename, " ", var_str; ] );
 
 endfunction

@@ -114,13 +114,13 @@ function [U R Q X] = qnclosedsinglecmva( N, S, V, m, Z )
     print_usage();
   endif
 
-  isscalar(N) && N >= 0 || \
+  isscalar(N) && N >= 0 || ...
       error( "N must be >= 0" );
-  isvector(S) || \
+  isvector(S) || ...
       error( "S must be a vector" );
   S = S(:)'; # make S a row vector
 
-  isvector(V) || \
+  isvector(V) || ...
       error( "V must be a vector" );
   V = V(:)'; # make V a row vector
 
@@ -129,23 +129,23 @@ function [U R Q X] = qnclosedsinglecmva( N, S, V, m, Z )
   if ( nargin < 4 ) 
     m = ones(1,K);
   else
-    isvector(m) || \
+    isvector(m) || ...
 	error( "m must be a vector" );
     m = m(:)'; # make m a row vector
   endif
 
   [err S V m] = common_size(S, V, m);
-  (err == 0) || \
+  (err == 0) || ...
       error( "S, V and m are of incompatible size" );
-  all(S>=0) || \
+  all(S>=0) || ...
       error( "S must be a vector >= 0" );
-  all(V>=0) || \
+  all(V>=0) || ...
       error( "V must be a vector >= 0" );
 
   if ( nargin < 5 )
     Z = 0;
   else
-    (isscalar(Z) && Z >= 0) || \
+    (isscalar(Z) && Z >= 0) || ...
         error( "Z must be >= 0" );
   endif
 

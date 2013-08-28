@@ -55,9 +55,9 @@ function [thermdata,nrm] = ThDDGOXthermaliteration(imesh,Dsides,Simesh,Sinodes,S
   [Ex,Ey] = Updegrad(Simesh,-thermdata.V(Sinodes));
   E       = [Ex;Ey];  
 
-  [jnx,jny] = Ufvsgcurrent3(Simesh,thermdata.n,\
+  [jnx,jny] = Ufvsgcurrent3(Simesh,thermdata.n,...
 			    mobn0,mobn1,Tn,thermdata.V(Sinodes)-Tn);
-  [jpx,jpy] = Ufvsgcurrent3(Simesh,thermdata.p,\
+  [jpx,jpy] = Ufvsgcurrent3(Simesh,thermdata.p,...
 			    -mobp0,mobp1,Tp,-thermdata.V(Sinodes)-Tp);
 
   Jn = [jnx;jny];
@@ -73,10 +73,10 @@ function [thermdata,nrm] = ThDDGOXthermaliteration(imesh,Dsides,Simesh,Sinodes,S
       fprintf(1,"\t***updating electron temperature\n");
     endif
     
-    Tn  =  ThDDGOXupdateelectron_temp(Simesh,SiDnodes,thermdata.Tn,\
-     				      thermdata.n,thermdata.p,\
-     				      thermdata.Tl,Jn,E,mobn0,\
-                                      twn0,twn1,thermdata.tn,thermdata.tp,\
+    Tn  =  ThDDGOXupdateelectron_temp(Simesh,SiDnodes,thermdata.Tn,...
+     				      thermdata.n,thermdata.p,...
+     				      thermdata.Tl,Jn,E,mobn0,...
+                                      twn0,twn1,thermdata.tn,thermdata.tp,...
      				      thermdata.ni,thermdata.ni);
     dtn = norm(Tn-thermdata.Tn,inf);
     if (dtn>0) 
@@ -88,10 +88,10 @@ function [thermdata,nrm] = ThDDGOXthermaliteration(imesh,Dsides,Simesh,Sinodes,S
       fprintf(1,"\t***updating hole temperature\n");
     endif
 
-    Tp  = ThDDGOXupdatehole_temp(Simesh,SiDnodes,thermdata.Tp,\
-   				 thermdata.n,thermdata.p,\
-    				 thermdata.Tl,Jp,E,mobp0,\
-                                 twp0,twp1,thermdata.tn,thermdata.tp,\
+    Tp  = ThDDGOXupdatehole_temp(Simesh,SiDnodes,thermdata.Tp,...
+   				 thermdata.n,thermdata.p,...
+    				 thermdata.Tl,Jp,E,mobp0,...
+                                 twp0,twp1,thermdata.tn,thermdata.tp,...
     				 thermdata.ni,thermdata.ni);
 
     dtp = norm(Tp-thermdata.Tp,inf);
@@ -119,11 +119,11 @@ function [thermdata,nrm] = ThDDGOXthermaliteration(imesh,Dsides,Simesh,Sinodes,S
       endif
     endif
 
-    Tl  = ThDDGOXupdatelattice_temp(Simesh,SiDnodes,thermdata.Tl,\
-				    Tn,Tp,thermdata.n,\
-				    thermdata.p,thermdata.kappa,thermdata.Egap,\
-				    thermdata.tn,thermdata.tp,twn0,\
-				    twp0,twn1,twp1,\
+    Tl  = ThDDGOXupdatelattice_temp(Simesh,SiDnodes,thermdata.Tl,...
+				    Tn,Tp,thermdata.n,...
+				    thermdata.p,thermdata.kappa,thermdata.Egap,...
+				    thermdata.tn,thermdata.tp,twn0,...
+				    twp0,twn1,twp1,...
 				    thermdata.ni,thermdata.ni);
     
     dtl = norm(Tl-thermdata.Tl,inf);

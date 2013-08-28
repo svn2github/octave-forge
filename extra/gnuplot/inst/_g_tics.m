@@ -38,7 +38,7 @@ while n<nargin
   end
 end
 
-if ! (length (major) == N && all (major == 0 | major == 1) \
+if ! (length (major) == N && all (major == 0 | major == 1) ...
       || all (major >= 1 & major <= N & major == round (major)))
   major
   values

@@ -38,7 +38,7 @@ function [varargout] = asci (varargin)
   %# Check number and types of input arguments
   if (nargin == 0)
     vcol = 4;
-  elseif (isnumeric (varargin{1}) && \
+  elseif (isnumeric (varargin{1}) && ...
           isequal (size (varargin{1}), [1, 1]))
     vcol = floor (varargin{1});
   else

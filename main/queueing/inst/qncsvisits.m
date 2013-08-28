@@ -63,11 +63,11 @@ function V = qncsvisits( P, r )
     print_usage();
   endif
 
-  issquare(P) || \
+  issquare(P) || ...
       error("P must be a square matrix");
 
   [res err] = dtmcchkP(P);
-  (res>0) || \
+  (res>0) || ...
       error( "invalid transition probability matrix P" );
 
   K = rows(P);
@@ -75,10 +75,10 @@ function V = qncsvisits( P, r )
   if ( nargin < 2 )
     r = 1;
   else
-    isscalar(r) || \
+    isscalar(r) || ...
 	error("r must be a scalar");
 
-    (r>=1 && r<=K) || \
+    (r>=1 && r<=K) || ...
 	error("r must be an integer in the range 1 - %d",K);
   endif
 

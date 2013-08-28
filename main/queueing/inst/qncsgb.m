@@ -105,10 +105,10 @@ function [X_lower X_upper R_upper R_lower Q_lower Q_upper] = qncsgb( varargin )
   isempty(err) || error(err);
 
   ## This function requires N>0
-  N > 0 || \
+  N > 0 || ...
       error( "N must be >0" );
 
-  all(m==1) || \
+  all(m==1) || ...
       error("this function only supports single server nodes");
 
   L = S .* V;

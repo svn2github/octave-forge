@@ -85,7 +85,7 @@ function [X_lower X_upper R_lower R_upper] = qnosaba( varargin )
   [err lambda S V m] = qnoschkparam( varargin{:} );
   isempty(err) || error(err);
   
-  all(m==1) || \
+  all(m==1) || ...
       error("this function supports M/M/1 servers only");
 
   D = S .* V;

@@ -80,7 +80,7 @@ function [net] = __trainlm(net,Im,Pp,Tt,VV)
   time     = net.trainParam.time;
 
   ## parameter checking
-  checkParameter(epochs,goal,maxFail,minGrad,mu,\
+  checkParameter(epochs,goal,maxFail,minGrad,mu,...
 	               muInc,muDec,muMax,show,time);
 
   ## Constants
@@ -136,12 +136,12 @@ function [net] = __trainlm(net,Im,Pp,Tt,VV)
     endif
 
     ## stoping criteria
-    [stop,currentTime] = stopifnecessary(stop,startTime,perf,goal,\
-                           iEpochs,epochs,time,normGradX,minGrad,mu,muMax,\
+    [stop,currentTime] = stopifnecessary(stop,startTime,perf,goal,...
+                           iEpochs,epochs,time,normGradX,minGrad,mu,muMax,...
                            doValidation,VV,maxFail);
 
     ## show train progress
-    showtrainprogress(show,stop,iEpochs,epochs,time,currentTime, \
+    showtrainprogress(show,stop,iEpochs,epochs,time,currentTime,...
 		  goal,perf,minGrad,normGradX,shortStr,net);
 
     ## show performance plot, if needed
@@ -219,7 +219,7 @@ function [net] = __trainlm(net,Im,Pp,Tt,VV)
 # additional functions
 #
 #=======================================================
-  function checkParameter(epochs,goal,maxFail,minGrad,mu,\
+  function checkParameter(epochs,goal,maxFail,minGrad,mu,...
 	               muInc, muDec, muMax, show, time)
     ## Parameter Checking
 
@@ -239,7 +239,7 @@ function [net] = __trainlm(net,Im,Pp,Tt,VV)
       error("maxFail is not a positive integer.")
     endif
 
-    if (!isa(minGrad,"double")) || (!isreal(minGrad)) || (!isscalar(minGrad)) || \
+    if (!isa(minGrad,"double")) || (!isreal(minGrad)) || (!isscalar(minGrad)) || ...
       (minGrad < 0)
       error("minGrad is not zero or a positive real value.")
     end
@@ -251,19 +251,19 @@ function [net] = __trainlm(net,Im,Pp,Tt,VV)
     endif
 
     ## muDec defines the decrement factor
-    if ((!isa(muDec,"double")) || (!isreal(muDec)) || (any(size(muDec)) != 1) || \
+    if ((!isa(muDec,"double")) || (!isreal(muDec)) || (any(size(muDec)) != 1) || ...
   		 (muDec < 0) || (muDec > 1))
       error("muDec is not a real value between 0 and 1.")
     endif
 
     ## muInc defines the increment factor
-    if (~isa(muInc,"double")) || (!isreal(muInc)) || (any(size(muInc)) != 1) || \
+    if (~isa(muInc,"double")) || (!isreal(muInc)) || (any(size(muInc)) != 1) || ...
       (muInc < 1)
       error("muInc is not a real value greater than 1.")
     endif
 
     ## muMax is the upper boundary for the mu value
-    if (!isa(muMax,"double")) || (!isreal(muMax)) || (any(size(muMax)) != 1) || \
+    if (!isa(muMax,"double")) || (!isreal(muMax)) || (any(size(muMax)) != 1) || ...
       (muMax <= 0)
       error("muMax is not a positive real value.")
     endif
@@ -281,7 +281,7 @@ function [net] = __trainlm(net,Im,Pp,Tt,VV)
     endif
 
     ## check at last the time argument, must be zero or a positive real value
-    if (!isa(time,"double")) || (!isreal(time)) || (any(size(time)) != 1) || \
+    if (!isa(time,"double")) || (!isreal(time)) || (any(size(time)) != 1) || ...
       (time < 0)
       error("Time is not zero or a positive real value.")
     end
@@ -292,7 +292,7 @@ function [net] = __trainlm(net,Im,Pp,Tt,VV)
 # -----------------------------------------------------------------------------
 #
 
-  function showtrainprogress(show,stop,iEpochs,epochs,time,currentTime, \
+  function showtrainprogress(show,stop,iEpochs,epochs,time,currentTime, ...
           goal,perf,minGrad,normGradX,shortStr,net)
 
     ## check number of inputs
@@ -325,8 +325,8 @@ function [net] = __trainlm(net,Im,Pp,Tt,VV)
 # -----------------------------------------------------------------------------
 #
 
-  function [stop,currentTime] = stopifnecessary(stop,startTime,perf,goal,\
-                        iEpochs,epochs,time,normGradX,minGrad,mu,muMax,\
+  function [stop,currentTime] = stopifnecessary(stop,startTime,perf,goal,...
+                        iEpochs,epochs,time,normGradX,minGrad,mu,muMax,...
 						doValidation,VV,maxFail)
 
     ## check number of inputs

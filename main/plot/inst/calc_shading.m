@@ -51,7 +51,7 @@
 ## Created: 2009-12-24
 ## Credits: Kai Habel for his diffuse, specular and surfl functions
 
-function [ cdat ] = calc_shading (amb, dif, spec, shine, \
+function [ cdat ] = calc_shading (amb, dif, spec, shine, ...
                                  colors, normals, lvec, vvec)
 
   lvec /= norm (lvec); # normalize light vector
@@ -68,19 +68,19 @@ function [ cdat ] = calc_shading (amb, dif, spec, shine, \
 
   if columns (colors) == 1
     ## if we have scalar colors do it the simple way
-    lfactor = amb * ones (rows (normals), 1) \
-        + dif * diffuse (normals(:, 1), normals(:, 2), normals(:, 3), lvec) \
-        + spec * specular (normals(:, 1), normals(:, 2), normals(:, 3), \
+    lfactor = amb * ones (rows (normals), 1) ...
+        + dif * diffuse (normals(:, 1), normals(:, 2), normals(:, 3), lvec) ...
+        + spec * specular (normals(:, 1), normals(:, 2), normals(:, 3), ...
                            lvec, vvec, shine);
     cdat = colors .* lfactor;
   else # we have rgb colors
     ## ambient and diffuse like in the scalar case
-    lfactor = amb * ones (rows (normals), 1) \
+    lfactor = amb * ones (rows (normals), 1) ...
         + dif * diffuse (normals(:, 1), normals(:, 2), normals(:, 3), lvec);
     lfactor = repmat (lfactor, [1, columns(colors)]);
 
     ## we use a white specular light for a better effect
-    lf_spec = spec * specular (normals(:, 1), normals(:, 2), normals(:, 3), \
+    lf_spec = spec * specular (normals(:, 1), normals(:, 2), normals(:, 3), ...
                                lvec, vvec, shine); 
     lf_spec = repmat (lf_spec, [1, columns(colors)]);
 

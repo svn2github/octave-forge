@@ -57,18 +57,18 @@ function V = qnosvisits( P, lambda )
     print_usage();
   endif
 
-  issquare(P) || \
+  issquare(P) || ...
       error("P must be a square matrix");
 
   K = rows(P);
 
-  all(P(:)>=0) && all( sum(P,2)<=1+1e-5 ) || \
+  all(P(:)>=0) && all( sum(P,2)<=1+1e-5 ) || ...
       error( "invalid transition probability matrix P" );
   
-  ( isvector(lambda) && length(lambda) == K ) || \
+  ( isvector(lambda) && length(lambda) == K ) || ...
       error( "lambda must be a vector with %d elements", K );
 
-  all( lambda>= 0 ) || \
+  all( lambda>= 0 ) || ...
       error( "lambda contains negative values" );
 
   lambda = lambda(:)';

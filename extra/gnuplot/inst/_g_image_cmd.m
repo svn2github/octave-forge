@@ -82,22 +82,22 @@ else
   yr = yr([2 1]);
 end
 
-s2 = sprintf (" origin=(%g,%g) ",\
-	      xr(1) + 0.5*diff(xr)/sz(2), \
+s2 = sprintf (" origin=(%g,%g) ",...
+	      xr(1) + 0.5*diff(xr)/sz(2), ...
 	      yr(1) + 0.5*diff(yr)/sz(1));
-s3 = sprintf (" dx=%g dy=%g ",\
-	      (xr(2)-xr(1))/sz(2),\
+s3 = sprintf (" dx=%g dy=%g ",...
+	      (xr(2)-xr(1))/sz(2),...
 	      (yr(2)-yr(1))/sz(1));
 
 s4 = " format='%uchar' ";
 
 if !is_col
-  s5 = sprintf (" using (%g*$1/255+%g) ",\
+  s5 = sprintf (" using (%g*$1/255+%g) ",...
 		diff(zrange), zrange(1));
   s6 = [" with image "];
 
 else
-  s5 = sprintf (" using (%g*$1/255+%g):(%g*$2/255+%g):(%g*$3/255+%g) ",\
+  s5 = sprintf (" using (%g*$1/255+%g):(%g*$2/255+%g):(%g*$3/255+%g) ",...
 		[diff(zrange);zrange(1)]*[1 1 1]);
   s6 = [" with rgbimage "];
 end

@@ -83,10 +83,10 @@ function pop_mix = qncmpopmix( k, population )
     print_usage();
   endif
 
-  isvector( population ) && all( population>=0 ) || \
+  isvector( population ) && all( population>=0 ) || ...
       error( "N must be an array >=0" );
   R = length(population); # number of classes
-  ( isscalar(k) && k >= 0 && k <= sum(population) ) || \
+  ( isscalar(k) && k >= 0 && k <= sum(population) ) || ...
       error( "k must be a scalar <= %d", sum(population));
   N = zeros(1, R);
   const = min(k, population);

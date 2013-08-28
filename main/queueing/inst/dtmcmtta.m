@@ -93,11 +93,11 @@ function [t N B] = dtmcmtta( P, p0 )
 
   [K err] = dtmcchkP(P);
 
-  (K>0) || \
+  (K>0) || ...
       error(err);
   
   if ( nargin == 2 )
-    ( isvector(p0) && length(p0) == K && all(p0>=0) && abs(sum(p0)-1.0)<epsilon ) || \
+    ( isvector(p0) && length(p0) == K && all(p0>=0) && abs(sum(p0)-1.0)<epsilon ) || ...
 	error( "p0 must be a state occupancy probability vector" );
   endif
 

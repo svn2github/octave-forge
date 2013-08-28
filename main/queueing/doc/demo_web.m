@@ -23,7 +23,7 @@ page_screen_output(0); # avoid output pagination
 
 N = 100; # total population size
 beta = linspace(0.1,0.9,18); # population mix for class 1
-D = [12 14 23 20 80 31; \
+D = [12 14 23 20 80 31; ...
       2 20 14 90 30 33 ];
 V = ones(size(D));
 X1 = X1 = XX = zeros(size(beta));
@@ -46,13 +46,13 @@ set(gcf,"papersize",papersize);
 set(gcf,"paperposition", [margin papersize-margin*2]);
 
 subplot(2,1,1);
-plot(beta, X1, "--", "linewidth", 2, \
-     beta, X2, ":", "linewidth", 2, \
+plot(beta, X1, "--", "linewidth", 2, ...
+     beta, X2, ":", "linewidth", 2, ...
      beta, XX, "-", "linewidth", 2 );
 ylabel("Throughput");
 subplot(2,1,2);
-plot(beta, R1, "--", "linewidth", 2, \
-     beta, R2, ":", "linewidth", 2, \
+plot(beta, R1, "--", "linewidth", 2, ...
+     beta, R2, ":", "linewidth", 2, ...
      beta, RR, "-", "linewidth", 2 );
 ax = axis();
 ax(3) = 0;
@@ -71,8 +71,8 @@ papersize=[4 2.5] * 0.7; margin=[0 0];
 set(gcf,"papersize",papersize);
 set(gcf,"paperposition", [margin papersize-margin*2]);
 
-plot(beta, X1./R1, "--;Class 1;", "linewidth", 2, \
-     beta, X2./R2, ":;Class 2;", "linewidth", 2, \
+plot(beta, X1./R1, "--;Class 1;", "linewidth", 2, ...
+     beta, X2./R2, ":;Class 2;", "linewidth", 2, ...
      beta, XX./RR, "-;System;", "linewidth", 2);
 xlabel("Population mix \\beta_1 for Class 1");
 ylabel("Power");

@@ -129,11 +129,11 @@ op1 = "ftol utol dtol df d2f d2i order narg maxev isz";
 # Boolean options 
 op0 = "verbose backend jac hess ihess ndiff" ;
 
-default = struct ("backend",0,"verbose",0,\
-		    "df","",  "df", "","d2f","","d2i","",  \
-		    "hess", 0,  "ihess", 0,  "jac", 0,"ndiff", 0,  \
-		    "ftol" ,nan, "utol",nan, "dtol", nan,\
-		    "order",nan, "narg",nan, "maxev",nan,\
+default = struct ("backend",0,"verbose",0,...
+		    "df","",  "df", "","d2f","","d2i","",  ...
+		    "hess", 0,  "ihess", 0,  "jac", 0,"ndiff", 0,  ...
+		    "ftol" ,nan, "utol",nan, "dtol", nan,...
+		    "order",nan, "narg",nan, "maxev",nan,...
 		    "isz",  nan);
 
 if nargin == 3			# Accomodation to struct and list optional
@@ -156,7 +156,7 @@ if nargin == 3			# Accomodation to struct and list optional
 else
   opls = varargin;
 end
-ops = read_options (opls,\
+ops = read_options (opls,...
 		    "op0",op0, "op1",op1, "default",default);
 
 backend=ops.backend; verbose=ops.verbose; 
@@ -175,7 +175,7 @@ ws = "";			# Warning string
 es = "";			# Error string
 
 				# Warn if more than 1 differential is given
-if !!length (df) + !!length (d2f) + !!length (d2i) + jac + hess + ihess + \
+if !!length (df) + !!length (d2f) + !!length (d2i) + jac + hess + ihess + ...
       ndiff > 1
 				# Order of preference of 
   if length (d2i), ws = [ws,"d2i='",d2i,"', "]; end

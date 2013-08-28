@@ -78,7 +78,7 @@ function result = ctmcfpt( Q, i, j )
 
   [N err] = ctmcchkQ(Q);
   
-  (N>0) || \
+  (N>0) || ...
       error(err);
 
   if ( nargin == 1 ) 

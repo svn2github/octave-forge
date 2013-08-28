@@ -65,27 +65,27 @@ function [odata,it,res] = DDGOXgummelmap (imesh,Dsides,Simesh,Sinodes,Sielements
     if (verbose>=1)
       fprintf(1,"solving non linear poisson equation\n");
       if ((i>1)&(verbose>1))
-        DDGOXplotresults(imesh,Simesh,n(:,1)*idata.ns,p(:,1)*idata.ns,V(:,1)*idata.Vs,\
+        DDGOXplotresults(imesh,Simesh,n(:,1)*idata.ns,p(:,1)*idata.ns,V(:,1)*idata.Vs,...
 			 Fn(:,1)*idata.Vs,Fp(:,1)*idata.Vs,i,nrm(end),"poisson");
       endif
     endif
     
-    [V(:,2),n(:,2),p(:,2)] = DDGOXnlpoisson (imesh,Dsides,Sinodes,SiDnodes,Sielements,\
-					     V(:,1),n(:,1),p(:,1),Fn(:,1),Fp(:,1),D,\
+    [V(:,2),n(:,2),p(:,2)] = DDGOXnlpoisson (imesh,Dsides,Sinodes,SiDnodes,Sielements,...
+					     V(:,1),n(:,1),p(:,1),Fn(:,1),Fp(:,1),D,...
 					     idata.l2,idata.l2ox,ptoll,pmaxit,verbose-1);
     V(Dnodes,2)            = idata.V(Dnodes);
     
     if (verbose>=1)
       fprintf (1,"***\nupdating electron qfl\n");
       if ((i>1)&(verbose>1))
-        DDGOXplotresults(imesh,Simesh,n(:,2)*idata.ns,p(:,2)*idata.ns,\
+        DDGOXplotresults(imesh,Simesh,n(:,2)*idata.ns,p(:,2)*idata.ns,...
 			 V(:,2)*idata.Vs,Fn(:,1)*idata.Vs,Fp(:,1)*idata.Vs,i,nrm(end),"e- continuity");
       endif
     endif
 
     mob            = Ufielddepmob(Simesh,idata.un,Fn(:,1),idata.vsatn,idata.mubn);
-    n(:,3)         = DDGOXelectron_driftdiffusion(Simesh,SiDsides,n(:,2),p(:,2),\
-						  V(Sinodes,2),mob,\
+    n(:,3)         = DDGOXelectron_driftdiffusion(Simesh,SiDsides,n(:,2),p(:,2),...
+						  V(Sinodes,2),mob,...
 						  idata.tn,idata.tp,idata.ni,idata.ni);		
     Fn(:,2)        = V(Sinodes,2) - log(n(:,3));
     n(SiDnodes,3)  = idata.n(SiDnodes);
@@ -106,14 +106,14 @@ function [odata,it,res] = DDGOXgummelmap (imesh,Dsides,Simesh,Sinodes,Sielements
     if (verbose>=1)
       fprintf(1,"***\nupdating hole qfl\n");
       if ((i>1)&(verbose>1))		
-        DDGOXplotresults(imesh,Simesh,n(:,3)*idata.ns,p(:,2)*idata.ns,V(:,2)*idata.Vs,\
+        DDGOXplotresults(imesh,Simesh,n(:,3)*idata.ns,p(:,2)*idata.ns,V(:,2)*idata.Vs,...
 			 Fn(:,2)*idata.Vs,Fp(:,1)*idata.Vs,i,nrm(end),"h+ continuity");
       endif
     endif
     
     mob            = Ufielddepmob(Simesh,idata.up,Fp(:,1),idata.vsatp,idata.mubp);
-    p(:,3)         = DDGOXhole_driftdiffusion(Simesh,SiDsides,n(:,3),p(:,2),\
-					      V(Sinodes,2),mob,\
+    p(:,3)         = DDGOXhole_driftdiffusion(Simesh,SiDsides,n(:,3),p(:,2),...
+					      V(Sinodes,2),mob,...
 					      idata.tn,idata.tp,idata.ni,idata.ni);
     Fp(:,2)        = V(Sinodes,2) + log(p(:,3));
     p(SiDnodes,3)  = idata.p(SiDnodes);

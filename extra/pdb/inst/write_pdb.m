@@ -104,7 +104,7 @@ endif
 
 # Print the Crystallographic and Coordinate Transformation Section 
 
-if( isfield(p, "cellsize") || isfield(p, "cellangl") \
+if( isfield(p, "cellsize") || isfield(p, "cellangl") ...
     || isfield(p, "sgroup") || isfield(p, "z") )
     if(isfield(p, "cellsize"))
       cellsize = p.cellsize;
@@ -128,7 +128,7 @@ if( isfield(p, "cellsize") || isfield(p, "cellangl") \
     endif
     buf = blanks(80);
     buf(1:6)   = "CRYST1";
-    buf(7:54) = sprintf(" %8.3f %8.3f %8.3f %6.2f %6.2f %6.2f", \
+    buf(7:54) = sprintf(" %8.3f %8.3f %8.3f %6.2f %6.2f %6.2f", ...
        cellsize, cellangl);	
     buf(56:66) = sprintf("%-11s", sgroup);
     buf(67:70) = sprintf("%4d", z);

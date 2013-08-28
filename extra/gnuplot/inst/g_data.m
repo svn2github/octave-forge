@@ -75,7 +75,7 @@ function g = g_data (g, varargin)
 	if columns (varargin{i}) == columns (data)
 	  data = [data;varargin{i}];
 	else
-	  error ("Data was %i columns wide until now, but arg %i is %i wide",\
+	  error ("Data was %i columns wide until now, but arg %i is %i wide",...
 		 columns(data), i, columns(varargin{i}));
 	endif
       endif
@@ -130,7 +130,7 @@ function g = g_data (g, varargin)
       endif
       count = fwrite (fid, uint8(data), "uint8");
       if count != prod (size (data))
-	error ("Could only write %i out of %i bytes of data.",\
+	error ("Could only write %i out of %i bytes of data.",...
 	       count, prod (size (data)));
       endif
       fclose (fid);

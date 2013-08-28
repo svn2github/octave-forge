@@ -90,7 +90,7 @@ function [U R Q X p0] = qsmminf( lambda, mu )
   if ( nargin != 2 )
     print_usage();
   endif
-  ( isvector(lambda) && isvector(mu) ) || \
+  ( isvector(lambda) && isvector(mu) ) || ...
       error( "lambda and mu must be vectors" );
   [ err lambda mu ] = common_size( lambda, mu );
   if ( err ) 
@@ -98,7 +98,7 @@ function [U R Q X p0] = qsmminf( lambda, mu )
   endif  
   lambda = lambda(:)';
   mu = mu(:)';
-  ( all( lambda>0 ) && all( mu>0 ) ) || \
+  ( all( lambda>0 ) && all( mu>0 ) ) || ...
       error( "lambda and mu must be >0" );
   U = Q = lambda ./ mu; # Traffic intensity.
   p0 = exp(-lambda./mu); # probability that there are 0 requests in the system

@@ -14,7 +14,6 @@ all: MPI_Init.oct \
      MPI_Send.oct \
      MPI_Recv.oct \
      MPI_Iprobe.oct \
-     MPI_Probe.oct \
      MPI_Barrier.oct \
      MPI_Comm_Load.oct \
      MPI_Comm_Test.oct \

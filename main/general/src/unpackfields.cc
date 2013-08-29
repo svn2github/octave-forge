@@ -69,16 +69,16 @@ but more efficient and more concise.\n\
           if (struct_val.is_map ())
             {
               // Fast code for a built-in struct.
-              const Octave_map map = struct_val.map_value ();
+              const octave_scalar_map map = struct_val.scalar_map_value ();
 
-              if (map.numel () == 1)
+              if (! error_state)
                 {
                   // Do the actual work.
                   for (octave_idx_type i = 0; i < nargin-1; i++)
                     {
-                      Octave_map::const_iterator iter = map.seek (fld_names(i));
+                      octave_scalar_map::const_iterator iter = map.seek (fld_names(i));
                       if (iter != map.end ())
-                        symbol_table::varref (fld_names(i)) = map.contents (iter)(0);
+                        symbol_table::varref (fld_names(i)) = map.contents (iter);
                       else
                         {
                           error ("unpackfields: field %s does not exist", fld_names(i).c_str ());

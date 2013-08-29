@@ -80,14 +80,14 @@ but more efficient and more concise.\n\
 
           // If not defined, use struct ().
           if (! struct_ref.is_defined ())
-            struct_ref = Octave_map (dim_vector (1, 1));
+            struct_ref = octave_scalar_map ();
 
           if (struct_ref.is_map ())
             {
               // Fast code for a built-in struct.
-              Octave_map map = struct_ref.map_value ();
+              octave_scalar_map map = struct_ref.scalar_map_value ();
 
-              if (map.numel () == 1)
+              if (! error_state)
                 {
                   // Do the actual work.
                   struct_ref = octave_value (); // Unshare map.

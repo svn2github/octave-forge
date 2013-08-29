@@ -28,7 +28,7 @@ octave_value get_element (element *root) {
 
   string_vector tmp_array;
   ComplexMatrix tmp_matrix;
-  Octave_map tmp_structure;
+  octave_scalar_map tmp_structure;
   Cell tmp_cell;
   octave_value_list tmp_list;
 

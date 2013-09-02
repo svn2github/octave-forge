@@ -24,7 +24,7 @@
 ##
 ## Calling xlsopen without specifying a return argument is fairly useless!
 ##
-## To make this function work at all, you need MS-Excel (95 - 2010), and/or
+## To make this function work at all, you need MS-Excel (95 - 2003), and/or
 ## the Java package >= 1.2.8 plus Apache POI >= 3.5 and/or JExcelAPI and/or
 ## OpenXLS and/or OpenOffice.org (or clones) installed on your computer +
 ## proper javaclasspath set. These interfaces are referred to as COM, POI,
@@ -34,8 +34,7 @@
 ## following jars in your javaclasspath: poi-ooxml-schemas-3.5.jar,
 ## xbean.jar and dom4j-1.6.1.jar (or later versions). Later OpenOffice.org
 ## versions (UNO) have support for OOXML as well.
-## Excel'95 spreadsheets can only be read by COM (ActiveX), JExcelAPI and
-## OpenOffice.org.
+## Excel'95 spreadsheets can only be read by JExcelAPI and OpenOffice.org.
 ##
 ## @var{filename} should be a valid .xls or xlsx Excel file name (including
 ## extension). But if you use the COM interface you can specify any extension
@@ -48,22 +47,17 @@
 ## is opened for reading. If @var{readwrite} is set to True or 1, an Excel
 ## file is opened (or created) for reading & writing.
 ##
-## Optional input argument @var{reqintf} (character string, or cellstr array)
-## can be used to override the Excel interface that otherwise is automatically
-## selected by xlsopen. Currently implemented interfaces (in order of built-in
-## preference) are 'COM' (Excel/ActiveX COM), 'POI' (Java/Apache POI),
-## 'JXL'(Java/JExcelAPI), 'OXS' (Java/OpenXLS), or 'UNO' (Java/OpenOffice.org).
+## Optional input argument @var{reqintf} can be used to override the Excel
+## interface that otherwise is automatically selected by xlsopen. Currently
+## implemented interfaces (in order of preference) are 'COM' (Excel/COM),
+## 'POI' (Java/Apache POI), 'JXL' (Java/JExcelAPI), 'OXS' (Java/OpenXLS), or
+## 'UNO' (Java/OpenOffice.org - EXPERIMENTAL!).
 ## In most situations this parameter is unneeded as xlsopen automatically
-## selects the most useful interface present ("default interface").
-## Depending on file type, xlsopen.m can invoke other detected interfaces than
-## the default one.
+## selects the most useful interface present.
 ##
-## Beware: 
-## Excel invocations may be left running invisibly in case of COM errors or
-## forgetting to close the file pointer. Similarly for OpenOffice.org
+## Beware: Excel invocations may be left running invisibly in case of COM
+## errors or forgetting to close the file pointer. Similarly for OpenOffice.org
 ## which may even prevent Octave from being closed.
-## The UNO interface is still experimental. While in itself reliable, it may
-## have undesired side effects on Open-/LibreOffice windows outside Octave.
 ##
 ## Examples:
 ##
@@ -121,11 +115,12 @@
 ##     ''     Moved all interface-specific file open stanzas to separate ./private funcs
 ## 2012-10-24 Style fixes
 ## 2012-12-18 Improved warning/error messages
-## 2012-03-01 Revamped logic for determining if file type is supported by a
-##            particular interface
-## 2012-04-17 Fix checks on xls or xls? suffix (due to Vermylen)
-## 2012-04-21 Revert xls/xlsx type check (was good as it stood)
-## 2013-05-16 Fix wrong fallback to JXL of OOXML
+## 2013-02-24 Temporarily disabled OXS and UNO
+## 2013-05-16 Fix fallback to JXL for OOXML files
+## 2013-06-18 Re-enabled OXS and UNO
+## 2013-09-01 Allow input of filename w/o suffix for Excel files
+## 2013-09-02 Better fix for undue fallback to JXL for OOXML files
+##     ''     Fixed wrong error message about OXS and UNO not being supported
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
@@ -145,16 +140,16 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
       usage ("XLS = xlsopen (Xlfile [, Rw] [, reqintf]). But no return argument specified!"); 
   endif
 
-  if (! (islogical (xwrite) || isnumeric (xwrite)))
+  if (~(islogical (xwrite) || isnumeric (xwrite)))
       usage ("xlsopen.m: numerical or logical value expected for arg ## 2 (readwrite)")
   endif
 
-  if (! isempty (reqinterface))
-    if (! (ischar (reqinterface) || iscell (reqinterface)))
+  if (~isempty (reqinterface))
+    if ~(ischar (reqinterface) || iscell (reqinterface))
       usage ("Arg ## 3 (interface) not recognized - character value required"); 
     endif
     ## Turn arg3 into cell array if needed
-    if (! iscell (reqinterface))
+    if (~iscell (reqinterface))
       reqinterface = {reqinterface}; 
     endif
     ## Check if previously used interface matches a requested interface
@@ -178,7 +173,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
           xlsinterfaces.UNO = [];
         else 
           usage (sprintf (["xlsopen.m: unknown .xls interface \"%s\" requested.\n" 
-                 "Only COM, POI, JXL, OXS or UNO supported\n"], reqinterface{}));
+                 "Only COM, POI, JXL, OXS, or UNO) supported\n"], reqinterface{}));
         endif
       endfor
       printf ("Checking requested interface(s):\n");
@@ -186,7 +181,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
       ## Well, is/are the requested interface(s) supported on the system?
       xlsintf_cnt = 0;
       for ii=1:numel (reqinterface)
-        if (! xlsinterfaces.(toupper (reqinterface{ii})))
+        if (~xlsinterfaces.(toupper (reqinterface{ii})))
           ## No it aint
           printf ("%s is not supported.\n", upper (reqinterface{ii}));
         else
@@ -194,7 +189,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
         endif
       endfor
       ## Reset interface check indicator if no requested support found
-      if (! xlsintf_cnt)
+      if (~xlsintf_cnt)
         chkintf = [];
         xls = [];
         return
@@ -205,8 +200,41 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
   ## Var readwrite is really used to avoid creating files when wanting to read,
   ## or not finding not-yet-existing files when wanting to write a new one.
 
-  ## Check if Excel file exists. Adapt file open mode for readwrite argument
-  if (xwrite); fmode = 'r+b'; else fmode = 'rb'; endif
+  ## Check if Excel file exists. First check for file name suffix
+  has_suffix = 1;
+  sfxpos = strfind (filename, ".xls");
+  if (! isempty (sfxpos))
+    ## .xls or .xls[x,m,b] is there, but at the right(most) position?
+    if (! sfxpos(end) >= length (filename) - 4)
+      ## Apparently not. If xwrite = 0, check file suffix, else add .xls
+      has_suffix = 0;
+    endif
+  else
+    has_suffix = 0;
+  endif
+  
+  ## Adapt file open mode for readwrite argument
+  if (xwrite);
+    fmode = 'r+b';
+    if (! has_suffix)
+      ## Add .xls suffix to filename (all Excel versions can write this)
+      filename = [filename ".xls"];
+    endif
+  else
+    fmode = 'rb';
+    if (! has_suffix)
+      ## Try to find eind existing file name
+        filnm = dir ([filename ".xls*"]);
+        if (! isempty (filnm))
+          ## Simply choose the first one
+          if (isstruct (filnm))
+            filename = filnm(1).name;
+          else
+            filename = filnm;
+          endif
+        endif
+    endif
+  endif
   fid = fopen (filename, fmode);
   if (fid < 0)                      ## File doesn't exist...
     if (~xwrite)                    ## ...which obviously is fatal for reading...
@@ -248,53 +276,51 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
   ## Interface preference order is defined below: currently COM -> POI -> JXL -> OXS -> UNO
   ## chk1 & chk2 (xls file type) are conveyed depending on interface capabilities
 
-  if (xlsinterfaces.COM && ~xlssupport)
+  if ((! xlssupport) && xlsinterfaces.COM)
     ## Excel functioning has been tested above & file exists, so we just invoke it.
     [ xls, xlssupport, lastintf ] = __COM_spsh_open__ (xls, xwrite, filename, xlssupport);
   endif
 
-  if (! xlssupport)
-    if (xlsinterfaces.POI && (chk1 || chk2))
+  if ((! xlssupport) && xlsinterfaces.POI)
+    if (chk1 || chk2)
       [ xls, xlssupport, lastintf ] = __POI_spsh_open__ (xls, xwrite, filename, xlssupport, chk1, chk2, xlsinterfaces);
-    elseif ~(chk1 || chk2)
+    else
       error ("xlsopen.m: unsupported file format for Apache POI")
     endif
   endif
 
-  if (! xlssupport)
-    if (xlsinterfaces.JXL && chk1)
+  if ((! xlssupport) && xlsinterfaces.JXL)
+    if (chk1)
       [ xls, xlssupport, lastintf ] = __JXL_spsh_open__ (xls, xwrite, filename, xlssupport, chk1);
-    elseif (~chk1)
+    else
       error ("xlsopen.m: unsupported file format for JExcelAPI")
     endif
   endif
 
-  if (! xlssupport)
-    if (xlsinterfaces.OXS && chk1)
+  if ((! xlssupport) && xlsinterfaces.OXS)
+    if (chk1)
       [ xls, xlssupport, lastintf ] = __OXS_spsh_open__ (xls, xwrite, filename, xlssupport, chk1);
-    elseif (~chk1)
+    else
       error ("xlsopen.m: unsupported file format for OpenXLS")
     endif
   endif
 
-  if (! xlssupport)
-    if (xlsinterfaces.UNO)
-      [ xls, xlssupport, lastintf ] = __UNO_spsh_open__ (xls, xwrite, filename, xlssupport);
-    endif
+  if ((! xlssupport) && xlsinterfaces.UNO)
+    [ xls, xlssupport, lastintf ] = __UNO_spsh_open__ (xls, xwrite, filename, xlssupport);
   endif
 
   ## if 
-  ##  ---- other future interfaces
+  ##  ---- other interfaces
   ## endif
 
   ## Rounding up. If none of the xlsinterfaces is supported we're out of luck.
-  if (! xlssupport)
+  if (~xlssupport)
     if (isempty (reqinterface))
       ## This message is appended after message from getxlsinterfaces()
       printf ("None.\n");
       warning ("xlsopen.m: no support for Excel .xls I/O"); 
     else
-      warning ("xlsopen.m: file type not supported by %s %s %s %s %s", upper (reqinterface{:}));
+      warning ("xlsopen.m: file type not supported by %s %s %s %s %s", reqinterface{:});
     endif
     xls = [];
     ## Reset found interfaces for re-testing in the next call. Add interfaces if needed.

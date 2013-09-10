@@ -10,7 +10,6 @@ Octave Wrappers for MPI functions
  MPI_Get_processor_name
  MPI_Init 	
  MPI_Initialized
- MPI_Iprobe 	
  MPI_Recv 	
  MPI_Send
 Examples 

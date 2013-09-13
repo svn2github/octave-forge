@@ -3,8 +3,10 @@ Summary of changes for mpi 1.1.1:
 
  * Package name changed.
 
- * Removed the MPI_(I)Probe function that was incompatible with newer versions of openmpi.
+ * Patched the MPI_(I)Probe function that was incompatible with newer versions of openmpi.
 
+ * This version of the package should work with distributions of mpi other than openmpi,
+   not testing has been done yet, though.
 
 Summary of changes for openmpi_ext 1.1.0:
 -------------------------------------------------------------------

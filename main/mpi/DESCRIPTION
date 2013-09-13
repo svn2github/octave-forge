@@ -1,11 +1,11 @@
 Name: mpi
 Version: 1.1.1
-Date: 2013-8-29
+Date: 2013-9-13
 Author: Riccardo Corradini <riccardocorradini@yahoo.it>, Jaroslav Hajek, Carlo de Falco
 Maintainer: the Octave Community
 Title: mpi
 Description: MPI functions for parallel computing using simple MPI Derived Datatypes.
-Depends: octave (>= 3.2.4)
+Depends: octave (>= 3.6.4)
 Autoload: no
 License: GPLv3+
 Url: http://octave.sf.net

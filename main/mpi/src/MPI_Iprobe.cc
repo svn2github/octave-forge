@@ -25,20 +25,22 @@
 #include "simple.h"	
 #include <octave/ov-struct.h>
 
-Octave_map put_MPI_Stat (const MPI_Status &stat)
+octave_scalar_map put_MPI_Stat (MPI_Status &stat)
 {
   /*---------------------------------------------*/
-  Octave_map map;
+  octave_scalar_map map;
   octave_value tmp = stat.MPI_SOURCE;
   map.assign ("src", tmp);
   tmp = stat.MPI_TAG;
   map.assign ("tag", tmp );
   tmp = stat.MPI_ERROR;
   map.assign ("err", tmp );
-  tmp = stat._count;
-  map.assign ("cnt", tmp);
-  tmp = stat._cancelled;
-  map.assign ("can", tmp);
+  int itmp;
+  MPI_Get_count (&stat, MPI_CHAR, &itmp);
+  map.assign ("cnt", itmp);
+
+  MPI_Test_cancelled (&stat, &itmp);
+  map.assign ("can", itmp);
 
   return map;
 }

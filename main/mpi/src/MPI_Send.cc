@@ -26,7 +26,7 @@
 int send_class (MPI_Comm comm, octave_value ov, ColumnVector rankrec, int mytag);       
 int send_string (int t_id, MPI_Comm comm, std::string  oi8, ColumnVector rankrec, int mytag);
 int send_cell (int t_id, MPI_Comm comm, Cell cell, ColumnVector rankrec, int mytag);
-int send_struct (int t_id, MPI_Comm comm, Octave_map map,ColumnVector rankrec, int mytag);
+int send_struct (int t_id, MPI_Comm comm, octave_map map,ColumnVector rankrec, int mytag);
 
 template <class Any>
 int send_scalar (int t_id, MPI_Datatype TSnd, MPI_Comm comm, std::complex<Any> d, ColumnVector rankrec, int mytag);
@@ -535,7 +535,7 @@ int send_cell (int t_id, MPI_Comm comm, Cell cell, ColumnVector rankrec, int myt
   return (info); 
 }
 
-int send_struct (int t_id, MPI_Comm comm, Octave_map map, ColumnVector rankrec, int mytag)
+int send_struct (int t_id, MPI_Comm comm, octave_map map, ColumnVector rankrec, int mytag)
 {        /* we store nkeys, */
   int n = map.nfields (); 
   int info;
@@ -570,7 +570,7 @@ int send_struct (int t_id, MPI_Comm comm, Octave_map map, ColumnVector rankrec, 
 
       // iterate through keys(fnames)
       int scap;
-      for (Octave_map::const_iterator p = map.begin (); p != map.end (); p++)
+      for (octave_map::const_iterator p = map.begin (); p != map.end (); p++)
         {
           // field name
           std::string key = map.key (p);

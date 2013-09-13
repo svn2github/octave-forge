@@ -432,7 +432,7 @@ int recv_cell (MPI_Comm comm, octave_value &ov, int source, int mytag)
 
 int recv_struct (MPI_Comm comm, octave_value &ov, int source, int mytag)
 {
-  Octave_map om;
+  octave_scalar_map om;
   int n; // map.fields ();
 
   OCTAVE_LOCAL_BUFFER(int, tanktag, 2);

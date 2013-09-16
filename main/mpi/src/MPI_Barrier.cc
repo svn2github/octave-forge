@@ -49,6 +49,13 @@ an error occurs. \n\
     print_usage ();
   else
     {
+      if (! simple_type_loaded)
+        {
+          simple::register_type ();
+          simple_type_loaded = true;
+          mlock ();
+        }
+
       if((args.length () != 1)
          || args(0).type_id () != simple::static_type_id ())
         {
@@ -56,14 +63,7 @@ an error occurs. \n\
           results(0) = octave_value (-1);
         }
       else
-        {
-          if (! simple_type_loaded)
-            {
-              simple::register_type ();
-              simple_type_loaded = true;
-              mlock ();
-            }
-	       
+        {	       
           const octave_base_value& rep = args(0).get_rep();
           const simple& B = ((const simple &)rep);
           MPI_Comm comm = ((const simple&) B).comunicator_value ();

@@ -206,8 +206,17 @@ endfunction
 %! P(1,1,2,2) = P(2,2,2,2) = 0.8;
 %! S(1,1) = S(1,2) = 0.1;
 %! S(2,1) = S(2,2) = 0.03;
-%! lambda(1,1) = lambda(1,2) = 1/5;
-%! [U R Q X] = qnom(lambda,S,P)
+%! rr = 1:100;
+%! Xk = zeros(2,length(rr));
+%! for r=rr
+%!   lambda(1,1) = lambda(1,2) = 1/r;
+%!   [U R Q X] = qnom(lambda,S,P);
+%!   Xk(:,r) = sum(X,1)';
+%! endfor
+%! plot(rr,Xk(1,:),";Server 1;","linewidth",2, \
+%!      rr,Xk(2,:),";Server 2;","linewidth",2);
+%! xlabel("Class 1 interarrival time");
+%! ylabel("Throughput");
 
 ##############################################################################
 ## Handle open, multiclass QNs without class switching

@@ -1,4 +1,4 @@
-## Copyright (C) 2008, 2009, 2010, 2011, 2012 Moreno Marzolla
+## Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013 Moreno Marzolla
 ##
 ## This file is part of the queueing toolbox.
 ##
@@ -19,6 +19,8 @@
 ##
 ## @deftypefn {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qnom (@var{lambda}, @var{S}, @var{V})
 ## @deftypefnx {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qnom (@var{lambda}, @var{S}, @var{V}, @var{m})
+## @deftypefnx {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qnom (@var{lambda}, @var{S}, @var{P})
+## @deftypefnx {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qnom (@var{lambda}, @var{S}, @var{P}, @var{m})
 ##
 ## @cindex open network, multiple classes
 ## @cindex multiclass network, open
@@ -28,13 +30,32 @@
 ## PS) or delay centers (IS). This function assumes a network with
 ## @math{K} service centers and @math{C} customer classes.
 ##
+## @quotation Note
+## If this function is called specifying the visit ratios
+## @var{V}, class switching is @strong{not} allowed.
+##
+## If this function is called specifying the routing probability matrix
+## @var{P}, then class switching @strong{is} allowed; however, in this
+## case all nodes are restricted to be fixed rate servers or delay
+## centers: multiple-server and general load-dependent centers are not
+## supported.
+##
+## Note that the meaning of parameter @var{lambda} is different 
+## from one case to the other (see below).
+## @end quotation
+##
 ## @strong{INPUTS}
 ##
 ## @table @var
 ##
 ## @item lambda
-## @code{@var{lambda}(c)} is the external
-## arrival rate of class @math{c} customers (@code{@var{lambda}(c)>0}).
+## If this function is invoked as @code{qnom(lambda, S, V, @dots{})},
+## then @code{@var{lambda}(c)} is the external arrival rate of class
+## @math{c} customers (@code{@var{lambda}(c) @geq{} 0}). If this
+## function is invoked as @code{qnom(lambda, S, P, @dots{})}, then
+## @code{@var{lambda}(c,k)} is the external arrival rate of class
+## @math{c} customers at center @math{k} (@code{@var{lambda}(c,k) @geq{}
+## 0}).
 ##
 ## @item S
 ## @code{@var{S}(c,k)} is the mean service time of class @math{c}
@@ -44,6 +65,14 @@
 ## @item V
 ## @code{@var{V}(c,k)} is the average number of visits of class @math{c}
 ## customers to service center @math{k} (@code{@var{V}(c,k) @geq{} 0 }).
+## @strong{If you pass this argument, class switching is not
+## allowed}
+##
+## @item P
+## @code{@var{P}(r,i,s,j)} is the probability that a class @math{r}
+## job completing service at center @math{i} is routed to center @math{j}
+## as a class @math{s} job. @strong{If you pass argument @var{P},
+## class switching is allowed}; however, all servers must be fixed-rate or infinite-server nodes (@code{@var{m}(k) @leq{} 1} for all @math{k}).
 ##
 ## @item m
 ## @code{@var{m}(k)} is the number of servers at center @math{i}. If
@@ -90,8 +119,99 @@ function [U R Q X] = qnom( varargin )
     print_usage();
   endif
 
-  [err lambda S V m] = qnomchkparam( varargin{:} );
-  isempty(err) || error(err);
+  if ( nargin == 2 || ndims(varargin{3}) == 2 )
+    [err lambda S V m] = qnomchkparam( varargin{:} );
+    isempty(err) || error(err);
+    [U R Q X] = __qnom_nocs( lambda, S, V, m );
+  else
+    [U R Q X] = __qnom_cs( varargin{:} );
+  endif
+endfunction
+%!test
+%! fail( "qnom([1 1], [.9; 1.0])", "exceeded at center 1");
+%! fail( "qnom([1 1], [0.9 .9; 0.9 1.0])", "exceeded at center 2");
+%! #qnom([1 1], [.9; 1.0],[],2); # should not fail, M/M/2-FCFS
+%! #qnom([1 1], [.9; 1.0],[],-1); # should not fail, -/G/1-PS
+%! fail( "qnom(1./[2 3], [1.9 1.9 0.9; 2.9 3.0 2.9])", "exceeded at center 2");
+%! #qnom(1./[2 3], [1 1.9 0.9; 0.3 3.0 1.5],[],[1 2 1]); # should not fail
+
+%!test
+%! V = [1 1; 1 1];
+%! S = [1 3; 2 4];
+%! lambda = [3/19 2/19];
+%! [U R Q X] = qnom(lambda, S, V);
+%! assert( U(1,1), 3/19, 1e-6 );
+%! assert( U(2,1), 4/19, 1e-6 );
+%! assert( R(1,1), 19/12, 1e-6 );
+%! assert( R(1,2), 57/2, 1e-6 );
+%! assert( Q(1,1), .25, 1e-6 );
+%! assert( Q, R.*X, 1e-5 ); # Little's Law
+
+%!test
+%! # example p. 138 Zahorjan et al.
+%! V = [ 10 9; 5 4];
+%! S = [ 1/10 1/3; 2/5 1];
+%! lambda = [3/19 2/19];
+%! [U R Q X] = qnom(lambda, S, V);
+%! assert( X(1,1), 1.58, 1e-2 );
+%! assert( U(1,1), .158, 1e-3 );
+%! assert( R(1,1), .158, 1e-3 ); # modified from the original example, as the reference above considers R as the residence time, not the response time
+%! assert( Q(1,1), .25, 1e-2 );
+%! assert( Q, R.*X, 1e-5 ); # Little's Law
+
+%!test
+%! # example 7.7 p. 304 Bolch et al. Please note that indices are swapper,
+%! # since the book assumes P(i,r,j,s) (i,j are service centers, r,s are job
+%! # classes) while the queueing package uses P(r,i,s,j)
+%! P = zeros(2,3,2,3);
+%! lambda = S = zeros(2,3);
+%! P(1,1,1,2) = 0.4;
+%! P(1,1,1,3) = 0.3;
+%! P(1,2,1,1) = 0.6;
+%! P(1,2,1,3) = 0.4;
+%! P(1,3,1,1) = 0.5;
+%! P(1,3,1,2) = 0.5;
+%! P(2,1,2,2) = 0.3;
+%! P(2,1,2,3) = 0.6;
+%! P(2,2,2,1) = 0.7;
+%! P(2,2,2,3) = 0.3;
+%! P(2,3,2,1) = 0.4;
+%! P(2,3,2,2) = 0.6;
+%! S(1,1) = 1/8;
+%! S(1,2) = 1/12;
+%! S(1,3) = 1/16;
+%! S(2,1) = 1/24;
+%! S(2,2) = 1/32;
+%! S(2,3) = 1/36;
+%! # Note: we set the arrival rates to 2, since in the example
+%! # the authors define the external arrival probabilities
+%! # P_{0,11} = P_{0,12} = 1, instead of the correct values
+%! # P_{0,11} = P_{0,12} = 0.5, Therefore, their rsults are twice
+%! # the correct values.
+%! lambda(1,1) = lambda(2,1) = 2;
+%! V = qnomvisits(P,lambda);
+%! assert( V, [ 3.333 2.292 1.917; 10 8.049 8.415] ./ 2, 1e-3);
+%! [U R Q X] = qnom(sum(lambda,2), S, V);
+%! assert( sum(U,1), [0.833 0.442 0.354], 1e-3 );
+%! # Note: the value of K_22 (corresponding to Q(2,2)) reported in the book
+%! # is 0.5. However, hand computation using the exact same formulas
+%! # from the book produces a different value, 0.451
+%! assert( Q, [2.5 0.342 0.186; 2.5 0.451 0.362], 1e-3 );
+
+%!demo
+%! P = zeros(2,2,2,2);
+%! lambda = zeros(2,2);
+%! S = zeros(2,2);
+%! P(1,1,2,1) = P(1,2,2,1) = 0.2;
+%! P(1,1,2,2) = P(2,2,2,2) = 0.8;
+%! S(1,1) = S(1,2) = 0.1;
+%! S(2,1) = S(2,2) = 0.03;
+%! lambda(1,1) = lambda(1,2) = 1/5;
+%! [U R Q X] = qnom(lambda,S,P)
+
+##############################################################################
+## Handle open, multiclass QNs without class switching
+function [U R Q X] = __qnom_nocs( lambda, S, V, m )
 
   [C K] = size(S);
 
@@ -142,35 +262,63 @@ function [U R Q X] = qnom( varargin )
     Q(c,i_single) = U(c,i_single) ./ ( 1 - sum(U(:,i_single),1) );
   endfor
 #}
+
 endfunction
-%!test
-%! fail( "qnom([1 1], [.9; 1.0])", "exceeded at center 1");
-%! fail( "qnom([1 1], [0.9 .9; 0.9 1.0])", "exceeded at center 2");
-%! #qnom([1 1], [.9; 1.0],[],2); # should not fail, M/M/2-FCFS
-%! #qnom([1 1], [.9; 1.0],[],-1); # should not fail, -/G/1-PS
-%! fail( "qnom(1./[2 3], [1.9 1.9 0.9; 2.9 3.0 2.9])", "exceeded at center 2");
-%! #qnom(1./[2 3], [1 1.9 0.9; 0.3 3.0 1.5],[],[1 2 1]); # should not fail
 
-%!test
-%! V = [1 1; 1 1];
-%! S = [1 3; 2 4];
-%! lambda = [3/19 2/19];
-%! [U R Q X] = qnom(lambda, S, V);
-%! assert( U(1,1), 3/19, 1e-6 );
-%! assert( U(2,1), 4/19, 1e-6 );
-%! assert( R(1,1), 19/12, 1e-6 );
-%! assert( R(1,2), 57/2, 1e-6 );
-%! assert( Q(1,1), .25, 1e-6 );
-%! assert( Q, R.*X, 1e-5 ); # Little's Law
+##############################################################################
+## Handle open, multiclass QNs with class switching
+function [U R Q X] = __qnom_cs( lambda, S, P, m );
+  [C K] = size(S);
 
-%!test
-%! # example p. 138 Zahorjan et al.
-%! V = [ 10 9; 5 4];
-%! S = [ 1/10 1/3; 2/5 1];
-%! lambda = [3/19 2/19];
-%! [U R Q X] = qnom(lambda, S, V);
-%! assert( X(1,1), 1.58, 1e-2 );
-%! assert( U(1,1), .158, 1e-3 );
-%! assert( R(1,1), .158, 1e-3 ); # modified from the original example, as the reference above considers R as the residence time, not the response time
-%! assert( Q(1,1), .25, 1e-2 );
-%! assert( Q, R.*X, 1e-5 ); # Little's Law
+  if ( nargin < 3 || nargin > 4 ) 
+    print_usage();
+  endif
+
+  ( ndims(lambda) == 2 && all( lambda(:) >= 0 ) ) || ...
+      error( "lambda must be >= 0" );
+  [C,K] = size(lambda);
+  (ndims(S) == 2 && size(S) == [C,K] ) || ...
+      error( "S size mismatch (should be [%d,%d])", C, K );
+  ( ndims(P) == 4 && size(P) == [C,K,C,K] ) || ...
+      error( "P size mismatch (should be %dx%dx%dx%d)",C,K,C,K );
+
+  if ( nargin < 4 )
+    m = ones(1,K);
+  else
+    isvector(m) || ...
+        error( "m must be a vector" );
+    m = m(:)'; # make m a row vector
+    length(m) == K || ...
+        error( "m size mismatch (should be %d, is %d)", K, length(m) );
+    all(m<=1) || ...
+	error( "IF you use parameter P, m must be <= 1");
+  endif
+
+  ## FIXME: check ergodicity condition
+
+  U = R = Q = X = zeros(C,K);
+
+  A = eye(K*C) - reshape(P,[K*C K*C]);
+  b = reshape(lambda, [1,K*C]);
+  X = reshape(b/A, [C, K]);
+
+  ## Compute utilizations (for IS nodes compute also response time and
+  ## queue lenghts)
+  for k=1:K
+    for c=1:C
+      if ( m(k) == 1 ) # M/M/1 or -/G/1-PS
+	[U(c,k)] = qsmm1( X(c,k), 1/S(c,k) );
+      else # -/G/inf
+  	[U(c,k) R(c,k) Q(c,k)] = qsmminf( X(c,k), 1/S(c,k) );
+      endif
+    endfor
+  endfor
+  ## Adjust response times and queue lengths for FCFS queues
+  k_fcfs = find(m>=1);
+  for c=1:C
+    Q(c,k_fcfs) = U(c,k_fcfs) ./ ( 1 - sum(U(:,k_fcfs),1) );
+    R(c,k_fcfs) = Q(c,k_fcfs) ./ X(c,k_fcfs); # Use Little's law
+  endfor
+
+endfunction
+

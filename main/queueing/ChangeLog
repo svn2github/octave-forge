@@ -1,3 +1,9 @@
+2013-09-XX Moreno Marzolla <moreno.marzolla@unibo.it>
+
+	* Version 1.2.3 released
+	* qsmm1 now accepts lambda=0
+	* qnom accepts lambda(c) = 0 for some classes c
+
 2013-06-29 Moreno Marzolla <moreno.marzolla@unibo.it>
 
 	* Version 1.2.2 released

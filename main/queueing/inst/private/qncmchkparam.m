@@ -55,8 +55,8 @@ function [err Nout Sout Vout mout Zout] = qncmchkparam( N, S, V, m, Z )
 
   C = length(Nout); ## Number of classes
 
-  if ( !ismatrix(S) || rows(S) != C )
-    err = sprintf("S must be a matrix with %d rows",C);
+  if ( !ismatrix(S) || ndims(S) != 2 || rows(S) != C )
+    err = sprintf("S must be a 2-dimensional matrix with %d rows",C);
     return;
   endif
 
@@ -72,7 +72,7 @@ function [err Nout Sout Vout mout Zout] = qncmchkparam( N, S, V, m, Z )
   if ( nargin < 3 )
     Vout = ones(size(Sout));
   else
-    if ( !ismatrix(V) || rows(V) != C || columns(V) != K )
+    if ( !ismatrix(V) || ndims(V) != 2 || rows(V) != C || columns(V) != K )
       err = sprintf("V must be a %d x %d matrix", C, K );
       return;
     endif

@@ -22,6 +22,9 @@
 ##
 ## Compute the average number of visits to the service centers of a single class, open or closed Queueing Network with @math{N} service centers.
 ##
+## This function is deprecated. Please use one of @code{qncsvisits},
+## @code{qncmvisits}, @code{qnosvisits} or @code{qnomvisits} instead.
+##
 ## @strong{INPUTS}
 ##
 ## @table @var

@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Moreno Marzolla
+## Copyright (C) 2012, 2013 Moreno Marzolla
 ##
 ## This file is part of the queueing toolbox.
 ##
@@ -45,8 +45,8 @@ function [err lambda S V m] = qnomchkparam( varargin )
     return;
   endif
 
-  if ( any(lambda<=0) )
-    err = "lambda must contain positive values";
+  if ( any(lambda<0) )
+    err = "lambda must contain nonnegative values";
     return;
   endif
 
@@ -54,8 +54,8 @@ function [err lambda S V m] = qnomchkparam( varargin )
 
   C = length(lambda); ## Number of classes
 
-  if ( !ismatrix(S) || rows(S) != C )
-    err = sprintf("S must be a matrix with %d rows",C);
+  if ( !ismatrix(S) || ndims(S) != 2 || rows(S) != C )
+    err = sprintf("S must be a 2-dimensional matrix with %d rows",C);
     return;
   endif
 
@@ -70,7 +70,7 @@ function [err lambda S V m] = qnomchkparam( varargin )
     V = ones(size(S));
   else
     V = varargin{3};
-    if ( !ismatrix(V) || rows(V) != C || columns(V) != K )
+    if ( !ismatrix(V) || ndims(V) != 2 || rows(V) != C || columns(V) != K )
       err = sprintf("V must be a %d x %d matrix", C, K );
       return;
     endif

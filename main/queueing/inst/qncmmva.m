@@ -1,4 +1,4 @@
-## Copyright (C) 2008, 2009, 2010, 2011, 2012 Moreno Marzolla
+## Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013 Moreno Marzolla
 ##
 ## This file is part of the queueing toolbox.
 ##
@@ -103,8 +103,8 @@
 ## as a class @math{s} job; the reference stations for each class
 ## are specified with the paramter @var{r}.
 ## @strong{If you pass argument @var{P},
-## class switching is allowed}, but you can not specify any external delay
-## (i.e., @var{Z} must be zero).
+## class switching is allowed}; however, you can not specify any external delay
+## (i.e., @var{Z} must be zero) and all servers must be fixed-rate or infinite-server nodes (@code{@var{m}(k) @leq{} 1} for all @math{k}).
 ##
 ## @item r
 ## @code{@var{r}(c)} is the reference station for class @math{c}.

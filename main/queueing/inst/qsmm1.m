@@ -42,7 +42,7 @@
 ## @table @var
 ##
 ## @item lambda
-## Arrival rate (@code{@var{lambda} > 0}).
+## Arrival rate (@code{@var{lambda} @geq{} 0}).
 ##
 ## @item mu
 ## Service rate (@code{@var{mu} > @var{lambda}}).
@@ -93,8 +93,8 @@ function [U R Q X p0] = qsmm1( lambda, mu )
   endif
   lambda = lambda(:)';
   mu = mu(:)';
-  all( lambda > 0 ) || ...
-      error( "lambda must be >0" );
+  all( lambda >= 0 ) || ...
+      error( "lambda must be >= 0" );
   all( mu > lambda ) || ...
       error( "The system is not ergodic" );
   U = rho = lambda ./ mu; # utilization

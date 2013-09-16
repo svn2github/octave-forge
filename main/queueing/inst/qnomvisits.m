@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Moreno Marzolla
+## Copyright (C) 2012, 2013 Moreno Marzolla
 ##
 ## This file is part of the queueing toolbox.
 ##
@@ -63,7 +63,7 @@ function V = qnomvisits( P, lambda )
 
   [C, K, C2, K2] = size( P );
   (K == K2 && C == C2) || ...
-      error( "P must be a [C,K,C,K] matrix");
+      error( "P must be a [%d,%d,%d,%d] matrix", C, K, C, K);
 
   ismatrix(lambda) && [C,K] == size(lambda) || ...
       error( "lambda must be a %d x %d matrix", C, K );
@@ -109,3 +109,36 @@ endfunction
 %!     assert(V(c,i), lambda(c,i) / lambda_sum + sum(sum(V .* P(:,:,c,i))), 1e-5);
 %!   endfor
 %! endfor
+
+%!test
+%! # example 7.7 p. 304 Bolch et al. 
+%! # Note that the book uses a slightly different notation than
+%! # what we use here. Specifically, the book defines the routing 
+%! # probabilities as P(i,r,j,s) (i,j are service centers, r,s are job
+%! # classes) while the queueing package uses P(r,i,s,j).
+%! # A more serious problem arises in the definition of external arrivals.
+%! # The computation of V(r,i) as given in the book (called e_ir
+%! # in Eq 7.14) is performed in terms of P_{0, js}, defined as 
+%! # "the probability in an open network that a job from outside the network
+%! #  enters the jth node as a job of the sth class" (p. 267). This is
+%! # compliant with eq. 7.12 where the external class r arrival rate at center
+%! # i is computed as \lambda * P_{0,ir}. However, example 7.7 wrongly
+%! # defines P_{0,11} = P_{0,12} = 1, instead of P_{0,11} = P_{0,12} = 0.5
+%! # Therefore the resulting visit ratios they obtain must be divided by two.
+%! P = zeros(2,3,2,3);
+%! lambda = S = zeros(2,3);
+%! P(1,1,1,2) = 0.4;
+%! P(1,1,1,3) = 0.3;
+%! P(1,2,1,1) = 0.6;
+%! P(1,2,1,3) = 0.4;
+%! P(1,3,1,1) = 0.5;
+%! P(1,3,1,2) = 0.5;
+%! P(2,1,2,2) = 0.3;
+%! P(2,1,2,3) = 0.6;
+%! P(2,2,2,1) = 0.7;
+%! P(2,2,2,3) = 0.3;
+%! P(2,3,2,1) = 0.4;
+%! P(2,3,2,2) = 0.6;
+%! lambda(1,1) = lambda(2,1) = 1;
+%! V = qnomvisits(P,lambda);
+%! assert( V, [ 3.333 2.292 1.917; 10 8.049 8.415] ./ 2, 1e-3);

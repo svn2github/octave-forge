@@ -21,7 +21,7 @@
 ## To run this example, set the variables HOSTFILE and NUMBER_OF_MPI_NODES to appropriate values, 
 ## then type the following command in your shell:
 ## @example
-## mpirun --hostfile $HOSTFILE -np $NUMBER_OF_MPI_NODES octave --eval 'pkg load openmpi_ext; hellostruct ()'
+## mpirun --hostfile $HOSTFILE -np $NUMBER_OF_MPI_NODES octave --eval 'pkg load mpi; hellostruct ()'
 ## @end example
 ## @seealso{hello2dimmat,helloworld,hellocell,hellosparsemat,mc_example,montecarlo,Pi} 
 ## @end deftypefn
@@ -56,4 +56,4 @@ function hellostruct ()
 endfunction
 
 %!demo
-%! system ("mpirun --hostfile $HOSTFILE -np $NUMBER_OF_MPI_NODES octave -q --eval 'pkg load openmpi_ext; hellostruct ()'");
+%! system ("mpirun --hostfile $HOSTFILE -np $NUMBER_OF_MPI_NODES octave -q --eval 'pkg load mpi; hellostruct ()'");

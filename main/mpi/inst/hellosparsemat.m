@@ -21,7 +21,7 @@
 ## To run this example, set the variables HOSTFILE and NUMBER_OF_MPI_NODES to appropriate values, 
 ## then type the following command in your shell:
 ## @example
-## mpirun --hostfile $HOSTFILE -np $NUMBER_OF_MPI_NODES octave --eval 'pkg load openmpi_ext; hellosparsemat ()'
+## mpirun --hostfile $HOSTFILE -np $NUMBER_OF_MPI_NODES octave --eval 'pkg load mpi; hellosparsemat ()'
 ## @end example
 ## @seealso{hello2dimmat,helloworld,hellocell,hellostruct,mc_example,montecarlo,Pi} 
 ## @end deftypefn
@@ -81,4 +81,4 @@ function hellosparsemat ()
 endfunction
 
 %!demo
-%! system ("mpirun --hostfile $HOSTFILE -np $NUMBER_OF_MPI_NODES octave -q --eval 'pkg load openmpi_ext; hellosparsemat ()'");
+%! system ("mpirun --hostfile $HOSTFILE -np $NUMBER_OF_MPI_NODES octave -q --eval 'pkg load mpi; hellosparsemat ()'");

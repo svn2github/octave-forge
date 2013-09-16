@@ -30,7 +30,7 @@
 ## To run this example, set the variables HOSTFILE and NUMBER_OF_MPI_NODES to appropriate values, 
 ## then type the following command in your shell:
 ## @example
-## mpirun --hostfile $HOSTFILE -np $NUMBER_OF_MPI_NODES octave --eval 'pkg load openmpi_ext; Pi ()'
+## mpirun --hostfile $HOSTFILE -np $NUMBER_OF_MPI_NODES octave --eval 'pkg load mpi; Pi ()'
 ## @end example
 ## @seealso{hello2dimmat,helloworld,hellocell,hellosparsemat,mc_example,montecarlo,hellostruct} 
 ## @end deftypefn
@@ -123,4 +123,4 @@ function results = Pi (N, mod)
 endfunction
 
 %!demo
-%! system ("mpirun --hostfile $HOSTFILE -np $NUMBER_OF_MPI_NODES octave -q --eval 'pkg load openmpi_ext; Pi ()'");
+%! system ("mpirun --hostfile $HOSTFILE -np $NUMBER_OF_MPI_NODES octave -q --eval 'pkg load mpi; Pi ()'");

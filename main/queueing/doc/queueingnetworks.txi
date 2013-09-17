@@ -157,8 +157,8 @@ after service at service center @math{i} is @math{1-\sum_{j=1}^K P_{i,
 j}}.
 
 @item V_k
-Average number of visits. @math{V_k} is the average number of visits to
-the service center @math{k}. This quantity will be described shortly.
+Mean number of visits the center @math{k} (also called @emph{visit
+ratio} or @emph{relative arrival rate}).
 
 @end table
 
@@ -213,7 +213,7 @@ closed systems, this can be written as @math{Q = N-XZ};
 
 For open, single class models, the scalar @math{\lambda} denotes the
 external arrival rate of requests to the system. The average number of
-visits satisfy the following equation:
+visits @math{V_j} satisfy the following equation:
 
 @iftex
 @tex
@@ -748,10 +748,13 @@ for the customer classes.
 @table @math
 
 @item @lambdack
-External arrival rate of class-@math{c} requests to service center @math{k}
+(open networks) External arrival rate of class-@math{c} requests to service center @math{k}
 
 @item @lambda
-Overall external arrival rate to the whole system: @math{\lambda = \sum_c \sum_k \lambda_{c, k}}
+(open networks) Overall external arrival rate to the whole system: @math{\lambda = \sum_c \sum_k \lambda_{c, k}}
+
+@item N_c
+(closed networks) Number of class @math{c} requests in the system.
 
 @item S_{c, k}
 Average service time. @math{S_{c, k}} is the average service time on
@@ -765,8 +768,7 @@ at server @math{i} will move to server @math{j} as a class @math{s}
 request.
 
 @item V_{c, k}
-Average number of visits. @math{V_{c, k}} is the average number of visits
-of class @math{c} requests to center @math{k}.
+Mean number of visits of class @math{c} requests to center @math{k}.
 
 @end table
 
@@ -784,8 +786,6 @@ If center @math{k} is an infinite server node (delay
 center), then @math{U_{c, k}} denotes the @emph{traffic intensity} and
 is defined as @math{U_{c, k} = X_{c, k} S_{c, k}}; in this case the
 utilization may be greater than one.
-
-
 
 @item R_{c, k}
 Average response time experienced by class @math{c} requests on service
@@ -855,8 +855,8 @@ $X_c = X_{c, 1} / V_{c, 1}$
 
 @end table
 
-We can define the visit ratios @math{V_{s, j}} for class @math{s}
-customers at service center @math{j} as follows:
+For closed networks, we can define the visit ratios @math{V_{s, j}}
+for class @math{s} customers at service center @math{j} as follows:
 
 @iftex
 @tex
@@ -881,12 +881,12 @@ For open networks the traffic equations are as follows:
 
 @iftex
 @tex
-$$V_{s, j} = P_{0, s, j} + \sum_{r=1}^C \sum_{i=1}^K V_{r, i} P_{r, i, s, j} \quad s=1, \ldots, K, j=1, \ldots, K$$
+$$V_{s, j} = P_{0, s, j} + \sum_{r=1}^C \sum_{i=1}^K V_{r, i} P_{r, i, s, j} \quad s=1, \ldots, C, j=1, \ldots, K$$
 @end tex
 @end iftex
 @ifnottex
 @group
-V_sj = P_0sj + sum_r sum_i V_ri P_risj  s=1,...,K, j=1,...,K
+V_sj = P_0sj + sum_r sum_i V_ri P_risj  s=1,...,C, j=1,...,K
 @end group
 @end ifnottex
 
@@ -894,8 +894,8 @@ V_sj = P_0sj + sum_r sum_i V_ri P_risj  s=1,...,K, j=1,...,K
 arrival goes to service center @math{j} as a class-@math{s} request.
 If @math{\lambda_{s, j}} is the external arrival rate of class
 @math{s} requests to service center @math{j}, and @math{\lambda =
-\sum_s \sum_j \lambda_{s, j}} is the overall external arrival rate to
-the whole system, then @math{P_{0, s, j} = \lambda_{s, j} / \lambda}.
+\sum_s \sum_j \lambda_{s, j}} is the overall external arrival rate,
+then @math{P_{0, s, j} = \lambda_{s, j} / \lambda}.
 
 @GETHELP{qncmvisits}
 

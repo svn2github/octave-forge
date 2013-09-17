@@ -34,7 +34,7 @@
 ##
 ## @item r
 ## @code{@var{r}(c)} is the index of class @math{c} reference station,
-## @math{r(c) \in @{1, @dots{}, K@}}, @math{c \in @{1, \@dots{}, C@}}.
+## @math{r(c) \in @{1, @ldots{}, K@}}, @math{c \in @{1, @ldots{}, C@}}.
 ## The class @math{c} visit count to server @code{@var{r}(c)}
 ## (@code{@var{V}(c,r(c))}) is conventionally set to 1. The reference
 ## station serves two purposes: (i) its throughput is assumed to be the
@@ -55,7 +55,7 @@
 ## @item ch
 ## @code{@var{ch}(c)} is the chain number that class @math{c} belongs
 ## to. Different classes can belong to the same chain. Chains are
-## numbered sequentially starting from 1 (@math{1, 2, @dots{}}). The
+## numbered sequentially starting from 1 (@math{1, 2, @ldots{}}). The
 ## total number of chains is @code{max(@var{ch})}.
 ##
 ## @end table

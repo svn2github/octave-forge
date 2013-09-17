@@ -57,7 +57,7 @@ endfunction
 %! V = [1 1; 1 1];
 %! S = [1 3; 2 4];
 %! lambda = [3/19 2/19];
-%! [U R Q] = qnopen(lambda, S, V);
+%! [U R Q] = qnopen(lambda, S, diag( lambda / sum(lambda) ) * V);
 %! assert( U(1,1), 3/19, 1e-6 );
 %! assert( U(2,1), 4/19, 1e-6 );
 %! assert( R(1,1), 19/12, 1e-6 );

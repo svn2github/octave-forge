@@ -765,7 +765,7 @@ endfunction
 %! Q1 = qnmknode( "m/m/m-fcfs", [1;2] );
 %! Q2 = qnmknode( "m/m/m-fcfs", [3;4] );
 %! lambda = [3/19 2/19];
-%! [U R Q] = qnsolve("open", lambda, { Q1, Q2 }, V);
+%! [U R Q] = qnsolve("open", lambda, { Q1, Q2 }, diag( lambda / sum(lambda) ) * V);
 %! assert( U(1,1), 3/19, 1e-6 );
 %! assert( U(2,1), 4/19, 1e-6 );
 %! assert( R(1,1), 19/12, 1e-6 );

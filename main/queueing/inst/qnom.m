@@ -33,13 +33,11 @@
 ## @quotation Note
 ## If this function is called specifying the visit ratios
 ## @var{V}, class switching is @strong{not} allowed.
-##
 ## If this function is called specifying the routing probability matrix
 ## @var{P}, then class switching @strong{is} allowed; however, in this
 ## case all nodes are restricted to be fixed rate servers or delay
 ## centers: multiple-server and general load-dependent centers are not
 ## supported.
-##
 ## Note that the meaning of parameter @var{lambda} is different 
 ## from one case to the other (see below).
 ## @end quotation
@@ -63,7 +61,7 @@
 ## For FCFS nodes, mean service times must be class-independent.
 ##
 ## @item V
-## @code{@var{V}(c,k)} is the average number of visits of class @math{c}
+## @code{@var{V}(c,k)} is the visit ratio of class @math{c}
 ## customers to service center @math{k} (@code{@var{V}(c,k) @geq{} 0 }).
 ## @strong{If you pass this argument, class switching is not
 ## allowed}
@@ -139,7 +137,7 @@ endfunction
 %! V = [1 1; 1 1];
 %! S = [1 3; 2 4];
 %! lambda = [3/19 2/19];
-%! [U R Q X] = qnom(lambda, S, V);
+%! [U R Q X] = qnom(lambda, S, diag( lambda / sum(lambda) ) * V );
 %! assert( U(1,1), 3/19, 1e-6 );
 %! assert( U(2,1), 4/19, 1e-6 );
 %! assert( R(1,1), 19/12, 1e-6 );
@@ -152,7 +150,7 @@ endfunction
 %! V = [ 10 9; 5 4];
 %! S = [ 1/10 1/3; 2/5 1];
 %! lambda = [3/19 2/19];
-%! [U R Q X] = qnom(lambda, S, V);
+%! [U R Q X] = qnom(lambda, S, diag( lambda / sum(lambda) ) * V );
 %! assert( X(1,1), 1.58, 1e-2 );
 %! assert( U(1,1), .158, 1e-3 );
 %! assert( R(1,1), .158, 1e-3 ); # modified from the original example, as the reference above considers R as the residence time, not the response time
@@ -160,8 +158,8 @@ endfunction
 %! assert( Q, R.*X, 1e-5 ); # Little's Law
 
 %!test
-%! # example 7.7 p. 304 Bolch et al. Please note that indices are swapper,
-%! # since the book assumes P(i,r,j,s) (i,j are service centers, r,s are job
+%! # example 7.7 p. 304 Bolch et al. Please note that the book uses the 
+%! # notation P(i,r,j,s) (i,j are service centers, r,s are job
 %! # classes) while the queueing package uses P(r,i,s,j)
 %! P = zeros(2,3,2,3);
 %! lambda = S = zeros(2,3);
@@ -183,12 +181,7 @@ endfunction
 %! S(2,1) = 1/24;
 %! S(2,2) = 1/32;
 %! S(2,3) = 1/36;
-%! # Note: we set the arrival rates to 2, since in the example
-%! # the authors define the external arrival probabilities
-%! # P_{0,11} = P_{0,12} = 1, instead of the correct values
-%! # P_{0,11} = P_{0,12} = 0.5, Therefore, their rsults are twice
-%! # the correct values.
-%! lambda(1,1) = lambda(2,1) = 2;
+%! lambda(1,1) = lambda(2,1) = 1;
 %! V = qnomvisits(P,lambda);
 %! assert( V, [ 3.333 2.292 1.917; 10 8.049 8.415] ./ 2, 1e-3);
 %! [U R Q X] = qnom(sum(lambda,2), S, V);
@@ -197,6 +190,25 @@ endfunction
 %! # is 0.5. However, hand computation using the exact same formulas
 %! # from the book produces a different value, 0.451
 %! assert( Q, [2.5 0.342 0.186; 2.5 0.451 0.362], 1e-3 );
+
+## Check that the results of qnom_nocs and qnom_cs are the same
+## for multiclass networks WITHOUT class switching.
+%!test
+%! P = zeros(2,2,2,2);
+%! P(1,1,1,2) = 0.8; P(1,2,1,1) = 1;
+%! P(2,1,2,2) = 0.9; P(2,2,2,1) = 1;
+%! S = zeros(2,2);
+%! S(1,1) = 1.5; S(1,2) = 1.2;
+%! S(2,1) = 0.8; S(2,2) = 2.5;
+%! lambda = zeros(2,2);
+%! lambda(1,1) = 1/20;
+%! lambda(2,1) = 1/30;
+%! [U1 R1 Q1 X1] = qnom(lambda, S, P); # qnom_cs
+%! [U2 R2 Q2 X2] = qnom(sum(lambda,2), S, qnomvisits(P,lambda)); # qnom_nocs
+%! assert( U1, U2, 1e-5 );
+%! assert( R1, R2, 1e-5 );
+%! assert( Q1, Q2, 1e-5 );
+%! assert( X1, X2, 1e-5 );
 
 %!demo
 %! P = zeros(2,2,2,2);
@@ -234,7 +246,19 @@ function [U R Q X] = __qnom_nocs( lambda, S, V, m )
       error( "Processing capacity exceeded at center %d", kmax );
 
   U = R = Q = X = zeros(C,K);
-  X = diag(lambda)*V; # X(c,k) = lambda(c)*V(c,k);
+
+  ## NOTE; Zahorjan et al. define the class c throughput at center k as
+  ## X(c,k) = lambda(c) * V(c,k). However, this assumes a definition of
+  ## V(c,k) that is different from what is returned by the qnomvisits()
+  ## function. The queueing package defines V(c,k) as the class c visit
+  ## _ratio_ at center k (see the documentation of the queueing package
+  ## to see the formal definition of V(c,k) as the solution of a linear
+  ## system of equations), while Zahorjan et al. define V(c,k) as the
+  ## _number of visits_ at center k. If you want to try the examples
+  ## on Zahorjan with this function, you need to scale V(c,k)
+  ## as lambda / lambda(c) * V(c,k).
+
+  X = sum(lambda)*V; # X(c,k) = lambda*V(c,k);
 
   ## Compute utilizations (for IS nodes compute also response time and
   ## queue lenghts)
@@ -322,6 +346,7 @@ function [U R Q X] = __qnom_cs( lambda, S, P, m );
       endif
     endfor
   endfor
+
   ## Adjust response times and queue lengths for FCFS queues
   k_fcfs = find(m>=1);
   for c=1:C

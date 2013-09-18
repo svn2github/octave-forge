@@ -118,12 +118,87 @@ function [U R Q X] = qnom( varargin )
   endif
 
   if ( nargin == 2 || ndims(varargin{3}) == 2 )
+
     [err lambda S V m] = qnomchkparam( varargin{:} );
-    isempty(err) || error(err);
-    [U R Q X] = __qnom_nocs( lambda, S, V, m );
+
   else
-    [U R Q X] = __qnom_cs( varargin{:} );
+
+    lambda = varargin{1};
+    ( ndims(lambda) == 2 && all( lambda(:) >= 0 ) ) || ...
+	error( "lambda must be >= 0" );
+    [C,K] = size(lambda);
+    S = varargin{2};
+    ( ndims(S) == 2 && size(S) == [C,K] ) || ...
+	error( "S size mismatch (should be [%d,%d])", C, K );
+    P = varargin{3};
+    ( ndims(P) == 4 && size(P) == [C,K,C,K] ) || ...
+	error( "P size mismatch (should be %dx%dx%dx%d)",C,K,C,K );
+    
+    V = qnomvisits(P,lambda);
+
+    if ( nargin < 4 )
+      m = ones(1,K);
+    else
+      m = varargin{4};
+      isvector(m) || ...
+          error( "m must be a vector" );
+      m = m(:)'; # make m a row vector
+      length(m) == K || ...
+          error( "m size mismatch (should be %d, is %d)", K, length(m) );
+      all(m<=1) || ...
+	  error( "IF you use parameter P, m must be <= 1");
+    endif
+
+    lambda = sum(lambda,2); # lambda(c) is the overall class c arrival rate
   endif
+
+  [C K] = size(S);
+
+  U = R = Q = X = zeros(C,K);
+
+  ## NOTE; Zahorjan et al. define the class c throughput at center k as
+  ## X(c,k) = lambda(c) * V(c,k). However, this assumes a definition of
+  ## V(c,k) that is different from what is returned by the qnomvisits()
+  ## function. The queueing package defines V(c,k) as the class c visit
+  ## _ratio_ at center k (see the documentation of the queueing package
+  ## to see the formal definition of V(c,k) as the solution of a linear
+  ## system of equations), while Zahorjan et al. define V(c,k) as the
+  ## _number of visits_ at center k. If you want to try the examples
+  ## on Zahorjan with this function, you need to scale V(c,k)
+  ## as lambda / lambda(c) * V(c,k).
+
+  X = sum(lambda)*V; # X(c,k) = lambda*V(c,k);
+
+  ## If there are M/M/k servers with k>=1, compute the maximum
+  ## processing capacity
+  m(m<1) = -1; # avoid division by zero in next line
+  rho = X .* S * diag( 1 ./ m ); # rho(c,k) = X(c,k) * S(x,k) / m(k)
+  [Umax kmax] = max( sum(rho,1) );
+  (Umax < 1) || ...
+      error( "Processing capacity exceeded at center %d", kmax );
+
+  ## Compute utilizations (for IS nodes compute also response time and
+  ## queue lenghts)
+  for k=1:K
+    for c=1:C
+      if ( m(k) > 1 ) # M/M/m-FCFS
+	[U(c,k)] = qsmmm( X(c,k), 1/S(c,k), m(k) );
+      elseif ( m(k) == 1 ) # M/M/1 or -/G/1-PS
+	[U(c,k)] = qsmm1( X(c,k), 1/S(c,k) );
+      else # -/G/inf
+  	[U(c,k) R(c,k) Q(c,k)] = qsmminf( X(c,k), 1/S(c,k) );
+      endif
+    endfor
+  endfor
+  assert( sum(U,1) < 1 ); # sanity check
+
+  ## Adjust response times and queue lengths for FCFS queues
+  k_fcfs = find(m>=1);
+  for c=1:C
+    Q(c,k_fcfs) = U(c,k_fcfs) ./ ( 1 - sum(U(:,k_fcfs),1) );
+    R(c,k_fcfs) = Q(c,k_fcfs) ./ X(c,k_fcfs); # Use Little's law
+  endfor
+
 endfunction
 %!test
 %! fail( "qnom([1 1], [.9; 1.0])", "exceeded at center 1");
@@ -221,7 +296,7 @@ endfunction
 %! rr = 1:100;
 %! Xk = zeros(2,length(rr));
 %! for r=rr
-%!   lambda(1,1) = lambda(1,2) = 1/r;
+%!   lambda(1,1) = lambda(1,2) = 1000/r;
 %!   [U R Q X] = qnom(lambda,S,P);
 %!   Xk(:,r) = sum(X,1)';
 %! endfor
@@ -229,130 +304,4 @@ endfunction
 %!      rr,Xk(2,:),";Server 2;","linewidth",2);
 %! xlabel("Class 1 interarrival time");
 %! ylabel("Throughput");
-
-##############################################################################
-## Handle open, multiclass QNs without class switching
-function [U R Q X] = __qnom_nocs( lambda, S, V, m )
-
-  [C K] = size(S);
-
-  D = S .* V;  # Service demands: D(c,k) = S(c,k) * V(c,k)
-
-  ## If there are M/M/k servers with k>=1, compute the maximum
-  ## processing capacity
-  m(m<1) = -1; # avoids division by zero in next line
-  [Umax kmax] = max(lambda * D ./ m);
-  (Umax < 1) || ...
-      error( "Processing capacity exceeded at center %d", kmax );
-
-  U = R = Q = X = zeros(C,K);
-
-  ## NOTE; Zahorjan et al. define the class c throughput at center k as
-  ## X(c,k) = lambda(c) * V(c,k). However, this assumes a definition of
-  ## V(c,k) that is different from what is returned by the qnomvisits()
-  ## function. The queueing package defines V(c,k) as the class c visit
-  ## _ratio_ at center k (see the documentation of the queueing package
-  ## to see the formal definition of V(c,k) as the solution of a linear
-  ## system of equations), while Zahorjan et al. define V(c,k) as the
-  ## _number of visits_ at center k. If you want to try the examples
-  ## on Zahorjan with this function, you need to scale V(c,k)
-  ## as lambda / lambda(c) * V(c,k).
-
-  X = sum(lambda)*V; # X(c,k) = lambda*V(c,k);
-
-  ## Compute utilizations (for IS nodes compute also response time and
-  ## queue lenghts)
-  for k=1:K
-    for c=1:C
-      if ( m(k) > 1 ) # M/M/m-FCFS
-	[U(c,k)] = qsmmm( X(c,k), 1/S(c,k), m(k) );
-      elseif ( m(k) == 1 ) # M/M/1 or -/G/1-PS
-	[U(c,k)] = qsmm1( X(c,k), 1/S(c,k) );
-      else # -/G/inf
-  	[U(c,k) R(c,k) Q(c,k)] = qsmminf( X(c,k), 1/S(c,k) );
-      endif
-    endfor
-  endfor
-  ## Adjust response times and queue lengths for FCFS queues
-  k_fcfs = find(m>=1);
-  for c=1:C
-    Q(c,k_fcfs) = U(c,k_fcfs) ./ ( 1 - sum(U(:,k_fcfs),1) );
-    R(c,k_fcfs) = Q(c,k_fcfs) ./ X(c,k_fcfs); # Use Little's law
-  endfor
-
-#{
-  i_delay  = find(m<1);
-  i_single = find(m==1);
-  U = diag(lambda)*D; # U(c,:) = lambda(c)*D(c,:);
-  
-  ## delay centers
-  R(:,i_delay) = S(:,i_delay);
-  Q(:,i_delay) = U(:,i_delay);
-
-  ## Queueing centers
-  for c=1:C
-    R(c,i_single) = S(c,i_single) ./ ( 1 - sum(U(:,i_single),1) );
-    Q(c,i_single) = U(c,i_single) ./ ( 1 - sum(U(:,i_single),1) );
-  endfor
-#}
-
-endfunction
-
-##############################################################################
-## Handle open, multiclass QNs with class switching
-function [U R Q X] = __qnom_cs( lambda, S, P, m );
-  [C K] = size(S);
-
-  if ( nargin < 3 || nargin > 4 ) 
-    print_usage();
-  endif
-
-  ( ndims(lambda) == 2 && all( lambda(:) >= 0 ) ) || ...
-      error( "lambda must be >= 0" );
-  [C,K] = size(lambda);
-  (ndims(S) == 2 && size(S) == [C,K] ) || ...
-      error( "S size mismatch (should be [%d,%d])", C, K );
-  ( ndims(P) == 4 && size(P) == [C,K,C,K] ) || ...
-      error( "P size mismatch (should be %dx%dx%dx%d)",C,K,C,K );
-
-  if ( nargin < 4 )
-    m = ones(1,K);
-  else
-    isvector(m) || ...
-        error( "m must be a vector" );
-    m = m(:)'; # make m a row vector
-    length(m) == K || ...
-        error( "m size mismatch (should be %d, is %d)", K, length(m) );
-    all(m<=1) || ...
-	error( "IF you use parameter P, m must be <= 1");
-  endif
-
-  ## FIXME: check ergodicity condition
-
-  U = R = Q = X = zeros(C,K);
-
-  A = eye(K*C) - reshape(P,[K*C K*C]);
-  b = reshape(lambda, [1,K*C]);
-  X = reshape(b/A, [C, K]);
-
-  ## Compute utilizations (for IS nodes compute also response time and
-  ## queue lenghts)
-  for k=1:K
-    for c=1:C
-      if ( m(k) == 1 ) # M/M/1 or -/G/1-PS
-	[U(c,k)] = qsmm1( X(c,k), 1/S(c,k) );
-      else # -/G/inf
-  	[U(c,k) R(c,k) Q(c,k)] = qsmminf( X(c,k), 1/S(c,k) );
-      endif
-    endfor
-  endfor
-
-  ## Adjust response times and queue lengths for FCFS queues
-  k_fcfs = find(m>=1);
-  for c=1:C
-    Q(c,k_fcfs) = U(c,k_fcfs) ./ ( 1 - sum(U(:,k_fcfs),1) );
-    R(c,k_fcfs) = Q(c,k_fcfs) ./ X(c,k_fcfs); # Use Little's law
-  endfor
-
-endfunction
 

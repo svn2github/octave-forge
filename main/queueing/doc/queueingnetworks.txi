@@ -200,7 +200,8 @@ be computed as follows:
 @table @math
 
 @item X
-System throughput, @math{X = X_1 / V_1}
+System throughput, @math{X = X_k / V_k} for any @math{k} for 
+which @math{V_k @neq{} 0}
 
 @item R
 System response time, @math{R = \sum_{k=1}^K R_k V_k}
@@ -433,7 +434,7 @@ other quantities of interest as follows:
 can be computed as
 @iftex
 @tex
-$R_s = \sum_{i=1}^K V_i R_i$
+$R_s = \sum_{k=1}^K V_i R_k$
 @end tex
 @end iftex
 @ifnottex
@@ -445,7 +446,7 @@ $R_s = \sum_{i=1}^K V_i R_i$
 in the system can be computed as:
 @iftex
 @tex
-$Q_s = \sum_{i=1}^K Q(i)$
+$Q_s = \sum_{k=1}^K Q(k)$
 @end tex
 @end iftex
 @ifnottex
@@ -846,11 +847,11 @@ $Q_c = \sum_{k=1}^K Q_{c, k}$
 Class @math{c} throughput:
 @iftex
 @tex
-$X_c = X_{c, 1} / V_{c, 1}$
+$X_c = X_{c, k} / V_{c, k}$ for any @math{k} for which @math{V_{c,k} @neq{} 0}
 @end tex
 @end iftex
 @ifnottex
-@code{Xc = X(:,1) ./ V(:,1);}
+@code{X(c) = X(c,k) ./ V(c,k);} for any @math{k} for which @code{V(c,k) @neq{} 0}
 @end ifnottex
 
 @end table

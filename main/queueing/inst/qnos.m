@@ -36,7 +36,7 @@
 ## @item Service times are exponentially distributed and
 ## load-independent; 
 ##
-## @item Service center @math{i} can consist of @code{@var{m}(i) @geq{} 1} 
+## @item Service center @math{k} can consist of @code{@var{m}(k) @geq{} 1} 
 ## identical servers.
 ##
 ## @item Routing is load-independent

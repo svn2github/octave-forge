@@ -41,14 +41,14 @@
 ## @item There exists only a single class of customers.
 ##
 ## @item The network has @math{K} service centers. Center
-## @math{i} has @math{m_i > 0} servers, and has a total (finite) capacity of
-## @math{C_i \geq m_i} which includes both buffer space and servers.
-## The buffer space at service center @math{i} is therefore
-## @math{C_i - m_i}.
+## @math{k} has @math{m_k > 0} servers, and has a total (finite) capacity of
+## @math{C_k \geq m_k} which includes both buffer space and servers.
+## The buffer space at service center @math{k} is therefore
+## @math{C_k - m_k}.
 ##
 ## @item The network can be open, with external arrival rate to
-## center @math{i} equal to 
-## @math{\lambda_i}, or closed with fixed
+## center @math{k} equal to 
+## @math{\lambda_k}, or closed with fixed
 ## population size @math{N}. For closed networks, the population size
 ## @math{N} must be strictly less than the network capacity: @math{N < \sum_i C_i}.
 ##
@@ -77,30 +77,30 @@
 ## @item lambda
 ## @itemx N
 ## If the first argument is a vector @var{lambda}, it is considered to be
-## the external arrival rate @code{@var{lambda}(i) @geq{} 0} to service center
-## @math{i} of an open network. If the first argument is a scalar, it is
+## the external arrival rate @code{@var{lambda}(k) @geq{} 0} to service center
+## @math{k} of an open network. If the first argument is a scalar, it is
 ## considered as the population size @var{N} of a closed network; in this case
 ## @var{N} must be strictly
 ## less than the network capacity: @code{@var{N} < sum(@var{C})}.
 ##
 ## @item S
-## @code{@var{S}(i)} is the average service time at service center
-## @math{i}
+## @code{@var{S}(k)} is the average service time at service center
+## @math{k}
 ##
 ## @item C
-## @code{@var{C}(i)} is the Capacity of service center @math{i}. The capacity includes both
+## @code{@var{C}(k)} is the Capacity of service center @math{k}. The capacity includes both
 ## the buffer and server space @code{@var{m}(i)}. Thus the buffer space is
-## @code{@var{C}(i)-@var{m}(i)}.
+## @code{@var{C}(k)-@var{m}(k)}.
 ##
 ## @item P
 ## @code{@var{P}(i,j)} is the transition probability from service center
 ## @math{i} to service center @math{j}.
 ##
 ## @item m
-## @code{@var{m}(i)} is the number of servers at service center
-## @math{i}. Note that @code{@var{m}(i) @geq{} @var{C}(i)} for each @var{i}.
+## @code{@var{m}(k)} is the number of servers at service center
+## @math{k}. Note that @code{@var{m}(k) @geq{} @var{C}(k)} for each @var{k}.
 ## If @var{m} is omitted, all service centers are assumed to have a
-## single server (@code{@var{m}(i) = 1} for all @math{i}).
+## single server (@code{@var{m}(k) = 1} for all @math{k}).
 ##
 ## @end table
 ##
@@ -109,26 +109,26 @@
 ## @table @var
 ##
 ## @item U
-## @code{@var{U}(i)} is the utilization of service center @math{i}.
+## @code{@var{U}(k)} is the utilization of service center @math{k}..
 ##
 ## @item R
-## @code{@var{R}(i)} is the response time on service center @math{i}.
+## @code{@var{R}(k)} is the response time on service center @math{k}.
 ##
 ## @item Q
-## @code{@var{Q}(i)} is the average number of customers in the
-## service center @math{i}, @emph{including} the request in service.
+## @code{@var{Q}(k)} is the average number of customers in the
+## service center @math{k}, @emph{including} the request in service.
 ##
 ## @item X
-## @code{@var{X}(i)} is the throughput of service center @math{i}.
+## @code{@var{X}(k)} is the throughput of service center @math{k}.
 ##
 ## @end table
 ##
 ## @quotation Note
 ##
 ## The space complexity of this implementation is
-## @math{O( \prod_{i=1}^K (C_i + 1)^2)}. The time complexity is dominated
+## @math{O( \prod_{k=1}^K (C_k + 1)^2)}. The time complexity is dominated
 ## by the time needed to solve a linear system with 
-## @math{\prod_{i=1}^K (C_i + 1)}
+## @math{\prod_{k=1}^K (C_k + 1)}
 ## unknowns.
 ##
 ## @end quotation

@@ -42,8 +42,8 @@
 ## @item S
 ## @code{@var{S}(k,n)} is the mean service time at center @math{k}
 ## where there are @math{n} requests, @math{1 @leq{} n
-## @leq{} N}. @code{@var{S}(k,n)} @math{= 1 / \mu_{k,n}},
-## where @math{\mu_{k,n}} is the service rate of center @math{k}
+## @leq{} N}. @code{@var{S}(k,n)} @math{= 1 / \mu_{k}(n)},
+## where @math{\mu_{k}(n)} is the service rate of center @math{k}
 ## when there are @math{n} requests.
 ##
 ## @item V

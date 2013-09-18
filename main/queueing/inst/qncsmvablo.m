@@ -36,13 +36,13 @@
 ## @code{0 < @var{N} < sum(@var{M})}.
 ##
 ## @item S
-## Average service time. @code{@var{S}(i)} is the average service time 
-## requested on server @math{i} (@code{@var{S}(i) > 0}).
+## Average service time. @code{@var{S}(k)} is the average service time 
+## requested on server @math{k} (@code{@var{S}(k) > 0}).
 ##
 ## @item M
-## @code{@var{M}(i)} is the capacity of center
-## @math{i}. The capacity is the maximum number of requests in a service
-## center, including the request currently in service (@code{@var{M}(i) @geq{} 1}).
+## @code{@var{M}(k)} is the capacity of center
+## @math{k}. The capacity is the maximum number of requests in a service
+## center, including the request currently in service (@code{@var{M}(k) @geq{} 1}).
 ##
 ## @item P
 ## @code{@var{P}(i,j)} is the probability that a request which completes
@@ -55,15 +55,15 @@
 ## @table @var
 ##
 ## @item U
-## @code{@var{U}(i)} is the utilization of
+## @code{@var{U}(k)} is the utilization of
 ## service center @math{i}.
 ##
 ## @item R
-## @code{@var{R}(i)} is the average response time
+## @code{@var{R}(k)} is the average response time
 ## of service center @math{i}.
 ##
 ## @item Q
-## @code{@var{Q}(i)} is
+## @code{@var{Q}(k)} is
 ## the average number of requests in service center @math{i} (including
 ## the request in service).
 ##

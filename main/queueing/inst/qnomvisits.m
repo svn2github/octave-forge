@@ -32,7 +32,7 @@
 ## is supported.
 ##
 ## @item lambda
-## @code{@var{lambda}(r,i)} is the arrival rate of class @math{r}
+## @code{@var{lambda}(r,i)} is the external arrival rate of class @math{r}
 ## requests to center @math{i}.
 ##
 ## @end table

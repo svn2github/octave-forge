@@ -107,8 +107,8 @@
 ## @end table
 ##
 ## @quotation Note on numerical stability
-## In presence of load-dependent servers (e.g., if @code{@var{m}(i)>1}
-## for some @math{i}), the MVA algorithm is known to be numerically
+## In presence of load-dependent servers (e.g., if @code{@var{m}(k)>1}
+## for some @math{k}), the MVA algorithm is known to be numerically
 ## unstable. Generally this problem manifests itself as negative
 ## response times or utilizations. This is not a problem with the
 ## @code{queueing} toolbox, but with the Mean Value Analysis algorithm,

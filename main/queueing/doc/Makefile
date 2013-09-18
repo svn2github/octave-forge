@@ -54,7 +54,8 @@ dist: $(DISTFILES)
 	ln $(DISTFILES) ../`cat ../fname`/doc/
 
 clean:
-	\rm -f *.fns *.pdf *.aux *.log *.dvi *.out *.info *.html *.ky *.tp *.toc *.vr *.cp *.fn *.pg *.op *.au *.aus *.cps x.log *~ DOCSTRINGS INSTALL $(CHAPTERS) $(FIGS_PDF) $(FIGS_EPS) $(FIGS_PNG)
+	\rm -f *.fns *.pdf *.aux *.log *.dvi *.out *.info *.html *.ky *.tp *.toc *.vr *.cp *.fn *.pg *.op *.au *.aus *.cps x.log *~ DOCSTRINGS INSTALL $(CHAPTERS) 
 
 distclean: clean
+	\rm -f $(FIGS_PDF) $(FIGS_EPS) $(FIGS_PNG)
 

@@ -26,7 +26,7 @@
 ## customers, for a closed multiclass Queueing Network with population
 ## vector @var{N}. More specifically, given a multiclass Queueing
 ## Network with @math{C} customer classes, such that there are
-## @code{@var{N}(i)} requests of class @math{i}, a
+## @code{@var{N}(c)} requests of class @math{c}, a
 ## @math{k}-mix @var{mix} is a @math{C}-dimensional vector with the
 ## following properties:
 ##
@@ -50,7 +50,7 @@
 ## Total population size of the requested mix. @var{k} must be a nonnegative integer
 ##
 ## @item N
-## @code{@var{N}(i)} is the number of class @math{i} requests.
+## @code{@var{N}(c)} is the number of class @math{c} requests.
 ## The condition @code{@var{k} @leq{} sum(@var{N})} must hold.
 ## 
 ## @end table
@@ -60,7 +60,7 @@
 ## @table @var
 ##
 ## @item pop_mix
-## @code{@var{pop_mix}(i,j)} is the number of class @math{j} requests
+## @code{@var{pop_mix}(i,c)} is the number of class @math{c} requests
 ## in the @math{i}-th population mix. The number of
 ## population mixes is @code{rows( @var{pop_mix} ) }.
 ##

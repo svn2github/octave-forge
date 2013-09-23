@@ -1,4 +1,4 @@
-## Copyright (C) 2010,2011,2012 ,2013Philip Nienhuis, prnienhuis at users.sf.net
+## Copyright (C) 2010,2011,2012 ,2013 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -15,12 +15,12 @@
 
 ## __POI_getusedrange__ - get range of occupied data cells from Excel using java/POI
 
-## Author: Philip <Philip@DESKPRN>
+## Author: Philip Nienhuis <prnienhuis at users.sf.net>
 ## Created: 2010-03-20
 ## Updates:
 ## 2012-10-12 Renamed & moved into ./private
 ## 2012-10-24 Style fixes
-## 2013-09-23 Check getFirstCellNum method return value for empty row
+## 2013-09-23 Check getFirstCellNum method return value for empty rows
 
 function [ trow, brow, lcol, rcol ] = __POI_getusedrange__ (xls, ii)
 

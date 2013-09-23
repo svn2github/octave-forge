@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012 by Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012,2013 by Philip Nienhuis <prnienhuis at users.sf.net>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -145,14 +145,12 @@
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-03-07 Updated texinfo help header
 ## 2012-10-24 Style fixes
+## 2013-09-24 Drop requirement of having at least one output arg
 
 function [ numarr, txtarr, rawarr, lims ] = xlsread (fn, wsh, datrange, reqintf=[])
 
 	rstatus = 0;
 
-	if (nargout < 1)
-		usage ("xlsread: no output argument(s) specified that should receive data");
-	endif
 	if (nargin < 1) 
 		error ("xlsread: no input arguments specified") 
 		numarr = []; txtarr={}; rawarr = {};

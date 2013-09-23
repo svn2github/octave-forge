@@ -120,14 +120,12 @@
 ## 2012-03-07 Updated texinfo help text
 ## 2012-06-08 Tabs replaced by double space
 ## 2012-10-24 Style fixes
+## 2013-09-24 Drop requirement of having at least one output arg
 
 function [ numarr, txtarr, rawarr, lim ] = odsread (filename, wsh=1, datrange=[], reqintf=[])
 
   if (nargin < 1 || isempty (findstr (".ods", tolower (filename))))
     usage ("odsread: at least a filename incl. suffix is needed");
-  endif
-  if (nargout < 1)
-    usage ("odsread: no output argument(s) specified");
   endif
 
   ods = odsopen (filename, 0, reqintf);

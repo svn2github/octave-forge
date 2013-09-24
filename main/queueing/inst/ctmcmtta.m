@@ -95,9 +95,9 @@ endfunction
 %! fail( "ctmcmtta(Q,[1 0 0])", "infinitesimal");
 
 %!test
-%! Q = [ 0 0.1 0 0; \
-%!       0.9 0 0.1 0; \
-%!       0 0.9 0 0.1; \
+%! Q = [ 0 0.1 0 0; ...
+%!       0.9 0 0.1 0; ...
+%!       0 0.9 0 0.1; ...
 %!       0 0 0 0 ];
 %! Q -= diag( sum(Q,2) );
 %! assert( ctmcmtta( Q,[0 0 0 1] ), 0 ); # state 4 is absorbing

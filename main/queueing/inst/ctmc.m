@@ -223,7 +223,7 @@ endfunction
 %! assert( 1-sum(q(7:9)), 0.3901, 1e-4 );
 
 %!demo
-%! Q = [ -1  1; \
+%! Q = [ -1  1; ...
 %!        1 -1  ];
 %! q = ctmc(Q)
 
@@ -237,9 +237,9 @@ endfunction
 %!   pp(:,i) = ctmc(Q,T(i),[1 0]);
 %! endfor
 %! ss = ctmc(Q); # compute steady state probabilities
-%! plot( T, pp(1,:), "b;p_0(t);", "linewidth", 2, \
-%!       T, ss(1)*ones(size(T)), "b;Steady State;", \
-%!       T, pp(2,:), "r;p_1(t);", "linewidth", 2, \
+%! plot( T, pp(1,:), "b;p_0(t);", "linewidth", 2, ...
+%!       T, ss(1)*ones(size(T)), "b;Steady State;", ...
+%!       T, pp(2,:), "r;p_1(t);", "linewidth", 2, ...
 %!       T, ss(2)*ones(size(T)), "r;Steady State;" );
 %! xlabel("Time");
 
@@ -258,10 +258,10 @@ endfunction
 %! g = 1/(5000*hour); # 1/g = processor MTTF (5000 hours)
 %! d = 1/(4*hour);    # 1/d = processor MTTR (4 hours)
 %! c = 0.9;           # coverage
-%! Q = [ -2*g 2*c*g 2*(1-c)*g      0  0 ; \
-%!          0    -b         0      b  0 ; \
-%!          0     0        -a      a  0 ; \
-%!          d     0         0 -(g+d)  g ; \
+%! Q = [ -2*g 2*c*g 2*(1-c)*g      0  0 ; ...
+%!          0    -b         0      b  0 ; ...
+%!          0     0        -a      a  0 ; ...
+%!          d     0         0 -(g+d)  g ; ...
 %!          0     0         0      d -d];
 %! p = ctmc(Q);
 %! assert( p, [0.9983916, 0.000002995, 0.0000066559, 0.00159742, 0.0000012779], 1e-6 );
@@ -285,10 +285,10 @@ endfunction
 %! g = 1/(5000*hour); # 1/g = processor MTTF (5000 hours)
 %! d = 1/(4*hour);    # 1/d = processor MTTR (4 hours)
 %! c = 0.9;           # coverage
-%! Q = [ -2*g 2*c*g 2*(1-c)*g      0  0; \
-%!          0    -b         0      b  0; \
-%!          0     0        -a      a  0; \
-%!          d     0         0 -(g+d)  g; \
+%! Q = [ -2*g 2*c*g 2*(1-c)*g      0  0; ...
+%!          0    -b         0      b  0; ...
+%!          0     0        -a      a  0; ...
+%!          d     0         0 -(g+d)  g; ...
 %!          0     0         0      d -d];
 %! p = ctmc(Q);
 %! A = p(1) + p(4); 

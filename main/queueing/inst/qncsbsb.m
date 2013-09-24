@@ -85,44 +85,6 @@ function [Xl Xu Rl Ru] = qncsbsb( varargin )
     print_usage();
   endif
 
-#{
-  ( isscalar(N) && N > 0 ) || \
-      error( "N must be a positive integer" );
-  (isvector(S) && length(S)>0) || \
-      error( "S/D must be a nonempty vector" );
-  all(S>=0) || \
-      error( "S/D must contain nonnegative values");
-  S = S(:)';
-  K = length(S);
-
-  if ( nargin < 3 || isempty(V) )
-    D = S;
-  else
-    (isvector(V) && length(V) == K) || \
-	error( "V must be a vector with %d elements", K );
-    all(V>=0) || \
-	error( "V must contain nonnegative values" );
-    V = V(:)';
-    D = S .* V;
-  endif
-
-  if ( nargin < 4 || isempty(m) )
-    ## not used
-  else
-    (isvector(m) && length(m) == K) || \
-	error( "m must be a vector with %d elements", K );
-    all(m==1) || \
-	error( "this function supports M/M/1 servers only" );
-  endif
-
-  if ( nargin < 5 || isempty(Z) )
-    Z = 0;
-  else
-    ( isscalar(Z) && Z >= 0 ) || \
-        error( "Z must be a nonnegative scalar" );
-  endif
-#}
-
   [err N S V m Z] = qncschkparam( varargin{:} );
   isempty(err) || error(err);
 

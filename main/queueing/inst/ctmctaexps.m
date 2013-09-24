@@ -82,9 +82,9 @@ function M = ctmctaexps( Q, varargin )
   M = L ./ repmat(sum(L,2),1,columns(L));
 endfunction
 %!test
-%! Q = [ 0 0.1 0 0; \
-%!       0.9 0 0.1 0; \
-%!       0 0.9 0 0.1; \
+%! Q = [ 0 0.1 0 0; ...
+%!       0.9 0 0.1 0; ...
+%!       0 0.9 0 0.1; ...
 %!       0 0 0 0 ];
 %! Q -= diag( sum(Q,2) );
 %! M = ctmctaexps(Q, [1 0 0 0]);
@@ -104,9 +104,9 @@ endfunction
 %!   M(i,:) = ctmctaexps(Q,t(i),p);
 %! endfor
 %! clf;
-%! plot(t, M(:,1), ";State 1;", "linewidth", 2, \
-%!      t, M(:,2), ";State 2;", "linewidth", 2, \
-%!      t, M(:,3), ";State 3;", "linewidth", 2, \
+%! plot(t, M(:,1), ";State 1;", "linewidth", 2, ...
+%!      t, M(:,2), ";State 2;", "linewidth", 2, ...
+%!      t, M(:,3), ";State 3;", "linewidth", 2, ...
 %!      t, M(:,4), ";State 4 (absorbing);", "linewidth", 2 );
 %! legend("location","east");
 %! xlabel("Time");
@@ -127,10 +127,10 @@ endfunction
 %! g = 1/(5000*hour); # 1/g = processor MTTF (5000 hours)
 %! d = 1/(4*hour);    # 1/d = processor MTTR (4 hours)
 %! c = 0.9;           # coverage
-%! Q = [ -2*g 2*c*g 2*(1-c)*g      0  0; \
-%!          0    -b         0      b  0; \
-%!          0     0        -a      a  0; \
-%!          d     0         0 -(g+d)  g; \
+%! Q = [ -2*g 2*c*g 2*(1-c)*g      0  0; ...
+%!          0    -b         0      b  0; ...
+%!          0     0        -a      a  0; ...
+%!          d     0         0 -(g+d)  g; ...
 %!          0     0         0      d -d];
 %! p = ctmc(Q);
 %! printf("System availability: %f\n",p(1)+p(4));
@@ -145,8 +145,8 @@ endfunction
 %!   Abart(n) = PP(n,1) + PP(n,4); # interval base availability
 %! endfor
 %! clf;
-%! semilogy(TT,A,";Steady-state;", \
-%!      TT,At,";Instantaneous;", \
+%! semilogy(TT,A,";Steady-state;", ...
+%!      TT,At,";Instantaneous;", ...
 %!      TT,Abart,";Interval base;");
 %! ax = axis();
 %! ax(3) = 1-1e-5;

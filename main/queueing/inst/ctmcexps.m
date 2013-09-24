@@ -163,9 +163,9 @@ endfunction
 %! for i=1:length(t)
 %!   L(i,:) = ctmcexps(Q,t(i),p0);
 %! endfor
-%! plot( t, L(:,1), ";State 1;", "linewidth", 2, \
-%!       t, L(:,2), ";State 2;", "linewidth", 2, \
-%!       t, L(:,3), ";State 3;", "linewidth", 2, \
+%! plot( t, L(:,1), ";State 1;", "linewidth", 2, ...
+%!       t, L(:,2), ";State 2;", "linewidth", 2, ...
+%!       t, L(:,3), ";State 3;", "linewidth", 2, ...
 %!       t, L(:,4), ";State 4;", "linewidth", 2 );
 %! legend("location","northwest");
 %! xlabel("Time");

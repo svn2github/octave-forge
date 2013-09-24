@@ -117,7 +117,7 @@ function [Xl Xu Rl Ru] = qncmcb( varargin )
 endfunction
 
 %!demo
-%! S = [10 7 5 4; \
+%! S = [10 7 5 4; ...
 %!      5  2 4 6];
 %! NN=20;
 %! Xl = Xu = Xmva = zeros(NN,2);
@@ -129,11 +129,11 @@ endfunction
 %!   Xmva(n,:) = X(:,1)';
 %! endfor
 %! subplot(2,1,1);
-%! plot(1:NN,Xl(:,1),"linewidth", 2, 1:NN,Xu(:,1),"linewidth", 2, \
+%! plot(1:NN,Xl(:,1),"linewidth", 2, 1:NN,Xu(:,1),"linewidth", 2, ...
 %!      1:NN,Xmva(:,1),";MVA;");
 %! title("Class 1 throughput");
 %! subplot(2,1,2);
-%! plot(1:NN,Xl(:,2),"linewidth", 2, 1:NN,Xu(:,2), "linewidth", 2,\
+%! plot(1:NN,Xl(:,2),"linewidth", 2, 1:NN,Xu(:,2), "linewidth", 2,...
 %!      1:NN,Xmva(:,2),";MVA;");
 %! title("Class 2 throughput");
 %! xlabel("Number of class 1 requests");

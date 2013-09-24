@@ -637,15 +637,15 @@ endfunction
 %! P(2,3,2,1) = P(2,4,2,1) = P(2,5,2,1) = P(2,6,2,1) = .05;
 %! P(2,3,2,2) = P(2,4,2,2) = P(2,5,2,2) = P(2,6,2,2) = .95;
 %! N = [40 4];
-%! S = [ 5.0 .010 .035 .035 .035 .035; \
+%! S = [ 5.0 .010 .035 .035 .035 .035; ...
 %!      10.0 .100 .035 .035 .035 .035 ];
 %! V = qncmvisits(P);
 %! [U R Q X] = qncmmva(N, S, V, [-1 1 1 1 1 1]);
 %! # FIXME: The results below were computed with JMVA; the numbers
 %! # in the paper are different (wrong?!?)!!
-%! assert( U, [39.457941 0.087684 0.076724 0.076724 0.076724 0.076724; \
+%! assert( U, [39.457941 0.087684 0.076724 0.076724 0.076724 0.076724; ...
 %!              2.772704 0.554541 0.048522 0.048522 0.048522 0.048522 ], 1e-5 );
-%! assert( R.*V, [5 0.024363 0.011081 0.011081 0.011081 0.011081; \
+%! assert( R.*V, [5 0.024363 0.011081 0.011081 0.011081 0.011081; ...
 %!                10 3.636155 0.197549 0.197549 0.197549 0.197549 ], 1e-5 );
 %! assert( Q(:,1), [39.457941 2.772704]', 1e-5 );
 %! assert( Q(:,2), [0.192262 1.008198]', 1e-5 );
@@ -690,7 +690,7 @@ endfunction
 %! # Define population and service times
 %! 
 %! N = [3 2];
-%! S = [0.01 0.09 0.10 0.08; \
+%! S = [0.01 0.09 0.10 0.08; ...
 %!      0.05 0.09 0.10 0.08];
 %! [U1 R1 Q1 X1] = qncmmva(N,S,V); # this invokes __qncmmva_nocs
 %! [U2 R2 Q2 X2] = qncmmva(N,S,P); # this invokes __qncmmva_cs
@@ -742,7 +742,7 @@ endfunction
 ## University, feb 15, 1982.
 %!test
 %! C = 2; K = 3;
-%! S = [.01 .07 .10; \
+%! S = [.01 .07 .10; ...
 %!      .05 .07 .10 ];
 %! P = zeros(C,K,C,K);
 %! P(1,1,1,2) = .7;
@@ -769,19 +769,19 @@ endfunction
 ## below have been computed using the multiclass MVA implementation of
 ## JMT (http://jmt.sourceforge.net/)
 %!test
-%! V = [ 1.00 0.45 0.50 0.00; \
+%! V = [ 1.00 0.45 0.50 0.00; ...
 %!       1.00 0.00 0.50 0.49 ];
 %! N = [3 2];
-%! S = [0.01 0.09 0.10 0.08; \
+%! S = [0.01 0.09 0.10 0.08; ...
 %!      0.05 0.09 0.10 0.08];
 %! [U R Q X] = qncmmva(N, S, V);
-%! assert( U, [ 0.1215 0.4921 0.6075 0.0000; \
+%! assert( U, [ 0.1215 0.4921 0.6075 0.0000; ...
 %!              0.3433 0.0000 0.3433 0.2691 ], 1e-4 );
-%! assert( Q, [ 0.2131 0.7539 2.0328 0.0000; \
+%! assert( Q, [ 0.2131 0.7539 2.0328 0.0000; ...
 %!              0.5011 0.0000 1.1839 0.3149 ], 1e-4 );
-%! assert( R.*V, [0.0175 0.0620 0.1672 0.0000; \
+%! assert( R.*V, [0.0175 0.0620 0.1672 0.0000; ...
 %!                0.0729 0.0000 0.1724 0.0458 ], 1e-4 );
-%! assert( X, [12.1517 5.4682 6.0758 0.0000; \
+%! assert( X, [12.1517 5.4682 6.0758 0.0000; ...
 %!              6.8669 0.0000 3.4334 3.3648 ], 1e-4 );
 
 
@@ -792,7 +792,7 @@ endfunction
 %!demo
 %! Ntot = 100; # total population size
 %! b = linspace(0.1,0.9,10); # fractions of class-1 requests
-%! S = [20 80 31 14 23 12; \
+%! S = [20 80 31 14 23 12; ...
 %!      90 30 33 20 14 7];
 %! V = ones(size(S));
 %! X1 = X1 = XX = zeros(size(b));
@@ -809,14 +809,14 @@ endfunction
 %!   RR(i) = Ntot / XX(i);
 %! endfor
 %! subplot(2,1,1);
-%! plot(b, X1, "linewidth", 2, \
-%!      b, X2, "linewidth", 2, \
+%! plot(b, X1, "linewidth", 2, ...
+%!      b, X2, "linewidth", 2, ...
 %!      b, XX, "linewidth", 2 );
 %! legend("location","south");
 %! ylabel("Throughput");
 %! subplot(2,1,2);
-%! plot(b, R1, ";Class 1;", "linewidth", 2, \
-%!      b, R2, ";Class 2;", "linewidth", 2, \
+%! plot(b, R1, ";Class 1;", "linewidth", 2, ...
+%!      b, R2, ";Class 2;", "linewidth", 2, ...
 %!      b, RR, ";System;", "linewidth", 2 );
 %! legend("location","south");
 %! xlabel("Population mix \\beta for Class 1");
@@ -839,7 +839,7 @@ endfunction
 ## University, feb 15, 1982.
 %!demo
 %! C = 2; K = 3;
-%! S = [.01 .07 .10; \
+%! S = [.01 .07 .10; ...
 %!      .05 .07 .10 ];
 %! P = zeros(C,K,C,K);
 %! P(1,1,1,2) = .7; P(1,1,1,3) = .2; P(1,1,2,1) = .1;

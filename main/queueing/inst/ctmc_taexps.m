@@ -39,9 +39,9 @@ function M = ctmc_taexps( varargin )
   M = ctmctaexps( varargin{:} );
 endfunction
 %!test
-%! Q = [ 0 0.1 0 0; \
-%!       0.9 0 0.1 0; \
-%!       0 0.9 0 0.1; \
+%! Q = [ 0 0.1 0 0; ...
+%!       0.9 0 0.1 0; ...
+%!       0 0.9 0 0.1; ...
 %!       0 0 0 0 ];
 %! Q -= diag( sum(Q,2) );
 %! M = ctmc_taexps(Q, [1 0 0 0]);

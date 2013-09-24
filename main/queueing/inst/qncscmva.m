@@ -194,9 +194,9 @@ endfunction
 
 %!test
 %! N=5;
-%! S = [1 1 1 1 1; \
-%!      1 1 1 1 1; \
-%!      1 1 1 1 1; \
+%! S = [1 1 1 1 1; ...
+%!      1 1 1 1 1; ...
+%!      1 1 1 1 1; ...
 %!      1 1/2 1/3 1/4 1/5];
 %! V = [1 1 1 1];
 %! [U1 R1 Q1 X1] = qncscmva( N, S(1:3,1), S(4,:), V );
@@ -208,9 +208,9 @@ endfunction
 
 %!test
 %! N=5;
-%! S = [1 1 1 1 1; \
-%!      1 1 1 1 1; \
-%!      1 1 1 1 1; \
+%! S = [1 1 1 1 1; ...
+%!      1 1 1 1 1; ...
+%!      1 1 1 1 1; ...
 %!      1 1/2 1/3 1/4 1/5];
 %! V = [1 2 1 1];
 %! Z = 3;
@@ -241,8 +241,8 @@ endfunction
 %!   Rcmva(N) = R(1);
 %! endfor
 %! warning(old.state,"qn:numerical-instability");
-%! plot(1:maxN, Rmva, ";MVA;", \
-%!      1:maxN, Rconv, ";Convolution;", \
+%! plot(1:maxN, Rmva, ";MVA;", ...
+%!      1:maxN, Rconv, ";Convolution;", ...
 %!      1:maxN, Rcmva, ";CNVA;", "linewidth",2);
 %! xlabel("Population size (N)");
 %! ylabel("Response Time");

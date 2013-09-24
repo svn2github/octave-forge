@@ -86,9 +86,9 @@ endfunction
 %!   X_mva(n) = X(1)/V(1);
 %! endfor
 %! close all;
-%! plot(1:N, X_ab_lower,"g;Asymptotic Bounds;", \
-%!      1:N, X_bsb_lower,"k;Balanced System Bounds;", \
-%!      1:N, X_mva,"b;MVA;", "linewidth", 2, \
+%! plot(1:N, X_ab_lower,"g;Asymptotic Bounds;", ...
+%!      1:N, X_bsb_lower,"k;Balanced System Bounds;", ...
+%!      1:N, X_mva,"b;MVA;", "linewidth", 2, ...
 %!      1:N, X_bsb_upper,"k", 1:N, X_ab_upper,"g" );
 %! axis([1,N,0,1]); legend("location","southeast");
 %! xlabel("Number of Requests n"); ylabel("System Throughput X(n)");

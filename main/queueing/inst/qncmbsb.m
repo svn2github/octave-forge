@@ -128,7 +128,7 @@ endfunction
 %! assert( all(Ru(:) == 0) );
 
 %!demo
-%! S = [10 7 5 4; \
+%! S = [10 7 5 4; ...
 %!      5  2 4 6];
 %! NN=20;
 %! Xl = Xu = Rl = Ru = Xmva = Rmva = zeros(NN,2);

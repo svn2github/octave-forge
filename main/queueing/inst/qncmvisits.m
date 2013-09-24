@@ -187,7 +187,7 @@ endfunction
 %! ## http://docs.lib.purdue.edu/cgi/viewcontent.cgi?article=1285&context=cstech
 %!
 %! C = 2; K = 3;
-%! S = [.01 .07 .10; \
+%! S = [.01 .07 .10; ...
 %!      .05 0.7 .10 ];
 %! P = zeros(C,K,C,K);
 %! P(1,1,1,2) = .7;

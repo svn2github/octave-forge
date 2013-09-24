@@ -304,7 +304,7 @@ function [U R Q X] = __qnsolve_closed_single( N, QQ, V, Z )
   ## Initialize vectors
   i_single = i_multi = i_delay = i_ld = [];
   for i=1:K
-    ( QQ{i}.c == 1 ) || \
+    ( QQ{i}.c == 1 ) || ...
 	error( "Multiclass networks are not supported by this function" );
     if __is_li(QQ{i})
       i_single = [i_single i];
@@ -748,9 +748,9 @@ endfunction
 
 %!test
 %! # Example 7.4 p. 287 Bolch et al.
-%! QQ = { qnmknode( "m/m/m-fcfs", 0.04 ), \
-%!        qnmknode( "m/m/m-fcfs", 0.03 ), \
-%!        qnmknode( "m/m/m-fcfs", 0.06 ), \
+%! QQ = { qnmknode( "m/m/m-fcfs", 0.04 ), ...
+%!        qnmknode( "m/m/m-fcfs", 0.03 ), ...
+%!        qnmknode( "m/m/m-fcfs", 0.06 ), ...
 %!        qnmknode( "m/m/m-fcfs", 0.05 ) };
 %! P = [ 0 0.5 0.5 0; 1 0 0 0; 0.6 0 0 0; 1 0 0 0 ];
 %! lambda = [0 0 0 4];
@@ -774,8 +774,8 @@ endfunction
 
 ## Example 9.5 p. 337, Bolch et al.
 %!test
-%! QQ = { qnmknode( "m/m/m-fcfs", [0.2; 0.2], 2 ), \
-%!        qnmknode( "-/g/1-ps", [0.4; 0.6] ), \
+%! QQ = { qnmknode( "m/m/m-fcfs", [0.2; 0.2], 2 ), ...
+%!        qnmknode( "-/g/1-ps", [0.4; 0.6] ), ...
 %!        qnmknode( "-/g/inf", [1; 2] ) };
 %! V = [ 1 0.6 0.4; 1 0.3 0.7 ];
 %! N = [ 2 1 ];
@@ -787,8 +787,8 @@ endfunction
 
 ## Same as above, but with general load-dependent centers
 %!test
-%! QQ = { qnmknode( "m/m/m-fcfs", [0.2 0.1 0.1; 0.2 0.1 0.1] ), \
-%!        qnmknode( "-/g/1-ps", [0.4; 0.6] ), \
+%! QQ = { qnmknode( "m/m/m-fcfs", [0.2 0.1 0.1; 0.2 0.1 0.1] ), ...
+%!        qnmknode( "-/g/1-ps", [0.4; 0.6] ), ...
 %!        qnmknode( "-/g/inf", [1; 2] ) };
 %! V = [ 1 0.6 0.4; 1 0.3 0.7 ];
 %! N = [ 2 1 ];
@@ -811,10 +811,10 @@ endfunction
 %! assert( [R(1,1) R(2,1) R(2,2)], [1.201 0.885 0.135], 1e-3 );
 
 %!demo
-%! QQ = { qnmknode( "m/m/m-fcfs", [0.2 0.1 0.1; 0.2 0.1 0.1] ), \
-%!        qnmknode( "-/g/1-ps", [0.4; 0.6] ), \
+%! QQ = { qnmknode( "m/m/m-fcfs", [0.2 0.1 0.1; 0.2 0.1 0.1] ), ...
+%!        qnmknode( "-/g/1-ps", [0.4; 0.6] ), ...
 %!        qnmknode( "-/g/inf", [1; 2] ) };
-%! V = [ 1 0.6 0.4; \
+%! V = [ 1 0.6 0.4; ...
 %!       1 0.3 0.7 ];
 %! N = [ 2 1 ];
 %! [U R Q X] = qnsolve( "closed", N, QQ, V );

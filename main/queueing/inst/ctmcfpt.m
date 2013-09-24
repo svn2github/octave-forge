@@ -101,8 +101,8 @@ function result = ctmcfpt( Q, i, j )
   endif
 endfunction
 %!demo
-%! Q = [ -1.0  0.9  0.1; \
-%!        0.1 -1.0  0.9; \
+%! Q = [ -1.0  0.9  0.1; ...
+%!        0.1 -1.0  0.9; ...
 %!        0.9  0.1 -1.0 ];
 %! M = ctmcfpt(Q)
 %! m = ctmcfpt(Q,1,3)

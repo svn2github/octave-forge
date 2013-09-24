@@ -220,7 +220,7 @@ endfunction
 %! p = [0 0 0]; # initialize p
 %! # Compute the probability to have k(i) jobs at service center i
 %! for i=1:3
-%!   p(i) = (V(i)*S(i))^k(i) / G(K+1) * \
+%!   p(i) = (V(i)*S(i))^k(i) / G(K+1) * ...
 %!          (G(K-k(i)+1) - V(i)*S(i)*G(K-k(i)) );
 %!   printf("k(%d)=%d prob=%f\n", i, k(i), p(i) );
 %! endfor

@@ -292,15 +292,15 @@ endfunction
 %! P(1,1,2,1) = P(1,2,2,1) = 0.2;
 %! P(1,1,2,2) = P(2,2,2,2) = 0.8;
 %! S(1,1) = S(1,2) = 0.1;
-%! S(2,1) = S(2,2) = 0.03;
+%! S(2,1) = S(2,2) = 0.05;
 %! rr = 1:100;
 %! Xk = zeros(2,length(rr));
 %! for r=rr
-%!   lambda(1,1) = lambda(1,2) = 1000/r;
+%!   lambda(1,1) = lambda(1,2) = 1/r;
 %!   [U R Q X] = qnom(lambda,S,P);
 %!   Xk(:,r) = sum(X,1)';
 %! endfor
-%! plot(rr,Xk(1,:),";Server 1;","linewidth",2, \
+%! plot(rr,Xk(1,:),";Server 1;","linewidth",2, ...
 %!      rr,Xk(2,:),";Server 2;","linewidth",2);
 %! xlabel("Class 1 interarrival time");
 %! ylabel("Throughput");

@@ -126,8 +126,8 @@ endfunction
 %! endfor
 
 %!demo
-%! P = [0 0.3 0.7; \
-%!      1 0   0  ; \
+%! P = [0 0.3 0.7; ...
+%!      1 0   0  ; ...
 %!      1 0   0  ];
 %! V = qncsvisits(P)
 

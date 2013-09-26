@@ -1,31 +1,32 @@
 CONTENTS:
 
+--------------------
+1) INSTALLATION INSTRUCTIONS
+
+2) ORIGINAL README
+--------------------
+
 1) INSTALLATION INSTRUCTIONS
 
 The makefile included derives all the info it needs for building the code 
-from running mpicc, so make sure that mpicc is in your path before running Octave
+from running mpic++, so make sure that mpicc is in your path before running Octave
 or type 
 
-putenv ("PATH", "/path/to/mpicc:${PATH}")
+putenv ("PATH", "/path/to/mpic++:${PATH}")
 
 from within Octave.
 Once this is done you should be able to install openmpi_ext from a locally dowloaded tarball
 by doing:
 
-pkg install openmpi_ext-<version>.tar.gz
+pkg install mpi-<version>.tar.gz
 
 or directly from the ftp server by doing
 
-pkg install -forge openmpi_ext
+pkg install -forge mpi
 
 
 2) ORIGINAL README
 
---------------------
-
-1) INSTALLATION INSTRUCTIONS
-
-2) ORIGINAL README
 
 Below are the contents of the original README file included with the first release
 by R. Corradini, I am not sure all the info there still make sense but they are still

@@ -6,6 +6,8 @@ Maintainer: the Octave Community
 Title: mpi
 Description: MPI functions for parallel computing using simple MPI Derived Datatypes.
 Depends: octave (>= 3.6.4)
+SystemRequirements: mpi
+BuildRequires: mpi
 Autoload: no
 License: GPLv3+
 Url: http://octave.sf.net

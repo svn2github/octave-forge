@@ -7,8 +7,21 @@ io-1.2.4   Release Date: 2013-TBA   Release Manager: Philip Nienhuis
 --- xlsopen.m: Undue fallback to JXL for OOXML files hopefully fixed now
        ''      Misinformation in error message about unsupported OXS & UNO fixed
 
+--- private/__POI_getusedrange__.m: Check return value of XSSF getFirstCellNum
+    method
+
 *** xlsopen.m: suffixes for Excel filenames (.xls, .xlsx) need not be specified. 
                (But the files on disk do need these suffixes!)
+
+*** odsread.m, xlsread.m: No output arg required (output is sent to terminal
+                          if not ouput args specified)
+       ''          ''     Check if filename is a text string
+
+*** odsopen: Relax requirement of lower case filename extension
+
+*** Added !experimental! OCT (native Octave) interface for reading .ods
+
+*** getxmlattv.m, getxmlnode.m: new functions for support of OCT interface
 
 ===============================================================================
 io-1.2.3   Release Date: 2013-08-15   Release Manager: Philip Nienhuis

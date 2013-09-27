@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <pr.nienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -100,7 +100,7 @@
 ##
 ## @end deftypefn
 
-## Author: Philip Nienhuis
+## Author: Philip Nienhuis <pr.nienhuis at users.sf.net>
 ## Created: 2009-12-13
 ## Updates:
 ## 2009-12-30 First working version
@@ -125,6 +125,8 @@
 ##     ''     Replaced tabs by double space
 ## 2012-10-12 Moved all interface-specific subfubcs into ./private
 ## 2012-10-24 Style fixes
+## 2013-09-09 Native Octave interface ("OCT") for reading
+## 2013-09-23 Updated copyright messages
 ##
 ## Latest subfunc update: 2012-10-12
 
@@ -183,7 +185,10 @@ function [ rawarr, ods, rstatus ] = ods2oct (ods, wsh=1, datrange=[], spsh_opts=
   elseif (strcmp (ods.xtype, "UNO"))
     ## Read ods file tru Java & UNO
     [rawarr, ods] = __UNO_spsh2oct__ (ods, wsh, datrange, spsh_opts);
-  ##elseif 
+  elseif (strcmp (ods.xtype, "OCT"))
+    ## Read ods file tru native Octave
+    [rawarr, ods] = __OCT_ods2oct__ (ods, wsh, datrange, spsh_opts);
+  ##elseif
   ##  ---- < Other interfaces here >
   else
     error (sprintf ("ods2oct: unknown OpenOffice.org .ods interface - %s.", ods.xtype));

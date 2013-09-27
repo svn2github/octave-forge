@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -37,9 +37,9 @@
 ## spreadsheet has to be parsed to get the sheet names, let alone exploring
 ## used data ranges.
 ##
-## By specifying a value of 'jod', 'otk' or 'uno' for @var{reqintf} the automatic
-## selection of the java interface is bypassed and the specified interface
-## will be used (if at all present).
+## By specifying a value of 'jod', 'otk', 'uno' or 'oct' for @var{reqintf} the
+## automatic selection of the java interface is bypassed and the specified
+## interface will be used (if at all present).
 ##
 ## Examples:
 ##
@@ -79,6 +79,8 @@
 ## 2012-06-08 Support for odfdom-0.8.8-incubator
 ## 2012-10-12 Moved all interface-specific code into ./private subfuncs
 ## 2012-10-24 Style fixes
+## 2013-09-09 Native Octave interface ("OCT") for reading
+## 2013-09-23 Header updated to OCT interface
 
 function [ filetype, sh_names ] = odsfinfo (filename, reqintf=[])
 
@@ -104,6 +106,9 @@ function [ filetype, sh_names ] = odsfinfo (filename, reqintf=[])
       
     elseif (strcmp (ods.xtype, "UNO"))
       [sh_names] = __UNO_spsh_info__ (ods);
+
+    elseif (strcmp (ods.xtype, "OCT"))
+      [sh_names] = __OCT_spsh_info__ (ods);
 
     else
       ## Below error will have been catched in odsopen() above

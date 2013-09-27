@@ -22,11 +22,12 @@
 ## Read data contained from cell range @var{range} in worksheet @var{wsh}
 ## in OpenOffice_org Calc spreadsheet file @var{filename}.
 ##
-## You need the octave-forge java package (> 1.2.6) and one or both of
-## jopendocument-<version>.jar or preferrably: (odfdom.jar (versions
-## 0.7.5 or 0.8.6+) & xercesImpl.jar v. 2.9.1) in your javaclasspath.
-## There is also experimental support invoking OpenOffice.org or clones
-## through Java/UNO bridge.
+## For writing data you need the octave-forge java package (> 1.2.8)
+## and one or both of jopendocument-<version>.jar or preferrably:
+## (odfdom.jar (versions 0.7.5 or 0.8.6+) & xercesImpl.jar v. 2.9.1) in
+## your javaclasspath. There is also experimental support invoking
+## OpenOffice.org or clones through Java/UNO bridge.
+## A native Octave interface (OCT) is available for reading data.
 ##
 ## Return argument @var{numarr} contains the numeric data, optional
 ## return arguments @var{txtarr} and @var{rawarr} contain text strings
@@ -61,7 +62,8 @@
 ## The optional last argument @var{reqintf} can be used to override 
 ## the automatic selection by odsread of one interface out of the
 ## supported ones: Java/ODFtoolkit ('OTK'), Java/jOpenDocument 
-## ('JOD') or Java/UNO bridge ('UNO').
+## ('JOD'), Java/UNO bridge ('UNO'), or native Octave (OCT; only for
+## reading).
 ##
 ## Erroneous data and empty cells are set to NaN in @var{numarr} and
 ## turn up empty in @var{txtarr} and @var{rawarr}. Date/time values
@@ -122,13 +124,15 @@
 ## 2012-10-24 Style fixes
 ## 2013-09-24 Drop requirement of having at least one output arg
 ## 2013-09-27 Check for proper filename in input
+## 2013-09-27 Better filename suffix check
+##     ''     Updated header
 
 function [ numarr, txtarr, rawarr, lim ] = odsread (filename, wsh=1, datrange=[], reqintf=[])
 
   if (! ischar (filename))
     error ("filename (text string) expected for argument #1, not a %s", class (filename));
   endif
-  if (nargin < 1 || isempty (findstr (".ods", lower (filename))))
+  if (nargin < 1 || ! strcmpi (".ods", filename(end-3:end)))
     usage ("odsread: at least a filename incl. suffix is needed");
   endif
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -28,10 +28,10 @@
 ## file pointer struct. However, in case of UNO, a hidden OOo invocation
 ## may linger on in memory then, preventing proper closing of Octave.
 ##
-## You need the Java package >= 1.2.6 plus odfdom.jar + xercesImpl.jar
-## and/or jopendocument-<version>.jar installed on your computer +
-## proper javaclasspath set, to make this function work at all.
-## For UNO support, Octave-Java package >= 1.2.8 + latest fixes is imperative;
+## For writing .ods files you need the Java package >= 1.2.6 plus odfdom.jar
+## + xercesImpl.jar and/or jopendocument-<version>.jar installed on your
+## computer + proper javaclasspath set, to make this function work at all.
+## For UNO support, Octave-Java package >= 1.2.9 is imperative;
 ## furthermore the relevant classes had best be added to the javaclasspath by
 ## utility function chk_spreadsheet_support().
 ##
@@ -49,7 +49,7 @@
 ##
 ## @end deftypefn
 
-## Author: Philip Nienhuis
+## Author: Philip Nienhuis <prnienhuis at users.sf.net>
 ## Created: 2009-12-13
 ## Updates:
 ## 2010-01-08 (OTK ODS write support)
@@ -70,6 +70,8 @@
 ##     ''     Move "file ptr preserved" message to proper else clause
 ## 2012-10-23 Style fixes
 ## 2012-12-18 Improved error/warning messages
+## 2012-09-09 Native Octave interface ("OCT") for reading
+##      ''    Warning message for empty file ptr structs
 
 function [ ods ] = odsclose (ods, varargs)
 
@@ -79,6 +81,11 @@ function [ ods ] = odsclose (ods, varargs)
   endif
 
   force = 0;
+
+  if (isempty (ods))
+    warning ("odsclose: file pointer struct is empty; was it already closed?")';
+    return
+  endif
 
   if (nargin > 1)
     for ii=2:nargin
@@ -114,6 +121,10 @@ function [ ods ] = odsclose (ods, varargs)
   elseif (strcmp (ods.xtype, "UNO"))
     ## Java & UNO bridge
     ods = __UNO_spsh_close__ (ods, force);
+
+  elseif (strcmp (ods.xtype, "OCT"))
+    ## Native Octave
+    ods = __OCT_spsh_close__ (ods);
 
   ##elseif ---- < Other interfaces here >
 

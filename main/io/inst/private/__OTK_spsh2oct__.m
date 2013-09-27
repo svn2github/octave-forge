@@ -25,8 +25,12 @@
 ##     ''     Remove rstatus var (now set in caller)
 ## 2012-10-12 Renamed & moved into ./private
 ## 2012-10-24 Style fixes
+## 2013-09-11 rstatus return arg added (nowhere used, but all other routines have it)
+##     ''     Returned formulas cleaned up
 
-function [ rawarr, ods ] = __OTK_spsh2oct__ (ods, wsh, crange, spsh_opts)
+function [ rawarr, ods, rstatus ] = __OTK_spsh2oct__ (ods, wsh, crange, spsh_opts)
+
+  rstatus = 0;
 
   ## Get contents and table stuff from the workbook
   odfcont = ods.workbook;  ## Use a local copy just to be sure. octave 
@@ -153,7 +157,12 @@ function [ rawarr, ods ] = __OTK_spsh2oct__ (ods, wsh, crange, spsh_opts)
 ##          endif
 ##          rawarr(ii-trow+1, jj-lcol+1)= cvalue;
           case "formula"
-            rawarr(ii-trow+1, jj-lcol+1) = ocell.getFormula ();
+            form = ocell.getFormula ();
+            ## Pimp ranges in formulas
+            form = regexprep (form(4:end), '\[\.(\w+)\]', '$1');
+            form = regexprep (form, '\[\.(\w+):', '$1:');
+            form = regexprep (form, ':\.(\w+)\]', ':$1');
+            rawarr(ii-trow+1, jj-lcol+1) = form;
           otherwise
             ## Nothing.
         endswitch

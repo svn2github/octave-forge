@@ -121,10 +121,14 @@
 ## 2012-06-08 Tabs replaced by double space
 ## 2012-10-24 Style fixes
 ## 2013-09-24 Drop requirement of having at least one output arg
+## 2013-09-27 Check for proper filename in input
 
 function [ numarr, txtarr, rawarr, lim ] = odsread (filename, wsh=1, datrange=[], reqintf=[])
 
-  if (nargin < 1 || isempty (findstr (".ods", tolower (filename))))
+  if (! ischar (filename))
+    error ("filename (text string) expected for argument #1, not a %s", class (filename));
+  endif
+  if (nargin < 1 || isempty (findstr (".ods", lower (filename))))
     usage ("odsread: at least a filename incl. suffix is needed");
   endif
 

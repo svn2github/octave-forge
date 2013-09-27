@@ -146,6 +146,7 @@
 ## 2012-03-07 Updated texinfo help header
 ## 2012-10-24 Style fixes
 ## 2013-09-24 Drop requirement of having at least one output arg
+## 2013-09-27 Check for proper filename in input
 
 function [ numarr, txtarr, rawarr, lims ] = xlsread (fn, wsh, datrange, reqintf=[])
 
@@ -155,6 +156,8 @@ function [ numarr, txtarr, rawarr, lims ] = xlsread (fn, wsh, datrange, reqintf=
 		error ("xlsread: no input arguments specified") 
 		numarr = []; txtarr={}; rawarr = {};
 		return
+  elseif (! ischar (filename))
+    error ("filename (text string) expected for argument #1, not a %s", class (filename));
 	elseif (nargin == 1)
 		wsh = 1;
 		datrange = ""; 

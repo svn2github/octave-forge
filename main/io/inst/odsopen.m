@@ -23,14 +23,18 @@
 ##
 ## Calling odsopen without specifying a return argument is fairly useless!
 ##
-## To make this function work at all, you need the Java package >= 1.2.5 plus
-## ODFtoolkit (version 0.7.5 or 0.8.6+) & xercesImpl, and/or jOpenDocument, and/or
-## OpenOffice.org (or clones) installed on your computer + proper javaclasspath
-## set. These interfaces are referred to as OTK, JOD, and UNO resp., and are
-## preferred in that order by default (depending on their presence).
-## For (currently experimental) UNO support, Octave-Java package 1.2.8 + latest
-## fixes is imperative; furthermore the relevant classes had best be added to
-## the javaclasspath by utility function chk_spreadsheet_support().
+## To make this function work at all for write support, you need the Java
+## package >= 1.2.5 plus ODFtoolkit (version 0.7.5 or 0.8.6+) & xercesImpl,
+## and/or jOpenDocument, and/or OpenOffice.org (or clones) installed on your
+## computer + proper javaclasspath set. These interfaces are referred to as
+## OTK, JOD, and UNO resp., and are preferred in that order by default
+## (depending on their presence). For (currently experimental) UNO support,
+## Octave-Java package 1.2.9 is imperative; furthermore the relevant classes
+## had best be added to the javaclasspath by utility function
+## chk_spreadsheet_support(). There is another interface only for reading .ods
+## that doesn't require Java: the 'OCT' interface; this has the lowest
+## priority and will automatically be selected if no Java-based interface is
+## detected.
 ##
 ## @var{filename} must be a valid .ods OpenOffice.org file name including
 ## .ods suffix. If @var{filename} does not contain any directory path,
@@ -43,10 +47,10 @@
 ## is desired immediately after calling odsopen(). It merely serves proper
 ## handling of file errors (e.g., "file not found" or "new file created").
 ##
-## Optional input argument @var{reqintf} (character string, or cellstr array)
-## can be used to override the ODS interface automatically selected by odsopen.
-## Currently implemented interfaces are 'OTK' (Java/ODF Toolkit),
-## 'JOD' (Java/jOpenDocument) and 'UNO' (Java/OpenOffice.org UNO bridge).
+## Optional input argument @var{reqintf} can be used to override the ODS
+## interface automatically selected by odsopen. Currently implemented interfaces
+## are 'OTK' (Java/ODF Toolkit), 'JOD' (Java/jOpenDocument), 'UNO'
+## (Java/OpenOffice.org UNO bridge), and 'OCT' (native Octave, only reading).
 ## In most situations this parameter is unneeded as odsopen automatically
 ## selects the most useful interface present ("default interface").
 ## Depending on file type, odsopen.m can invoke other detected interfaces than
@@ -117,17 +121,23 @@
 ##      ''    Removed fall-back options for .sxc. Other than .xls this can be
 ##            inferred from file suffix
 ## 2012-12-18 Improved error messages
-## 2012-03-01 Revamped logic for determining if file type is supported by a
-##            particular interface
+## 2013-02-24 Temporarily disabled UNO
+## 2013-06-18 Re-enabled UNO
+## 2013-09-09 Native Octave interface ("OCT") for reading
+## 2013-09-23 Check and catch write requests for OCT interface
+##     ''     Relax check for lowercase filename extension
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
   persistent odsinterfaces; persistent chkintf; persistent lastintf;
   if (isempty (chkintf))
-    odsinterfaces = struct ( "OTK", [], "JOD", [], "UNO", [] );
+    odsinterfaces = struct ( "OTK", [], "JOD", [], "UNO", [] , "OCT", 1);
     chkintf = 1;
   endif
-  if (isempty (lastintf)); lastintf = "---"; endif 
+  if (isempty (lastintf));
+    lastintf = "---";
+  endif
+  odsintf_cnt = 0;
   
   if (nargout < 1)
     usage ("ODS = odsopen (ODSfile, [Rw]). But no return argument specified!");
@@ -141,28 +151,31 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
     if (~iscell (reqinterface)), reqinterface = {reqinterface}; endif
     ## Check if previously used interface matches a requested interface
     if (isempty (regexpi (reqinterface, lastintf, "once"){1}))
-      ## New interface requested
+      ## New interface requested. OCT is always supported but it must be
+      ## possible to disable it
       odsinterfaces.OTK = 0; odsinterfaces.JOD = 0; odsinterfaces.UNO = 0;
+      odsinterfaces.OCT = 0;
       for ii=1:numel (reqinterface)
         reqintf = toupper (reqinterface {ii});
         ## Try to invoke requested interface(s) for this call. Check if it
         ## is supported anyway by emptying the corresponding var.
-        if     (strcmp (reqintf, "OTK"))
+        if     (strcmpi (reqintf, "OTK"))
           odsinterfaces.OTK = [];
-        elseif (strcmp (reqintf, "JOD"))
+        elseif (strcmpi (reqintf, "JOD"))
           odsinterfaces.JOD = [];
-        elseif (strcmp (reqintf, "UNO"))
+        elseif (strcmpi (reqintf, "UNO"))
           odsinterfaces.UNO = [];
+        elseif (strcmpi (reqintf, "OCT"))
+          odsinterfaces.OCT = [];
         else 
           usage (sprintf (["odsopen.m: unknown .ods interface \"%s\" requested.\n" ...
-                  "Only OTK, JOD or UNO supported\n"], reqinterface{}));
+                  "Only OTK, JOD, UNO and OCT supported\n"], reqinterface{}));
         endif
       endfor
 
       printf ("Checking requested interface(s):\n");
       odsinterfaces = getodsinterfaces (odsinterfaces);
       ## Well, is/are the requested interface(s) supported on the system?
-      odsintf_cnt = 0;
       for ii=1:numel (reqinterface)
         if (~odsinterfaces.(toupper (reqinterface{ii})))
           ## No it aint
@@ -183,7 +196,13 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
   ## Var rw is really used to avoid creating files when wanting to read, or
   ## not finding not-yet-existing files when wanting to write a new one.
   ## Be sure it's either 0 or 1 initially
-  if (rw), rw = 1; endif      
+  if (rw)
+    if (odsintf_cnt == 1 && odsinterfaces.OCT)
+      ## Check if OCT is only interface and writing is requested
+      error ("OCT interface doesn't support writing .ods files");
+    endif
+    rw = 1;
+  endif
 
   ## Check if ODS file exists. Set open mode based on rw argument
   if (rw), fmode = "r+b"; else fmode = "rb"; endif
@@ -217,9 +236,9 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
   ## Supported interfaces determined; now check ODS file type.
 
-  chk3 = strcmpi (filename(end-3:end), '.ods');
-  ## Only jOpenDocument (JOD) can read from .sxc files, but only if odfvsn = 2
-  chk4 = strcmpi (filename(end-3:end), '.sxc');
+  chk3 = strcmpi (lower (filename(end-3:end)), '.ods');
+  ## jOpenDocument (JOD) can read from .sxc files, but only if odfvsn = 2
+  chk4 = strcmpi (lower (filename(end-3:end)), '.sxc');
 
   ods = struct ("xtype",    [], 
                 "app",      [], 
@@ -248,19 +267,19 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
               __UNO_spsh_open__ (ods, rw, filename, odssupport);
   endif
 
-  ## if 
-  ##   <other future interfaces here>
+  if (odsinterfaces.OCT && ~odssupport && chk3)
+    [ ods, odssupport, lastintf ] = ...
+              __OCT_spsh_open__ (ods, rw, filename, odssupport, 0, chk3);
+  endif
 
-  if (! odssupport)
-    if (isempty (reqinterface))
-      ## Below message follows after getodsinterfaces found no support
-      printf ("None.\n");
-      warning ("odsopen.m: no support for OpenOffice.org .ods I/O"); 
-    else
-      warning ("odsopen.m: file type not supported by %s %s %s", upper (reqinterface{:}));
-    endif
+  ## if 
+  ##   <other interfaces here>
+
+  if (~odssupport)
+    ## Below message follows after getodsinterfaces
+    printf ("None.\n");
+    warning ("odsopen.m: no support for OpenOffice.org .ods I/O"); 
     ods = [];
-    ## Reset found interfaces for re-testing in the next call. Add interfaces if needed.
     chkintf = [];
   else
     # From here on rw is tracked via ods.changed in the various lower

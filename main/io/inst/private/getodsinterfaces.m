@@ -70,6 +70,8 @@
 ##     ''     Moved check for Java support to separate file in private/
 ##     ''     Fixed javaclasspath info resync in case of requested interfaces
 ## 2013-08-13 Tested odfdom 0.8.9 (odfdom-0.6-incubator); found it doesn't work :-(
+## 2013-09-09 Native Octave interface ("OCT")for reading
+## 2013-09-11 Check Java again when requesting a specific Java interface
 
 function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 
@@ -85,7 +87,7 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
   elseif (isempty (odsinterfaces.OTK) || isempty (odsinterfaces.JOD) ...
                                       || isempty (odsinterfaces.UNO))
     ## Can't be first call. Here one of the Java interfaces is requested
-    if (~tmp1)
+    if (tmp1)
       # Check Java support again
       tmp1 = [];
     else
@@ -190,6 +192,12 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
     else
       warning ("\nOne or more UNO classes (.jar) missing in javaclasspath");
     endif
+  endif
+
+  ## Native Octave
+  if (isempty (odsinterfaces.OCT))
+    ## Nothing to check, always supported
+    odsinterfaces.OCT = 1;
   endif
   
   ## ---- Other interfaces here, similar to the ones above

@@ -1,4 +1,4 @@
-## Copyright (C) 2010,2011,2012 Philip Nienhuis <pr.nienhuis@users.sf.net>
+## Copyright (C) 2010,2011,2012,2013 Philip Nienhuis <pr.nienhuis@users.sf.net>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -71,13 +71,14 @@
 ## 2012-10-12 Moved all interface-specific subfuncs to . /private
 ## 2012-10-23 Added UNO to error message
 ##     ''     Style fixes
+## 2013-09-08 Added OCT (native ods & xlsx) interface
 
 function [ trow, lrow, lcol, rcol ] = getusedrange (spptr, ii)
 
   ## Some checks
   if ~isstruct (spptr), error ("Illegal spreadsheet pointer argument"); endif
 
-  if (strcmp (spptr.xtype, 'OTK'))
+  if     (strcmp (spptr.xtype, 'OTK'))
     [ trow, lrow, lcol, rcol ] = __OTK_getusedrange__ (spptr, ii);
   elseif (strcmp (spptr.xtype, "JOD"))
     [ trow, lrow, lcol, rcol ] = __JOD_getusedrange__ (spptr, ii);
@@ -91,9 +92,11 @@ function [ trow, lrow, lcol, rcol ] = getusedrange (spptr, ii)
     [ trow, lrow, lcol, rcol ] = __JXL_getusedrange__ (spptr, ii);
   elseif (strcmp (spptr.xtype, "OXS"))
     [ trow, lrow, lcol, rcol ] = __OXS_getusedrange__ (spptr, ii);
+  elseif (strcmp (spptr.xtype, "OCT"))
+    [ trow, lrow, lcol, rcol ] = __OCT_getusedrange__ (spptr, ii);
   else
     error ...
-      ("Unknown interface - only OTK, JOD, COM, POI, JXL, UNO and OXS implemented");
+      ("Unknown interface - only OTK, JOD, COM, POI, JXL, OXS, UNO and OCT implemented");
   endif
 
 endfunction

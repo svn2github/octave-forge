@@ -126,12 +126,13 @@
 ## 2013-09-09 Native Octave interface ("OCT") for reading
 ## 2013-09-23 Check and catch write requests for OCT interface
 ##     ''     Relax check for lowercase filename extension
+## 2013-09-29 Initially set OCT interface to not detected
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
   persistent odsinterfaces; persistent chkintf; persistent lastintf;
   if (isempty (chkintf))
-    odsinterfaces = struct ( "OTK", [], "JOD", [], "UNO", [] , "OCT", 1);
+    odsinterfaces = struct ( "OTK", [], "JOD", [], "UNO", [] , "OCT", []);
     chkintf = 1;
   endif
   if (isempty (lastintf));

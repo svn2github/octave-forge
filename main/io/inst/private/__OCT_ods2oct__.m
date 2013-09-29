@@ -32,33 +32,33 @@
 ## 2013-09-23 Renamed to __OCT_ods2oct__.m
 ## 2013-09-29 Use values between <text> tags only for strings & dates/times
 ##     ''     Return date values as Octave datenums (doubles)
+##     ''     Return requested range rather than entire sheet data
 
-function [ rawarr, xls, rstatus] = __OCT_ods2oct__ (xls, wsh, cellrange='', spsh_opts)
+function [ rawarr, ods, rstatus] = __OCT_ods2oct__ (ods, wsh, cellrange='', spsh_opts)
 
   rstatus = 0;
 
   ## Check if requested worksheet exists in the file & if so, get sheet
   if (isnumeric (wsh))
-    if (wsh > numel (xls.sheets.sh_names) || wsh < 1)
-      error ("ods2oct: sheet number (%d) out of range (1 - %d)", wsh, numel (xls.sheets.sh_names));
+    if (wsh > numel (ods.sheets.sh_names) || wsh < 1)
+      error ("ods2oct: sheet number (%d) out of range (1 - %d)", wsh, numel (ods.sheets.sh_names));
     endif
   elseif (ischar (wsh))
     idx = strmatch (wsh, ods.sheets.sh_names);
     if (isempty (idx))
-      error ("ods2oct: sheet '%s' not found in file %s", wsh, xls.filename);
+      error ("ods2oct: sheet '%s' not found in file %s", wsh, ods.filename);
     endif
     wsh = idx;
   endif
-  sheet = xls.workbook(xls.sheets.shtidx(wsh):xls.sheets.shtidx(wsh+1));
+  sheet = ods.workbook(ods.sheets.shtidx(wsh):ods.sheets.shtidx(wsh+1));
 
   ## Check ranges
-  [ firstrow, lastrow, lcol, rcol ] = getusedrange (xls, wsh);
-  ## FIXME first row & left col always 1
+  [ firstrow, lastrow, lcol, rcol ] = getusedrange (ods, wsh);
   if (isempty (cellrange))
     if (firstrow == 0 && lastrow == 0)
       ## Empty sheet
       rawarr = {};
-      printf ("Worksheet '%s' contains no data\n", xls.sheets.sh_names{wsh});
+      printf ("Worksheet '%s' contains no data\n", ods.sheets.sh_names{wsh});
       rstatus = 1;
       return;
     else
@@ -68,42 +68,53 @@ function [ rawarr, xls, rstatus] = __OCT_ods2oct__ (xls, wsh, cellrange='', spsh
   else
     [topleft, nrows, ncols, firstrow, lcol] = parse_sp_range (cellrange);
     ## Check if requested range exists
+    if (firstrow > lastrow || lcol > rcol)
+      ## Out of occupied range
+      warning ("ods2oct: requested range outside occupied range");
+      rawarr = {};
+      ods.limits = [];
+      return
+    endif
     lastrow = min (lastrow, firstrow + nrows - 1);
     rcol = min (rcol, lcol + ncols - 1);
   endif
 
-  rawarr = cell (nrows, rcol);
+  ## FIXME Preallocation + data reading can be more efficient
+  ## Preallocate output array; provisionally assign max nr. of rows & columns
+  rawarr = cell (lastrow, rcol);
 
   ## Get data
-  re = 1;
-  ii = 0;
+  re = 1;                       # Start table-row search at first char of sheet
+  irow = 0;                     # Counts "real" spreadsheet rows
   trow = " ";
   ## Row index ii below does not necessarily match table-rows!
-  while (ii < nrows && (! isempty (trow)))
+  while (irow < lastrow && (! isempty (trow)))
     ## Get next table-row
     [trow, ~, re] = getxmlnode (sheet, "table:table-row", re);
 
     if (! isempty (trow))
       ## Check if table-row has any data
       datrow = index (trow, " office:");
+      ## Check repeat status and update row counter
+      reprow = str2double (getxmlattv (trow, "table:number-rows-repeated"));
+      if (isfinite (reprow))
+        reprow = min (reprow, lastrow - irow);
+      endif
+      irow++;
 
       ## Only process table-row contents if it has any data. Skip upper
       ## empty table-rows (that's why we need an OR), only start counting
       ## with the first table-row containing data
-      if (datrow || ii)
-        ++ii;
-        ## Check repeat status
-        reprow = str2double (getxmlattv (trow, "table:number-rows-repeated"));
-        ce = 0;
-        jj = 0;
-        tcell = " ";
-        ## Column index jj below does not necessarily match table-cells!
-        while (jj < rcol && (! isempty (tcell)))
-          ++jj;
+      if (datrow || irow)
 
+        ce = 0;                 # Char pointer on table-row
+        tcell = " ";
+        icol = 0;               # Count spreadsheet column
+        while (icol < rcol && (! isempty (tcell)))
           ## Get next table-cell. First see if it is covered (merged)
           [tcell1, ~, ce1] = getxmlnode (trow, "table:covered-table-cell", ce+1);
           [tcell2, ~, ce2] = getxmlnode (trow, "table:table-cell", ce+1);
+
           if (ce1 > 0 && ce2 > 0)
             ## Both  table-cell and a table-covered-cell are present
             if (ce1 < ce2)
@@ -128,10 +139,14 @@ function [ rawarr, xls, rstatus] = __OCT_ods2oct__ (xls, wsh, cellrange='', spsh
               tcell = tcell2;
             endif
           endif
+          ## First check its repeat status and update column counter
+          repcol = str2double (getxmlattv (tcell, "table:number-columns-repeated"));
+          if (isfinite (repcol))
+            repcol = min (repcol, rcol - icol);
+          endif
+          icol++;
 
           if (! isempty (tcell))
-            ## First check its repeat status
-            repcol = str2double (getxmlattv (tcell, "table:number-columns-repeated"));
             ## Try to get value type
             ctype = '';
             if (ce2)
@@ -157,32 +172,32 @@ function [ rawarr, xls, rstatus] = __OCT_ods2oct__ (xls, wsh, cellrange='', spsh
                   form = regexprep (form, '\[\.(\w+)\]', '$1');
                   form = regexprep (form, '\[\.(\w+):', '$1:');
                   form = regexprep (form, ':\.(\w+)\]', ':$1');
-                  rawarr{ii, jj} = form;
+                  rawarr{irow, icol} = form;
                 case "float"
                   ## Watch out for error values. If so, <text> has #VALUE and office:value = 0
                   if (isfinite (str2double (ctvalue)))
-                    rawarr{ii, jj} = str2double (getxmlattv (tcell, "office:value"));
+                    rawarr{irow, icol} = str2double (getxmlattv (tcell, "office:value"));
                   else
-                    rawarr{ii, jj} = NaN;
+                    rawarr{irow, icol} = NaN;
                   endif
                 case "percentage"
                   ## Watch out for error values. If so, <text> has #VALUE and office:value = 0
                   ctvalue = ctvalue (1:end-1);
                   if (isfinite (str2double (ctvalue)))
-                    rawarr{ii, jj} = str2double (getxmlattv (tcell, "office:value"));
+                    rawarr{irow, icol} = str2double (getxmlattv (tcell, "office:value"));
                   else
-                    rawarr{ii, jj} = NaN;
+                    rawarr{irow, icol} = NaN;
                   endif
                 case "currency"
                   ## Watch out for error values. If so, <text> has #VALUE and office:value = 0
                   idx = regexp (ctvalue, '[\d.\d]');
                   if (isempty (idx))
-                    rawarr{ii, jj} = NaN;
+                    rawarr{irow, icol} = NaN;
                   else
-                    rawarr{ii, jj} = str2double (getxmlattv (tcell, "office:value"));
+                    rawarr{irow, icol} = str2double (getxmlattv (tcell, "office:value"));
                   endif
                 case "string"
-                  rawarr{ii, jj} = ctvalue;
+                  rawarr{irow, icol} = ctvalue;
                 case "date"
                   cvalue = getxmlattv (tcell, "office:date-value");
                   try
@@ -192,17 +207,17 @@ function [ rawarr, xls, rstatus] = __OCT_ods2oct__ (xls, wsh, cellrange='', spsh
                     yr = str2double (cv(1));
                     mo = str2double (cv(2));
                     dy = str2double (cv(3));
-                    rawarr{ii, jj} = datenum(yr, mo, dy) + 693960;
+                    rawarr{irow, icol} = datenum(yr, mo, dy) + 693960;
                     ## Time part, if any (that's what the try-catch is for)
                     cv = regexp (cvalue{2}, '[0-9]*', "match");
                     hh = str2double (cv(1));
                     mm = str2double (cv(2));
                     ss = str2double (cv(3));
-                    rawarr{ii, jj} += datenum (0, 0, 0, hh, mm, ss);
+                    rawarr{irow, icol} += datenum (0, 0, 0, hh, mm, ss);
                   catch
                   end_try_catch
                 case "boolean"
-                  rawarr{ii, jj} = strcmpi (ctvalue, "true");
+                  rawarr{irow, icol} = strcmpi (ctvalue, "true");
                 case "time"
                   ## Time values usually have hours first, then minutes, optionally seconds
                   hh = mi = ss = 0;
@@ -214,26 +229,27 @@ function [ rawarr, xls, rstatus] = __OCT_ods2oct__ (xls, wsh, cellrange='', spsh
                     ss = str2double (ctvalue(3));
                   catch
                   end_try_catch
-                  rawarr{ii, jj} = datenum (0, 0, 0, hh, mi, ss);
+                  rawarr{irow, icol} = datenum (0, 0, 0, hh, mi, ss);
                 otherwise
                   ## Do nothing
               endswitch
             endif
+
             ## Copy cell contents for repeated columns & bump column counter
-            if (isfinite (repcol))
-              rawarr(ii, jj+1:jj+repcol-1) = rawarr(ii, jj);
-              jj += repcol - 1;
+            if (isfinite (repcol) && icol < rcol)
+              rawarr(irow, icol+1:icol+repcol-1) = rawarr(irow, icol);
+              icol += repcol;
               repcol = '';
             endif
           endif
         endwhile
 
         ## Copy row contents to repeated rows & bump row counter
-        if (isfinite (reprow))
-          for kk=ii+1:min (nrows, ii+reprow-1)
-            rawarr(kk, :) = rawarr(ii, :);
+        if (isfinite (reprow) && irow < lastrow)
+          for kk=irow+1:min (nrows, irow+reprow-1)
+            rawarr(kk, :) = rawarr(irow, :);
           endfor
-          ii += reprow - 1;
+          irow += reprow;
           reprow = '';
         endif
       endif
@@ -241,13 +257,16 @@ function [ rawarr, xls, rstatus] = __OCT_ods2oct__ (xls, wsh, cellrange='', spsh
 
   endwhile
 
-  ## If required strip leftmost empty columns
+  ## If required strip leftmost empty columns/topmost empty rows
   if (lcol > 1)
-    rawarr (:, 1:ncols) = rawarr (:, lcol:rcol);
-    rawarr (:, ncols+1:end) = [];
+    rawarr(:, 1:ncols) = rawarr(:, lcol:rcol);
+    rawarr(:, ncols+1:end) = [];
   endif
-
+  if (firstrow > 1)
+    rawarr(1:nrows, :) = rawarr(firstrow:lastrow, :);
+    rawarr(nrows+1:end, :) = [];
+  endif
   ## Keep track of data rectangle limits
-  xls.limits = [1, ncols; 1, nrows];
+  ods.limits = [lcol, rcol; firstrow, lastrow];
 
 endfunction

@@ -72,6 +72,7 @@
 ## 2013-08-13 Tested odfdom 0.8.9 (odfdom-0.6-incubator); found it doesn't work :-(
 ## 2013-09-09 Native Octave interface ("OCT")for reading
 ## 2013-09-11 Check Java again when requesting a specific Java interface
+## 2013-09-29 Treat OCT as any other interface
 
 function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 
@@ -195,7 +196,7 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
   endif
 
   ## Native Octave
-  if (isempty (odsinterfaces.OCT) || odsinterfaces.OCT)
+  if (isempty (odsinterfaces.OCT))
     ## Nothing to check, always supported
     odsinterfaces.OCT = 1;
     printf ("OCT");

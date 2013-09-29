@@ -30,6 +30,8 @@
 ##     ''     Try-catch construct for time values
 ##     ''     Formula reading support
 ## 2013-09-23 Renamed to __OCT_ods2oct__.m
+## 2013-09-29 Use values between <text> tags only for strings & dates/times
+##     ''     Return date values as Octave datenums (doubles)
 
 function [ rawarr, xls, rstatus] = __OCT_ods2oct__ (xls, wsh, cellrange='', spsh_opts)
 
@@ -77,7 +79,7 @@ function [ rawarr, xls, rstatus] = __OCT_ods2oct__ (xls, wsh, cellrange='', spsh
   ii = 0;
   trow = " ";
   ## Row index ii below does not necessarily match table-rows!
-  while (ii < lastrow && (! isempty (trow)))
+  while (ii < nrows && (! isempty (trow)))
     ## Get next table-row
     [trow, ~, re] = getxmlnode (sheet, "table:table-row", re);
 
@@ -85,7 +87,7 @@ function [ rawarr, xls, rstatus] = __OCT_ods2oct__ (xls, wsh, cellrange='', spsh
       ## Check if table-row has any data
       datrow = index (trow, " office:");
 
-      ## Only process table-row contents if it has any data. Ski[ upper
+      ## Only process table-row contents if it has any data. Skip upper
       ## empty table-rows (that's why we need an OR), only start counting
       ## with the first table-row containing data
       if (datrow || ii)
@@ -99,7 +101,7 @@ function [ rawarr, xls, rstatus] = __OCT_ods2oct__ (xls, wsh, cellrange='', spsh
         while (jj < rcol && (! isempty (tcell)))
           ++jj;
 
-          ## Get next table-cell. First see if it is covered.
+          ## Get next table-cell. First see if it is covered (merged)
           [tcell1, ~, ce1] = getxmlnode (trow, "table:covered-table-cell", ce+1);
           [tcell2, ~, ce2] = getxmlnode (trow, "table:table-cell", ce+1);
           if (ce1 > 0 && ce2 > 0)
@@ -143,7 +145,7 @@ function [ rawarr, xls, rstatus] = __OCT_ods2oct__ (xls, wsh, cellrange='', spsh
                 endif
               endif
               ## Get value
-              cvalue = getxmlnode (tcell, "text:p")(9:end-9);
+              ctvalue = getxmlnode (tcell, "text:p")(9:end-9);
               ## Put proper translation into rawarr
               switch ctype
                 case "cformula"
@@ -157,30 +159,59 @@ function [ rawarr, xls, rstatus] = __OCT_ods2oct__ (xls, wsh, cellrange='', spsh
                   form = regexprep (form, ':\.(\w+)\]', ':$1');
                   rawarr{ii, jj} = form;
                 case "float"
-                  rawarr{ii, jj} = str2double (cvalue);
+                  ## Watch out for error values. If so, <text> has #VALUE and office:value = 0
+                  if (isfinite (str2double (ctvalue)))
+                    rawarr{ii, jj} = str2double (getxmlattv (tcell, "office:value"));
+                  else
+                    rawarr{ii, jj} = NaN;
+                  endif
                 case "percentage"
-                  rawarr{ii, jj} = str2double (cvalue(1:end-1));
+                  ## Watch out for error values. If so, <text> has #VALUE and office:value = 0
+                  ctvalue = ctvalue (1:end-1);
+                  if (isfinite (str2double (ctvalue)))
+                    rawarr{ii, jj} = str2double (getxmlattv (tcell, "office:value"));
+                  else
+                    rawarr{ii, jj} = NaN;
+                  endif
                 case "currency"
-                  rawarr{ii, jj} = str2double (getxmlattv (tcell, "office:value"));                
-                case {"string", "date"}
-                  cvalue = strrep (cvalue, "&amp;", "&");
-                  cvalue = strrep (cvalue, "&quot;", '"');
-                  cvalue = strrep (cvalue, "&gt;", ">");
-                  cvalue = strrep (cvalue, "&lt;", "<");
-                  rawarr(ii, jj) = cvalue;
+                  ## Watch out for error values. If so, <text> has #VALUE and office:value = 0
+                  idx = regexp (ctvalue, '[\d.\d]');
+                  if (isempty (idx))
+                    rawarr{ii, jj} = NaN;
+                  else
+                    rawarr{ii, jj} = str2double (getxmlattv (tcell, "office:value"));
+                  endif
+                case "string"
+                  rawarr{ii, jj} = ctvalue;
+                case "date"
+                  cvalue = getxmlattv (tcell, "office:date-value");
+                  try
+                    cvalue = strsplit (cvalue, "T");
+                    ## Date part
+                    cv = regexp (cvalue{1}, '[0-9]*', "match");
+                    yr = str2double (cv(1));
+                    mo = str2double (cv(2));
+                    dy = str2double (cv(3));
+                    rawarr{ii, jj} = datenum(yr, mo, dy) + 693960;
+                    ## Time part, if any (that's what the try-catch is for)
+                    cv = regexp (cvalue{2}, '[0-9]*', "match");
+                    hh = str2double (cv(1));
+                    mm = str2double (cv(2));
+                    ss = str2double (cv(3));
+                    rawarr{ii, jj} += datenum (0, 0, 0, hh, mm, ss);
+                  catch
+                  end_try_catch
                 case "boolean"
-                  rawarr{ii, jj} = strcmpi (cvalue, "true");
-#                case "date"
-#                  ## FIXME As dates can have so many formats they're returned as strings
+                  rawarr{ii, jj} = strcmpi (ctvalue, "true");
                 case "time"
                   ## Time values usually have hours first, then minutes, optionally seconds
                   hh = mi = ss = 0;
-                  cvalue = regexp (getxmlattv (tcell, "office:time-value"), '[0-9]*', "match");
+                  ctvalue = regexp (getxmlattv (tcell, "office:time-value"), '[0-9]*', "match");
                   ## try-catch to catch missing seconds
                   try
-                    hh = str2double (cvalue(1));
-                    mi = str2double (cvalue(2));
-                    ss = str2double (cvalue(3));
+                    hh = str2double (ctvalue(1));
+                    mi = str2double (ctvalue(2));
+                    ss = str2double (ctvalue(3));
                   catch
                   end_try_catch
                   rawarr{ii, jj} = datenum (0, 0, 0, hh, mi, ss);

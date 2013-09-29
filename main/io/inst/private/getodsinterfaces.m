@@ -195,9 +195,16 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
   endif
 
   ## Native Octave
-  if (isempty (odsinterfaces.OCT))
+  if (isempty (odsinterfaces.OCT) || odsinterfaces.OCT)
     ## Nothing to check, always supported
     odsinterfaces.OCT = 1;
+    printf ("OCT");
+    if (deflt)
+      printf ("; ");
+    else
+      printf ("*; ");
+      deflt = 1;
+    endif
   endif
   
   ## ---- Other interfaces here, similar to the ones above

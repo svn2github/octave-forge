@@ -28,6 +28,7 @@
 ## - Java & JExcelAPI
 ## - Java & OpenXLS (only JRE >= 1.4 needed)
 ## - Java & UNO bridge (native OpenOffice.org in background) - EXPERIMENTAL!!
+## - native Octave, only for .xlsx (OOXML)
 ##
 ## Examples:
 ##
@@ -68,6 +69,7 @@
 ##     ''     Moved check for Java support to separate file in private/
 ##     ''     Fixed javaclasspath info resync in case of requested interfaces
 ## 2013-07-18 Add Fedora naming scheme to POI jar entries (official ones are symlinks)
+## 2013-09-30 Native Octave interface ("OCT") for reading
 
 function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 
@@ -202,6 +204,19 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
         deflt = 1; 
         uno_1st_time = min (++uno_1st_time, 2);
       endif
+    endif
+  endif
+
+  ## Native Octave
+  if (isempty (xlsinterfaces.OCT))
+    ## Nothing to check, always supported
+    xlsinterfaces.OCT = 1;
+    printf ("OCT");
+    if (deflt)
+      printf ("; ");
+    else
+      printf ("*; ");
+      deflt = 1;
     endif
   endif
 

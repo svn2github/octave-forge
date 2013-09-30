@@ -204,12 +204,14 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
     endif
   endif
 
-  ## Var readwrite is really used to avoid creating files when wanting to read,
-  ## or not finding not-yet-existing files when wanting to write a new one.
+  ## Supported interfaces determined; Excel file type check moved to separate interfaces.
+  chk1 = strcmpi (filename(end-3:end), ".xls");       ## Regular (binary) BIFF 
+  chk2 = strcmpi (filename(end-4:end-1), ".xls");     ## Zipped XML / OOXML
+  chk5 = strcmpi (filename(end-9:end), "gnumeric");   ## Zipped XML / gnumeric
 
   ## Check if Excel file exists. First check for file name suffix
   has_suffix = 1;
-  sfxpos = strfind (filename, ".xls");
+  sfxpos = regexp (filnam, '(\.xls|\.gnumeric)');
   if (! isempty (sfxpos))
     ## .xls or .xls[x,m,b] is there, but at the right(most) position?
     if (! sfxpos(end) >= length (filename) - 4)
@@ -219,9 +221,15 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
   else
     has_suffix = 0;
   endif
+
+  ## Var readwrite is really used to avoid creating files when wanting to read,
+  ## or not finding not-yet-existing files when wanting to write a new one.
   
   ## Adapt file open mode for readwrite argument
-  if (xwrite);
+  if (xwrite)
+    if (chk5)
+      error ("There's only read support for gnumeric files");
+    endif
     fmode = 'r+b';
     if (! has_suffix)
       ## Add .xls suffix to filename (all Excel versions can write this)
@@ -264,10 +272,6 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
   ## Check for the various Excel interfaces. No problem if they've already
   ## been checked, getxlsinterfaces (far below) just returns immediately then.
   xlsinterfaces = getxlsinterfaces (xlsinterfaces);
-
-  ## Supported interfaces determined; Excel file type check moved to separate interfaces.
-  chk1 = strcmpi (filename(end-3:end), ".xls");       ## Regular (binary) BIFF 
-  chk2 = strcmpi (filename(end-4:end-1), ".xls");     ## Zipped XML / OOXML
   
   ## Initialize file ptr struct
   xls = struct ("xtype",    'NONE', 
@@ -336,7 +340,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
       printf ("None.\n");
       warning ("xlsopen.m: no support for Excel I/O"); 
     else
-      warning ("xlsopen.m: file type not supported by %s %s %s %s %s", reqinterface{:});
+      warning ("xlsopen.m: file type not supported by %s %s %s %s %s %s", reqinterface{:});
     endif
     xls = [];
     ## Reset found interfaces for re-testing in the next call. Add interfaces if needed.

@@ -266,8 +266,8 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
   xlsinterfaces = getxlsinterfaces (xlsinterfaces);
 
   ## Supported interfaces determined; Excel file type check moved to separate interfaces.
-  chk1 = strcmpi (filename(end-3:end), '.xls');      ## Regular (binary) BIFF 
-  chk2 = strcmpi (filename(end-4:end-1), '.xls');    ## Zipped XML / OOXML
+  chk1 = strcmpi (filename(end-3:end), ".xls");       ## Regular (binary) BIFF 
+  chk2 = strcmpi (filename(end-4:end-1), ".xls");     ## Zipped XML / OOXML
   
   ## Initialize file ptr struct
   xls = struct ("xtype",    'NONE', 
@@ -319,7 +319,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
   if ((! xlssupport) && xlsinterfaces.OCT)
     if (chk2)
-      [ xls, xlssupport, lastintf ] = __OCT_spsh_open__ (xls, xwrite, filename, xlssupport, chk1);
+      [ xls, xlssupport, lastintf ] = __OCT_spsh_open__ (xls, xwrite, filename, xlssupport, chk2);
     else
       error ("xlsopen.m: unsupported file format for OCT / native Octave")
     endif

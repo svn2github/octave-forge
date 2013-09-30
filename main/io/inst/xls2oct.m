@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,12 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis <prnienhuis at users.sf.net>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -135,6 +135,7 @@
 ## 2012-06-07 Replaced all tabs by double space
 ## 2012-10-12 Moved all interface-specific subfubcs into ./private
 ## 2012-10-24 Style fixes
+## 2013-09-30 Native Octave (OCT) added
 ##
 ## Latest subfunc update: 2012-10-12
 
@@ -197,6 +198,9 @@ function [ rawarr, xls, rstatus ] = xls2oct (xls, wsh=1, datrange="", spsh_opts=
   elseif (strcmp (xls.xtype, "UNO"))
     ## Read xls file tru OpenOffice.org UNO (Java) bridge
     [rawarr, xls, rstatus] = __UNO_spsh2oct__ (xls, wsh, datrange, spsh_opts);
+  elseif (strcmp (xls.xtype, "OCT"))
+    ## Read xls file tru native Octave
+    [rawarr, xls, rstatus] = __OCT_xlsx2oct__ (xls, wsh, datrange, spsh_opts);
   ##elseif ---- <Other interfaces here>
     ## Call to next interface
   else

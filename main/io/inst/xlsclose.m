@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis <prnienhuis at users.sf.net>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -78,6 +78,7 @@
 ##     ''     Move "file ptr preserved" message to proper else clause
 ## 2012-10-24 Style fixes
 ## 2012-12-18 Improved error/warning messages
+## 2013-09-30 OCT interface added
 
 function [ xls ] = xlsclose (xls, varargs)
 
@@ -129,6 +130,9 @@ function [ xls ] = xlsclose (xls, varargs)
 
   elseif (strcmp (xls.xtype, "UNO"))
     xls = __UNO_spsh_close__ (xls, force);
+
+  elseif (strcmp (xls.xtype, "OCT"))
+    xls = __OCT_spsh_close__ (xls);
 
   ## elseif   <other interfaces here>
 

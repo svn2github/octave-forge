@@ -66,14 +66,15 @@
 ##
 ## The optional last argument @var{reqintf} can be used to override 
 ## the automatic interface selection by xlsread out of the supported
-## ones: COM/Excel, Java/Apache POI, Java/JExcelAPI, Java/OpenXLS, or 
-## Java/UNO (OpenOffice.org) (in that -built in- order of preference).
-## For reading from OOXML files a value of 'com', 'poi' or 'uno' must
-## be specified for @var{reqintf} (see help for xlsopen); for Excel'95
-## files use 'com', or if Excel is not installed use 'jxl', 'basic'
-## or 'uno' (POI can't read Excel 95 but will try to fall back to JXL).
-## As @var{reqintf} can also be a cell array of strings, one can
-## select or exclude one or more interfaces.
+## ones: COM/Excel, Java/Apache POI, Java/JExcelAPI, Java/OpenXLS, 
+## Java/UNO (OpenOffice.org), or native Octave (only reading .xlsx)
+## (in that -built in- order of preference).
+## For reading from OOXML files a value of 'com', 'poi', 'uno', or 'oct'
+## must be specified for @var{reqintf} (see help for xlsopen); for
+## Excel'95 files use 'com', or if Excel is not installed use 'jxl',
+## 'basic' or 'uno' (POI can't read Excel 95 but will try to fall back
+## to JXL). As @var{reqintf} can also be a cell array of strings, one
+## can select or exclude one or more interfaces.
 ##
 ## Erroneous data and empty cells are set to NaN in @var{numarr} and
 ## turn up empty in @var{txtarr} and @var{rawarr}. Date/time values in
@@ -91,11 +92,11 @@
 ## "corresponding" Excel cells are empty.
 ##
 ## xlsread is just a wrapper for a collection of scripts that find out
-## the interface to be used (COM, Java/POI, Java/JXL Java/OXS, Java/UNO)
-## and do the actual reading. For each call to xlsread the interface must
-## be started and the Excel file read into memory. When reading multiple
-## ranges (in optionally multiple worksheets) a significant speed boost
-## can be obtained by invoking those scripts directly as in:
+## the interface to be used (COM, Java/POI, Java/JXL Java/OXS, Java/UNO,
+## OCT) and do the actual reading. For each call to xlsread the interface
+## must be started and the Excel file read into memory. When reading
+## multiple ranges (in optionally multiple worksheets) a significant speed
+## boost can be obtained by invoking those scripts directly as in:
 ## xlsopen / xls2oct [/ parsecell] / ... / xlsclose
 ##
 ## Beware: when using the COM interface, hidden Excel invocations may be
@@ -148,6 +149,7 @@
 ## 2013-09-24 Drop requirement of having at least one output arg
 ## 2013-09-27 Check for proper filename in input
 ## 2013-09-27 Proper spelling of input arg
+## 2013-09-30 Header adapted to native OCT interface f xlsx
 
 function [ numarr, txtarr, rawarr, lims ] = xlsread (fn, wsh, datrange, reqintf=[])
 

@@ -270,7 +270,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
   if (odsinterfaces.OCT && ~odssupport && chk3)
     [ ods, odssupport, lastintf ] = ...
-              __OCT_spsh_open__ (ods, rw, filename, odssupport, 0, chk3);
+              __OCT_spsh_open__ (ods, rw, filename, odssupport, 0, chk3, 0);
   endif
 
   ## if 

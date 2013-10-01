@@ -29,11 +29,17 @@
 function [xls] = __OCT_spsh_close__ (xls)
 
 ## FIXME remove comments and fill OOXML clause
-#  if (strcmpi (xls.filename(end-3:end), ".ods"))
-    ## Not much to do here as files were closed in __OCT_spsh_open__
-    xls.changed = 0;
-#  else
+  if (strcmpi (xls.filename(end-3:end), ".ods"))
+    ## Delete tmp file
+    rmdir (xls.workbook, "s");
+
+  elseif (strcmpi (xls.filename(end-4:end-1), "xls"))
     ## For OOXML remove temp dir here
-#  endif
+
+  elseif (strcmpi (xls.filename(end-8:end), ".gnumeric"))
+    ## Delete temporary file
+    unlink (xls.workbook);
+
+  endif
 
 endfunction

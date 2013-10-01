@@ -15,7 +15,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*- 
-## @deftypefn {Function File} {@var{retval} =} __OCT_ods2oct__ (@var{x} @var{y})
+## @deftypefn {Function File} [@var{raw}, @var{ods}, @var{rstatus} = __OCT_ods2oct__ (@var{ods}, @var{wsh}, @var{range}, @var{opts})
+## Internal function for reading data from an ods worksheet
 ##
 ## @seealso{}
 ## @end deftypefn
@@ -33,6 +34,8 @@
 ## 2013-09-29 Use values between <text> tags only for strings & dates/times
 ##     ''     Return date values as Octave datenums (doubles)
 ##     ''     Return requested range rather than entire sheet data
+## 2013-10-01 Little adaptation in header
+## 2013-10-01 Read sheets from disk rather than keep them in memory
 
 function [ rawarr, ods, rstatus] = __OCT_ods2oct__ (ods, wsh, cellrange='', spsh_opts)
 
@@ -50,7 +53,18 @@ function [ rawarr, ods, rstatus] = __OCT_ods2oct__ (ods, wsh, cellrange='', spsh
     endif
     wsh = idx;
   endif
-  sheet = ods.workbook(ods.sheets.shtidx(wsh):ods.sheets.shtidx(wsh+1));
+  
+  ## Get requested sheet from info in ods struct pointer. Open file
+  fid = fopen (sprintf ("%s/content.xml", ods.workbook), "r");;
+  ## Go to start of requested sheet
+  fseek (fid, ods.sheets.shtidx(wsh), 'bof');
+  ## Compute size of requested chunk
+  nchars = ods.sheets.shtidx(wsh+1) - ods.sheets.shtidx(wsh);
+  ## Get the sheet
+  sheet = fread (fid, nchars, "char=>char").';
+  fclose (fid);
+  ## Add xml to struct pointer to avoid __OCT_getusedrange__ to read it again
+  xls.xml = sheet;
 
   ## Check ranges
   [ firstrow, lastrow, lcol, rcol ] = getusedrange (ods, wsh);

@@ -28,33 +28,45 @@
 ##            FIXME this needs to be adapted for future OOXML support
 ## 2013-09-23 Fix copyright messages
 
-function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename, xlssupport, chk2, chk3)
+function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename, xlssupport, chk2, chk3, chk5)
 
   ## Open and unzip file to temp location (code by Markus Bergholz)
   ## create current work folder
   tmpdir = tmpnam;
-  confirm_recursive_rmdir (0);      # this is needed for a silent delete of our tmpdir
 
-  %% http://savannah.gnu.org/bugs/index.php?39148
-  %% unpack.m taken from bugfix: http://hg.savannah.gnu.org/hgweb/octave/rev/45165d6c4738
-  %% needed for octave 3.6.x
-  unpack (filename, tmpdir, "unzip");
+  if (chk5)
+    ## Gnumeric xml files are gzipped
+    system (sprintf ("gzip -d -c -S=gnumeric %s > %s", filename, tmpdir));
+    fid = fopen (tmpdir, 'r');
+    xml = fgetl (fid);
+    ## Remember length of 1st line
+    st_xml = ftell (fid) - 1;
+    xml = fread (fid, "char=>char").';
+  else
+    # This is needed for a silent delete of our tmpdir
+    confirm_recursive_rmdir (0);
+    ## http://savannah.gnu.org/bugs/index.php?39148
+    ## unpack.m taken from bugfix: http://hg.savannah.gnu.org/hgweb/octave/rev/45165d6c4738
+    ## needed for octave 3.6.x
+    unpack (filename, tmpdir, "unzip");
+  endif  
 
   ## First check if we're reading ODS
   if (chk3)
-    ## Yep. Read the actual data part in content.xml
+    ## ============== ODS. Read the actual data part in content.xml ============
     fid = fopen (sprintf ("%s/content.xml", tmpdir), "r");
     if (fid < 0)
       ## File open error
       error ("file %s couldn't be opened for reading", filename);
     else
-      ## Read file contents. For some reason fgetl needs to be called twice
+      ## Read file contents. For some reason fgets needs to be called twice
       xml = fgets (fid);
+      ## Remember length of 1st line
+      st_xml = ftell (fid) - 1;
       xml = fgets (fid);
       
-      ## File & expanded subdir are no longer needed for ODS
+      ## Close file but keep it around, store file name in struct pointer
       fclose (fid);
-      rmdir (tmpdir, "s");
 
       ## To speed things up later on, get sheet names and starting indices
       shtidx = strfind (xml, "<table:table table:name=");
@@ -67,17 +79,14 @@ function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename
       endfor
 
       ## Fill ods pointer.
-      ## FIXME find a class that doesn't display as one looooong string
-      xls.workbook = xml;               # content.xml
-      xls.sheets.sh_names = sh_names;   # sheet names
-      xls.sheets.shtidx = shtidx;       # start &end indices of sheets
-      xls.xtype = "OCT";                # OCT is fall-back interface
-      xls.app = ' ';                    # location (subdir) of unzipped file for OOXML
-                                        # must NOT be an empty string!
-      xls.filename = filename;          # spreadsheet filename
-
-      lastintf = "OCT";
-      xlssupport += 1;
+      xls.workbook        = tmpdir;         # file containing content.xml
+      xls.sheets.sh_names = sh_names;       # sheet names
+      xls.sheets.shtidx   = shtidx + st_xml;# start & end indices of sheets
+      xls.xtype           = "OCT";          # OCT is fall-back interface
+      xls.app             = 'ods';          #
+                                            # must NOT be an empty string!
+      xls.filename = filename;              # spreadsheet filename
+      xls.changed = 0;                      # Dummy
 
     endif
 
@@ -85,6 +94,28 @@ function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename
     ## xlsx
     ## FIXME  not implemented yet - Markus' job
 
+  elseif (chk5)
+    ## ====================== Gnumeric =========================================
+    xls.workbook = tmpdir;              # location of unzipped file
+    xls.xtype    = "OCT";               # interface
+    xls.app      = 'gnumeric';          # file handle
+    xls.filename = filename;            # file name
+    xls.changed  = 0;                   # Dummy
+
+    ## Get nr of sheets & pointers to start of Sheet nodes & end of Sheets node
+    shtidx = strfind (xml, "<gnm:Sheet ");
+    ## Add offset caused by first line
+    xls.sheets.shtidx = [ shtidx index(xml, "</gnm:Sheets>") ] + st_xml;
+    xls.sheets.sh_names = cell (1, numel (shtidx));
+    sh_names = getxmlnode (xml, "gnm:SheetNameIndex");
+    jdx = 1;
+    for ii=1:numel (shtidx)
+      [xls.sheets.sh_names(ii), ~, jdx] = getxmlnode (sh_names, "gnm:SheetName", jdx, 1);
+    endfor
+
   endif  
+
+  xlssupport += 1;
+  lastintf = "OCT";
 
 endfunction

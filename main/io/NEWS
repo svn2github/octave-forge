@@ -10,6 +10,8 @@ io-1.2.4   Release Date: 2013-TBA   Release Manager: Philip Nienhuis
 --- private/__POI_getusedrange__.m: Check return value of XSSF getFirstCellNum
     method
 
+*** basic Gnumeric read support added. Spreadsheet formulas can't be evaluated.
+
 *** xlsopen.m: suffixes for Excel filenames (.xls, .xlsx) need not be specified. 
                (But the files on disk do need these suffixes!)
 
@@ -19,7 +21,8 @@ io-1.2.4   Release Date: 2013-TBA   Release Manager: Philip Nienhuis
 
 *** odsopen: Relax requirement of lower case filename extension
 
-*** Added !experimental! OCT (native Octave) interface for reading .ods
+*** Added !experimental! OCT (native Octave) interface for reading .ods and
+    gnumeric
 
 *** getxmlattv.m, getxmlnode.m: new functions for support of OCT interface
 

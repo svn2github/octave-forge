@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <pr.nienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis <pr.nienhuis at users.sf.net>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -88,6 +88,7 @@
 ## 2012-02-25 Added info on occupied ranges to sh_names outarg for all interfaces
 ## 2012-10-12 Moved all interface-specific code into ./private subfuncs
 ## 2012-10-24 Style fixes
+## 2013-10-01 OCT interface added for gnumeric
 
 function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 
@@ -117,6 +118,9 @@ function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 
   elseif (strcmp (xls.xtype, "UNO"))
     [sh_names] = __UNO_spsh_info__ (xls);
+
+  elseif (strcmp (xls.xtype, "OCT"))
+    [sh_names] = __OCT_spsh_info__ (xls);
 
 ##elseif   <Other Excel interfaces below>
 

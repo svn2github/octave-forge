@@ -79,8 +79,14 @@
 ## 2012-10-24 Style fixes
 ## 2012-12-18 Improved error/warning messages
 ## 2013-09-30 OCT interface added
+## 2013-10-01 Warn for empty struct input
 
 function [ xls ] = xlsclose (xls, varargs)
+
+  if (isempty (xls))
+    warning ("xlsclose: file pointer struct was already closed");
+    return
+  endif
 
   force = 0;
 

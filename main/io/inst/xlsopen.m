@@ -126,6 +126,7 @@
 ##     ''     Fixed wrong error message about OXS and UNO not being supported
 ## 2013-09-30 Native Octave interface ("OCT") for reading .xlsx
 ##     ''     Adapted header to OCT (also Excel 2013 is supported)
+## 2013-10-01 Some adaptations for gnumeric
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
@@ -207,11 +208,11 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
   ## Supported interfaces determined; Excel file type check moved to separate interfaces.
   chk1 = strcmpi (filename(end-3:end), ".xls");       ## Regular (binary) BIFF 
   chk2 = strcmpi (filename(end-4:end-1), ".xls");     ## Zipped XML / OOXML
-  chk5 = strcmpi (filename(end-9:end), "gnumeric");   ## Zipped XML / gnumeric
+  chk5 = strcmpi (filename(end-8:end), ".gnumeric");  ## Zipped XML / gnumeric
 
   ## Check if Excel file exists. First check for file name suffix
   has_suffix = 1;
-  sfxpos = regexp (filnam, '(\.xls|\.gnumeric)');
+  sfxpos = regexp (filename, '(\.xls|\.gnumeric)');
   if (! isempty (sfxpos))
     ## .xls or .xls[x,m,b] is there, but at the right(most) position?
     if (! sfxpos(end) >= length (filename) - 4)
@@ -285,14 +286,14 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
   xlssupport = 0;
 
   ## Interface preference order is defined below: currently COM -> POI -> JXL -> OXS -> UNO -> OCT
-  ## chk1 & chk2 (xls file type) are conveyed depending on interface capabilities
+  ## chk1, chk2  (xls file type) and chk5 (gnumeric) are conveyed depending on interface capabilities
 
-  if ((! xlssupport) && xlsinterfaces.COM)
+  if ((! xlssupport) && xlsinterfaces.COM && (! chk5))
     ## Excel functioning has been tested above & file exists, so we just invoke it.
     [ xls, xlssupport, lastintf ] = __COM_spsh_open__ (xls, xwrite, filename, xlssupport);
   endif
 
-  if ((! xlssupport) && xlsinterfaces.POI)
+  if ((! xlssupport) && xlsinterfaces.POI && (! chk5))
     if (chk1 || chk2)
       [ xls, xlssupport, lastintf ] = __POI_spsh_open__ (xls, xwrite, filename, xlssupport, chk1, chk2, xlsinterfaces);
     else
@@ -300,7 +301,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
     endif
   endif
 
-  if ((! xlssupport) && xlsinterfaces.JXL)
+  if ((! xlssupport) && xlsinterfaces.JXL && (! chk5))
     if (chk1)
       [ xls, xlssupport, lastintf ] = __JXL_spsh_open__ (xls, xwrite, filename, xlssupport, chk1);
     else
@@ -308,7 +309,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
     endif
   endif
 
-  if ((! xlssupport) && xlsinterfaces.OXS)
+  if ((! xlssupport) && xlsinterfaces.OXS && (! chk5))
     if (chk1)
       [ xls, xlssupport, lastintf ] = __OXS_spsh_open__ (xls, xwrite, filename, xlssupport, chk1);
     else
@@ -316,14 +317,14 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
     endif
   endif
 
-  if ((! xlssupport) && xlsinterfaces.UNO)
+  if ((! xlssupport) && xlsinterfaces.UNO && (! chk5))
     [ xls, xlssupport, lastintf ] = __UNO_spsh_open__ (xls, xwrite, filename, xlssupport);
   endif
 
 
   if ((! xlssupport) && xlsinterfaces.OCT)
-    if (chk2)
-      [ xls, xlssupport, lastintf ] = __OCT_spsh_open__ (xls, xwrite, filename, xlssupport, chk2);
+    if (chk2 || chk5)
+      [ xls, xlssupport, lastintf ] = __OCT_spsh_open__ (xls, xwrite, filename, xlssupport, chk2, 0, chk5);
     else
       error ("xlsopen.m: unsupported file format for OCT / native Octave")
     endif

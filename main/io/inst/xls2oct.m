@@ -200,7 +200,13 @@ function [ rawarr, xls, rstatus ] = xls2oct (xls, wsh=1, datrange="", spsh_opts=
     [rawarr, xls, rstatus] = __UNO_spsh2oct__ (xls, wsh, datrange, spsh_opts);
   elseif (strcmp (xls.xtype, "OCT"))
     ## Read xls file tru native Octave
-    [rawarr, xls, rstatus] = __OCT_xlsx2oct__ (xls, wsh, datrange, spsh_opts);
+    if (strcmpi (xls.app, 'xlsx'))
+      [rawarr, xls, rstatus] = __OCT_xlsx2oct__ (xls, wsh, datrange, spsh_opts);
+    elseif (strcmpi (xls.app, 'gnumeric'))
+      [rawarr, xls, rstatus] = __OCT_gnm2oct__ (xls, wsh, datrange);
+    elseif (strcmpi (xls.app, 'ods'))
+      [rawarr, xls, rstatus] = __OCT_ods2oct__ (xls, wsh, datrange, spsh_opts);
+    endif
   ##elseif ---- <Other interfaces here>
     ## Call to next interface
   else

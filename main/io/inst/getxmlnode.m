@@ -15,15 +15,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*- 
-## @deftypefn {Function File} {@var{node} =} getxmlnode (@var{xml}, @var{nname})
-## @deftypefnx {Function File} {@var{node} =} getxmlnode (@var{xml}, @var{nname}, @var{is})
-## @deftypefnx {Function File} {@var{node} =} getxmlnode (@var{xml}, @var{nname}, @var{is}, @var{contnt})
-## Get string representing the first xml node @var{nname} from xml file in
-## string @var{xml}, optionally starting at position @var{is}, and return
-## start and end indices. If @var{contnt} is TRUE, return the portion of the
-## node between the outer tags.
+## @deftypefn {Function File} [ @var{node}, @var{s}, @var{e} ] = getxmlnode (@var{xml}, @var{tag})
+## @deftypefnx {Function File} [ @var{node}, @var{s}, @var{e} ] = getxmlnode (@var{xml}, @var{tag}, @var{is})
+## @deftypefnx {Function File} [ @var{node}, @var{s}, @var{e} ] = getxmlnode (@var{xml}, @var{tag}, @var{is}, @var{contnt})
+## Get a string representing the first xml @var{tag} node starting at position
+## @var{is} in xml text string @var{xml}, and return start and end indices. If
+## @var{is} is omitted it defaults to 1 (start of @var{xml}). If @var{contnt}
+## is TRUE, return the portion of the node between the outer tags.
 ##
-## @seealso{}
+## @seealso{getxmlattv}
 ## @end deftypefn
 
 ## Author: Philip Nienhuis <prnienhuis at users.sf.net>
@@ -34,14 +34,14 @@
 ##     ''     Further simplified using regexp
 ##     ''     Option to return just node contents
 
-function [ node, spos, epos ] = getxmlnode (xml, nname, is=1, contnt=0)
+function [ node, spos, epos ] = getxmlnode (xml, tag, is=1, contnt=0)
 
   if (nargin >= 3 && isempty (is))
     is = 1;
   endif
 
   ## Input validation
-  if (! ischar (xml) || ! ischar (nname))
+  if (! ischar (xml) || ! ischar (tag))
     error ("getxmlnode: text strings expected for first two args");
   elseif (nargin==3 && (! islogical (is) && ! isnumeric (is)))
     error ("getxmlnode: logicalor numerical value expected for arg #3");
@@ -53,12 +53,12 @@ function [ node, spos, epos ] = getxmlnode (xml, nname, is=1, contnt=0)
 
   node = '';
   ## Start tag must end with either > or a space preceding an attribute
-  spos = regexp (xml(is:end), sprintf ("<%s( |>)", nname));
+  spos = regexp (xml(is:end), sprintf ("<%s( |>)", tag));
   if (! isempty (spos))
     ## Apparently a node exists. Get its end. Maybe it is a single node
     ## ending in "/>"
     spos = spos(1);
-    [~, epos] = regexp (xml(is+spos:end), sprintf ("(</%s>|%s[^><]*/>)", nname, nname));
+    [~, epos] = regexp (xml(is+spos:end), sprintf ("(</%s>|%s[^><]*/>)", tag, tag));
     if (! isempty (epos))
       epos = epos(1);
       node = xml(is+spos-1 : is+spos+epos(1)-1);
@@ -72,7 +72,7 @@ function [ node, spos, epos ] = getxmlnode (xml, nname, is=1, contnt=0)
         endif
       endif
     else
-      error ("getxmlnode: couldn't find matching end tag for %s", nname);
+      error ("getxmlnode: couldn't find matching end tag for %s", tag);
     endif
     ## Update position pointers relative to input string
     epos += is + spos - 1;

@@ -16,10 +16,10 @@
 
 ## -*- texinfo -*- 
 ## @deftypefn {Function File} [@var{retval}] = getxmlattv (@var{xmlnode}, @var{att})
-## Get value of attribute @var{att} in xml node in string @var{xmlnode}.
-## of an xml string, return empty if attribute isn't present.
+## Get value of attribute @var{att} in xml node (char string) @var{xmlnode},
+## return empty if attribute isn't present.
 ##
-## @seealso{}
+## @seealso{getxmlnode}
 ## @end deftypefn
 
 ## Author: Philip Nienhuis <prnienhuis@ at users.sf.net>

@@ -33,6 +33,7 @@
 ## 2013-10-01 Input validation
 ##     ''     Further simplified using regexp
 ##     ''     Option to return just node contents
+## 2013-10-02 Speed up using regexp options
 
 function [ node, spos, epos ] = getxmlnode (xml, tag, is=1, contnt=0)
 
@@ -53,18 +54,18 @@ function [ node, spos, epos ] = getxmlnode (xml, tag, is=1, contnt=0)
 
   node = '';
   ## Start tag must end with either > or a space preceding an attribute
-  spos = regexp (xml(is:end), sprintf ("<%s( |>)", tag));
+  spos = regexp (xml(is:end), sprintf ("<%s( |>)", tag), "once");
   if (! isempty (spos))
     ## Apparently a node exists. Get its end. Maybe it is a single node
     ## ending in "/>"
     spos = spos(1);
-    [~, epos] = regexp (xml(is+spos:end), sprintf ("(</%s>|%s[^><]*/>)", tag, tag));
+    [~, epos] = regexp (xml(is+spos:end), sprintf ("(</%s>|%s[^><]*/>)", tag, tag), "once");
     if (! isempty (epos))
       epos = epos(1);
       node = xml(is+spos-1 : is+spos+epos(1)-1);
       if (contnt)
         if (strcmp (node(end-1:end), "/>"))
-          Single node tag. Return empty string
+          ## Single node tag. Return empty string
           node = '';
         else
           ## Get contents between end of opening tag en start of end tag

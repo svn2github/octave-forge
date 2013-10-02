@@ -27,6 +27,7 @@
 ## 2013-09-09 Wipe temp dir after opening as all content is in memory
 ##            FIXME this needs to be adapted for future OOXML support
 ## 2013-09-23 Fix copyright messages
+## 2013-10-02 More comments
 
 function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename, xlssupport, chk2, chk3, chk5)
 
@@ -43,7 +44,8 @@ function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename
     st_xml = ftell (fid) - 1;
     xml = fread (fid, "char=>char").';
   else
-    # This is needed for a silent delete of our tmpdir
+    ## xlsx and ods are zipped
+    ## Below is needed for a silent delete of our tmpdir
     confirm_recursive_rmdir (0);
     ## http://savannah.gnu.org/bugs/index.php?39148
     ## unpack.m taken from bugfix: http://hg.savannah.gnu.org/hgweb/octave/rev/45165d6c4738
@@ -79,7 +81,7 @@ function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename
       endfor
 
       ## Fill ods pointer.
-      xls.workbook        = tmpdir;         # file containing content.xml
+      xls.workbook        = tmpdir;         # subdir containing content.xml
       xls.sheets.sh_names = sh_names;       # sheet names
       xls.sheets.shtidx   = shtidx + st_xml;# start & end indices of sheets
       xls.xtype           = "OCT";          # OCT is fall-back interface
@@ -96,9 +98,9 @@ function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename
 
   elseif (chk5)
     ## ====================== Gnumeric =========================================
-    xls.workbook = tmpdir;              # location of unzipped file
+    xls.workbook = tmpdir;              # location of unzipped files
     xls.xtype    = "OCT";               # interface
-    xls.app      = 'gnumeric';          # file handle
+    xls.app      = 'gnumeric';          #
     xls.filename = filename;            # file name
     xls.changed  = 0;                   # Dummy
 

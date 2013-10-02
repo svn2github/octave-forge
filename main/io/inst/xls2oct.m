@@ -20,7 +20,8 @@
 ## @deftypefnx {Function File} [ @var{rawarr}, @var{xls}, @var{rstatus} ] = xls2oct (@var{xls}, @var{wsh}, @var{range}, @var{options})
 ##
 ## Read data contained within cell range @var{range} from worksheet @var{wsh}
-## in an Excel spreadsheet file pointed to in struct @var{xls}.
+## in an Excel spreadsheet file pointed to in struct @var{xls}. Gnumeric
+## files can be read as well.
 ##
 ## @var{xls} is supposed to have been created earlier by xlsopen in the
 ## same octave session.
@@ -136,6 +137,8 @@
 ## 2012-10-12 Moved all interface-specific subfubcs into ./private
 ## 2012-10-24 Style fixes
 ## 2013-09-30 Native Octave (OCT) added
+## 2013-10-01 Some adaptations for gnumeric
+## 2013-10-02 Delete ODS section
 ##
 ## Latest subfunc update: 2012-10-12
 
@@ -204,8 +207,6 @@ function [ rawarr, xls, rstatus ] = xls2oct (xls, wsh=1, datrange="", spsh_opts=
       [rawarr, xls, rstatus] = __OCT_xlsx2oct__ (xls, wsh, datrange, spsh_opts);
     elseif (strcmpi (xls.app, 'gnumeric'))
       [rawarr, xls, rstatus] = __OCT_gnm2oct__ (xls, wsh, datrange);
-    elseif (strcmpi (xls.app, 'ods'))
-      [rawarr, xls, rstatus] = __OCT_ods2oct__ (xls, wsh, datrange, spsh_opts);
     endif
   ##elseif ---- <Other interfaces here>
     ## Call to next interface

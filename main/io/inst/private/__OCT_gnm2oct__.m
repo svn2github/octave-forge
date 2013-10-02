@@ -24,9 +24,10 @@
 ## Author: Philip Nienhuis <prnienhuis at users.sf.net>
 ## Created: 2013-10-01
 ## Updates:
-## 
+## 2013-10-02 Drop return arg rstatus
+## 2013-10-02 Significant speed-up using regexp and splitting xml in chunks ~4e5 chars
 
-function [ rawarr, xls, rstatus] = __OCT_gnm2oct__ (xls, wsh, cellrange='', spsh_opts)
+function [ rawarr, xls] = __OCT_gnm2oct__ (xls, wsh, cellrange='', spsh_opts)
 
   rstatus = 0;
 
@@ -90,39 +91,69 @@ function [ rawarr, xls, rstatus] = __OCT_gnm2oct__ (xls, wsh, cellrange='', spsh
   rawarr = cell (nrows, ncols);
 
   ## Get cells
-  cells = getxmlnode (xml, "gnm:Cells");
-  gcell = " ";
-  icx = 1;                      # Position counter
-  while (! isempty (gcell))
-    ## Get next cell
-    [gcell, ~, jcx] = getxmlnode (cells, "gnm:Cell", icx);
-    ## Get row index (0-based)
-    crow = str2double (getxmlattv (gcell, "Row"));
-    if (crow >= firstrow - 1 && crow < lastrow)
-      ## Row is in range. Get column index
-      ccol = str2double (getxmlattv (gcell, "Col"));
-      if (ccol >= lcol - 1 && ccol < rcol)
-        ## This cell is in range. Get type
-        ctype = getxmlattv (gcell, "ValueType");
-        if (! isempty (ctype))
-          switch ctype
-            case "40"   # float
-              rawarr {crow-firstrow+2, ccol-lcol+2} = str2double (getxmlnode (gcell, "gnm:Cell", 1, 1));
-            case "60"   # string
-              rawarr {crow-firstrow+2, ccol-lcol+2} = getxmlnode (gcell, "gnm:Cell", 1, 1);
-            otherwise
-              ## Nothing
-          endswitch
+  cells = getxmlnode (xml, "gnm:Cells", 1, 1);  # save -v7 cells.mat cells
+
+  ## The row and column checks below assume rows and cols are sorted rows 1st cols 2nd
+  ## In case of requested cell range, set pointer to first cell in range
+  if (! isempty (cellrange))
+    cells = cells (max (1, regexp (cells, sprintf ('Row="%d"', firstrow - 1), "once") - 12) : end);
+  endif
+
+  ## Reading nodes goes fastest if the xml is split in chunks of around 4.10^5 chars
+  cdim = length (cells);
+  if (cdim > 410000)
+    idx = 1;
+    jdx = 400000;
+    ccells = cell (1, ceil (cdim / 400000));
+    ## Assign to ccell, make sure chunks end at <gnm:Cell> node ends
+    for ii=1:numel (ccells) - 1
+      kdx = regexp (cells(jdx+1:min(jdx+400000, cdim)), "<gnm:Cell ", "once");
+      ## Subtract 1 for ">" before "<gnm:" and another 1 coz index = 1-based
+      jdx += kdx - 2;
+      ccells(ii) = cells (idx:jdx);
+      idx = jdx + 1;
+      jdx = min (400000 * (ii+1), cdim);
+    endfor
+    ccells(end) = cells(idx:end);
+  else
+    ccells = {cells};
+  endif
+
+  ## Get first cell
+  [gcell, ~, jcx] = getxmlnode (ccells{1}, "gnm:Cell");
+  inrange = 1;
+  for ii=1:numel (ccells)
+    cells = ccells{ii};
+    while (! isempty (gcell) && inrange)
+      ## Get row index (0-based)
+      crow = str2double (regexp (gcell, 'Row="[+-.\d]*"', "match"){1}(6:end-1));
+      if (crow >= firstrow - 1)
+        if (crow < lastrow)
+          ## Row is in range. Get column index
+          ccol = str2double (regexp (gcell, 'Col="[+-.\d]*"', "match"){1}(6:end-1));
+          if (ccol >= lcol - 1)
+            if (ccol < rcol)
+              ## This cell is in range. Get type
+              ctype = regexp (gcell, 'ValueType="[+-.\d]*"', "match"){1}(6:end-1);
+              if (ctype(1) == "4")
+                ## Type 40, float
+                rawarr {crow-firstrow+2, ccol-lcol+2} = str2double (regexp (gcell, '>.*<', "match"){1}(2:end-1));
+              else
+                ## A string or maybe a formula. Return as text string anyway (we have no formula evaluator)
+                rawarr {crow-firstrow+2, ccol-lcol+2} = regexp (gcell, '>.*<', "match"){1}(2:end-1);
+              endif
+            endif
+          endif
         else
-          ## Probably a formula. Return as text string (we have no formula evaluator)
-          rawarr {crow-firstrow+2, ccol-lcol+2} = getxmlnode (gcell, "gnm:Cell", 1, 1);
+          inrange = 0;
         endif
       endif
-    endif
-    icx = jcx;
-    
-  endwhile
+      icx = jcx;
+      ## Get next cell
+      [gcell, ~, jcx] = getxmlnode (cells, "gnm:Cell", icx);
+    endwhile
+  endfor
+
   xls.limits = [lcol, rcol; firstrow, lastrow];
-  rstatus = 1;
 
 endfunction

@@ -17,7 +17,7 @@
 ## @deftypefn {Function File} [@var{ods}] = odsclose (@var{ods})
 ## @deftypefnx {Function File} [@var{ods}] = odsclose (@var{ods}, @var{filename})
 ## @deftypefnx {Function File} [@var{ods}] = odsclose (@var{ods}, "FORCE")
-## Close the OpenOffice_org Calc spreadsheet pointed to in struct
+## Close the OpenOffice_org Calc / Gnumeric spreadsheet pointed to in struct
 ## @var{ods}, if needed write the file to disk.
 ## odsclose will determine if the file must be written to disk based on
 ## information contained in @var{ods}.
@@ -70,8 +70,9 @@
 ##     ''     Move "file ptr preserved" message to proper else clause
 ## 2012-10-23 Style fixes
 ## 2012-12-18 Improved error/warning messages
-## 2012-09-09 Native Octave interface ("OCT") for reading
+## 2013-09-09 Native Octave interface ("OCT") for reading
 ##      ''    Warning message for empty file ptr structs
+## 2013-10-02 Texinfo header adapted 
 
 function [ ods ] = odsclose (ods, varargs)
 

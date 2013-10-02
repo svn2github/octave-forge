@@ -200,7 +200,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
   if (rw)
     if (odsintf_cnt == 1 && odsinterfaces.OCT)
       ## Check if OCT is only interface and writing is requested
-      error ("OCT interface doesn't support writing .ods files");
+      error ("OCT interface doesn't support writing files");
     endif
     rw = 1;
   endif
@@ -237,9 +237,10 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
   ## Supported interfaces determined; now check ODS file type.
 
-  chk3 = strcmpi (lower (filename(end-3:end)), '.ods');
+  chk3 = strcmpi (lower (filename(end-3:end)), '.ods'); ## ODS 1.2
   ## jOpenDocument (JOD) can read from .sxc files, but only if odfvsn = 2
-  chk4 = strcmpi (lower (filename(end-3:end)), '.sxc');
+  chk4 = strcmpi (lower (filename(end-3:end)), '.sxc'); ## Old OOo/Starcalc
+  chk5 = strcmpi (filename(end-8:end), ".gnumeric");    ## Zipped XML / gnumeric
 
   ods = struct ("xtype",    [], 
                 "app",      [], 
@@ -253,24 +254,24 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
   ## Keep track of which interface is selected. Can be used for fallback to other intf
   odssupport = 0;
 
-  if (odsinterfaces.OTK && ~odssupport && chk3)
+  if (odsinterfaces.OTK && ~odssupport && chk3 && ! chk5)
     [ ods, odssupport, lastintf ] = ...
               __OTK_spsh_open__ (ods, rw, filename, odssupport);
   endif
 
-  if (odsinterfaces.JOD && ~odssupport && (chk3 || chk4))
+  if (odsinterfaces.JOD && ~odssupport && (chk3 || chk4) && ! chk5)
     [ ods, odssupport, lastintf ] = ...
               __JOD_spsh_open__ (ods, rw, filename, odssupport);
   endif
 
-  if (odsinterfaces.UNO && ~odssupport)
+  if (odsinterfaces.UNO && ~odssupport && ! chk5)
     [ ods, odssupport, lastintf ] = ...
               __UNO_spsh_open__ (ods, rw, filename, odssupport);
   endif
 
-  if (odsinterfaces.OCT && ~odssupport && chk3)
+  if (odsinterfaces.OCT && ~odssupport && (chk3 || chk5))
     [ ods, odssupport, lastintf ] = ...
-              __OCT_spsh_open__ (ods, rw, filename, odssupport, 0, chk3, 0);
+              __OCT_spsh_open__ (ods, rw, filename, odssupport, 0, chk3, chk5);
   endif
 
   ## if 

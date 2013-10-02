@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -20,14 +20,16 @@
 ## @deftypefnx {Function File} [@var{numarr}, @var{txtarr}, @var{rawarr}, @var{limits}] = odsread (@var{filename}, @var{wsh}, @var{range}, @var{reqintf})
 ##
 ## Read data contained from cell range @var{range} in worksheet @var{wsh}
-## in OpenOffice_org Calc spreadsheet file @var{filename}.
+## in OpenOffice_org Calc spreadsheet file @var{filename}. Reading
+## Gnumeric xml files is also supported.
 ##
-## For writing data you need the octave-forge java package (> 1.2.8)
-## and one or both of jopendocument-<version>.jar or preferrably:
-## (odfdom.jar (versions 0.7.5 or 0.8.6+) & xercesImpl.jar v. 2.9.1) in
-## your javaclasspath. There is also experimental support invoking
-## OpenOffice.org or clones through Java/UNO bridge.
 ## A native Octave interface (OCT) is available for reading data.
+## For ODS the supported Java-based interfaces offer more flexibility
+## and better speed, plus write support. For these you need the octave-forge
+## Java package (> 1.2.8) and one or both of jopendocument-<version>.jar or
+## preferrably: (odfdom.jar (versions 0.7.5 or 0.8.6+) & xercesImpl.jar v. 2.9.1)
+## in your javaclasspath. There is also experimental support invoking
+## OpenOffice.org/LibreOffice or clones through a Java/UNO bridge.
 ##
 ## Return argument @var{numarr} contains the numeric data, optional
 ## return arguments @var{txtarr} and @var{rawarr} contain text strings
@@ -63,7 +65,8 @@
 ## the automatic selection by odsread of one interface out of the
 ## supported ones: Java/ODFtoolkit ('OTK'), Java/jOpenDocument 
 ## ('JOD'), Java/UNO bridge ('UNO'), or native Octave (OCT; only for
-## reading).
+## reading). Octave selects one of these, preferrably in the order above,
+## based on presence of support software and the file at hand.
 ##
 ## Erroneous data and empty cells are set to NaN in @var{numarr} and
 ## turn up empty in @var{txtarr} and @var{rawarr}. Date/time values
@@ -73,21 +76,25 @@
 ## internal representation so MS-Excel spreadsheets rewritten into
 ## .ods format by OpenOffice.org Calc may have different date base
 ## values.
+## As there's no gnumeric formula evaluator and gnumeric doesn't store
+## cached formula results, formulas are returned as text strings.
 ##
 ## @var{numarr} and @var{txtarr} are trimmed from empty outer rows
 ## and columns, so any returned array may turn out to be smaller than
 ## requested in @var{range}.
 ##
 ## When reading from merged cells, all array elements NOT corresponding 
-## to the leftmost or upper Calc cell will be treated as if the
-## "corresponding" Calc cells are empty.
+## to the leftmost or upper spreadsheet cell will be treated as if the
+## "corresponding" cells are empty.
 ##
 ## odsread is just a wrapper for a collection of scripts that find out
 ## the interface to be used and do the actual reading. For each call
-## to odsread the interface must be started and the Calc file read into
+## to odsread the interface must be started and the spreadsheet file read into
 ## memory. When reading multiple ranges (in optionally multiple worksheets)
 ## a significant speed boost can be obtained by invoking those scripts
-## directly (odsopen / ods2oct [/ parsecell] / ... / odsclose).
+## directly (odsopen / ods2oct [/ parsecell] / ... / odsclose). This also 
+## offers more flexibility (e.g. formula results or the formulas
+## themselves; stripping output arrays from empty enveloping rows/columns).
 ##
 ## Examples:
 ##
@@ -126,13 +133,16 @@
 ## 2013-09-27 Check for proper filename in input
 ## 2013-09-27 Better filename suffix check
 ##     ''     Updated header
+## 2013-10-02 Some adaptations for gnumeric support
+##     ''     Texinfo header adapted
 
 function [ numarr, txtarr, rawarr, lim ] = odsread (filename, wsh=1, datrange=[], reqintf=[])
 
   if (! ischar (filename))
     error ("filename (text string) expected for argument #1, not a %s", class (filename));
   endif
-  if (nargin < 1 || ! strcmpi (".ods", filename(end-3:end)))
+  if (nargin < 1 || ! (strcmpi (".ods", filename(end-3:end)) || ...
+                       strcmpi (".gnumeric", filename(end-8:end))))
     usage ("odsread: at least a filename incl. suffix is needed");
   endif
 

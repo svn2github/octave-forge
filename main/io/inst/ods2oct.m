@@ -127,6 +127,7 @@
 ## 2012-10-24 Style fixes
 ## 2013-09-09 Native Octave interface ("OCT") for reading
 ## 2013-09-23 Updated copyright messages
+## 2013-10-02 Some adaptations for gnumeric
 ##
 ## Latest subfunc update: 2012-10-12
 
@@ -186,8 +187,14 @@ function [ rawarr, ods, rstatus ] = ods2oct (ods, wsh=1, datrange=[], spsh_opts=
     ## Read ods file tru Java & UNO
     [rawarr, ods] = __UNO_spsh2oct__ (ods, wsh, datrange, spsh_opts);
   elseif (strcmp (ods.xtype, "OCT"))
-    ## Read ods file tru native Octave
-    [rawarr, ods] = __OCT_ods2oct__ (ods, wsh, datrange, spsh_opts);
+    if (strcmpi (ods.app, 'ods'))
+      ## Read ods file tru native Octave
+      [rawarr, ods] = __OCT_ods2oct__ (ods, wsh, datrange, spsh_opts);
+    elseif (strcmpi (ods.app, 'gnumeric'))
+      ## Read gnumeric. Gnumeric does not support formula evaluation nor supports
+      ## cached values. Stripping output is processed below, spsh_opts is ignored
+      [rawarr, ods] = __OCT_gnm2oct__ (ods, wsh, datrange);
+    endif
   ##elseif
   ##  ---- < Other interfaces here >
   else

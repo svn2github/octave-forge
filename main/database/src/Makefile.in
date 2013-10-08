@@ -9,7 +9,7 @@ endif
 
 OBJECTS := __pq_connect__.o pq_close.o pq_exec.o converters.o \
            converters_arr_comp.o pq_connection.o command.o \
-           pq_update_types.o pq_lo.o pq_conninfo.o
+           pq_update_types.o pq_lo.o pq_conninfo.o __pq_internal_exit__.o
 
 pq_interface.oct: $(OBJECTS)
 	@MKOCTFILE@ -o pq_interface.oct -L`@PG_CONFIG@ --libdir` -lpq $(OBJECTS)

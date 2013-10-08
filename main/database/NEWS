@@ -1,3 +1,8 @@
+database 2.2.1
+--------------
+
+ ** New function pq_lo_view.
+
 database 2.2.0
 --------------
 

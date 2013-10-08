@@ -10,6 +10,7 @@ Postgresql large objects
  pq_lo_import
  pq_lo_export
  pq_lo_unlink
+ pq_lo_view
 Option setting
  setdbopts
  getdbopts

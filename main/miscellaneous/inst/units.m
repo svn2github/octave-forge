@@ -1,4 +1,5 @@
 ## Copyright (C) 2005 Carl Osterwisch <osterwischc@asme.org>
+## Copyright (C) 2013 Carnë Draug <carandraug@octave.org>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -14,7 +15,7 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} units (@var{fromUnit}, @var{toUnit})
+## @deftypefn  {Function File} {} units (@var{fromUnit}, @var{toUnit})
 ## @deftypefnx {Function File} {} units (@var{fromUnit}, @var{toUnit}, @var{x})
 ## Return the conversion factor from @var{fromUnit} to @var{toUnit} measurements.
 ##
@@ -35,21 +36,40 @@
 ## @end example
 ## @end deftypefn
 
-function y = units(fromUnit, toUnit, x)
-    if 2 > nargin || 3 < nargin || !ischar(fromUnit) || !ischar(toUnit)
-        print_usage;
+function y = units (fromUnit, toUnit, x = 1)
+
+  if (nargin < 2 || nargin > 3)
+    print_usage ();
+  elseif (! ischar (fromUnit))
+    error ("units: FromUNIT must be a string");
+  elseif (! ischar (toUnit))
+    error ("units: ToUNIT must be a string");
+  elseif (! isnumeric (x))
+    error ("units: X must be numeric");
+  endif
+
+  cmd = sprintf ('units --compact --one-line "%s" "%s"', fromUnit, toUnit);
+  [status, rawoutput] = system (cmd);
+  if (status)
+    error ("units: %s\nVerify that GNU units is installed in the current path.",
+           rawoutput);
+  endif
+
+  ## FIXME missing support for non-linear conversions. See for example:
+  ##          units --compact --one-line tempC tempF
+  c_factor = str2double (rawoutput);
+  if (any (isnan (c_factor(:))))
+    if (index (rawoutput, "="))
+      ## If there's an equal on the output, it was probably a formula
+      ## for a non-linear conversion such as "tempC(x) = x K + stdtemp"
+      error ("units: no support for non-linear conversion of '%s' to '%s'",
+             fromUnit, toUnit);
+    else
+      error ("units: unable to parse output %s from GNU units.", rawoutput);
     endif
+  endif
 
-    [status, rawoutput] = system(sprintf('units "%s" "%s"', fromUnit, toUnit), 1);
-    (0 == status) || error([rawoutput,
-        'Verify that GNU units is installed in the current path.']);
-    
-    i = index(rawoutput, "*");
-    j = index(rawoutput, "\n") - 1;
-    i && (i < j) || error('parsing units output "%s"', rawoutput);
-
-    exist("x", "var") || (x = 1);
-    eval(['y = x', rawoutput(i:j), ';'])
+  y = x * c_factor;
 endfunction
 
 %!demo
@@ -58,4 +78,6 @@ endfunction
 %! c.unit = 'kg';
 %! c.value = units(a.unit, c.unit, a.value) + units(b.unit, c.unit, b.value)
 
-%!assert( units("in", "mm"), 25.4 )
+%!assert (units ("in", "mm"), 25.4)
+%!assert (units ("in", "mm", [5 7; 8 9]), 25.4 * [5 7; 8 9])
+%!error <non-linear conversion> units ("tempC", "tempF")

@@ -32,6 +32,12 @@
 
 function [ trow, brow, lcol, rcol ] = __OCT_getusedrange__ (spptr, ii)
 
+  ## Check input
+  nsheets = numel (spptr.sheets.sh_names); 
+  if (ii > nsheets)
+    error ("getusedrange: sheet index (%d) out of range (1 - %d)", ii, nsheets);
+  endif
+
   if (strcmpi (spptr.filename(end-3:end), ".ods"))
     [ trow, brow, lcol, rcol ] = __OCT_ods_getusedrange__ (spptr, ii);
   elseif (strcmpi (spptr.filename(end-4:end-1), ".xls"))
@@ -49,7 +55,23 @@ function [ trow, brow, lcol, rcol ] = __OCT_xlsx_getusedrange__ (spptr, ii);
 
   trow = brow = lcol = rcol = 0;
 
-  ## FIXME OOXML stuff (.xlsx) here
+  ## Read first part of raw worksheet
+  rawsheet = fopen (sprintf ('%s/xl/worksheets/sheet%d.xml', spptr.workbook, ii));
+  if (rawsheet > 0)
+    fgetl (rawsheet);                   ## skip the first line
+    xml = fgetl (rawsheet, 516);        ## Occupied range is in first 512 bytes
+    fclose (rawsheet);
+  else
+    ## We know the number must be good => apparently tmpdir is damaged or it has gone
+    error ("getusedrange: sheet number nonexistent or corrupted file pointer struct");
+  endif
+
+  node = getxmlnode (xml, "dimension");
+  crange = getxmlattv (node, "ref");
+
+  [~, nrows, ncols, trow, lcol] = parse_sp_range (crange);
+  brow = trow + nrows - 1;
+  rcol = lcol + ncols - 1;
 
 endfunction
 
@@ -59,12 +81,6 @@ endfunction
 function [ trow, brow, lcol, rcol ] = __OCT_ods_getusedrange__ (spptr, ii)
 
   trow = brow = lcol = rcol = nrows = ncols = 0;
-
-  ## Check input
-  nsheets = numel (spptr.sheets.sh_names); 
-  if (ii > nsheets)
-    error ("getusedrange: sheet index (%d) out of range (1 - %d)", ii, nsheets);
-  endif
 
   if (isfield (spptr, "xml"))
     xml = spptr.xml;
@@ -98,12 +114,6 @@ endfunction
 function [ trow, brow, lcol, rcol ] = __OCT_gnm_getusedrange__ (spptr, ii);
 
   trow = brow = lcol = rcol = nrows = ncols = 0;
-
-  ## Check input
-  nsheets = numel (spptr.sheets.sh_names); 
-  if (ii > nsheets)
-    error ("getusedrange: sheet index (%d) out of range (1 - %d)", ii, nsheets);
-  endif
 
   if (isfield (spptr, "xml"))
     xml = spptr.xml;

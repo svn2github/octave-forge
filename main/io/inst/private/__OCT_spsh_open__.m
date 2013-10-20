@@ -28,6 +28,7 @@
 ##            FIXME this needs to be adapted for future OOXML support
 ## 2013-09-23 Fix copyright messages
 ## 2013-10-02 More comments
+## 2013-10-20 Adapted parts of Markus' .xlxs code
 
 function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename, xlssupport, chk2, chk3, chk5)
 
@@ -93,8 +94,47 @@ function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename
     endif
 
   elseif (chk2)
-    ## xlsx
-    ## FIXME  not implemented yet - Markus' job
+    ## =======================  XLSX ===========================================
+    ## From xlsxread by Markus Bergholz <markuman+xlsread@gmail.com>
+    ## https://github.com/markuman/xlsxread
+    
+    ## Fill xlsx pointer 
+    xls.workbook          = tmpdir;         # subdir containing content.xml
+    xls.xtype             = "OCT";          # OCT is fall-back interface
+    xls.app               = 'xlsx';         # must NOT be an empty string!
+    xls.filename = filename;                # spreadsheet filename
+    xls.changed = 0;                        # Dummy
+
+    ## Get sheet names. Speeds up other functions a lot if we can do it here
+    fid = fopen (sprintf ('%s/xl/workbook.xml', tmpdir));
+    if (fid < 0)
+      ## File open error
+      error ("xls2oct: file %s couldn't be unzipped", filename);
+    else
+      ## Get content.xml
+      fgetl (fid);
+      xml = fgetl (fid);
+      ## Close file
+      fclose (fid);
+
+      sheets = getxmlnode (xml, "sheets");
+      sh = ' ';
+      is = 1;
+      nsheets = 0;
+      names = {};
+      sheetId = [];
+      while (! isempty (sh))
+        ## getxmlnode returns empty string if no node with req. tag is found
+        [sh, ~, is] = getxmlnode (sheets, "sheet", is);
+        if (! isempty (sh))
+          ++nsheets;
+          names(nsheets) = getxmlattv (sh, "name");
+          Id(nsheets)    = str2double (getxmlattv (sh, "r:id")(4:end));
+        endif
+      endwhile
+      xls.sheets.sh_names = names;
+      xls.sheets.rid   = Id;
+    endif
 
   elseif (chk5)
     ## ====================== Gnumeric =========================================

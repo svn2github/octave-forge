@@ -34,9 +34,14 @@
 ##     ''     Further simplified using regexp
 ##     ''     Option to return just node contents
 ## 2013-10-02 Speed up using regexp options
+## 2013-10-20 Fix typos in input validation error messages
+##     ''     Better input validation
 
 function [ node, spos, epos ] = getxmlnode (xml, tag, is=1, contnt=0)
 
+  if (nargin < 2)
+    print_usage;
+  endif
   if (nargin >= 3 && isempty (is))
     is = 1;
   endif
@@ -45,9 +50,9 @@ function [ node, spos, epos ] = getxmlnode (xml, tag, is=1, contnt=0)
   if (! ischar (xml) || ! ischar (tag))
     error ("getxmlnode: text strings expected for first two args");
   elseif (nargin==3 && (! islogical (is) && ! isnumeric (is)))
-    error ("getxmlnode: logicalor numerical value expected for arg #3");
+    error ("getxmlnode: logical or numerical value expected for arg #3");
   elseif (nargin==4 && (! islogical (contnt) && ! isnumeric (contnt)))
-    error ("getxmlnode: logicalor numerical value expected for arg #3");
+    error ("getxmlnode: logical or numerical value expected for arg #3");
   endif
 
   is = max (is, 1);

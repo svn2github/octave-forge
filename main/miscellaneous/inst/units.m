@@ -48,7 +48,8 @@ function y = units (fromUnit, toUnit, x = 1)
     error ("units: X must be numeric");
   endif
 
-  cmd = sprintf ('units --compact --one-line "%s" "%s"', fromUnit, toUnit);
+  cmd = sprintf ('units --compact --one-line -o "%%.16g" "%s" "%s"',
+                 fromUnit, toUnit);
   [status, rawoutput] = system (cmd);
   if (status)
     error ("units: %s\nVerify that GNU units is installed in the current path.",

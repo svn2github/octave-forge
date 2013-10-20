@@ -127,6 +127,7 @@
 ## 2013-09-30 Native Octave interface ("OCT") for reading .xlsx
 ##     ''     Adapted header to OCT (also Excel 2013 is supported)
 ## 2013-10-01 Some adaptations for gnumeric
+## 2013-10-20 Overhauled file extension detection logic
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
@@ -205,19 +206,21 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
     endif
   endif
 
-  ## Supported interfaces determined; Excel file type check moved to separate interfaces.
-  chk1 = strcmpi (filename(end-3:end), ".xls");       ## Regular (binary) BIFF 
-  chk2 = strcmpi (filename(end-4:end-1), ".xls");     ## Zipped XML / OOXML
-  chk5 = strcmpi (filename(end-8:end), ".gnumeric");  ## Zipped XML / gnumeric
-
-  ## Check if Excel file exists. First check for file name suffix
+  ## Check if Excel file exists. First check for (supported) file name suffix:
+  ch1 = chk2 = chk5 = 0;
   has_suffix = 1;
-  sfxpos = regexp (filename, '(\.xls|\.gnumeric)');
+  [sfxpos, ~, ~, ext] = regexp (filename, '(\.xlsx?|\.gnumeric)');
+  ext = ext{end};
   if (! isempty (sfxpos))
-    ## .xls or .xls[x,m,b] is there, but at the right(most) position?
-    if (! sfxpos(end) >= length (filename) - 4)
-      ## Apparently not. If xwrite = 0, check file suffix, else add .xls
+    ## .xls or .xls[x,m,b] or .gnumeric is there, but at the right(most) position?
+    if (sfxpos(end) <= length (filename) - length (ext))
+      ## Apparently not, or it is an unrecognized extension
+      ## If xwrite = 0, check file suffix, else add .xls
       has_suffix = 0;
+    else
+      chk1 = strcmpi (ext, ".xls");               ## Regular (binary) BIFF 
+      chk2 = strcmpi (ext(1:end-1), ".xls");      ## Zipped XML / OOXML. Catches xlsx, xlsb, xlsm
+      chk5 = strcmpi (ext, ".gnumeric");          ## Zipped XML / gnumeric
     endif
   else
     has_suffix = 0;
@@ -239,7 +242,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
   else
     fmode = 'rb';
     if (! has_suffix)
-      ## Try to find eind existing file name
+      ## Try to find find existing file name. We ignore .gnumeric
         filnm = dir ([filename ".xls*"]);
         if (! isempty (filnm))
           ## Simply choose the first one
@@ -320,7 +323,6 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
   if ((! xlssupport) && xlsinterfaces.UNO && (! chk5))
     [ xls, xlssupport, lastintf ] = __UNO_spsh_open__ (xls, xwrite, filename, xlssupport);
   endif
-
 
   if ((! xlssupport) && xlsinterfaces.OCT)
     if (chk2 || chk5)

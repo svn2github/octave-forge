@@ -204,7 +204,7 @@ function [ rawarr, xls, rstatus ] = xls2oct (xls, wsh=1, datrange="", spsh_opts=
   elseif (strcmp (xls.xtype, "OCT"))
     ## Read xls file tru native Octave
     if (strcmpi (xls.app, 'xlsx'))
-      [rawarr, xls, rstatus] = __OCT_xlsx2oct__ (xls, wsh, datrange, spsh_opts);
+      [rawarr, xls] = __OCT_xlsx2oct__ (xls, wsh, datrange);
     elseif (strcmpi (xls.app, 'gnumeric'))
       [rawarr, xls, rstatus] = __OCT_gnm2oct__ (xls, wsh, datrange);
     endif

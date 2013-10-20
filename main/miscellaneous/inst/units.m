@@ -48,12 +48,31 @@ function y = units (fromUnit, toUnit, x = 1)
     error ("units: X must be numeric");
   endif
 
-  cmd = sprintf ('units --compact --one-line -o "%%.16g" "%s" "%s"',
-                 fromUnit, toUnit);
-  [status, rawoutput] = system (cmd);
-  if (status)
-    error ("units: %s\nVerify that GNU units is installed in the current path.",
-           rawoutput);
+  ## Does the version of units available have the compact option that
+  ## will make things easier to parse?
+  persistent compact = compact_option ();
+
+  if (compact)
+    cmd = sprintf ('units --compact --one-line -o "%%.16g" "%s" "%s"',
+                   fromUnit, toUnit);
+    [status, rawoutput] = system (cmd);
+    if (status)
+      error ("units: %s", rawoutput);
+    endif
+  else
+    ## No compact or one-line option, we need to find the conversion factor
+    ## from the text ourselves
+    cmd = sprintf ('units -o "%%.16g" "%s" "%s"', fromUnit, toUnit);
+    [status, rawoutput] = system (cmd);
+    if (status)
+      error ("units: %s", rawoutput);
+    endif
+    ini_factor = index (rawoutput, "*");
+    end_factor = index (rawoutput, "\n") - 1;
+    if (isempty (ini_factor) || ini_factor > end_factor)
+        error ("units: unable to parse output from units:\n%s", rawoutput);
+    endif
+    rawoutput = rawoutput(ini_factor+1:end_factor);
   endif
 
   ## FIXME missing support for non-linear conversions. See for example:
@@ -66,11 +85,33 @@ function y = units (fromUnit, toUnit, x = 1)
       error ("units: no support for non-linear conversion of '%s' to '%s'",
              fromUnit, toUnit);
     else
-      error ("units: unable to parse output %s from GNU units.", rawoutput);
+      error ("units: unable to parse output `%s' from units.", rawoutput);
     endif
   endif
 
   y = x * c_factor;
+endfunction
+
+function compact = compact_option ()
+  ## First check if units is installed and whether it's GNU or not. We can't
+  ## use the status of "units --version" because it exits with 3 on success.
+  [status, rawoutput] = system ("command -v units");
+  if (status || isempty (rawoutput))
+    ## For some reason, --version option would return an exit status
+    error ("units: %s\nVerify that GNU units is installed in the current path.",
+           rawoutput);
+  endif
+  [status, rawoutput] = system ("units --version");
+  if (! strcmp (rawoutput(1:3), "GNU"))
+    warning ("units: non-GNU version of units found. Results may be unexpected.");
+  endif
+
+  compact = true;
+  ## Check if the compact and one-line options are available
+  [status, rawoutput] = system ("units --compact --one-line --version");
+  if (status)
+    compact = false;
+  endif
 endfunction
 
 %!demo

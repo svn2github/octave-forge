@@ -21,8 +21,10 @@ io-1.2.4   Release Date: 2013-TBA   Release Manager: Philip Nienhuis
 
 *** odsopen: Relax requirement of lower case filename extension
 
-*** Added !experimental! OCT (native Octave) interface for reading .ods and
-    gnumeric
+*** Added !experimental! OCT (native Octave) interface for reading .ods,
+    gnumeric.
+    Markus Bergholz supplied code for very fast reading of OOXML(currently only
+    numeric data)
 
 *** getxmlattv.m, getxmlnode.m: new functions for support of OCT interface
 

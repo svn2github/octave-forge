@@ -48,25 +48,19 @@ function y = units (fromUnit, toUnit, x = 1)
     error ("units: X must be numeric");
   endif
 
-  ## Does the version of units available have the compact option that
-  ## will make things easier to parse?
-  persistent compact = compact_option ();
+  persistent available  = check_units ();
+  persistent compact    = has_compact_option ();
+  persistent template   = template_cmd (compact);
 
-  if (compact)
-    cmd = sprintf ('units --compact --one-line -o "%%.16g" "%s" "%s"',
-                   fromUnit, toUnit);
-    [status, rawoutput] = system (cmd);
-    if (status)
-      error ("units: %s", rawoutput);
-    endif
-  else
+  cmd = sprintf ('%s "%s" "%s"', template, fromUnit, toUnit);
+  [status, rawoutput] = system (cmd);
+  if (status)
+    error ("units: %s", rawoutput);
+  endif
+
+  if (! compact)
     ## No compact or one-line option, we need to find the conversion factor
     ## from the text ourselves
-    cmd = sprintf ('units -o "%%.16g" "%s" "%s"', fromUnit, toUnit);
-    [status, rawoutput] = system (cmd);
-    if (status)
-      error ("units: %s", rawoutput);
-    endif
     ini_factor = index (rawoutput, "*");
     end_factor = index (rawoutput, "\n") - 1;
     if (isempty (ini_factor) || ini_factor > end_factor)
@@ -79,9 +73,14 @@ function y = units (fromUnit, toUnit, x = 1)
   ##          units --compact --one-line tempC tempF
   c_factor = str2double (rawoutput);
   if (any (isnan (c_factor(:))))
-    if (index (rawoutput, "="))
-      ## If there's an equal on the output, it was probably a formula
+    if (index (rawoutput, "=") || index (rawoutput, "+") ||
+        index (rawoutput, "-") || index (rawoutput, "*") ||
+        index (rawoutput, "/"))
+      ## If there's a mathematical operator in the output, it may be a formula
       ## for a non-linear conversion such as "tempC(x) = x K + stdtemp"
+      ## We don't check for the equal only because it won't appear in
+      ## version 1.00 which although it was released before 1996, it's still
+      ## what's distributed with Mac OSX (see bug #38270)
       error ("units: no support for non-linear conversion of '%s' to '%s'",
              fromUnit, toUnit);
     else
@@ -92,25 +91,39 @@ function y = units (fromUnit, toUnit, x = 1)
   y = x * c_factor;
 endfunction
 
-function compact = compact_option ()
-  ## First check if units is installed and whether it's GNU or not. We can't
-  ## use the status of "units --version" because it exits with 3 on success.
-  [status, rawoutput] = system ("command -v units");
-  if (status || isempty (rawoutput))
-    ## For some reason, --version option would return an exit status
+function fpath = check_units ()
+  ## See bug #38270 about why we're checking this way.
+  fpath = file_in_path (getenv ("PATH"), sprintf ("units%s", octave_config_info ("EXEEXT")));
+  if (isempty (fpath))
     error ("units: %s\nVerify that GNU units is installed in the current path.",
            rawoutput);
   endif
-  [status, rawoutput] = system ("units --version");
-  if (! strcmp (rawoutput(1:3), "GNU"))
-    warning ("units: non-GNU version of units found. Results may be unexpected.");
-  endif
+endfunction
 
+function compact = has_compact_option ()
   compact = true;
-  ## Check if the compact and one-line options are available
-  [status, rawoutput] = system ("units --compact --one-line --version");
+  ## We must give some units to convert because the only thing that would
+  ## make it not do any work (--version) actually exits with exit value 3
+  [status, rawoutput] = system ('units --compact --one-line "in" "cm"');
   if (status)
     compact = false;
+  endif
+endfunction
+
+function template = template_cmd (compact)
+  ## do we have the format option?
+  format = true;
+  [status, rawoutput] = system ('units --output-format "%%.16g" "in" "cm"');
+  if (status)
+    format = false;
+  endif
+
+  template = "units ";
+  if (format)
+    template = [template '--output-format "%.16g" '];
+  endif
+  if (compact)
+    template = [template '--compact --one-line '];
   endif
 endfunction
 

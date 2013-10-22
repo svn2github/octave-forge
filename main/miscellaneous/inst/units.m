@@ -51,7 +51,9 @@ function y = units (fromUnit, toUnit, x = 1)
   persistent compact    = has_compact_option ();
   persistent template   = template_cmd (compact);
 
-  cmd = sprintf ('%s "%s" "%s"', template, fromUnit, toUnit);
+  ## We have to insert the template on the string this way, because it may have
+  ## a %%.16g which we may want to keep for later use in non-linear conversion
+  cmd = sprintf ([template ' "%s" "%s"'], fromUnit, toUnit);
   [status, rawoutput] = system (cmd);
   if (status)
     error ("units: %s", rawoutput);
@@ -75,12 +77,17 @@ function y = units (fromUnit, toUnit, x = 1)
         index (rawoutput, "/"))
       ## If there's a mathematical operator in the output, it may be a formula
       ## for a non-linear conversion such as "tempC(x) = x K + stdtemp"
-      ## We don't check for the equal only because it won't appear in
-      ## version 1.00 which although it was released before 1996, it's still
-      ## what's distributed with Mac OSX (see bug #38270)
+      ## We don't check for the equal only because some versions of units data
+      ## file (not version of the units application, see bug #38270) have a
+      ## very different syntax.
+      if (nargin < 3)
+        ## for a non-linear unit conversion, we need a value to convert
+        error ("units: argument X is required for non-linear unit conversion");
+      endif
       y = zeros (size (x));
+      template_non_linear = function_template (template, fromUnit, toUnit);
       for ind = 1:numel(y)
-        cmd = sprintf ('%s "%s(%.16g)" "%s"', template, fromUnit, x(ind), toUnit);
+        cmd = sprintf (template_non_linear, x(ind));
         [status, rawoutput] = system (cmd);
         if (status)
           error ("units: %s", rawoutput);
@@ -120,17 +127,36 @@ endfunction
 function template = template_cmd (compact)
   ## do we have the format option?
   format = true;
-  [status, rawoutput] = system ('units --output-format "%%.16g" "in" "cm"');
+  [status, rawoutput] = system ('units --output-format "%.16g" "in" "cm"');
   if (status)
     format = false;
   endif
 
   template = "units ";
   if (format)
-    template = [template '--output-format "%.16g" '];
+    template = [template '--output-format "%%.16g" '];
   endif
   if (compact)
     template = [template '--compact --one-line '];
+  endif
+endfunction
+
+function template = function_template (template, from, to)
+  ## Test the correct way to do non-linear conversion.
+  ## First try the GNU units syntax with parentheses
+  [status, rawoutput] = system (sprintf ('%s "%s(1)" "%s"',
+                                          template, from, to));
+  if (status)
+    ## Try the non-GNU syntax (version 1.0 distributed with MacOSX system)
+    [status, rawoutput] = system (sprintf ('%s "100 %s" "%s"',
+                                           template, from, to));
+    if (status)
+      ## If it doesn't work, give up
+        error ("units: unable to identify correct syntax for non-linear conversion");
+    endif
+    template = sprintf ('%s "%%.16g %s" "%s"', template, from, to);
+  else
+    template = sprintf ('%s "%s(%%.16g)" "%s"', template, from, to);
   endif
 endfunction
 
@@ -146,4 +172,5 @@ endfunction
 %!assert (units ("in", "mm", [5 7; 8 9]), 25.4 * [5 7; 8 9])
 # a non-linear conversion
 %!assert (units ("tempC", "tempF", 100), 212)
+%!error <non-linear unit conversion> units ("tempC", "tempF")
 

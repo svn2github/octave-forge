@@ -24,8 +24,7 @@
 ## measurement units.  See @code{man units} or 
 ## @url{http://www.gnu.org/software/units} for more information.
 ## If the optional argument @var{x} is supplied, return that argument
-## multiplied by the conversion factor.  Nonlinear conversions
-## such as Fahrenheit to Celsius are not currently supported.  For example, to 
+## multiplied by the conversion factor.  For example, to 
 ## convert three values from miles per hour into meters per second:
 ##
 ## @example
@@ -69,8 +68,6 @@ function y = units (fromUnit, toUnit, x = 1)
     rawoutput = rawoutput(ini_factor+1:end_factor);
   endif
 
-  ## FIXME missing support for non-linear conversions. See for example:
-  ##          units --compact --one-line tempC tempF
   c_factor = str2double (rawoutput);
   if (any (isnan (c_factor(:))))
     if (index (rawoutput, "=") || index (rawoutput, "+") ||
@@ -81,14 +78,24 @@ function y = units (fromUnit, toUnit, x = 1)
       ## We don't check for the equal only because it won't appear in
       ## version 1.00 which although it was released before 1996, it's still
       ## what's distributed with Mac OSX (see bug #38270)
-      error ("units: no support for non-linear conversion of '%s' to '%s'",
-             fromUnit, toUnit);
+      y = zeros (size (x));
+      for ind = 1:numel(y)
+        cmd = sprintf ('%s "%s(%.16g)" "%s"', template, fromUnit, x(ind), toUnit);
+        [status, rawoutput] = system (cmd);
+        if (status)
+          error ("units: %s", rawoutput);
+        endif
+        y(ind) = str2double (rawoutput);
+        if (isnan (y(ind)))
+          error ("units unable to parse non-linear conversion `%s'", rawoutput);
+        endif
+      endfor
     else
       error ("units: unable to parse output `%s' from units.", rawoutput);
     endif
+  else
+    y = x * c_factor;
   endif
-
-  y = x * c_factor;
 endfunction
 
 function fpath = check_units ()
@@ -133,6 +140,10 @@ endfunction
 %! c.unit = 'kg';
 %! c.value = units(a.unit, c.unit, a.value) + units(b.unit, c.unit, b.value)
 
+# test normal usage
 %!assert (units ("in", "mm"), 25.4)
+# multiple values
 %!assert (units ("in", "mm", [5 7; 8 9]), 25.4 * [5 7; 8 9])
-%!error <non-linear conversion> units ("tempC", "tempF")
+# a non-linear conversion
+%!assert (units ("tempC", "tempF", 100), 212)
+

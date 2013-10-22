@@ -9,6 +9,9 @@ miscellaneous-1.X.X   Release Date: 201X-XX-XX  Release Manager:
 
       apply       map         partarray   temp_name
 
+ ** units is now able to perform non-linear unit conversions such as conversion
+    between Fahrenheit and Celsius.
+
 ===============================================================================
 miscellaneous-1.2.0   Release Date: 2012-10-16  Release Manager: Carnë Draug
 ===============================================================================

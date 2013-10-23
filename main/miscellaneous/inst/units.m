@@ -141,22 +141,21 @@ function template = template_cmd (compact)
   endif
 endfunction
 
+## Test the correct way to do non-linear conversion.
 function template = function_template (template, from, to)
-  ## Test the correct way to do non-linear conversion.
-  ## First try the GNU units syntax with parentheses
-  [status, rawoutput] = system (sprintf ('%s "%s(1)" "%s"',
-                                          template, from, to));
-  if (status)
-    ## Try the non-GNU syntax (version 1.0 distributed with MacOSX system)
-    [status, rawoutput] = system (sprintf ('%s "100 %s" "%s"',
-                                           template, from, to));
-    if (status)
-      ## If it doesn't work, give up
-        error ("units: unable to identify correct syntax for non-linear conversion");
-    endif
-    template = sprintf ('%s "%%.16g %s" "%s"', template, from, to);
-  else
+
+  ## First try the most common syntax distributed with the most recent
+  ## units.dat file using parentheses "from(x)" as if it was a function.
+  if (! system (sprintf ([template '"%s(1)" "%s"'], from, to), true))
     template = sprintf ('%s "%s(%%.16g)" "%s"', template, from, to);
+
+  ## If it doesn't work, try the oldest syntax of the style "x from"
+  elseif (! system (sprintf ([template '"100 %s" "%s"'], from, to), true))
+    template = sprintf ('%s "%%.16g %s" "%s"', template, from, to);
+
+  ## If it doesn't work, give up
+  else
+    error ("units: unable to identify correct syntax for non-linear conversion");
   endif
 endfunction
 

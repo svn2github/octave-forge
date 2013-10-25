@@ -122,7 +122,7 @@ pause
 
 save -binary -z datafile_rlc_circuit.octbin.gz  device material constants algorithm tspan Vin nin pin  % A B C x r 
 
-[V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs3d_coupled_circuit_newton ...
+[V, n, p, F, Fn, Fp, Jn, Jp, Itot, tout] = secs3d_coupled_circuit_newton ...
                                            (device, material, constants, algorithm,
                                             Vin, nin, pin, tspan, @vbcs);
 

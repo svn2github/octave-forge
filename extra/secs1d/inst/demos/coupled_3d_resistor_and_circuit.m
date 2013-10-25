@@ -1,3 +1,4 @@
+#!/usr/bin/octave
 %%
 clear all;
 close all;
@@ -119,10 +120,11 @@ R_0 = sum (bim3a_rhs (device.msh, 1, 1 ./ (constants.q * nin .* u_nodes))) / ...
 pause
 
 %% (pseudo)transient simulation
-
-save -binary -z datafile_rlc_circuit.octbin.gz  device material constants algorithm tspan Vin nin pin  % A B C x r 
-
-[V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = secs3d_coupled_circuit_newton ...
+[~, ~, ~, ~, Fin, ~] = vbcs (0);
+device.msh = bim3c_mesh_properties (device.msh);
+save -binary -z datafile_rlc_circuit.octbin.gz  device material constants algorithm tspan Vin nin pin Fin  % A B C x r 
+return
+[V, n, p, F, Fn, Fp, Jn, Jp, Itot, tout] = secs3d_coupled_circuit_newton ...
                                            (device, material, constants, algorithm,
                                             Vin, nin, pin, tspan, @vbcs);
 

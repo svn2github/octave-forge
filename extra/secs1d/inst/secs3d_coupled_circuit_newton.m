@@ -1,7 +1,13 @@
-function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
+function [V, n, p, F, Fn, Fp, Jn, Jp, Itot, tout] = ...
          secs3d_coupled_circuit_newton ...
            (device, material, constants, algorithm, 
             Vin, nin, pin, tspan, va)    
+
+  if (isfield (algorithm, 'plotsOff'));
+    plotsOff = algorithm.plotsOff;
+  else
+    plotsOff = 0;
+  endif
   
   tags = {'V', 'n', 'p', 'F'};
   rejected = 0;
@@ -21,9 +27,9 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
     this_dnodes = bim3c_unknowns_on_faces (
                    device.msh, device.contacts(iii));
     if (! sum(this_dnodes));
-      error((["circuit pin #%d is not connected",
-              " to the device. Check mesh bound"
-              "ary labeling."])'(:)', iii)
+      error((['circuit pin #%d is not connected',
+              ' to the device. Check mesh bound'
+              'ary labeling.'])'(:)', iii)
     endif
     inodes = setdiff (inodes, this_dnodes);
     dnodes(iii, this_dnodes) = 1;
@@ -64,12 +70,13 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
                                         dt, A, B, C, r, pins,
                                         indexing, dnodes, inodes); 
       
-      jac =  __secs3d_newton_jacobian__ (device, material, constants, 
-                                         algorithm, V2, n2, p2, F2, 
-                                         dt, A, B, C, r, pins,
-                                         indexing, dnodes, inodes);
+      jac = __secs3d_newton_jacobian__ (device, material, constants, 
+                                        algorithm, V2, n2, p2, F2, 
+                                        dt, A, B, C, r, pins,
+                                        indexing, dnodes, inodes);
 
       J = sparse(rows(jac{1, 1}), columns(jac{1, 1}));
+
 
       for iii = 1:4
         for jjj = 1:4
@@ -77,6 +84,9 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
         end
       end
 
+      save -binary -z octave_jacobian_and_residual.octbin.gz J res
+      return
+      
       delta = - J \ res;
 
       dn = dp = dV = zeros(rows (n), 1);
@@ -102,7 +112,7 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
 
       tk = min ([tkv, tkn, tkp]);
       if (tk <= 0)
-        error ("relaxation parameter too small, die!")
+        error ('relaxation parameter too small, die!')
       endif
       V2 += tk * dV;
       n2 += tk * dn;
@@ -127,8 +137,8 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
 
       [incr0, whichone] = max ([incr0v, incr0n, incr0p, incr0F]);
       if (incr0 > algorithm.maxnpincr)
-        printf ("at time step %d, fixed point iteration %d, the ", tstep, in);
-        printf ("increment in %s has grown too large\n", tags{whichone});
+        printf ('at time step %d, fixed point iteration %d, the ', tstep, in);
+        printf ('increment in %s has grown too large\n', tags{whichone});
         reject = true;
         break;
       endif
@@ -148,22 +158,24 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
       [incr1, whichone] = max ([incr1v, incr1n, incr1p, incr1F]);
       resnlin(in) = incr1;
       if (in > 3 && resnlin(in) > resnlin(in-3))
-        printf ("at time step %d, fixed point iteration %d, ", tstep, in);
-        printf ("the Newton algorithm is diverging: ");
-        printf ("the increment in %s is not decreasing\n", tags{whichone});
+        printf ('at time step %d, fixed point iteration %d, ', tstep, in);
+        printf ('the Newton algorithm is diverging: ');
+        printf ('the increment in %s is not decreasing\n', tags{whichone});
         reject = true;
         break;
       endif
 
-      figure (1)
-      semilogy (1:in, resnlin(1:in),'bo-');
-      xlim([1,15]);
-      ylim([5e-9,5e-2]);
-      drawnow        
+      if (! plotsOff) 
+        figure (1)
+        semilogy (1:in, resnlin(1:in),'bo-');
+        xlim([1,15]);
+        ylim([5e-9,5e-2]);
+        drawnow
+      endif         
 
       if (incr1 < algorithm.toll)
-        printf ("fixed point iteration %d, time step %d, ", in, tstep);
-        printf ("model time %g: convergence reached incr = %g ", t, incr1);
+        printf ('fixed point iteration %d, time step %d, ', in, tstep);
+        printf ('model time %g: convergence reached incr = %g ', t, incr1);
         break;
       endif
 
@@ -175,10 +187,10 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
       t = tout (--tstep);
       dt /= 2;
 
-      printf ("reducing time step\n");
-      printf ("\ttime step #%d, ", tstep);
-      printf ("model time %g s\n", t);
-      printf ("\tnew dt %g s\n", dt);
+      printf ('reducing time step\n');
+      printf ('\ttime step #%d, ', tstep);
+      printf ('model time %g s\n', t);
+      printf ('\tnew dt %g s\n', dt);
 
     else
 
@@ -212,12 +224,14 @@ function [V, n, p, Fn, Fp, Jn, Jp, Itot, tout] = ...
       endfor
       Itot(:, tstep) = (Jn_pins + Jp_pins + Jd_pins)(:);
       
-      figure (2)
-      plotyy (tout, Itot(2, :), tout, F(pins(2), :) - F(pins(1), :));
-      drawnow
+      if (! plotsOff) 
+        figure (2)
+        plotyy (tout, Itot(2, :), tout, F(pins(2), :) - F(pins(1), :));
+        drawnow
+      endif
     
       dt *= .8 * sqrt (algorithm.maxnpincr / incr0);
-      printf ("\nestimate for next time step size: dt = %g \n", dt);
+      printf ('\nestimate for next time step size: dt = %g \n', dt);
     endif
 
   endwhile %% time step

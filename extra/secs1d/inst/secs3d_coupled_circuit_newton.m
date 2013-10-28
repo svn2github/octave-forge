@@ -13,7 +13,12 @@ function [V, n, p, F, Fn, Fp, Jn, Jp, Itot, tout] = ...
   rejected = 0;
   nnodes = columns (device.msh.p);
   Nelements = columns (device.msh.t);
-  dt = (tspan(2) - tspan(1)) / 1000;
+  if (isfield (algorithm, "dt0"))
+    dt = algorithm.dt0;
+  else
+    dt = (tspan(2) - tspan(1)) / 1000;
+  end
+
   tout(tstep = 1) = t = tspan (1);
 
   [V, n, p] = deal (Vin, nin, pin);  
@@ -185,7 +190,7 @@ function [V, n, p, F, Fn, Fp, Jn, Jp, Itot, tout] = ...
 
       ++rejected;
       t = tout (--tstep);
-      dt /= 2;
+      dt /= 5;
 
       printf ('reducing time step\n');
       printf ('\ttime step #%d, ', tstep);
@@ -251,32 +256,22 @@ function [V0, n0, p0, F0] = predict (device, material, constants,
     t  = tout (it);
     dt = tout (tstep) - tout (tstep - 1);
 
-    Fn(:, 1) = V(:, it(1)) - ...
-               constants.Vth * ...
-               log (n(:, it(1)) ./ device.ni);
-    Fn(:, 2) = V(:, it(2)) - ...
-               constants.Vth * ...
-               log (n(:, it(2)) ./ device.ni);
-
-    dFndt = diff (Fn, 1, 2) ./ diff (tout(it));
+    dVdt  = diff (V(:, it(1:2)), 1, 2) ./ diff (tout(it));
     dFdt  = diff (F(:, it(1:2)), 1, 2) ./ diff (tout(it));
 
-    Fn0 = Fn(:, 2) + dFndt * dt;
+    n0 = n(:, it(2));% .* dndt;
+    p0 = p(:, it(2));% .* dpdt;
+    V0 = V(:, it(2)) + dVdt * dt;
     F0 = F(:, it(2)) + dFdt * dt;
 
   else
 
-    Fn0 = V(:, tstep-1) - ...
-          constants.Vth * ...
-          log (n(:, tstep-1) ./ device.ni);
-    F0  = F(:, tstep-1);
-
+    V0 = V(:, tstep-1);
+    F0 = F(:, tstep-1);
+    n0 = n(:, tstep-1);
+    p0 = p(:, tstep-1);
+ 
   endif
 
-  n0 = n(:, tstep-1);
-  p0 = p(:, tstep-1);
-
-  V0 = Fn0 + constants.Vth * ...
-             log (n0 ./ device.ni);
   
 endfunction

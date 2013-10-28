@@ -88,9 +88,6 @@ function [V, n, p, F, Fn, Fp, Jn, Jp, Itot, tout] = ...
           J += jac{iii, jjj};
         end
       end
-
-      save -binary -z octave_jacobian_and_residual.octbin.gz J res
-      return
       
       delta = - J \ res;
 

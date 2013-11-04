@@ -26,8 +26,11 @@
 ## Updates:
 ## 2013-10-02 Drop return arg rstatus
 ## 2013-10-02 Significant speed-up using regexp and splitting xml in chunks ~4e5 chars
+## 2013-11-03 Fix processing chunks
+##     ''     Get ValueType using getxmlattv, not regexp
+##     ''     Process Boolean type
 
-function [ rawarr, xls] = __OCT_gnm2oct__ (xls, wsh, cellrange='', spsh_opts)
+function [ rawarr, xls, rstatus] = __OCT_gnm2oct__ (xls, wsh, cellrange='', spsh_opts)
 
   rstatus = 0;
 
@@ -91,7 +94,7 @@ function [ rawarr, xls] = __OCT_gnm2oct__ (xls, wsh, cellrange='', spsh_opts)
   rawarr = cell (nrows, ncols);
 
   ## Get cells
-  cells = getxmlnode (xml, "gnm:Cells", 1, 1);  # save -v7 cells.mat cells
+  cells = getxmlnode (xml, "gnm:Cells", 1, 1);
 
   ## The row and column checks below assume rows and cols are sorted rows 1st cols 2nd
   ## In case of requested cell range, set pointer to first cell in range
@@ -119,11 +122,12 @@ function [ rawarr, xls] = __OCT_gnm2oct__ (xls, wsh, cellrange='', spsh_opts)
     ccells = {cells};
   endif
 
-  ## Get first cell
-  [gcell, ~, jcx] = getxmlnode (ccells{1}, "gnm:Cell");
   inrange = 1;
   for ii=1:numel (ccells)
     cells = ccells{ii};
+    ## Get first cell of ccell{ii}
+    [gcell, ~, jcx] = getxmlnode (ccells{ii}, "gnm:Cell");
+
     while (! isempty (gcell) && inrange)
       ## Get row index (0-based)
       crow = str2double (regexp (gcell, 'Row="[+-.\d]*"', "match"){1}(6:end-1));
@@ -134,13 +138,28 @@ function [ rawarr, xls] = __OCT_gnm2oct__ (xls, wsh, cellrange='', spsh_opts)
           if (ccol >= lcol - 1)
             if (ccol < rcol)
               ## This cell is in range. Get type
-              ctype = regexp (gcell, 'ValueType="[+-.\d]*"', "match"){1}(6:end-1);
-              if (ctype(1) == "4")
-                ## Type 40, float
-                rawarr {crow-firstrow+2, ccol-lcol+2} = str2double (regexp (gcell, '>.*<', "match"){1}(2:end-1));
+              ctype = getxmlattv (gcell, "ValueType");
+              ## We have ValueType 20 Boolean , 40 float and 60 string. ExprID means formula
+              if (! isempty (ctype ))
+                if (ctype(1) == "2")
+                  ## Type 20, Boolean
+                  rawarr {crow-firstrow+2, ccol-lcol+2} = index (gcell, '20">TRUE<') > 0;
+                elseif (ctype(1) == "4")
+                  ## Type 40, float
+                  rawarr {crow-firstrow+2, ccol-lcol+2} = str2double (regexp (gcell, '>.*<', "match"){1}(2:end-1));
+                elseif (ctype(1) == "6")
+                  ## A string. Return as text string anyway (we have no formula evaluator)
+                  rawarr {crow-firstrow+2, ccol-lcol+2} = regexp (gcell, '>.*<', "match"){1}(2:end-1);
+                else
+                  ## ?? unknown type
+                  printf ("Unknown cell ValueType in row %d col %d\n", crow+1, ccol+1);
+                endif
               else
-                ## A string or maybe a formula. Return as text string anyway (we have no formula evaluator)
-                rawarr {crow-firstrow+2, ccol-lcol+2} = regexp (gcell, '>.*<', "match"){1}(2:end-1);
+                ctype = getxmlattv (gcell, "ExprID");
+                if (! isempty (ctype))
+                  ## Formula. The gnumeric devs don't want cached values
+                  rawarr {crow-firstrow+2, ccol-lcol+2} = "##Formula##";
+                endif
               endif
             endif
           endif
@@ -152,8 +171,10 @@ function [ rawarr, xls] = __OCT_gnm2oct__ (xls, wsh, cellrange='', spsh_opts)
       ## Get next cell
       [gcell, ~, jcx] = getxmlnode (cells, "gnm:Cell", icx);
     endwhile
+
   endfor
 
   xls.limits = [lcol, rcol; firstrow, lastrow];
+  rstatus = 1;
 
 endfunction

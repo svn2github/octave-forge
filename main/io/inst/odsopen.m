@@ -127,18 +127,19 @@
 ## 2013-09-23 Check and catch write requests for OCT interface
 ##     ''     Relax check for lowercase filename extension
 ## 2013-09-29 Initially set OCT interface to not detected
+## 2013-11-04 Revert above
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
   persistent odsinterfaces; persistent chkintf; persistent lastintf;
   if (isempty (chkintf))
-    odsinterfaces = struct ( "OTK", [], "JOD", [], "UNO", [] , "OCT", []);
+    odsinterfaces = struct ( "OTK", [], "JOD", [], "UNO", [] , "OCT", 1);
     chkintf = 1;
   endif
   if (isempty (lastintf));
     lastintf = "---";
   endif
-  odsintf_cnt = 0;
+  odsintf_cnt = 1;
   
   if (nargout < 1)
     usage ("ODS = odsopen (ODSfile, [Rw]). But no return argument specified!");

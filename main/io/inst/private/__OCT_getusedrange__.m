@@ -29,6 +29,7 @@
 ## 2013-09-26 Improved code to skip last empty columns in column count
 ## 2013-09-27 Re-use old jOpenDocument code; may be slow but it is well-tested
 ## 2013-10-01 Gnumeric subfunction added
+## 2013-11-03 Fix wrong variable name "xml"->"sheet" in __OCT_ods_getusedrange__ 
 
 function [ trow, brow, lcol, rcol ] = __OCT_getusedrange__ (spptr, ii)
 
@@ -83,7 +84,7 @@ function [ trow, brow, lcol, rcol ] = __OCT_ods_getusedrange__ (spptr, ii)
   trow = brow = lcol = rcol = nrows = ncols = 0;
 
   if (isfield (spptr, "xml"))
-    xml = spptr.xml;
+    sheet = spptr.xml;
   else
     ## Get requested sheet from info in ods struct pointer. Open file
     fid = fopen (sprintf ("%s/content.xml", spptr.workbook), "r");
@@ -95,8 +96,6 @@ function [ trow, brow, lcol, rcol ] = __OCT_ods_getusedrange__ (spptr, ii)
     sheet = fread (fid, nchars, "char=>char").';
     fclose (fid);
   endif
-  ## Get requested sheet from info in ods struct pointer
-#  sheet = spptr.workbook(spptr.sheets.shtidx(ii):spptr.sheets.shtidx(ii+1)-1);
 
   ## Check if sheet contains any cell content at all
   ## FIXME: in far-fetched cases, cell string content may contain ' office:value' too

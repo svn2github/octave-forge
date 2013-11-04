@@ -135,6 +135,8 @@
 ##     ''     Updated header
 ## 2013-10-02 Some adaptations for gnumeric support
 ##     ''     Texinfo header adapted
+## 2013-11-04 Better error message about unsupported file types
+##     ''     Add .sxc to supported file types
 
 function [ numarr, txtarr, rawarr, lim ] = odsread (filename, wsh=1, datrange=[], reqintf=[])
 
@@ -142,8 +144,9 @@ function [ numarr, txtarr, rawarr, lim ] = odsread (filename, wsh=1, datrange=[]
     error ("filename (text string) expected for argument #1, not a %s", class (filename));
   endif
   if (nargin < 1 || ! (strcmpi (".ods", filename(end-3:end)) || ...
+                       strcmpi (".sxc", filename(end-3:end)) || ...
                        strcmpi (".gnumeric", filename(end-8:end))))
-    usage ("odsread: at least a filename incl. suffix is needed");
+    usage ("odsread: filename (incl. suffix) of a supported file type is required");
   endif
 
   ods = odsopen (filename, 0, reqintf);

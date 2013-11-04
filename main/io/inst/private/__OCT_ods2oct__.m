@@ -36,6 +36,7 @@
 ##     ''     Return requested range rather than entire sheet data
 ## 2013-10-01 Little adaptation in header
 ## 2013-10-01 Read sheets from disk rather than keep them in memory
+## 2013-11-03 Fix bug with updating column ptr after repeated columns node
 
 function [ rawarr, ods, rstatus] = __OCT_ods2oct__ (ods, wsh, cellrange='', spsh_opts)
 
@@ -63,11 +64,17 @@ function [ rawarr, ods, rstatus] = __OCT_ods2oct__ (ods, wsh, cellrange='', spsh
   ## Get the sheet
   sheet = fread (fid, nchars, "char=>char").';
   fclose (fid);
+
   ## Add xml to struct pointer to avoid __OCT_getusedrange__ to read it again
-  xls.xml = sheet;
+  ods.xml = sheet;
 
   ## Check ranges
   [ firstrow, lastrow, lcol, rcol ] = getusedrange (ods, wsh);
+
+  ## Clear xml from file ptr struct
+  ods.xml = [];
+  ods = rmfield (ods, "xml");
+
   if (isempty (cellrange))
     if (firstrow == 0 && lastrow == 0)
       ## Empty sheet
@@ -252,7 +259,7 @@ function [ rawarr, ods, rstatus] = __OCT_ods2oct__ (ods, wsh, cellrange='', spsh
             ## Copy cell contents for repeated columns & bump column counter
             if (isfinite (repcol) && icol < rcol)
               rawarr(irow, icol+1:icol+repcol-1) = rawarr(irow, icol);
-              icol += repcol;
+              icol += repcol - 1;
               repcol = '';
             endif
           endif

@@ -213,8 +213,8 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
   ch1 = chk2 = chk5 = 0;
   has_suffix = 1;
   [sfxpos, ~, ~, ext] = regexp (filename, '(\.xlsx?|\.gnumeric)');
-  ext = ext{end};
   if (! isempty (sfxpos))
+    ext = ext{end};
     ## .xls or .xls[x,m,b] or .gnumeric is there, but at the right(most) position?
     if (sfxpos(end) <= length (filename) - length (ext))
       ## Apparently not, or it is an unrecognized extension
@@ -333,7 +333,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
     if (isempty (reqinterface))
       ## This message is appended after message from getxlsinterfaces()
       printf ("None.\n");
-      warning ("xlsopen.m: no support for Excel I/O"); 
+      warning ("xlsopen.m: no support for spreadsheet I/O"); 
     else
       ## No match between filte type & interface found
       warning ("xlsopen.m: file type not supported by %s %s %s %s %s %s", reqinterface{:});

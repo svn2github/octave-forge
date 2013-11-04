@@ -1,32 +1,56 @@
 Summary of important user-visible changes for releases of the io package
 
 ===============================================================================
-io-1.2.4   Release Date: 2013-TBA   Release Manager: Philip Nienhuis
+io-1.2.4   Release Date: 2013-11-05   Release Manager: Philip Nienhuis
 ===============================================================================
+*** Added !experimental! OCT (native Octave) interface for reading .ods,
+    gnumeric, and xlsx. OCT doesn't need Java or COM/ActiveX; it works without
+    any support software. That independence does come at a price however:
+    - reading .ods is fully flexible like the other interfaces but a bit slow
+    - reading .xlsx is FAST but it only gives numeric data (no strings yet)
+    - reading gnumeric only reads "hard" data, no formula results. I'm afraid
+      this isn't gonna change (it's a gnumeric developer issue)
+    Markus Bergholz supplied the code for very fast reading of OOXML (at
+    present only numeric data) - Thanks very much Markus!
+
+An overview of what interface can be used for which types of files (extension)
+( ~ = dependent on Excel version);  + = read/write;  R = only reading )
+
+                                 Interface
+File extension       COM POI POI/OOXML JXL OXS UNO OTK JOD OCT
+--------------------------------------------------------------
+.xls (Excel95)        R                 R       R 
+.xls (Excel97-2003)   +   +      +      +   R   +
+.xlxx/xlsm            +          +              +           R
+.wk1                  +                         +
+.wks                  +                         +
+.dbf                  +                         +
+.ods                  ~                         +   +   +   R
+.sxc                                            +       +
+.fods                                           +
+.uos                                            +
+.dif                                            +
+.csv                  +                         +
+.gnumeric                                                   R
+--------------------------------------------------------------
+
+*** getxmlattv.m, getxmlnode.m: new functions (for support of OCT interface)
+
+*** xlsopen.m: suffixes for Excel filenames (.xls, .xlsx) need not be specified. 
+               (But the files on disk do need these suffixes!)
+
+*** odsread.m, xlsread.m: No output arg required (output is sent to terminal
+                          if not output args specified)
+       ''          ''     Check if filename is a text string
+
+*** odsopen: Relax requirement of lower case filename extension
+
 ** Bug fixes:
 --- xlsopen.m: Undue fallback to JXL for OOXML files hopefully fixed now
        ''      Misinformation in error message about unsupported OXS & UNO fixed
 
 --- private/__POI_getusedrange__.m: Check return value of XSSF getFirstCellNum
     method
-
-*** basic Gnumeric read support added. Spreadsheet formulas can't be evaluated.
-
-*** xlsopen.m: suffixes for Excel filenames (.xls, .xlsx) need not be specified. 
-               (But the files on disk do need these suffixes!)
-
-*** odsread.m, xlsread.m: No output arg required (output is sent to terminal
-                          if not ouput args specified)
-       ''          ''     Check if filename is a text string
-
-*** odsopen: Relax requirement of lower case filename extension
-
-*** Added !experimental! OCT (native Octave) interface for reading .ods,
-    gnumeric.
-    Markus Bergholz supplied code for very fast reading of OOXML(currently only
-    numeric data)
-
-*** getxmlattv.m, getxmlnode.m: new functions for support of OCT interface
 
 ===============================================================================
 io-1.2.3   Release Date: 2013-08-15   Release Manager: Philip Nienhuis

@@ -128,6 +128,7 @@
 ##     ''     Adapted header to OCT (also Excel 2013 is supported)
 ## 2013-10-01 Some adaptations for gnumeric
 ## 2013-10-20 Overhauled file extension detection logic
+## 2013-11-03 Improved interface selection (fix a.0., fallback to JXL for xlsx)
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
@@ -289,47 +290,31 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
   xlssupport = 0;
 
   ## Interface preference order is defined below: currently COM -> POI -> JXL -> OXS -> UNO -> OCT
-  ## chk1, chk2  (xls file type) and chk5 (gnumeric) are conveyed depending on interface capabilities
+  ## chk1, chk2 (xls file type) and chk5 (gnumeric) are conveyed depending on interface capabilities
 
   if ((! xlssupport) && xlsinterfaces.COM && (! chk5))
     ## Excel functioning has been tested above & file exists, so we just invoke it.
     [ xls, xlssupport, lastintf ] = __COM_spsh_open__ (xls, xwrite, filename, xlssupport);
   endif
 
-  if ((! xlssupport) && xlsinterfaces.POI && (! chk5))
-    if (chk1 || chk2)
-      [ xls, xlssupport, lastintf ] = __POI_spsh_open__ (xls, xwrite, filename, xlssupport, chk1, chk2, xlsinterfaces);
-    else
-      error ("xlsopen.m: unsupported file format for Apache POI")
-    endif
+  if ((! xlssupport) && xlsinterfaces.POI && (chk1 || chk2) && (! chk5))
+    [ xls, xlssupport, lastintf ] = __POI_spsh_open__ (xls, xwrite, filename, xlssupport, chk1, chk2, xlsinterfaces);
   endif
 
-  if ((! xlssupport) && xlsinterfaces.JXL && (! chk5))
-    if (chk1)
-      [ xls, xlssupport, lastintf ] = __JXL_spsh_open__ (xls, xwrite, filename, xlssupport, chk1);
-    else
-      error ("xlsopen.m: unsupported file format for JExcelAPI")
-    endif
+  if ((! xlssupport) && xlsinterfaces.JXL && chk1 && (! chk5))
+    [ xls, xlssupport, lastintf ] = __JXL_spsh_open__ (xls, xwrite, filename, xlssupport, chk1);
   endif
 
-  if ((! xlssupport) && xlsinterfaces.OXS && (! chk5))
-    if (chk1)
-      [ xls, xlssupport, lastintf ] = __OXS_spsh_open__ (xls, xwrite, filename, xlssupport, chk1);
-    else
-      error ("xlsopen.m: unsupported file format for OpenXLS")
-    endif
+  if ((! xlssupport) && xlsinterfaces.OXS && chk1 && (! chk5))
+    [ xls, xlssupport, lastintf ] = __OXS_spsh_open__ (xls, xwrite, filename, xlssupport, chk1);
   endif
 
   if ((! xlssupport) && xlsinterfaces.UNO && (! chk5))
     [ xls, xlssupport, lastintf ] = __UNO_spsh_open__ (xls, xwrite, filename, xlssupport);
   endif
 
-  if ((! xlssupport) && xlsinterfaces.OCT)
-    if (chk2 || chk5)
-      [ xls, xlssupport, lastintf ] = __OCT_spsh_open__ (xls, xwrite, filename, xlssupport, chk2, 0, chk5);
-    else
-      error ("xlsopen.m: unsupported file format for OCT / native Octave")
-    endif
+  if ((! xlssupport) && xlsinterfaces.OCT && (chk2 || chk5))
+    [ xls, xlssupport, lastintf ] = __OCT_spsh_open__ (xls, xwrite, filename, xlssupport, chk2, 0, chk5);
   endif
 
   ## if 
@@ -343,6 +328,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
       printf ("None.\n");
       warning ("xlsopen.m: no support for Excel I/O"); 
     else
+      ## No match between filte type & interface found
       warning ("xlsopen.m: file type not supported by %s %s %s %s %s %s", reqinterface{:});
     endif
     xls = [];

@@ -129,6 +129,7 @@
 ## 2013-10-01 Some adaptations for gnumeric
 ## 2013-10-20 Overhauled file extension detection logic
 ## 2013-11-03 Improved interface selection (fix a.0., fallback to JXL for xlsx)
+## 2013-11-04 Catch attempts to write with only OCT interface
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
@@ -136,11 +137,12 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
   ## xlsinterfaces.<intf> = [] (not yet checked), 0 (found to be unsupported) or 1 (OK)
   if (isempty (chkintf));
       chkintf = 1;
-      xlsinterfaces = struct ('COM', [], 'POI', [], 'JXL', [], 'OXS', [], 'UNO', [], "OCT", []);
+      xlsinterfaces = struct ('COM', [], 'POI', [], 'JXL', [], 'OXS', [], 'UNO', [], "OCT", 1);
   endif
   if (isempty (lastintf))
     lastintf = "---";
   endif
+  xlsintf_cnt = 1;
 
   xlssupport = 0;
 
@@ -232,8 +234,13 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
   
   ## Adapt file open mode for readwrite argument
   if (xwrite)
+    ## Catch attempts to write gnumeric
     if (chk5)
       error ("There's only read support for gnumeric files");
+    endif
+    ## Catch attempts to write xlsx if only OCT interface is supported
+    if (xlsintf_cnt == 1 && xlsinterfaces.OCT)
+      error ("Only the OCT interface is present or requested, but that has only read support");
     endif
     fmode = 'r+b';
     if (! has_suffix)

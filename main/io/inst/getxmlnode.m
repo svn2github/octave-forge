@@ -36,6 +36,7 @@
 ## 2013-10-02 Speed up using regexp options
 ## 2013-10-20 Fix typos in input validation error messages
 ##     ''     Better input validation
+## 2013-11-04 More robust <single node/> detection
 
 function [ node, spos, epos ] = getxmlnode (xml, tag, is=1, contnt=0)
 
@@ -58,8 +59,9 @@ function [ node, spos, epos ] = getxmlnode (xml, tag, is=1, contnt=0)
   is = max (is, 1);
 
   node = '';
-  ## Start tag must end with either > or a space preceding an attribute
-  spos = regexp (xml(is:end), sprintf ("<%s( |>)", tag), "once");
+  ## Start tag must end with either />, a space preceding an attribute, or >
+  ## Search order is vital as /> (single node) is otherwise easily missed
+  spos = regexp (xml(is:end), sprintf ("<%s(/>| |>)", tag), "once");
   if (! isempty (spos))
     ## Apparently a node exists. Get its end. Maybe it is a single node
     ## ending in "/>"

@@ -128,6 +128,7 @@
 ##     ''     Relax check for lowercase filename extension
 ## 2013-09-29 Initially set OCT interface to not detected
 ## 2013-11-04 Revert above
+## 2013-11-08 Better filetype / fileextension detection (bug #40490)
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
@@ -237,11 +238,19 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
   [odsinterfaces] = getodsinterfaces (odsinterfaces);
 
   ## Supported interfaces determined; now check ODS file type.
-
-  chk3 = strcmpi (lower (filename(end-3:end)), '.ods'); ## ODS 1.2
-  ## jOpenDocument (JOD) can read from .sxc files, but only if odfvsn = 2
-  chk4 = strcmpi (lower (filename(end-3:end)), '.sxc'); ## Old OOo/Starcalc
-  chk5 = strcmpi (filename(end-8:end), ".gnumeric");    ## Zipped XML / gnumeric
+  [~, ~, ext] = fileparts (filename)
+  switch
+    case ".ods"
+      ## ODS 1.2
+      chk3 = 1;
+    case ".sxc"
+      ## jOpenDocument (JOD) can read from .sxc files, but only if odfvsn = 2
+      chk4 = 1;
+    case ".gnumeric"
+      ## Zipped XML / gnumeric
+      chk5 = 1;
+    otherwise
+  endswitch
 
   ods = struct ("xtype",    [], 
                 "app",      [], 

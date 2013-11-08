@@ -18,9 +18,12 @@
 
 ## Author: Philip <Philip@DESKPRN>
 ## Created: 2013-03-01
+## 2013-11-05 Provide default values for jcp & tmp1
 
 function [ tmp1, jcp ] = __chk_java_sprt__ ()
 
+  jcp = {};
+  tmp1 = 0;
   try
     jcp = javaclasspath ("-all");          # For java pkg >= 1.2.8
     if (isempty (jcp)), jcp = javaclasspath; endif  # For java pkg <  1.2.8
@@ -41,7 +44,6 @@ function [ tmp1, jcp ] = __chk_java_sprt__ ()
     tmp1 = 1;
   catch
     ## No Java support
-    tmp1 = 0;
   end_try_catch
 
 endfunction

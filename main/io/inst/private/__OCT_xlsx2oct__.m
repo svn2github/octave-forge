@@ -97,7 +97,7 @@ function [ mat, xls, rstatus ] = __OCT_xlsx2oct__ (xls, wsh, crange='')
       valraw = cell2mat (regexp (rawdata, '<c r="(\w+)" s="\d"(?!t="s")><v>.*?</v>', "tokens"));
     ## If 'val' exist, check is there are tagged s="NUMBERS" values
     elseif (numel (strfind (rawdata,' s="')) > 0)
-      valp = regexp (rawdata, '<c r="\w+" s="\d"(?!t="s")><v>(.*?)</v>', "tokens");
+      valp = cell2mat (regexp (rawdata, '<c r="\w+" s="\d"(?!t="s")><v>(.*?)</v>', "tokens"));
       if (! isempty (valp))
         val =    [val    valp];
         valraw = [valraw cell2mat(regexp (rawdata, '<c r="(\w+)" s="\d"(?!t="s")><v>.*?</v>', "tokens"))];

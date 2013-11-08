@@ -129,6 +129,7 @@
 ## 2013-09-29 Initially set OCT interface to not detected
 ## 2013-11-04 Revert above
 ## 2013-11-08 Better filetype / fileextension detection (bug #40490)
+##     ''     Removed stray ';'
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
@@ -238,7 +239,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
   [odsinterfaces] = getodsinterfaces (odsinterfaces);
 
   ## Supported interfaces determined; now check ODS file type.
-  [~, ~, ext] = fileparts (filename)
+  [~, ~, ext] = fileparts (filename);
   switch
     case ".ods"
       ## ODS 1.2

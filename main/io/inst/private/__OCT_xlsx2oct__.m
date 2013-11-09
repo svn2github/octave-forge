@@ -15,7 +15,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*- 
-## @deftypefn {Function File} [ @var{raw}, @var{xls}, @var rstatus} ] = __OCT_xlsx2oct__ (@var{xlsx}, @var{wsh}, @var{range})
+## @deftypefn {Function File} [ @var{raw}, @var{xls}, @var rstatus} ] = __OCT_xlsx2oct__ (@var{xlsx}, @var{wsh}, @var{range}, @spsh_opts)
 ## Internal function for reading data from an xlsx worksheet
 ##
 ## @seealso{}
@@ -30,9 +30,18 @@
 ## 2013-11-02 Added rstatus return arg (needed by xlsread.m)
 ## 2013-11-04 (PRN) Adapted regexp search strings to include (numeric) formulas and booleans
 ##     ''     (PRN) Commented out code for only numeric data until contiguousness is checked
+## 2013-11-08 Fix reading date/time
+##     ''     Rework code to keep cell array, not a numeric matrix
+##     ''     Add reading formulas
+## 2013-11-09 Add reading strings & formulas
+##     ''     Rearrange code
+##     ''     Prepare for fast reading (still uncommented)
+##     ''     Implement selected range (still rough ATM but for devs the easiest)
 
-function [ mat, xls, rstatus ] = __OCT_xlsx2oct__ (xls, wsh, crange='')
+function [ raw, xls, rstatus ] = __OCT_xlsx2oct__ (xls, wsh, crange='', spsh_opts)
 
+  ## spsh_opts is guaranteed to be filled by caller
+  
   ## If a worksheet if given, check if it's given by a name (string) or a number
   if (ischar (wsh))
     fid = fopen (sprintf ('%s/xl/workbook.xml', xls.workbook));
@@ -48,14 +57,16 @@ function [ mat, xls, rstatus ] = __OCT_xlsx2oct__ (xls, wsh, crange='')
       ## Search for requested sheet name
       id = strmatch (wsh, xls.sheets.sh_names);
       if (! isempty (id))
-        error ("xlsxread: cannot find sheet '%s' in file %s", wsh, xls.filename);
+        error ("xls2oct: cannot find sheet '%s' in file %s", wsh, xls.filename);
       else
         wsh = xls.sheets.rid(id);
       endif
-      
     endif
+  elseif (wsh > numel (xls.sheets.sh_names))
+    error ("xls2oct: worksheet number %d > number of worksheets in file (%d)", wsh, numel (xls.sheets.sh_names));
+  elseif (wsh < 1)
+    warning ("xls2oct: illegal worksheet number (%d) - worksheet #1 assumed", wsh);
   endif
-  rstatus = 0;
 
   ## Prepare to open requested worksheet file in subdir xl/ . Note: Win accepts forward slashes
   rawsheet = fopen (sprintf ('%s/xl/worksheets/sheet%d.xml', xls.workbook, wsh));
@@ -63,84 +74,188 @@ function [ mat, xls, rstatus ] = __OCT_xlsx2oct__ (xls, wsh, crange='')
     fgetl (rawsheet);                   ## skip the first line
     rawdata = fgetl (rawsheet);         ## here comes our needed datastring
     fclose (rawsheet);
-  else
-    error ("xls2oct: sheet number out of range");
+    ## Strings
+    try
+      fid = fopen (sprintf ("%s/xl/sharedStrings.xml", xls.workbook));
+      fgetl (fid);
+      strings = fgetl (fid);
+      fclose (fid);
+    catch
+      ## Some error with shared strings sub file
+      warning ("xls2oct: sharedStrings.xml not found in file xls.filename");
+      strings = "";
+    end_try_catch
   endif
-
-  ## FIXME
-  if (! isempty (crange))  ## someone wants to read a range :-/ don't work atm!!!
-    printf ("xls2oct: reading specified ranges not supported - you'll get all the numeric data\n");
-  endif
-  ##    s = '"';
-  ##    [ra.num, ra.char] = __getrange(crange);   ## lets analyse the range
-  ##    matrows = columns (ra.num); % brainfuck? :)
-  ##    eval (sprintf ("tmpdata=regexp(rawdata, '<c r=%s[%s]+[%s]%s[^>]*><v[^>]*>(.*?)</v></c>',"tokens");", s, ra.char, ra.num, s));
-  ##    tmpdata = char (tmpdata{:});
-  ##    tmpdata = strrep (tmpdata, ',' , '');
-  ##    tmpdata = str2double (tmpdata);
-  ##    mat=reshape(tmpdata, [], matrows)';
-  ##
-  ##else ## someone wants all or nothing! :)
-
-  ## 'val' are the relevant values. 'valraw' are the corresponding(!) positions (e.g. B3).
-  ##
-  ## Check if rawdata string was created with Excel 2007, 2010 or 2010 for mac
+  rstatus = 0;
 
   ## Check if there are only numeric data (then no s="" or <f> r="s")
-  ## FIXME contguous data rectangles check needed!! so corresponding else clause below
-  ##if (numel (strfind (rawdata, ' s="')) > 0 || numel (strfind (rawdata, '<f>')) > 0 || numel (strfind (rawdata, 't="s"')) > 0)
-    val = cell2mat    (regexp (rawdata, '<c r="\w+"(?: t="[b]+")?>(?:<f.+?(?:</f>|/>))?<v>(.*?)</v>', "tokens"));
-    valraw = cell2mat (regexp (rawdata, '<c r="(\w+)"(?: t="[b]+")?>(?:<f.+?(?:</f>|/>))?<v>.*?</v>', "tokens"));
-    ## If val is still empty, try another regexpression
-    if (numel (val) == 0)
-      val =    cell2mat (regexp (rawdata, '<c r="\w+" s="\d"(?!t="s")><v>(.*?)</v>', "tokens"));
-      valraw = cell2mat (regexp (rawdata, '<c r="(\w+)" s="\d"(?!t="s")><v>.*?</v>', "tokens"));
-    ## If 'val' exist, check is there are tagged s="NUMBERS" values
-    elseif (numel (strfind (rawdata,' s="')) > 0)
-      valp = cell2mat (regexp (rawdata, '<c r="\w+" s="\d"(?!t="s")><v>(.*?)</v>', "tokens"));
-      if (! isempty (valp))
-        val =    [val    valp];
-        valraw = [valraw cell2mat(regexp (rawdata, '<c r="(\w+)" s="\d"(?!t="s")><v>.*?</v>', "tokens"))];
-      endif
-    endif
+  ## FIXME contiguous data rectangles check needed!! so corresponding else clause below
+  ##if (! (numel (strfind (rawdata, ' s="')) > 0 || numel (strfind (rawdata, '<f>')) > 0 || numel (strfind (rawdata, 't="s"')) > 0))
 
   ## if no s="...", nor <formular>, nor t="s" is found. good luck - it could be awesome fast (like example.xlsx)!
   ## FIXME This will break on the reshape below if the data are non-contiguous. Numeric formula results are skipped too
-  ##else
-    ##val = cell2mat (regexp(rawdata, '<c r="\w+"(?:t="b")?><v>(.*?)</v>', "tokens"));
-    ##valraw = [];
-  ##endif
+  raw = {};
+  ##val = cell2mat (regexp (rawdata, '<c r="\w+"(?: t="b")?><v>(.*?)</v>', "tokens"));
+  ##valraw = [];
+  ##FIXME This reshape will break on non-contguous data
+  ##try
+  ##  matrows = size (strfind (rawdata, '</row>'), 2)
+  ##  raw = reshape (val, [], matrows)';
+  ##  raw = num2cell (raw);
+  ##  ## Reshape didn't complain. Big chance we have contiguous data.
+  ##  topleft = cell2mat (regexp (rawdata, '<c r="(\w+)"(?:t="b")?><v>.*?</v>', "tokens", "once"));
+  ##  [~, ~, ~, trow, lcol] = parse_sp_range (topleft);
+  ##  [nrows, ncols] = size (raw);
+  ##  xls.limits = [lcol, lcol + ncols - 1; trow, trow + nrows - 1];
+  ##  rstatus = 1;
+  ##  return
+  ##catch
+  ##  raw = {};
+  ##end_try_catch
 
-  ## the values for mat
-  val = str2double (val)';
+  ## 'val' are the actual values. 'valraw' are the corresponding(!) cell positions (e.g. B3).
+  if (isempty (raw))
+    ## General note for tuning: '"([^"]*)"' (w/o single quotes) could be faster than '"(.*?)"'
+    ## (http://stackoverflow.com/questions/2503413/regular-expression-to-stop-at-first-match comment #7)
 
-  ## FIXME see FIXME below
-  ##if (numel (valraw))
-    ## get the row number (currently supported from 1 to 999999)
-    ## admitted of improvement
+    ## Beloware loads of nested IFs. They're needed to catch empty previous results, even empty sheets
+
+    ## 1. Get pure numbers, including booleans, double and boolean formula results, from cells w/o 's=""' tag
+    val = cell2mat    (regexp (rawdata, '<c r="\w+"(?: t="[b]+")?>(?:<f.+?(?:</f>|/>))?<v>(.*?)</v>', "tokens"));
+    if (! isempty (val))
+      valraw = cell2mat (regexp (rawdata, '<c r="(\w+)"(?: t="[b]+")?>(?:<f.+?(?:</f>|/>))?<v>.*?</v>', "tokens"));
+    endif
+
+    ## If val is still empty, try another regexpression (PRN: will this ever work? haven't seen such cells)
+    if (numel (val) == 0)
+      val =      cell2mat (regexp (rawdata, '<c r="\w+" s="\d"(?! t="s")><v>(.*?)</v>', "tokens"));
+      if (! isempty (val))
+        valraw = cell2mat (regexp (rawdata, '<c r="(\w+)" s="\d"(?! t="s")><v>.*?</v>', "tokens"));
+      endif
+    endif
+
+    ## If 'val' exist, check if there are tagged s="NUMBERS" values
+    if (numel (regexp (rawdata, ' s="', "once")) > 0)
+      ## Time/date values. Exclude formulas (having <f> </f>  of <f  /> tags),
+      ## strings  ('t="s"') and error results ('t="e"')
+      valp =            cell2mat (regexp (rawdata, '<c r="\w+" s="\d"(?: t="[^se]*")?><v>(.*?)</v>', "tokens"));
+      if (! isempty (valp))
+        valrawp = cell2mat(regexp (rawdata, '<c r="(\w+)" s="\d"(?: t="[^se]*")?><v>.*?</v>', "tokens"));
+        if (! isempty (val))
+          val =    [val    valp];
+          valraw = [valraw valrawp];
+        else
+          val = valp;
+          valraw = valrawp;
+          clear valp valrawp ;
+        endif
+      endif
+    endif
+    ## Turn strings into numbers
+    val = num2cell (str2double (val)); 
+
+    ## 2. String / text formulas (cached results are in this sheet; fixed strings in <sharedStrings.xml>)
+    ## Formulas
+    if (spsh_opts.formulas_as_text)
+      ## Get formulas themselves as text strings. Formulas have no 't="s"' attribute. Keep starting '>' for next line
+      valf1 = cell2mat (regexp (rawdata, '<c r="\w+" s="\d"(?: t="(?:[^s]?|str)")?><f(?: .*?)*(>.+?)</f><v>.*?</v>', "tokens"));
+      if (! isempty (valf1))
+        valf1 = regexprep (valf1, '^>', '=');
+        valrawf1 = cell2mat(regexp (rawdata, '<c r="(\w+)" s="\d"(?: t="(?:[^s]?|str)")?>(?:<f(?: .*?)*>.+?</f>)<v>.*?</v>', "tokens"));
+        if (isempty (val))
+          val = valf1;
+        else
+          ##  Formulas start with '=' so:
+          val = [val valf1];
+          valraw = [valraw valrawf1];
+        endif
+      endif
+      clear valf1 valrawf1 ;
+    else
+      ## Get (cached) formula results. Watch out! as soon as a "t" attibute equals "b" or is missing it is a number
+      ## First the non-numeric formula results
+      valf2 = cell2mat (regexp (rawdata, '<c r="\w+" s="\d" t="(?:[^sb]?|str)">(?:<f.+?(?:</f>|/>))<v>(.*?)</v>', "tokens"));
+      if (! isempty (valf2))
+        valrawf2 = cell2mat(regexp (rawdata, '<c r="(\w+)" s="\d" t="(?:[^sb]?|str)">(?:<f.+?(?:</f>|/>))<v>.*?</v>', "tokens"))
+        if (isempty (val))
+          val = valf2;
+          valraw = valrawf2;
+        else
+          val = [val valf2];
+          valraw = [valraw valrawf2];
+        endif
+      endif
+      clear valf2 valrawf2 ;
+      ## Next the numeric formula results. These need additional conversion
+      valf3 = cell2mat (regexp (rawdata, '<c r="\w+" s="\d"(?: t="b")?>(?:<f.+?(?:</f>|/>))<v>(.*?)</v>', "tokens"));
+      if (! isempty (valf3))
+        valrawf3 = cell2mat(regexp (rawdata, '<c r="(\w+)" s="\d"(?: t="b")?>(?:<f.+?(?:</f>|/>))<v>.*?</v>', "tokens"));
+        if (isempty (val))
+          val = num2cell(str2double (valf3));
+          valraw = valrawf3;
+        else
+          val = [val num2cell(str2double (valf3))];
+          valraw = [valraw valrawf3];
+        endif
+      endif
+      clear valf3 valrawf3 ;
+    endif
+    ## 3. Strings
+    if (! isempty (strings))
+      ## Extract string values. May be much more than present in current sheet
+      ctext = cell2mat (regexp (strings, '<si><t>(.+?)</t></si>', "tokens"));
+      ## Pointers into sharedStrings.xml. "Hard" (fixed) strings have 't="s"' attribute
+      ## For reasons known only to M$ that pointer is zero-based, so:
+      vals = str2double (cell2mat (regexp (rawdata, '<c r="\w+"(?: s="\d")? t="s"><v>(\d?)</v>', "tokens"))) + 1;
+      if (! isempty (vals))
+        ## Get actual values
+        vals = ctext(vals);
+        ## Cell addresses
+        valraws = cell2mat (regexp (rawdata, '<c r="(\w+)"(?: s="\d")? t="s"><v>\d?</v>', "tokens"));
+        if (isempty (val))
+          val = vals;
+          valraw = valraws;
+        else
+          val = [val vals];
+          valraw = [valraw valraws];
+        endif
+      endif
+      clear vals valraws ;
+    endif
+
+    ## If val is empty, sheet is empty
+    if (isempty (val))
+      xls.limits = [];
+      raw = {};
+      return
+    endif
+
+    ## 4. Prepare 
+    ## Get the row number (currently supported from 1 to 999999)
     vi.row = str2double (cell2mat (regexp (valraw, '(\d+|\d+\d+|\d+\d+\d+|\d+\d+\d+\d+|\d+\d+\d+\d+\+d|\d+\d+\d+\d+\d+\d+)?', "match"))')';
-    ## get the column character (A to ZZZ) (that are more than 18k supported columns atm)
-    ## admitted of improvement
+
+    ## Get the column character (A to ZZZ) (that are more than 18k supported columns atm)
     vi.alph = cell2mat (regexp (valraw, '([A-Za-z]+|[A-Za-z]+[A-Za-z]+|[A-Za-z]+[A-Za-z]+[A-Za-z]+)?', "match"));
-    ## free memory
-    ## might be useful while reading huge files
-    clear valraw
-    ## if missed formular indices
+
+    ## Free memory; might be useful while reading huge files
+    clear valraw ;
+
+    ## If missed formular indices
     idx.all = cell2mat (regexp (rawdata, '<c r="(\w+)"[^>]*><f', "tokens"));
     if (0 < numel (idx.all))
       idx.num = str2double (cell2mat (regexp (idx.all, '(\d+|\d+\d+|\d+\d+\d+|\d+\d+\d+\d+|\d+\d+\d+\d+\+d|\d+\d+\d+\d+\d+\d+)?', "match"))')';
       idx.alph = cell2mat (regexp (idx.all, '([A-Za-z]+|[A-Za-z]+[A-Za-z]+|[A-Za-z]+[A-Za-z]+[A-Za-z]+)?', "match"));
       idx.alph = double (cell2mat (cellfun (@__col_str_to_number, vi.alph, "UniformOutput", 0)));
     else
-      ## to prevent warnings or errors while calculating corresponding NaN matrix
+      ## To prevent warnings or errors while calculating corresponding NaN matrix
       idx.num = [];
       idx.alph = [];
     end
-    ## transform column character to column number
+    ## Transform column character to column number
     ## A -> 1; C -> 3, AB -> 28 ...
-    ## admitted of improvement
     vi.col = double (cell2mat (cellfun (@__col_str_to_number, vi.alph, "UniformOutput", 0)));
-    ## create corresponding NaN matrix
+
+    ## Find data rectangle limits
     idx.mincol = min ([idx.alph vi.col]);
     idx.minrow = min ([idx.num vi.row]);
     idx.maxrow = max ([idx.num vi.row]);
@@ -157,25 +272,28 @@ function [ mat, xls, rstatus ] = __OCT_xlsx2oct__ (xls, wsh, crange='')
     if (1 < idx.minrow)
           vi.row = vi.row - (idx.minrow - 1);
     endif
-    ## create corresponding NaN matrix
-    mat(1 : idx.maxrow-(idx.minrow-1), 1 : idx.maxcol-(idx.mincol-1)) = NaN;
+    ## Initialize output cell array
+    raw = cell (idx.maxrow - idx.minrow + 1, idx.maxcol - idx.mincol + 1);
 
     ## get logical indices for 'val' from 'valraw' positions in NaN matrix
-    vi.idx = sub2ind (size (mat), (vi.row), (vi.col));
-    ## set values to the corresponding indizes in final mat
-    mat (vi.idx) = val;
+    vi.idx = sub2ind (size (raw), (vi.row), (vi.col));
+    ## set values to the corresponding indizes in final cell matrix
+    raw(vi.idx) = val;
 
-  ## this was the "good luck" part. no regard for strings, formulars etc.
-  ##else
-    ## FIZME This reshapewill break on non-contguous data
-    ##matrows = size (strfind (rawdata, '</row>'), 2);
-    ##mat= reshape (val, [], matrows)';
-  ##endif
+  endif
 
-  ## xls2oct expects a cell array
-  mat = num2cell (mat);
-  
-  if (! isempty (mat))
+  ## FIXME maybe reading parts of the data can be done faster above by better regexps
+  if (! isempty (crange))
+    ## We'll do it the easy way: just read all data, then return only the requested part
+    [~, nr, nc, tr, lc] = parse_sp_range (crange);
+    xls.limits = [max(idx.mincol, lc), min(idx.maxcol, lc+nc-1); max(idx.minrow, tr), min(idx.maxrow, tr+nr-1)];
+    ## Correct spreadsheet locations for lower right shift or raw
+    rc = idx.minrow - 1;
+    cc = idx.mincol - 1;
+    raw = raw(xls.limits(2, 1)-rc : xls.limits(2, 2)-rc, xls.limits(1, 1)-cc : xls.limits(1, 2)-cc);
+  endif
+ 
+  if (! isempty (val))
     rstatus = 1;
   endif
 

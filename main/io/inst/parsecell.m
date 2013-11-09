@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis <prnienhuis at users.sf.net>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -66,108 +66,108 @@
 
 function [ numarr, txtarr, lim ] = parsecell (rawarr, arg2=[])
 
-	if (isstruct (arg2))
-		## Assume a file ptr has been supplied
-		if (isfield (arg2, "limits"))
-			rawlimits = arg2.limits;
-		else
-			warning ("Invalid file ptr supplied to parsecell() - limits ignored.");
-		endif
-	else
-		rawlimits = arg2;
-	endif
+ if (isstruct (arg2))
+  ## Assume a file ptr has been supplied
+  if (isfield (arg2, "limits"))
+   rawlimits = arg2.limits;
+  else
+   warning ("Invalid file ptr supplied to parsecell() - limits ignored.");
+  endif
+ else
+  rawlimits = arg2;
+ endif
 
-	lim = struct ( "numlimits", [], "txtlimits", []);
+ lim = struct ( "numlimits", [], "txtlimits", []);
 
-	numarr = [];
-	txtarr = {};
-	
-	if (~isempty (rawarr))
-		## Valid data returned. Divide into numeric & text arrays
-		no_txt = 0; no_num = 0;
-		if (isnumeric ([rawarr{:}]))
-			numarr = num2cell (rawarr); 
-			no_txt = 1;
-		elseif (iscellstr (rawarr))
-			txtarr = cellstr (rawarr);
-			no_num = 1;
-		endif
-		## Prepare parsing
-		[nrows, ncols] = size (rawarr);
-	
-		## Find text entries in raw data cell array
-		txtptr = cellfun ("isclass", rawarr, "char");
-		if (~no_txt)
-			## Prepare text array. Create placeholder for text cells
-			txtarr = cell (size (rawarr));
-			txtarr(:) = {""};
-			if (any (any (txtptr)))
-				## Copy any text cells found into place holder
-				txtarr(txtptr) = rawarr(txtptr);
-				## Clean up text array (find leading / trailing empty
-				## rows & columns)
-				irowt = 1;
-				while (~any (txtptr(irowt, :))); irowt++; endwhile
-				irowb = nrows;
-				while (~any (txtptr(irowb, :))); irowb--; endwhile
-				icoll = 1;
-				while (~any (txtptr(:, icoll))); icoll++; endwhile
-				icolr = ncols;
-				while (~any (txtptr(:, icolr))); icolr--; endwhile
-				## Crop textarray
-				txtarr = txtarr(irowt:irowb, icoll:icolr);
-				lim.txtlimits = [icoll, icolr; irowt, irowb];
-				if (~isempty (rawlimits))
-					correction = [1; 1];
-					lim.txtlimits(:,1) = lim.txtlimits(:,1) + rawlimits(:,1) - correction;
-					lim.txtlimits(:,2) = lim.txtlimits(:,2) + rawlimits(:,1) - correction;
-				endif
-			else
-				## If no text cells found return empty text array
-				txtarr = {};
-			endif
-		endif
-		
-		if (~no_num)
-			## Prepare numeric array. Set all text & empty cells to NaN.
-			## First get their locations
-			emptr = cellfun ("isempty", rawarr);
-			emptr(find (txtptr)) = 1;
-			if (all (all (emptr)))
-				numarr= [];
-			else
-				## Find leading & trailing empty rows
-				irowt = 1;
-				while (all(emptr(irowt, :))); irowt++; endwhile
-				irowb = nrows;
-				while (all(emptr(irowb, :))); irowb--; endwhile
-				icoll = 1;
-				while (all(emptr(:, icoll))); icoll++; endwhile
-				icolr = ncols;
-				while (all(emptr(:, icolr))); icolr--; endwhile
+ numarr = [];
+ txtarr = {};
+ 
+ if (~isempty (rawarr))
+  ## Valid data returned. Divide into numeric & text arrays
+  no_txt = 0; no_num = 0;
+  if (isnumeric ([rawarr{:}]))
+   numarr = num2cell (rawarr); 
+   no_txt = 1;
+  elseif (iscellstr (rawarr))
+   txtarr = cellstr (rawarr);
+   no_num = 1;
+  endif
+  ## Prepare parsing
+  [nrows, ncols] = size (rawarr);
+ 
+  ## Find text entries in raw data cell array
+  txtptr = cellfun ("isclass", rawarr, "char");
+  if (~no_txt)
+   ## Prepare text array. Create placeholder for text cells
+   txtarr = cell (size (rawarr));
+   txtarr(:) = {""};
+   if (any (any (txtptr)))
+    ## Copy any text cells found into place holder
+    txtarr(txtptr) = rawarr(txtptr);
+    ## Clean up text array (find leading / trailing empty
+    ## rows & columns)
+    irowt = 1;
+    while (~any (txtptr(irowt, :))); irowt++; endwhile
+    irowb = nrows;
+    while (~any (txtptr(irowb, :))); irowb--; endwhile
+    icoll = 1;
+    while (~any (txtptr(:, icoll))); icoll++; endwhile
+    icolr = ncols;
+    while (~any (txtptr(:, icolr))); icolr--; endwhile
+    ## Crop textarray
+    txtarr = txtarr(irowt:irowb, icoll:icolr);
+    lim.txtlimits = [icoll, icolr; irowt, irowb];
+    if (~isempty (rawlimits))
+     correction = [1; 1];
+     lim.txtlimits(:,1) = lim.txtlimits(:,1) + rawlimits(:,1) - correction;
+     lim.txtlimits(:,2) = lim.txtlimits(:,2) + rawlimits(:,1) - correction;
+    endif
+   else
+    ## If no text cells found return empty text array
+    txtarr = {};
+   endif
+  endif
+  
+  if (~no_num)
+   ## Prepare numeric array. Set all text & empty cells to NaN.
+   ## First get their locations
+   emptr = cellfun ("isempty", rawarr);
+   emptr(find (txtptr)) = 1;
+   if (all (all (emptr)))
+    numarr= [];
+   else
+    ## Find leading & trailing empty rows
+    irowt = 1;
+    while (all(emptr(irowt, :))); irowt++; endwhile
+    irowb = nrows;
+    while (all(emptr(irowb, :))); irowb--; endwhile
+    icoll = 1;
+    while (all(emptr(:, icoll))); icoll++; endwhile
+    icolr = ncols;
+    while (all(emptr(:, icolr))); icolr--; endwhile
 
-				## Pre-crop rawarr
-				rawarr = rawarr (irowt:irowb, icoll:icolr);
-				## Build numerical array
-				numarr = zeros (irowb-irowt+1, icolr-icoll+1);
-				## Watch out for scalar (non-empty) numarr where emptr = 0
-				if (sum (emptr(:)) > 0)
-					numarr(emptr(irowt:irowb, icoll:icolr)) = NaN;
-				endif
-				numarr(~emptr(irowt:irowb, icoll:icolr)) = ...
+    ## Pre-crop rawarr
+    rawarr = rawarr (irowt:irowb, icoll:icolr);
+    ## Build numerical array
+    numarr = zeros (irowb-irowt+1, icolr-icoll+1);
+    ## Watch out for scalar (non-empty) numarr where emptr = 0
+    if (sum (emptr(:)) > 0)
+     numarr(emptr(irowt:irowb, icoll:icolr)) = NaN;
+    endif
+    numarr(~emptr(irowt:irowb, icoll:icolr)) = ...
                 cell2mat (rawarr(~emptr(irowt:irowb, icoll:icolr)));
-				## Save limits
-				lim.numlimits = [icoll, icolr; irowt, irowb];
-				if (~isempty (rawlimits))
-					correction = [1; 1];
-					lim.numlimits(:,1) = lim.numlimits(:,1) + rawlimits(:,1) - correction(:);
-					lim.numlimits(:,2) = lim.numlimits(:,2) + rawlimits(:,1) - correction(:);
-				endif
-			endif
-		endif
+    ## Save limits
+    lim.numlimits = [icoll, icolr; irowt, irowb];
+    if (~isempty (rawlimits))
+     correction = [1; 1];
+     lim.numlimits(:,1) = lim.numlimits(:,1) + rawlimits(:,1) - correction(:);
+     lim.numlimits(:,2) = lim.numlimits(:,2) + rawlimits(:,1) - correction(:);
+    endif
+   endif
+  endif
 
-		lim.rawlimits = rawlimits;
-	
-	endif
+  lim.rawlimits = rawlimits;
+ 
+ endif
 
 endfunction

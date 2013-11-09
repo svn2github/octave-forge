@@ -48,9 +48,11 @@ function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename
     ## xlsx and ods are zipped
     ## Below is needed for a silent delete of our tmpdir
     confirm_recursive_rmdir (0);
+
     ## http://savannah.gnu.org/bugs/index.php?39148
     ## unpack.m taken from bugfix: http://hg.savannah.gnu.org/hgweb/octave/rev/45165d6c4738
-    ## needed for octave 3.6.x
+    ## needed for octave 3.6.x and added to ./private subdir
+    ## FIXME delete unpack.m for release 1.3.x
     unpack (filename, tmpdir, "unzip");
   endif  
 

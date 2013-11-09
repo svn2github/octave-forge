@@ -128,7 +128,7 @@
 ##     ''     Relax check for lowercase filename extension
 ## 2013-09-29 Initially set OCT interface to not detected
 ## 2013-11-04 Revert above
-## 2013-11-08 Better filetype / fileextension detection (bug #40490)
+## 2013-11-08 Better filetype / file extension detection (bug #40490)
 ##     ''     Removed stray ';'
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
@@ -241,14 +241,11 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
   ## Supported interfaces determined; now check ODS file type.
   [~, ~, ext] = fileparts (filename);
   switch
-    case ".ods"
-      ## ODS 1.2
+    case ".ods"               ## ODS 1.2
       chk3 = 1;
-    case ".sxc"
-      ## jOpenDocument (JOD) can read from .sxc files, but only if odfvsn = 2
-      chk4 = 1;
-    case ".gnumeric"
-      ## Zipped XML / gnumeric
+    case ".sxc"               ## jOpenDocument (JOD) can read from .sxc files,
+      chk4 = 1;               ## but only if odfvsn = 2
+    case ".gnumeric"          ## Zipped XML / gnumeric
       chk5 = 1;
     otherwise
   endswitch

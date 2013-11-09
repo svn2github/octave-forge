@@ -140,6 +140,7 @@
 ## 2013-10-01 Some adaptations for gnumeric
 ## 2013-10-02 Delete ODS section
 ## 2013-11-02 Added rstatus return arg for __OCT_xlsx2oct__.m
+## 2013-11-08 Added spsh_opts arg for __OCT_xls2oct__.m
 ##
 ## Latest subfunc update: 2012-10-12
 
@@ -205,7 +206,7 @@ function [ rawarr, xls, rstatus ] = xls2oct (xls, wsh=1, datrange="", spsh_opts=
   elseif (strcmp (xls.xtype, "OCT"))
     ## Read xls file tru native Octave
     if (strcmpi (xls.app, 'xlsx'))
-      [rawarr, xls, rstatus] = __OCT_xlsx2oct__ (xls, wsh, datrange);
+      [rawarr, xls, rstatus] = __OCT_xlsx2oct__ (xls, wsh, datrange, spsh_opts);
     elseif (strcmpi (xls.app, 'gnumeric'))
       [rawarr, xls, rstatus] = __OCT_gnm2oct__ (xls, wsh, datrange);
     endif

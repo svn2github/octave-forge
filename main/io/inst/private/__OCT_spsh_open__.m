@@ -29,6 +29,7 @@
 ## 2013-09-23 Fix copyright messages
 ## 2013-10-02 More comments
 ## 2013-10-20 Adapted parts of Markus' .xlxs code
+## 2013-11-10 (MB) Compacted sheet names & rid code in xlsx section
 
 function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename, xlssupport, chk2, chk3, chk5)
 
@@ -119,23 +120,10 @@ function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename
       ## Close file
       fclose (fid);
 
-      sheets = getxmlnode (xml, "sheets");
-      sh = ' ';
-      is = 1;
-      nsheets = 0;
-      names = {};
-      sheetId = [];
-      while (! isempty (sh))
-        ## getxmlnode returns empty string if no node with req. tag is found
-        [sh, ~, is] = getxmlnode (sheets, "sheet", is);
-        if (! isempty (sh))
-          ++nsheets;
-          names(nsheets) = getxmlattv (sh, "name");
-          Id(nsheets)    = str2double (getxmlattv (sh, "r:id")(4:end));
-        endif
-      endwhile
-      xls.sheets.sh_names = names;
-      xls.sheets.rid   = Id;
+      ## Get sheet names and indices
+      xls.sheets.sh_names = cell2mat (regexp (xml, '<sheet name="(.*?)" sheetId="\d+"', "tokens"));
+      xls.sheets.rid = str2double (cell2mat (regexp (xml, '<sheet name=".*?" sheetId="(\d+)"', "tokens")));
+
     endif
 
   elseif (chk5)

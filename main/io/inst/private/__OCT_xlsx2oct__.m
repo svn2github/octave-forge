@@ -37,31 +37,32 @@
 ##     ''     Rearrange code
 ##     ''     Prepare for fast reading (still uncommented)
 ##     ''     Implement selected range (still rough ATM but for devs the easiest)
+## 2013-11-10 Fix typo preventing reading named worksheets instead of indices
 
 function [ raw, xls, rstatus ] = __OCT_xlsx2oct__ (xls, wsh, crange='', spsh_opts)
 
   ## spsh_opts is guaranteed to be filled by caller
-  
+
   ## If a worksheet if given, check if it's given by a name (string) or a number
   if (ischar (wsh))
-    fid = fopen (sprintf ('%s/xl/workbook.xml', xls.workbook));
-    if (fid < 0)
-      ## File open error
-      error ("xls2oct: file %s couldn't be opened for reading", filename);
-    else
-      fgetl (fid); 
-      xml = fgetl(fid);
-      ## Close file
-      fclose (fid);
+    # fid = fopen (sprintf ('%s/xl/workbook.xml', xls.workbook));
+    # if (fid < 0)
+      # File open error
+      # error ("xls2oct: file %s couldn't be opened for reading", filename);
+    # else
+      # fgetl (fid); 
+      # xml = fgetl(fid);
+      # Close file
+      # fclose (fid);
 
       ## Search for requested sheet name
       id = strmatch (wsh, xls.sheets.sh_names);
-      if (! isempty (id))
+      if (isempty (id))
         error ("xls2oct: cannot find sheet '%s' in file %s", wsh, xls.filename);
       else
         wsh = xls.sheets.rid(id);
       endif
-    endif
+    # endif
   elseif (wsh > numel (xls.sheets.sh_names))
     error ("xls2oct: worksheet number %d > number of worksheets in file (%d)", wsh, numel (xls.sheets.sh_names));
   elseif (wsh < 1)

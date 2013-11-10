@@ -1,3 +1,6 @@
+ ** LinearRegression: Two demo codes added ad the confidence band 
+                      for the dependent variable can be estimated.
+
  ** Bugfix in jacobs for functions of more than 2 variables.
 
 optim 1.2.2:

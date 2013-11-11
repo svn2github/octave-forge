@@ -29,7 +29,7 @@ function r = ranks(X,DIM,Mode)
 
 
 %    $Id$
-%    Copyright (C) 2000-2002,2005,2010 by Alois Schloegl <alois.schloegl@gmail.com>	
+%    Copyright (C) 2000-2002,2005,2010,2013 by Alois Schloegl <alois.schloegl@gmail.com>	
 %    This script is part of the NaN-toolbox
 %       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
@@ -72,11 +72,11 @@ X = squeeze (X); %remove singleton dimensions for convenience
 nd = ndims (X);
 if (~DIM)
 	 DIM = 1;
-endif
+end
 if DIM > 1 %shift the array so that the dimension to sort over is first
   perm = [DIM 1:(DIM-1) (DIM+1):nd];
   X = permute (X, perm);
-endif
+end
 if nd > 2  %convert X to 2-D if it has >2 dimensions
   sz = size(X);
   N = sz(1);
@@ -84,7 +84,7 @@ if nd > 2  %convert X to 2-D if it has >2 dimensions
   X = reshape(X, N, M);
 else
   [N,M] = size(X);
-endif
+end
 
 if strcmp(Mode(1:min(11,length(Mode))),'traditional'), % traditional, needs O(m.n^2)
 % this method was originally implemented by: KH <Kurt.Hornik@ci.tuwien.ac.at>
@@ -176,10 +176,10 @@ end;
 %reshape r to match the input X
 if nd > 2
   r = reshape (r, sz);
-endif
+end
 if (DIM > 1)
 	r = ipermute (r, perm);
-endif
+end
 r = reshape (r, sz_orig); %restore any singleton dimensions
 
 

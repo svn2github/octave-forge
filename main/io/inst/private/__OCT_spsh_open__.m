@@ -30,6 +30,7 @@
 ## 2013-10-02 More comments
 ## 2013-10-20 Adapted parts of Markus' .xlxs code
 ## 2013-11-10 (MB) Compacted sheet names & rid code in xlsx section
+## 2013-11-12 Rely on private/__unpack (patched unpack.m from core Octave)
 
 function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename, xlssupport, chk2, chk3, chk5)
 
@@ -54,7 +55,7 @@ function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename
     ## unpack.m taken from bugfix: http://hg.savannah.gnu.org/hgweb/octave/rev/45165d6c4738
     ## needed for octave 3.6.x and added to ./private subdir
     ## FIXME delete unpack.m for release 1.3.x
-    unpack (filename, tmpdir, "unzip");
+    __unpack (filename, tmpdir, "unzip");
   endif  
 
   ## First check if we're reading ODS

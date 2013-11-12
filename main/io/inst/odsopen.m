@@ -130,6 +130,7 @@
 ## 2013-11-04 Revert above
 ## 2013-11-08 Better filetype / file extension detection (bug #40490)
 ##     ''     Removed stray ';'
+## 2013-11-12 Fix syntax error + missing initialization in file ext switch stmt
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
@@ -239,8 +240,9 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
   [odsinterfaces] = getodsinterfaces (odsinterfaces);
 
   ## Supported interfaces determined; now check ODS file type.
+  chk3 = chk4 = chk5 = 0;
   [~, ~, ext] = fileparts (filename);
-  switch
+  switch ext
     case ".ods"               ## ODS 1.2
       chk3 = 1;
     case ".sxc"               ## jOpenDocument (JOD) can read from .sxc files,

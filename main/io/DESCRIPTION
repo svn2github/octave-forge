@@ -6,8 +6,7 @@ Maintainer: Philip Nienhuis <prnienhuis@users.sf.net>
 Title: Input/Output
 Description: Input/Output in external formats.
 Categories: IO
-Problems: Default initial Java memory probably too small, increase with
- java.opts (see documentation). No OXS write support. UNO support experimental.
+Problems: Default initial Java memory probably too small, increase with java.opts (see documentation). No OXS write support. UNO support experimental.
 Depends: octave (>= 3.4.0), octave (<= 3.7.1)
 Suggested: java (>= 1.2.8), windows (>= 1.0.10)
 Autoload: no

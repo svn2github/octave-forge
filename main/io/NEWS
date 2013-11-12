@@ -1,7 +1,7 @@
 Summary of important user-visible changes for releases of the io package
 
 ===============================================================================
-io-1.2.5   Release Date: 2013-11-TBA Release Manager: Philip Nienhuis
+io-1.2.5   Release Date: 2013-11-12 Release Manager: Philip Nienhuis
 ===============================================================================
 
 *** - Added string/formula read support to xlsx/OCT. There's now full read
@@ -10,6 +10,9 @@ io-1.2.5   Release Date: 2013-11-TBA Release Manager: Philip Nienhuis
 
 *** Bug fixes:
     - Better filetype / file extension detection (bug #40490)
+
+    - Added unpack.m from dev core Octave as private/__unpack.m to avoid
+      unzip errors for .xlsx and .gnumeric
 
     - Removed harmless but annoying error messages from Java detection
 

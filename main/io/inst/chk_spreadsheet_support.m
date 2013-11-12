@@ -30,8 +30,9 @@
 %                 2. PATH_TO_OOO/ure/.../ridl.jar
 %                 resolve OK
 %     Returns:
-% RETVAL        =  0 No spreadsheet I/O support found
-%               <> 0 At least one spreadsheet I/O interface found. RETVAL
+% RETVAL        =  0  OCT (native Octave),
+%                     only read support for .xlsx, .ods (1.2) and gnumeric
+%               <> 0 At least one spreadsheet I/O write interface found. RETVAL
 %                  RETVAL will be set to the sum of values for found interfaces:
 %                  ---------- XLS (Excel) interfaces: ----------
 %                    1 = COM (ActiveX / Excel)
@@ -93,6 +94,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 % 2013-01-20 Made JVM memory detector more robust wrt Java return type
 % 2013-07-18 Add Fedora naming scheme to POI jar entries (the "old" ones are symlinks)
 % 2013-08-13 Tested odfdom 0.8.9 (odfdom-0.6-incubator); found it doesn't work :-(
+% 2013-11-12 Updated to OCT interface
 
   jcp = []; retval = 0;
   if (nargin < 3); path_to_ooo= ''; end %if
@@ -118,8 +120,8 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
   end %try_catch
 
     % Check Java
-  if (dbug), fprintf ('Checking Java support...\n'); end %if
-  if (dbug > 1), fprintf ('  1. Checking Java JRE presence.... '); end %if
+  if (dbug), fprintf ('Checking Java support... '); end %if
+  if (dbug > 1), fprintf ('\n  1. Checking Java JRE presence.... '); end %if
   % Try if Java is installed at all
   if (isOctave)
     oct_vsn = str2double (strsplit (OCTAVE_VERSION, '.'){1}) + ...
@@ -133,12 +135,18 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
     tst1 = version ('-java');
     jtst = isempty (strfind (tst1, 'Java'));
   end %if
-  if (jtst)
-    printf ('Apparently no Java JRE installed.\n');
-    return;
-  else
-    if (dbug > 1), fprintf ('OK, found one.\n'); end %if
-  end %if
+  if (dbug)
+    if (jtst)
+      printf ('Apparently no Java JRE installed.\n');
+      ## If there's no ActiveX support either...
+      if (! retval)
+        printf ("Only read support for ODS 1.2 (.ods), OOXML (.xlsx) amd .gnumeric present\n");
+      endif
+      return;
+    else
+      if (dbug > 1), fprintf ('OK, found one.\n'); end %if
+    end %if
+  endif
   if (dbug > 1 && isOctave), fprintf ('  2. Checking Octave Java support... '); end %if
   try
     % The following stanza is meant for older Octave w/o built-in Java
@@ -178,8 +186,8 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
       % Check JVM virtual memory settings
       jrt = javaMethod ('getRuntime', 'java.lang.Runtime');
       jmem = jrt.maxMemory ()
-	  % Some Java versions return jmem as octave_value => convert to double
-	  if (! isnumeric (jmem)); jmem = jmem.doubleValue(); end %if
+    % Some Java versions return jmem as octave_value => convert to double
+    if (! isnumeric (jmem)); jmem = jmem.doubleValue(); end %if
       jmem = int16 (jmem/1024/1024);
       fprintf ('  Maximum JVM memory: %5d MiB; ', jmem);
       if (jmem < 400)
@@ -196,7 +204,13 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
     end %if
     if (dbug), fprintf ('Java support OK\n'); end %if
   catch
-    printf ('No Java support found.\n');
+    if (dbug)
+      printf ('No Java support found.\n\n');
+      ## If there's no ActiveX support either...
+      if (! retval)
+        printf ("Only read support for ODS 1.2 (.ods), OOXML (.xlsx) amd .gnumeric\n");
+      endif
+    endif
     return
   end %try_catch
 

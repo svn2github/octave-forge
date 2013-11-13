@@ -37,6 +37,8 @@
 ## 2013-10-01 Little adaptation in header
 ## 2013-10-01 Read sheets from disk rather than keep them in memory
 ## 2013-11-03 Fix bug with updating column ptr after repeated columns node
+## 2013-11-13 Fix table-row counter bug
+##     ''     Pretty text output
 
 function [ rawarr, ods, rstatus] = __OCT_ods2oct__ (ods, wsh, cellrange='', spsh_opts)
 
@@ -119,7 +121,7 @@ function [ rawarr, ods, rstatus] = __OCT_ods2oct__ (ods, wsh, cellrange='', spsh
       ## Check repeat status and update row counter
       reprow = str2double (getxmlattv (trow, "table:number-rows-repeated"));
       if (isfinite (reprow))
-        reprow = min (reprow, lastrow - irow);
+        reprow = min (reprow, lastrow - irow) - 1;
       endif
       irow++;
 
@@ -218,6 +220,10 @@ function [ rawarr, ods, rstatus] = __OCT_ods2oct__ (ods, wsh, cellrange='', spsh
                     rawarr{irow, icol} = str2double (getxmlattv (tcell, "office:value"));
                   endif
                 case "string"
+                  ctvalue = strrep (ctvalue, "&amp;", "&");
+                  ctvalue = strrep (ctvalue, "&lt;", "<");
+                  ctvalue = strrep (ctvalue, "&gt;", ">");
+                  ctvalue = strrep (ctvalue, "&quot;", '"');
                   rawarr{irow, icol} = ctvalue;
                 case "date"
                   cvalue = getxmlattv (tcell, "office:date-value");

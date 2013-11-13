@@ -1,4 +1,4 @@
-## Copyright (C) 2013 Philip
+## Copyright (C) 2013 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -17,8 +17,10 @@
 ## __ods_get_sheet_dims__
 ## Internal function - get dimensions of occupied cell range in an ODS sheet.
 
-## Author: Philip <Philip@DESKPRN>
+## Author: Philip Nienhuis <prnienhuis@users.sf.net>
 ## Created: 2013-09-29 (split off from __JOD_getusedrange__.m)
+## Updates:
+## 2013-11-13 Fix table-row counter bug
 
 function [trow, brow, lcol, rcol ] = __ods_get_sheet_dims__ (sh)
 
@@ -48,7 +50,7 @@ function [trow, brow, lcol, rcol ] = __ods_get_sheet_dims__ (sh)
         rowrept = strfind (tablerow(1:rowend), "number-rows-repeated");
         if (~isempty (rowrept))
           [st, en] = regexp (tablerow(rowrept:min (rowend, rowrept+30)), '\d+');
-          rowrepcnt += str2num (tablerow(rowrept+st-1:min (rowend, rowrept+en-1))) - 1;
+          rowrepcnt += str2double (tablerow(rowrept+st-1:min (rowend, rowrept+en-1))) - 1;
         endif
 
         ## 3. Search table-cells. table-c is a table-covered-cell that is considered empty
@@ -67,7 +69,9 @@ function [trow, brow, lcol, rcol ] = __ods_get_sheet_dims__ (sh)
           if (~isempty (id_valtcell(1:end-1)))
             brow = irow + rowrepcnt;
             ## First set trow if it hadn't already been found
-            if (~trow) trow = irow; endif
+            if (~trow)
+              trow = irow + rowrepcnt; 
+            endif
             ## Search for repeated table-cells
             id_reptcell = strfind (tablerow, "number-columns-repeated");
             id_reptcell = [id_reptcell rowl];

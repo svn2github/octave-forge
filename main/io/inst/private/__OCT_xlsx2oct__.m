@@ -38,6 +38,7 @@
 ##     ''     Prepare for fast reading (still uncommented)
 ##     ''     Implement selected range (still rough ATM but for devs the easiest)
 ## 2013-11-10 Fix typo preventing reading named worksheets instead of indices
+## 2013-11-13 Pretty text output
 
 function [ raw, xls, rstatus ] = __OCT_xlsx2oct__ (xls, wsh, crange='', spsh_opts)
 
@@ -162,6 +163,11 @@ function [ raw, xls, rstatus ] = __OCT_xlsx2oct__ (xls, wsh, crange='', spsh_opt
       valf1 = cell2mat (regexp (rawdata, '<c r="\w+" s="\d"(?: t="(?:[^s]?|str)")?><f(?: .*?)*(>.+?)</f><v>.*?</v>', "tokens"));
       if (! isempty (valf1))
         valf1 = regexprep (valf1, '^>', '=');
+        ## Pretty text output
+        valf1 = strrep (valf1, "&quot;", '"');
+        valf1 = strrep (valf1, "&lt;", "<");
+        valf1 = strrep (valf1, "&gt;", ">");
+        valf1 = strrep (valf1, "&amp;", "&");
         valrawf1 = cell2mat(regexp (rawdata, '<c r="(\w+)" s="\d"(?: t="(?:[^s]?|str)")?>(?:<f(?: .*?)*>.+?</f>)<v>.*?</v>', "tokens"));
         if (isempty (val))
           val = valf1;
@@ -177,6 +183,11 @@ function [ raw, xls, rstatus ] = __OCT_xlsx2oct__ (xls, wsh, crange='', spsh_opt
       ## First the non-numeric formula results
       valf2 = cell2mat (regexp (rawdata, '<c r="\w+" s="\d" t="(?:[^sb]?|str)">(?:<f.+?(?:</f>|/>))<v>(.*?)</v>', "tokens"));
       if (! isempty (valf2))
+        ## Pretty text output
+        valf2 = strrep (valf2, "&quot;", '"');
+        valf2 = strrep (valf2, "&lt;", "<");
+        valf2 = strrep (valf2, "&gt;", ">");
+        valf2 = strrep (valf2, "&amp;", "&");
         valrawf2 = cell2mat(regexp (rawdata, '<c r="(\w+)" s="\d" t="(?:[^sb]?|str)">(?:<f.+?(?:</f>|/>))<v>.*?</v>', "tokens"))
         if (isempty (val))
           val = valf2;
@@ -211,7 +222,12 @@ function [ raw, xls, rstatus ] = __OCT_xlsx2oct__ (xls, wsh, crange='', spsh_opt
       if (! isempty (vals))
         ## Get actual values
         vals = ctext(vals);
-        ## Cell addresses
+        ## Pretty text output
+        vals = strrep (vals, "&quot;", '"');
+        vals = strrep (vals, "&lt;", "<");
+        vals = strrep (vals, "&gt;", ">");
+        vals = strrep (vals, "&amp;", "&");
+         ## Cell addresses
         valraws = cell2mat (regexp (rawdata, '<c r="(\w+)"(?: s="\d")? t="s"><v>\d?</v>', "tokens"));
         if (isempty (val))
           val = vals;

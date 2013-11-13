@@ -1,7 +1,7 @@
 Summary of important user-visible changes for releases of the io package
 
 ===============================================================================
-io-1.2.5   Release Date: 2013-11-12 Release Manager: Philip Nienhuis
+io-1.2.5   Release Date: 2013-11-14 Release Manager: Philip Nienhuis
 ===============================================================================
 
 *** - Added string/formula read support to xlsx/OCT. There's now full read
@@ -15,6 +15,8 @@ io-1.2.5   Release Date: 2013-11-12 Release Manager: Philip Nienhuis
       unzip errors for .xlsx and .gnumeric
 
     - Removed harmless but annoying error messages from Java detection
+    
+    - Fix tablerow repeat counter bugs (affected reading ODS w. OCT interface)
 
 ===============================================================================
 io-1.2.4   Release Date: 2013-11-05   Release Manager: Philip Nienhuis

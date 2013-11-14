@@ -140,7 +140,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
       printf ('Apparently no Java JRE installed.\n');
       ## If there's no ActiveX support either...
       if (! retval)
-        printf ("Only read support for ODS 1.2 (.ods), OOXML (.xlsx) amd .gnumeric present\n");
+        printf ("Only read support for ODS 1.2 (.ods), OOXML (.xlsx) and .gnumeric present\n");
       endif
       return;
     else

@@ -39,6 +39,7 @@
 ##     ''     Implement selected range (still rough ATM but for devs the easiest)
 ## 2013-11-10 Fix typo preventing reading named worksheets instead of indices
 ## 2013-11-13 Pretty text output
+## 2013-11-15 Catch empty sharedString.xml (means no fixed strings)
 
 function [ raw, xls, rstatus ] = __OCT_xlsx2oct__ (xls, wsh, crange='', spsh_opts)
 
@@ -83,8 +84,7 @@ function [ raw, xls, rstatus ] = __OCT_xlsx2oct__ (xls, wsh, crange='', spsh_opt
       strings = fgetl (fid);
       fclose (fid);
     catch
-      ## Some error with shared strings sub file
-      warning ("xls2oct: sharedStrings.xml not found in file xls.filename");
+      ## No sharedStrings.xml; implies no "fixed" strings (computed strings can still be there)
       strings = "";
     end_try_catch
   endif

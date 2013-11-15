@@ -13,29 +13,41 @@
 ## You should have received a copy of the GNU General Public License along with
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
+
+## -*- texinfo -*-
+##@deftypefn {Function File} {[@var{p},@var{e_var},@var{r},@var{p_var},@var{y_var}] =} LinearRegression (@var{F},@var{y})
+##@deftypefnx {Function File} {[@var{p},@var{e_var},@var{r},@var{p_var},@var{y_var}] =} LinearRegression (@var{F},@var{y},@var{w})
+##
+##
 ## general linear regression
 ##
-## [p,e_var,r,p_var,y_var] = LinearRegression(F,y)
-## [p,e_var,r,p_var,y_var] = LinearRegression(F,y,weight)
-##
 ## determine the parameters p_j  (j=1,2,...,m) such that the function
-## f(x) = sum_(i=1,...,m) p_j*f_j(x) fits as good as possible to the 
-## given values y_i = f(x_i)
+## f(x) = sum_(i=1,...,m) p_j*f_j(x) is the best fit to the given values y_i = f(x_i)
 ##
-## parameters
-## F  n*m matrix with the values of the basis functions at the support points 
-##    in column j give the values of f_j at the points x_i  (i=1,2,...,n)
-## y  n column vector of given values
-## weight  n column vector of given weights of data points
+## parameters:  
+## @itemize
+## @item @var{F} is an n*m matrix with the values of the basis functions at
+## the support points. In column j give the values of f_j at the points
+## x_i  (i=1,2,...,n)
+## @item @var{y} is a column vector of length n with the given values
+## @item @var{w} is n column vector of of length n vector with the weights of data points
+##@end itemize
 ##
-## return values
-## p     m vector with the estimated values of the parameters
-## e_var estimated variance of the difference between fitted and
-##       measured values
-## r     weighted norm of residual
-## p_var estimated variance of the parameters p_j
-## y_var estimated variance of the dependend variables
-##       do NOT request y_var for large data sets, as a n by n matrix is generated
+## return values:
+## @itemize
+## @item @var{p} is the vector of length m with the estimated values of the parameters
+## @item @var{e_var} is the estimated variance of the difference between fitted and measured values
+## @item @var{r} is the weighted norm of the residual
+## @item @var{p_var} is the estimated variance of the parameters p_j
+## @item @var{y_var} is the estimated variance of the dependend variables
+##@end itemize
+##
+##  Caution:  
+##  do NOT request @var{y_var} for large data sets, as a n by n matrix is
+##  generated
+##
+## @seealso{regress,leasqr,nonlin_curvefit,polyfit,wpolyfit,expfit}
+##  @end deftypefn
 
 function [p,e_var,r,p_var,y_var] = LinearRegression (F,y,weight)
 

@@ -30,6 +30,7 @@
 ## 2013-09-27 Re-use old jOpenDocument code; may be slow but it is well-tested
 ## 2013-10-01 Gnumeric subfunction added
 ## 2013-11-03 Fix wrong variable name "xml"->"sheet" in __OCT_ods_getusedrange__ 
+## 2013-11-16 Replace fgetl calls by fread to cope with EOLs
 
 function [ trow, brow, lcol, rcol ] = __OCT_getusedrange__ (spptr, ii)
 
@@ -54,13 +55,14 @@ endfunction
 
 function [ trow, brow, lcol, rcol ] = __OCT_xlsx_getusedrange__ (spptr, ii);
 
+  ## Approximation only! OOXML also counts empty cells (with only formatting)
+
   trow = brow = lcol = rcol = 0;
 
   ## Read first part of raw worksheet
   rawsheet = fopen (sprintf ('%s/xl/worksheets/sheet%d.xml', spptr.workbook, ii));
   if (rawsheet > 0)
-    fgetl (rawsheet);                   ## skip the first line
-    xml = fgetl (rawsheet, 516);        ## Occupied range is in first 512 bytes
+    xml = fread (fid, 512, "char=>char").';  ## Occupied range is in first 512 bytes
     fclose (rawsheet);
   else
     ## We know the number must be good => apparently tmpdir is damaged or it has gone
@@ -119,7 +121,7 @@ function [ trow, brow, lcol, rcol ] = __OCT_gnm_getusedrange__ (spptr, ii);
   else
     ## Get requested sheet from info in ods struct pointer. Open file
     fid = fopen (spptr.workbook, 'r');
-    ## Go to start of requested sheet
+    ## Go to start of requested sheet (real start, incl. xml id line)
     fseek (fid, spptr.sheets.shtidx(ii), 'bof');
     ## Compute size of requested chunk
     nchars = spptr.sheets.shtidx(ii+1) - spptr.sheets.shtidx(ii);

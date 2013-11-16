@@ -29,6 +29,7 @@
 ## 2013-11-03 Fix processing chunks
 ##     ''     Get ValueType using getxmlattv, not regexp
 ##     ''     Process Boolean type
+## 2013-11-15 Replace slow xml node parsing by regexp a la Markus Bergholz
 
 function [ rawarr, xls, rstatus] = __OCT_gnm2oct__ (xls, wsh, cellrange='', spsh_opts)
 
@@ -49,21 +50,25 @@ function [ rawarr, xls, rstatus] = __OCT_gnm2oct__ (xls, wsh, cellrange='', spsh
 
   ## Get requested sheet from info in file struct pointer. Open file
   fid = fopen (xls.workbook, "r");
-  ## Go to start of requested sheet
+  ## Go to start of requested sheet. This requires reading from start, not
+  ## from after 1st xml id line
   fseek (fid, xls.sheets.shtidx(wsh), 'bof');
   ## Compute size of requested chunk
   nchars = xls.sheets.shtidx(wsh+1) - xls.sheets.shtidx(wsh);
   ## Get the sheet
   xml = fread (fid, nchars, "char=>char").';
   fclose (fid);
+
   ## Add xml to struct pointer to avoid __OCT_getusedrange__ to read it again
   xls.xml = xml;
 
   ## Check ranges
-  [ firstrow, lastrow, lcol, rcol ] = getusedrange (xls, wsh);
+  [ firstrow, lastrow, leftcol, rightcol ] = getusedrange (xls, wsh);
+
   ## Remove xml field
   xls.xml = [];
   xls = rmfield (xls, "xml");
+
   if (isempty (cellrange))
     if (firstrow == 0 && lastrow == 0)
       ## Empty sheet
@@ -73,12 +78,12 @@ function [ rawarr, xls, rstatus] = __OCT_gnm2oct__ (xls, wsh, cellrange='', spsh
       return;
     else
       nrows = lastrow - firstrow + 1;
-      ncols = rcol - lcol + 1;
+      ncols = rightcol - leftcol + 1;
     endif
   else
-    [topleft, nrows, ncols, firstrow, lcol] = parse_sp_range (cellrange);
+    [~, nr, nc, tr, lc] = parse_sp_range (cellrange);
     ## Check if requested range exists
-    if (firstrow > lastrow || lcol > rcol)
+    if (tr > lastrow || lc > rightcol)
       ## Out of occupied range
       warning ("xls2oct: requested range outside occupied range");
       rawarr = {};
@@ -86,95 +91,59 @@ function [ rawarr, xls, rstatus] = __OCT_gnm2oct__ (xls, wsh, cellrange='', spsh
       return
     endif
     
-    lastrow = min (lastrow, firstrow + nrows - 1);
-    rcol = min (rcol, lcol + ncols - 1);
+    lastrow  = min (lastrow, firstrow + nr - 1);
+    rightcol = min (rightcol, leftcol + nc - 1);
   endif
 
-  ## Preallocate output array
-  rawarr = cell (nrows, ncols);
+  ## Get cell nodes
+  cells = getxmlnode (xml, "gnm:Cells");
 
-  ## Get cells
-  cells = getxmlnode (xml, "gnm:Cells", 1, 1);
+  ## Pattern gets all required tokens in one fell swoop
+  pattrn = '<gnm:Cell Row="(\d*?)" Col="(\d*?)" (?:ValueType="(\d*?)"|ExprID="(\d*?)")>(.*?)</gnm:Cell>';
+  allvals = cell2mat (regexp (cells, pattrn, "tokens"));
 
-  ## The row and column checks below assume rows and cols are sorted rows 1st cols 2nd
-  ## In case of requested cell range, set pointer to first cell in range
+  ## Reshape into 4 x ... cell array
+  allvals = reshape (allvals, 4,  numel (allvals) / 4);
+
+  ## Convert 0-based rw/column indices to 1-based numeric
+  allvals(1:2, :) = num2cell (str2double (allvals(1:2, :)) + 1);
+  ## Convert cell type values to double
+  allvals(3, :)   = num2cell (str2double (allvals(3, :)));
+  ## Convert numeric cell values to double
+  in = find ([allvals{3,:}] == 40);
+  allvals(4, in)  =  num2cell (str2double(allvals(4, in))');
+  ## Convert boolean values to logical
+  il = find ([allvals{3,:}] == 20);
+  allvals(4, il)  =  num2cell (cellfun (@(x) strcmpi (x, "true"), allvals(4, il)));
+
+  ## Get limits of data rectangle
+  trow = min (cell2mat (allvals(1, :)));
+  brow = max (cell2mat (allvals(1, :)));
+  rcol = max (cell2mat (allvals(2, :)));
+  lcol = min (cell2mat (allvals(2, :)));
+  xls.limits = [lcol rcol; trow brow];
+
+  ## Create data array
+  rawarr = cell (brow-trow+1, rcol-lcol+1);
+
+  ## Compute linear indices into data array from 1-based row/col indices
+  idx = sub2ind (size (rawarr), [allvals{1, :}] - trow + 1, [allvals{2,:}] - lcol + 1);
+  ## And assign cell values to data array
+  rawarr(idx) = allvals(4, :);
+
+  ## FIXME maybe reading parts of the data can be done faster above by better regexps
+  ##       or sorting on row & truncating followed by sorting on columns and truncating
   if (! isempty (cellrange))
-    cells = cells (max (1, regexp (cells, sprintf ('Row="%d"', firstrow - 1), "once") - 12) : end);
+    ## We'll do it the easy way: just read all data, then return only the requested part
+    xls.limits = [max(lcol, lc), min(rcol, lc+nc-1); max(trow, tr), min(brow, tr+nr-1)];
+    ## Correct spreadsheet locations for lower right shift or raw
+    rc = trow - 1;
+    cc = lcol - 1;
+    rawarr = rawarr(xls.limits(2, 1)-rc : xls.limits(2, 2)-rc, xls.limits(1, 1)-cc : xls.limits(1, 2)-cc);
   endif
-
-  ## Reading nodes goes fastest if the xml is split in chunks of around 4.10^5 chars
-  cdim = length (cells);
-  if (cdim > 410000)
-    idx = 1;
-    jdx = 400000;
-    ccells = cell (1, ceil (cdim / 400000));
-    ## Assign to ccell, make sure chunks end at <gnm:Cell> node ends
-    for ii=1:numel (ccells) - 1
-      kdx = regexp (cells(jdx+1:min(jdx+400000, cdim)), "<gnm:Cell ", "once");
-      ## Subtract 1 for ">" before "<gnm:" and another 1 coz index = 1-based
-      jdx += kdx - 2;
-      ccells(ii) = cells (idx:jdx);
-      idx = jdx + 1;
-      jdx = min (400000 * (ii+1), cdim);
-    endfor
-    ccells(end) = cells(idx:end);
-  else
-    ccells = {cells};
+ 
+  if (! isempty (allvals))
+    rstatus = 1;
   endif
-
-  inrange = 1;
-  for ii=1:numel (ccells)
-    cells = ccells{ii};
-    ## Get first cell of ccell{ii}
-    [gcell, ~, jcx] = getxmlnode (ccells{ii}, "gnm:Cell");
-
-    while (! isempty (gcell) && inrange)
-      ## Get row index (0-based)
-      crow = str2double (regexp (gcell, 'Row="[+-.\d]*"', "match"){1}(6:end-1));
-      if (crow >= firstrow - 1)
-        if (crow < lastrow)
-          ## Row is in range. Get column index
-          ccol = str2double (regexp (gcell, 'Col="[+-.\d]*"', "match"){1}(6:end-1));
-          if (ccol >= lcol - 1)
-            if (ccol < rcol)
-              ## This cell is in range. Get type
-              ctype = getxmlattv (gcell, "ValueType");
-              ## We have ValueType 20 Boolean , 40 float and 60 string. ExprID means formula
-              if (! isempty (ctype ))
-                if (ctype(1) == "2")
-                  ## Type 20, Boolean
-                  rawarr {crow-firstrow+2, ccol-lcol+2} = index (gcell, '20">TRUE<') > 0;
-                elseif (ctype(1) == "4")
-                  ## Type 40, float
-                  rawarr {crow-firstrow+2, ccol-lcol+2} = str2double (regexp (gcell, '>.*<', "match"){1}(2:end-1));
-                elseif (ctype(1) == "6")
-                  ## A string. Return as text string anyway (we have no formula evaluator)
-                  rawarr {crow-firstrow+2, ccol-lcol+2} = regexp (gcell, '>.*<', "match"){1}(2:end-1);
-                else
-                  ## ?? unknown type
-                  printf ("Unknown cell ValueType in row %d col %d\n", crow+1, ccol+1);
-                endif
-              else
-                ctype = getxmlattv (gcell, "ExprID");
-                if (! isempty (ctype))
-                  ## Formula. The gnumeric devs don't want cached values
-                  rawarr {crow-firstrow+2, ccol-lcol+2} = "##Formula##";
-                endif
-              endif
-            endif
-          endif
-        else
-          inrange = 0;
-        endif
-      endif
-      icx = jcx;
-      ## Get next cell
-      [gcell, ~, jcx] = getxmlnode (cells, "gnm:Cell", icx);
-    endwhile
-
-  endfor
-
-  xls.limits = [lcol, rcol; firstrow, lastrow];
-  rstatus = 1;
 
 endfunction

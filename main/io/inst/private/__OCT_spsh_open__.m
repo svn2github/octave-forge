@@ -31,6 +31,7 @@
 ## 2013-10-20 Adapted parts of Markus' .xlxs code
 ## 2013-11-10 (MB) Compacted sheet names & rid code in xlsx section
 ## 2013-11-12 Rely on private/__unpack (patched unpack.m from core Octave)
+## 2013-11-16 Replace fgetl calls by fread to cope with EOLs
 
 function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename, xlssupport, chk2, chk3, chk5)
 
@@ -42,9 +43,6 @@ function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename
     ## Gnumeric xml files are gzipped
     system (sprintf ("gzip -d -c -S=gnumeric %s > %s", filename, tmpdir));
     fid = fopen (tmpdir, 'r');
-    xml = fgetl (fid);
-    ## Remember length of 1st line
-    st_xml = ftell (fid) - 1;
     xml = fread (fid, "char=>char").';
   else
     ## xlsx and ods are zipped
@@ -54,7 +52,7 @@ function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename
     ## http://savannah.gnu.org/bugs/index.php?39148
     ## unpack.m taken from bugfix: http://hg.savannah.gnu.org/hgweb/octave/rev/45165d6c4738
     ## needed for octave 3.6.x and added to ./private subdir
-    ## FIXME delete unpack.m for release 1.3.x
+    ## FIXME delete unpack.m for release 1.3.x+
     __unpack (filename, tmpdir, "unzip");
   endif  
 
@@ -66,12 +64,8 @@ function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename
       ## File open error
       error ("file %s couldn't be opened for reading", filename);
     else
-      ## Read file contents. For some reason fgets needs to be called twice
-      xml = fgets (fid);
-      ## Remember length of 1st line
-      st_xml = ftell (fid) - 1;
-      xml = fgets (fid);
-      
+      ## Read file contents
+      xml = fread (fid, "char=>char").';
       ## Close file but keep it around, store file name in struct pointer
       fclose (fid);
 
@@ -88,10 +82,9 @@ function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename
       ## Fill ods pointer.
       xls.workbook        = tmpdir;         # subdir containing content.xml
       xls.sheets.sh_names = sh_names;       # sheet names
-      xls.sheets.shtidx   = shtidx + st_xml;# start & end indices of sheets
+      xls.sheets.shtidx   = shtidx;         # start & end indices of sheets
       xls.xtype           = "OCT";          # OCT is fall-back interface
-      xls.app             = 'ods';          #
-                                            # must NOT be an empty string!
+      xls.app             = 'ods';          # must NOT be an empty string!
       xls.filename = filename;              # spreadsheet filename
       xls.changed = 0;                      # Dummy
 
@@ -101,13 +94,6 @@ function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename
     ## =======================  XLSX ===========================================
     ## From xlsxread by Markus Bergholz <markuman+xlsread@gmail.com>
     ## https://github.com/markuman/xlsxread
-    
-    ## Fill xlsx pointer 
-    xls.workbook          = tmpdir;         # subdir containing content.xml
-    xls.xtype             = "OCT";          # OCT is fall-back interface
-    xls.app               = 'xlsx';         # must NOT be an empty string!
-    xls.filename = filename;                # spreadsheet filename
-    xls.changed = 0;                        # Dummy
 
     ## Get sheet names. Speeds up other functions a lot if we can do it here
     fid = fopen (sprintf ('%s/xl/workbook.xml', tmpdir));
@@ -115,9 +101,15 @@ function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename
       ## File open error
       error ("xls2oct: file %s couldn't be unzipped", filename);
     else
+      ## Fill xlsx pointer 
+      xls.workbook          = tmpdir;       # subdir containing content.xml
+      xls.xtype             = "OCT";        # OCT is fall-back interface
+      xls.app               = 'xlsx';       # must NOT be an empty string!
+      xls.filename = filename;              # spreadsheet filename
+      xls.changed = 0;                      # Dummy
+
       ## Get content.xml
-      fgetl (fid);
-      xml = fgetl (fid);
+      xml = fread (fid, "char=>char").';
       ## Close file
       fclose (fid);
 
@@ -129,16 +121,15 @@ function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename
 
   elseif (chk5)
     ## ====================== Gnumeric =========================================
-    xls.workbook = tmpdir;              # location of unzipped files
-    xls.xtype    = "OCT";               # interface
-    xls.app      = 'gnumeric';          #
-    xls.filename = filename;            # file name
-    xls.changed  = 0;                   # Dummy
+    xls.workbook = tmpdir;                  # location of unzipped files
+    xls.xtype    = "OCT";                   # interface
+    xls.app      = 'gnumeric';              #
+    xls.filename = filename;                # file name
+    xls.changed  = 0;                       # Dummy
 
     ## Get nr of sheets & pointers to start of Sheet nodes & end of Sheets node
     shtidx = strfind (xml, "<gnm:Sheet ");
-    ## Add offset caused by first line
-    xls.sheets.shtidx = [ shtidx index(xml, "</gnm:Sheets>") ] + st_xml;
+    xls.sheets.shtidx = [ shtidx index(xml, "</gnm:Sheets>") ];
     xls.sheets.sh_names = cell (1, numel (shtidx));
     sh_names = getxmlnode (xml, "gnm:SheetNameIndex");
     jdx = 1;

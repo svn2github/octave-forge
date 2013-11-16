@@ -40,6 +40,7 @@
 ## 2013-11-10 Fix typo preventing reading named worksheets instead of indices
 ## 2013-11-13 Pretty text output
 ## 2013-11-15 Catch empty sharedString.xml (means no fixed strings)
+## 2013-11-16 Replace fgetl calls by fread to cope with EOLs
 
 function [ raw, xls, rstatus ] = __OCT_xlsx2oct__ (xls, wsh, crange='', spsh_opts)
 
@@ -49,12 +50,11 @@ function [ raw, xls, rstatus ] = __OCT_xlsx2oct__ (xls, wsh, crange='', spsh_opt
   if (ischar (wsh))
     # fid = fopen (sprintf ('%s/xl/workbook.xml', xls.workbook));
     # if (fid < 0)
-      # File open error
+      ## File open error
       # error ("xls2oct: file %s couldn't be opened for reading", filename);
     # else
-      # fgetl (fid); 
-      # xml = fgetl(fid);
-      # Close file
+      # xml = fread (fid, "char=>char").';;
+      ## Close file
       # fclose (fid);
 
       ## Search for requested sheet name
@@ -74,14 +74,13 @@ function [ raw, xls, rstatus ] = __OCT_xlsx2oct__ (xls, wsh, crange='', spsh_opt
   ## Prepare to open requested worksheet file in subdir xl/ . Note: Win accepts forward slashes
   rawsheet = fopen (sprintf ('%s/xl/worksheets/sheet%d.xml', xls.workbook, wsh));
   if (rawsheet > 0)
-    fgetl (rawsheet);                   ## skip the first line
-    rawdata = fgetl (rawsheet);         ## here comes our needed datastring
+    ## Get data
+    rawdata = fread (rawsheet, "char=>char").';
     fclose (rawsheet);
     ## Strings
     try
       fid = fopen (sprintf ("%s/xl/sharedStrings.xml", xls.workbook));
-      fgetl (fid);
-      strings = fgetl (fid);
+      strings = fread (fid, "char=>char").';
       fclose (fid);
     catch
       ## No sharedStrings.xml; implies no "fixed" strings (computed strings can still be there)
@@ -217,7 +216,7 @@ function [ raw, xls, rstatus ] = __OCT_xlsx2oct__ (xls, wsh, crange='', spsh_opt
       ## Extract string values. May be much more than present in current sheet
       ctext = cell2mat (regexp (strings, '<si><t>(.+?)</t></si>', "tokens"));
       ## Pointers into sharedStrings.xml. "Hard" (fixed) strings have 't="s"' attribute
-      ## For reasons known only to M$ that pointer is zero-based, so:
+      ## For reasons known only to M$ those pointers are zero-based, so:
       vals = str2double (cell2mat (regexp (rawdata, '<c r="\w+"(?: s="\d")? t="s"><v>(\d?)</v>', "tokens"))) + 1;
       if (! isempty (vals))
         ## Get actual values
@@ -274,8 +273,8 @@ function [ raw, xls, rstatus ] = __OCT_xlsx2oct__ (xls, wsh, crange='', spsh_opt
 
     ## Find data rectangle limits
     idx.mincol = min ([idx.alph vi.col]);
-    idx.minrow = min ([idx.num vi.row]);
-    idx.maxrow = max ([idx.num vi.row]);
+    idx.minrow = min ([idx.num  vi.row]);
+    idx.maxrow = max ([idx.num  vi.row]);
     idx.maxcol = max ([idx.alph vi.col]);
 
     ## Convey limits of data rectangle to xls2oct. Must be done here

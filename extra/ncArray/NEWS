@@ -1,4 +1,16 @@
+Summary of important user-visible changes for ncArray 1.0.1:
+------------------------------------------------------------
+
+ ** new function: nanmean: mean ignoring NaNs
+ ** new function: load: load data based on a coordinate range or a single 
+    value (only 1-dimensional coordinates are currently supported)
+ ** CACHED_DECOMPRESS_DIR defaults now to a directory inside the system temporary 
+    directory (/tmp on Linux)
+ ** add support for xz compression
+ ** optimization of assignement operator
+ ** add units and standard_name in nccoord
+
 Summary of important user-visible changes for ncArray 1.0.0:
--------------------------------------------------------------------
+------------------------------------------------------------
 
  ** Initial release

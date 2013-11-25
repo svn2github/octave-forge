@@ -327,6 +327,9 @@ end
 zname = [tmpfname '.gz'];
 system(['gzip --stdout ' tmpfname ' > ' zname]);
 
+%zname = [tmpfname '.xz'];
+%system(['xz --stdout ' tmpfname ' > ' zname]);
+
 SST = ncArray(zname,'SST');
 SST_ref = ncread(tmpfname,'SST');
 assert(isequalwithequalnans(SST(),SST_ref))

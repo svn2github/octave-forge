@@ -9,7 +9,7 @@
 %  fname: the filename of the uncompressed file
 %
 % Global variables:
-% CACHED_DECOMPRESS_DIR (default fullfile(getenv('HOME'),'tmp','Cache')):
+% CACHED_DECOMPRESS_DIR (default is the result of tempname)
 %    cache directory of decompressed files
 % CACHED_DECOMPRESS_LOG_FID (default 1): file id for log message
 % CACHED_DECOMPRESS_MAX_SIZE (default 1e10): maximum size of cache in bytes.
@@ -24,21 +24,26 @@ global CACHED_DECOMPRESS_LOG_FID
 global CACHED_DECOMPRESS_MAX_SIZE
 
 cache_dir = CACHED_DECOMPRESS_DIR;
+
 if isempty(cache_dir)
-    cache_dir = fullfile(getenv('HOME'),'tmp','Cache');
+    cache_dir = tempname;
+    CACHED_DECOMPRESS_DIR = cache_dir; 
+    mkdir(cache_dir);
+    fprintf('creating directory %s for temporary files.\n',cache_dir);
 end
 
-if beginswith(url,'http:') || ~(endswith(url,'.gz') || endswith(url,'.bz2'))
+if beginswith(url,'http:') || ...
+        ~(endswith(url,'.gz') || endswith(url,'.bz2') || endswith(url,'.xz'))
   % opendap url or not compressed file
   fname = url;
   return
 end
 
-if exist(cache_dir,'dir') ~= 7
-  error(['cache directory for compressed files does not exist. '...
-         'Please create the directory %s or change le value of the '...
-         'global variable CACHED_DECOMPRESS_DIR'],cache_dir);
-end
+%if exist(cache_dir,'dir') ~= 7
+%  error(['cache directory for compressed files does not exist. '...
+%         'Please create the directory %s or change le value of the '...
+%         'global variable CACHED_DECOMPRESS_DIR'],cache_dir);
+%end
     
 % where to print logs? default to screen
 
@@ -60,8 +65,10 @@ fname = fullfile(cache_dir,fname);
 if exist(fname,'file') ~= 2
     if endswith(url,'.gz')
         syscmd('gunzip --stdout "%s" > "%s"',url,fname);
-    else
+    elseif endswith(url,'.bz2')
         syscmd('bunzip2 --stdout "%s" > "%s"',url,fname);
+    else
+        syscmd('unxz --stdout "%s" > "%s"',url,fname);
     end    
 else
 %    fprintf(fid,'retrieve from cache %s\n',url);
@@ -134,7 +141,7 @@ end
 end
 
 
-% Copyright (C) 2012 Alexander Barth <barth.alexander@gmail.com>
+% Copyright (C) 2012-2013 Alexander Barth <barth.alexander@gmail.com>
 %
 % This program is free software; you can redistribute it and/or modify
 % it under the terms of the GNU General Public License as published by

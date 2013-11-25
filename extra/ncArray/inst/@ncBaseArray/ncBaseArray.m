@@ -4,7 +4,7 @@
 % Ths object is a helper object. Users should normally call ncArray.
 %
 % For read access filename can be compressed if it has the extensions
-% ".gz" or ".bz2". It use the function cache_decompress to cache to
+% ".gz", ".bz2" or ".xz". It use the function cache_decompress to cache to
 % decompressed files.
 %
 % Data is loaded by ncread and saved by ncwrite. Values equal to _FillValue

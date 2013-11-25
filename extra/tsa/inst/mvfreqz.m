@@ -36,10 +36,10 @@ function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, PDCF, coh,GGC,Af,GPDC,GGC2,
 % S   	power spectrum
 % h	transfer functions, abs(h.^2) is the non-normalized DTF [11]
 % PDC 	partial directed coherence [2]
-% DC  	directed coupling	
+% DC  	directed coupling [13] 	
 % COH 	coherency (complex coherence) [5]
-% DTF 	directed transfer function
-% pCOH 	partial coherence
+% DTF 	directed transfer function [3,13]
+% pCOH 	partial coherence 
 % dDTF 	direct Directed Transfer function
 % ffDTF full frequency Directed Transfer Function 
 % pCOH2 partial coherence - alternative method 
@@ -89,7 +89,11 @@ function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, PDCF, coh,GGC,Af,GPDC,GGC2,
 %	Measuring Connectivity in Linear Multivariate Processes: Definitions, Interpretation, and Practical Analysis
 %	Computational and Mathematical Methods in Medicine Volume 2012 (2012), Article ID 140513, 18 pages
 %	doi:10.1155/2012/140513
-
+% [13] Maciej Kaminski, Mingzhou Ding, Wilson A. Truccolo, Steven L. Bressler
+%	Evaluating causal relations in neural systems: Granger causality, 
+%       directed transfer function and statistical assessment of significance.
+% 	Biol. Cybern. 85, 145-157 (2001)
+%
 
 %	$Id$
 %	Copyright (C) 1996-2008 by Alois Schloegl <alois.schloegl@gmail.com>	

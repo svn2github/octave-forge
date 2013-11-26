@@ -289,7 +289,7 @@ int octave_pq_connection::octave_pq_get_composite_types (void)
 {
   Cell p, pt, rt;
 
-  std::string cmd ("select pg_type.oid, pg_type.typname, pg_type.typarray, pg_namespace.nspname, pg_type_is_visible(pg_type.oid) as visible, array_agg(pg_attribute.atttypid), array_agg(pg_attribute.attnum) from (pg_type join pg_namespace on pg_type.typnamespace = pg_namespace.oid) join pg_attribute on pg_type.typrelid = pg_attribute.attrelid where pg_type.typtype = 'c' and pg_attribute.attnum > 0 group by pg_type.oid, pg_type.typname, pg_type,typarray, pg_type.typrelid, pg_namespace.nspname, visible;"),
+  std::string cmd ("select pg_type.oid, pg_type.typname, pg_type.typarray, pg_namespace.nspname, pg_type_is_visible(pg_type.oid) as visible, array_agg(pg_attribute.atttypid), array_agg(pg_attribute.attnum) from (pg_type join pg_namespace on pg_type.typnamespace = pg_namespace.oid) join pg_attribute on pg_type.typrelid = pg_attribute.attrelid where pg_type.typtype = 'c' and pg_attribute.attnum > 0 group by pg_type.oid, pg_type.typname, pg_type.typarray, pg_type.typrelid, pg_namespace.nspname, visible;"),
     caller ("octave_pq_get_composite_types");
 
   command c (*this, cmd, p, pt, rt, caller);

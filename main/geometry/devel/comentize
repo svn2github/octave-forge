@@ -1,9 +1,0 @@
-#!/bin/bash
-
-# Replace comments
-#sed 's/#!/%!/g' ${1} > tmp
-
-# Replace deprecated functions
-sed 's/distancePoints3d/distancePoints /g' ${1} > tmp
-
-mv tmp ${1}

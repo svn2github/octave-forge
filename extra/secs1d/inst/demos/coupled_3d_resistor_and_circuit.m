@@ -10,9 +10,9 @@ constants = secs1d_physical_constants_fun ();
 material  = secs1d_silicon_material_properties_fun (constants);
 
 % geometry
-NelementsX = 100;
-NelementsY = 10;
-NelementsZ = 10;
+NelementsX = 1;
+NelementsY = 1;
+NelementsZ = 1;
 xdiv = linspace(0,1,NelementsX+1);
 ydiv = linspace(0,1,NelementsY+1);
 zdiv = linspace(0,1,NelementsZ+1);
@@ -117,13 +117,12 @@ R_0 = sum (bim3a_rhs (device.msh, 1, 1 ./ (constants.q * nin .* u_nodes))) / ...
 %%    (device, material, constants, algorithm, V, n, p, Fn, Fp);  
 
 %close all; %secs1d_logplot (device.x, device.D, 'x-'); 
-pause
+%% pause
 
 %% (pseudo)transient simulation
 [~, ~, ~, ~, Fin, ~] = vbcs (0);
 device.msh = bim3c_mesh_properties (device.msh);
-save -binary -z datafile_rlc_circuit.octbin.gz  device material constants algorithm tspan Vin nin pin Fin  % A B C x r 
-return
+%% save -binary -z datafile_rlc_circuit.octbin.gz  device material constants algorithm tspan Vin nin pin Fin  % A B C x r 
 [V, n, p, F, Fn, Fp, Jn, Jp, Itot, tout] = secs3d_coupled_circuit_newton ...
                                            (device, material, constants, algorithm,
                                             Vin, nin, pin, tspan, @vbcs);

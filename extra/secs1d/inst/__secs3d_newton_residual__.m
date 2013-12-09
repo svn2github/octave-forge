@@ -1,9 +1,26 @@
 function res_full = __secs3d_newton_residual__ ...
-                      (device, material, constants, 
-                       algorithm, V, n, p, F, 
-                       V0, n0, p0, F0, deltat, 
-                       A, B, C, r, pins,
-                       indexing, dnodes, inodes);
+                      (device,
+                       material,
+                       constants,
+                       algorithm,
+                       V,
+                       n,
+                       p,
+                       F, 
+                       V0,
+                       n0,
+                       p0,
+                       F0,
+                       deltat,
+                       A,
+                       B,
+                       C,
+                       r,
+                       pins,
+                       indexing,
+                       dnodes,
+                       inodes
+                       );
   
   nnodes    = columns (device.msh.p);
   Nelements = columns (device.msh.t);
@@ -13,6 +30,7 @@ function res_full = __secs3d_newton_residual__ ...
   indexing2 = indexing.n; 
   indexing3 = indexing.p;
   indexing4 = indexing.ext; 
+
   totN = indexing4(end);
   
   [mobilityn, mobilityp] = ...
@@ -42,23 +60,34 @@ function res_full = __secs3d_newton_residual__ ...
   res3 += bim3a_rhs (device.msh, 1, (Rp + 1/deltat) .* p - 
                                   (Gp + p0 * 1/ deltat));
   for iii = 1 : numel(pins)
-    thisdnodes = find(dnodes(iii,:));
-    res1(thisdnodes) = diag(A11(thisdnodes,thisdnodes)) .* ...
-            (V(thisdnodes) + 
-             constants.Vth * log (p(thisdnodes) ./ device.ni(thisdnodes)) -
-             F(pins(iii)));
-    res2(thisdnodes) = diag(A22(thisdnodes,thisdnodes)) .* ...
-            (n(thisdnodes) - n0(thisdnodes));
-    res3(thisdnodes) = diag(A33(thisdnodes,thisdnodes)) .* ...
-            (p(thisdnodes) - p0(thisdnodes));
-    Jn(iii) = sum(-constants.q * A22(thisdnodes,:) * n);
-    Jp(iii) = sum(constants.q * A33(thisdnodes, :) * p);
-    Jd(iii) = sum(A11(thisdnodes, :) * ((V-V0) / deltat));
+
+    thisdnodes = find (dnodes(iii,:));
+    DV = (F(pins(iii)) - V(thisdnodes)) /  constants.Vth;
+
+    res1(thisdnodes) = ...
+        diag (A11(thisdnodes,thisdnodes)) .* ...
+        (- device.D(thisdnodes) - ...
+         device.ni(thisdnodes) .* (exp (DV) - exp (-DV)));
+
+    res2(thisdnodes) = ...
+    diag (A22(thisdnodes,thisdnodes)) .* ...
+    (n(thisdnodes) - ...
+     device.ni(thisdnodes) .* exp (-DV));
+
+    res3(thisdnodes) = ...
+    diag (A33(thisdnodes,thisdnodes)) .* ...
+    (p(thisdnodes) - ...
+     device.ni(thisdnodes) .* exp (DV));
+
+    Jn(iii) = sum (-constants.q * A22(thisdnodes,:) * n);
+    Jp(iii) = sum (constants.q * A33(thisdnodes, :) * p);
+    Jd(iii) = sum (A11(thisdnodes, :) * ((V-V0) / deltat));
+
   endfor
 
   Jtot = Jn + Jp + Jd;
 
-  circuit_scaling = eye(size(A));
+  circuit_scaling = eye (size (A));
   res4 = ((A * (F - F0)) / deltat ...
          + B * F ...
          + C ...

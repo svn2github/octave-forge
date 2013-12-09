@@ -9,9 +9,9 @@ constants = secs1d_physical_constants_fun ();
 material  = secs1d_silicon_material_properties_fun (constants);
 
 % geometry
-NelementsX = 300;
-NelementsY = 2;
-NelementsZ = 2;
+NelementsX = 200;
+NelementsY = 1;
+NelementsZ = 1;
 xdiv = linspace(0,1,NelementsX+1);
 ydiv = linspace(0,1,NelementsY+1);
 zdiv = linspace(0,1,NelementsZ+1);
@@ -72,7 +72,7 @@ function [A, B, C, r, x, pins] = vbcs (t)
   A = zeros (2);
   %% %% Voltage controlled
   B = eye(2);
-  C = [sin(2*pi*t/1e-4); 0];
+  C = [3*sin(2*pi*t/1e-4); 0];
   r = [0, 0; 0, 0];
   %% Current controlled
   %% B = diag ([0, 1]);
@@ -93,15 +93,15 @@ function [A, B, C, r, x, contacts] = vbcs0 (t)
 endfunction
 
 % tolerances for convergence checks
-algorithm.toll       = 1e-06;
+algorithm.toll       = 5e-05;
 algorithm.ltol       = 1e-10;
-algorithm.maxit      = 100;
-algorithm.lmaxit     = 100;
+algorithm.maxit      = 30;
+algorithm.lmaxit     = 30;
 algorithm.ptoll      = 1e-12;
 algorithm.pmaxit     = 1000;
 algorithm.colscaling = [10 1e21 1e21 .1];
 algorithm.rowscaling = [1  1e-7 1e-7 .1];
-algorithm.maxnpincr  = 1e2;
+algorithm.maxnpincr  = 1e-0;
 
 %% initial guess via stationary simulation
 [Vin, nin, pin, Fin, Fn, Fp, Jn, Jp, Itot, tout] = ...
@@ -109,7 +109,7 @@ algorithm.maxnpincr  = 1e2;
                   (device, material, constants, algorithm,
                   V, n, p, tspan, @vbcs0);
 
-save -binary -z datafile_rlc_circuit_T0.octbin.gz  device material constants algorithm tspan Vin nin pin  % A B C x r 
+% save -binary -z datafile_rlc_circuit_T0.octbin.gz  device material constants algorithm tspan Vin nin pin  % A B C x r 
 %close all; %secs1d_logplot (device.x, device.D, 'x-'); 
 %pause
 

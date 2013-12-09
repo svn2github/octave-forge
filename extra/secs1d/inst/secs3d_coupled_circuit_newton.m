@@ -121,6 +121,13 @@ function [V, n, p, F, Fn, Fp, Jn, Jp, Itot, tout] = ...
       p2 += tk * dp;
       F2 += tk * dF;
 
+      figure (4)
+      xxx = device.msh.p(1,:);
+      plot(xxx, .01 * log(p2), 'r.', 
+           xxx, .01 * log(n2), 'b.',
+           xxx, V2, 'g.');
+      drawnow
+
       if (any (n2 <= 0) || any (p2 <= 0))
         error ('negative charge density')
         reject = true; 
@@ -232,7 +239,7 @@ function [V, n, p, F, Fn, Fp, Jn, Jp, Itot, tout] = ...
         drawnow
       endif
     
-      dt *= .8 * sqrt (algorithm.maxnpincr / incr0);
+      dt *= min (.8 * sqrt (algorithm.maxnpincr / incr0), 1.25);
       printf ('\nestimate for next time step size: dt = %g \n', dt);
     endif
 

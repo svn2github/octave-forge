@@ -1,8 +1,8 @@
-MPICC := mpic++
-JUNK := $(shell $(MPICC) -showme:compile)
-MPIINC := $(shell echo $(JUNK) | sed -e "s/-pthread/-lpthread/g")
-JUNK := $(shell $(MPICC) -showme:link)
-MPILIBS := $(shell echo $(JUNK) | sed -e "s/-pthread/ /g")
+MPICC     ?= mpic++
+OFMPIINC  ?= $(shell $(MPICC) -showme:compile | sed -e "s/-pthread/-lpthread/g")
+MPIINC    := $(OFMPIINC)
+OFMPILIBS ?= $(shell $(MPICC) -showme:link | sed -e "s/-pthread/ /g")
+MPILIBS   := $(OFMPILIBS)
 MKOCTFILE ?= mkoctfile
 
 all: MPI_Init.oct \

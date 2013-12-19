@@ -1,3 +1,9 @@
+Summary of important user-visible changes for ncArray 1.0.2:
+------------------------------------------------------------
+
+ ** new function: nansum, nanvar, nanstd: mean, variance, standard deviation
+    ignoring NaNs
+
 Summary of important user-visible changes for ncArray 1.0.1:
 ------------------------------------------------------------
 

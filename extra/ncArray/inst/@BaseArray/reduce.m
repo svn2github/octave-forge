@@ -27,7 +27,7 @@ if n == 0
 else
   idx.subs{dim} = 1;  
   s = funelem(subsref(self,idx));
-  
+
   for i=2:n
     idx.subs{dim} = i;  
     s = funred(s,funelem(subsref(self,idx)));

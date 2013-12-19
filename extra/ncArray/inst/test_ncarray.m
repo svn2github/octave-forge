@@ -79,6 +79,9 @@ assert(isequalwithequalnans(SST_ref(1,:,:), SST(1,:,:)))
 
 % sum
 
+nanmeanSST = nanmean(SST);
+nanmeanSSTref = nanmean(SST_ref);
+assert(isequalwithequalnans(nanmeanSST, nanmeanSSTref))
 
 %momentSST = moment(SST,2,1);
 %momentSSTref = moment(SST_ref,2,1);
@@ -145,6 +148,7 @@ assert(isequalwithequalnans(maxSST, maxSSTref))
 minSST = min(SST,[],2);
 minSSTref = min(SST_ref,[],2);
 assert(isequalwithequalnans(minSST, minSSTref))
+
 
 
 % writing
@@ -341,6 +345,14 @@ SST_ref = ncread(files{2},'SST');
 assert(isequalwithequalnans(SST_test,SST_ref))
 
 assert(strcmp(CA2.('units'),'degC'));
+
+test_ncarray_nan
+
+% clean-up
+for i = 1:3  
+  delete(files{i});
+end
+rmdir(tmpdir);
 
 disp('All tests passed.')
 

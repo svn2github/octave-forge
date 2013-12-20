@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Philip
+## Copyright (C) 2012,2013 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 
 ## __POI_xlsopen__ - Internal function for opening an xls(x) file using Java/Apache POI
 
-## Author: Philip <Philip@DESKPRN>
+## Author: Philip Nienhuis <prnienhuis@users.sf.net>
 ## Created: 2012-10-07
 ##
 ## Updates (possibly earlier in xlsopen):
@@ -27,6 +27,7 @@
 ## 2012-06-07 Fixed mixed-up lastintf assignments for POI and JXL
 ## 2012-10-24 Style fixes; added UNO to fall-back for BIFF5 formats
 ## 2013-01-20 Adapted to ML-compatible Java calls
+## 2013-12-06 Updated copyright strings
 
 function [ xls, xlssupport, lastintf ] = __POI_spsh_open__ (xls, xwrite, filename, xlssupport, chk1, chk2, xlsinterfaces)
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -37,7 +37,7 @@
 ##
 ## @end deftypefn
 
-## Author: Philip Nienhuis
+## Author: Philip Nienhuis <prnienhuis at users.sf.net>
 ## Created: 2009-11-26
 ## Updates: 
 ## 2010-01-03 Bugfixes
@@ -59,11 +59,13 @@
 ## 2012-05-21 "Double" cast moved into main func oct2xls
 ## 2012-10-12 Renamed & moved into ./private
 ## 2012-10-24 Style fixes
+## 2013-12-06 Updated copyright strings; style fixes
+## 2013-12-07 Fixed .xls extension check; style fixes
 
 function [ xls, rstatus ] = __POI_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
 
   ## Preliminary sanity checks
-  if (~strmatch (tolower (xls.filename(end-4:end)), ".xls"))
+  if (isempty (strcmpi (xls.filename(end-3:end), ".xls")))
     error ("POI interface can only write to Excel .xls or .xlsx files")
   endif
 
@@ -72,9 +74,9 @@ function [ xls, rstatus ] = __POI_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
     ## Get cell types. Beware as they start at 0 not 1
     ctype(1) = java_get ("org.apache.poi.ss.usermodel.Cell", "CELL_TYPE_NUMERIC");  ## 0
     ctype(2) = java_get ("org.apache.poi.ss.usermodel.Cell", "CELL_TYPE_BOOLEAN");  ## 4
-    ctype(3) = java_get ("org.apache.poi.ss.usermodel.Cell", "CELL_TYPE_STRING");  ## 1
+    ctype(3) = java_get ("org.apache.poi.ss.usermodel.Cell", "CELL_TYPE_STRING");   ## 1
     ctype(4) = java_get ("org.apache.poi.ss.usermodel.Cell", "CELL_TYPE_FORMULA");  ## 2
-    ctype(5) = java_get ("org.apache.poi.ss.usermodel.Cell", "CELL_TYPE_BLANK");  ## 3
+    ctype(5) = java_get ("org.apache.poi.ss.usermodel.Cell", "CELL_TYPE_BLANK");    ## 3
   endif
   ## scratch vars
   rstatus = 0; f_errs = 0;
@@ -90,15 +92,15 @@ function [ xls, rstatus ] = __POI_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
       ## Watch out as a sheet called Sheet%d can exist with a lower index...
       strng = sprintf ("Sheet%d", wsh);
       ii = 1;
-      while (~isempty (xls.workbook.getSheet (strng)) && (ii < 5))
+      while (! isempty (xls.workbook.getSheet (strng)) && (ii < 5))
         strng = ["_" strng];
         ++ii;
       endwhile
       if (ii >= 5) error (sprintf( " > 5 sheets named [_]Sheet%d already present!", wsh)); endif
       sh = xls.workbook.createSheet (strng);
-      xls.changed = min (xls.changed, 2);        ## Keep 2 for new files
+      xls.changed = min (xls.changed, 2);       ## Keep 2 for new files
     else
-      sh = xls.workbook.getSheetAt (wsh - 1);    ## POI sheet count 0-based
+      sh = xls.workbook.getSheetAt (wsh - 1);   ## POI sheet count 0-based
     endif
     printf ("(Writing to worksheet %s)\n",   sh.getSheetName ());  
   else
@@ -106,7 +108,7 @@ function [ xls, rstatus ] = __POI_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
     if (isempty (sh))
       ## Sheet not found, just create it
       sh = xls.workbook.createSheet (wsh);
-      xls.changed = min (xls.changed, 2);        ## Keep 2 or 3 f. new files
+      xls.changed = min (xls.changed, 2);       ## Keep 2 or 3 f. new files
     endif
   endif
 
@@ -121,10 +123,10 @@ function [ xls, rstatus ] = __POI_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
 
   ## Prepare type array
   typearr = spsh_prstype (obj, nrows, ncols, ctype, spsh_opts);
-  if ~(spsh_opts.formulas_as_text)
+  if (! spsh_opts.formulas_as_text)
     ## Remove leading "=" from formula strings
     ## FIXME should be easier using typearr<4> info
-    fptr = ~(2 * (ones (size (typearr))) .- typearr);
+    fptr = (! (2 * (ones (size (typearr))) .- typearr));
     obj(fptr) = cellfun (@(x) x(2:end), obj(fptr), "Uniformoutput", false); 
   endif
 
@@ -132,21 +134,23 @@ function [ xls, rstatus ] = __POI_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
   frm_eval = xls.workbook.getCreationHelper ().createFormulaEvaluator ();
 
   for ii=1:nrows
-    ll = ii + trow - 2;                       ## Java POI's row count 0-based
+    ll = ii + trow - 2;                         ## Java POI's row count 0-based
     row = sh.getRow (ll);
-    if (isempty (row)) row = sh.createRow (ll); endif
+    if (isempty (row))
+      row = sh.createRow (ll); 
+    endif
     for jj=1:ncols
-      kk = jj + lcol - 2;                     ## POI's column count is 0-based
-      if (typearr(ii, jj) == ctype(5))        ## Empty cells
+      kk = jj + lcol - 2;                       ## POI's column count is 0-based
+      if (typearr(ii, jj) == ctype(5))          ## Empty cells
         cell = row.createCell (kk, ctype(5));
-      elseif (typearr(ii, jj) == ctype(4))    ## Formulas
+      elseif (typearr(ii, jj) == ctype(4))      ## Formulas
         ## Try-catch needed as there's no guarantee for formula correctness
         try
           cell = row.createCell (kk, ctype(4));
           cell.setCellFormula (obj{ii,jj});
         catch                  
           ++f_errs;
-          cell.setCellType (ctype (3));       ## Enter formula as text
+          cell.setCellType (ctype (3));         ## Enter formula as text
           cell.setCellValue (obj{ii, jj});
         end_try_catch
       else
@@ -163,7 +167,7 @@ function [ xls, rstatus ] = __POI_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
   if (f_errs) 
     printf ("%d formula errors encountered - please check input array\n", f_errs);
   endif
-  xls.changed = max (xls.changed, 1);         ## Preserve a "2"
+  xls.changed = max (xls.changed, 1);           ## Preserve a "2"
   rstatus = 1;
   
 endfunction

@@ -32,6 +32,9 @@
 ## 2013-11-10 (MB) Compacted sheet names & rid code in xlsx section
 ## 2013-11-12 Rely on private/__unpack (patched unpack.m from core Octave)
 ## 2013-11-16 Replace fgetl calls by fread to cope with EOLs
+## 2013-12-13 Fix sheet names parsing regexpr
+## 2013-12-14 Fix sheet names parsing regexpr # 2 (attrib order can change =>
+##            that's why an XML parser is superior over regular expressions)
 
 function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename, xlssupport, chk2, chk3, chk5)
 
@@ -48,12 +51,13 @@ function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename
     ## xlsx and ods are zipped
     ## Below is needed for a silent delete of our tmpdir
     confirm_recursive_rmdir (0);
-
-    ## http://savannah.gnu.org/bugs/index.php?39148
-    ## unpack.m taken from bugfix: http://hg.savannah.gnu.org/hgweb/octave/rev/45165d6c4738
-    ## needed for octave 3.6.x and added to ./private subdir
-    ## FIXME delete unpack.m for release 1.3.x+
-    __unpack (filename, tmpdir, "unzip");
+    try
+      unpack (filename, tmpdir, "unzip");
+    catch
+      printf ("file %s couldn't be unpacked. Is it the proper file format?\n", filename);
+      xls = [];
+      return
+    end_try_catch
   endif  
 
   ## First check if we're reading ODS
@@ -114,7 +118,7 @@ function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename
       fclose (fid);
 
       ## Get sheet names and indices
-      xls.sheets.sh_names = cell2mat (regexp (xml, '<sheet name="(.*?)" sheetId="\d+"', "tokens"));
+      xls.sheets.sh_names = cell2mat (regexp (xml, '<sheet name="(.*?)"(?: r:id="\w+")? sheetId="\d+"', "tokens"));
       xls.sheets.rid = str2double (cell2mat (regexp (xml, '<sheet name=".*?" sheetId="(\d+)"', "tokens")));
 
     endif

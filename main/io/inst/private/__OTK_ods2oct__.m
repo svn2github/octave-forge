@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <prnienhuis _at- users.sf.net>
+## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -17,7 +17,7 @@
 ## You need proper java-for-octave & odfdom.jar + xercesImpl.jar 2.9.1
 ## in your javaclasspath.
 
-## Author: Philip Nenhuis <pr.nienhuis at users.sf.net>
+## Author: Philip Nenhuis <prnienhuis at users.sf.net>
 ## Created: 2009-12-24
 ## Updates:
 ## 2010-01-08 First working version
@@ -31,6 +31,7 @@
 ## 2011-09-18 Remove rstatus var (now set in caller)
 ## 2012-10-12 Renamed & moved 2 ./private; soon te be dropped as OTK 0.7.5 is too old
 ## 2012-10-24 Style fixes
+## 2013-12-01 Style fixes, str2num->str2double, copyright string updates
 
 function [ rawarr, ods ] = __OTK_ods2oct__ (ods, wsh, crange, spsh_opts)
 
@@ -56,7 +57,7 @@ function [ rawarr, ods ] = __OTK_ods2oct__ (ods, wsh, crange, spsh_opts)
   nr_of_sheets = sheets.getLength ();
 
   ## Check user input & find sheet pointer (1-based), using ugly hacks
-  if (~isnumeric (wsh))
+  if (! isnumeric (wsh))
     ## Search in sheet names, match sheet name to sheet number
     ii = 0;
     while (++ii <= nr_of_sheets && ischar (wsh))  
@@ -114,7 +115,9 @@ function [ rawarr, ods ] = __OTK_ods2oct__ (ods, wsh, crange, spsh_opts)
       ++rowcnt;
     endwhile
     ## Desired top row may be in a nr-rows-repeated tablerow....
-    if (tfillrows > ii); ii = tfillrows; endif
+    if (tfillrows > ii)
+      ii = tfillrows;
+    endif
   endif
 
   ## Read from worksheet row by row. Row numbers are 0-based
@@ -127,7 +130,7 @@ function [ rawarr, ods ] = __OTK_ods2oct__ (ods, wsh, crange, spsh_opts)
     while (jj <= rcol)
       tcell = row.getCellAt(jj-1);
       form = 0;
-      if (~isempty (tcell))     ## If empty it's possibly in columns-repeated/spanned
+      if (! isempty (tcell))     ## If empty it's possibly in columns-repeated/spanned
         if (spsh_opts.formulas_as_text)   ## Get spreadsheet formula rather than value
           ## Check for formula attribute
           tmp = tcell.getTableFormulaAttribute ();
@@ -141,8 +144,8 @@ function [ rawarr, ods ] = __OTK_ods2oct__ (ods, wsh, crange, spsh_opts)
             form = 1;
           endif
         endif
-        if ~(form || index (char(tcell), "text:p>Err:") ...
-                  || index (char(tcell), "text:p>##DIV"))  
+        if (! (form || index (char(tcell), "text:p>Err:") ...
+                  || index (char(tcell), "text:p>##DIV")))
           ## Get data from cell
           ctype = tcell.getOfficeValueTypeAttribute ();
           cvalue = tcell.getOfficeValueAttribute ();
@@ -152,13 +155,13 @@ function [ rawarr, ods ] = __OTK_ods2oct__ (ods, wsh, crange, spsh_opts)
             case "date"
               cvalue = tcell.getOfficeDateValueAttribute ();
               ## Dates are returned as octave datenums, i.e. 0-0-0000 based
-              yr = str2num (cvalue(1:4));
-              mo = str2num (cvalue(6:7));
-              dy = str2num (cvalue(9:10));
+              yr = str2double (cvalue(1:4));
+              mo = str2double (cvalue(6:7));
+              dy = str2double (cvalue(9:10));
               if (index (cvalue, "T"))
-                hh = str2num (cvalue(12:13));
-                mm = str2num (cvalue(15:16));
-                ss = str2num (cvalue(18:19));
+                hh = str2double (cvalue(12:13));
+                mm = str2double (cvalue(15:16));
+                ss = str2double (cvalue(18:19));
                 rawarr(ii-trow+2, jj-lcol+1) = datenum (yr, mo, dy, hh, mm, ss);
               else
                 rawarr(ii-trow+2, jj-lcol+1) = datenum (yr, mo, dy);
@@ -166,9 +169,9 @@ function [ rawarr, ods ] = __OTK_ods2oct__ (ods, wsh, crange, spsh_opts)
             case "time"
               cvalue = tcell.getOfficeTimeValueAttribute ();
               if (index (cvalue, "PT"))
-                hh = str2num (cvalue(3:4));
-                mm = str2num (cvalue(6:7));
-                ss = str2num (cvalue(9:10));
+                hh = str2double (cvalue(3:4));
+                mm = str2double (cvalue(6:7));
+                ss = str2double (cvalue(9:10));
                 rawarr(ii-trow+2, jj-lcol+1) = datenum (0, 0, 0, hh, mm, ss);
               endif
             case "boolean"

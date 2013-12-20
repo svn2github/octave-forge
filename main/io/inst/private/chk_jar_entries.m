@@ -1,4 +1,4 @@
-## Copyright (C) 2012,2013 Philip Nienhuis <prnienhuis@users.sf.net>
+## Copyright (C) 2012,2013 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -22,7 +22,11 @@
 ## 2012-10-23 Style fixes
 ## 2012-12-18 Add option for range of names per required entry
 ##     ''     Tests added
-## 2012-07-18 Fix multiple equivalent jar entries bug (padding w. spaces overlooked)
+## 2013-07-12 Trim implied padding of range of names per entry
+## 2012-07-18 Fix multiple equivalent jar entries bug (padding w. spaces
+##            overlooked)
+## 2013-12-06 Updated copyright strings; style fixes
+##     ''     Commented out tests
 
 function [ retval, missing ] = chk_jar_entries (jcp, entries, dbug=0)
 
@@ -35,7 +39,7 @@ function [ retval, missing ] = chk_jar_entries (jcp, entries, dbug=0)
       jentry = strsplit (lower (jcp{ii}), filesep){end};
       kk = 0;
       while (++kk <= size (char (entries{jj}), 1) && ! found)
-        if (~isempty (strfind (jentry, strtrim (lower (char (entries{jj})(kk, :))))))
+        if (! isempty (strfind (jentry, strtrim (lower (char (entries{jj})(kk, :))))))
           ++retval; 
           found = 1;
           if (dbug > 2)
@@ -44,10 +48,11 @@ function [ retval, missing ] = chk_jar_entries (jcp, entries, dbug=0)
         endif
       endwhile
     endfor
-    if (~found)
+    if (! found)
       if (dbug > 2)
         if (iscellstr (entries{jj}))
-          entrtxt = sprintf ("%s/", entries{jj}{:}); entrtxt(end) = "";
+          entrtxt = sprintf ("%s/", entries{jj}{:});
+          entrtxt(end) = "";
         else
           entrtxt = entries{jj};
         endif
@@ -66,7 +71,7 @@ endfunction
 ##%! jcp1 = {"/usr/lib/java/abcx.jar", "/usr/lib/java/defz.jar", "/usr/lib/java/jkl3.jar"};
 ##%! jcp1 = strrep (jcp1, "/", filesep);
 ##%! assert (chk_jar_entries (jcp1, entries), 3);
-##
+
 ##%!test
 ##%! entries = {"abc", {"def", "ghi"}, "xyz"};
 ##%! jcp2 = {"/usr/lib/java/abcy.jar", "/usr/lib/java/ghiw.jar", "/usr/lib/java/jkl6.jar"};

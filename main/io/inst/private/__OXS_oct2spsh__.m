@@ -1,4 +1,4 @@
-## Copyright (C) 2011 Philip Nienhuis <prnienhuis@users.sf.net>
+## Copyright (C) 2011,2012,2013 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -34,13 +34,14 @@
 ## Updates:
 ## 2012-10-12 Renamed & moved into ./private
 ## 2012-10-24 Style fixes
+## 2013-12-06 Updated copyright strings; style fixes
 
 function [ xls, rstatus ] = __OXS_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
 
   ## Preliminary sanity checks
-  if (~strmatch (tolower (xls.filename(end-4:end-1)), ".xls"))  
+  if (! isempty (strcmpi (xls.filename(end-4:end-1)), ".xls"))  
     ## No OOXML in OXS
-    error ("OXS interface can only write to Excel .xls files")
+    error ("OXS interface can only write to Excel 97-2003 .xls files")
   endif
   
   changed = 0;
@@ -103,9 +104,9 @@ function [ xls, rstatus ] = __OXS_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
 
   ## Prepare type array
   typearr = spsh_prstype (obj, nrows, ncols, ctype, spsh_opts);
-  if ~(spsh_opts.formulas_as_text)
+  if (! spsh_opts.formulas_as_text)
     ## Remove leading '=' from formula strings  //FIXME needs updating
-    fptr = ~(4 * (ones (size (typearr))) .- typearr);
+    fptr = (! (4 * (ones (size (typearr))) .- typearr));
     obj(fptr) = cellfun (@(x) x(2:end), obj(fptr), "Uniformoutput", false); 
   endif
   clear fptr
@@ -118,7 +119,7 @@ function [ xls, rstatus ] = __OXS_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
         changed = 1;
       catch
         ## Cell not existent. Add cell
-        if ~(typearr(jj, ii) == 5)
+        if (! typearr(jj, ii) == 5)
           sh.add (obj{jj, ii}, jj+trow-2, ii+lcol-2);
           changed = 1;
         endif
@@ -126,7 +127,10 @@ function [ xls, rstatus ] = __OXS_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
     endfor
   endfor
 
-  if (changed), xls.changed = max (xls.changed, 1); endif   ## Preserve 2 for new files
+  if (changed)
+    ## Preserve 2 for new files
+    xls.changed = max (xls.changed, 1);
+  endif   
   rstatus = 1;
 
 endfunction

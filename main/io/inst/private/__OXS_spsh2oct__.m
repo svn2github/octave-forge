@@ -1,4 +1,4 @@
-## Copyright (C) 2011,2012 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2011,2012,2013 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -24,12 +24,13 @@
 ## __OXS_spsh2oct__ should not be invoked directly but rather through xls2oct.
 ##
 
-## Author: Philip Nienhuis
+## Author: Philip Nienhuis <prnienhuis at users.sf.net>
 ## Created: 2011-03-26
 ## Updates:
 ## 2012-02-25 Changed ctype into num array rather than cell array
 ## 2012-10-12 Renamed & moved into ./private
 ## 2012-10-24 Style fixes
+## 2013-12-06 Updated copyright strings
 
 function [ rawarr, xls, rstatus ] = __OXS_spsh2oct__ (xls, wsh, cellrange, spsh_opts)
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2010,2011,2012 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2010,2011,20123 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -21,6 +21,7 @@
 ## 2011-06-29 try-catch to be able to skip non-data (e.g., graph) sheets
 ## 2012-10-12 Renamed & moved into ./private
 ## 2012-10-24 Style fixes
+## 2013-12-06 Updated copyright strings
 
 function [ trow, brow, lcol, rcol ] = __OXS_getusedrange__ (xls, wsh)
 

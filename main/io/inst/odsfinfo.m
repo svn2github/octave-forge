@@ -81,6 +81,7 @@
 ## 2012-10-24 Style fixes
 ## 2013-09-09 Native Octave interface ("OCT") for reading
 ## 2013-09-23 Header updated to OCT interface
+## 2013-12-01 Output arg #2 adapted to file type tru switch stmt
 
 function [ filetype, sh_names ] = odsfinfo (filename, reqintf=[])
 
@@ -93,7 +94,16 @@ function [ filetype, sh_names ] = odsfinfo (filename, reqintf=[])
   ## If no ods support was found, odsopen will have complained. Just return here
   if (isempty (ods)), return; endif
   
-  filetype = "OpenOffice.org Calc Document";
+  ## If any valid xls-pointer struct has been returned, it must be a valid
+  ## spreadsheet. Find out what format
+  [~, ~, ext] = fileparts (ods.filename); 
+  switch ext
+    case {"ods", "sxc"}
+      filetype = "OpenOffice.org Calc Document";
+    case "gnumeric"
+      filetype = "Gnumeric spreadsheet";
+    otherwise
+  endswitch
 
   ## To save execution time, only proceed if sheet names are wanted
   if ~(nargout == 1)

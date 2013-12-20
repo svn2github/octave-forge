@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012 by Philip Nienhuis <prnienhuis@users.sf.net>
+## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -36,7 +36,8 @@
 ##
 ## @end deftypefn
 
-## Author: Philip Nienhuis  (originally based on mat2xls by Michael Goffioul)
+## Author: Philip Nienhuis <prnienhuis@users.sf.net> 
+##        (originally based on mat2xls by Michael Goffioul)
 ## Rewritten: 2009-09-26
 ## Updates:
 ## 2009-12-11
@@ -63,6 +64,7 @@
 ## 2012-10-12 Renamed & moved into ./private
 ## 2012-10-24 Style fixes
 ## 2012-12-21 Search for exact match when searching sheet names
+## 2012-12-01 Style fixes; copyright string adapted
 
 function [ xls, status ] = __COM_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
 
@@ -70,7 +72,7 @@ function [ xls, status ] = __COM_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
   ## FIXME - Excel can write to much more than .xls/.xlsx (but not to all
   ##         formats with multiple sheets):
   ##         .wk1 .wk3 .wk4 .csv .pxl .html .dbf .txt .prn .wks .wq1 .dif
-	if (~strmatch (lower (xls.filename(end-4:end)), '.xls'))
+	if (! strmatch (lower (xls.filename(end-4:end)), '.xls'))
 		error ("COM interface can only write to Excel .xls or .xlsx files")
 	endif
 	if (isnumeric (wsh))
@@ -105,7 +107,7 @@ function [ xls, status ] = __COM_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
 	ctype = [0 1 2 3 4];							## Numeric Boolean Text Formula Empty
 	typearr = spsh_prstype (obj, nrows, ncols, ctype, spsh_opts);
 	## Make cells now indicated to be empty, empty
-	fptr = ~(4 * (ones (size (typearr))) .- typearr);
+	fptr = ! (4 * (ones (size (typearr))) .- typearr);
 	obj(fptr) = cellfun (@(x) [], obj(fptr), "Uniformoutput",  false);
 
 	if (spsh_opts.formulas_as_text)
@@ -136,7 +138,7 @@ function [ xls, status ] = __COM_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
 				shnm = sprintf ("Sheet%d", wsh); shnm1 = shnm;
 			endif
 		endif
-		if (~old_sh)
+		if (! old_sh)
 			## Check if the requested (or proposed) sheet already exists
 			## COM objects are not OO (yet?), so we need a WHILE loop 
 			ii = 1; jj = 1;
@@ -162,7 +164,7 @@ function [ xls, status ] = __COM_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
 
 		if (old_sh) 
 			## Requested sheet exists. Check if it is a *work*sheet
-			if ~(xls.workbook.Sheets(old_sh).Type == xlWorksheet)
+			if (! (xls.workbook.Sheets(old_sh).Type == xlWorksheet))
 				## Error as you can't write data to Chart sheet
 				error (sprintf ("Existing sheet '%s' is not type worksheet.", wsh));
 			else
@@ -176,7 +178,7 @@ function [ xls, status ] = __COM_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
 			catch
 				error (sprintf ("Cannot add new worksheet to file %s\n", xls.filename));
 			end_try_catch
-			if (~isnumeric (wsh)) 
+			if (! isnumeric (wsh)) 
 				sh.Name = wsh;
 			else
 				sh.Name = shnm;
@@ -187,7 +189,7 @@ function [ xls, status ] = __COM_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
 			## Find where Excel has left it. We have to, depends on Excel version :-(
 
 			ii = 1;
-			while ((ii < ws_cnt+1) && ~strcmp (sh.Name, xls.workbook.Worksheets(ii).Name) == 1)
+			while ((ii < ws_cnt+1) && ! strcmp (sh.Name, xls.workbook.Worksheets(ii).Name) == 1)
 				++ii;
 			endwhile
 			## Excel can't move it beyond the current last one, so we need a trick.
@@ -222,7 +224,7 @@ function [ xls, status ] = __COM_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
 
 	## MG's original part.
 	## Save object in Excel sheet, starting at cell top_left_cell
-	if (~isempty(obj))
+	if (! isempty(obj))
 		r = sh.Range (crange);
 		try
 			r.Value = obj;

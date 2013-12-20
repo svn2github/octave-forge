@@ -25,16 +25,16 @@
 ##
 ## A native Octave interface (OCT) is available for reading data.
 ## For ODS the supported Java-based interfaces offer more flexibility
-## and better speed, plus write support. For these you need the octave-forge
-## Java package (> 1.2.8) and one or both of jopendocument-<version>.jar or
-## preferrably: (odfdom.jar (versions 0.7.5 or 0.8.6+) & xercesImpl.jar v. 2.9.1)
-## in your javaclasspath. There is also experimental support invoking
+## and better speed, plus write support. For these you need a Java JRE or JDK
+## and one or both of jopendocument-<version>.jar or preferrably: (odfdom.jar
+## (versions 0.7.5 or 0.8.6-0.8.8) & xercesImpl.jar v. 2.9.1) in your
+## javaclasspath. There is also experimental support invoking
 ## OpenOffice.org/LibreOffice or clones through a Java/UNO bridge.
 ##
 ## Return argument @var{numarr} contains the numeric data, optional
 ## return arguments @var{txtarr} and @var{rawarr} contain text strings
 ## and the raw spreadsheet cell data, respectively, and @var{limits} is
-##a struct containing the data origins of the various returned arrays.
+## a struct containing the data origins of the various returned arrays.
 ##
 ## If @var{filename} does not contain any directory, the file is
 ## assumed to be in the current directory. @var{filename} should include
@@ -137,6 +137,7 @@
 ##     ''     Texinfo header adapted
 ## 2013-11-04 Better error message about unsupported file types
 ##     ''     Add .sxc to supported file types
+## 2013-12-01 Updated texinfo header
 
 function [ numarr, txtarr, rawarr, lim ] = odsread (filename, wsh=1, datrange=[], reqintf=[])
 

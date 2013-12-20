@@ -72,7 +72,8 @@
 ## 2012-12-18 Improved error/warning messages
 ## 2013-09-09 Native Octave interface ("OCT") for reading
 ##      ''    Warning message for empty file ptr structs
-## 2013-10-02 Texinfo header adapted 
+## 2013-10-02 Texinfo header adapted
+## 2013-12-01 Style fixes
 
 function [ ods ] = odsclose (ods, varargs)
 
@@ -94,11 +95,11 @@ function [ ods ] = odsclose (ods, varargs)
         ## Close .ods anyway even if write errors occur
         force = 1;
 
-      elseif (~isempty (strfind (tolower (varargin{ii}), ".")))
+      elseif (! isempty (strfind (tolower (varargin{ii}), ".")))
         ## Apparently a file name. First some checks....
         if (ods.changed == 0 || ods.changed > 2)
           warning ("odsclose.m: file %s wasn't changed, new filename ignored.", ods.filename);
-        elseif (~strcmp (xls.xtype, "UNO") && ...
+        elseif (! strcmp (xls.xtype, "UNO") && ...
                 isempty (strfind ( lower (filename), ".ods")))
           ## UNO will write any file type, all other interfaces only .ods
             error ("odsclose.m: .ods suffix lacking in filename %s", filename);

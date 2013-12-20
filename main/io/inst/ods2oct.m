@@ -128,26 +128,27 @@
 ## 2013-09-09 Native Octave interface ("OCT") for reading
 ## 2013-09-23 Updated copyright messages
 ## 2013-10-02 Some adaptations for gnumeric
+## 2013-12-01 Style fixes
 ##
 ## Latest subfunc update: 2012-10-12
 
 function [ rawarr, ods, rstatus ] = ods2oct (ods, wsh=1, datrange=[], spsh_opts=[])
 
   ## Check if ods struct pointer seems valid
-  if (~isstruct (ods)); error ("File ptr struct expected for arg @ 1"); endif
-  test1 = ~isfield (ods, "xtype");
-  test1 = test1 || ~isfield (ods, "workbook");
+  if (! isstruct (ods)); error ("File ptr struct expected for arg @ 1"); endif
+  test1 = ! isfield (ods, "xtype");
+  test1 = test1 || ! isfield (ods, "workbook");
   test1 = test1 || isempty (ods.workbook);
   test1 = test1 || isempty (ods.app);
   if (test1)
     error ("Arg #1 is an invalid ods file struct");
   endif
   ## Check worksheet ptr
-  if (~(ischar (wsh) || isnumeric (wsh)))
+  if (! (ischar (wsh) || isnumeric (wsh)))
     error ("Integer (index) or text (wsh name) expected for arg # 2");
   endif
   ## Check range
-  if (~(isempty (datrange) || ischar (datrange)))
+  if (! (isempty (datrange) || ischar (datrange)))
     error ("Character string (range) expected for arg # 3");
   endif
   ## Check & setup options struct
@@ -156,13 +157,13 @@ function [ rawarr, ods, rstatus ] = ods2oct (ods, wsh=1, datrange=[], spsh_opts=
     spsh_opts.strip_array = 1;
     ## Other options here:
 
-  elseif (~isstruct (spsh_opts))
+  elseif (! isstruct (spsh_opts))
     error ("struct expected for OPTIONS argument (# 4)");
   else
-    if (~isfield (spsh_opts, "formulas_as_text"))
+    if (! isfield (spsh_opts, "formulas_as_text"))
       spsh_opts.formulas_as_text = 0;
     endif
-    if (~isfield (spsh_opts, "strip_array"))
+    if (! isfield (spsh_opts, "strip_array"))
       spsh_opts.strip_array = 1;
     endif
     ## Future options:
@@ -201,7 +202,7 @@ function [ rawarr, ods, rstatus ] = ods2oct (ods, wsh=1, datrange=[], spsh_opts=
     error (sprintf ("ods2oct: unknown OpenOffice.org .ods interface - %s.", ods.xtype));
   endif
 
-  rstatus = ~isempty (rawarr);
+  rstatus = ! isempty (rawarr);
 
   ## Optionally strip empty outer rows and columns & keep track of original data location
   if (spsh_opts.strip_array && rstatus)

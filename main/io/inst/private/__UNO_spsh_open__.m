@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Philip Nienhuis <prnienhuis@users.sf.net>
+## Copyright (C) 2012,2013 Philip Nienhuis <prnienhuis@users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -25,12 +25,13 @@
 ##            make_absolute_filename (see bug #36677)
 ## 2012-10-24 Style fixes
 ## 2013-01-20 Adapted to ML-compatible Java calls
+## 2013-12-06 Updated copyright strings
 
 function [ xls, xlssupport, lastintf ] = __UNO_spsh_open__ (xls, xwrite, filename, xlssupport)
 
     ## First, the file name must be transformed into a URL
-    if (~isempty (strmatch ("file:///", filename)) || ~isempty (strmatch ("http://", filename))...
-       || ~isempty (strmatch ("ftp://", filename)) || ~isempty (strmatch ("www://", filename)))
+    if (! isempty (strmatch ("file:///", filename)) || ! isempty (strmatch ("http://", filename))...
+       || ! isempty (strmatch ("ftp://", filename)) || ! isempty (strmatch ("www://", filename)))
       ## Seems in proper shape for OOo (at first sight)
     else
       ## Transform into URL form. 
@@ -62,10 +63,11 @@ function [ xls, xlssupport, lastintf ] = __UNO_spsh_open__ (xls, xwrite, filenam
       lProps = javaArray ("com.sun.star.beans.PropertyValue", 1);
       lProp = javaObject ("com.sun.star.beans.PropertyValue", "Hidden", 0, true, []);
       lProps(1) = lProp;
+      flags = 0;
       if (xwrite > 2)
-        xComp = aLoader.loadComponentFromURL ("private:factory/scalc", "_blank", 0, lProps);
+        xComp = aLoader.loadComponentFromURL ("private:factory/scalc", "_blank", flags, lProps);
       else
-        xComp = aLoader.loadComponentFromURL (filename, "_blank", 0, lProps);
+        xComp = aLoader.loadComponentFromURL (filename, "_blank", flags, lProps);
       endif
       ## Workaround for <UNOruntime>.queryInterface():
       unotmp = javaObject ("com.sun.star.uno.Type", "com.sun.star.sheet.XSpreadsheetDocument");

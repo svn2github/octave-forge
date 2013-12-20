@@ -1,4 +1,4 @@
-## Copyright (C) 2011,2012 Philip Nienhuis <prnienhuis@users.sf.net>
+## Copyright (C) 2011,2012,2013 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -24,6 +24,7 @@
 ## 2012-10-24 Style fixes
 ## 2012-12-21 Search for exact match when searching sheet names
 ## 2013-01-20 Adapted to ML-compatible Java calls
+## 2013-12-06 Updated copyright strings; style fixes
 
 function [rawarr, xls, rstatus] = __UNO_spsh2oct__  (xls, wsh, datrange, spsh_opts)
 
@@ -43,7 +44,9 @@ function [rawarr, xls, rstatus] = __UNO_spsh2oct__  (xls, wsh, datrange, spsh_op
     endif
   else
     ii = strmatch (wsh, sh_names, "exact");
-    if (isempty (ii)), error ("Sheet '%s' not found", wsh); endif
+    if (isempty (ii))
+      error ("Sheet '%s' not found", wsh);
+    endif
     wsh = ii;
   endif
   unotmp = javaObject ("com.sun.star.uno.Type", "com.sun.star.sheet.XSpreadsheet");
@@ -55,8 +58,8 @@ function [rawarr, xls, rstatus] = __UNO_spsh2oct__  (xls, wsh, datrange, spsh_op
   ##java_get ("com.sun.star.sheet.CellFlags", "VALUE")      ans =  1
   ##java_get ("com.sun.star.sheet.CellFlags", "DATETIME")   ans =  2
   ##java_get ("com.sun.star.sheet.CellFlags", "STRING")     ans =  4
-  ##java_get ("com.sun.star.sheet.CellFlags", "FORMULA")    ans =  16
-  ## Yep, boolean is lacking...
+  ##java_get ("com.sun.star.sheet.CellFlags", "FORMULA")    ans = 16 +
+  ## Yep, boolean is lacking...                             sum = 23
   Cellflgs = javaObject ("java.lang.Short", "23");
   ccells = xRQ.queryContentCells (Cellflgs);
   addrs = ccells.getRangeAddressesAsString ();
@@ -108,7 +111,9 @@ function [rawarr, xls, rstatus] = __UNO_spsh2oct__  (xls, wsh, datrange, spsh_op
             rawarr{ii-trow+2, jj-lcol+2} = XCell.queryInterface (unotmp).getString ();
             tmp = str2double (rawarr{ii-trow+2, jj-lcol+2});
             ## If the string happens to contain just a number we'll assume it is numeric
-            if (~isnan (tmp)); rawarr{ii-trow+2, jj-lcol+2} = tmp; endif
+            if (! isnan (tmp))
+              rawarr{ii-trow+2, jj-lcol+2} = tmp;
+            endif
           endif
         otherwise
           ## Empty cell
@@ -119,6 +124,6 @@ function [rawarr, xls, rstatus] = __UNO_spsh2oct__  (xls, wsh, datrange, spsh_op
   ## Keep track of data rectangle limits
   xls.limits = [lcol, rcol; trow, brow];
 
-  rstatus = ~isempty (rawarr);
+  rstatus = ! isempty (rawarr);
 
 endfunction

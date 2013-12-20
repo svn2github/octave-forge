@@ -1,4 +1,4 @@
-## Copyright (C) 2011,2012,2013 Philip Nienhuis <prnienhuis@users.sf.net>
+## Copyright (C) 2011,2012,2013 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -29,7 +29,7 @@
 ## 2012-10-24 Style fixes
 ## 2012-12-21 Search for exact match when searching sheet names
 ## 2013-01-20 Adapted to ML-compatible Java calls
-## 2013-03-10 Fixed bug in finding existing sheetnames i.c.o. numeric sheet name arg
+## 2013-12-06 Updated copyright string;
 
 function [ xls, rstatus ] = __UNO_oct2spsh__ (c_arr, xls, wsh, crange, spsh_opts)
 

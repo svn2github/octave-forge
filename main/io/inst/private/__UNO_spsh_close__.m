@@ -1,4 +1,4 @@
-## Copyright (C) 2012,2013 Philip Nienhuis <prnienhuis@users.sf.net>
+## Copyright (C) 2012,2013 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 ## Updates:
 ## 2012-10-23 Style fixes
 ## 2013-01-20 Adapted to ML-compatible Java calls
+## 2013-12-06 Updated copyright strings;
 
 function [ xls ] = __UNO_spsh_close__ (xls, force)
 
@@ -28,10 +29,10 @@ function [ xls ] = __UNO_spsh_close__ (xls, force)
     ## New filename specified
     if (strcmp (xls.xtype, 'UNO'))
       ## For UNO, turn filename into URL
-      if    (~isempty (strmatch ("file:///", nfilename))... 
-          || ~isempty (strmatch ("http://",  nfilename))...
-          || ~isempty (strmatch ("ftp://",   nfilename))...   
-          || ~isempty (strmatch ("www://",   nfilename)))
+      if    (! isempty (strmatch ("file:///", nfilename))... 
+          || ! isempty (strmatch ("http://",  nfilename))...
+          || ! isempty (strmatch ("ftp://",   nfilename))...   
+          || ! isempty (strmatch ("www://",   nfilename)))
         ## Seems in proper shape for OOo (at first sight)
       else
         ## Transform into URL form

@@ -1,4 +1,4 @@
-## Copyright (C) 2011,2012 Philip Nienhuis <prnienhuis@users.sf.net>
+## Copyright (C) 2011,2012,2013 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -24,6 +24,7 @@
 ## 2012-10-12 Renamed & moved into ./private
 ## 2012-10-24 Style fixes
 ## 2013-01-20 Adapted to ML-compatible Java calls
+## 2013-12-06 Updated copyright strings
 
 function [ srow, erow, scol, ecol ] = __UNO_getusedrange__ (ods, ii)
 
@@ -52,7 +53,7 @@ function [ srow, erow, scol, ecol ] = __UNO_getusedrange__ (ods, ii)
     ## Apparently we have a ';' separator, so try with semicolon
     adrblks = strsplit (addrs, ";");
   endif
-  if (isempty (adrblks))
+  if (isempty (adrblks) || isempty (adrblks{1}))
     srow = erow = scol = ecol = 0;
     return
   endif

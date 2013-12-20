@@ -39,6 +39,7 @@
 ## 2013-11-03 Fix bug with updating column ptr after repeated columns node
 ## 2013-11-13 Fix table-row counter bug
 ##     ''     Pretty text output
+## 2013-12-19 Work around OTK bug (doesn't write office:value-type for formula cells)
 
 function [ rawarr, ods, rstatus] = __OCT_ods2oct__ (ods, wsh, cellrange='', spsh_opts)
 
@@ -174,6 +175,12 @@ function [ rawarr, ods, rstatus] = __OCT_ods2oct__ (ods, wsh, cellrange='', spsh
             ctype = '';
             if (ce2)
               ctype = getxmlattv (tcell, "office:value-type");
+              if (isempty (ctype) && spsh_opts.formulas_as_text)
+                ## Work around OTK bug (doesn't write office:value-type for formulas)
+                if (! isempty (strfind (tcell, "formula")))
+                  ctype = "cformula";
+                endif
+              endif
             endif
             if (! isempty (ctype))
               if (spsh_opts.formulas_as_text)
@@ -187,7 +194,7 @@ function [ rawarr, ods, rstatus] = __OCT_ods2oct__ (ods, wsh, cellrange='', spsh
               ## Put proper translation into rawarr
               switch ctype
                 case "cformula"
-                  form = strrep (form(4:end), "&quot;", '"');
+                  form = strrep (form, "&quot;", '"');
                   form = strrep (form, "&lt;", "<");
                   form = strrep (form, "&gt;", ">");
                   form = strrep (form, "&amp;", "&");

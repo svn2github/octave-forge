@@ -23,18 +23,17 @@
 ##
 ## Calling odsopen without specifying a return argument is fairly useless!
 ##
-## To make this function work at all for write support, you need the Java
-## package >= 1.2.5 plus ODFtoolkit (version 0.7.5 or 0.8.6+) & xercesImpl,
-## and/or jOpenDocument, and/or OpenOffice.org (or clones) installed on your
-## computer + proper javaclasspath set. These interfaces are referred to as
-## OTK, JOD, and UNO resp., and are preferred in that order by default
-## (depending on their presence). For (currently experimental) UNO support,
-## Octave-Java package 1.2.9 is imperative; furthermore the relevant classes
-## had best be added to the javaclasspath by utility function
-## chk_spreadsheet_support(). There is another interface only for reading .ods
-## that doesn't require Java: the 'OCT' interface; this has the lowest
-## priority and will automatically be selected if no Java-based interface is
-## detected.
+## Octave links to external software for read/write support of spreadsheets;
+## these links are "interfaces". For just reading ODS 1.2 and Gnumeric XML
+## no external SW is required, yet this "interface" is called 'OCT'.
+## To make this function work at all for write support, you need a Java JRE
+## or JDK plus one or more of (ODFtoolkit (version 0.7.5 or 0.8.6 - 0.8.8) &
+## xercesImpl v.2.9.1), jOpenDocument, or OpenOffice.org (or clones) installed
+## on your computer + proper javaclasspath set. These interfaces are referred
+## to as OTK, JOD, and UNO resp., and are preferred in that order by default
+## (depending on their presence; the OCT interface has lowest priority).
+## The relevant Java class libs for spreadsheet I/O had best be added to the
+## javaclasspath by utility function chk_spreadsheet_support().
 ##
 ## @var{filename} must be a valid .ods OpenOffice.org file name including
 ## .ods suffix. If @var{filename} does not contain any directory path,
@@ -131,6 +130,8 @@
 ## 2013-11-08 Better filetype / file extension detection (bug #40490)
 ##     ''     Removed stray ';'
 ## 2013-11-12 Fix syntax error + missing initialization in file ext switch stmt
+## 2013-12-01 Updated texinfo header
+## 2013-12-18 Style fixes
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
@@ -148,12 +149,14 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
     usage ("ODS = odsopen (ODSfile, [Rw]). But no return argument specified!");
   endif
 
-  if (~isempty (reqinterface))
-    if ~(ischar (reqinterface) || iscell (reqinterface))
+  if (! isempty (reqinterface))
+    if (! (ischar (reqinterface) || iscell (reqinterface)))
       usage ("odsopen.m: arg # 3 (interface) not recognized");
     endif
     ## Turn arg3 into cell array if needed
-    if (~iscell (reqinterface)), reqinterface = {reqinterface}; endif
+    if (! iscell (reqinterface))
+      reqinterface = {reqinterface};
+    endif
     ## Check if previously used interface matches a requested interface
     if (isempty (regexpi (reqinterface, lastintf, "once"){1}))
       ## New interface requested. OCT is always supported but it must be
@@ -182,7 +185,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
       odsinterfaces = getodsinterfaces (odsinterfaces);
       ## Well, is/are the requested interface(s) supported on the system?
       for ii=1:numel (reqinterface)
-        if (~odsinterfaces.(toupper (reqinterface{ii})))
+        if (! odsinterfaces.(toupper (reqinterface{ii})))
           ## No it aint
           printf ("%s is not supported.\n", toupper (reqinterface{ii}));
         else
@@ -190,7 +193,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
         endif
       endfor
       ## Reset interface check indicator if no requested support found
-      if (~odsintf_cnt)
+      if (! odsintf_cnt)
         chkintf = [];
         ods = [];
         return
@@ -210,10 +213,14 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
   endif
 
   ## Check if ODS file exists. Set open mode based on rw argument
-  if (rw), fmode = "r+b"; else fmode = "rb"; endif
+  if (rw)
+    fmode = "r+b";
+  else
+    fmode = "rb";
+  endif
   fid = fopen (filename, fmode);
   if (fid < 0)
-    if (~rw)                  ## Read mode requested but file doesn't exist
+    if (! rw)                 ## Read mode requested but file doesn't exist
       err_str = sprintf ("odsopen.m: file %s not found\n", filename);
       error (err_str)
     else        
@@ -264,22 +271,22 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
   ## Keep track of which interface is selected. Can be used for fallback to other intf
   odssupport = 0;
 
-  if (odsinterfaces.OTK && ~odssupport && chk3 && ! chk5)
+  if (odsinterfaces.OTK && ! odssupport && chk3)
     [ ods, odssupport, lastintf ] = ...
               __OTK_spsh_open__ (ods, rw, filename, odssupport);
   endif
 
-  if (odsinterfaces.JOD && ~odssupport && (chk3 || chk4) && ! chk5)
+  if (odsinterfaces.JOD && ! odssupport && (chk3 || chk4))
     [ ods, odssupport, lastintf ] = ...
               __JOD_spsh_open__ (ods, rw, filename, odssupport);
   endif
 
-  if (odsinterfaces.UNO && ~odssupport && ! chk5)
+  if (odsinterfaces.UNO && ! odssupport && ! chk5)
     [ ods, odssupport, lastintf ] = ...
               __UNO_spsh_open__ (ods, rw, filename, odssupport);
   endif
 
-  if (odsinterfaces.OCT && ~odssupport && (chk3 || chk5))
+  if (odsinterfaces.OCT && ! odssupport && (chk3 || chk5))
     [ ods, odssupport, lastintf ] = ...
               __OCT_spsh_open__ (ods, rw, filename, odssupport, 0, chk3, chk5);
   endif
@@ -287,7 +294,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
   ## if 
   ##   <other interfaces here>
 
-  if (~odssupport)
+  if (! odssupport)
     ## Below message follows after getodsinterfaces
     printf ("None.\n");
     warning ("odsopen.m: no support for OpenOffice.org .ods I/O"); 
@@ -302,7 +309,9 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
     # ods.changed = 0 (existing/only read from), 1 (existing/data added), 2 (new,
     # data added) or 3 (pristine, no data added).
     # Until something was written to existing files we keep status "unchanged".
-    if (ods.changed == 1); ods.changed = 0; endif
+    if (ods.changed == 1);
+      ods.changed = 0;
+    endif
   endif
 
 endfunction

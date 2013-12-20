@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Philip
+## Copyright (C) 2012,2013 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -16,16 +16,17 @@
 
 ## __JXL_xlsopen__ - Internal function for opening an xls file using Java / JExcelAPI
 
-## Author: Philip <Philip@DESKPRN>
+## Author: Philip Nienhuis <prnienhuis@users.sf.net>
 ## Created: 2012-10-07
 ## Updates (possibly from xlsopen):
 ## 2010-11-05 Bug fix: JXL fallback from POI for BIFF5 is only useful for reading
 ## 2012-10-24 Style fixes
 ## 2013-01-20 Adapted to ML-compatible Java calls
+## 2013-12-01 Style fixes, opyright string updates
 
 function [ xls, xlssupport, lastintf ] = __JXL_spsh_open__ (xls, xwrite, filename, xlssupport, chk1)
 
-    if (~chk1)
+    if (! chk1)
       error ("JXL can only read reliably from .xls files")
     endif
     try

@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Philip Nienhuis <prnienhuis@users.sf.net>
+## Copyright (C) 2012,2013 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 ## Created: 2012-10-12
 ## Updates:
 ## 2012-10-24 Style fixes
+## 2013-12-01 Style fixes, copyright string updates
 
 function [ xls ] = __JXL_spsh_close__ (xls)
 

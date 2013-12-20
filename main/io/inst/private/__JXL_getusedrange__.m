@@ -1,4 +1,4 @@
-## Copyright (C) 2010,2011,2012 Philip Nienhuis, prnienhuis at users.sf.net
+## Copyright (C) 2010,2011,2012,2013 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -16,11 +16,12 @@
 ## __JXL_getusedrange__ - get occupied data cell range from Excel sheet
 ## using java/JExcelAPI
 
-## Author: Philip <Philip@DESKPRN>
+## Author: Philip Nienhuis <prnienhuis at users.sf.net>
 ## Created: 2010-03-20
 ## Updates:
 ## 2012-10-12 Renamed & moved into ./private
 ## 2012-10-24 Style fixes
+## 2013-12-01 Style fixes, copyright string updates
 
 function [ trow, brow, lcol, rcol ] = __JXL_getusedrange__ (xls, wsh)
 
@@ -44,13 +45,15 @@ function [ trow, brow, lcol, rcol ] = __JXL_getusedrange__ (xls, wsh)
       ## While loop => only til first non-empty cell
       while (jj < rcol && emptyrow)   
         cell = sh.getCell (jj, ii);
-        if ~(strcmp (char (cell.getType ()), emptycell))
+        if (! strcmp (char (cell.getType ()), emptycell))
           lcol = min (lcol, jj + 1);
           emptyrow = 0;
         endif
         ++jj;
       endwhile
-      if ~(emptyrow); trow = min (trow, ii + 1); endif
+      if (! emptyrow)
+        trow = min (trow, ii + 1);
+      endif
     endfor
   endif
 

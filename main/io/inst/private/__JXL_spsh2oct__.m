@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@
 ##
 ## @end deftypefn
 
-## Author: Philip Nienhuis
+## Author: Philip Nienhuis <prnienhuis at users.sf.net>
 ## Created: 2009-12-04
 ## Updates:
 ## 2009-12-11 ??? some bug fix
@@ -51,6 +51,7 @@
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-10-12 Renamed & moved into ./private
 ## 2012-10-24 Style fixes
+## 2013-12-01 Style fixes, copyright string updates
 
 function [ rawarr, xls, rstatus ] = __JXL_spsh2oct__ (xls, wsh, cellrange, spsh_opts)
 
@@ -131,16 +132,16 @@ function [ rawarr, xls, rstatus ] = __JXL_spsh2oct__ (xls, wsh, cellrange, spsh_
     for ii = firstrow:lastrow
       scell = sh.getCell (jj-1, ii-1);
       switch char (scell.getType ())
-        case ctype {1}   ## Boolean
+        case ctype{1}   ## Boolean
           rawarr {ii+1-firstrow, jj+1-lcol} = scell.getValue ();
-        case ctype {2}   ## Boolean formula
+        case ctype{2}   ## Boolean formula
           if (spsh_opts.formulas_as_text)
             tmp = scell.getFormula ();
             rawarr {ii+1-firstrow, jj+1-lcol} = ["=" tmp];
           else
             rawarr {ii+1-firstrow, jj+1-lcol} = scell.getValue ();
           endif
-        case ctype {3}   ## Date
+        case ctype{3}   ## Date
           try
             % Older JXL.JAR, returns float
             rawarr {ii+1-firstrow, jj+1-lcol} = scell.getValue ();
@@ -158,7 +159,7 @@ function [ rawarr, xls, rstatus ] = __JXL_spsh2oct__ (xls, wsh, cellrange, spsh_
             endif
             rawarr {ii+1-firstrow, jj+1-lcol} = datenum (yy, mo, dd, hh, mi, ss);
           end_try_catch
-        case ctype {4}   ## Date formula
+        case ctype{4}   ## Date formula
           if (spsh_opts.formulas_as_text)
             tmp = scell.getFormula ();
             rawarr {ii+1-firstrow, jj+1-lcol} = ["=" tmp];
@@ -168,7 +169,7 @@ function [ rawarr, xls, rstatus ] = __JXL_spsh2oct__ (xls, wsh, cellrange, spsh_
               tmp = scell.getValue ();
               % if we get here, we got a float (old JXL).
               % Check if it is time
-              if (~scell.isTime ())
+              if (! scell.isTime ())
                 % Reset rawarr <> so it can be processed below as date string
                 rawarr {ii+1-firstrow, jj+1-lcol} = [];
               else
@@ -191,20 +192,20 @@ function [ rawarr, xls, rstatus ] = __JXL_spsh2oct__ (xls, wsh, cellrange, spsh_
               endif
             end_unwind_protect
           endif
-        case { ctype {5}, ctype {6}, ctype {7} }
+        case { ctype{5}, ctype{6}, ctype{7} }
           ## Empty, Error or Formula error. Nothing to do here
-        case ctype {8}   ## Number
+        case ctype{8}   ## Number
           rawarr {ii+1-firstrow, jj+1-lcol} = scell.getValue ();
-        case ctype {9}   ## String
+        case ctype{9}   ## String
           rawarr {ii+1-firstrow, jj+1-lcol} = scell.getString ();
-        case ctype {10}  ## Numerical formula
+        case ctype{10}  ## Numerical formula
           if (spsh_opts.formulas_as_text)
             tmp = scell.getFormula ();
             rawarr {ii+1-firstrow, jj+1-lcol} = ["=" tmp];
           else
             rawarr {ii+1-firstrow, jj+1-lcol} = scell.getValue ();
           endif
-        case ctype {11}  ## String formula
+        case ctype{11}  ## String formula
           if (spsh_opts.formulas_as_text)
             tmp = scell.getFormula ();
             rawarr {ii+1-firstrow, jj+1-lcol} = ["=" tmp];

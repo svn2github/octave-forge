@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Philip Nienhuis <prnienhuis@users.sf.net>
+## Copyright (C) 2012,2013 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 ## Updates:
 ## 2012-10-12 Moved into ./private
 ## 2012-10-24 Style fixes
+## 2013-12-01 Style fixes, copyright string updates
 
 function [sh_names, fformat] = __JXL_spsh_info__ (xls)
 
@@ -36,6 +37,10 @@ function [sh_names, fformat] = __JXL_spsh_info__ (xls)
       sh_names(ii, 2) = "Empty";
     endif
   endfor
-  if (sh_cnt > 0); fformat = "xlWorkbookNormal"; else, fformat = ''; endif
+  if (sh_cnt > 0)
+    fformat = "xlWorkbookNormal";
+  else
+    fformat = '';
+  endif
 
 endfunction

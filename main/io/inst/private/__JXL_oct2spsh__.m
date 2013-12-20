@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -37,7 +37,7 @@
 ##
 ## @end deftypefn
 
-## Author: Philip Nienhuis
+## Author: Philip Nienhuis <prnienhuis at users.sf.net>
 ## Created: 2009-12-04
 ## Updates:
 ## 2009-12-11
@@ -62,11 +62,12 @@
 ## 2012-10-12 Renamed & moved into ./private
 ## 2012-10-24 Style fixes
 ## 2013-01-20 Adapted to ML-compatible Java calls
+## 2013-12-01 Style fixes, copyright string updates
 
 function [ xls, rstatus ] = __JXL_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
 
 	## Preliminary sanity checks
-	if (~strmatch (tolower (xls.filename(end-4:end-1)), ".xls"))	## No OOXML in JXL
+	if (! strmatch (tolower (xls.filename(end-4:end-1)), ".xls"))	## No OOXML in JXL
 		error ("JXL interface can only write to Excel .xls files")
 	endif
 
@@ -132,9 +133,9 @@ function [ xls, rstatus ] = __JXL_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
 
 	## Prepare type array
 	typearr = spsh_prstype (obj, nrows, ncols, ctype, spsh_opts);
-	if ~(spsh_opts.formulas_as_text)
+	if (! spsh_opts.formulas_as_text)
 		## Remove leading '=' from formula strings
-		fptr = ~(4 * (ones (size (typearr))) .- typearr);
+		fptr = ! (4 * (ones (size (typearr))) .- typearr);
 		obj(fptr) = cellfun (@(x) x(2:end), obj(fptr), "Uniformoutput", false); 
 	endif
 	clear fptr

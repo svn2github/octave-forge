@@ -42,7 +42,7 @@
 ## 2013-11-13 (PRN) Pretty text output
 ## 2013-11-15 (PRN) Catch empty sharedString.xml (means no fixed strings)
 ## 2013-11-16 (PRN) Replace fgetl calls by fread to cope with EOLs
-## 2013-12-12 (PRN) Adapted regular exprssions for formulas_as_text to cope with POI
+## 2013-12-12 (PRN) Adapted regular expressions for formulas_as_text to cope with POI
 ##     ''     Adapted regular expression for shared strings to cope with empty strings
 ## 2013-12-14 (PRN) Adapt regexpr for values (include "n" as value type)
 ##     ''     Fix regexpr for strings ( <v>\d? => <v>\d+ )
@@ -53,7 +53,7 @@ function [ raw, xls, rstatus ] = __OCT_xlsx2oct__ (xls, wsh, crange='', spsh_opt
 
   ## spsh_opts is guaranteed to be filled by caller
 
-  ## If a worksheet if given, check if it's given by a name (string) or a number
+  ## If a worksheet if given, check if it's given by a name (string) or a number 
   if (ischar (wsh))
     # fid = fopen (sprintf ('%s/xl/workbook.xml', xls.workbook));
     # if (fid < 0)

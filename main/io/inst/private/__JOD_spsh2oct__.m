@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <pr.nienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -17,7 +17,7 @@
 ## Watch out, no error checks, and spreadsheet formula error results
 ## are conveyed as 0 (zero).
 ##
-## Author: Philip Nienhuis
+## Author: Philip Nienhuis <prnienhuis@users.sf.net>
 ## Created: 2009-12-13
 ## Last updates:
 ## 2010-12-31 Moved into subfunc of ods2oct
@@ -33,6 +33,7 @@
 ## 2012-02-26 Further workaround for reading strings (actually: cells w/o OfficeValueAttr)
 ## 2012-10-12 Renamed & moved into ./private
 ## 2012-10-24 Style fixes
+## 2013-12-01 Style fixes, copyright string updates
 
 function [ rawarr, ods] = __JOD_spsh2oct__ (ods, wsh, crange)
 
@@ -59,7 +60,10 @@ function [ rawarr, ods] = __JOD_spsh2oct__ (ods, wsh, crange)
 ##    ver = 2;
   endif
 
-  if (isnumeric (wsh)); wsh = wsh - 1; endif   ## Sheet INDEX starts at 0
+  ## Sheet INDEX starts at 0
+  if (isnumeric (wsh));
+    --wsh; 
+  endif
   ## Check if sheet exists. If wsh = numeric, nonexistent sheets throw errors.
   try
     sh = ods.workbook.getSheet (wsh);
@@ -78,8 +82,8 @@ function [ rawarr, ods] = __JOD_spsh2oct__ (ods, wsh, crange)
     else
       if (isnumeric (wsh)); wsh = wsh + 1; endif
       [ trow, brow, lcol, rcol ] = getusedrange (ods, wsh);
-      nrows = brow - trow + 1;  ## Number of rows to be read
-      ncols = rcol - lcol + 1;  ## Number of columns to be read
+      nrows = brow - trow + 1;                ## Number of rows to be read
+      ncols = rcol - lcol + 1;                ## Number of columns to be read
     endif
   else
     [dummy, nrows, ncols, trow, lcol] = parse_sp_range (crange);
@@ -105,7 +109,7 @@ function [ rawarr, ods] = __JOD_spsh2oct__ (ods, wsh, crange)
           sctype = char (scell.getValueType ());
           switch sctype
             case { FLOAT, CURRENCY, PERCENTAGE }
-              rawarr{ii, jj} = scell.getValue ().doubleValue ();
+              rawarr{ii, jj} = scell.getValue ();
             case BOOLEAN
               rawarr {ii, jj} = scell.getValue () == 1;
             case STRING
@@ -127,7 +131,7 @@ function [ rawarr, ods] = __JOD_spsh2oct__ (ods, wsh, crange)
               rawarr {ii, jj} = hh + mi + ss;
             otherwise
               ## Workaround for sheets written by jOpenDocument (no value-type attrb):
-              if (~isempty (scell.getValue) )
+              if (! isempty (scell.getValue) )
                 ## FIXME Assume cell contains string if there's a text attr. 
                 ## But it could be BOOLEAN too...
                 if (findstr ("<text:", char (scell))), sctype = STRING; endif
@@ -153,13 +157,17 @@ function [ rawarr, ods] = __JOD_spsh2oct__ (ods, wsh, crange)
           ## No panic, probably a merged cell
           val = {};
         end_try_catch
-        if (~isempty (val))
+        if (! isempty (val))
           if (ischar (val))
             ## Text string
             rawarr(ii, jj) = val;
           elseif (isnumeric (val))
             ## Boolean
-            if (val) rawarr(ii, jj) = true; else; rawarr(ii, jj) = false; endif
+            if (val)
+              rawarr(ii, jj) = true;
+            else;
+              rawarr(ii, jj) = false;
+            endif
           else
             try
               val = sh.getCellAt (celladdress).getValue ().doubleValue ();

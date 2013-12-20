@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Philip Nienhuis <prnienhuis@users.sf.net>
+## Copyright (C) 2012,2013 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 ## Updates:
 ## 2012-10-23 Style fixes
 ## 2013-01-20 Adapted to ML-compatible Java calls
+## 2013-12-01 Copyright string updates
 
 function [ ods ] = __JOD_spsh_close__ (ods)
 

@@ -1,7 +1,5 @@
-#====================================================================================
-## Copyright (C) 2009,2010,2011,2012 P.R. Nienhuis, <pr.nienhuis at hccnet.nl>
-##
-## based on mat2xls by Michael Goffioul (2007) <michael.goffioul@swing.be>
+## Copyright (C) 2009,2010,2011,2012,2013 P.R. Nienhuis
+## parts Copyright (C) 2007 Michael Goffioul
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -37,7 +35,8 @@
 ##
 ## @end deftypefn
 
-## Author: Philip Nienhuis
+## Author: Philip Nienhuis <pr.nienhuis at hccnet.nl>
+## Based on mat2xls by Michael Goffioul (2007) <michael.goffioul@swing.be>
 ## Created: 2009-09-23
 ## Last updates:
 ## 2009-12-11 <forgot what it was>
@@ -52,6 +51,7 @@
 ## 2012-06-06 Implemented "formulas_as_text option"
 ## 2012-10-12 Renamed & moved into ./private
 ## 2012-10-24 Style fixes
+## 2013-12-01 Copyright strings updates
 
 function [rawarr, xls, rstatus ] = __COM_spsh2oct__ (xls, wsh, crange, spsh_opts)
 

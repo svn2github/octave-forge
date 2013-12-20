@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Philip Nienhuis <prnienhuis@users.sf.net>
+## Copyright (C) 2012,2013 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -18,6 +18,8 @@
 
 ## Author: Philip Nienhuis <prnienhuis@users.sf.net>
 ## Created: 2012-10-12
+## Updates
+## 2013-12-01 Style fixes, copyright string update
 
 function [ xls ] = __COM_spsh_close__ (xls)
 
@@ -60,7 +62,7 @@ function [ xls ] = __COM_spsh_close__ (xls)
       endif
       xls.app.Quit ();
       delete (xls.workbook);  ## This statement actually closes the workbook
-      delete (xls.app);     ## This statement actually closes down Excel
+      delete (xls.app);       ## This statement actually closes down Excel
     catch
       xls.app.Application.DisplayAlerts = 1;
     end_try_catch

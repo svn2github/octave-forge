@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Philip
+## Copyright (C) 2012,2013 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -16,11 +16,12 @@
 
 ## __COM_xlsopen.m__ - Internal function for opening an xls(x) file using COM/ActiveX
 
-## Author: Philip <Philip@DESKPRN>
+## Author: Philip Nienhuis <prnienhuis@users.sf.net>
 ## Created: 2012-10-07
 ## Updates (possibly from xlsopen):
 ## 2010-11-01 Added <COM>.Application.DisplayAlerts=0 in COM section to avoid Excel pop-ups
 ## 2012-10-24 Style fixes
+## 2012-12-01 Copyright string updates
 
 function [ xls, xlssupport, lastintf ] = __COM_spsh_open__ (xls, xwrite, filename, xlssupport)
 

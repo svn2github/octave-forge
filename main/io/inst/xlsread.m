@@ -150,6 +150,7 @@
 ## 2013-09-27 Check for proper filename in input
 ## 2013-09-27 Proper spelling of input arg
 ## 2013-09-30 Header adapted to native OCT interface f xlsx
+## 2013-12-20 Style fixes
 
 function [ numarr, txtarr, rawarr, lims ] = xlsread (fn, wsh, datrange, reqintf=[])
 
@@ -177,7 +178,7 @@ function [ numarr, txtarr, rawarr, lims ] = xlsread (fn, wsh, datrange, reqintf=
 	endif
 
 	## A small gesture for Matlab compatibility. JExcelAPI supports BIFF5.
-	if (~isempty (reqintf) && ischar (reqintf) && strcmpi (reqintf, "BASIC")) 
+	if (! isempty (reqintf) && ischar (reqintf) && strcmpi (reqintf, "BASIC")) 
 		reqintf = {"JXL"}; 
 		printf ("(BASIC (BIFF5) support request translated to JXL)\n");
 	endif
@@ -186,33 +187,33 @@ function [ numarr, txtarr, rawarr, lims ] = xlsread (fn, wsh, datrange, reqintf=
 	## what interface to use. If none found, just return as xlsopen will complain enough
 
 	unwind_protect	# Needed to catch COM errors & able to close stray Excel invocations
-	## Get pointer array to Excel file
-	xls_ok = 0;
-	xls = xlsopen (fn, 0, reqintf);
-	if (~isempty (xls))
-		xls_ok = 1;
-	else
-		return
-	endif
+    ## Get pointer array to Excel file
+    xls_ok = 0;
+    xls = xlsopen (fn, 0, reqintf);
+    if (! isempty (xls))
+      xls_ok = 1;
+    else
+      return
+    endif
 
-	## Get data from Excel file & return handle
-	[rawarr, xls, rstatus] = xls2oct (xls, wsh, datrange);
+    ## Get data from Excel file & return handle
+    [rawarr, xls, rstatus] = xls2oct (xls, wsh, datrange);
 
-	## Save some results before xls is wiped
-	rawlimits = xls.limits;
-	xtype = xls.xtype;
+    ## Save some results before xls is wiped
+    rawlimits = xls.limits;
+    xtype = xls.xtype;
 
-	if (rstatus)
-		[numarr, txtarr, lims] = parsecell (rawarr, rawlimits);
-	else
-		rawarr = {}; numarr = []; txtarr = {};
-	endif
+    if (rstatus)
+      [numarr, txtarr, lims] = parsecell (rawarr, rawlimits);
+    else
+      rawarr = {}; numarr = []; txtarr = {};
+    endif
 
 	unwind_protect_cleanup	
-	## Close Excel file
-	if (xls_ok)
-    xls = xlsclose (xls);
-  endif
+    ## Close Excel file
+    if (xls_ok)
+      xls = xlsclose (xls);
+    endif
 
 	end_unwind_protect
 

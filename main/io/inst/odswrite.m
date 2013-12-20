@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <pr.nienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis <pr.nienhuis at users.sf.net>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -96,23 +96,24 @@
 ## 2010-03-07 Updated texinfo help text
 ## 2012-06-08 Tabs replaced by double space
 ## 2012-10-24 Style fixes
+## 2013-12-18 Copyright string updates, style fixes
 
 function [ rstatus ] = odswrite (filename, data, wsh=1, crange="", reqintf=[])
 
   ## Input validity checks
   if (nargin < 2)
     usage ("Insufficient arguments - see 'help odswrite'");
-  elseif (~ischar (filename) || isempty (findstr (".ods", tolower (filename))))
+  elseif (! ischar (filename) || isempty (findstr (".ods", tolower (filename))))
     error ("First argument must be a filename (incl. .ods suffix for OTK & JOD)");
   endif
 
   ods = odsopen (filename, 1, reqintf);
 
-  if (~isempty (ods)) 
+  if (! isempty (ods)) 
     [ods, rstatus] = oct2ods (data, ods, wsh, crange);
 
     ## If rstatus was not OK, reset change indicator in ods pointer
-    if (~rstatus)
+    if (! rstatus)
       ods.changed = rstatus;
       warning ("odswrite: data transfer errors, file not rewritten");
     endif

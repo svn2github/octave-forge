@@ -89,10 +89,11 @@
 ## 2012-10-12 Moved all interface-specific code into ./private subfuncs
 ## 2012-10-24 Style fixes
 ## 2013-10-01 OCT interface added for gnumeric
+## 2013-12-01 Style fixes & support for more file types than just Excel
 
 function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 
-  persistent str2; str2 = "                                 "; # 33 spaces
+  persistent str2; str2 = "                                 "; ## 33 spaces
   persistent lstr2; lstr2 = length (str2);
 
   xls = xlsopen (filename, 0, reqintf);
@@ -100,8 +101,18 @@ function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 
   toscreen = nargout < 1;
 
-  ## If any valid xls-pointer struct has been returned, it must be a valid Excel spreadsheet
-  filetype = "Microsoft Excel Spreadsheet"; 
+  ## If any valid xls-pointer struct has been returned, it must be a valid
+  ## spreadsheet. Find out what format
+  [~, ~, ext] = fileparts (xls.filename); 
+  switch ext
+    case {"xls", "xlsx", "xlsm", "xlsb"}
+      filetype = "Microsoft Excel Spreadsheet";
+    case "ods"
+      filetype = "OpenOffice.org Calc spreadsheet";
+    case "gnumeric"
+      filetype = "Gnumeric spreadsheet";
+    otherwise
+  endswitch
   fformat = "";
 
   if (strcmp (xls.xtype, "COM"))

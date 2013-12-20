@@ -1,4 +1,4 @@
-## Copyright (C) 2013 Philip Nienhuis <prnienhuis@users.sf.net>
+## Copyright (C) 2013 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -16,25 +16,38 @@
 
 ## __chk_java_sprt__ Internal io package function
 
-## Author: Philip <Philip@DESKPRN>
+## Author: Philip Nienhuis <prnienhuis@users.sf.net>
 ## Created: 2013-03-01
 ## 2013-11-05 Provide default values for jcp & tmp1
+## 2013-12-20 Copyright string updates
+##     ''     dbug info argument added (for chk_spreadsheet_support)
 
-function [ tmp1, jcp ] = __chk_java_sprt__ ()
+function [ tmp1, jcp ] = __chk_java_sprt__ (dbug=0)
 
   jcp = {};
   tmp1 = 0;
   try
     jcp = javaclasspath ("-all");          # For java pkg >= 1.2.8
     if (isempty (jcp)), jcp = javaclasspath; endif  # For java pkg <  1.2.8
-    ## If we get here, at least Java works. Now check for proper version (>= 1.6)
+    ## If we get here, at least Java works. 
+    if (dbug > 1)
+      printf ("Java seems to work OK.\n");
+    endif
+    ## Now check for proper version (>= 1.6)
     jver = ...
       char (java_invoke ('java.lang.System', 'getProperty', 'java.version'));
     cjver = strsplit (jver, ".");
     if (sscanf (cjver{2}, "%d") < 6)
       warning ...
         ("\nJava version too old - you need at least Java 6 (v. 1.6.x.x)\n");
+      if (dbug)
+        printf ('    At Octave prompt, try "!system ("java -version")"');
+      endif
       return
+    else
+      if (dbug > 2)
+        printf ("  Java (version %s) seems OK.\n", jver);
+      endif
     endif
     ## Now check for proper entries in class path. Under *nix the classpath
     ## must first be split up. In java 1.2.8+ javaclasspath is already a cell array
@@ -44,6 +57,9 @@ function [ tmp1, jcp ] = __chk_java_sprt__ ()
     tmp1 = 1;
   catch
     ## No Java support
+    if (dbug)
+      printf ("No Java support found.\n");
+    endif
   end_try_catch
 
 endfunction

@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -95,7 +95,7 @@
 ##
 ## @end deftypefn
 
-## Author: Philip Nienhuis
+## Author: Philip Nienhuis <prnienhuis at users.sf.net>
 ## Created: 2009-10-16
 ## Updates:
 ## 2010-01-04 (Adapted range capacity checks to OOXML)
@@ -111,6 +111,8 @@
 ## 2012-12-23 Fix rare occasion of xlsclose error in unwind_protect block
 ## 2012-04-17 Fix checks on xls or xls? suffix (due to Vermylen)
 ## 2012-04-21 Improve xls/xlsx suffix check
+## 2013-12-07 Updated copyright string
+##     ''     Check on empty file ptr struct after calling xlsopen
 
 function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
 
@@ -119,7 +121,7 @@ function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
   ## Sanity checks
   if (nargin < 2)
     usage ("Insufficient arguments - see 'help xlswrite'");
-  elseif (~ischar (filename))
+  elseif (! ischar (filename))
     error ("First argument must be a filename (incl. suffix)");
   elseif (nargin == 2)
     ## Assume first worksheet and full worksheet starting at A1
@@ -170,9 +172,11 @@ function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
   unwind_protect          ## Needed to be sure Excel can be closed i.c.o. errors
     xls_ok = 0;
     xls = xlsopen (filename, 1, reqintf);
-    xls_ok = 1;
+    if (! isempty (xls))
+      xls_ok = 1;
 
-    [xls, rstatus] = oct2xls (arr(1:nr, 1:nc), xls, wsh, topleft);
+      [xls, rstatus] = oct2xls (arr(1:nr, 1:nc), xls, wsh, topleft);
+    endif
 
   unwind_protect_cleanup
     if (xls_ok && ! isempty (xls))

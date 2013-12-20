@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2012,2013 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -20,10 +20,11 @@
 ## Created: 2012-10-07
 ## Updates:
 ## 2012-10-24 Style fixes
+## 2013-12-06 Updated copyright string; style fixes
 
 function [ xls, xlssupport, lastintf ] = __OXS_spsh_open__ (xls, xwrite, filename, xlssupport, chk1)
 
-    if (~chk1)
+    if (! chk1)
       error ("OXS can only read from .xls files")
     endif
     try

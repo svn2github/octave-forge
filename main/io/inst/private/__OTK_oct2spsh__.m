@@ -1,4 +1,4 @@
-## Copyright (C) 2010,2011,2012 Philip Nienhuis <prnienhuis _at- users.sf.net>
+## Copyright (C) 2010,2011,2012,2013 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -36,6 +36,7 @@
 ## 2011-03-23 First try of odfdom 0.8.7
 ## 2012-06-08 Support for odfdom-incubator-0.8.8
 ## 2012-10-12 Renamed & moved into ./private
+## 2013-12-01 Style fixes, copyright string updates
 
 function [ ods, rstatus ] = __OTK_oct2spsh__ (c_arr, ods, wsh, crange, spsh_opts)
 
@@ -66,19 +67,25 @@ function [ ods, rstatus ] = __OTK_oct2spsh__ (c_arr, ods, wsh, crange, spsh_opts
   sheets = ods.app.getTableList();
   nr_of_sheets = sheets.size ();
   ## Check user input & find sheet pointer
-  if (~isnumeric (wsh))
+  if (! isnumeric (wsh))
     try
       sh = ods.app.getTableByName (wsh);
       ## We do need a sheet index number...
       ii = 0;
       while (ischar (wsh) && ii < nr_of_sheets) 
         sh_nm = sh.getTableName ();
-        if (strcmp (sh_nm, wsh)) wsh = ii + 1; else ++ii; endif
+        if (strcmp (sh_nm, wsh))
+          wsh = ii + 1;
+        else
+          ++ii;
+        endif
       endwhile
     catch
       newsh = 1;
     end_try_catch
-    if isempty (sh) newsh = 1; endif
+    if (isempty (sh))
+      newsh = 1;
+    endif
   elseif (wsh < 1)
     ## Negative sheet number:
     error (sprintf ("Illegal worksheet nr. %d\n", wsh));
@@ -100,7 +107,7 @@ function [ ods, rstatus ] = __OTK_oct2spsh__ (c_arr, ods, wsh, crange, spsh_opts
   
   ## Parse data array, setup typarr and throw out NaNs  to speed up writing;
   typearr = spsh_prstype (c_arr, nrows, ncols, ctype, spsh_opts);
-  if ~(spsh_opts.formulas_as_text)
+  if (! spsh_opts.formulas_as_text)
     ## Find formulas (designated by a string starting with "=" and ending in ")")
     fptr = cellfun (@(x) ischar (x) && strncmp (x, "=", 1) ...
                                     && strncmp (x(end:end), ")", 1), c_arr);
@@ -153,7 +160,7 @@ function [ ods, rstatus ] = __OTK_oct2spsh__ (c_arr, ods, wsh, crange, spsh_opts
   for ii=1:nrows
     for jj=1:ncols
       ocell = sh.getCellByPosition (jj+lcol-1, ii+trow-1);
-      if ~(isempty (ocell )) ## Might be spanned (merged), hidden, ....
+      if (! isempty (ocell )) ## Might be spanned (merged), hidden, ....
         ## Number, String, Boolean, Date, Time
         try
           switch typearr (ii, jj)

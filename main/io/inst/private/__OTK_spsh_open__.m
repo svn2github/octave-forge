@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Philip Nienhuis <prnienhuis@users.sf.net>
+## Copyright (C) 2012,2013 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -21,12 +21,13 @@
 ## Updates:
 ## 2012-10-24 Style fixes
 ## 2013-01-20 Adapted to ML-compatible Java calls
+## 2013-12-01 Copyright string updates
 
 function [ ods, odssupport, lastintf ] = __OTK_spsh_open__ (ods, rw, filename, odssupport)
 
     ## Parts after user gfterry in
     ## http://www.oooforum.org/forum/viewtopic.phtml?t=69060
-    
+
     ## Get odfdom version
     persistent odfvsn; odfvsn = [];
     if (isempty (odfvsn))

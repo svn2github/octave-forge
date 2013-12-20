@@ -1,4 +1,4 @@
-## Copyright (C) 2010,2011,2012 Philip Nienhuis, pr.nienhuis -at- users.sf.net
+## Copyright (C) 2010,2011,2012,2013 Philip Nienhuis 
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -15,7 +15,7 @@
 
 ## __OTK_getusedrange__ - get used range from ODS spreadsheet using ODF Toolkit
 
-## Author: Philip Nienhuis <philip@JVC741>
+## Author: Philip Nienhuis <prnienhuis -at- users.sf.net>
 ## Created: 2010-03-18 (First usable version)
 ## Updates:
 ## 2010-08-24 Support for odfdom (ODF Toolkit) 0.8.6 checked; we still need 
@@ -30,6 +30,7 @@
 ## 2012-06-08 Support for odsfdom-0.8.8-incubator
 ## 2012-10-12 Renamed & moved into ./private
 ## 2012-10-24 Style fixes
+## 2013-12-01 Style fixes, copyright string updates
 
 function [ trow, lrow, lcol, rcol ] = __OTK_getusedrange__ (ods, ii)
 
@@ -65,7 +66,7 @@ function [ trow, lrow, lcol, rcol ] = __OTK_getusedrange__ (ods, ii)
     if (findstr ("office:value-type", rw_char) || findstr ("<text:", rw_char))
       ++drows;
       ## Check for uppermost data row
-      if (~trow) 
+      if (! trow) 
         trow = nrows + 1;
         nrows = 0;
       else
@@ -87,7 +88,7 @@ function [ trow, lrow, lcol, rcol ] = __OTK_getusedrange__ (ods, ii)
       endif
 
       ## if rcol is already 1024 no more exploring for rightmost column is needed
-      if ~(rcol == 1024)
+      if (! (rcol == 1024))
         ## Get rightmost cell column number by counting....
         rc = 0;
         for kk=1:row.getLength()

@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Philip Nienhuis <prnienhuis@users.sf.net>
+## Copyright (C) 2012,2013 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 ## Updates:
 ## 2012-10-12 Moved into ./private
 ## 2012-10-24 Style fixes
-## 2013-09-11 For empty sheets echo "Empty" instead of empty range
+## 2013-12-01 Copyright string updates
 
 function [sh_names] = __OTK_spsh_info__ (ods)
 
@@ -47,8 +47,6 @@ function [sh_names] = __OTK_spsh_info__ (ods)
     if (tr)
       sh_names(ii, 2) = sprintf ("%s:%s", calccelladdress (tr, lc),... 
                         calccelladdress (lr, rc));
-    else
-      sh_names(ii, 2) = "Empty";
     endif
   endfor
 

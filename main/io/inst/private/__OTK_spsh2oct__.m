@@ -1,4 +1,4 @@
-## Copyright (C) 2010,2011,2012 Philip Nienhuis <prnienhuis@users.sf.net>
+## Copyright (C) 2010,2011,2012,2013 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -15,7 +15,7 @@
 
 ## __OTK_spsh2oct__: internal function for reading odf files using odfdom-0.8.6+
 
-## Author: Philip Nienhuis <Philip@DESKPRN>
+## Author: Philip Nienhuis <prnienhuis@users.sf.net>
 ## Created: 2010-08-24. First workable version Aug 27, 2010
 ## Updates:
 ## 2010-10-27 Moved cropping rawarr from empty outer rows & columns to caller
@@ -27,6 +27,7 @@
 ## 2012-10-24 Style fixes
 ## 2013-09-11 rstatus return arg added (nowhere used, but all other routines have it)
 ##     ''     Returned formulas cleaned up
+## 2013-12-01 Style fixes, copyright string updates
 
 function [ rawarr, ods, rstatus ] = __OTK_spsh2oct__ (ods, wsh, crange, spsh_opts)
 
@@ -41,7 +42,7 @@ function [ rawarr, ods, rstatus ] = __OTK_spsh2oct__ (ods, wsh, crange, spsh_opt
   nr_of_sheets = sheets.size ();
 
   ## Check user input & find sheet pointer (1-based)
-  if (~isnumeric (wsh))
+  if (! isnumeric (wsh))
     try
       sh = ods.app.getTableByName (wsh);
       sh_err = isempty (sh);
@@ -60,10 +61,10 @@ function [ rawarr, ods, rstatus ] = __OTK_spsh2oct__ (ods, wsh, crange, spsh_opt
 
   ## Either parse (given cell range) or prepare (unknown range) help variables 
   if (isempty (crange))
-    if ~isnumeric (wsh)
+    if (! isnumeric (wsh))
       ## Get sheet index
       jj = nr_of_sheets;
-      while jj-- >= 0
+      while (jj-- >= 0)
         if (strcmp (wsh, sheets.get(jj).getTableName()) == 1)
           wsh = jj +1;
           jj = -1;
@@ -94,16 +95,16 @@ function [ rawarr, ods, rstatus ] = __OTK_spsh2oct__ (ods, wsh, crange, spsh_opt
     row = sh.getRowByIndex (ii-1);
     for jj=lcol:ncols+lcol-1;
       ocell = row.getCellByIndex (jj-1);
-      if ~isempty (ocell)
+      if (! isempty (ocell))
         otype = deblank (tolower (ocell.getValueType ()));
          if (spsh_opts.formulas_as_text)
-          if ~isempty (ocell.getFormula ())
+          if (! isempty (ocell.getFormula ()))
             otype = "formula";
           endif
         endif
 ##        ## Provisions for catching jOpenDocument 1.2b bug where text cells
 ##        ## haven't been assigned an <office:value-type='string'> attribute
-##        if (~isempty (ocell))
+##        if (! isempty (ocell))
 ##          if (findstr ("<text:", char (ocell.getOdfElement ())))
 ##            otype = "string"; 
 ##          endif

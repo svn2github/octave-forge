@@ -21,6 +21,7 @@
 ## 2013-11-05 Provide default values for jcp & tmp1
 ## 2013-12-20 Copyright string updates
 ##     ''     dbug info argument added (for chk_spreadsheet_support)
+##     ''     java_invoke -> javaMethod
 
 function [ tmp1, jcp ] = __chk_java_sprt__ (dbug=0)
 
@@ -35,7 +36,7 @@ function [ tmp1, jcp ] = __chk_java_sprt__ (dbug=0)
     endif
     ## Now check for proper version (>= 1.6)
     jver = ...
-      char (java_invoke ('java.lang.System', 'getProperty', 'java.version'));
+      char (javaMethod ("getProperty", "java.lang.System", "java.version"));
     cjver = strsplit (jver, ".");
     if (sscanf (cjver{2}, "%d") < 6)
       warning ...

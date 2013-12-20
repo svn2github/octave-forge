@@ -74,6 +74,7 @@
 ## 2013-09-11 Check Java again when requesting a specific Java interface
 ## 2013-09-29 Treat OCT as any other interface
 ## 2013-12-06 Updated copyright strings; style fixes
+## 2013-12-20 java_invoke -> javaMethod
 
 function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 
@@ -139,10 +140,10 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
       try
         ## New in 0.8.6
         odfvsn = ...
-          java_invoke ("org.odftoolkit.odfdom.JarManifest", "getOdfdomVersion");
+          javaMethod ("getOdfdomVersion", "org.odftoolkit.odfdom.JarManifest");
       catch
         odfvsn = ...
-          java_invoke ("org.odftoolkit.odfdom.Version", "getApplicationVersion");
+          javaMethod ("getApplicationVersion", "org.odftoolkit.odfdom.Version");
       end_try_catch
       ## For odfdom-incubator (= 0.8.8+), strip extra info
       odfvsn = regexp (odfvsn, '\d\.\d\.\d', "match"){1};

@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -34,7 +34,7 @@
 ##
 ## @end deftypefn
 
-## Author: Philip Nienhuis
+## Author: Philip Nienhuis <prnienhuis at users.sf.net>
 ## Created: 2009-11-23
 ## Updates: 
 ## 2010-01-11 Fall back to cached values when formula evaluator fails
@@ -50,6 +50,7 @@
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-10-12 Renamed & moved into ./private
 ## 2012-10-24 Style fixes
+## 2013-12-06 Updated copyright strings; style fixes
 
 function [ rawarr, xls, rstatus ] = __POI_spsh2oct__ (xls, wsh, cellrange, spsh_opts)
 
@@ -118,16 +119,16 @@ function [ rawarr, xls, rstatus ] = __POI_spsh2oct__ (xls, wsh, cellrange, spsh_
   rawarr = cell (nrows, ncols);               ## create placeholder
   for ii = firstrow:lastrow
     irow = sh.getRow (ii-1);
-    if ~isempty (irow)
-      scol = (irow.getFirstCellNum).intValue ();
-      ecol = (irow.getLastCellNum).intValue () - 1;
+    if (! isempty (irow))
+      scol = irow.getFirstCellNum;
+      ecol = irow.getLastCellNum - 1;
       for jj = lcol:rcol
         scell = irow.getCell (jj-1);
-        if ~isempty (scell)
+        if (! isempty (scell))
           ## Explore cell contents
           type_of_cell = scell.getCellType ();
           if (type_of_cell == ctype(3))       ## Formula
-            if ~(spsh_opts.formulas_as_text)
+            if (! spsh_opts.formulas_as_text)
               try    
                 ## Because not al Excel formulas have been implemented in POI
                 cvalue = frm_eval.evaluate (scell);

@@ -1,4 +1,4 @@
-## Copyright (C) 2010,2011,2012 ,2013 Philip Nienhuis
+## Copyright (C) 2010,2011,2012,2013 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -21,6 +21,7 @@
 ## 2012-10-12 Renamed & moved into ./private
 ## 2012-10-24 Style fixes
 ## 2013-09-23 Check getFirstCellNum method return value for empty rows
+## 2013-12-06 Style fixes
 
 function [ trow, brow, lcol, rcol ] = __POI_getusedrange__ (xls, ii)
 
@@ -37,16 +38,16 @@ function [ trow, brow, lcol, rcol ] = __POI_getusedrange__ (xls, ii)
   botrow = brow;
   for jj=trow:brow
     irow = sh.getRow (jj);
-    if (~isempty (irow))
-      scol = (irow.getFirstCellNum).intValue ();
+    if (! isempty (irow))
+      scol = irow.getFirstCellNum;
       ## If getFirstCellNum < 0, row is empty
       if (scol >= 1)
         lcol = min (lcol, scol);
-        ecol = (irow.getLastCellNum).intValue () - 1;
+        ecol = irow.getLastCellNum - 1;
         rcol = max (rcol, ecol);
         ## Keep track of lowermost non-empty row as getLastRowNum() is unreliable
-        if   ~(irow.getCell(scol).getCellType () == cblnk ...
-            && irow.getCell(ecol).getCellType () == cblnk)
+        if  (! (irow.getCell(scol).getCellType () == cblnk ...
+            && irow.getCell(ecol).getCellType () == cblnk))
           botrow = jj;
         endif
       endif
@@ -56,7 +57,11 @@ function [ trow, brow, lcol, rcol ] = __POI_getusedrange__ (xls, ii)
     ## Empty sheet
     trow = 0; brow = 0; lcol = 0; rcol = 0;
   else
-    brow = min (brow, botrow) + 1; ++trow; ++lcol; ++rcol;   ## 1-based retvals
+    ## 1-based retvals
+    brow = min (brow, botrow) + 1; 
+    ++trow; 
+    ++lcol; 
+    ++rcol;
   endif
 
 endfunction

@@ -22,11 +22,10 @@
 ## and optionally add Java class libs for spreadsheet support.
 ##
 ## chk_spreadsheet_support first checks ActiveX (native MS-Excel); then
-## Java JRE presence, then Java support (builtin) or added tru octave-forge
-## Java package (Octave); then checks existing javaclasspath for Java class
-## libraries (.jar files) needed for various Java-based spreadsheet I/O
-## interfaces. If requested chk_spreadsheet_support will try to add the relevant
-## Java class libs to the dynamic javaclasspath.
+## Java JRE presence, then Java support (builtin); then checks existing
+## javaclasspath for Java class libraries (.jar files) needed for various
+## Java-based spreadsheet I/O interfaces. If requested chk_spreadsheet_support
+## will try to add the relevant Java class libs to the dynamic javaclasspath.
 ##
 ## @var{path_to_jars} - relative or absolute path name to subdirectory
 ## containing these classes. TAKE NOTICE: /forward/ slashes are needed!
@@ -62,7 +61,7 @@
 ## @noindent
 ## @end table
 ##
-## @var{path_to_ooo} - installation directory of Openffice.org (again with
+## @var{path_to_ooo} - installation directory of OpenOffice.org (again with
 ## /forward/ slashes). Usually that is something like (but no guarantees):
 ## @table @asis
 ## - Windows: C:/Program Files/OpenOffice.org
@@ -148,6 +147,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 ## 2013-08-20 Allow subdir searches for Java class libs
 ## 2013-09-01 Adapt recursive file search proc name (now rfsearch.m)
 ## 2013-12-14 Texinfo header updated to OCT
+## 2013-12-20 More Texinfo header improvements
 
   jcp = []; retval = 0;
   if (nargin < 3)
@@ -224,7 +224,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
       printf ("  2. Checking Octave Java support... ");
     endif
   endif
-  ## Check Java package (older) or core Java support (newer Octave)
+  ## Check core Java support (newer Octave)
   try
     ## The following stanza is meant for older Octave w/o built-in Java
     if (compare_versions (OCTAVE_VERSION, "3.7.2", "<"))
@@ -259,52 +259,36 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
     endif
 
     ## OK sufficient info to give it a try
-    jcp = javaclasspath ("-all");
-    ## If we get here (=past above statement), at least Java works.
+    [tmp1, jcp] = __chk_java_sprt__ (dbug);
 
-    if (dbug > 1)
-      printf ("Java seems to work OK.\n");
-    endif
-    ## Now check for proper version (> 1.6.x.x)
-    jver = char (javaMethod ("getProperty", "java.lang.System", "java.version"));
-    cjver = strsplit (jver, ".");
-    if (sscanf (cjver{2}, "%d") < 6)
+    if (tmp1)
+      if (dbug > 1)
+        ## Check JVM virtual memory settings
+        jrt = javaMethod ("getRuntime", "java.lang.Runtime");
+        jmem = jrt.maxMemory ();
+        ## Some Java versions return jmem as octave_value => convert to double
+        if (! isnumeric (jmem))
+          jmem = jmem.doubleValue();
+        endif
+        jmem = int16 (jmem/1024/1024);
+        printf ("  Maximum JVM memory: %5d MiB; ", jmem);
+        if (jmem < 400)
+          printf ("should better be at least 400 MB!\n");
+          printf ('    Hint: adapt setting -Xmx in file "java.opts" (supposed to be here:)\n');
+          printf ("    %s\n", [matlabroot filesep "share" filesep "octave" filesep "packages" filesep "java-<version>" filesep "java.opts"]);
+        else
+          printf ("sufficient.\n");
+        endif
+      endif
       if (dbug)
-        printf ("  Java version (%s) too old - you need at least Java 6 (v. 1.6.x.x)\n", jver);
-        warning ('    At Octave prompt, try "!system ("java -version")"'); 
+        printf ("Java support OK\n");
       endif
-      return
-    else
-      if (dbug > 2)
-        printf ("  Java (version %s) seems OK.\n", jver);
-      endif
-    endif
-    ## Under *nix the classpath must first be split up.
-    if (isunix && ! iscell (jcp))
-      jcp = strsplit (char (jcp), ":");
-    endif
-    if (dbug > 1)
-      ## Check JVM virtual memory settings
-      jrt = javaMethod ("getRuntime", "java.lang.Runtime");
-      jmem = jrt.maxMemory ()
-      ## Some Java versions return jmem as octave_value => convert to double
-      if (! isnumeric (jmem))
-        jmem = jmem.doubleValue();
-      endif
-      jmem = int16 (jmem/1024/1024);
-      printf ("  Maximum JVM memory: %5d MiB; ", jmem);
-      if (jmem < 400)
-        printf ("should better be at least 400 MB!\n");
-        printf ('    Hint: adapt setting -Xmx in file "java.opts" (supposed to be here:)\n');
-        printf ("    %s\n", [matlabroot filesep "share" filesep "octave" filesep "packages" filesep "java-<version>" filesep "java.opts"]);
-      else
-        printf ("sufficient.\n");
-      endif
-    endif
-    if (dbug)
-      printf ("Java support OK\n");
     endif
   catch
+    ## No Java support
+  end_try_catch
+  if (! tmp1)
+    ## We can return as for below code Java is required.
     if (dbug)
       printf ("No Java support found.\n");
       if (! retval)
@@ -312,7 +296,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
       endif
     endif
     return
-  end_try_catch
+  endif
 
   if (dbug)
     printf ("\nChecking javaclasspath for .jar class libraries needed for spreadsheet I/O...:\n");

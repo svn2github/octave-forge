@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <pr.nienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -87,7 +87,7 @@
 ##
 ## @end deftypefn
 
-## Author: Philip Nienhuis
+## Author: Philip Nienhuis <pr.nienhuis at users.sf.net>
 ## Created: 2009-12-13
 ## Updates:
 ## 2010-01-15 Updated texinfo header
@@ -120,12 +120,15 @@
 ## 2012-10-12 Moved all interface-specific subfubcs into ./private
 ## 2012-10-24 Style fixes
 ## 2012-12-18 Improved error/warning messages
+## 2013-12-18 Copyright string updates, style fixes
 ##
 ## Latest subfunc update: 2012-10-12
 
 function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange="", spsh_opts=[])
 
-  if (nargin < 2) error ("oct2xls needs a minimum of 2 arguments."); endif
+  if (nargin < 2)
+    error ("oct2xls needs a minimum of 2 arguments.");
+  endif
   
   ## Check if input array is cell
   if (isempty (c_arr))
@@ -145,8 +148,8 @@ function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange="", spsh_opts=[])
   endif
 
   ## Check ods file pointer struct
-  test1 = ~isfield (ods, "xtype");
-  test1 = test1 || ~isfield (ods, "workbook");
+  test1 = ! isfield (ods, "xtype");
+  test1 = test1 || ! isfield (ods, "workbook");
   test1 = test1 || isempty (ods.workbook);
   test1 = test1 || isempty (ods.app);
   if test1
@@ -154,12 +157,12 @@ function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange="", spsh_opts=[])
   endif
 
   ## Check worksheet ptr
-  if (~(ischar (wsh) || isnumeric (wsh)))
+  if (! (ischar (wsh) || isnumeric (wsh)))
     error ("oct2ods: integer (index) or text (wsh name) expected for arg # 3");
   endif
 
   ## Check range
-  if (~isempty (crange) && ~ischar (crange))
+  if (! isempty (crange) && ! ischar (crange))
     error ("oct2ods: character string (range) expected for arg # 4");
   elseif (isempty (crange))
     crange = "";
@@ -170,7 +173,7 @@ function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange="", spsh_opts=[])
     spsh_opts.formulas_as_text = 0;
     ## other options to be implemented here
   elseif (isstruct (spsh_opts))
-    if (~isfield (spsh_opts, "formulas_as_text"))
+    if (! isfield (spsh_opts, "formulas_as_text"))
       spsh_opts.formulas_as_text = 0; 
     endif
     ## other options to be implemented here:

@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2011 Philip Nienhuis <pr.nienhuis at users.sf.net>
+## Copyright (C) 2009,2010.2011,2012,2013 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -17,14 +17,17 @@
 ## into nr of rows and nr of columns and also extract top left
 ## cell address + top row + left column. Some error checks are implemented.
 
-## Author: Philip Nienhuis
+## Author: Philip Nienhuis <pr.nienhuis at users.sf.net>
 ## Created: 2009-06-20
 ## Latest update 2010-01-13
+## 2013-12-06 Updated copyright strings; style fixes
 
 function [topleft, nrows, ncols, toprow, lcol] = parse_sp_range (range_org)
 
   range = deblank (upper (range_org));
-  range_error = 0; nrows = 0; ncols = 0;
+  range_error = 0; 
+  nrows = 0; 
+  ncols = 0;
 
   # Basic checks
   if (index (range, ':') == 0)
@@ -44,18 +47,18 @@ function [topleft, nrows, ncols, toprow, lcol] = parse_sp_range (range_org)
 
   # Get toprow and clean up left column
   [st, en] = regexp (topleft, '\d+');
-  toprow = str2num (topleft(st:en));
+  toprow = str2double (topleft(st:en));
   leftcol = deblank (topleft(1:st-1));
   [st, en1] = regexp (leftcol, '\s+');
   if (isempty (en1)) 
-    en1=0  ; 
+    en1 = 0 ; 
   endif
   [st, en2] = regexp (leftcol,'\D+');
   leftcol = leftcol(en1+1:en2);
 
   # Get bottom row and clean up right column
   [st, en] = regexp (lowerright, '\d+');
-  bottomrow = str2num (lowerright(st:en));
+  bottomrow = str2double (lowerright(st:en));
   rightcol = deblank (lowerright(2:st-1));
   [st, en1] = regexp (rightcol, '\s+');
   if (isempty (en1)) 
@@ -93,7 +96,8 @@ function [topleft, nrows, ncols, toprow, lcol] = parse_sp_range (range_org)
   endif
 
   if (range_error > 0) 
-    ncols = 0; nrows = 0;
+    ncols = 0; 
+    nrows = 0;
     error ("Spreadsheet range error!");
   endif
   
@@ -104,15 +108,15 @@ endfunction
 ##%!test
 ##%! [a b c d e] = parse_sp_range ('A1:B2');
 ##%! assert ([a b c d e], ['A1', 2, 2, 1, 1]);
-##
+
 ##%!test
 ##%! [a b c d e] = parse_sp_range ('A1:AB200');
 ##%! assert ([a b c d e], ['A1', 200, 28, 1, 1]);
-##
+
 ##%!test
 ##%! [a b c d e] = parse_sp_range ('cd230:iY65536');
 ##%! assert ([a b c d e], ['CD230', 65307, 178, 230, 82]);
-##
+
 ##%!test
 ##%! [a b c d e] = parse_sp_range ('BvV12798 : xFd1054786');
 ##%! assert ([b c d e], [1041989, 14439, 12798, 1946]);

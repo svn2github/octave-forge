@@ -1,4 +1,4 @@
-## Copyright (C) 2010,2011,2012,2013 Philip Nienhuis <pr.nienhuis@users.sf.net>
+## Copyright (C) 2010,2011,2012,2013 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -52,7 +52,7 @@
 ##
 ## @end deftypefn
 
-## Author: Philip Nienhuis <philip@JVC741>
+## Author: Philip Nienhuis <pr.nienhuis@users.sf.net>
 ## Created: 2010-03-18 (First usable version) for ODS (java/OTK)
 ## Updates:
 ## 2010-03-20 Added Excel support (Java/POI)
@@ -72,6 +72,7 @@
 ## 2012-10-23 Added UNO to error message
 ##     ''     Style fixes
 ## 2013-09-08 Added OCT (native ods & xlsx) interface
+## 2013-12-06 Updated copyright strings
 
 function [ trow, lrow, lcol, rcol ] = getusedrange (spptr, ii)
 

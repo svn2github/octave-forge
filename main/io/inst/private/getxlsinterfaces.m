@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@
 ##   xlsinterfaces = getxlsinterfaces (xlsinterfaces);
 ## @end example
 
-## Author: Philip Nienhuis
+## Author: Philip Nienhuis <prnienhuis at users.sf.net>
 ## Created: 2009-11-29
 ## Last updates: 
 ## 2009-12-27 Make sure proper dimensions are checked in parsed javaclasspath
@@ -65,16 +65,20 @@
 ## 2012-10-07 Moved common classpath entry code to private function
 ## 2012-10-24 Style fixes
 ## 2012-12-18 POI 3.9 support (either xbeans.jar or xmlbeans.jar), see chk_jar_entries.m
+## 2013-01-20 Adapted to ML-compatible Java calls
 ## 2013-03-01 active -> default interface
 ##     ''     Moved check for Java support to separate file in private/
 ##     ''     Fixed javaclasspath info resync in case of requested interfaces
 ## 2013-07-18 Add Fedora naming scheme to POI jar entries (official ones are symlinks)
 ## 2013-09-30 Native Octave interface ("OCT") for reading
+## 2013-12-06 Updated copyright strings; style fixes
 
 function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 
   ## tmp1 = [] (not initialized), 0 (No Java detected), or 1 (Working Java found)
-  persistent tmp1 = []; persistent tmp2 = []; persistent jcp;  ## Java class path
+  persistent tmp1 = []; 
+  persistent tmp2 = []; 
+  persistent jcp;                                     ## Java class path
   persistent uno_1st_time = 0;
 
   if  (isempty (xlsinterfaces.COM) && isempty (xlsinterfaces.POI) ...
@@ -87,14 +91,17 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
        || isempty (xlsinterfaces.JXL) || isempty (xlsinterfaces.OXS) ...
        || isempty (xlsinterfaces.UNO))
     ## Can't be first call. Here one of the Java interfaces is requested
-    if (~tmp1)
+    if (! tmp1)
       ## Check Java support again
       tmp1 = [];
     else
       ## Renew jcp (javaclasspath) as it may have been updated since last call
-      jcp = javaclasspath ("-all");                   # For java pkg >= 1.2.8
-      if (isempty (jcp)); jcp = javaclasspath; endif  # For java pkg <  1.2.8
-      if (isunix && ~iscell (jcp));
+      jcp = javaclasspath ("-all");                   ## For java pkg >= 1.2.8
+      if (isempty (jcp))
+        ## For java pkg <  1.2.8
+        jcp = javaclasspath;
+      endif
+      if (isunix && ! iscell (jcp));
         jcp = strsplit (char (jcp), pathsep ()); 
       endif
     endif
@@ -104,25 +111,28 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
   ## Check if MS-Excel COM ActiveX server runs (only on Windows!)
   if (ispc && isempty (xlsinterfaces.COM))
     xlsinterfaces.COM = 0;
-    if (ispc)
-      try
-        app = actxserver ("Excel.application");
-        ## If we get here, the call succeeded & COM works.
-        xlsinterfaces.COM = 1;
-        ## Close Excel. Yep this is inefficient when we need only one r/w action,
-        ## but it quickly pays off when we need to do more with the same file
-        ## (+, MS-Excel code is in OS cache anyway after this call so no big deal)
-        app.Quit();
-        delete(app);
-        printf ("COM");
-        if (deflt), printf ("; "); else, printf ("*; "); deflt = 1; endif
-      catch
-        ## COM non-existent. Only print message if COM is explicitly requested (tmp1==[])
-        if (~isempty (tmp1))
-          printf ("ActiveX not working; no Excel installed?\n"); 
-        endif
-      end_try_catch
-    endif
+    try
+      app = actxserver ("Excel.application");
+      ## If we get here, the call succeeded & COM works.
+      xlsinterfaces.COM = 1;
+      ## Close Excel. Yep this is inefficient when we need only one r/w action,
+      ## but it quickly pays off when we need to do more with the same file
+      ## (+, MS-Excel code is in OS cache anyway after this call so no big deal)
+      app.Quit();
+      delete (app);
+      printf ("COM");
+      if (deflt)
+        printf ("; ");
+      else
+        printf ("*; ");
+        deflt = 1;
+      endif
+    catch
+      ## COM non-existent. Only print message if COM is explicitly requested (tmp1==[])
+      if (! isempty (tmp1))
+        printf ("ActiveX not working; no Excel installed?\n"); 
+      endif
+    end_try_catch
   endif
 
   if (isempty (tmp1))
@@ -161,9 +171,16 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
     endif
     ## Check OOXML support
     entries = {{"xbean", "xmlbean"}, {"apache-poi-ooxml-schemas", "poi-ooxml-schemas"}, "dom4j"};
-    if (chk_jar_entries (jcp, entries) >= numel (entries)), printf (" (& OOXML)"); endif
+    if (chk_jar_entries (jcp, entries) >= numel (entries))
+      printf (" (& OOXML)");
+    endif
     if (xlsinterfaces.POI)
-      if (deflt), printf ("; "); else, printf ("*; "); deflt = 1; endif
+      if (deflt)
+        printf ("; ");
+      else
+        printf ("*; ");
+        deflt = 1; 
+      endif
     endif
   endif
 
@@ -174,7 +191,12 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
     if (chk_jar_entries (jcp, entries) >= numel (entries))
       xlsinterfaces.JXL = 1;
       printf ("JXL");
-      if (deflt), printf ("; "); else, printf ("*; "); deflt = 1; endif
+      if (deflt)
+        printf ("; "); 
+      else
+        printf ("*; "); 
+        deflt = 1; 
+      endif
     endif
   endif
 
@@ -185,7 +207,12 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
     if (chk_jar_entries (jcp, entries) >= numel (entries))
       xlsinterfaces.OXS = 1;
       printf ("OXS");
-      if (deflt), printf ("; "); else, printf ("*; "); deflt = 1; endif
+      if (deflt)
+        printf ("; "); 
+      else 
+        printf ("*; "); 
+        deflt = 1; 
+      endif
     endif
   endif
 
@@ -222,7 +249,9 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 
   ## ---- Other interfaces here, similar to the ones above
 
-  if (deflt), printf ("(* = default interface)\n"); endif
+  if (deflt)
+    printf ("(* = default interface)\n"); 
+  endif
 
   ## FIXME the below stanza should be dropped once UNO is stable.
   # Echo a suitable warning about experimental status:

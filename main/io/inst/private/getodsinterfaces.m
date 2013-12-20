@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 ##   odsinterfaces = getodsinterfaces (odsinterfaces);
 ## @end example
 
-## Author: Philip Nienhuis
+## Author: Philip Nienhuis <prnienhuis at users.sf.net>
 ## Created: 2009-12-27
 ## Updates:
 ## 2010-01-14 (yeah what was it...>
@@ -73,11 +73,13 @@
 ## 2013-09-09 Native Octave interface ("OCT")for reading
 ## 2013-09-11 Check Java again when requesting a specific Java interface
 ## 2013-09-29 Treat OCT as any other interface
+## 2013-12-06 Updated copyright strings; style fixes
 
 function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 
   ## tmp1 = [] (not initialized), 0 (No Java detected), or 1 (Working Java found)
-  persistent tmp1 = []; persistent jcp;  # Java class path
+  persistent tmp1 = []; 
+  persistent jcp;  # Java class path
   persistent uno_1st_time = 0;
 
   if (isempty (odsinterfaces.OTK) && isempty (odsinterfaces.JOD) ...
@@ -93,9 +95,9 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
       tmp1 = [];
     else
       ## Renew jcp (javaclasspath) as it may have been updated since last call
-      jcp = javaclasspath ("-all");                   # For java pkg >= 1.2.8
-      if (isempty (jcp)); jcp = javaclasspath; endif  # For java pkg <  1.2.8
-      if (isunix && ~iscell (jcp));
+      jcp = javaclasspath ("-all");                   ## For java pkg >= 1.2.8
+      if (isempty (jcp)); jcp = javaclasspath; endif  ## For java pkg <  1.2.8
+      if (isunix && ! iscell (jcp));
         jcp = strsplit (char (jcp), pathsep ()); 
       endif
       endif
@@ -144,8 +146,8 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
       end_try_catch
       ## For odfdom-incubator (= 0.8.8+), strip extra info
       odfvsn = regexp (odfvsn, '\d\.\d\.\d', "match"){1};
-      if  ~(strcmp (odfvsn, "0.7.5") || strcmp (odfvsn, "0.8.6") ...
-         || strcmp (odfvsn, "0.8.7") || strfind (odfvsn, "0.8.8"))
+      if  (! (strcmp (odfvsn, "0.7.5") || strcmp (odfvsn, "0.8.6") ...
+         || strcmp (odfvsn, "0.8.7") || strfind (odfvsn, "0.8.8")))
         warning ("\nodfdom version %s is not supported - use v. 0.8.6, 0.8.7 or 0.8.8\n", odfvsn);
       else
         if (strcmp (odfvsn, "0.7.5"))
@@ -154,7 +156,12 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
         endif
         odsinterfaces.OTK = 1;
         printf ("OTK");
-        if (deflt), printf ("; "); else, printf ("*; "); deflt = 1; endif
+        if (deflt)
+          printf ("; ");
+        else 
+          printf ("*; ");
+          deflt = 1;
+        endif
       endif
       odsinterfaces.odfvsn = odfvsn;
     else
@@ -169,7 +176,12 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
     if (chk_jar_entries (jcp, entries) >= numel (entries))
       odsinterfaces.JOD = 1;
       printf ("JOD");
-      if (deflt), printf ("; "); else, printf ("*; "); deflt = 1; endif
+      if (deflt)
+        printf ("; ");
+      else
+        printf ("*; ");
+        deflt = 1;
+      endif
     else
       warning ("\nNot all required classes (.jar) in classpath for JOD");
     endif
@@ -210,7 +222,9 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
   
   ## ---- Other interfaces here, similar to the ones above
 
-  if (deflt), printf ("(* = default interface)\n"); endif
+  if (deflt)
+    printf ("(* = default interface)\n");
+  endif
 
   ## FIXME the below stanza should be dropped once UNO is stable.
   ## Echo a suitable warning about experimental status:

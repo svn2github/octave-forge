@@ -1,4 +1,4 @@
-## Copyright (C) 2010,2011 Philip Nienhuis <prnienhuis@users.sf.net>
+## Copyright (C) 2010,2011,2012,2013 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -35,6 +35,7 @@
 ## 2011-04-21 Formulas now don't need closing ")" (e.g., =A1+B1 is OK as well)
 ##     ''     Formula ptrs in output arg now OK (cellfun(@(x).... skips empty cells)
 ## 2012-10-23 Style fixes
+## 2013-12-06 Updated copyright strings
 
 function [ typearr ] = spsh_prstype (obj, nrows, ncols, ctype, spsh_opts)
 
@@ -60,7 +61,7 @@ function [ typearr ] = spsh_prstype (obj, nrows, ncols, ctype, spsh_opts)
 
 	ptr = cellfun ("isnan", obj);					      ## Find NaNs & set to BLANK
 	typearr(ptr) = ctype(5); 
-  typearr(~ptr) = ctype(1);	                  ## All other cells are now numeric
+  typearr(! ptr) = ctype(1);	                ## All other cells are now numeric
 
 	obj(txtptr) = obj2(txtptr);						      ## Copy strings back into place
 	obj(lptr) = obj2(lptr);								      ## Same for logicals
@@ -70,7 +71,7 @@ function [ typearr ] = spsh_prstype (obj, nrows, ncols, ctype, spsh_opts)
 	typearr(emptr) = ctype(5);						      ## EMPTY
 	typearr(lptr) = ctype(2);							      ## BOOLEAN
 
-	if ~(spsh_opts.formulas_as_text)
+	if (! spsh_opts.formulas_as_text)
 		## Find formulas (designated by a string starting with "=" and ending in ")")
 		## fptr = cellfun (@(x) ischar (x) && strncmp (x, "=", 1) 
     ##                                 && strncmp (x(end:end), ")", 1), obj);
@@ -83,11 +84,11 @@ endfunction
 
 ## FIXME -- reinstate these tests one there if a way is found to test private
 ##          functions directly
-## %!test
+##%!test
 ##%! tstobj = {1.5, true, []; 'Text1', '=A1+B1', '=SQRT(A1)'; NaN, {}, 0};
 ##%! typarr = spsh_prstype (tstobj, 3, 3, [1 2 3 4 5], struct ("formulas_as_text", 0));
 ##%! assert (typarr, [1 2 5; 3 4 4; 5 5 1]);
-##
+
 ##%!test
 ##%! tstobj = {1.5, true, []; 'Text1', '=A1+B1', '=SQRT(A1)'; NaN, {}, 0};
 ##%! typarr = spsh_prstype (tstobj, 3, 3, [1 2 3 4 5], struct ("formulas_as_text", 1));

@@ -1,4 +1,4 @@
-## Copyright (C) 2010,2011,2012 Philip Nienhuis <prnienhuis@users.sf.net>
+## Copyright (C) 2010,2011,2012,2013 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -36,6 +36,7 @@
 ## 2011-05-15 Experimental UNO support added (OpenOffice.org & clones)
 ## 2011-09-18 Updated UNO data row capacity for LibreOffice 3.4+ (now 1,048,576 rows)
 ## 2012-10-23 Style fixes
+## 2013-12-06 Updated copyright strings
 
 function [ topleft, nrows, ncols, trow, lcol ] = spsh_chkrange (crange, nr, nc, intf, filename=[])
 

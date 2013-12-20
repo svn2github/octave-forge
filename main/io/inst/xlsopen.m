@@ -24,16 +24,19 @@
 ##
 ## Calling xlsopen without specifying a return argument is fairly useless!
 ##
-## To make this function work at all, you need MS-Excel (95 - 2013), and/or
-## the Java package >= 1.2.8 plus Apache POI >= 3.5 and/or JExcelAPI and/or
-## OpenXLS and/or OpenOffice.org (or clones) installed on your computer +
-## proper javaclasspath set. These interfaces are referred to as COM, POI,
+## xlsopen works with interfaces, which are links to external software.
+## For reading from OOXML (Excel 2007 and up), ODS 1.2 and Gnumeric no
+## additional software is required when the OCT interface is used. For all
+## other spreadsheet formats and for writing to spreadsheet files, you need
+## MS-Excel (95 - 2013), or a Java JRE plus Apache POI >= 3.5 and/or JExcelAPI
+## and/or OpenXLS and/or OpenOffice.org (or clones) installed on your computer
+## + proper javaclasspath set. These interfaces are referred to as COM, POI,
 ## JXL, OXS, and UNO, resp., and are preferred in that order by default
-## (depending on their presence).
-## For OOXML support, in addition to Apache POI support you also need the
-## following jars in your javaclasspath: poi-ooxml-schemas-3.5.jar,
+## (depending on their presence). The OCT interface has the lowest priority.
+## For OOXML read/write support, in addition to Apache POI support you also
+## need the following jars in your javaclasspath: poi-ooxml-schemas-3.5.jar,
 ## xbean.jar and dom4j-1.6.1.jar (or later versions). Later OpenOffice.org
-## versions (UNO) have support for OOXML as well.
+## versions (UNO interface) have support for OOXML as well.
 ## Excel'95 spreadsheets can only be read by JExcelAPI and OpenOffice.org.
 ## For just reading OOXML (.xlsx or .xlsm), no Java or add-on packages are 
 ## required; but currently you loose a bit of the flexibility of the other
@@ -53,8 +56,8 @@
 ## Optional input argument @var{reqintf} can be used to override the Excel
 ## interface that otherwise is automatically selected by xlsopen. Currently
 ## implemented interfaces (in order of preference) are 'COM' (Excel/COM),
-## 'POI' (Java/Apache POI), 'JXL' (Java/JExcelAPI), 'OXS' (Java/OpenXLS), or
-## 'UNO' (Java/OpenOffice.org - EXPERIMENTAL!).
+## 'POI' (Java/Apache POI), 'JXL' (Java/JExcelAPI), 'OXS' (Java/OpenXLS),
+## 'UNO' (Java/OpenOffice.org - EXPERIMENTAL!), or 'OCT' (native Octave).
 ## In most situations this parameter is unneeded as xlsopen automatically
 ## selects the most useful interface present.
 ##
@@ -128,8 +131,9 @@
 ##     ''     Adapted header to OCT (also Excel 2013 is supported)
 ## 2013-10-01 Some adaptations for gnumeric
 ## 2013-10-20 Overhauled file extension detection logic
-## 2013-11-03 Improved interface selection (fix a.0., fallback to JXL for xlsx)
+## 2013-11-03 Improved interface selection (fix a.o., fallback to JXL for xlsx)
 ## 2013-11-04 Catch attempts to write with only OCT interface
+## 2013-12-01 Add support for ODS (Excel 2007+ and OpenOffice.org/LibreOffice support it)
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
@@ -150,20 +154,21 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
       usage ("XLS = xlsopen (Xlfile [, Rw] [, reqintf]). But no return argument specified!"); 
   endif
 
-  if (~(islogical (xwrite) || isnumeric (xwrite)))
+  if (! (islogical (xwrite) || isnumeric (xwrite)))
       usage ("xlsopen.m: numerical or logical value expected for arg ## 2 (readwrite)")
   endif
 
-  if (~isempty (reqinterface))
-    if ~(ischar (reqinterface) || iscell (reqinterface))
+  if (! isempty (reqinterface))
+    if (! (ischar (reqinterface) || iscell (reqinterface)))
       usage ("Arg ## 3 (interface) not recognized - character value required"); 
     endif
     ## Turn arg3 into cell array if needed
-    if (~iscell (reqinterface))
+    if (! iscell (reqinterface))
       reqinterface = {reqinterface}; 
     endif
     ## Check if previously used interface matches a requested interface
-    if (isempty (regexpi (reqinterface, lastintf, 'once'){1}))
+    if (isempty (regexpi (reqinterface, lastintf, 'once'){1}) ||
+        ! xlsinterfaces.(upper (reqinterface{1})))
       ## New interface requested
       xlsinterfaces.COM = 0; xlsinterfaces.POI = 0; xlsinterfaces.JXL = 0;
       xlsinterfaces.OXS = 0; xlsinterfaces.UNO = 0; xlsinterfaces.OCT = 0;
@@ -193,7 +198,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
       ## Well, is/are the requested interface(s) supported on the system?
       xlsintf_cnt = 0;
       for ii=1:numel (reqinterface)
-        if (~xlsinterfaces.(toupper (reqinterface{ii})))
+        if (! xlsinterfaces.(toupper (reqinterface{ii})))
           ## No it aint
           printf ("%s is not supported.\n", upper (reqinterface{ii}));
         else
@@ -201,7 +206,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
         endif
       endfor
       ## Reset interface check indicator if no requested support found
-      if (~xlsintf_cnt)
+      if (! xlsintf_cnt)
         chkintf = [];
         xls = [];
         return
@@ -210,9 +215,9 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
   endif
 
   ## Check if Excel file exists. First check for (supported) file name suffix:
-  ch1 = chk2 = chk5 = 0;
+  ch1 = chk2 = chk3 = chk5 = 0;
   has_suffix = 1;
-  [sfxpos, ~, ~, ext] = regexp (filename, '(\.xlsx?|\.gnumeric)');
+  [sfxpos, ~, ~, ext] = regexpi (filename, '(\.xlsx?|\.gnumeric|\.ods)');
   if (! isempty (sfxpos))
     ext = ext{end};
     ## .xls or .xls[x,m,b] or .gnumeric is there, but at the right(most) position?
@@ -223,6 +228,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
     else
       chk1 = strcmpi (ext, ".xls");               ## Regular (binary) BIFF 
       chk2 = strcmpi (ext(1:end-1), ".xls");      ## Zipped XML / OOXML. Catches xlsx, xlsb, xlsm
+      chk3 = strcmpi (ext, ".od'");               ## ODS 1.2 (Excel 2007+ & OOo/LO can read ODS)
       chk5 = strcmpi (ext, ".gnumeric");          ## Zipped XML / gnumeric
     endif
   else
@@ -304,15 +310,15 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
     [ xls, xlssupport, lastintf ] = __COM_spsh_open__ (xls, xwrite, filename, xlssupport);
   endif
 
-  if ((! xlssupport) && xlsinterfaces.POI && (chk1 || chk2) && (! chk5))
+  if ((! xlssupport) && xlsinterfaces.POI && (chk1 || chk2))
     [ xls, xlssupport, lastintf ] = __POI_spsh_open__ (xls, xwrite, filename, xlssupport, chk1, chk2, xlsinterfaces);
   endif
 
-  if ((! xlssupport) && xlsinterfaces.JXL && chk1 && (! chk5))
+  if ((! xlssupport) && xlsinterfaces.JXL && chk1)
     [ xls, xlssupport, lastintf ] = __JXL_spsh_open__ (xls, xwrite, filename, xlssupport, chk1);
   endif
 
-  if ((! xlssupport) && xlsinterfaces.OXS && chk1 && (! chk5))
+  if ((! xlssupport) && xlsinterfaces.OXS && chk1)
     [ xls, xlssupport, lastintf ] = __OXS_spsh_open__ (xls, xwrite, filename, xlssupport, chk1);
   endif
 
@@ -320,8 +326,8 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
     [ xls, xlssupport, lastintf ] = __UNO_spsh_open__ (xls, xwrite, filename, xlssupport);
   endif
 
-  if ((! xlssupport) && xlsinterfaces.OCT && (chk2 || chk5))
-    [ xls, xlssupport, lastintf ] = __OCT_spsh_open__ (xls, xwrite, filename, xlssupport, chk2, 0, chk5);
+  if ((! xlssupport) && xlsinterfaces.OCT && (chk2 || chk3 || chk5))
+    [ xls, xlssupport, lastintf ] = __OCT_spsh_open__ (xls, xwrite, filename, xlssupport, chk2, chk3, chk5);
   endif
 
   ## if 

@@ -28,7 +28,7 @@
 ## - Java & JExcelAPI
 ## - Java & OpenXLS (only JRE >= 1.4 needed)
 ## - Java & UNO bridge (native OpenOffice.org in background) - EXPERIMENTAL!!
-## - native Octave, only for .xlsx (OOXML)
+## - native Octave, only for .xlsx (OOXML), .ODS1.2, . gnumeric
 ##
 ## Examples:
 ##
@@ -72,6 +72,7 @@
 ## 2013-07-18 Add Fedora naming scheme to POI jar entries (official ones are symlinks)
 ## 2013-09-30 Native Octave interface ("OCT") for reading
 ## 2013-12-06 Updated copyright strings; style fixes
+## 2013-12-27 Slight updates to texinfo header
 
 function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 

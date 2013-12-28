@@ -1,4 +1,4 @@
-## Copyright (C) 2008, 2009, 2010, 2011, 2012 Moreno Marzolla
+## Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013 Moreno Marzolla
 ##
 ## This file is part of the queueing toolbox.
 ##
@@ -109,7 +109,7 @@
 ##
 ## @end deftypefn
 
-## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
+## Author: Moreno Marzolla <moreno.marzolla(at)unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
 function [U R Q X p0 pK] = qsmmmk( lambda, mu, m, K )

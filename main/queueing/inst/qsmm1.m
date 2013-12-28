@@ -1,4 +1,4 @@
-## Copyright (C) 2008, 2009, 2010, 2011, 2012 Moreno Marzolla
+## Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013 Moreno Marzolla
 ##
 ## This file is part of the queueing toolbox.
 ##
@@ -57,14 +57,14 @@
 ## Server utilization
 ##
 ## @item R
-## Service center response time
+## Server response time
 ##
 ## @item Q
 ## Average number of requests in the system
 ##
 ## @item X
-## Service center throughput. If the system is ergodic, 
-## we will always have @code{@var{X} = @var{lambda}}
+## Server throughput. If the system is ergodic (@code{@var{mu} >
+## @var{lambda}}), we always have @code{@var{X} = @var{lambda}}
 ##
 ## @item p0
 ## Steady-state probability that there are no requests in the system.
@@ -78,7 +78,7 @@
 ##
 ## @end deftypefn
 
-## Author: Moreno Marzolla <moreno.marzolla(at)cs.unibo.it>
+## Author: Moreno Marzolla <moreno.marzolla(at)unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
 function [U R Q X p0] = qsmm1( lambda, mu )
@@ -106,3 +106,11 @@ endfunction
 %!test
 %! fail( "qsmm1(10,5)", "not ergodic" );
 %! fail( "qsmm1([2 2], [1 1 1])", "incompatible size");
+
+%!test
+%! [U R Q X P0] = qsmm1(0, 1);
+%! assert( U, 0 );
+%! assert( R, 1 );
+%! assert( Q, 0 );
+%! assert( X, 0 );
+%! assert( P0, 1 );

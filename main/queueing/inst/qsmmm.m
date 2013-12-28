@@ -1,4 +1,4 @@
-## Copyright (C) 2008, 2009, 2010, 2011, 2012 Moreno Marzolla
+## Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013 Moreno Marzolla
 ##
 ## This file is part of the queueing toolbox.
 ##
@@ -97,7 +97,7 @@
 ##
 ## @end deftypefn
 
-## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
+## Author: Moreno Marzolla <moreno.marzolla(at)unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
 function [U R Q X p0 pm] = qsmmm( lambda, mu, m )
@@ -117,6 +117,8 @@ function [U R Q X p0 pm] = qsmmm( lambda, mu, m )
   mu = mu(:)';
   all( m>0 ) || ...
       error( "m must be >0" );
+  all( lambda>0 ) || ...
+      error( "lambda must be >0" );
   all( lambda < m .* mu ) || ...
       error( "Processing capacity exceeded" );
   X = lambda;
@@ -136,7 +138,6 @@ function [U R Q X p0 pm] = qsmmm( lambda, mu, m )
                  );
     pm(i) = expn(m(i)*rho(i),m(i))*p0(i)/(1-rho(i));
   endfor
-  ## pm = (m.*rho).^m./(factorial(m).*(1-rho)).*p0;
   Q = m .* rho .+ rho ./ (1-rho) .* pm;
   R = Q ./ X;
 endfunction

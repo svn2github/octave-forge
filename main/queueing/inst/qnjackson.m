@@ -107,7 +107,7 @@
 ##
 ## @end deftypefn
 
-## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
+## Author: Moreno Marzolla <moreno.marzolla(at)unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
 function [U_or_pi R Q X] = qnjackson( lambda, S, P, m, k )

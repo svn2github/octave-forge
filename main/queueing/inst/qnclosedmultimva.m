@@ -30,7 +30,7 @@
 ##
 ## @end deftypefn
 
-## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
+## Author: Moreno Marzolla <moreno.marzolla(at)unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
 function [U R Q X] = qnclosedmultimva( varargin )

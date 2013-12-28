@@ -25,7 +25,7 @@
 ##
 ## @end deftypefn
 
-## Author: Moreno Marzolla <marzolla(at)cs.unibo.it>
+## Author: Moreno Marzolla <moreno.marzolla(at)unibo.it>
 ## Web: http://www.moreno.marzolla.name/
 
 function [X_lower X_upper Q_lower Q_upper] = qnclosedgb( N, D, Z )

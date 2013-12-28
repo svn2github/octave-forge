@@ -151,6 +151,7 @@
 ## 2013-09-27 Proper spelling of input arg
 ## 2013-09-30 Header adapted to native OCT interface f xlsx
 ## 2013-12-20 Style fixes
+## 2013-12-27 In case of .csv fall back to csvread for lazy Matlab users
 
 function [ numarr, txtarr, rawarr, lims ] = xlsread (fn, wsh, datrange, reqintf=[])
 
@@ -193,6 +194,11 @@ function [ numarr, txtarr, rawarr, lims ] = xlsread (fn, wsh, datrange, reqintf=
     if (! isempty (xls))
       xls_ok = 1;
     else
+      ## Convenience for scripts from lazy Matlab users (see bug #40993):
+      [~, ~, ext] = fileparts (fn);
+      if strcmpi (fn, ".csv")
+        numarr = csvread (fn, 1, datrange);
+      endif
       return
     endif
 

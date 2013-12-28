@@ -23,11 +23,13 @@
 ## 2012-10-24 Style fixes
 ## 2013-01-20 Adapted to ML-compatible Java calls
 ## 2013-12-01 Style fixes, opyright string updates
+## 2013-12-27 Use one variable for processed file type
+##     ''     Clarify error message about unrecognized file type
 
-function [ xls, xlssupport, lastintf ] = __JXL_spsh_open__ (xls, xwrite, filename, xlssupport, chk1)
+function [ xls, xlssupport, lastintf ] = __JXL_spsh_open__ (xls, xwrite, filename, xlssupport, ftype)
 
-    if (! chk1)
-      error ("JXL can only read reliably from .xls files")
+    if (ftype != 1)
+      error ("xlsopen: JXL can only read .xls (BIFF5 - Excel95 or BIFF8 - Excel97-2003) files")
     endif
     try
       xlsin = javaObject ("java.io.File", filename);

@@ -22,10 +22,10 @@
 ## 2012-10-24 Style fixes
 ## 2013-12-06 Updated copyright string; style fixes
 
-function [ xls, xlssupport, lastintf ] = __OXS_spsh_open__ (xls, xwrite, filename, xlssupport, chk1)
+function [ xls, xlssupport, lastintf ] = __OXS_spsh_open__ (xls, xwrite, filename, xlssupport, ftype)
 
-    if (! chk1)
-      error ("OXS can only read from .xls files")
+    if (ftype != 1)
+      error ("OXS can only read from .xls (BIFF8; Excel'97-2003) files")
     endif
     try
       wb = javaObject ("com.extentech.ExtenXLS.WorkBookHandle", filename);

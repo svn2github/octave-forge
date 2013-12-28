@@ -35,11 +35,12 @@
 ## 2012-10-12 Renamed & moved into ./private
 ## 2012-10-24 Style fixes
 ## 2013-12-06 Updated copyright strings; style fixes
+## 2013-12-27 Style fixes
 
 function [ xls, rstatus ] = __OXS_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
 
   ## Preliminary sanity checks
-  if (! isempty (strcmpi (xls.filename(end-4:end-1)), ".xls"))  
+  if (strcmpi (xls.filename(end-4:end-1)), ".xls")  
     ## No OOXML in OXS
     error ("OXS interface can only write to Excel 97-2003 .xls files")
   endif
@@ -52,7 +53,8 @@ function [ xls, rstatus ] = __OXS_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
     ctype = [1, 2, 3, 4, 5];
   endif
   ## scratch vars
-  rstatus = 0; f_errs = 0;
+  rstatus = 0; 
+  f_errs = 0;
   
   ## Prepare workbook pointer if needed
   wb = xls.workbook;
@@ -119,7 +121,7 @@ function [ xls, rstatus ] = __OXS_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
         changed = 1;
       catch
         ## Cell not existent. Add cell
-        if (! typearr(jj, ii) == 5)
+        if (typearr(jj, ii) != 5)
           sh.add (obj{jj, ii}, jj+trow-2, ii+lcol-2);
           changed = 1;
         endif

@@ -63,12 +63,13 @@
 ## 2012-10-24 Style fixes
 ## 2013-01-20 Adapted to ML-compatible Java calls
 ## 2013-12-01 Style fixes, copyright string updates
+## 2013-12-27 Style fixes
 
 function [ xls, rstatus ] = __JXL_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
 
 	## Preliminary sanity checks
-	if (! strmatch (tolower (xls.filename(end-4:end-1)), ".xls"))	## No OOXML in JXL
-		error ("JXL interface can only write to Excel .xls files")
+	if (strcmpi (xls.filename(end-4:end-1), ".xls"))	## No OOXML in JXL
+		error ("JXL interface can only process Excel .xls files")
 	endif
 
 	persistent ctype;

@@ -31,6 +31,7 @@
 ## 2012-10-12 Renamed & moved into ./private
 ## 2012-10-24 Style fixes
 ## 2013-12-01 Style fixes, copyright string updates
+## 2013-12-27 Style fixes
 
 function [ trow, lrow, lcol, rcol ] = __OTK_getusedrange__ (ods, ii)
 
@@ -88,7 +89,7 @@ function [ trow, lrow, lcol, rcol ] = __OTK_getusedrange__ (ods, ii)
       endif
 
       ## if rcol is already 1024 no more exploring for rightmost column is needed
-      if (! (rcol == 1024))
+      if (rcol != 1024)
         ## Get rightmost cell column number by counting....
         rc = 0;
         for kk=1:row.getLength()
@@ -116,7 +117,7 @@ function [ trow, lrow, lcol, rcol ] = __OTK_getusedrange__ (ods, ii)
     lrow = trow + drows - 1;
   else
     ## Empty sheet
-    lrow = 0; lcol = 0; rcol = 0;
+    lrow = lcol = rcol = 0;
   endif
 
 endfunction

@@ -134,6 +134,8 @@
 ## 2013-11-03 Improved interface selection (fix a.o., fallback to JXL for xlsx)
 ## 2013-11-04 Catch attempts to write with only OCT interface
 ## 2013-12-01 Add support for ODS (Excel 2007+ and OpenOffice.org/LibreOffice support it)
+## 2013-12-27 Use one variable for processed file type
+##     ''     Style fixes
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
@@ -215,21 +217,30 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
   endif
 
   ## Check if Excel file exists. First check for (supported) file name suffix:
-  ch1 = chk2 = chk3 = chk5 = 0;
+  ftype = 0;
   has_suffix = 1;
   [sfxpos, ~, ~, ext] = regexpi (filename, '(\.xlsx?|\.gnumeric|\.ods)');
   if (! isempty (sfxpos))
-    ext = ext{end};
+    ext = lower (ext{end});
     ## .xls or .xls[x,m,b] or .gnumeric is there, but at the right(most) position?
     if (sfxpos(end) <= length (filename) - length (ext))
       ## Apparently not, or it is an unrecognized extension
       ## If xwrite = 0, check file suffix, else add .xls
       has_suffix = 0;
     else
-      chk1 = strcmpi (ext, ".xls");               ## Regular (binary) BIFF 
-      chk2 = strcmpi (ext(1:end-1), ".xls");      ## Zipped XML / OOXML. Catches xlsx, xlsb, xlsm
-      chk3 = strcmpi (ext, ".od'");               ## ODS 1.2 (Excel 2007+ & OOo/LO can read ODS)
-      chk5 = strcmpi (ext, ".gnumeric");          ## Zipped XML / gnumeric
+      switch ext
+        case ".xls"                               ## Regular (binary) BIFF
+          ftype = 1;
+        case {".xlsx", ".xlsm", ".xlsb"}          ## Zipped XML / OOXML. Catches xlsx, xlsb, xlsm
+          ftype = 2;
+        case "ods"
+          ftype = 3;                              ## ODS 1.2 (Excel 2007+ & OOo/LO can read ODS)
+        case ".gnumeric"
+          ftype = 5;                              ## Zipped XML / gnumeric
+        case ".csv"
+          ftype = 6;                              ## csv. Detected for xlsread afficionados
+        otherwise
+      endswitch
     endif
   else
     has_suffix = 0;
@@ -241,7 +252,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
   ## Adapt file open mode for readwrite argument
   if (xwrite)
     ## Catch attempts to write gnumeric
-    if (chk5)
+    if (ftype == 5)
       error ("There's only read support for gnumeric files");
     endif
     ## Catch attempts to write xlsx if only OCT interface is supported
@@ -270,7 +281,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
   endif
   fid = fopen (filename, fmode);
   if (fid < 0)                      ## File doesn't exist...
-    if (~xwrite)                    ## ...which obviously is fatal for reading...
+    if (! xwrite)                   ## ...which obviously is fatal for reading...
       error ( sprintf ("xlsopen.m: file %s not found\n", filename));
     else                            ## ...but for writing, we need more info:
       fid = fopen (filename, 'rb'); ## Check if it exists at all...
@@ -303,31 +314,32 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
   xlssupport = 0;
 
   ## Interface preference order is defined below: currently COM -> POI -> JXL -> OXS -> UNO -> OCT
-  ## chk1, chk2 (xls file type) and chk5 (gnumeric) are conveyed depending on interface capabilities
+  ## ftype (file type) is conveyed depending on interface capabilities
 
-  if ((! xlssupport) && xlsinterfaces.COM && (! chk5))
+  if ((! xlssupport) && xlsinterfaces.COM && (ftype != 5))
     ## Excel functioning has been tested above & file exists, so we just invoke it.
     [ xls, xlssupport, lastintf ] = __COM_spsh_open__ (xls, xwrite, filename, xlssupport);
   endif
 
-  if ((! xlssupport) && xlsinterfaces.POI && (chk1 || chk2))
-    [ xls, xlssupport, lastintf ] = __POI_spsh_open__ (xls, xwrite, filename, xlssupport, chk1, chk2, xlsinterfaces);
+  if ((! xlssupport) && xlsinterfaces.POI && (ftype <= 2))
+    [ xls, xlssupport, lastintf ] = __POI_spsh_open__ (xls, xwrite, filename, xlssupport, ftype, xlsinterfaces);
   endif
 
-  if ((! xlssupport) && xlsinterfaces.JXL && chk1)
-    [ xls, xlssupport, lastintf ] = __JXL_spsh_open__ (xls, xwrite, filename, xlssupport, chk1);
+  if ((! xlssupport) && xlsinterfaces.JXL && ftype == 1)
+    [ xls, xlssupport, lastintf ] = __JXL_spsh_open__ (xls, xwrite, filename, xlssupport, ftype);
   endif
 
-  if ((! xlssupport) && xlsinterfaces.OXS && chk1)
-    [ xls, xlssupport, lastintf ] = __OXS_spsh_open__ (xls, xwrite, filename, xlssupport, chk1);
+  if ((! xlssupport) && xlsinterfaces.OXS && ftype == 1)
+    [ xls, xlssupport, lastintf ] = __OXS_spsh_open__ (xls, xwrite, filename, xlssupport, ftype);
   endif
 
-  if ((! xlssupport) && xlsinterfaces.UNO && (! chk5))
+  if ((! xlssupport) && xlsinterfaces.UNO && (ftype != 5))
     [ xls, xlssupport, lastintf ] = __UNO_spsh_open__ (xls, xwrite, filename, xlssupport);
   endif
 
-  if ((! xlssupport) && xlsinterfaces.OCT && (chk2 || chk3 || chk5))
-    [ xls, xlssupport, lastintf ] = __OCT_spsh_open__ (xls, xwrite, filename, xlssupport, chk2, chk3, chk5);
+  if ((! xlssupport) && xlsinterfaces.OCT && ...
+      (ftype == 2 || ftype == 3 || ftype == 5))
+    [ xls, xlssupport, lastintf ] = __OCT_spsh_open__ (xls, xwrite, filename, xlssupport, ftype);
   endif
 
   ## if 
@@ -335,11 +347,15 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
   ## endif
 
   ## Rounding up. If none of the xlsinterfaces is supported we're out of luck.
-  if (~xlssupport)
+  if (! xlssupport)
     if (isempty (reqinterface))
-      ## This message is appended after message from getxlsinterfaces()
-      printf ("None.\n");
-      warning ("xlsopen.m: no support for spreadsheet I/O"); 
+      ## If no suitable interface was detected (COM or UNO can read .csv), handle
+      ## .csv in xlsread (as that's where Matlab n00bs would expect .csv support)
+      if (ftype != 6)
+        ## This message is appended after message from getxlsinterfaces()
+        printf ("None.\n");
+        warning ("xlsopen.m: no support for spreadsheet I/O");
+      endif
     else
       ## No match between filte type & interface found
       warning ("xlsopen.m: file type not supported by %s %s %s %s %s %s", reqinterface{:});
@@ -355,7 +371,9 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
     ## xls.changed = 0 (existing/only read from), 1 (existing/data added), 2 (new,
     ## data added) or 3 (pristine, no data added).
     ## Until something was written to existing files we keep status "unchanged".
-    if (xls.changed == 1), xls.changed = 0; endif
+    if (xls.changed == 1)
+      xls.changed = 0; 
+    endif
   endif
 
 endfunction

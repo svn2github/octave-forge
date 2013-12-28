@@ -132,6 +132,7 @@
 ## 2013-11-12 Fix syntax error + missing initialization in file ext switch stmt
 ## 2013-12-01 Updated texinfo header
 ## 2013-12-18 Style fixes
+## 2013-12-27 Use one variable for processed file types
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
@@ -247,15 +248,15 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
   [odsinterfaces] = getodsinterfaces (odsinterfaces);
 
   ## Supported interfaces determined; now check ODS file type.
-  chk3 = chk4 = chk5 = 0;
+  ftype = 0;
   [~, ~, ext] = fileparts (filename);
   switch ext
     case ".ods"               ## ODS 1.2
-      chk3 = 1;
+      ftype = 3;
     case ".sxc"               ## jOpenDocument (JOD) can read from .sxc files,
-      chk4 = 1;               ## but only if odfvsn = 2
+      ftype = 4;               ## but only if odfvsn = 2
     case ".gnumeric"          ## Zipped XML / gnumeric
-      chk5 = 1;
+      ftype = 5;
     otherwise
   endswitch
 
@@ -268,27 +269,29 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
                 "odfvsn",   []);
 
   ## Preferred interface = OTK (ODS toolkit & xerces), so it comes first. 
-  ## Keep track of which interface is selected. Can be used for fallback to other intf
+  ## Keep track of which interface is selected. Can be used (later) for
+  ## fallback to other interface
   odssupport = 0;
 
-  if (odsinterfaces.OTK && ! odssupport && chk3)
+  if (odsinterfaces.OTK && ! odssupport && ftype == 3)
     [ ods, odssupport, lastintf ] = ...
               __OTK_spsh_open__ (ods, rw, filename, odssupport);
   endif
 
-  if (odsinterfaces.JOD && ! odssupport && (chk3 || chk4))
+  if (odsinterfaces.JOD && ! odssupport && (ftype == 3 || ftype == 4))
     [ ods, odssupport, lastintf ] = ...
               __JOD_spsh_open__ (ods, rw, filename, odssupport);
   endif
 
-  if (odsinterfaces.UNO && ! odssupport && ! chk5)
+  if (odsinterfaces.UNO && ! odssupport && ftype < 5)
     [ ods, odssupport, lastintf ] = ...
               __UNO_spsh_open__ (ods, rw, filename, odssupport);
   endif
 
-  if (odsinterfaces.OCT && ! odssupport && (chk3 || chk5))
+  if (odsinterfaces.OCT && ! odssupport && ...
+      (ftype == 2 || ftype == 3 || ftype == 5))
     [ ods, odssupport, lastintf ] = ...
-              __OCT_spsh_open__ (ods, rw, filename, odssupport, 0, chk3, chk5);
+              __OCT_spsh_open__ (ods, rw, filename, odssupport, ftype);
   endif
 
   ## if 

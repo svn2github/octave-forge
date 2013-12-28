@@ -1,4 +1,5 @@
 ## Copyright (C) 2013 Philip Nienhuis
+## Copyright (C) 2013 Markus Bergholz (.xlsx & archive unzip stuff)
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -35,14 +36,16 @@
 ## 2013-12-13 Fix sheet names parsing regexpr
 ## 2013-12-14 Fix sheet names parsing regexpr # 2 (attrib order can change =>
 ##            that's why an XML parser is superior over regular expressions)
+## 2013-12-27 Use one variable for processed file type
+##     ''     Shuffled code around to file type order
 
-function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename, xlssupport, chk2, chk3, chk5)
+function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename, xlssupport, ftype)
 
   ## Open and unzip file to temp location (code by Markus Bergholz)
   ## create current work folder
   tmpdir = tmpnam;
 
-  if (chk5)
+  if (ftype == 5)
     ## Gnumeric xml files are gzipped
     system (sprintf ("gzip -d -c -S=gnumeric %s > %s", filename, tmpdir));
     fid = fopen (tmpdir, 'r');
@@ -60,8 +63,37 @@ function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename
     end_try_catch
   endif  
 
-  ## First check if we're reading ODS
-  if (chk3)
+  ## Set up file pointer struct
+  if (ftype == 2)
+    ## =======================  XLSX ===========================================
+    ## From xlsxread by Markus Bergholz <markuman+xlsread@gmail.com>
+    ## https://github.com/markuman/xlsxread
+
+    ## Get sheet names. Speeds up other functions a lot if we can do it here
+    fid = fopen (sprintf ('%s/xl/workbook.xml', tmpdir));
+    if (fid < 0)
+      ## File open error
+      error ("xls2oct: file %s couldn't be unzipped", filename);
+    else
+      ## Fill xlsx pointer 
+      xls.workbook          = tmpdir;       # subdir containing content.xml
+      xls.xtype             = "OCT";        # OCT is fall-back interface
+      xls.app               = 'xlsx';       # must NOT be an empty string!
+      xls.filename = filename;              # spreadsheet filename
+      xls.changed = 0;                      # Dummy
+
+      ## Get content.xml
+      xml = fread (fid, "char=>char").';
+      ## Close file
+      fclose (fid);
+
+      ## Get sheet names and indices
+      xls.sheets.sh_names = cell2mat (regexp (xml, '<sheet name="(.*?)"(?: r:id="\w+")? sheetId="\d+"', "tokens"));
+      xls.sheets.rid = str2double (cell2mat (regexp (xml, '<sheet name=".*?" sheetId="(\d+)"', "tokens")));
+
+    endif
+
+  elseif (ftype == 3)
     ## ============== ODS. Read the actual data part in content.xml ============
     fid = fopen (sprintf ("%s/content.xml", tmpdir), "r");
     if (fid < 0)
@@ -94,36 +126,7 @@ function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename
 
     endif
 
-  elseif (chk2)
-    ## =======================  XLSX ===========================================
-    ## From xlsxread by Markus Bergholz <markuman+xlsread@gmail.com>
-    ## https://github.com/markuman/xlsxread
-
-    ## Get sheet names. Speeds up other functions a lot if we can do it here
-    fid = fopen (sprintf ('%s/xl/workbook.xml', tmpdir));
-    if (fid < 0)
-      ## File open error
-      error ("xls2oct: file %s couldn't be unzipped", filename);
-    else
-      ## Fill xlsx pointer 
-      xls.workbook          = tmpdir;       # subdir containing content.xml
-      xls.xtype             = "OCT";        # OCT is fall-back interface
-      xls.app               = 'xlsx';       # must NOT be an empty string!
-      xls.filename = filename;              # spreadsheet filename
-      xls.changed = 0;                      # Dummy
-
-      ## Get content.xml
-      xml = fread (fid, "char=>char").';
-      ## Close file
-      fclose (fid);
-
-      ## Get sheet names and indices
-      xls.sheets.sh_names = cell2mat (regexp (xml, '<sheet name="(.*?)"(?: r:id="\w+")? sheetId="\d+"', "tokens"));
-      xls.sheets.rid = str2double (cell2mat (regexp (xml, '<sheet name=".*?" sheetId="(\d+)"', "tokens")));
-
-    endif
-
-  elseif (chk5)
+  elseif (ftype == 5)
     ## ====================== Gnumeric =========================================
     xls.workbook = tmpdir;                  # location of unzipped files
     xls.xtype    = "OCT";                   # interface

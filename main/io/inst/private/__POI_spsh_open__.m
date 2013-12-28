@@ -28,15 +28,16 @@
 ## 2012-10-24 Style fixes; added UNO to fall-back for BIFF5 formats
 ## 2013-01-20 Adapted to ML-compatible Java calls
 ## 2013-12-06 Updated copyright strings
+## 2013-12-27 Use one variable for processed file type
 
-function [ xls, xlssupport, lastintf ] = __POI_spsh_open__ (xls, xwrite, filename, xlssupport, chk1, chk2, xlsinterfaces)
+function [ xls, xlssupport, lastintf ] = __POI_spsh_open__ (xls, xwrite, filename, xlssupport, ftype, xlsinterfaces)
 
     ## Get handle to workbook
     try
       if (xwrite > 2)
-        if (chk1)
+        if (ftype == 1)
           wb = javaObject ("org.apache.poi.hssf.usermodel.HSSFWorkbook");
-        elseif (chk2)
+        elseif (ftype == 2)
           wb = javaObject ("org.apache.poi.xssf.usermodel.XSSFWorkbook");
         endif
         xls.app = "new_POI";
@@ -54,7 +55,7 @@ function [ xls, xlssupport, lastintf ] = __POI_spsh_open__ (xls, xwrite, filenam
       lastintf = "POI";
     catch
       clear xlsin;
-      if (chk1 && (xlsinterfaces.JXL || xlsinterfaces.UNO))
+      if (ftype == 1 && (xlsinterfaces.JXL || xlsinterfaces.UNO))
         printf ...
         (["Couldn't open file %s using POI;\n" ...
           "trying Excel'95 format with JXL or UNO...\n"], filename);

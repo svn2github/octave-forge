@@ -129,13 +129,16 @@
 ## 2013-09-23 Updated copyright messages
 ## 2013-10-02 Some adaptations for gnumeric
 ## 2013-12-01 Style fixes
+## 2013-12-27 More style fixes
 ##
 ## Latest subfunc update: 2012-10-12
 
 function [ rawarr, ods, rstatus ] = ods2oct (ods, wsh=1, datrange=[], spsh_opts=[])
 
   ## Check if ods struct pointer seems valid
-  if (! isstruct (ods)); error ("File ptr struct expected for arg @ 1"); endif
+  if (! isstruct (ods))
+    error ("File ptr struct expected for arg @ 1"); 
+  endif
   test1 = ! isfield (ods, "xtype");
   test1 = test1 || ! isfield (ods, "workbook");
   test1 = test1 || isempty (ods.workbook);

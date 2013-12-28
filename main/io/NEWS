@@ -1,6 +1,20 @@
 Summary of important user-visible changes for releases of the io package
 
 ===============================================================================
+io-1.3.6   Release Date: 2013-TBA Release Manager: Philip Nienhuis
+===============================================================================
+
+*** Bug fixes:
+    - post_install.m: seems unneeded, provisionally commented out all commands
+    - PKG_ADD: dropped all references to Java package, now just checks
+      octave_config_info("features").JAVA
+
+*** Some code simplifications & style fixes
+
+*** xlsread may fall back to csvread for .csv files when no Excel (COM) or
+    LibreOffice/OOo (UNO) interface is supported (bug #40993)
+
+===============================================================================
 io-1.3.5   Release Date: 2013-TBA Release Manager: Philip Nienhuis
 ===============================================================================
 

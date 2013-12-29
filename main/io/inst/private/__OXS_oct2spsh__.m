@@ -36,14 +36,9 @@
 ## 2012-10-24 Style fixes
 ## 2013-12-06 Updated copyright strings; style fixes
 ## 2013-12-27 Style fixes
+## 2013-12-29 Commented out formula formatting line
 
 function [ xls, rstatus ] = __OXS_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
-
-  ## Preliminary sanity checks
-  if (strcmpi (xls.filename(end-4:end-1)), ".xls")  
-    ## No OOXML in OXS
-    error ("OXS interface can only write to Excel 97-2003 .xls files")
-  endif
   
   changed = 0;
 
@@ -79,18 +74,49 @@ function [ xls, rstatus ] = __OXS_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
       if (ii >= 5)
         error (sprintf( " > 5 sheets named [_]Sheet%d already present!", wsh));
       endif
-      sh = wb.createWorkSheet (strng); ++nr_of_sheets;
+      ## OpenXLS v.10 has some idiosyncrasies. Might be related to the empty workbook...
+      try
+        sh = wb.createWorkSheet (strng);
+        ++nr_of_sheets;
+      catch
+        if (wb.getNumWorkSheets () > nr_of_sheets)
+          ## Adding a sheet did work out, in spite of Java exception
+          ## lasterr should be something like "org/json/JSONException"
+          ++nr_of_sheets;
+        else
+          error ("Couldn't add worksheet. Error message =\n%s", lasterr);
+        endif
+      end_try_catch
       xls.changed = min (xls.changed, 2);    ## Keep a 2 in case of new file
     else
-      sh = wb.getWorkSheet (wsh - 1);        ## OXS sheet count 0-based
+      sh = wb.getWorkSheet (wsh - 1);        ## OXS sheet index 0-based
     endif
     printf ("(Writing to worksheet %s)\n", sh.getSheetName ());
   else
+
     try
       sh = wb.getWorkSheet (wsh);
     catch
-      ## Sheet not found, just create it
-      sh = wb.createWorkSheet (wsh); ++nr_of_sheets;
+      ## Sheet not found, just create it. Mind OpenXLS v.10 idiosyncrasies
+      if (xls.changed == 3 || strcmpi 
+          (wb.getWorkSheet (0).getSheetName, ")_]_}_ Dummy sheet made by Octave_{_[_("))
+        ## Workbook was just created, still has one empty worksheet. Rename it
+        sh = wb.getWorkSheet (0);             ## Index = 0-based
+        sh.setSheetName (wsh);
+      else
+        try
+          sh = wb.createWorkSheet (wsh);
+          ++nr_of_sheets;
+        catch
+          if (wb.getNumWorkSheets () > nr_of_sheets)
+            ## Adding a sheet did work out, in spite of Java exception
+            ## lasterr should be something like "org/json/JSONException"
+            ++nr_of_sheets;
+          else
+            error ("Couldn't add worksheet. Error message =\n%s", lasterr);
+          endif
+        end_try_catch
+      endif
       xls.changed = min (xls.changed, 2);    ## Keep a 2 for new file
     end_try_catch
   endif
@@ -109,7 +135,7 @@ function [ xls, rstatus ] = __OXS_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
   if (! spsh_opts.formulas_as_text)
     ## Remove leading '=' from formula strings  //FIXME needs updating
     fptr = (! (4 * (ones (size (typearr))) .- typearr));
-    obj(fptr) = cellfun (@(x) x(2:end), obj(fptr), "Uniformoutput", false); 
+#    obj(fptr) = cellfun (@(x) x(2:end), obj(fptr), "Uniformoutput", false); 
   endif
   clear fptr
 

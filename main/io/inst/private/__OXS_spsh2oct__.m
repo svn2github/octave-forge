@@ -31,6 +31,7 @@
 ## 2012-10-12 Renamed & moved into ./private
 ## 2012-10-24 Style fixes
 ## 2013-12-06 Updated copyright strings
+## 2013-12-29 Overhauled reading section proper. Now does formulas too
 
 function [ rawarr, xls, rstatus ] = __OXS_spsh2oct__ (xls, wsh, cellrange, spsh_opts)
 
@@ -48,7 +49,7 @@ function [ rawarr, xls, rstatus ] = __OXS_spsh2oct__ (xls, wsh, cellrange, spsh_
   
   rstatus = 0; 
   wb = xls.workbook;
-  
+
   ## Check if requested worksheet exists in the file & if so, get pointer
   nr_of_sheets = wb.getNumWorkSheets ();
   if (isnumeric (wsh))
@@ -57,7 +58,7 @@ function [ rawarr, xls, rstatus ] = __OXS_spsh2oct__ (xls, wsh, cellrange, spsh_
           ("Worksheet ## %d bigger than nr. of sheets (%d) in file %s",...
           wsh, nr_of_sheets, xls.filename)); 
     endif
-    sh = wb.getWorkSheet (wsh - 1);      ## OXS sheet count 0-based
+    sh = wb.getWorkSheet (wsh - 1);               ## OXS sheet count 0-based
     printf ("(Reading from worksheet %s)\n", sh.getSheetName ());
   else
     try
@@ -93,16 +94,30 @@ function [ rawarr, xls, rstatus ] = __OXS_spsh2oct__ (xls, wsh, cellrange, spsh_
   endif
 
   ## Read contents into rawarr
-  rawarr = cell (nrows, ncols);      ## create placeholder
+  rawarr = cell (nrows, ncols);                   ## create placeholder
   for jj = lcol:rcol
     for ii = firstrow:lastrow
       try
         scell = sh.getCell (ii-1, jj-1);
         sctype = scell.getCellType ();
-        rawarr {ii+1-firstrow, jj+1-lcol} = scell.getVal ();
-        if (sctype == ctype(2) || sctype == ctype(3) || sctype == ctype(6))
-          rawarr {ii+1-firstrow, jj+1-lcol} = scell.getDoubleVal ();
-        endif
+        switch sctype
+          case {ctype(2), ctype(3), ctype(6)}     ## Float / double
+            rawarr{ii+1-firstrow, jj+1-lcol} = scell.getDoubleVal ();
+          case ctype(4)                           ## Formula cell  
+            if (spsh_opts.formulas_as_text)
+              tmp = char (sh.getFormula (scell.getCellAddress));
+              rawarr{ii+1-firstrow, jj+1-lcol} = tmp(index (tmp, ":=") + 1 : end);
+            else
+              ## FIXME - may still be a string; usually OpenXLS gets it right
+              rawarr{ii+1-firstrow, jj+1-lcol} = scell.getVal ();
+            endif
+          case ctype(5)
+            rawarr{ii+1-firstrow, jj+1-lcol} = scell.getVal () == 1;
+          case ctype(1)
+            rawarr{ii+1-firstrow, jj+1-lcol} = scell.getVal ();
+          otherwise
+            # rawarr{ii+1-firstrow, jj+1-lcol} = scell.getVal ();
+        endswitch
       catch
         ## Empty or non-existing cell
       end_try_catch

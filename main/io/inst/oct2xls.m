@@ -115,6 +115,7 @@
 ## 2012-10-12 Moved all interface-specific subfubcs into ./private
 ## 2012-10-24 Style fixes
 ## 2012-12-18 Improved error/warning messages
+## 2012-12-29 Style fixes
 ##
 ## Latest subfunc update: 2012-10-12
 
@@ -132,7 +133,7 @@ function [ xls, rstatus ] = oct2xls (obj, xls, wsh=1, crange="", spsh_opts=[])
   elseif (ischar (obj))
     obj = {obj};
     printf ("(oct2xls: input character array converted to 1x1 cell)\n");
-  elseif (~iscell (obj))
+  elseif (! iscell (obj))
     error ("oct2xls: input array neither cell nor numeric array");
   endif
   if (ndims (obj) > 2)
@@ -143,22 +144,22 @@ function [ xls, rstatus ] = oct2xls (obj, xls, wsh=1, crange="", spsh_opts=[])
   obj(idx) = cellfun (@double, obj(idx), "UniformOutput", false);
 
   ## Check xls file pointer struct
-  test1 = ~isfield (xls, "xtype");
-  test1 = test1 || ~isfield (xls, "workbook");
+  test1 = ! isfield (xls, "xtype");
+  test1 = test1 || ! isfield (xls, "workbook");
   test1 = test1 || isempty (xls.workbook);
   test1 = test1 || isempty (xls.app);
-  test1 = test1 || ~ischar (xls.xtype);
+  test1 = test1 || ! ischar (xls.xtype);
   if (test1)
     error ("oct2xls: invalid xls file pointer struct");
   endif
 
   ## Check worksheet ptr
-  if (~(ischar (wsh) || isnumeric (wsh)))
+  if (! (ischar (wsh) || isnumeric (wsh)))
     error ("Integer (index) or text (wsh name) expected for arg # 3");
   endif
 
   ## Check range
-  if (~isempty (crange) && ~ischar (crange))
+  if (! isempty (crange) && ! ischar (crange))
     error ("oct2xls: character string expected for arg # 4 (range)");
   elseif (isempty (crange))
     crange = "";
@@ -169,7 +170,7 @@ function [ xls, rstatus ] = oct2xls (obj, xls, wsh=1, crange="", spsh_opts=[])
     spsh_opts.formulas_as_text = 0;
     ## other options to be implemented here
   elseif (isstruct (spsh_opts))
-    if (~isfield (spsh_opts, "formulas_as_text"))
+    if (! isfield (spsh_opts, "formulas_as_text"))
       spsh_opts.formulas_as_text = 0; 
     endif
     ## other options to be implemented here
@@ -194,8 +195,8 @@ function [ xls, rstatus ] = oct2xls (obj, xls, wsh=1, crange="", spsh_opts=[])
     [xls, rstatus] = __JXL_oct2spsh__ (obj, xls, wsh, crange, spsh_opts);
   elseif (strcmpi (xls.xtype, "OXS"))
     ## Invoke Java and OpenXLS     ##### Not complete, saving file doesn't work yet!
-    printf ("Sorry, writing with OpenXLS not reliable => not supported yet\n");
-    ## [xls, rstatus] = __OXS_oct2spsh__ (obj, xls, wsh, crange, spsh_opts);
+    ## printf ("Sorry, writing with OpenXLS not reliable => not supported yet\n");
+    [xls, rstatus] = __OXS_oct2spsh__ (obj, xls, wsh, crange, spsh_opts);
   elseif (strcmpi (xls.xtype, "UNO"))
     ## Invoke Java and UNO bridge (OpenOffice.org)
     [xls, rstatus] = __UNO_oct2spsh__ (obj, xls, wsh, crange, spsh_opts);

@@ -80,6 +80,7 @@
 ## 2012-12-18 Improved error/warning messages
 ## 2013-09-30 OCT interface added
 ## 2013-10-01 Warn for empty struct input
+## 2013-12-29 Style fixes
 
 function [ xls ] = xlsclose (xls, varargs)
 
@@ -97,13 +98,13 @@ function [ xls ] = xlsclose (xls, varargs)
         force = 1;
 
       ## Interface-specific clauses here:
-      elseif (~isempty (strfind (tolower (varargin{ii}), '.')))
+      elseif (! isempty (strfind (tolower (varargin{ii}), '.')))
         ## Apparently a file name. First some checks....
         if (xls.changed == 0 || xls.changed > 2)
           warning ("xlsclose: file %s wasn't changed, new filename ignored.", xls.filename);
         elseif (strcmp (xls.xtype, "JXL"))
           error ("xlsclose: JXL doesn't support changing filename, new filename ignored.");
-        elseif (~((strcmp (xls.xtype, "COM") || strcmp (xls.xtype, "UNO")) ... 
+        elseif (! ((strcmp (xls.xtype, "COM") || strcmp (xls.xtype, "UNO")) ... 
                 && isempty (strfind ( lower (filename), ".xls"))))
           # Excel/ActiveX && OOo (UNO bridge) will write any valid filetype; POI/JXL/OXS need .xls[x]
           error ("xlsclose: .xls or .xlsx suffix lacking in filename %s", filename);

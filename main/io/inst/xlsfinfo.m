@@ -90,6 +90,7 @@
 ## 2012-10-24 Style fixes
 ## 2013-10-01 OCT interface added for gnumeric
 ## 2013-12-01 Style fixes & support for more file types than just Excel
+## 2013-12-29 Style fixes
 
 function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 
@@ -97,7 +98,9 @@ function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
   persistent lstr2; lstr2 = length (str2);
 
   xls = xlsopen (filename, 0, reqintf);
-  if (isempty (xls)); return; endif
+  if (isempty (xls))
+    return; 
+  endif
 
   toscreen = nargout < 1;
 

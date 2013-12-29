@@ -136,6 +136,7 @@
 ## 2013-12-01 Add support for ODS (Excel 2007+ and OpenOffice.org/LibreOffice support it)
 ## 2013-12-27 Use one variable for processed file type
 ##     ''     Style fixes
+## 2013-12-28 Allow OOXML support for OpenXLS
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
@@ -233,12 +234,12 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
           ftype = 1;
         case {".xlsx", ".xlsm", ".xlsb"}          ## Zipped XML / OOXML. Catches xlsx, xlsb, xlsm
           ftype = 2;
-        case "ods"
-          ftype = 3;                              ## ODS 1.2 (Excel 2007+ & OOo/LO can read ODS)
-        case ".gnumeric"
-          ftype = 5;                              ## Zipped XML / gnumeric
-        case ".csv"
-          ftype = 6;                              ## csv. Detected for xlsread afficionados
+        case "ods"                                ## ODS 1.2 (Excel 2007+ & OOo/LO can read ODS)
+          ftype = 3;
+        case ".gnumeric"                          ## Zipped XML / gnumeric
+          ftype = 5;
+        case ".csv"                               ## csv. Detected for xlsread afficionados
+          ftype = 6;
         otherwise
       endswitch
     endif
@@ -257,7 +258,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
     endif
     ## Catch attempts to write xlsx if only OCT interface is supported
     if (xlsintf_cnt == 1 && xlsinterfaces.OCT)
-      error ("Only the OCT interface is present or requested, but that has only read support");
+      error ("Only the OCT interface is present | requested, but that has only read support");
     endif
     fmode = 'r+b';
     if (! has_suffix)
@@ -329,7 +330,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
     [ xls, xlssupport, lastintf ] = __JXL_spsh_open__ (xls, xwrite, filename, xlssupport, ftype);
   endif
 
-  if ((! xlssupport) && xlsinterfaces.OXS && ftype == 1)
+  if ((! xlssupport) && xlsinterfaces.OXS && ftype <= 2)
     [ xls, xlssupport, lastintf ] = __OXS_spsh_open__ (xls, xwrite, filename, xlssupport, ftype);
   endif
 

@@ -22,6 +22,8 @@
 ## 2012-10-24 Style fixes
 ## 2013-01-20 Adapted to ML-compatible Java calls
 ## 2013-12-06 Updated copyright string
+## 2013-12-28 Style fixes
+##     ''     Moved wb close statement down to always unlock file
 
 function [ xls ] = __OXS_spsh_close__ (xls)
 
@@ -32,20 +34,17 @@ function [ xls ] = __OXS_spsh_close__ (xls)
         fname = xls.filename;
       endif
       try
+        if (xls.changed == 2)
+          printf ("Saving file %s...\n", fname);
+        endif
         xlsout = javaObject ("java.io.FileOutputStream", fname);
-        bufout = javaObject ("java.io.BufferedOutputStream", xlsout);
-        if (xls.changed == 2) printf ("Saving file %s...\n", fname); endif
-        xls.workbook.writeBytes (bufout);
-        xls.workbook.close ();
-        bufout.flush ();
-        bufout.close ();
+        xls.workbook.write (xlsout);
         xlsout.close ();
         xls.changed = 0;
       catch
-##      xlsout.close ();
+        warning ("__OXS_spsh_close__: error trying to close OXS file ptr");
       end_try_catch
-    else
-      xls.workbook.close ();
     endif
+    xls.workbook.close ();
 
 endfunction

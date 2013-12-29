@@ -73,6 +73,8 @@
 ## 2013-09-30 Native Octave interface ("OCT") for reading
 ## 2013-12-06 Updated copyright strings; style fixes
 ## 2013-12-27 Slight updates to texinfo header
+## 2013-12-28 Added check for OpenXLS version 10
+## 2013-12-29 Added gwt-servlet-deps.jar to OpenXLS dependencies
 
 function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 
@@ -204,16 +206,25 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
   ## Try Java & OpenXLS
   if (isempty (xlsinterfaces.OXS))
     xlsinterfaces.OXS = 0;
-    entries = {"openxls"};
+    entries = {"openxls", "gwt-servlet-deps"};
     if (chk_jar_entries (jcp, entries) >= numel (entries))
-      xlsinterfaces.OXS = 1;
-      printf ("OXS");
-      if (deflt)
-        printf ("; "); 
-      else 
-        printf ("*; "); 
-        deflt = 1; 
-      endif
+      ## OK, jar in the javaclasspath. Check version (should be >= 10
+      try
+        ## ...a method that is first introduced in OpenXLS v.10
+        javaMethod ("getVersion", "com.extentech.ExtenXLS.GetInfo");
+        ## If we get here, we do have v. 10
+        xlsinterfaces.OXS = 1;
+        printf ("OXS");
+        if (deflt)
+          printf ("; "); 
+        else 
+          printf ("*; "); 
+          deflt = 1; 
+        endif
+      catch
+        ## Wrong OpenXLS.jar version (probably <= 6.08). V. 10 is required now
+        warning ("OpenXLS.jar version is outdated; please upgrade to v.10");
+      end_try_catch
     endif
   endif
 

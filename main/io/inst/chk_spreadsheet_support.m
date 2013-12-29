@@ -148,6 +148,8 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 ## 2013-09-01 Adapt recursive file search proc name (now rfsearch.m)
 ## 2013-12-14 Texinfo header updated to OCT
 ## 2013-12-20 More Texinfo header improvements
+## 2013-12-28 Added check for OpenXLS version 10
+## 2013-12-29 Added gwt-servlet-deps.jar to OpenXLS dependencies
 
   jcp = []; retval = 0;
   if (nargin < 3)
@@ -306,7 +308,8 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
   if (dbug > 1)
     printf ("\nBasic POI (.xls) <poi-3> <poi-ooxml>:\n");
   endif
-  entries1 = {{"apache-poi.", "poi-3"}, {"apache-poi-ooxml.", "poi-ooxml-3"}}; missing1 = zeros (1, numel (entries1));
+  entries1 = {{"apache-poi.", "poi-3"}, {"apache-poi-ooxml.", "poi-ooxml-3"}}; 
+  missing1 = zeros (1, numel (entries1));
   ## Only under *nix we might use brute force: e.g., strfind (javaclasspath, classname)
   ## as javaclasspath is one long string. Under Windows however classpath is a cell array
   ## so we need the following more subtle, platform-independent approach:
@@ -343,7 +346,8 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
   if (dbug > 1)
     printf ("\nJExcelAPI (.xls (incl. BIFF5 read)) <jxl>:\n");
   endif
-  entries3 = {"jxl"}; missing3 = zeros (1, numel (entries3));
+  entries3 = {"jxl"}; 
+  missing3 = zeros (1, numel (entries3));
   [jpchk, missing3] = chk_jar_entries (jcp, entries3, dbug);
   if (jpchk >= numel (entries3))
     retval = retval + 8;
@@ -358,26 +362,37 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 
   ## Try Java & OpenXLS
   if (dbug > 1)
-    printf ("\nOpenXLS (.xls (BIFF8)) <OpenXLS>:\n");
+    printf ("\nOpenXLS (.xls - BIFF8 & .xlsx - OOXML) <OpenXLS>:\n");
   endif
-  entries4 = {"OpenXLS"}; missing4 = zeros (1, numel (entries4));
+  entries4 = {"OpenXLS", "gwt-servlet-deps"}; 
+  missing4 = zeros (1, numel (entries4));
   [jpchk, missing4] = chk_jar_entries (jcp, entries4, dbug);
   if (jpchk >= numel (entries4))
-    retval = retval + 16;
-  endif
-  if (dbug > 1)
-    if (jpchk >= numel (entries4))
-      printf ("  => Java/OpenXLS (OXS) OK.\n");
-    else
-      printf ("  => Not all classes (.jar) required for OXS in classpath\n");
-    endif
+    ## Check OpenXLS.jar version
+    try
+      ## ...a method that is first introduced in OpenXLS v.10
+      javaMethod ("getVersion", "com.extentech.ExtenXLS.GetInfo");
+      ## If we get here, we do have v. 10
+      retval = retval + 16;
+      if (dbug > 1)
+        if (jpchk >= numel (entries4))
+          printf ("  => Java/OpenXLS (OXS) OK.\n");
+        else
+          printf ("  => Not all classes (.jar) required for OXS in classpath\n");
+        endif
+      endif
+    catch
+      ## Wrong OpenXLS.jar version (probably <= 6.08). V. 10 is required now
+      warning ("OpenXLS.jar version is outdated; please upgrade to v.10");
+    end_try_catch
   endif
 
   ## Try Java & ODF toolkit
   if (dbug > 1)
     printf ("\nODF Toolkit (.ods) <odfdom> <xercesImpl>:\n");
   endif
-  entries5 = {"odfdom", "xercesImpl"}; missing5 = zeros (1, numel (entries5));
+  entries5 = {"odfdom", "xercesImpl"}; 
+  missing5 = zeros (1, numel (entries5));
   [jpchk, missing5] = chk_jar_entries (jcp, entries5, dbug);
   if (jpchk >= numel (entries5))    ## Apparently all requested classes present.
     ## Only now we can check for proper odfdom version (only 0.7.5 & 0.8.6-0.8.8 work OK).
@@ -407,7 +422,8 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
   if (dbug > 1)
     printf ("\njOpenDocument (.ods + experimental .sxc readonly) <jOpendocument>:\n");
   endif
-  entries6 = {"jOpenDocument"}; missing6 = zeros (1, numel (entries6));
+  entries6 = {"jOpenDocument"}; 
+  missing6 = zeros (1, numel (entries6));
   [jpchk, missing6] = chk_jar_entries (jcp, entries6, dbug);
   if (jpchk >= numel (entries6))
     retval = retval + 64;
@@ -575,6 +591,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 
   if (! jars_complete && nargin > 0 && ! isempty (path_to_jars))
     ## Add missing jars to javaclasspath. Assume they're all in the same place
+    ## FIXME: add checks for prope odfdom && OpenXLS jar versions
     if (dbug)
       printf ("Trying to add missing java class libs to javaclasspath...\n");
     endif

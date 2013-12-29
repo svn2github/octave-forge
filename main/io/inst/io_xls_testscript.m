@@ -50,7 +50,7 @@ function io_xls_testscript (intf, fname, intf2=[])
   arr1 = [ 1 2; 3 4.5];
   arr2 = {'r1c1', '=c2+d2'; '', 'r2c2'; true, -83.4};
   opts = struct ("formulas_as_text", 0);
-  
+
   ## 2. Insert empty sheet
   printf ("\n 2. Insert first empty sheet.\n");
   xlswrite (fname, {''}, 'EmptySheet', 'b4', intf2); if (isuno); sleep (dly); endif
@@ -67,8 +67,12 @@ function io_xls_testscript (intf, fname, intf2=[])
   ## 5. Get sheet info & find sheet with data and data range
   printf ("\n 5. Explore sheet info.\n");
   [~, shts] = xlsfinfo (fname, intf); if (isuno); sleep (dly); endif
-  shnr = strmatch ('Testsheet', shts(:, 1));        ## Note case!
-  crange = shts{shnr, 2};                           ## Range can be unreliable
+  shnr = strmatch ('Testsheet', shts(:, 1));      ## Note case!
+  if (isempty (shnr))
+    printf ("Worksheet with data not found - not properly written ... test failed.\n");
+    return
+  endif
+  crange = shts{shnr, 2};                       ## Range can be unreliable
   if (strcmpi (crange, "A1:A1"))
     crange = ''
   endif
@@ -152,16 +156,20 @@ function io_xls_testscript (intf, fname, intf2=[])
 
   try
     # Just check if it contains any string
-    assert ( (ischar (raw{3, 3}) && ~isempty (raw(3, 3)) && raw{3, 3}(1) == "="), true); 
+    assert ( (ischar (raw{3, 3}) && ! isempty (raw(3, 3)) && raw{3, 3}(1) == "="), true); 
     printf ("    ...OK, formula recovered ('%s').\n", raw{3, 3});
   catch
     printf ("Hmmm.... error, see 'raw(3, 3)'");
-    if (isempty (raw{3, 3}))
-      printf (" (empty, should be a string like '=c2+d2')\n");
-    elseif (isnumeric (raw{3, 3}))
-      printf (" (equals %f, should be a string like '=c2+d2')\n", raw{3, 3}); 
+    if (size (raw, 1) >= 3 && size (raw, 2) >= 3)
+      if (isempty (raw{3, 3}))
+        printf (" (empty, should be a string like '=c2+d2')\n");
+      elseif (isnumeric (raw{3, 3}))
+        printf (" (equals %f, should be a string like '=c2+d2')\n", raw{3, 3}); 
+      else
+        printf ("\n");
+      endif
     else
-      printf ("\n");
+      printf (".. raw{3, 3} doesn't even exist, array too small... Test failed.\n");
     endif
   end_try_catch
   

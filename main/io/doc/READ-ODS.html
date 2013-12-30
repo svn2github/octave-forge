@@ -18,7 +18,7 @@
 	Copyright © 2009 - 2013 Philip Nienhuis &lt;prnienhuis at users.sf.net&gt;</font></font>
 </p>
 	<p align="center"><font face="Arial, sans-serif"><font size="2">
-	This version August 15, 2013</font></font>
+	This version December 30, 2013</font></font>
 </p>
     <p><font face="Arial, sans-serif"><font size="2">
 	<i>(ODS = Open Document Format spreadsheet data format, used by e.g., OpenOffice.org.)</i></font></font>
@@ -57,29 +57,17 @@
 	is more useful during initialization of Octave itself) it can be very
 	helpful when hunting down issues with spreadsheet support in Octave.</font></font></p></dt>
   <dt>
-	<p><font face="Arial, sans-serif"><font size="2"><i><b>io_ods_testscript.m</b></i>
-	<br>Script for testing basic operation of ODS spreadsheet functions. Meant for testers and developers, but I don't mind if mere mortal users give it a try as well ;-)</font></font></p><br></dt>  
+	<p><font face="Arial, sans-serif"><font size="2"><i><b>test_spsh.m</b></i>, <i><b>io_ods_testscript.m</b></i>
+	<br>Undocumented scripts for testing basic operation of ODS spreadsheet functions. Meant for testers and developers, but I don't mind if mere mortal users give it a try as well ;-)</font></font></p><br></dt>  
   
 
 </dl>
     <p align="center"><font face="Arial, sans-serif"><font size="4"><u><b>REQUIRED
     SUPPORT SOFTWARE</b></u></font></font></p><dl>
-    	</dl><font style="font-weight: bold; font-style: italic;" face="Arial, sans-serif"><font size="2">For
-    					Windows (MingW):</font></font>
-    <ul>
+    <p><font face="Arial, sans-serif"><font size="2">(Apart from io package >= 1.3.5 :)</font></font></p>
+    	</dl>
     	<li><p align="left">
-    	<font face="Arial, sans-serif"><font size="2">Octave with Java package
-    	(preferrably &gt;= 1.2.8, although 1.2.6 will do for most functionality)</font></font></p></li></ul>
-    <dl style="font-style: italic; font-weight: bold;">
-    	<dt><p><font face="Arial, sans-serif"><font size="2">For Linux:</font></font></p></dt></dl>
-    <ul>
-    	<li><p align="left">
-    	<font face="Arial, sans-serif"><font size="2">Octave with Java package
-    	(preferrably &gt;= 1.2.8, although 1.2.5 will do for most functionality)</font></font></p></li></ul>
-    	<p><font face="Arial, sans-serif"><font size="2">For ODS access,
-    	you'll need to choose at least one of the following java class files
-    	collections:</font></font></p>
-    <ul>
+    	<font face="Arial, sans-serif"><font size="2">For just read support: <B>Octave > 3.7.2</B> will do just fine; for write support Octave requires Java support to be compiled in, a Java JRE > 1.6.0, and one or more of the following:</font></font></p></li>
     	<li>
 		<p align="left"><font face="Arial, sans-serif"><font size="2">
 		<b>odfdom.jar</b> currently the preferred option)<br>
@@ -170,7 +158,7 @@
     <p align="center"><font face="Arial, sans-serif"><font size="4"><u><b>SPREADSHEET
     FORMULA SUPPORT</b></u></font></font></p><dl>
     	<dt>
-    	<font face="Arial, sans-serif"><font size="2">When using the OTK or UNO
+    	<font face="Arial, sans-serif"><font size="2">When using the OTK, UNO, and/or OCT
     	interface you can:</font></font></dt></dl>
     <ul>
     	<li>
@@ -309,9 +297,8 @@
     </p>
     <p align="center"><font face="Arial, sans-serif"><font size="4"><u><b>MATLAB
     COMPATIBILITY</b></u></font></font></p>
-    	<p><font face="Arial, sans-serif"><font size="2">AFAIK there's no
-    	similar functionality in Matlab (yet?), only for reading and then
-    	very limited.<br>o<b>dsread</b> is fairly
+    	<p><font face="Arial, sans-serif"><font size="2">Depending on the MS-Excel version on the same computer,
+    	Matlab may read/write ODS files using xlsread/xlswrite. Note that decent ODS 1.2 support only started with Excel 2013.<br>o<b>dsread</b> is fairly
     	function-compatible to <b>xlsread</b>, however.</font></font></p><p><font face="Arial, sans-serif"><font size="2">Same goes for <b>odswrite</b>,
     	<b>odsfinfo</b> and <b>xlsfinfo</b> – however <b>ods</b><b>f</b><b>info</b>
     	has better functionality IMO.</font></font></p><br>
@@ -378,6 +365,13 @@
 	</font></font></li></ul>
   <font face="Arial, sans-serif"><font size="2">However, UNO is not stable yet (see below).</font>.
 </p></dt>
+<dt><p><font face="Arial, sans-serif"><font size="2">The <b>OCT (native Octave)</b>
+    	interface is also promising as it is completely under control of Octave (-Forge) developers.
+      Currently it only offers (relatively slow) read support (for ODS, OOXML and gnumeric), but an immense
+      advantage is that for reading ODS no other external software is required.<br>
+      Write support is underway but may be appearing only in 2015, depending on time
+      and resources of the io package developers.</font></font></p></dt>
+
 </dl>
 	
     <p align="center"><font face="Arial, sans-serif"><font size="4"><u><b>TROUBLESHOOTING</b></u></font></font></p><dl>
@@ -555,7 +549,7 @@
     	<font face="Arial, sans-serif"><font size="2">oct2ods.m (revision
     	7159)</font></font></li></ul>
     	<p><font face="Arial, sans-serif"><font size="2">Enjoy!</font></font></p><p align="center"><font face="Arial, sans-serif"><font size="2">Philip
-    	Nienhuis, August 15, 2013</font></font></p><dl><dd><p align="center">
+    	Nienhuis, December 30, 2013</font></font></p><dl><dd><p align="center">
     	<br>
     </p></dd></dl>
     </body></html>

@@ -9,11 +9,11 @@
 <BODY LINK="#0000ff" VLINK="#800080">
 
 <P><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN"></P>
-<FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><P ALIGN="CENTER">README for Excel spreadsheet file r/w access scripts for octave (&gt; 3.4.0)<BR>
+<FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><P ALIGN="CENTER">README for Excel spreadsheet file r/w access scripts for octave (&gt; 3.7.2)<BR>
 <BR>
-Copyright (C) 2009 - 2012 Philip Nienhuis &lt;prnienhuis at users.sf.net&gt;<BR>
+Copyright (C) 2009 - 2013 Philip Nienhuis &lt;prnienhuis at users.sf.net&gt;<BR>
 <BR>
-This version October 14, 2012</P>
+This version December 30, 2012</P>
 </FONT></FONT><B><U><FONT FACE="Arial, sans-serif" SIZE=4><FONT FACE="Arial, sans-serif" SIZE=4><P ALIGN="CENTER">EXCEL .XLS SUPPORT FILES</P>
 </B></U></FONT></FONT><FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><DL>
 <DT><BR>
@@ -48,25 +48,25 @@ This file.</FONT></FONT> </DT><BR>
 </DL>
 <B>calccelladdress.m</B>,</FONT></FONT><FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><DT>Support function called by the script functions; calculates spreadsheet type row/column address based on 1-based row/column numbers.<BR></DT>
 <BR>
-<DT><B>io_xls_testscript.m</B></DT>
-<DT>Script for testing basic features of the spreadsheet scripts. Meant for testers and developers, but I don't mind ordinary users to give it a try.</DT>
+<DT><B>test_spsh.m</B>, <B>io_xls_testscript.m</B></DT>
+<DT>Undocumented scripts for testing basic features of the spreadsheet scripts. Meant for testers and developers, but I don't mind ordinary users to give it a try.</DT>
 </DL>
 <P ALIGN="CENTER"><BR>
 </FONT></FONT><B><U><FONT FACE="Arial, sans-serif" SIZE=4><FONT FACE="Arial, sans-serif" SIZE=4>REQUIRED SUPPORT SOFTWARE</P>
 </B></U></FONT></FONT><FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><DL>
 <DT><BR>
-For the Excel/COM interface:</DT>
+<U><B>For the Excel/COM interface:</B></U></DT>
 </DL>
 
 <UL>
 <LI>A windows computer with Excel installed</LI>
-<LI>Octave-forge Windows-1.0.8 (WITH LATEST SVN PATCHES APPLIED) or later package (preferrably 1.1.10 or later)</LI></UL>
+<LI>Octave-forge Windows-1.2.1</LI></UL>
 
-<P>For the Java / Apache POI / JExcelAPI interfaces (general):</FONT></FONT> </P>
+<P><U><B>For the Java / Apache POI / JExcelAPI / OpenXLS / LibreOffice | OpenOffice.org interfaces (general):</FONT></FONT></B></U> </P>
 
 <UL>
-<FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><LI>octave-forge java-1.2.8 package or later version on Linux</LI>
-<LI>octave-forge java-1.2.8 with latest svn fixes, or later version on Windows/MingW</LI>
+<FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2>
+<LI>Octave 3.7.2 or later with Java support compiled in</LI>
 <LI>Java JRE or JDK &gt; 1.6.0 (hasn't been tested with earlier versions)</LI></UL>
 
 <DL>
@@ -84,11 +84,12 @@ For the Excel/COM interface:</DT>
 
 
 <UL>
-<LI>for OOXML support (only available with Apache POI): </LI></UL>
+<LI>for OOXML support with Apache POI:</LI>
+</UL>
 <DIR>
 <DIR>
 
-<B><P>poi-ooxml-schemas-&lt;version&gt;.jar</B>, <B>xbean.jar</B>, <B>dom4j-1.6.1.jar</B> in javaclasspath. </P>
+<B><P>poi-ooxml-schemas-&lt;version&gt;.jar</B>, + either <B>xbean.jar</B> or <B>xmlbeans.jar</B>, + <B>dom4j-1.6.1.jar</B> in javaclasspath. </P>
 <P>Get them here:</P>
 </FONT></FONT><P><A HREF="http://poi.apache.org/download.html"><FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2>http://poi.apache.org/download.html</FONT></FONT></A><FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2> (&quot;xmlbeans&quot; and poi-ooxml-schemas)</P>
 </FONT></FONT><P><A HREF="http://sourceforge.net/projects/dom4j/files"><FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2>http://sourceforge.net/projects/dom4j/files</FONT></FONT></A><FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2> (dom4j-&lt;version&gt;)</P></DIR>
@@ -107,25 +108,32 @@ For the Excel/COM interface:</DT>
 </DL>
 
 <UL>
-<LI>class .jar: <B>jxl.jar</B> in classpath</LI>
-<LI>Get it here: </FONT></FONT><A HREF="http://sourceforge.net/projects/openxls/"><FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2>http://sourceforge.net/projects/openxls/</FONT></FONT></A></LI></UL>
+<LI>class .jar: <B>OpenXLS.jar</B> in classpath</LI>
+<LI>Get it here: </FONT></FONT><A HREF="http://sourceforge.net/projects/openxls/"><FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2>http://sourceforge.net/projects/openxls/</FONT></A> (Be sure to get version 10)</FONT></LI>
+<LI>class .jar: <B>gwt-servlet-deps.jar</B> in classpath</LI>
+<LI>Get it here: </FONT></FONT><A HREF="http://www.gwtproject.org/download.html"><FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2>http://www.gwtproject.org/download.html</FONT></A> ("Download GWT SDK")</FONT></LI>
+</UL>
 
 <FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><DL>
-<DT>These class libs must be referenced with full pathnames in your javaclasspath.<br>They had best be put in /&lt;libdir&gt;/java where &lt;libdir&gt; on Linux is usually /usr/lib; on MinGW it is usually /lib. The PKG_ADD command expects the class libs there; if they are elsewhere, add them in ./share/octave/&lt;version&gt;/m/startup/octaverc using appropriate javaaddpath statements or a chk_spreadsheet_support() call.</DT></DL>
+<DT>These class libs must be referenced with full pathnames in your javaclasspath.<br>They had best be put in /&lt;libdir&gt;/java (where &lt;libdir&gt; on Linux is usually /usr/lib; on MinGW it is usually /lib). The PKG_ADD command expects the class libs there; if they are elsewhere, add them in ./share/octave/&lt;version&gt;/m/startup/octaverc using appropriate javaaddpath statements or a chk_spreadsheet_support() call.</DT></DL>
 <DL><DT>UNO specific  (invoking OpenOffice.org (or clones) behind the scenes):<BR>
 NOTE: EXPERIMENTAL!!  A working OpenOffice.org installation. The utility function chk_spreadsheet_support can be used to add the needed entries to the javaclasspath.<BR></DT>
 </DL>
+
+<P><FONT FACE="Arial, sans-serif" SIZE=2><U><B>For the native Octave interface</B></U> <br>
+(currently only read support for OOXML, ODS 1.2 and Gnumeric), no external support software is required.</FONT></P>
+
 <P ALIGN="CENTER"><BR>
 </FONT></FONT><B><U><FONT FACE="Arial, sans-serif" SIZE=4><FONT FACE="Arial, sans-serif" SIZE=4>USAGE</P>
 </B></U></FONT></FONT><FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><DL>
 <DT><BR>
 <B>xlsread</B> and <B>xlswrite</B> are mere wrappers for <B>xlsopen</B>-<B>xls2oct</B>-<B>xlsclose</B>-<B>parsecell</B> and <B>xlsopen</B>-<B>oct2xls</B>-<B>xlsclose</B> sequences, resp. They exist for the sake of Matlab compatibility.<BR>
 <BR>
-<B>xlsfinf</B>o can be used for finding out what worksheet names exist in the file. For OOXML files you either need MS-Excel 2007 for Windows (or later version) installed, and/or the input parameter REQINTF should be specified with a value of 'poi' (case-insensitive) and -obviously- the complete POI interface must have been installed.<BR>
+<B>xlsfinf</B>o can be used for finding out what worksheet names exist in the file. For OOXML files you either need MS-Excel 2007 for Windows (or later version) installed, and/or the input parameter REQINTF should be specified with a value of 'poi', 'oxs' or 'uno' (case-insensitive) and -obviously- either the complete POI interface must have been installed, and/or OpenXLS, and/or LibreOffice/OpenOffice.org.<BR>
 <BR>
 Invoking <B>xlsopen</B>/..../<B>xlsclose</B> directly provides for much more flexibility, speed, and robustness than <B>xlsread</B> / <B>xlswrite</B>. Indeed, using the same file handle (pointer struct) you can mix reading &amp; writing before writing the workbook out to disk using xlsclose.<BR>
 And: <B>xlsopen </B>/ <B>xlsclose</B> hide the gory interface details from the user.<BR>
-Currently only .xls files (BIFF8) can be read/written; using JExcelAPI BIFF5 can be read as well. For OOXML files either Excel 2007 for Windows (or higher) and/or the complete Apache POI interface must be installed (and probably the REQINTF parameter specified with a value of 'poi').<BR>
+Currently only .xls files (BIFF8) can be read/written; using JExcelAPI BIFF5 can be read as well. For OOXML files either Excel 2007 for Windows (or higher) and/or the complete Apache POI interface, and/or OpenXLS v 10, or LibreOffice must be installed (and probably the REQINTF parameter specified with a value of 'poi', 'oxs', or 'uno').<BR>
 <BR>
 When using <B>xlsopen</B>....<B>xlsclose</B> be sure to keep track of the file handle struct.<BR>
 <BR>
@@ -167,7 +175,7 @@ A possible scenario:<BR>
 </FONT></FONT><B><U><FONT FACE="Arial, sans-serif" SIZE=4><FONT FACE="Arial, sans-serif" SIZE=4><P ALIGN="CENTER">SPREADSHEET FORMULA SUPPORT</P>
 </B></U></FONT></FONT><FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><DL>
 <DT><BR>
-When using the COM, POI, JXL, and UNO interfaces you can:</DT>
+When using the COM, POI, JXL, OXS, UNO and OCT interfaces you can:</DT>
 </DL>
 
 <UL>
@@ -200,8 +208,6 @@ Octave's xlsread (and for that matter, xlsfinfo as well) returns info about the 
 When using the Java interface, reading and writing xls-files by octave's xlsread is platform-independent. On systems w/o installed Excel, Matlab can only read Excel 95 formatted .xls files (written using ML <B>xlswrite</B>'s 'Basic&quot; option) – and then differently than under Windows.....</DT>
 <DT>Matlab's <B>xlsread</B> returns strings for cells containing date values. This makes for endless if-then-elseif-else-end constructs to catch all expected date formates. Octave returns numerical data (where 0 = 1/1/1900 – you can easily transfer them into proper octave date values yourself using e.g. datestr(), see bottom of this document for more info).<BR>
 <BR>
-Matlab's <B>xlsread</B> invokes <B>csvread</B> if no Excel interface is present. Octave's <B>xlsread</B> doesn't.<BR>
-<BR>
 <B><U>xlswrite</B></U><BR>
 Octave's <B>xlswrite</B> works on systems w/o Excel support, Matlab's doesn't (properly).</DT>
 <DT>When specifying a sheet number larger than the number of existing sheets in an .xls file, Matlab's <B>xlswrite</B> adds empty sheets until the new sheet number is created; Octave's <B>xlswrite</B> only adds one sheet called &quot;Sheet&lt;number&gt;&quot; where &lt;number&gt; is the specified sheet number. </DT>
@@ -215,7 +221,7 @@ Octave's <B>xlsfinfo</B> also shows (and returns) the range of the smallest rect
 </DL>
 </FONT></FONT><B><U><FONT FACE="Arial, sans-serif" SIZE=4><FONT FACE="Arial, sans-serif" SIZE=4><P ALIGN="CENTER">COMPARISON OF INTERFACES &amp; USAGE</P>
 </B></U></FONT></FONT><FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><DL>
-<DT>Using Excel itself (through <b>COM / ActiveX</b> on Windows systems) is probably the most robust and versatile and especially FAST option. There's one gotcha: in case of some type of COM errors Excel will keep running invisibly; you can only end it through Task Manager. <BR>
+<DT>Using Excel itself (through <b>COM / ActiveX</b> on Windows systems) is probably the most robust and versatile and especially FAST option (though for OOXML the OCT interface is probably faster). There's one gotcha: in case of some type of COM errors Excel will keep running invisibly; you can only end it through Task Manager. <BR>
 A tiny problem is that one cannot find out easily through COM what file types are supported; xls, wks, wk1, xlsx, etc. <BR>
 Another -obvious- limitation is that COM Excel access only works on Windows systems where Excel is installed. <BR>
 <BR>
@@ -224,16 +230,16 @@ Another -obvious- limitation is that COM Excel access only works on Windows syst
 <DT>JexcelAPI, unlike ApachePOI, doesn't evaluate functions while reading but instead relies on cached results (i.e. results computed by Excel itself). Depending on Excel settings (&quot;Automatic calculation&quot; ON or OFF) this may or may not yield incorrect (or expected) results. <BR>
 <BR>
 <b>Apache POI</b> (Java-based and platform-independent too) is based on the OpenOffice.org I/O Excel r/w routines. It is a more versatile than JExcelAPI, while it doesn't support BIFF5 it does support BIFF8 (Excel 97 – 2003) and OOXML (Excel 2007).</DT>
-<DT>It is slower than native JXL let alone Excel &amp; COM but it features active formula evaluation, although at the moment (fall 2012, v. 3.8) still not *all* Excel functions have been implemented (a daunting task for the POI devs, as it is hard to keep up with MS here). I've made the relevant subfunction (xls2jpoi2oct) fall back to cached formula results (and yield a suitable warning) for non-implemented Excel functions while reading Excel files. <BR>
+<DT>It is slower than native JXL let alone Excel &amp; COM but it features active formula evaluation, although at the moment (end of 2013, v. 3.9) still not *all* Excel functions have been implemented (a daunting task for the POI devs, as it is hard to keep up with MS here). I've made the relevant subfunction (xls2jpoi2oct) fall back to cached formula results (and yield a suitable warning) for non-implemented Excel functions while reading Excel files. <BR>
 <BR>
-<b>OpenXLS</b> (an open source version of Extentech's commercial Java-xls product) is still experimental. It seems to work faster than JExcelAPI, but it has other issues - i.e., it locks the .xls file and the unlocking mechanism is a bit wonky. Sometimes xls files keep being locked until Octave is shut down. The solution suggested by Extentech leaves your working directory cluttered with temporary files. <BR>
-Currently OXS write support is disabled (but the code is there). OpenXLS doesn't support reading back formulas as text strings.<BR>
+<b>OpenXLS</b> (an open source version of Extentech's commercial Java-xls product) is still a bit experimental. It seems to work faster than JExcelAPI, but it has other issues - i.e., processing of OOXML files is still unreliable.<BR>
 <BR>
-<b>UNO</b> (invoking OpenOffice.org or clones behind the scenes, a la ActiveX) is experimental. It works FAST (i.e., once OOo itself is loaded and initialized which can take some time) and can process much larger spreadsheets than the other Java-based interfaces because the data are not entered in the JVM but in OOo's memory.<BR>
+<b>UNO</b> (invoking OpenOffice.org (OOo) or LibreOffice (LO) or clones behind the scenes, a la ActiveX) is experimental. It works FAST (i.e., once OOo itself is loaded and initialized which can take some time) and can process much larger spreadsheets than the other Java-based interfaces because the data are not entered in the JVM but in OOo's memory.<BR>
 A big stumbling block is that odsclose() on a UNO xls struct will kill ALL OpenOffice.org invocations, also those that were not related to Octave! This is due to UNO-Java limitations.<BR>
 The underlying issue is that when Octave starts an OpenOffice.org invocation, OpenOffice.org must be closed for Octave to be able to exit; otherwise Octave will wait for OOo to shut down before it can terminate itself. So Octave must kill OOo to be able to terminate.<br>
 A way out hasn't been found yet.<br><br>
-All in all, of the three Java options I'd prefer Apache POI rather than OpenXLS or JexcelAPI. But the latter is indispensable for BIFF5 formats. Once UNO is stable it is to be preferred as it can read ALL file formats supported by OOo (viz. wk1, ods, xlsx, sxc, ...). If you need to process really large spreadsheets, UNO is by far the fastest option (behind COM on Windows systems), but for smaller spreadsheets you'll find that the other interfaces are more efficient.</DT>
+All in all, of the three Java options I'd prefer Apache POI rather than OpenXLS or JexcelAPI. But the latter is indispensable for BIFF5 formats. Once UNO is stable it is to be preferred as it can read ALL file formats supported by OOo (viz. wk1, ods, xlsx, sxc, ...). If you need to process really large spreadsheets, UNO is by far the fastest option (behind COM on Windows systems), but for smaller spreadsheets you'll find that the other interfaces are more efficient.<DT><br>
+<DT>The OCT interface (native Octave calls) is by far the fastest for OOXML, the only Octave option for gnumeric, but for ODS it is still slower than COM/ActiveX or UNO. OCT write support is under construction and already working but not yet very mature.</DT>
 <DT><br>Some notes on the choice for Java:</DT>
 </DL>
 <OL>
@@ -251,10 +257,11 @@ All in all, of the three Java options I'd prefer Apache POI rather than OpenXLS 
 </B><DL>
 <DT>The Java virtual machine (JVM), when initialized by octave, reserves one big chunk of your computer's RAM in which all java classes and methods etc. are to be loaded: the java memory pool. It does this because java has a very sophisticated &quot;garbage collection&quot; system. At least on Windows, the initial size is 2MB and the maximum size is 16 MB. On Linux this allocated size might differ (e.g., my Mandriva box with openJDK has a 512 MB default max setting). This part of memory is where the Java-based XLS/ODS octave routines live and keep their variables etc.</DT>
 <DT>For transferring large pieces of information to and from spreadsheets you might hit the limits of this pool. E.g. to be able to handle I/O of an array of around 500,000 cells I needed a memory pool size of 512 MB.</DT>
-<DT>The memory size can be increased by inserting a file called &quot;java.opts&quot; (without quotes) in the directory ./share/octave/packages/java-&lt;version&gt; (where the script file javaclasspath.m is located), containing just the following lines:</DT>
+<DT>The memory size can be increased by inserting a file called &quot;java.opts&quot; (without quotes) in the directory ./share/octave/<version>/java (where the script file javaclasspath.m is located; try "which javaclasspath" in an Octave terminal to get the proper location), containing just the following lines:</DT>
 </FONT></FONT><B><FONT FACE="Courier New, monospace" SIZE=2><FONT FACE="Courier New, monospace" SIZE=2><DT>-Xms16m<BR>
 -Xmx512m</DT>
-</B></FONT></FONT><FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><DT>(where 16 = initial size, 512 = maximum size (in this example), m stands for Megabyte. This maximum is system-dependent. E.g., I have a 1 GB setting).</DT>
+</B></FONT></FONT><FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><DT>(where 16 = initial size, 512 = maximum size (in this example), m stands for Megabyte. This maximum is system-dependent. E.g., I have a 1 GB setting).<br>
+For further details consult the Octave manual, "Java Interface", "FAQ", "How can I handle memory limitations?"</DT><br><br>
 <DT>After processing a large chunk of spreadsheet information you might notice that octave's memory footprint does not shrink so it looks like Java's memory pool does not shrink back; but rest assured, the memory footprint is the <I>allocated</I> (reserved) memory size, not the actual used size. After the JVM has done its garbage collection, only the so-called &quot;working set&quot; of the memory allocation is really in use and that is a trimmed-down part of the memory allocation pool. On Windows systems it often suffices to minimize the octave terminal for a few seconds to get a more reasonable memory footprint.</DT>
 </DL>
 </FONT></FONT><B><U><FONT FACE="Arial, sans-serif" SIZE=4><FONT FACE="Arial, sans-serif" SIZE=4><P ALIGN="CENTER">TROUBLESHOOTING</P>
@@ -328,6 +335,6 @@ Some other options for development (who?):</DT>
 
 <P>Enjoy!</FONT></FONT> </P>
 <FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><DL>
-<DD ALIGN="CENTER">Philip Nienhuis, October 14, 2012</DD>
+<DD ALIGN="CENTER">Philip Nienhuis, December 30, 2013</DD>
 </DL></FONT></FONT></BODY>
 </HTML>

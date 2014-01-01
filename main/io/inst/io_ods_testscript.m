@@ -23,7 +23,9 @@
 ## @var{intf1} can be one of OTK, JOD, UNO, or OCT.  No checks
 ## are made as to whether the requested interface is supported at all.  If
 ## @var{fname} is supplied, that filename is used for the tests, otherwise
-## filename "io-test.ods" is chosen by default.
+## filename "io-test.ods" is chosen by default.  This parameter is required
+## to have e.g., JOD distinguish between testing (reading) .ods (ODS 1.2)
+## and .sxc (old OpenOffice.org & StarOffice) files (that UNO can write).
 ##
 ## If @var{intf2} is supplied, that interface will be used for writing the
 ## spreadsheet file and @var{intf1} will be used for reading.  The OCT
@@ -46,8 +48,9 @@
 ## 2013-12-18 Add option to write and read with different interfaces (needed for OCT)
 ##     ''     Catch more erroneous read-back results
 ## 2013-12-31 More extensive texinfo help text
+##     ''     Provide default test file name
 
-function io_ods_testscript (intf, fname, intf2='')
+function io_ods_testscript (intf, fname="io-test.ods", intf2='')
 
   printf ("\nTesting .ods interface %s using file %s...\n", upper (intf), fname);
   

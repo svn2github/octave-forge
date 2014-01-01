@@ -52,8 +52,9 @@
 ## 2013-12-31 Style fixes
 ##     ''     Also delay a bit if write intf2 = UNO to avoid unzip errors
 ## 2014-01-01 Provisionally fall back to COM or POI for intf2
+##     ''     Provide default test file name
 
-function io_xls_testscript (intf, fname, intf2=[])
+function io_xls_testscript (intf, fname="io-test.xls", intf2=[])
 
   printf ("\nTesting .xls interface %s using file %s...\n", upper (intf), fname);
 

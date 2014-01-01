@@ -81,6 +81,7 @@
 ## 2013-09-30 OCT interface added
 ## 2013-10-01 Warn for empty struct input
 ## 2013-12-29 Style fixes
+## 2014-01-01 Style fixes
 
 function [ xls ] = xlsclose (xls, varargs)
 
@@ -98,7 +99,7 @@ function [ xls ] = xlsclose (xls, varargs)
         force = 1;
 
       ## Interface-specific clauses here:
-      elseif (! isempty (strfind (tolower (varargin{ii}), '.')))
+      elseif (! isempty (strfind (tolower (varargin{ii}), ".")))
         ## Apparently a file name. First some checks....
         if (xls.changed == 0 || xls.changed > 2)
           warning ("xlsclose: file %s wasn't changed, new filename ignored.", xls.filename);
@@ -146,7 +147,7 @@ function [ xls ] = xlsclose (xls, varargs)
   endif
 
   if (xls.changed && xls.changed < 3)
-    warning (sprintf ("xlsclose: file %s could not be saved. Read-only or in use elsewhere?",...
+    warning (sprintf ("xlsclose: file %s could not be saved. Read-only or in use elsewhere?", ...
                       xls.filename));
     if (force)
       xls = [];

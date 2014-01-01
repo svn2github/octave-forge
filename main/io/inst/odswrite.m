@@ -97,14 +97,13 @@
 ## 2012-06-08 Tabs replaced by double space
 ## 2012-10-24 Style fixes
 ## 2013-12-18 Copyright string updates, style fixes
+## 2014-01-01 Drop file extension check
 
 function [ rstatus ] = odswrite (filename, data, wsh=1, crange="", reqintf=[])
 
   ## Input validity checks
   if (nargin < 2)
     usage ("Insufficient arguments - see 'help odswrite'");
-  elseif (! ischar (filename) || isempty (findstr (".ods", tolower (filename))))
-    error ("First argument must be a filename (incl. .ods suffix for OTK & JOD)");
   endif
 
   ods = odsopen (filename, 1, reqintf);

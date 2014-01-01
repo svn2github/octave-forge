@@ -26,6 +26,7 @@
 ## 2012-10-24 Style fixes
 ## 2013-01-20 Adapted to ML-compatible Java calls
 ## 2013-12-06 Updated copyright strings
+## 2014-01-01 First throw at input/output type filters
 
 function [ xls, xlssupport, lastintf ] = __UNO_spsh_open__ (xls, xwrite, filename, xlssupport)
 
@@ -60,9 +61,18 @@ function [ xls, xlssupport, lastintf ] = __UNO_spsh_open__ (xls, xwrite, filenam
       unotmp = javaObject ("com.sun.star.uno.Type", "com.sun.star.frame.XComponentLoader");
       aLoader = oDesktop.queryInterface (unotmp);
       ## Some trickery as Octave Java cannot create initialized arrays
-      lProps = javaArray ("com.sun.star.beans.PropertyValue", 1);
-      lProp = javaObject ("com.sun.star.beans.PropertyValue", "Hidden", 0, true, []);
+      lProps = javaArray ("com.sun.star.beans.PropertyValue", 2);
+      ## Set file type property
+      [ftype, filtnam] = __get_ftype__ (filename);
+      if (isempty (filtnam))
+        filtnam = "calc8";
+      endif
+      lProp = javaObject ...
+        ("com.sun.star.beans.PropertyValue", "FilterName", 0, filtnam, []);
       lProps(1) = lProp;
+      ## Set hidden property
+      lProp = javaObject ("com.sun.star.beans.PropertyValue", "Hidden", 0, true, []);
+      lProps(2) = lProp;
       flags = 0;
       if (xwrite > 2)
         xComp = aLoader.loadComponentFromURL ("private:factory/scalc", "_blank", flags, lProps);

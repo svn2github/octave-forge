@@ -21,7 +21,10 @@
 ## Updates:
 ## 2012-10-23 Style fixes
 ## 2013-01-20 Adapted to ML-compatible Java calls
-## 2013-12-06 Updated copyright strings;
+## 2013-12-06 Updated copyright strings
+## 2014-01-01 Fixed bug ignoring xls.nfilename
+##     ''     Simplified filename/nfilename code
+##     ''     First throw at output file type filters
 
 function [ xls ] = __UNO_spsh_close__ (xls, force)
 
@@ -29,6 +32,7 @@ function [ xls ] = __UNO_spsh_close__ (xls, force)
     ## New filename specified
     if (strcmp (xls.xtype, 'UNO'))
       ## For UNO, turn filename into URL
+      nfilename = xls.nfilename;
       if    (! isempty (strmatch ("file:///", nfilename))... 
           || ! isempty (strmatch ("http://",  nfilename))...
           || ! isempty (strmatch ("ftp://",   nfilename))...   
@@ -47,14 +51,16 @@ function [ xls ] = __UNO_spsh_close__ (xls, force)
           flen = numel (tmp);
           tmp(2:2:2*flen) = tmp;
           tmp(1:2:2*flen) = "/";
-          nfilename = [ "file://" tmp{:} ];
+          filename = [ "file://" tmp{:} ];
         endif
       endif
     endif
+  else
+    filename = xls.filename;
   endif
 
   try
-    if (xls.changed && xls.changed < 3)
+    if (xls.changed > 0 && xls.changed < 3)
       ## Workaround:
       unotmp = javaObject ("com.sun.star.uno.Type", "com.sun.star.frame.XModel");
       xModel = xls.workbook.queryInterface (unotmp);
@@ -66,18 +72,28 @@ function [ xls ] = __UNO_spsh_close__ (xls, force)
         xStore = xls.app.xComp.queryInterface (unotmp);
         if (xls.changed == 2)
           ## Some trickery as Octave Java cannot create non-numeric arrays
-          lProps = javaArray ("com.sun.star.beans.PropertyValue", 1);
+          lProps = javaArray ("com.sun.star.beans.PropertyValue", 2);
+          ## Set file type property
+          [ftype, filtnam] = __get_ftype__ (filename)
+          if (isempty (filtnam))
+            filtnam = "calc8";
+          endif
+          lProp = javaObject ...
+            ("com.sun.star.beans.PropertyValue", "FilterName", 0, filtnam, []);
+          lProps(1) = lProp;
+          ## Set "Overwrite" property
           lProp = ...
             javaObject ("com.sun.star.beans.PropertyValue", "Overwrite", 0, true, []);
-          lProps(1) = lProp;
+          lProps(2) = lProp;
           ## OK, store file
-          if (isfield (xls, "nfilename"))
+      #    if (isfield (xls, "nfilename"))
             ## Store in another file 
             ## FIXME check if we need to close the old file
-            xStore.storeAsURL (xls.nfilename, lProps);
-          else
-            xStore.storeAsURL (xls.filename, lProps);
-          endif
+      #      xStore.storeAsURL (xls.nfilename, lProps);
+      #    else
+      #      xStore.storeAsURL (xls.filename, lProps);
+            xStore.storeAsURL (filename, lProps);
+      #    endif
         else
           xStore.store ();
         endif

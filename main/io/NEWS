@@ -1,18 +1,100 @@
 Summary of important user-visible changes for releases of the io package
 
 ===============================================================================
+io-2.0.0   Release Date: 2014-01-01 Release Manager: Philip Nienhuis
+===============================================================================
+
+*** Some code simplifications & style fixes
+
+An updated overview of which interface can be used for what types of files
+(extension):
+~ = dependent on Excel/LO/OOo version);  + = read/write;  R = only reading )
+
+                                 Interface
+File extension       COM POI POI/OOXML JXL OXS UNO OTK JOD OCT
+--------------------------------------------------------------
+.xls (Excel95)        R                 R       R 
+.xls (Excel97-2003)   +   +      +      +   +   +
+.xlsx                 ~          +         (+)  R           R
+.xlsb, .xlsm          ~                     ?   R
+.wk1                  +                         R
+.wks                  +                         R
+.dbf                  +                         +
+.ods                  ~                         +   +   +   R
+.sxc                                            +       +
+.fods                                           +
+.uos                                            +
+.dif                                            +
+.csv                  +                         R
+.gnumeric                                                   R
+--------------------------------------------------------------
+
+For unsupported file types, UNO will write .ods whatever the actual file
+extension.
+
+*** Bug fixes:
+    - Fixed texinfo headers for the test scripts
+
+    - The UNO interface no longer writes ODS for all file extensions. An
+      updated list is shown above.
+
+*** Known issues:
+    - OOXML write/read support in OpenXLS (OXS) is a bit wonky. Doesn't
+      pass Octave OF-io's test script. Upstream has been informed of one
+      example bug.
+    - OpenXLS' OOXML depends on another .jar file (gwt-servlet-deps.jar).
+      Rip it from this archive (108+ MB download): gwt-2.5.1.zip,
+      available at:
+      http://www.gwtproject.org/download.html  ("Download GWT SDK")
+    - LibreOffice/OpenOffice.org (UNO interface) doesn't write .csv
+    - OTK interface (.ods) sometimes writes ridiculous wide columns.
+
+===============================================================================
 io-1.3.6   Release Date: 2013-TBA Release Manager: Philip Nienhuis
 ===============================================================================
+
+*** OXS (OpenXLS) now has read/write support. AFAICS it is the fastest Java-
+    based interface. Provisionally .xls (BIFF8, Excel'97-2003) works fairly
+    reliably. OOXML works too but is unstable (see below, "Known issues").
+
+*** Some code simplifications & style fixes
+
+*** xlsread may fall back to csvread for .csv files when no Excel (COM) or
+    LibreOffice/OOo (UNO) interface is supported (bug #40993)
+    
+An updated overview of which interface can be used for what types of files
+(extension):
+( ~ = dependent on Excel version);  + = read/write;  R = only reading )
+
+                                 Interface
+File extension       COM POI POI/OOXML JXL OXS UNO OTK JOD OCT
+--------------------------------------------------------------
+.xls (Excel95)        R                 R       R 
+.xls (Excel97-2003)   +   +      +      +   +   +
+.xlxx/xlsm            +          +         (+)  +           R
+.wk1                  +                         +
+.wks                  +                         +
+.dbf                  +                         +
+.ods                  ~                         +   +   +   R
+.sxc                                            +       +
+.fods                                           +
+.uos                                            +
+.dif                                            +
+.csv                  +                         +
+.gnumeric                                                   R
+--------------------------------------------------------------
 
 *** Bug fixes:
     - post_install.m: seems unneeded, provisionally commented out all commands
     - PKG_ADD: dropped all references to Java package, now just checks
       octave_config_info("features").JAVA
 
-*** Some code simplifications & style fixes
-
-*** xlsread may fall back to csvread for .csv files when no Excel (COM) or
-    LibreOffice/OOo (UNO) interface is supported (bug #40993)
+*** Known issues:
+    - OOXML write/read support in OpenXLS (OXS) is a bit wonky. Doesn't pass
+      Octave OF-io's test script. Upstream has been informed of one example bug.
+    - OpenXLS' OOXML depends on another .jar file (gwt-servlet-deps.jar). Rip
+      it from this archive (108+ MB download): gwt-2.5.1.zip, available at:
+      http://www.gwtproject.org/download.html  ("Download GWT SDK")
 
 ===============================================================================
 io-1.3.5   Release Date: 2013-TBA Release Manager: Philip Nienhuis

@@ -73,7 +73,9 @@ function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename
     fid = fopen (sprintf ('%s/xl/workbook.xml', tmpdir));
     if (fid < 0)
       ## File open error
-      error ("xls2oct: file %s couldn't be unzipped", filename);
+      warning ("xls2oct: file %s couldn't be unzipped", filename);
+      xls = [];
+      return
     else
       ## Fill xlsx pointer 
       xls.workbook          = tmpdir;       # subdir containing content.xml

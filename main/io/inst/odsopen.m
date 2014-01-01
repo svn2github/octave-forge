@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012,2013,2014 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -74,7 +74,7 @@
 ##
 ## @end deftypefn
 
-## Author: Philip Nienhuis
+## Author: Philip Nienhuis <prnienhuis at users.sf.net>
 ## Created: 2009-12-13
 ## Updates: 
 ## 2009-12-30 ....<forgot what is was >
@@ -133,6 +133,8 @@
 ## 2013-12-01 Updated texinfo header
 ## 2013-12-18 Style fixes
 ## 2013-12-27 Use one variable for processed file types
+## 2014-01-01 Add warning that UNO will write ODS f. unsupported file extensions
+##     ''     Copyright string update
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
@@ -284,6 +286,10 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
   endif
 
   if (odsinterfaces.UNO && ! odssupport && ftype < 5)
+    ## Warn for LO / OOo stubbornness
+    if (ftype == 0 || ftype == 5 || ftype == 6)
+      warning ("UNO interface will write ODS format for unsupported file extensions")
+    endif
     [ ods, odssupport, lastintf ] = ...
               __UNO_spsh_open__ (ods, rw, filename, odssupport);
   endif

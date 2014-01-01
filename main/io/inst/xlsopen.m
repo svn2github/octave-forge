@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -80,7 +80,7 @@
 ##
 ## @end deftypefn
 
-## Author: Philip Nienhuis
+## Author: Philip Nienhuis <prnienhuis at users.sf.net>
 ## Created: 2009-11-29
 ## Updates:
 ## 2010-01-03 Added OOXML support
@@ -137,6 +137,9 @@
 ## 2013-12-27 Use one variable for processed file type
 ##     ''     Style fixes
 ## 2013-12-28 Allow OOXML support for OpenXLS
+## 2014-01-01 Add .csv to supported file extensions
+##     ''     Add warning that UNO will write ODS f. unsupported file extensions
+##     ''     Copyright string update
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
@@ -220,7 +223,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
   ## Check if Excel file exists. First check for (supported) file name suffix:
   ftype = 0;
   has_suffix = 1;
-  [sfxpos, ~, ~, ext] = regexpi (filename, '(\.xlsx?|\.gnumeric|\.ods)');
+  [sfxpos, ~, ~, ext] = regexpi (filename, '(\.xlsx?|\.gnumeric|\.ods|\.csv)');
   if (! isempty (sfxpos))
     ext = lower (ext{end});
     ## .xls or .xls[x,m,b] or .gnumeric is there, but at the right(most) position?
@@ -241,6 +244,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
         case ".csv"                               ## csv. Detected for xlsread afficionados
           ftype = 6;
         otherwise
+          warning ("xlsopen: file type ('%s' extension) not supported", ext);
       endswitch
     endif
   else
@@ -335,6 +339,10 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
   endif
 
   if ((! xlssupport) && xlsinterfaces.UNO && (ftype != 5))
+    ## Warn for LO / OOo stubbornness
+    if (ftype == 0 || ftype == 5 || ftype == 6)
+      warning ("UNO interface will write ODS format for unsupported file extensions")
+    endif
     [ xls, xlssupport, lastintf ] = __UNO_spsh_open__ (xls, xwrite, filename, xlssupport);
   endif
 

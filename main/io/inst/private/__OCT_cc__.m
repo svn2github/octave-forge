@@ -52,7 +52,7 @@ if (isnumeric (in))
     output = hstr(in);
   elseif (in > 26 && in < 703)
     letter1 = fix (in / 26);
-    if (0 == in - (letter1 * 26)
+    if (! (in - (letter1 * 26)))
       output = [hstr(letter1 - 1) hstr(26)];
     else
       a = hstr(letter1);
@@ -67,7 +67,7 @@ if (isnumeric (in))
       letter1 = letter1 + 1;
     endif
     letter2 = fix (fix (in - letter1 * 26 * 26) / 26);
-    if (! (in - (letter1 * 26 * 26) - (letter2 * 26));
+    if (! (in - (letter1 * 26 * 26) - (letter2 * 26)));
       letter2 = letter2 - 1;
     endif
     letter3 = in - (letter1 * 26 * 26) - (letter2 * 26);
@@ -77,7 +77,7 @@ if (isnumeric (in))
     output = [hstr(letter1) hstr(letter2) hstr(letter3)];
   endif
 
-elseif (ischar(in))
+elseif (ischar (in))
   strlength = length (in);
   
   ## Input check

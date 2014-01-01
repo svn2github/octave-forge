@@ -31,7 +31,7 @@
 ## 2012-10-12 Renamed & moved into ./private
 ## 2012-10-24 Style fixes
 ## 2013-12-06 Updated copyright strings
-## 2013-12-29 Overhauled reading section proper. Now does formulas too
+## 2013-12-29 Overhauled actual worksheet reading section. Now does formulas too
 
 function [ rawarr, xls, rstatus ] = __OXS_spsh2oct__ (xls, wsh, cellrange, spsh_opts)
 

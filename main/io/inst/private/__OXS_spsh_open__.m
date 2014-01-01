@@ -23,6 +23,7 @@
 ## 2013-12-06 Updated copyright string; style fixes
 ## 2013-12-28 Fix creating new files
 ##      ''    Implemented OOXML support for OpenXLS v.10
+## 2012-12-29 Fixed file open support, no more lingering file locks 
 
 function [ xls, xlssupport, lastintf ] = __OXS_spsh_open__ (xls, xwrite, filename, xlssupport, ftype)
 

@@ -32,6 +32,7 @@
 ## 2013-11-03 Fix wrong variable name "xml"->"sheet" in __OCT_ods_getusedrange__ 
 ## 2013-11-16 Replace fgetl calls by fread to cope with EOLs
 ## 2013-12-14 (OOXML) Insert scanning to circumvent faulty "A1" range from POI
+## 2014-01-01 Beware of empty sheets in __OCT_xlsx_getusedrange__ range scanner
 
 function [ trow, brow, lcol, rcol ] = __OCT_getusedrange__ (spptr, ii)
 
@@ -73,18 +74,24 @@ function [ trow, brow, lcol, rcol ] = __OCT_xlsx_getusedrange__ (spptr, ii);
   node = getxmlnode (xml, "dimension");
   crange = getxmlattv (node, "ref");
   if (strcmpi (crange, "A1"))
-    ## Looks like it has been written by POI OOXML. We need a better guess
+    ## Looks like it has been written by POI OOXML or UNO. We need a better guess
     ## 1. Re-read entire worksheet
     fid = fopen (sprintf ('%s/xl/worksheets/sheet%d.xml', spptr.workbook, ii));
     xml = fread (fid, Inf, "char=>char").';
     fclose (fid);
     ## 2. Scan for cell addresses
     addr = cell2mat (regexp (xml, '<c r="(\w+)?"', "tokens"));
-    ## 3. Split in rows & columns, then sort
-    rows = sort (str2double (cell2mat (regexp (addr, '\d+', "match"))));
-    cols = sort (strjust (char (cell2mat (regexp (addr, '\D*', "match")))));
-    ## 4. Extract range by taking outer row/col limits
-    crange = sprintf ("%s%d:%s%d", cols(1), rows(1), cols(end), rows(end));
+    if (isempty (addr))
+      ## Empty sheet
+      trow = brow = lcol = rcol = 0;
+      return
+    else
+      ## 3. Split in rows & columns, then sort
+      rows = sort (str2double (cell2mat (regexp (addr, '\d+', "match"))));
+      cols = sort (strjust (char (cell2mat (regexp (addr, '\D*', "match")))));
+      ## 4. Extract range by taking outer row/col limits
+      crange = sprintf ("%s%d:%s%d", cols(1), rows(1), cols(end), rows(end));
+    endif
   endif
   [~, nrows, ncols, trow, lcol] = parse_sp_range (crange);
   brow = trow + nrows - 1;

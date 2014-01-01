@@ -25,6 +25,7 @@
 ## 2014-01-01 Fixed bug ignoring xls.nfilename
 ##     ''     Simplified filename/nfilename code
 ##     ''     First throw at output file type filters
+##     ''     Add ";" to suppress debug output
 
 function [ xls ] = __UNO_spsh_close__ (xls, force)
 
@@ -74,7 +75,7 @@ function [ xls ] = __UNO_spsh_close__ (xls, force)
           ## Some trickery as Octave Java cannot create non-numeric arrays
           lProps = javaArray ("com.sun.star.beans.PropertyValue", 2);
           ## Set file type property
-          [ftype, filtnam] = __get_ftype__ (filename)
+          [ftype, filtnam] = __get_ftype__ (filename);
           if (isempty (filtnam))
             filtnam = "calc8";
           endif

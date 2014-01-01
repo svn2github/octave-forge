@@ -2,6 +2,7 @@ io >> Input from and output to external formats
 File I/O
   append_save
   fexist
+  rfsearch
 Miscellaneous conversion functions
   object2json
   pch2mat
@@ -40,4 +41,5 @@ Spreadsheet utility functions
 Spreadsheet function test scripts
   io_ods_testscript
   io_xls_testscript
+  test_spsh
 

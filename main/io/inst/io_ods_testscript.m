@@ -13,7 +13,30 @@
 ## You should have received a copy of the GNU General Public License along with
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
-## (Internal function) Check proper operation of ODS spreadsheet scripts.
+## -*- texinfo -*- 
+## @deftypefn {Function File} io_ods_testscript (@var{intf1})
+## @deftypefnx {Function File} io_ods_testscript (@var{intf1}, @var{fname})
+## @deftypefnx {Function File} io_ods_testscript (@var{intf1}, @var{fname}, @var{intf2})
+## Try to check proper operation of ODS spreadsheet scripts using
+## interface @var{intf1}.
+##
+## @var{intf1} can be one of OTK, JOD, UNO, or OCT.  No checks
+## are made as to whether the requested interface is supported at all.  If
+## @var{fname} is supplied, that filename is used for the tests, otherwise
+## filename "io-test.ods" is chosen by default.
+##
+## If @var{intf2} is supplied, that interface will be used for writing the
+## spreadsheet file and @var{intf1} will be used for reading.  The OCT
+## interface doesn't have write support (yet), so it will read spreadsheet
+## files made by OTK (if supported) unless another interface is supplied
+## for @var{intf2}.
+##
+## As the tests are meant to be run interactively, no output arguments are
+## returned. The results of all test steps are printed on the terminal.
+##
+## @seealso {test_spsh, io_xls_testscript}
+##
+## @end deftypefn
 
 ## Author: Philip Nienhuis
 ## Created: 2012-02-25
@@ -22,6 +45,7 @@
 ## 2013-04-21 Made it into a function
 ## 2013-12-18 Add option to write and read with different interfaces (needed for OCT)
 ##     ''     Catch more erroneous read-back results
+## 2013-12-31 More extensive texinfo help text
 
 function io_ods_testscript (intf, fname, intf2='')
 
@@ -71,7 +95,7 @@ function io_ods_testscript (intf, fname, intf2='')
   printf ("\n 6. Read data back.\n");
   [num, txt, raw, lims] = odsread (fname, shnr, crange, intf); if (isuno); sleep (dly); endif
   
-  ## First check: has anything been read at all?x
+  ## First check: has anything been read at all?
   if (isempty (raw))
     printf ("No data at all have been read... test failed.\n");
     return

@@ -15,15 +15,27 @@
 ## <http://www.gnu.org/licenses/>.  
 
 ## -*- texinfo -*- 
-## @deftypefn {Function File}  [ @var{ret} ] = test_sprdsh ()
-## @deftypefnx {Function File} [ @var{ret} ] = test_sprdsh (@var{interface})
-## Internal function meant for testing functionality of spreadsheet functions.
+## @deftypefn {Function File}  [ @var{void} ] = test_sprdsh ()
+## Test functionality of supported spreadsheet interfaces.
+##
+## test_spsh tests simply tests all interfaces that are found to be
+## supported by chk_spreadsheet_support() function, one by one.
+## It invokes the functions io_xls_testscript.m and io_ods_testscript.m
+## for the actual testing.
+##
+## As it is meant to be used interactively, no output arguments
+## are returned.
+##
+## @seealso {io_xls_testscript, io_ods_testscript}
+##
+## @end deftypefn
 
 ## Author: Philip Nienhuis <prnienhuis@users.sf.net>
 ## Created: 2013-04-21
 ## Updates:
 ## 2013-12-20 Updated texinfo header & copyright strings
 ##     ''     Added OCT interface tests conditional of writing interfaces
+## 2013-12-31 Extended texinfo help text
 
 function [] = test_spsh (numb = [])
 
@@ -33,26 +45,28 @@ function [] = test_spsh (numb = [])
   ## Get available interfaces
   avail_intf = uint16 (chk_spreadsheet_support ());
 
-  if (! isempty (numb))
-    ## Check if numb makes sense
-    if (ischar (numb))
-      numb = lower (numb);
-      ## First check if it is recognized in the list ofinterfaces
-      if (ismember (numb, xls_intf) || ismember (numb, ods_intf))
-        idx = strmatch (numb, [xls_intf ods_intf]);
-        ## It is known; now check if it's actually supported at the moment
-        if (bitget (avail_intf, idx))
-          ## It is, set just that bit of avail_intf that's related to intf 'numb'
-          avail_intf = bitset (uint16 (0), idx, 1);
-        else
-          ## It isn't, notify user
-          error ("Requested interface \"%s\" presently not available\n", numb);
-        endif
-      else
-        error ("Unknown interface - %s\n", numb);
-      endif
-    endif
-  endif
+  ## FIXME Sort out below code so that arbitrary bit patterns can be tested
+  ##       resembling the one returned by uint16 (chk_spreadsheet_support)
+  ##if (! isempty (numb))
+  ##  ## Check if numb makes sense
+  ##  if (ischar (numb))
+  ##    numb = lower (numb);
+  ##    ## First check if it is recognized in the list ofinterfaces
+  ##    if (ismember (numb, xls_intf) || ismember (numb, ods_intf))
+  ##      idx = strmatch (numb, [xls_intf ods_intf]);
+  ##      ## It is known; now check if it's actually supported at the moment
+  ##      if (bitget (avail_intf, idx))
+  ##        ## It is, set just that bit of avail_intf that's related to intf 'numb'
+  ##        avail_intf = bitset (uint16 (0), idx, 1);
+  ##      else
+  ##        ## It isn't, notify user
+  ##        error ("Requested interface \"%s\" presently not available\n", numb);
+  ##      endif
+  ##    else
+  ##      error ("Unknown interface - %s\n", numb);
+  ##    endif
+  ##  endif
+  ##endif
 
   ## First all Excel xls/xlsx interfaces
   intf2 = '';
@@ -83,8 +97,10 @@ function [] = test_spsh (numb = [])
       printf ("\nInterface \"%s\" found.\n", upper (intf));
       io_xls_testscript (intf, fname);
     endif
+    ## Allow the OS some time for cleaning up
+    sleep (0.25);
   endfor
-  ## Test OCT interface if possible
+  ## Test OCT interface if possible. Intf2 = last used in above for loop
   if (! isempty (intf2))
     printf ("\nInterface \"OCT\"....\n");
     io_xls_testscript ("OCT", 'io-test.xlsx', intf2);
@@ -110,8 +126,10 @@ function [] = test_spsh (numb = [])
       printf ("\nInterface \"%s\" found.\n", upper (intf));
       io_ods_testscript (intf, 'io-test.ods');
     endif
+    ## Allow the OS some time for cleaning up
+    sleep (0.25);
   endfor
-  ## Test OCT interface if possible
+  ## Test OCT interface if possible. Intf2 = last used in above for loop
   if (! isempty (intf2))
     printf ("\nInterface \"OCT\"....\n");
     io_ods_testscript ("OCT", 'io-test.ods', intf2);

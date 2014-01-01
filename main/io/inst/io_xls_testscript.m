@@ -13,7 +13,32 @@
 ## You should have received a copy of the GNU General Public License along with
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
-## (Internal function) Check proper operation of XLS spreadsheet scripts.
+## -*- texinfo -*- 
+## @deftypefn {Function File} io_xls_testscript (@var{intf1})
+## @deftypefnx {Function File} io_xls_testscript (@var{intf1}, @var{fname})
+## @deftypefnx {Function File} io_xls_testscript (@var{intf1}, @var{fname}, @var{intf2})
+## Try to check proper operation of XLS / XLSX spreadsheet scripts using
+## interface @var{intf1}.
+##
+## @var{intf1} can be one of COM, POI, JXL, OXS, UNO, or OCT.  No checks
+## are made as to whether the requested interface is supported at all.  If
+## @var{fname} is supplied, that filename is used for the tests, otherwise
+## filename "io-test.xls" is chosen by default.  This parameter is required
+## to have e.g., POI distinguish between testing .xls (BIFF8) and .xlsx
+## (OOXML) files.
+##
+## If @var{intf2} is supplied, that interface will be used for writing the
+## spreadsheet file and @var{intf1} will be used for reading.  The OCT
+## interface doesn't have write support (yet), so it will read spreadsheet
+## files made by POI (if supported) unless another interface is supplied
+## for @var{intf2}.
+##
+## As the tests are meant to be run interactively, no output arguments are
+## returned. The results of all test steps are printed on the terminal.
+##
+## @seealso {test_spsh, io_ods_testscript}
+##
+## @end deftypefn
 
 ## Author: Philip Nienhuis <pr.nienhuis at users.sf.net>
 ## Created: 2012-02-25
@@ -23,6 +48,10 @@
 ## 2013-04-21 Made it into a function
 ## 2013-12-12 Updated copyright strings
 ## 2013-12-19 Add option to write and read with different interfaces (needed for OCT)
+## 2013-12-31 More extensive texinfo help text
+## 2013-12-31 Style fixes
+##     ''     Also delay a bit if write intf2 = UNO to avoid unzip errors
+## 2014-01-01 Provisionally fall back to COM or POI for intf2
 
 function io_xls_testscript (intf, fname, intf2=[])
 
@@ -30,21 +59,23 @@ function io_xls_testscript (intf, fname, intf2=[])
 
   isuno = false;
   dly = 0.25;
-  if (strcmpi (intf, 'oxs') || strcmpi (intf, 'oct'))
-    if (isempty (intf2))
+  if (strcmpi (intf, 'oct'))
+  ## FIXME commented out/replaced until UNO & OXS OOXML write support is fixed
+##  if (isempty (intf2))
+    if (isempty (intf2) || ! strcmpi (intf2, "com"))
       intf2 = 'poi';
     endif
-    if (strcmpi (intf2, 'uno'))
-      isuno = true;
-    endif
-    printf ("OXS / OCT interface has no write support enabled - writing is done with %s.\n", intf2);
-  elseif (strcmpi (intf, 'uno'));
-    isuno = true;
+    printf ("OCT interface has no write support enabled - writing is done with %s.\n", intf2);
   endif
+  ## If no intf2 is supplied, write with intf1
   if (isempty (intf2))
     intf2 = intf;
   endif
-  
+  ## Allow the OS some delay to accomodate for file operations (zipping etc.)
+  if (strcmpi (intf, "uno") || strcmpi (intf2, "uno"));
+    isuno = true;
+  endif
+
   ## 1. Initialize test arrays
   printf ("\n 1. Initialize arrays.\n");
   arr1 = [ 1 2; 3 4.5];
@@ -53,20 +84,35 @@ function io_xls_testscript (intf, fname, intf2=[])
 
   ## 2. Insert empty sheet
   printf ("\n 2. Insert first empty sheet.\n");
-  xlswrite (fname, {''}, 'EmptySheet', 'b4', intf2); if (isuno); sleep (dly); endif
+  xlswrite (fname, {''}, 'EmptySheet', 'b4', intf2); 
+  if (isuno)
+    sleep (dly);
+  endif
   
   ## 3. Add data to test sheet
   printf ("\n 3. Add data to test sheet.\n");
-  xlswrite (fname, arr1, 'Testsheet', 'c2:d3', intf2); if (isuno); sleep (dly); endif
-  xlswrite (fname, arr2, 'Testsheet', 'd4:z20', intf2); if (isuno); sleep (dly); endif
+  xlswrite (fname, arr1, 'Testsheet', 'c2:d3', intf2);
+  if (isuno)
+    sleep (dly);
+  endif
+  xlswrite (fname, arr2, 'Testsheet', 'd4:z20', intf2);
+  if (isuno)
+    sleep (dly);
+  endif
   
   ## 4. Insert another sheet
   printf ("\n 4. Add another sheet with just one number in A1.\n");
-  xlswrite (fname, [1], 'JustOne', 'A1', intf2); if (isuno); sleep (dly); endif
+  xlswrite (fname, [1], 'JustOne', 'A1', intf2);
+  if (isuno)
+    sleep (dly);
+  endif
 
   ## 5. Get sheet info & find sheet with data and data range
   printf ("\n 5. Explore sheet info.\n");
-  [~, shts] = xlsfinfo (fname, intf); if (isuno); sleep (dly); endif
+  [~, shts] = xlsfinfo (fname, intf);
+  if (isuno)
+    sleep (dly);
+  endif
   shnr = strmatch ('Testsheet', shts(:, 1));      ## Note case!
   if (isempty (shnr))
     printf ("Worksheet with data not found - not properly written ... test failed.\n");
@@ -79,7 +125,10 @@ function io_xls_testscript (intf, fname, intf2=[])
   
   ## 6. Read data back
   printf ("\n 6. Read data back.\n");
-  [num, txt, raw, lims] = xlsread (fname, shnr, crange, intf); if (isuno); sleep (dly); endif
+  [num, txt, raw, lims] = xlsread (fname, shnr, crange, intf);
+  if (isuno)
+    sleep (dly);
+  endif
   
   ## First check: has anything been read at all?x
   if (isempty (raw))
@@ -146,9 +195,18 @@ function io_xls_testscript (intf, fname, intf2=[])
   ## Check if "formulas_as_text" option works:
   printf ("\n 8. Repeat reading, now return formulas as text\n");
   opts.formulas_as_text = 1;
-  xls = xlsopen (fname, 0, intf); if (isuno); sleep (dly); endif
-  raw = xls2oct (xls, shnr, crange, opts); if (isuno); sleep (dly); endif
-  xls = xlsclose (xls); if (isuno); sleep (dly); endif
+  xls = xlsopen (fname, 0, intf);
+  if (isuno)
+    sleep (dly);
+  endif
+  raw = xls2oct (xls, shnr, crange, opts);
+  if (isuno)
+    sleep (dly);
+  endif
+  xls = xlsclose (xls);
+  if (isuno)
+    sleep (dly);
+  endif
   clear xls;
 
   ## 9. Here come the tests, part 2.

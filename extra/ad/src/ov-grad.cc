@@ -71,10 +71,10 @@ octave_value octave_gradient::jacobian () const
 
 void octave_gradient::print (std::ostream& os, bool pr_as_read_syntax) const 
 {
-	x ().print_with_name (os, "value", true);
+	x ().print_with_name (os, "value");
 	// print (partial) derivative(s),
 	// following convention i-th row = nabla(x_i)T
-	jacobian ().print_with_name (os, "(partial) derivative(s)", true);
+	jacobian ().print_with_name (os, "(partial) derivative(s)");
 }
 
 octave_value_list octave_gradient::dotref (const octave_value_list& idx) 

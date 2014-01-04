@@ -59,6 +59,7 @@
 ## 2013-09-01 Input validation of purposely undocumented arg #4
 ##     ''     Name changed to rfseach
 ## 2013-12-14 Texinfo header adaptations (recursion noted)
+## 2014-01-03 Check for empty subdir before exploring it (L.95)
 
 function [ fpath ] = rfsearch (dname, fname, mxdpth=1, depth=0)
 
@@ -91,24 +92,26 @@ function [ fpath ] = rfsearch (dname, fname, mxdpth=1, depth=0)
 
     ## Get list of subdirs in current level
     dirlist = dir (dname);
-    dirlist = dirlist(find ([dirlist.isdir]));
-    ii = 0;
-    if (strcmp (dirlist(1).name, '.'))
-      ## Not a root dir; discard entries '.' & '..'
-      ii = 2;
-    endif
-    fpath = '';
-
-    ## Search all subdirs in current level
-    while (++ii <= numel (dirlist) && isempty (fpath))
-      sbdir = [filesep dirlist(ii).name];
-      fpath = dir ([dname sbdir filesep fname '*']);
-      if (isempty (fpath) && depth < mxdpth)
-        ## Try a level deeper, if allowed. Be sure to convey current depth
-        ## as 'find_in_subdir' is called recursively here
-        fpath = rfsearch ([dname sbdir], fname, mxdpth, depth);
+    if (! isempty (dirlist))
+      dirlist = dirlist(find ([dirlist.isdir]));
+      ii = 0;
+      if (strcmp (dirlist(1).name, '.'))
+        ## Not a root dir; discard entries '.' & '..'
+        ii = 2;
       endif
-    endwhile
+      fpath = '';
+
+      ## Search all subdirs in current level
+      while (++ii <= numel (dirlist) && isempty (fpath))
+        sbdir = [filesep dirlist(ii).name];
+        fpath = dir ([dname sbdir filesep fname '*']);
+        if (isempty (fpath) && depth < mxdpth)
+          ## Try a level deeper, if allowed. Be sure to convey current depth
+          ## as 'find_in_subdir' is called recursively here
+          fpath = rfsearch ([dname sbdir], fname, mxdpth, depth);
+        endif
+      endwhile
+    endif
   endif
 
   ## Final parts

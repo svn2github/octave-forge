@@ -1,6 +1,19 @@
 Summary of important user-visible changes for releases of the io package
 
 ===============================================================================
+io-2.0.1   Release Date: 2014-01-01 Release Manager: Philip Nienhuis
+===============================================================================
+
+Bug fix release
+
+*** Bug fixes:
+    - Fixed rfsearch error (empty subdirs) when loading package
+
+*** PKG_ADD: Also search user (%USERPROFILE%\Java  or ~/Java) for Java
+             spreadsheet support .jar files; also add conventional Linux
+             place in search (usually /usr/share/java)
+
+===============================================================================
 io-2.0.0   Release Date: 2014-01-01 Release Manager: Philip Nienhuis
 ===============================================================================
 

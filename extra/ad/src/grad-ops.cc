@@ -127,27 +127,26 @@ static inline
 octave_value re (const octave_value& v)
 	{ return v.is_real_type () ? v : feval ("real", v, 1)(0); }
 
-static inline 
+static inline
 octave_value sigma (octave_idx_type nr, octave_idx_type nc)
 {
-	if (nr == 1 || nc == 1)
-		return octave_value::magic_colon_t;
+  if (nr == 1 || nc == 1)
+    return octave_value::magic_colon_t;
 
- 	NDArray a =	
-		NDArray (dim_vector (nr*nc));
+  ColumnVector a (nr*nc);
 
-	octave_idx_type k, v, i, j;
-	k = 0;
-	for (i = 1; i <= nr; i++)
-	{
-		v = i;
-		for (j = 0; j < nc; j++)
-		{
-			a(k++) = v;
-			v += nr;
-		}
-	}
-	return octave_value (a);
+  octave_idx_type k, v, i, j;
+  k = 0;
+  for (i = 1; i <= nr; i++)
+    {
+      v = i;
+      for (j = 0; j < nc; j++)
+        {
+          a(k++) = v;
+          v += nr;
+        }
+    }
+  return octave_value (a);
 }
 
 /* unary gradient ops */
@@ -527,53 +526,49 @@ void install_gcs_ops (void)
 static inline
 octave_value add_g_mx (const octave_gradient& g, const octave_value& m)
 {
-	if (g.is_scalar_type ())
-	{
-		cperm(1) = NDArray (dim_vector (m.numel ()), 1.0);
-		return new octave_gradient (
-			g.x () + m,
-			octave_value (g.dx ()).do_index_op (cperm));
-	}
-	return new octave_gradient (g.x () + m, g.dx ());
+  if (g.is_scalar_type ())
+    {
+      cperm(1) = ColumnVector (m.numel (), 1.0);
+      return new octave_gradient (
+        g.x () + m, octave_value (g.dx ()).do_index_op (cperm));
+    }
+  return new octave_gradient (g.x () + m, g.dx ());
 }
 
 static inline 
 octave_value add_mx_g (const octave_value& m, const octave_gradient& g) 
-{ 
-	if (g.is_scalar_type ())
-	{
-		cperm(1) = NDArray (dim_vector (m.numel ()), 1.0);
-		return new octave_gradient (
-			m + g.x (),
-			octave_value (g.dx ()).do_index_op (cperm));
-	}
-	return new octave_gradient (m + g.x (), g.dx ());
+{
+  if (g.is_scalar_type ())
+    {
+      cperm(1) = ColumnVector (m.numel (), 1.0);
+      return new octave_gradient (
+        m + g.x (), octave_value (g.dx ()).do_index_op (cperm));
+    }
+  return new octave_gradient (m + g.x (), g.dx ());
 }
 
 static inline
 octave_value sub_g_mx (const octave_gradient& g, const octave_value& m)
 {
-	if (g.is_scalar_type ())
-	{
-		cperm(1) = NDArray (dim_vector (m.numel ()), 1.0);
-		return new octave_gradient (
-			g.x () - m,
-			octave_value (g.dx ()).do_index_op (cperm));
-	}
-	return new octave_gradient (g.x () - m, g.dx ());
+  if (g.is_scalar_type ())
+    {
+      cperm(1) = ColumnVector (m.numel (), 1.0);
+      return new octave_gradient (
+        g.x () - m, octave_value (g.dx ()).do_index_op (cperm));
+    }
+  return new octave_gradient (g.x () - m, g.dx ());
 }
 
 static inline 
 octave_value sub_mx_g (const octave_value& m, const octave_gradient& g) 
-{ 
-	if (g.is_scalar_type ())
-	{
-		cperm(1) = NDArray (dim_vector (m.numel ()), 1.0);
-		return new octave_gradient (
-			m - g.x (),
-			octave_value (- g.dx ()).do_index_op (cperm));
-	}
-	return new octave_gradient (m - g.x (), - g.dx ());
+{
+  if (g.is_scalar_type ())
+    {
+      cperm(1) = ColumnVector (m.numel (), 1.0);
+      return new octave_gradient (
+        m - g.x (), octave_value (- g.dx ()).do_index_op (cperm));
+    }
+  return new octave_gradient (m - g.x (), - g.dx ());
 }
 
 DEFBOP_GX (add, matrix, add_g_mx)
@@ -1813,33 +1808,34 @@ ASSIGNOP (gradient)
 
 DEFCATOP (g_g, octave_gradient, octave_gradient)
 {
-	CAST_BINOP_ARGS (const octave_gradient&, const octave_gradient&);
-	const octave_value& cx = do_cat_op (v1.x (), v2.x (), ra_idx);
-	if (!error_state)
-	{
-		octave_idx_type nd = v1.nderv ();
-		if (nd == v2.nderv ())
-		{
-			Array<octave_idx_type> idx = Array<octave_idx_type>(2);
-			const dim_vector& dv1 = v1.dims ();
-			const dim_vector& dv2 = v2.dims ();
-			octave_idx_type c = 1;
-			octave_idx_type v = 0;
-			for (octave_idx_type k = 1; k < ra_idx.length (); k++)
-			{
-				v += ra_idx(k) * c;
-				c *= dv1(k);
-			}
-			idx(0) = ra_idx(0) * nd;
-			idx(1) = v;
-			return new octave_gradient (cx, do_cat_op (
-				resh (v1.dx (), dim_vector (nd * dv1(0), dv1.numel () / dv1(0))),
-				resh (v2.dx (), dim_vector (nd * dv2(0), dv2.numel () / dv2(0))), idx).
-				reshape (dim_vector (nd, dv1.numel ())));
-		}
-		else error (mismatching_ops);
-	}
-	return octave_value ();
+  CAST_BINOP_ARGS (const octave_gradient&, const octave_gradient&);
+  const octave_value& cx = do_cat_op (v1.x (), v2.x (), ra_idx);
+  if (! error_state)
+    {
+      octave_idx_type nd = v1.nderv ();
+      if (nd == v2.nderv ())
+        {
+          Array<octave_idx_type> idx (dim_vector (2, 1));
+          const dim_vector& dv1 = v1.dims ();
+          const dim_vector& dv2 = v2.dims ();
+          octave_idx_type c = 1;
+          octave_idx_type v = 0;
+          for (octave_idx_type k = 1; k < ra_idx.length (); k++)
+            {
+              v += ra_idx(k) * c;
+              c *= dv1(k);
+            }
+          idx(0) = ra_idx(0) * nd;
+          idx(1) = v;
+          return new octave_gradient (cx, do_cat_op (
+            resh (v1.dx (), dim_vector (nd * dv1(0), dv1.numel () / dv1(0))),
+            resh (v2.dx (), dim_vector (nd * dv2(0), dv2.numel () / dv2(0))), idx).
+            reshape (dim_vector (nd, dv1.numel ())));
+        }
+      else
+        error (mismatching_ops);
+    }
+  return octave_value ();
 }
 
 void install_gradient_ops (void)

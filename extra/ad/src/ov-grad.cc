@@ -45,14 +45,13 @@ octave_value zero_mx (octave_idx_type r, octave_idx_type c)
 static inline
 octave_value eye_mx (octave_idx_type n)
 {
-	if (octave_gradient::sparse_storage_mode ())
+  if (octave_gradient::sparse_storage_mode ())
     {
-      Array<octave_idx_type> ix = Array<octave_idx_type> (n);
-      for (octave_idx_type k = 0; k < n; k++) 
-		  ix(k) = k;
-	  return SparseMatrix(Array<double> (1, 1.0), ix, ix, n, n, false);
+      idx_vector ix (0, n-1);
+      return SparseMatrix (ColumnVector (1, 1.0), ix, ix, n, n, false);
     }
-    else return identity_matrix (n, n);
+  else
+    return identity_matrix (n, n);
 }
 
 /* constructor & member functions */

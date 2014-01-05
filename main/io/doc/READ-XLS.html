@@ -115,7 +115,15 @@ This file.</FONT></FONT> </DT><BR>
 </UL>
 
 <FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><DL>
-<DT>These class libs must be referenced with full pathnames in your javaclasspath.<br>They had best be put in /&lt;libdir&gt;/java (where &lt;libdir&gt; on Linux is usually /usr/lib; on MinGW it is usually /lib). The PKG_ADD command expects the class libs there; if they are elsewhere, add them in ./share/octave/&lt;version&gt;/m/startup/octaverc using appropriate javaaddpath statements or a chk_spreadsheet_support() call.</DT></DL>
+<DT>These class libs must be referenced with full pathnames in your javaclasspath.<br>On MinGW they had best be put in /&lt;libdir&gt;/java (where &lt;libdir&gt; on MinGW is usually /lib); on Linux system supplied Java class libs usually reside in /usr/share/java. Alternatively, you can put them in your HOME directory in a subdirectory java (mind case!) - on *nix that would be ~./java, on Windows %USERPROFILE%/java (same level as My Documents). The PKG_ADD routine, that gets run each time the io package is loaded, expects the class libs there; if they are elsewhere, add them in ./share/octave/&lt;version&gt;/m/startup/octaverc using appropriate javaaddpath statements or a chk_spreadsheet_support() call.<br>
+  In addition, you can specify a subdirectory using the environment variable OCTAVE_IO_JAVALIBS.<br>
+  Once a particular Java class lib has been added to the javaclasspath, it won't be searched anymore nor reloaded from the next search location. The search order is:
+  <OL>
+  <LI>Specified by the environment variable OCTAVE_IO_JAVALIBS</LI>
+  <LI>&lt;HOME_DIR&gt;/java</LI>
+  <LI>/usr/share/java (*nix) or /lib/java (MinGW)</LI>
+  </OL>
+  If you do not want PKG_ADD to load the Java class libs, specify a value of "no", "false" or "0" for the OCTAVE_IO_JAVALIBS envioronment variable before starting Octave.</DT></DL>
 <DL><DT>UNO specific  (invoking OpenOffice.org (or clones) behind the scenes):<BR>
 NOTE: EXPERIMENTAL!!  A working OpenOffice.org installation. The utility function chk_spreadsheet_support can be used to add the needed entries to the javaclasspath.<BR></DT>
 </DL>

@@ -202,3 +202,15 @@ endfunction
 %! R_s = dot(R,V) # System response time
 %! N = sum(Q) # Average number in system
 
+%!test
+%! # Example 7.4 p. 287 Bolch et al.
+%! S = [ 0.04 0.03 0.06 0.05 ];
+%! P = [ 0 0.5 0.5 0; 1 0 0 0; 0.6 0 0 0; 1 0 0 0 ];
+%! lambda = [0 0 0 4];
+%! V=qnosvisits(P,lambda);
+%! k = [ 3 2 4 1 ];
+%! [U R Q X] = qnos( sum(lambda), S, V );
+%! assert( X, [20 10 10 4], 1e-4 );
+%! assert( U, [0.8 0.3 0.6 0.2], 1e-2 );
+%! assert( R, [0.2 0.043 0.15 0.0625], 1e-3 );
+%! assert( Q, [4, 0.429 1.5 0.25], 1e-3 );

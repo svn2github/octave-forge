@@ -22,6 +22,7 @@
 ## 2013-12-20 Copyright string updates
 ##     ''     dbug info argument added (for chk_spreadsheet_support)
 ##     ''     java_invoke -> javaMethod
+## 2014-01-08 Tiny style fix
 
 function [ tmp1, jcp ] = __chk_java_sprt__ (dbug=0)
 
@@ -52,7 +53,7 @@ function [ tmp1, jcp ] = __chk_java_sprt__ (dbug=0)
     endif
     ## Now check for proper entries in class path. Under *nix the classpath
     ## must first be split up. In java 1.2.8+ javaclasspath is already a cell array
-    if (isunix && ~iscell (jcp));
+    if (isunix && ! iscell (jcp));
       jcp = strsplit (char (jcp), pathsep ()); 
     endif
     tmp1 = 1;

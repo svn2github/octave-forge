@@ -12,7 +12,7 @@ if (octave_config_info ("features").JAVA)
 # elseif (ismac)
     ## Who knows where OSX keeps e.g., Apache POI stuff? if it does at all...
   elseif (isunix)
-    homedir = "~" ;
+    homedir = tilde_expand ("~");
     ## On linux spreadsheet .jars are often found somewhere in /usr/share/java
     libdir = "/usr/share";
   else

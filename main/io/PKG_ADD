@@ -19,28 +19,58 @@ if (octave_config_info ("features").JAVA)
     ## Set libdir to "." to avoid searching in a root dir
     libdir = ".";
   endif
-  if (! isempty (userdir))
-    if (strcmpi (userdir, "no") || strcmpi (userdir, "false") || strcmpi (userdir, "0"))
-      ## Do not load Java class libs .jar files). First clean up
-      clear libdir spr_status userdir homedir ;
-      return
-    endif
-    ## First allow some time for io package to be fully loaded
-    pause (0.25);
-    ## Chekc first for user-, then system supplied jars
-    if (exist (userdir) == 7)
-      ## Userdir is a subdir
-      spr_status = chk_spreadsheet_support (userdir, 0);
-    endif
-    ## Also try user's home directory
+
+  ## Find LibreOffice or OpenOffice.org
+  ooopath = '';
+  ii = 0;
+  ## Possible locations for  OOo or LO.
+  bnam = {"C:/Program Files (X86)", ...
+               "C:/Program Files", ...
+               "C:/Programs", ...
+               "/opt", ...
+               "/usr/lib"};
+  while (isempty (ooopath) && ii < numel (bnam))
+    ooopath = glob ([ bnam{++ii} filesep "LibreOffice*"]);
+  endwhile
+  while (isempty (ooopath) && ii < numel (bnam))
+    ooopath = glob ([ bnam{++ii} filesep "OpenOffice.org*"]);
+  endwhile
+  while (isempty (ooopath) && ii < numel (bnam))
+    ooopath = glob ([ bnam{++ii} filesep "ooo*"]);
+  endwhile
+  if (! isempty (ooopath))
+    ooopath = ooopath{:};
   else
-    ## Allow some time for io package to be fully loaded
-    pause (0.25);
+    ooopath = '';
   endif
-  ## Try <HOME>/java
-  spr_status = chk_spreadsheet_support ([ homedir filesep "java" ]);
-  ## Only then search for system-supplied jars
-  spr_status = chk_spreadsheet_support ([ libdir filesep "java" ]);
+
+  ## One big try-catch to circumvent possible problems on Linux
+  try
+    if (! isempty (userdir))
+      if (strcmpi (userdir, "no") || strcmpi (userdir, "false") || strcmpi (userdir, "0"))
+        ## Do not load Java class libs .jar files). First clean up
+        clear libdir spr_status userdir homedir ;
+        return
+      endif
+      ## First allow some time for io package to be fully loaded
+      pause (0.25);
+      ## Check first for user-, then system supplied jars
+      if (exist (userdir) == 7)
+        ## Userdir is a subdir
+        spr_status = chk_spreadsheet_support (userdir, 0, ooopath);
+      endif
+      ## Also try user's home directory
+    else
+      ## Allow some time for io package to be fully loaded
+      pause (0.25);
+    endif
+    ## Try <HOME>/java
+    spr_status = chk_spreadsheet_support ([ homedir filesep "java" ], 0, ooopath);
+    ## Only then search for system-supplied jars
+    spr_status = chk_spreadsheet_support ([ libdir filesep "java" ], 0, ooopath);
+  catch
+    warning ("(Automatic loading of spreadsheet I/O Java classlibs failed)\n");
+  end_try_catch
 endif
 ## Clean up
-clear libdir spr_status userdir homedir ;
+clear libdir spr_status userdir homedir bnam ooopath ii;

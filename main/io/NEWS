@@ -1,6 +1,25 @@
 Summary of important user-visible changes for releases of the io package
 
 ===============================================================================
+io-2.0.2   Release Date: 2014-01-09 Release Manager: Philip Nienhuis
+===============================================================================
+
+Another bug fix release
+
+*** Bug fixes:
+    - PKG_ADD, PKG_DEL: move into script dir to be sure they can be invoked
+      while loading / unloading io package
+
+*** New features:
+    - chk_spreadsheet_support: Remembers which javaclasspath entries it loaded,
+      can remove them too
+    - PKG_DEL: Removes all javaclasspath entries added by chk_spreadsheet-support
+      when unloading the io package
+    - PKG_ADD: Searches for OpenOffice.org / LibreOffice in some conventional
+      places to allow silent automatic loading of Java class libs &
+      directories required for OOo / LO
+
+===============================================================================
 io-2.0.1   Release Date: 2014-01-01 Release Manager: Philip Nienhuis
 ===============================================================================
 
@@ -60,7 +79,7 @@ extension.
       available at:
       http://www.gwtproject.org/download.html  ("Download GWT SDK")
     - LibreOffice/OpenOffice.org (UNO interface) doesn't write .csv
-    - OTK interface (.ods) sometimes writes ridiculous wide columns.
+    - OTK interface (.ods) sometimes writes ridiculously wide columns.
 
 ===============================================================================
 io-1.3.6   Release Date: 2013-TBA Release Manager: Philip Nienhuis

@@ -21,89 +21,9 @@
 ## @deftypefnx {Function File} {[@var{U}, @var{R}, @var{Q}, @var{X}] =} qnjackson (@var{lambda}, @var{S}, @var{P}, @var{m} )
 ## @deftypefnx {Function File} {@var{pr} =} qnjackson (@var{lambda}, @var{S}, @var{P}, @var{m}, @var{k})
 ##
-## @cindex open network, single class
-## @cindex Jackson network
+## This function is deprecated. Please use @code{qnos} instead.
 ##
-## This function is deprecated. Please use @code{qnopensingle} instead.
-##
-## With three or four arguments, this function computes the steady-state
-## occupancy probabilities for a Jackson network. With five arguments,
-## this function computes the steady-state probability
-## @code{@var{pi}(j)} that there are @code{@var{k}(j)} requests at
-## service center @math{j}.
-##
-## This function solves a subset of Jackson networks, with the
-## following constraints:
-##
-## @itemize
-##
-## @item External arrival rates are load-independent.
-## 
-## @item Service center @math{i} consists either of @code{@var{m}(i) @geq{}
-## 1} identical servers with individual average service time
-## @code{@var{S}(i)}, or of an Infinite Server (IS) node.
-##
-## @end itemize
-##
-## @strong{INPUTS}
-##
-## @table @var
-##
-## @item lambda
-## @code{@var{lambda}(i)} is
-## the external arrival rate to service center @math{i}. @var{lambda}
-## must be a vector of length @math{N}, @code{@var{lambda}(i) @geq{} 0}.
-##
-## @item S
-## @code{@var{S}(i)} is the average service time on service center @math{i}
-## @var{S} must be a vector of length @math{N}, @code{@var{S}(i)>0}.
-##
-## @item P
-## @code{@var{P}(i,j)} is the probability
-## that a job which completes service at service center @math{i} proceeds
-## to service center @math{j}. @var{P} must be a matrix of size
-## @math{N \times N}.
-##
-## @item m
-## @code{@var{m}(i)} is the number of servers at center
-## @math{i}. If @code{@var{m}(i) < 1}, center @math{i} is an
-## infinite-server node. Otherwise, it is a regular FCFS queueing center with
-## @code{@var{m}(i)} servers. Default is 1.
-##
-## @item k
-## Compute the steady-state probability that there are @code{@var{k}(i)}
-## requests at service center @math{i}. @var{k} must have the same length
-## as @var{lambda}, with @code{@var{k}(i) @geq{} 0}.
-## 
-## @end table
-##
-## @strong{OUTPUT}
-##
-## @table @var
-##
-## @item U
-## If @math{i} is a FCFS node, then
-## @code{@var{U}(i)} is the utilization of service center @math{i}.
-## If @math{i} is an IS node, then @code{@var{U}(i)} is the
-## @emph{traffic intensity} defined as @code{@var{X}(i)*@var{S}(i)}.
-##
-## @item R
-## @code{@var{R}(i)} is the average response time of service center @math{i}.
-##
-## @item Q
-## @code{@var{Q}(i)} is the average number of customers in service center
-## @math{i}.
-##
-## @item X
-## @code{@var{X}(i)} is the throughput of service center @math{i}.
-##
-## @item pr
-## @code{@var{pr}(i)} is the steady state probability 
-## that there are @code{@var{k}(i)} requests at service center @math{i}.
-##
-## @end table
-##
-## @seealso{qnopen}
+## @seealso{qnos}
 ##
 ## @end deftypefn
 
@@ -115,7 +35,7 @@ function [U_or_pi R Q X] = qnjackson( lambda, S, P, m, k )
   if (!warned)
     warned = true;
     warning("qn:deprecated-function",
-	    "qnjackson is deprecated. Please use qnopensingle insgead");
+	    "qnjackson is deprecated. Please use qnos insgead");
   endif
   if ( nargin < 3 || nargin > 5 )
     print_usage();
@@ -194,35 +114,3 @@ function [U_or_pi R Q X] = qnjackson( lambda, S, P, m, k )
 
   endif
 endfunction
-%!test
-%! # Test various error conditions
-%! fail( "qnjackson( [0.5 0.5], [0 1], [0 0; 0 0], [1 1])", "S must be" );
-%! fail( "qnjackson( [-1 1], [1 1], [0 0; 0 0], [1 1])", "lambda must be" );
-%! fail( "qnjackson( [0.5 0.5], [1 1], [1 1; 0 0], [1 1])", "P is not" );
-%! fail( "qnjackson( [0.5 0.5], [1 1], [1 0; -1 0], [1 1])", "P is not" );
-%! fail( "qnjackson( [0.5 0.5], [1 1 1], [0 0; 0 0], [1 1])", "lambda and S" );
-%! fail( "qnjackson( [0.5 0.5], [1 1], [0 0; 0 0], [1 1 1])", "m and lambda" );
-%! fail( "qnjackson( [0.5 0.5], [1 1], [0 0; 0 0], [1 1], [1 1 1])", "k must be" );
-%! fail( "qnjackson( [0.5 0.5], [1 1], [0 0; 0 0], [1 1], [1 -1])", "k must be" );
-%! fail( "qnjackson( [0 1], [2 2], [0 0.9; 0 0] )", "not ergodic" );
-
-%!test
-%! # Example 7.4 p. 287 Bolch et al.
-%! S = [ 0.04 0.03 0.06 0.05 ];
-%! P = [ 0 0.5 0.5 0; 1 0 0 0; 0.6 0 0 0; 1 0 0 0 ];
-%! lambda = [0 0 0 4];
-%! k = [ 3 2 4 1 ];
-%! [U R Q X] = qnjackson( lambda, S, P, 1 );
-%! assert( X, [20 10 10 4], 1e-4 );
-%! assert( U, [0.8 0.3 0.6 0.2], 1e-2 );
-%! assert( R, [0.2 0.043 0.15 0.0625], 1e-3 );
-%! assert( Q, [4, 0.429 1.5 0.25], 1e-3 );
-
-%!test
-%! # Example 7.4 p. 287 Bolch et al.
-%! S = [ 0.04 0.03 0.06 0.05 ];
-%! P = [ 0 0.5 0.5 0; 1 0 0 0; 0.6 0 0 0; 1 0 0 0 ];
-%! lambda = [0 0 0 4];
-%! k = [ 3 2 4 1 ];
-%! p_i = qnjackson( lambda, S, P, 1, k );
-%! assert( p_i, [0.1024, 0.063, 0.0518, 0.16], 1e-4 );

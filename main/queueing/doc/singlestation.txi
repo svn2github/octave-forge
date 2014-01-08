@@ -114,6 +114,10 @@ mu(n) = min(m,n)*mu
 
 @GETHELP{qsmmm}
 
+@GETHELP{erlangb}
+
+@GETHELP{erlangc}
+
 @noindent @strong{REFERENCES}
 
 @noindent G. Bolch, S. Greiner, H. de Meer and K. Trivedi, @cite{Queueing Networks
@@ -124,6 +128,10 @@ Science Applications}, Wiley, 1998, Section 6.5.
 @auindex Greiner, S.
 @auindex de Meer, H.
 @auindex Trivedi, K.
+
+@noindent G. Zeng, @cite{Two common properties of the erlang-B function, erlang-C function, and Engset blocking function}, Mathematical and Computer Modelling, Volume 37, Issues 12-13, June 2003, Pages 1287-1296
+
+@auindex Zeng, G.
 
 @c
 @c M/M/inf
@@ -156,11 +164,12 @@ Science Applications}, Wiley, 1998, Section 6.4.
 @node The M/M/1/K System
 @section The @math{M/M/1/K} System 
 
-In a @math{M/M/1/K} finite capacity system there can be at most
-@math{k} jobs at any time. If a new request tries to join the system
-when there are already @math{K} other requests, the arriving request
-is lost. The queue has @math{K-1} slots. The @math{M/M/1/K} system is
-always stable, regardless of the arrival and service rates
+In a @math{M/M/1/K} finite capacity system there is a single server
+and there can be at most @math{k \geq 1} jobs at any time (including
+the job currently in service). If a new request tries to join the
+system when there are already @math{K} other requests, the arriving
+request is lost. The queue has @math{K-1} slots. The @math{M/M/1/K}
+system is always stable, regardless of the arrival and service rates
 @math{\lambda} and @math{\mu}.
 
 @GETHELP{qsmm1k}

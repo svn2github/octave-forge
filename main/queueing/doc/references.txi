@@ -129,7 +129,11 @@ DOI @uref{http://dx.doi.org/10.1002/047001363X, 10.1002/047001363X}
 @item [ZaWo81]
 J. Zahorjan and E. Wong, @cite{The solution of separable queueing
 network models using mean value analysis}. SIGMETRICS
-Perform. Eval. Rev. 10, 3 (Sep. 1981), 80-85. DOI
+Perform. Eval. Rev. 10, 3 (Sep. 1981), 80-85.
 DOI @uref{http://doi.acm.org/10.1145/1010629.805477, 10.1145/1010629.805477}
+
+@item [Zeng03]
+G. Zeng, @cite{Two common properties of the erlang-B function, erlang-C function, and Engset blocking function}, Mathematical and Computer Modelling, Volume 37, Issues 12-13, June 2003, Pages 1287-1296 DOI
+@uref{http://dx.doi.org/10.1016/S0895-7177(03)90040-9, 10.1016/S0895-7177(03)90040-9}
 
 @end table

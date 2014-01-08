@@ -1,4 +1,4 @@
-## Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013 Moreno Marzolla
+## Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013, 2014 Moreno Marzolla
 ##
 ## This file is part of the queueing toolbox.
 ##
@@ -22,7 +22,10 @@
 ##
 ## @cindex @math{M/M/m} system
 ##
-## Compute utilization, response time, average number of requests in service and throughput for a @math{M/M/m} queue, a queueing system with @math{m} identical service centers connected to a single FCFS queue.
+## Compute utilization, response time, average number of requests in
+## service and throughput for a @math{M/M/m} queue, a queueing system
+## with @math{m} identical service centers connected to a single FCFS
+## queue.
 ##
 ## @iftex
 ## The steady-state probability @math{\pi_k} that there are @math{k}
@@ -93,7 +96,7 @@
 ## @var{lambda}, @var{mu} and @var{m} can be vectors of the same size. In this
 ## case, the results will be vectors as well.
 ##
-## @seealso{qsmm1,qsmminf,qsmmmk}
+## @seealso{erlangc,qsmm1,qsmminf,qsmmmk}
 ##
 ## @end deftypefn
 
@@ -106,38 +109,33 @@ function [U R Q X p0 pm] = qsmmm( lambda, mu, m )
   endif
   if ( nargin == 2 )
     m = 1;
+  else
+    ( isnumeric(lambda) && isnumeric(mu) && isnumeric(m) ) || ...
+	error( "the parameters must be numeric vectors" );
   endif
-  ( isvector(lambda) && isvector(mu) && isvector(m) ) || ...
-      error( "the parameters must be vectors" );
   [err lambda mu m] = common_size( lambda, mu, m );
   if ( err ) 
     error( "parameters are not of common size" );
   endif
   lambda = lambda(:)';
   mu = mu(:)';
+  m = m(:)';
   all( m>0 ) || ...
       error( "m must be >0" );
   all( lambda>0 ) || ...
       error( "lambda must be >0" );
-  all( lambda < m .* mu ) || ...
-      error( "Processing capacity exceeded" );
   X = lambda;
   U = rho = lambda ./ (m .* mu );
+  all( U < 1 ) || ...
+      error( "Processing capacity exceeded" );
   Q = p0 = pm = 0*lambda;
   for i=1:length(lambda)
-#{
-    k=[0:m(i)-1];
-    p0(i) = 1 / ( ...
-		 sum( (m(i)*rho(i)).^ k ./ factorial(k)) + ...
-                 (m(i)*rho(i))^m(i) / (factorial(m(i))*(1-rho(i))) ...
-                 );
-#}
     p0(i) = 1 / ( ...
                  sumexpn( m(i)*rho(i), m(i)-1 ) + ...		 
 		 expn(m(i)*rho(i), m(i))/(1-rho(i)) ...
                  );
-    pm(i) = expn(m(i)*rho(i),m(i))*p0(i)/(1-rho(i));
   endfor
+  pm = erlangc(lambda ./ mu, m);
   Q = m .* rho .+ rho ./ (1-rho) .* pm;
   R = Q ./ X;
 endfunction

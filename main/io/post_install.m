@@ -1,21 +1,24 @@
-## this function removes the PKG_ADD script from the .oct directory of the io
-## package after installation. The reason is that PKG_ADD calls chk_spreadsheet_support
-## which belongs to the io package itself. While it is ok when called from the
-## .m directory (since chk_spreadsheet_support is there), when called from the
-## .oct directory it fails since the package hasn't been loaded yet
+## (C) 2011,2012 Nitzan Arani
+## (C) 2014 Philip Nienhuis <prnienhuis at users.sf.net>
+## This function moves the PKG_ADD & PKG_DEL scripts from the .oct directory of the io
+## package to the function script file after installation. The reason is that PKG_ADD
+## calls chk_spreadsheet_support before the function subdir has been added to Octave's
+## search path.
 
-## Updates:
-## 2013-12-20 Doesn't seem to be needed; io package loads OK and properly
-##            adds java class libs to the javaclasspath => unlink commented out
-## 2013-12-28 Provisionally commented out all effective code
+## Changes:
+## 2014-01-08 Changed to move, rather than remove, PKG_ADD & PKG_DEL
 
 function post_install (desc)
-#  file = cstrcat (desc.archprefix, filesep, octave_config_info ("canonical_host_type"),
-#                  "-", octave_config_info ("api_version"), filesep, "PKG_ADD");
-#  ## [err, msg] = unlink (file);  ## Currently commented out
-#  if (err)
-#    warning ("Unable to remove PKG_ADD: %s", msg);
-#    printf ("For spreadsheet I/O you may need to manually add the required\n", ... 
-#            "Java class libs to the javaclasspath");
-#  endif
+
+  ## Try to move PKG_ADD & PKG_DEL to the io function script subdir to avoid
+  ## PKG_ADD invoking chk_spreadsheet_support before the function dir is in
+  ## the load path during loading of io pkg (esp. during installation).
+  
+  files = cstrcat (desc.archprefix, filesep, octave_config_info ("canonical_host_type"),
+                  "-", octave_config_info ("api_version"), filesep, "PKG_???");
+  [status, msg] = movefile (files, desc.dir, 'f');
+  if (! status)
+    warning ("post_install.m: unable to move PKG_ADD & PKG_DEL to script dir: %s", msg);
+  endif
+
 endfunction

@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis
+## Copyright (C) 2009,2010,2011,2012,2013,2014 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -14,18 +14,20 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[ @var{retval} ]} = chk_spreadsheet_support ()
-## @deftypefnx {Function File} {[ @var{retval} ]} = chk_spreadsheet_support ( @var{path_to_jars} )
-## @deftypefnx {Function File} {[ @var{retval} ]} = chk_spreadsheet_support ( @var{path_to_jars}, @var{debug_level} )
-## @deftypefnx {Function File} {[ @var{retval} ]} = chk_spreadsheet_support ( @var{path_to_jars}, @var{debug_level}, @var{path_to_ooo} )
+## @deftypefn  {Function File} {[ @var{retval}, @var{intfs}, @var{ljars} ]} = chk_spreadsheet_support ()
+## @deftypefnx {Function File} {[ @var{retval}, @var{intfs}, @var{ljars} ]} = chk_spreadsheet_support ( @var{path_to_jars} )
+## @deftypefnx {Function File} {[ @var{retval}, @var{intfs}, @var{ljars} ]} = chk_spreadsheet_support ( @var{path_to_jars}, @var{debug_level} )
+## @deftypefnx {Function File} {[ @var{retval}, @var{intfs}, @var{ljars} ]} = chk_spreadsheet_support ( @var{path_to_jars}, @var{debug_level}, @var{path_to_ooo} )
 ## Check Octave environment for spreadsheet I/O support, report any problems,
-## and optionally add Java class libs for spreadsheet support.
+## and optionally add or remove Java class libs for spreadsheet support.
 ##
 ## chk_spreadsheet_support first checks ActiveX (native MS-Excel); then
-## Java JRE presence, then Java support (builtin); then checks existing
+## Java JRE presence, then Java support (if builtin); then checks existing
 ## javaclasspath for Java class libraries (.jar files) needed for various
 ## Java-based spreadsheet I/O interfaces. If requested chk_spreadsheet_support
 ## will try to add the relevant Java class libs to the dynamic javaclasspath.
+## chk_spreadsheet_support remembers which Java class libs it has added to
+## the javaclasspath; optionally it can unload them as well.
 ##
 ## @var{path_to_jars} - relative or absolute path name to subdirectory
 ## containing these classes. TAKE NOTICE: /forward/ slashes are needed!
@@ -58,13 +60,20 @@
 ## indicated. If @var{path_to_jars} and/or @var{path_to_ooo} was supplied,
 ## chk_spreadsheet_support reports for each individual Java-based interface
 ## which required Java class libs it could find and add to the javaclasspath.
+##
+## @item -1 (or any negative number)
+## Remove all directories and Java class libs that chk_spreadsheet_support
+## added to the javaclasspath. If @var{debug_level} < 1 report number of 
+## removed javclasspath entries; if @var{debug_level} < 2 report each
+## individual removed entry.
 ## @noindent
 ## @end table
 ##
 ## @var{path_to_ooo} - installation directory of OpenOffice.org (again with
 ## /forward/ slashes). Usually that is something like (but no guarantees):
 ## @table @asis
-## - Windows: C:/Program Files/OpenOffice.org
+## - Windows: C:/Program Files/OpenOffice.org   or 
+##            C:/Program Files (X86)/LibreOffice
 ##
 ## - *nix: /usr/lib/ooo  or  /opt/libreoffice
 ##
@@ -103,9 +112,14 @@
 ##     0 = OOXML / ODS / gumeric read support (built-in)
 ##   128 = UNO (Java/UNO bridge - OpenOffice.org) (any format supported by OOo)
 ## @end example
+##
+## @var{INTFS}: listing of supported spreadsheet interfaces. The OCT 
+## interface is always supported.
+##
+## @var{ljars}: listing of full paths of Java class libs and directories
+## that chk_spreadsheet_support has added to the javaclasspath.
+##
 ## @end deftypefn
-
-function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo)
 
 ## Author: Philip Nienhuis <prnienhuis@users.sf.net>
 ## Created 2010-11-03 for Octave & Matlab
@@ -150,18 +164,54 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 ## 2013-12-20 More Texinfo header improvements
 ## 2013-12-28 Added check for OpenXLS version 10
 ## 2013-12-29 Added gwt-servlet-deps.jar to OpenXLS dependencies
+## 2014-01-07 Style fixes; "forward slash expected" message conditional on dbug
+## 2014-01-08 Keep track of loaded jars; allow unloading them; return them as output arg
+##     ''     Return checked interfaces; update texinfo header
 
-  jcp = []; retval = 0;
+function  [ retval, sinterfaces, loaded_jars ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo)
+
+  ## Keep track of which Java class libs were loaded
+  persistent loaded_jars;
+  persistent sinterfaces;
+
+  sinterfaces = {"OCT"};
+  jcp = []; 
+  retval = 0;
   if (nargin < 3)
     path_to_ooo= "";
   endif
   if (nargin < 2)
     dbug = 0;
   endif
-  if (dbug)
+
+  if (dbug < 0 && octave_config_info ("features").JAVA)
+    ## Remove loaded Java class libs from the javaclasspath
+    if (dbug < -2 && numel (loaded_jars))
+      printf ("Removing javaclasspath entries loaded by chk_spreadsheet_support:\n");
+    endif
+    for ii=1:numel (loaded_jars)
+      javarmpath (loaded_jars{ii});
+      if (dbug < -2)
+        printf ("%s\n", loaded_jars{ii});
+      endif
+    endfor
+    if (dbug < -1)
+      printf ("%d jars removed from javaclasspath\n", numel (loaded_jars));
+    endif
+    loaded_jars = {};
+    ## Re-assess supported interfaces
+    sinterfaces = {"OCT"};
+    retval = 0;
+    if (ismember ("COM", sinterfaces))
+      sinterfaces = [sinterfaces, "COM"];
+      retval = 1;
+    endif
+    return
+  elseif (dbug > 0)
     printf ('\n');
   endif
-  ## interfaces = {"COM", "POI", "POI+OOXML", "JXL", "OXS", "OTK", "JOD", "UNO", "OCT"}; 
+
+  interfaces = {"COM", "POI", "POI+OOXML", "JXL", "OXS", "OTK", "JOD", "UNO", "OCT"}; 
   ## Order  = vital
 
   ## Check if MS-Excel COM ActiveX server runs. Only needed on Windows systems
@@ -176,8 +226,11 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
       ## Close Excel to avoid zombie Excel invocation
       app.Quit();
       delete(app);
-      if (dbug), printf ("OK.\n\n"); endif
+      if (dbug)
+        printf ("OK.\n\n");
+      endif
       retval = retval + 1;
+      sinterfaces = [ sinterfaces, "COM" ];
     catch
       ## COM not supported
       if (dbug)
@@ -220,7 +273,9 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
       endif
       return;
     else
-      if (dbug > 1), printf ("OK, found one.\n"); endif
+      if (dbug > 1)
+        printf ("OK, found one.\n");
+      endif
     endif
     if (dbug > 1)
       printf ("  2. Checking Octave Java support... ");
@@ -294,7 +349,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
     if (dbug)
       printf ("No Java support found.\n");
       if (! retval)
-        printf ("Only read support for ODS 1.2 (.ods), OOXML (.xlsx) amd .gnumeric\n");
+        printf ("Only read support for ODS 1.2 (.ods), OOXML (.xlsx) and .gnumeric\n");
       endif
     endif
     return
@@ -316,6 +371,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
   [jpchk1, missing1] = chk_jar_entries (jcp, entries1, dbug);
   if (jpchk1 >= numel (entries1))
     retval = retval + 2;
+    sinterfaces = [ sinterfaces, "POI" ];
   endif
   if (dbug > 1)
     if (jpchk1 >= numel (entries1))
@@ -333,6 +389,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
   [jpchk2, missing2] = chk_jar_entries (jcp, entries2, dbug);
   if (jpchk1 >= numel (entries1) && jpchk2 >= numel (entries2))
     retval = retval + 4;
+    sinterfaces = [ sinterfaces, "POI+OOXML" ];
   endif
   if (dbug > 1)
     if (jpchk2 >= numel (entries2)) 
@@ -351,6 +408,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
   [jpchk, missing3] = chk_jar_entries (jcp, entries3, dbug);
   if (jpchk >= numel (entries3))
     retval = retval + 8;
+    sinterfaces = [ sinterfaces, "JXL" ];
   endif
   if (dbug > 1)
     if (jpchk >= numel (entries3))
@@ -374,6 +432,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
       javaMethod ("getVersion", "com.extentech.ExtenXLS.GetInfo");
       ## If we get here, we do have v. 10
       retval = retval + 16;
+      sinterfaces = [ sinterfaces, "OXS" ];
       if (dbug > 1)
         if (jpchk >= numel (entries4))
           printf ("  => Java/OpenXLS (OXS) OK.\n");
@@ -411,8 +470,11 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
            && compare_versions (odfvsn, "0.8.9", "<"))))
       warning ("  *** odfdom version (%s) is not supported - use v. 0.8.6 - 0.8.8\n", odfvsn);
     else  
-      if (dbug > 1), printf ("  => ODFtoolkit (OTK) OK.\n"); endif
+      if (dbug > 1)
+        printf ("  => ODFtoolkit (OTK) OK.\n");
+      endif
       retval = retval + 32;
+      sinterfaces = [ sinterfaces, "OTK" ];
     endif
   elseif (dbug > 1)
     printf ("  => Not all required classes (.jar) in classpath for OTK\n");
@@ -427,6 +489,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
   [jpchk, missing6] = chk_jar_entries (jcp, entries6, dbug);
   if (jpchk >= numel (entries6))
     retval = retval + 64;
+    sinterfaces = [ sinterfaces, "JOD" ];
   endif
   if (dbug > 1)
     if (jpchk >= numel(entries6))
@@ -445,6 +508,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
   [jpchk, missing0] = chk_jar_entries (jcp, entries0, dbug);
   if (jpchk >= numel (entries0))
     retval = retval + 128;
+    sinterfaces = [ sinterfaces, "UNO" ];
   endif
   if (dbug > 1)
     if (jpchk >= numel (entries0))
@@ -461,11 +525,11 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
     if (dbug)
       printf ("\nTrying to add missing program subdir & UNO java class libs to javaclasspath...\n");
     endif
-    if (~ischar (path_to_ooo))
+    if (! ischar (path_to_ooo))
       printf ("Path expected for arg # 3\n");
       return;
     endif
-    if (! isempty (strfind (path_to_ooo, '\')))
+    if (dbug && ! isempty (strfind (path_to_ooo, '\')))
       printf ("\n(Hmmm... forward slashes are preferred over backward slashes in path)\n");
     endif
     ## Add missing jars to javaclasspath. First combine all entries
@@ -482,6 +546,11 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
           targt = targt - 1;
           if (dbug > 2)
             printf ("OK\n");
+          endif
+          if (isempty (loaded_jars))
+            loaded_jars = { programdir };
+          else
+            loaded_jars = [ loaded_jars, programdir] ;
           endif
         catch
           if (dbug > 2)
@@ -525,7 +594,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
           endif
           basisdirentries = {"program", "classes"};
           tmp = basisdir; jj=1;
-          while (~isempty (tmp) && jj <= numel (basisdirentries))
+          while (! isempty (tmp) && jj <= numel (basisdirentries))
             tmp = get_dir_ (tmp, basisdirentries{jj});
             jj = jj + 1;
           endwhile
@@ -557,6 +626,11 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
             if (dbug > 2)
               printf ("OK\n");
             endif
+            if (isempty (loaded_jars))
+              loaded_jars = {[unojarpath filesep file.name]};
+            else
+              loaded_jars = [ loaded_jars; [unojarpath filesep file.name] ];
+            endif
           catch
             if (dbug > 2)
               printf ("FAILED\n");
@@ -565,8 +639,9 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
         endif
       endif
     endfor
-    if (~targt)
+    if (! targt)
       retval = retval + 128;
+      sinterfaces = [sinterfaces, "UNO"];
     endif
     if (dbug)
       if (targt)
@@ -595,7 +670,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
     if (dbug)
       printf ("Trying to add missing java class libs to javaclasspath...\n");
     endif
-    if (~ischar (path_to_jars))
+    if (! ischar (path_to_jars))
       printf ("Path expected for arg # 1\n");
       return;
     endif
@@ -605,12 +680,13 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
     for ii=1:6   ## Adapt number in case of future new interfaces
       tmpe = eval ([ "entries" char(ii + "0") ]);
       tmpm = eval ([ "missing" char(ii + "0") ]);
-      if (sum (tmpm))
+      tmpmcnt = sum (tmpm);
+      if (tmpmcnt)
         for jj=1:numel (tmpe)
           if (tmpm(jj))
             if (iscellstr (tmpe{jj}))
               rtval = 0; kk = 1;
-              while (kk <= numel (tmpe{jj}) && ! rtval)
+              while (kk <= numel (tmpe{jj}) && isnumeric (rtval))
                 jtmpe = tmpe{jj}{kk};
                 rtval = add_jars_to_jcp (path_to_jars, jtmpe, dbug);
                 ++kk;
@@ -618,15 +694,25 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
             else
               rtval = add_jars_to_jcp (path_to_jars, tmpe{jj}, dbug);
             endif
-            if (rtval)
-              targt = targt - rtval;
+            if (ischar (rtval))
+              --targt;
+              --tmpmcnt;
               tmpm(jj) = 0;
+              if (isempty (loaded_jars))
+                ## Make sue we get a cellstr array
+                loaded_jars = {rtval};
+              else
+                loaded_jars = [ loaded_jars; rtval ];
+              endif
             endif
           endif
         endfor
-        if (~sum (tmpm))
+        if (! sum (tmpm))
           retval = retval + 2^ii;
         endif
+      endif
+      if (! tmpmcnt)
+        sinterfaces = [ sinterfaces, interfaces{ii} ];
       endif
     endfor
     if (dbug)
@@ -672,6 +758,7 @@ function [ retval ] = add_jars_to_jcp (path_to_jars, jarname, dbug)
 ## lib file (.jar) name, checks if it can find the file in the subdir and
 ## tries to add it to the javaclasspath. Only two more subdir levels below the
 ## path_to_jar subdir will be searched to limit excessive search time.
+## If found, return the full pathname
 
   retval = 0;
   ## Search subdirs. Max search depth = 2 to avoid undue search time
@@ -696,7 +783,7 @@ function [ retval ] = add_jars_to_jcp (path_to_jars, jarname, dbug)
       if (dbug > 2)
         printf ('OK\n');
       endif
-      retval = 1;
+      retval = [path_to_jars filesep file];
     catch
       if (dbug > 2)
         printf ('FAILED\n');

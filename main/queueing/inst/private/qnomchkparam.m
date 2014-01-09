@@ -1,4 +1,4 @@
-## Copyright (C) 2012, 2013 Moreno Marzolla
+## Copyright (C) 2012, 2013, 2014 Moreno Marzolla
 ##
 ## This file is part of the queueing toolbox.
 ##
@@ -40,7 +40,7 @@ function [err lambda S V m] = qnomchkparam( varargin )
 
   [V m] = deal(0);
 
-  if ( !isvector(lambda) || length(lambda)==0 )
+  if ! ( isnumeric(lambda) && isvector(lambda) && length(lambda)>0 )
     err = "lambda must be a nonempty vector";
     return;
   endif
@@ -54,7 +54,7 @@ function [err lambda S V m] = qnomchkparam( varargin )
 
   C = length(lambda); ## Number of classes
 
-  if ( !ismatrix(S) || ndims(S) != 2 || rows(S) != C )
+  if ! ( isnumeric(S) && ismatrix(S) && ndims(S) == 2 && rows(S) == C )
     err = sprintf("S must be a 2-dimensional matrix with %d rows",C);
     return;
   endif
@@ -70,7 +70,7 @@ function [err lambda S V m] = qnomchkparam( varargin )
     V = ones(size(S));
   else
     V = varargin{3};
-    if ( !ismatrix(V) || ndims(V) != 2 || rows(V) != C || columns(V) != K )
+    if ! ( isnumeric(V) && ismatrix(V) & ndims(V) == 2 & rows(V) == C & columns(V) == K )
       err = sprintf("V must be a %d x %d matrix", C, K );
       return;
     endif
@@ -85,7 +85,7 @@ function [err lambda S V m] = qnomchkparam( varargin )
     m = ones(1,K);
   else
     m = varargin{4};
-    if (!isvector(m) || length(m) != K ) 
+    if ! ( isnumeric(m) && isvector(m) && length(m) == K ) 
       err = sprintf("m must be a vector with %d elements", K );
       return;
     endif

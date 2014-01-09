@@ -41,12 +41,12 @@ function [err Nout Sout Vout mout Zout] = qncmchkparam( N, S, V, m, Z )
     return;
   endif
 
-  if ( !isvector(N) || length(N)==0 )
+  if ! ( isnumeric(N) && isvector(N) && length(N)>0 )
     err = "N must be a nonempty vector";
     return;
   endif
 
-  if ( any(N<0) || any( fix(N) != N ) )
+  if ! ( all(N>=0) && all( fix(N) == N ) )
     err = "N must contain nonnegative integers";
     return;
   endif
@@ -55,7 +55,7 @@ function [err Nout Sout Vout mout Zout] = qncmchkparam( N, S, V, m, Z )
 
   C = length(Nout); ## Number of classes
 
-  if ( !ismatrix(S) || ndims(S) != 2 || rows(S) != C )
+  if ! ( isnumeric(S) && ismatrix(S) && ndims(S) == 2 && rows(S) == C )
     err = sprintf("S must be a 2-dimensional matrix with %d rows",C);
     return;
   endif
@@ -72,7 +72,7 @@ function [err Nout Sout Vout mout Zout] = qncmchkparam( N, S, V, m, Z )
   if ( nargin < 3 )
     Vout = ones(size(Sout));
   else
-    if ( !ismatrix(V) || ndims(V) != 2 || rows(V) != C || columns(V) != K )
+    if ! ( isnumeric(V) && ismatrix(V) && ndims(V) == 2 && rows(V) == C && columns(V) == K )
       err = sprintf("V must be a %d x %d matrix", C, K );
       return;
     endif
@@ -88,7 +88,7 @@ function [err Nout Sout Vout mout Zout] = qncmchkparam( N, S, V, m, Z )
   if ( nargin < 4 ) 
     mout = ones(1,K);
   else
-    if (!isvector(m) || length(m) != K ) 
+    if ! ( isnumeric(m) && isvector(m) && length(m) == K ) 
       err = sprintf("m must be a vector with %d elements", K );
       return;
     endif
@@ -98,7 +98,7 @@ function [err Nout Sout Vout mout Zout] = qncmchkparam( N, S, V, m, Z )
   if ( nargin < 5 )
     Zout = zeros(1,C);
   else
-    if (!isvector(Z) || length(Z) != C)
+    if ! ( isnumeric(Z) && isvector(Z) && length(Z) == C )
       err = sprintf("Z must be a vector with %d elements", C);
       return;
     endif

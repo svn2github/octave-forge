@@ -1,4 +1,4 @@
-## Copyright (C) 2008, 2009, 2010, 2011, 2012 Moreno Marzolla
+## Copyright (C) 2008, 2009, 2010, 2011, 2012, 2014 Moreno Marzolla
 ##
 ## This file is part of the queueing toolbox.
 ##

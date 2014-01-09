@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Moreno Marzolla
+## Copyright (C) 2012, 2013, 2014 Moreno Marzolla
 ##
 ## This file is part of the queueing toolbox.
 ##
@@ -40,12 +40,12 @@ function [err lambda S V m] = qnoschkparam( varargin )
 
   [V m] = deal(0);
 
-  if ( !isscalar(lambda) || lambda <= 0 )
+  if ! ( isscalar(lambda) && lambda > 0 )
     err = "lambda must be a positive scalar";  
     return;
   endif
 
-  if ( !isvector(S) || length(S)<=0 )
+  if ! ( isnumeric(S) && isvector(S) && length(S)>0 )
     err = "S must be a nonempty vector";
     return;
   endif
@@ -62,7 +62,7 @@ function [err lambda S V m] = qnoschkparam( varargin )
   else
     V = varargin{3};
 
-    if ( ! isvector(V) )
+    if ! ( isnumeric(V) && isvector(V) )
       err =  "V must be a vector";
       return;
     endif
@@ -78,7 +78,7 @@ function [err lambda S V m] = qnoschkparam( varargin )
   else
     m = varargin{4};
 
-    if ( ! isvector(m) )
+    if ! ( isnumeric(m) && isvector(m) )
       err = "m must be a vector";
       return;
     endif

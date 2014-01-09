@@ -1,4 +1,4 @@
-## Copyright (C) 2012, 2013 Moreno Marzolla
+## Copyright (C) 2012, 2013, 2014 Moreno Marzolla
 ##
 ## This file is part of the queueing toolbox.
 ##
@@ -38,14 +38,14 @@ function [err Nout Sout Vout mout Zout] = qncschkparam( N, S, V, m, Z )
     return;
   endif
 
-  if ( !isscalar(N) || N<0 || N != fix(N) )
+  if ! ( isscalar(N) && N>=0 && N == fix(N) )
     err = "N must be a nonnegative integer";  
     return;
   endif
 
   Nout = N;
 
-  if ( !isvector(S) || length(S)<=0 )
+  if ! ( isnumeric(S) && isvector(S) && length(S)>0 )
     err = "S must be a nonempty vector";
     return;
   endif
@@ -60,7 +60,7 @@ function [err Nout Sout Vout mout Zout] = qncschkparam( N, S, V, m, Z )
   if ( nargin < 3 )
     Vout = ones(size(Sout));
   else
-    if ( ! isvector(V) )
+    if ! ( isnumeric(V) && isvector(V) )
       err =  "V must be a vector";
       return;
     endif
@@ -74,7 +74,7 @@ function [err Nout Sout Vout mout Zout] = qncschkparam( N, S, V, m, Z )
   if ( nargin < 4 ) 
     mout = ones(size(Sout));
   else
-    if ( ! isvector(m) )
+    if ! ( isnumeric(V) && isvector(m) )
       err = "m must be a vector";
       return;
     endif

@@ -355,7 +355,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
 		}
 
 		// train's original code
-		error_msg = check_parameter(&prob, &param);
+		error_msg = check_parameter(&param);
 
 		if(err || error_msg)
 		{

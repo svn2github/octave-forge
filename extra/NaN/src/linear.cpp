@@ -957,7 +957,7 @@ static void solve_l1r_l2_svc(
 	double d, G_loss, G, H;
 	double Gmax_old = INF;
 	double Gmax_new;
-	double Gmax_init;
+	double Gmax_init = 0.0;
 	double d_old, d_diff;
 	double loss_old, loss_new;
 	double appxcond, cond;
@@ -1244,7 +1244,7 @@ static void solve_l1r_lr(
 	double d, G, H;
 	double Gmax_old = INF;
 	double Gmax_new;
-	double Gmax_init;
+	double Gmax_init = 0.0;
 	double sum1, appxcond1;
 	double sum2, appxcond2;
 	double cond;
@@ -2108,7 +2108,7 @@ void destroy_param(parameter* param)
 		free(param->weight);
 }
 
-const char *check_parameter(const problem *prob, const parameter *param)
+const char *check_parameter(const parameter *param)
 {
 	if(param->eps <= 0)
 		return "eps <= 0";

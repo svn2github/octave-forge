@@ -339,7 +339,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			ix1 = ix0*D2;	// index for input 
 			for (j=0; j<D2; j++) {
 				// minimize cache misses 
-				ix2 =   ix0;	// index for output 
+				ix2 = ix0;	// index for output 
 				// Inner LOOP: along dimensions < DIM
 				if (W) do {
 					long double x = *LInput;

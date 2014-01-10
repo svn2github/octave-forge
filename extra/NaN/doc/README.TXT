@@ -1,6 +1,6 @@
 NaN-Tb: A statistics toolbox 
 ------------------------------------------------------------
-Copyright (C) 2000-2005,2009,2010,2011 Alois Schloegl <alois.schloegl@gmail.com>
+Copyright (C) 2000-2005,2009,2010,2011,2014 Alois Schloegl <alois.schloegl@gmail.com>
 
 
 FEATURES of the NaN-tb:
@@ -279,7 +279,7 @@ d) Compile mex files:
   Run NANINSTTEST again to check the stability of the compiled SUMSKIPNAN.  
 
 	$Id$
-	Copyright (C) 2000-2005,2009,2010,2011 by Alois Schloegl <alois.schloegl@gmail.com>	
+	Copyright (C) 2000-2005,2009,2010,2011,2014 by Alois Schloegl <alois.schloegl@gmail.com>	
         http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
 

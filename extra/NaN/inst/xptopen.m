@@ -15,6 +15,17 @@
 %   The fields of X must be column vectors of equal length.
 %   Each vector is either a numeric vector or a cell array of strings.
 %   The SAS-XPT format stores Date/Time as numeric value counting the number of days since 1960-01-01.
+%
+% References:
+% [1]	TS-140 THE RECORD LAYOUT OF A DATA SET IN SAS TRANSPORT (XPORT) FORMAT
+%	http://support.sas.com/techsup/technote/ts140.html
+% [2] IBM floating point format
+%	http://en.wikipedia.org/wiki/IBM_Floating_Point_Architecture
+% [3] see http://old.nabble.com/Re%3A-IBM-integer-and-double-formats-p20428979.html
+% [4] STATA File Format
+%	http://www.stata.com/help.cgi?dta
+%	http://www.stata.com/help.cgi?dta_113
+
 
 %   This program is free software; you can redistribute it and/or modify
 %   it under the terms of the GNU General Public License as published by
@@ -31,7 +42,7 @@
 
 
 %   $Id$
-%   Copyright (C) 2010,2011,2012 by Alois Schloegl <alois.schloegl@ist.ac.at>
+%   Copyright (C) 2010,2011,2012,2014 by Alois Schloegl <alois.schloegl@ist.ac.at>
 %   This is part of the NaN-toolbox. For more details see
 %   http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
@@ -39,3 +50,4 @@
 if exist('xptopen','file')~=3
 	error('xptopen.mex is not compiled')
 end;
+

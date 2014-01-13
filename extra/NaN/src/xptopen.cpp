@@ -78,7 +78,11 @@ SPSS file format
 
 #if 0
 
-#elif defined(__linux__) 
+#elif defined(__linux__)
+#  include <endian.h>
+#  include <byteswap.h>
+
+#elif defined(__CYGWIN__)
 #  include <endian.h>
 #  include <byteswap.h>
 
@@ -182,10 +186,6 @@ SPSS file format
 
 #if !defined(__BIG_ENDIAN) && !defined(__LITTLE_ENDIAN) 
 #error  ENDIANITY is not known 
-#endif 
-
-#if !defined(bswap_16) || !defined(bswap_32) || !defined(bswap_64)
-#error SWAP operation not available 
 #endif 
 
 

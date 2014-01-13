@@ -17,7 +17,25 @@
 ## @deftypefn{Function File} {d =} dict (@var{keys}, @var{values})
 ## @deftypefnx{Function File} {d =} dict ()
 ## @deftypefnx{Function File} {d =} dict (@var{str})
-## Creates a dictionary object with given keys and values. @var{keys}
+## Creates a dictionary object with given keys and values.
+##
+## The class @code{dict} has been deprecated in favour of using Octave
+## structs.  The advantage of dict over structs was that dict allowed any
+## string, not only valid Octave identifiers, as fieldnames.  This has
+## since change and any string is now a valid fieldname.
+##
+## @example
+## @group
+## s = struct ("7", "value7", "  ", "just spaces");
+## s.("7")
+##   @result{} "value 7"
+## s.("  ")
+## @result {} just spaces
+##   @result{} "just spaces"
+## @end group
+## @end example
+##
+## @var{keys}
 ## should be a cell array of strings; @var{values} should be a cell array
 ## with matching size. @var{values} can also be a singleton array, in
 ## which case it is expanded to the proper size; or omitted, in which case
@@ -65,6 +83,14 @@
 ## Author: Jaroslav Hajek <highegg@gmail.com>
 
 function d = dict (keys, values)
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             ["`dict' has been deprecated in favor of structs which in " ...
+              "Octave allows the use of arbitrary strings as fieldnames."]);
+  endif
 
   if (nargin == 0)
     keys = values = cell (0, 1);

@@ -66,27 +66,27 @@
 ##
 ## @example
 ## @group
-## function check (pack, path, mat, varargin)
-##     p = inputParser;                             # create object
+## function check (varargin)
+##     p = inputParser ();                             # create object
 ##     p.FunctionName = "check";                    # set function name
 ##     p = p.addRequired ("pack", @@ischar);         # create mandatory argument
 ##
 ##     p = p.addOptional ("path", pwd(), @@ischar);  # create optional argument
 ##
 ##     ## one can create a function handle to anonymous functions for validators
-##     val_mat = @@(x)isvector(x) && all( x <= 1) && all(x >= 0);
+##     val_mat = @@(x) isvector (x) && all (x <= 1) && all (x >= 0);
 ##     p = p.addOptional ("mat", [0 0], val_mat);
 ##
 ##     ## create two ParamValue type of arguments
-##     val_type = @@(x) ischar(x) && any(strcmp(x, @{"linear", "quadratic"@});
-##     p = p.addParamValue ("type", "linear", @@val_type);
-##     val_verb = @@(x) ischar(x) && any(strcmp(x, @{"low", "medium", "high"@});
-##     p = p.addParamValue ("tolerance", "low", @@val_verb);
+##     val_type = @@(x) ischar (x) && any (strcmp (x, @{"linear", "quadratic"@}));
+##     p = p.addParamValue ("type", "linear", val_type);
+##     val_verb = @@(x) ischar (x) && any (strcmp (x, @{"low", "medium", "high"@}));
+##     p = p.addParamValue ("tolerance", "low", val_verb);
 ##
 ##     ## create a switch type of argument
 ##     p = p.addSwitch ("verbose");
 ##
-##     p = p.parse (pack, path, mat, varargin@{:@});
+##     p = p.parse (varargin@{:@});
 ##
 ##     ## the rest of the function can access the input by accessing p.Results
 ##     ## for example, to access the value of tolerance, use p.Results.tolerance

@@ -25,7 +25,11 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 #include <libpq-fe.h>
 
+#ifdef __WIN32__
+#include <winsock2.h>
+#else
 #include <sys/socket.h> // for AF_INET, needed in network address types
+#endif
 
 #include "converters.h"
 #include "pq_connection.h"

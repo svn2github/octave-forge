@@ -167,6 +167,7 @@
 ## 2014-01-07 Style fixes; "forward slash expected" message conditional on dbug
 ## 2014-01-08 Keep track of loaded jars; allow unloading them; return them as output arg
 ##     ''     Return checked interfaces; update texinfo header
+## 2014-01-17 Tame messages about COM/ActiveX if dbug = 0
 
 function  [ retval, sinterfaces, loaded_jars ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo)
 
@@ -241,10 +242,10 @@ function  [ retval, sinterfaces, loaded_jars ]  = chk_spreadsheet_support (path_
       winpkgind = find (cellfun (@(x) strcmp(x.name, "windows"), pkglist), 1, "first");
       if (! isempty (winpkgind))
         winpkg = pkglist{winpkgind};
-        if (winpkg.loaded)
+        if (winpkg.loaded && dbug)
           printf ("MS-Excel couldn't be started (maybe because of 64-bit MS-Office?)\n");
         endif
-      else
+      elseif (dbug)
         printf ("(windows package is required for COM/ActiveX support)\n");
       endif
       printf ("\n");

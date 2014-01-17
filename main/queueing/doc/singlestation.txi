@@ -30,6 +30,9 @@ for handling the following types of queues:
 @menu
 * The M/M/1 System::    Single-server queueing station.
 * The M/M/m System::    Multiple-server queueing station.
+* The Erlang-B Formula::
+* The Erlang-C Formula::
+* The Engset Formula::
 * The M/M/inf System::  Infinite-server (delay center) station.
 * The M/M/1/K System::  Single-server, finite-capacity queueing station.
 * The M/M/m/K System::  Multiple-server, finite-capacity queueing station.
@@ -114,10 +117,6 @@ mu(n) = min(m,n)*mu
 
 @GETHELP{qsmmm}
 
-@GETHELP{erlangb}
-
-@GETHELP{erlangc}
-
 @noindent @strong{REFERENCES}
 
 @noindent G. Bolch, S. Greiner, H. de Meer and K. Trivedi, @cite{Queueing Networks
@@ -129,9 +128,35 @@ Science Applications}, Wiley, 1998, Section 6.5.
 @auindex de Meer, H.
 @auindex Trivedi, K.
 
+@c
+@c Erlang-B
+@c
+@node The Erlang-B Formula
+@section The Erlang-B Formula
+
+@GETHELP{erlangb}
+
+@noindent @strong{REFERENCES}
+
 @noindent G. Zeng, @cite{Two common properties of the erlang-B function, erlang-C function, and Engset blocking function}, Mathematical and Computer Modelling, Volume 37, Issues 12-13, June 2003, Pages 1287-1296
 
 @auindex Zeng, G.
+
+@c
+@c Erlang-c
+@c
+@node The Erlang-C Formula
+@section The Erlang-C Formula
+
+@GETHELP{erlangc}
+
+@c
+@c Engset
+@c
+@node The Engset Formula
+@section The Engset Formula
+
+@GETHELP{engset}
 
 @c
 @c M/M/inf

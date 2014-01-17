@@ -17,25 +17,28 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {@var{B} =} erlangb (@var{A}, @var{m})
+## @deftypefn {Function File} {@var{B} =} engset (@var{A}, @var{m}, @var{n})
 ##
-## @cindex Erlang-B formula
+## @cindex Engset loss formula
 ##
-## Compute the value of the Erlang-B formula @math{E_B(A, m)} giving the
-## probability that an open system with @math{m} identical servers,
-## arrival rate @math{\lambda}, individual service rate @math{\mu}
-## and offered load @math{A = \lambda / \mu} has all servers busy.
+## Compute the Engset blocking probability @math{P_b(A, m, n)} for a system
+## with a finite population of @math{n} users, @math{m} identical
+## servers, no queue, individual service rate @math{\mu}, individual
+## arrival rate @math{\lambda} (i.e., the time until a user tries to
+## request service is exponentially distributed with mean @math{1 /
+## \lambda}), and offered load @math{A = \lambda / \mu}.
 ## 
 ## @iftex
 ##
-## @math{E_B(A, m)} is defined as:
+## @math{P_b(A, m, n)} is defined for @math{n > m} as:
 ##
 ## @tex
 ## $$
-## E_B(A, m) = \displaystyle{{A^m \over m!} \left( \sum_{k=0}^m {A^k \over k!} \right) ^{-1}}
+## P_b(A, m, n) = {\displaystyle{A^m {{n}\choose{m}}}} \over {\displaystyle{\sum_{k=0}^m {A^k {{n}\choose{k}}}}}
 ## $$
 ## @end tex
 ##
+## and is 0 if @math{n @leq{} m}.
 ## @end iftex
 ##
 ## @strong{INPUTS}
@@ -50,6 +53,9 @@
 ## @item m
 ## Number of identical servers (integer, @math{m @geq{} 1}). Default @math{m = 1}
 ##
+## @item n
+## Number of requests (integer, @math{n @geq{} 1}). Default @math{n = 1}
+##
 ## @end table
 ##
 ## @strong{OUTPUTS}
@@ -57,55 +63,56 @@
 ## @table @var
 ##
 ## @item B
-## The value @math{E_B(A, m)}
+## The value @math{P_b(A, m, n)}
 ##
 ## @end table
 ##
-## @var{A} or @var{m} can be vectors, and in this case, the results will
-## be vectors as well.
+## @var{A}, @var{m} or @math{n} can be vectors, and in this case, the
+## results will be vectors as well.
 ##
-## @seealso{qsmmm}
+## @seealso{erlangb, erlangc}
 ##
 ## @end deftypefn
 
 ## Author: Moreno Marzolla <moreno.marzolla(at)unibo.it>
 ## Web: http://www.moreno.marzolla.name/
-function B = erlangb(A, m)
-  if ( nargin < 1 || nargin > 2 )
+function P = engset(A, m, n)
+  if ( nargin < 1 || nargin > 3 )
     print_usage();
   endif
 
   ( isnumeric(A) && all( A(:) > 0 ) ) || error("A must be positive");
   
-  if ( nargin == 1 )
+  if ( nargin < 2 )
     m = 1;
   else
     ( isnumeric(m) && all( fix(m(:)) == m(:)) && all( m(:) > 0 ) ) || error("m must be a positive integer");
   endif
 
-  [err A m] = common_size(A, m);
+  if ( nargin < 3 )
+    n = 1;
+  else
+    ( isnumeric(n) && all( fix(n(:)) == n(:)) && all( n(:) > 0 ) ) || error("n must be a positive integer");
+  endif
+  
+  [err A m n] = common_size(A, m, n);
   if ( err )
     error("parameters are not of common size");
   endif
 
-  B = arrayfun( @__erlangb_compute, A, m);
+  P = arrayfun( @__engset_compute, A, m, n);
 endfunction
 
-## Compute E_B(A,m) recursively, as described in:
-##
-## Guoping Zeng, Two common properties of the erlang-B function,
-## erlang-C function, and Engset blocking function, Mathematical and
-## Computer Modelling Volume 37, Issues 12–13, June 2003, Pages
-## 1287–1296 http://dx.doi.org/10.1016/S0895-7177(03)90040-9
-##
-## To improve numerical stability, the recursion is based on the inverse
-## 1 / E_B rather than E_B itself.
-function B = __erlangb_compute(A, m)
-  Binv = 1.0;
-  for k=1:m
-    Binv = 1.0 + k/A*Binv;
-  endfor
-  B = 1.0 / Binv;
+## Compute P_b(A,m,n) recursively
+function P = __engset_compute(A, m, n)
+  if ( m >= n )
+    P = 0.0;
+  else
+    P = 1.0;
+    for i = 1:m
+      P=(A*(n-i)*P)/(i+A*(n-i)*P);
+    endfor
+  endif
 endfunction
 
 %!test

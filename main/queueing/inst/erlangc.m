@@ -21,10 +21,11 @@
 ##
 ## @cindex Erlang-C formula
 ##
-## Compute the steady-state probability that a request finds all
-## @math{m} servers musy in a @math{M/M/m/\infty} queueing system with
-## @math{m} identical servers and infinite queue. This quantity is
-## also called Erlang-C formula @math{E_C(A, m)}.
+## Compute the steady-state probability that an open queueing system
+## with @math{m} identical servers, infinite wating space, arrival rate
+## @math{\lambda}, individual service rate @math{\mu} and offered load
+## @math{A = \lambda / \mu} are busy. This probability is also called
+## Erlang-C formula @math{E_C(A, m)}.
 ## 
 ## @iftex
 ##

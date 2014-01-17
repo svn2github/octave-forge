@@ -24,7 +24,7 @@
 ##
 ## Compute utilization, response time, average number of requests in
 ## service and throughput for a @math{M/M/m} queue, a queueing system
-## with @math{m} identical service centers connected to a single FCFS
+## with @math{m} identical servers connected to a single FCFS
 ## queue.
 ##
 ## @iftex

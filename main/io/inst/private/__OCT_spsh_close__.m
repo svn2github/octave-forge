@@ -21,19 +21,41 @@
 ##
 ## @end deftypefn
 
-## Author: Philip Nenhuis <prnienhuis@users.sf.net>
+## Author: Philip Nenhuis <prnienhuis at users.sf.net>
 ## Created: 2013-09-09
 ## Updates:
 ## 2013-09-23 Added in commented-out stanza for OOXML (.xlsx)
-## 2013-10-20 OOXLM support
+## 2013-10-20 OOXML support
+## 2014-01-19 Write support for ODS
+## 2014-01-20 Catch zip errors; zip to proper (original) file name
+## 2014-01-22 Zip quietly; zip into current dir, not temp dir
 
 function [xls] = __OCT_spsh_close__ (xls)
 
   ## Below order is vital - shortest extension first as you can have file 'a.<ext>'
   ## that'll crash if we have 't.ods' but first try the 'gnumeric' extension
   if (strcmpi (xls.filename(end-3:end), ".ods"))
+    if (xls.changed && xls.changed < 3)
+      [pth, fname, ext] = fileparts (xls.filename);
+      opwd = pwd;
+      if (isempty (pth))
+        filename = [ opwd filesep xls.filename ];
+      endif
+      ## Go to temp dir where ods file has been unzipped
+      cd (xls.workbook);
+      ## Zip tmp directory into .ods and copy it over original file
+      try
+        system (sprintf ("zip -q -r %s *.* .", filename));
+        xls.changed = 0;
+      catch
+        printf ("odsclose: could not zip ods contents in %s to %s", xls.workbook, filename);
+      end_try_catch;
+      cd (opwd);
+    endif
     ## Delete tmp file
-    rmdir (xls.workbook, "s");
+    if (! xls.changed)
+      rmdir (xls.workbook, "s");
+    endif
 
   elseif (strcmpi (xls.filename(end-4:end-1), ".xls"))
     ## For OOXML remove temp dir here

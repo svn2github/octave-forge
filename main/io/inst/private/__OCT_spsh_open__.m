@@ -38,6 +38,7 @@
 ##            that's why an XML parser is superior over regular expressions)
 ## 2013-12-27 Use one variable for processed file type
 ##     ''     Shuffled code around to file type order
+## 2014-01-22 Open new files from template directory in io script directory
 
 function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename, xlssupport, ftype)
 
@@ -54,8 +55,19 @@ function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename
     ## xlsx and ods are zipped
     ## Below is needed for a silent delete of our tmpdir
     confirm_recursive_rmdir (0);
+    if (xwrite == 3)
+      if (ftype == 2)
+        ext = ".xlsx";
+      elseif (ftype == 3)
+        ext = ".ods"
+      endif
+      ## New file, get it from template
+      templ = strrep (which ("odsopen"), "odsopen.m", ["templates" filesep "template" ext]);
+    else
+      templ = filename;
+    endif
     try
-      unpack (filename, tmpdir, "unzip");
+      unpack (templ, tmpdir, "unzip");
     catch
       printf ("file %s couldn't be unpacked. Is it the proper file format?\n", filename);
       xls = [];
@@ -109,8 +121,13 @@ function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename
 
       ## To speed things up later on, get sheet names and starting indices
       shtidx = strfind (xml, "<table:table table:name=");
-      shtidx = [ shtidx length(xml) ];
-      nsheets = numel (shtidx) - 1;
+      nsheets = numel (shtidx);
+      ## Find end (+1) of very last sheet, marked by either one of below tags
+      sht_end = strfind (xml, "<table:named-expressions");
+      if (isempty (sht_end))
+        sht_end = strfind (xml, "</office:spreadsheet>");
+      endif
+      shtidx = [ shtidx sht_end ];
       ## Get sheet names
       sh_names = cell (1, nsheets);
       for ii=1:nsheets

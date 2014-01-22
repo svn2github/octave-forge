@@ -135,6 +135,7 @@
 ## 2013-12-27 Use one variable for processed file types
 ## 2014-01-01 Add warning that UNO will write ODS f. unsupported file extensions
 ##     ''     Copyright string update
+## 2014-01-23 OCT ods write support for .ods
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
@@ -208,7 +209,9 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
   ## not finding not-yet-existing files when wanting to write a new one.
   ## Be sure it's either 0 or 1 initially
   if (rw)
-    if (odsintf_cnt == 1 && odsinterfaces.OCT)
+    [~, ~, ext] = fileparts (filename);
+    ## .ods write support is supported
+    if (odsintf_cnt == 1 && odsinterfaces.OCT && ! strcmpi (ext, ".ods"))
       ## Check if OCT is only interface and writing is requested
       error ("OCT interface doesn't support writing files");
     endif

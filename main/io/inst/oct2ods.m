@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis
+## Copyright (C) 2009,2010,2011,2012,2013,2014 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -201,9 +201,9 @@ function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange="", spsh_opts=[])
     ## Write ods file tru Java & jOpenDocument. API still leaves lots to be wished...
     [ ods, rstatus ] = __JOD_oct2spsh__ (c_arr, ods, wsh, crange);
 
-  elseif (strcmp (ods.xtype, "UNO"))
-    ## Write ods file tru Java & UNO bridge (OpenOffice.org & clones)
-    [ ods, rstatus ] = __UNO_oct2spsh__ (c_arr, ods, wsh, crange, spsh_opts);
+  elseif (strcmp (ods.xtype, "OCT"))
+    ## Write ods file tru native Octave
+    [ ods, rstatus ] = __OCT_oct2ods__ (c_arr, ods, wsh, crange, spsh_opts);
 
   ##elseif 
     ##---- < Other interfaces here >

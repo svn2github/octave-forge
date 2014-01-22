@@ -1,4 +1,4 @@
-## Copyright (C) 2013 Philip Nienhuis
+## Copyright (C) 2013,2014 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -40,6 +40,7 @@
 ## 2013-11-13 Fix table-row counter bug
 ##     ''     Pretty text output
 ## 2013-12-19 Work around OTK bug (doesn't write office:value-type for formula cells)
+## 2014-01-22 Copyright string update
 
 function [ rawarr, ods, rstatus] = __OCT_ods2oct__ (ods, wsh, cellrange='', spsh_opts)
 
@@ -82,7 +83,8 @@ function [ rawarr, ods, rstatus] = __OCT_ods2oct__ (ods, wsh, cellrange='', spsh
     if (firstrow == 0 && lastrow == 0)
       ## Empty sheet
       rawarr = {};
-      printf ("Worksheet '%s' contains no data\n", ods.sheets.sh_names{wsh});
+      ## printf ("Worksheet '%s' contains no data\n", ods.sheets.sh_names{wsh});
+      lims = [];
       rstatus = 1;
       return;
     else

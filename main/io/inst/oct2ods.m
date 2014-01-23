@@ -140,7 +140,7 @@ function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange="", spsh_opts=[])
   elseif (ischar(c_arr))
     c_arr = {c_arr};
     printf ("(oct2ods: input character array converted to 1x1 cell)\n");
-  elseif (~iscell (c_arr))
+  elseif (! iscell (c_arr))
     error ("oct2ods: input array neither cell nor numeric array");
   endif
   if (ndims (c_arr) > 2)
@@ -213,6 +213,8 @@ function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange="", spsh_opts=[])
                     ods.xtype));
   endif
 
-  if (rstatus), ods.limits = []; endif
+  if (rstatus)
+    ods.limits = [];
+  endif
 
 endfunction

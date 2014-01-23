@@ -59,7 +59,7 @@ function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename
       if (ftype == 2)
         ext = ".xlsx";
       elseif (ftype == 3)
-        ext = ".ods"
+        ext = ".ods";
       endif
       ## New file, get it from template
       templ = strrep (which ("odsopen"), "odsopen.m", ["templates" filesep "template" ext]);

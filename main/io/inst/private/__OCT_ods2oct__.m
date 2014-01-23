@@ -196,6 +196,7 @@ function [ rawarr, ods, rstatus] = __OCT_ods2oct__ (ods, wsh, cellrange='', spsh
               ## Put proper translation into rawarr
               switch ctype
                 case "cformula"
+                  form = strrep (form, "of:", "");
                   form = strrep (form, "&quot;", '"');
                   form = strrep (form, "&lt;", "<");
                   form = strrep (form, "&gt;", ">");

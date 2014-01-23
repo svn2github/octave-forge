@@ -49,17 +49,13 @@
 ##     ''     Catch more erroneous read-back results
 ## 2013-12-31 More extensive texinfo help text
 ##     ''     Provide default test file name
+## 2014-01-23 Adapted to write support for OCT
 
 function io_ods_testscript (intf, fname="io-test.ods", intf2='')
 
   printf ("\nTesting .ods interface %s using file %s...\n", upper (intf), fname);
   
   isuno = false; dly = 0.25;
-  if (strcmpi (intf, 'oct'))
-    if (isempty (intf2))
-      intf2 = 'otk';
-    endif
-  endif
   if (isempty (intf2))
     intf2 = intf;
   else
@@ -122,6 +118,7 @@ function io_ods_testscript (intf, fname="io-test.ods", intf2='')
     printf ("matches.\n");
   catch
     printf ("Hmmm.... error, see 'num'\n");
+    num
   end_try_catch
   try
     printf ("    ...Cellstr array... ");
@@ -130,6 +127,7 @@ function io_ods_testscript (intf, fname="io-test.ods", intf2='')
     printf ("matches.\n");
   catch
     printf ("Hmmm.... error, see 'txt'\n"); 
+    txt
   end_try_catch
   try
     printf ("    ...Boolean... "); 
@@ -140,6 +138,7 @@ function io_ods_testscript (intf, fname="io-test.ods", intf2='')
       printf ("recovered as numeric '1' rather than logical TRUE\n");
     else
       printf ("Hmmm.... error, see 'raw'\n");
+      raw
     endif
   end_try_catch
 

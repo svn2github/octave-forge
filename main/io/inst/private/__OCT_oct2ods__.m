@@ -23,7 +23,7 @@
 ## Author: Philip Nienhuis <prnienhuis at users.sf.net>
 ## Created: 2014-01-18
 ## Updates:
-##
+## 2014-01-23 Fix writing repeated empty cells
 
 function [ ods, status ] = __OCT_oct2ods__ (obj, ods, wsh, crange, spsh_opts=0)
 
@@ -149,7 +149,7 @@ function [ ods, status ] = __OCT_oct2ods__ (obj, ods, wsh, crange, spsh_opts=0)
   endif
 
   ## Write data to sheet (actually table:table section in content.xml)
-  status  = __OCT__oct2ods_sh__ (fid, rawarr, wsh, lims, onc, onr, ods.sheets.sh_names{wsh})
+  status  = __OCT__oct2ods_sh__ (fid, rawarr, wsh, lims, onc, onr, ods.sheets.sh_names{wsh});
 
   ## E. Merge new/updated sheet into content.xml
   ## Read first chunk of content.xml until sht_idx<xx>
@@ -256,8 +256,8 @@ function [ status ] = __OCT__oct2ods_sh__ (fid, rawarr, wsh, lims, onc, onr, tna
             ++tncr;
           endwhile
           if (tncr > 1)
-            tncr = sprintf (' table:number-columns-repeated="%d"', tncr);
-            fprintf (fid, '<table:table-cell%s />', tncr);
+%            tncr = sprintf (' table:number-columns-repeated="%d"', tncr);
+            fprintf (fid, '<table:table-cell table:number-columns-repeated="%d" />', tncr);
             jj += tncr - 1;
           else
             fprintf (fid, '<table:table-cell />');

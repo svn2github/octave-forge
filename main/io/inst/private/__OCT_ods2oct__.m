@@ -41,6 +41,7 @@
 ##     ''     Pretty text output
 ## 2013-12-19 Work around OTK bug (doesn't write office:value-type for formula cells)
 ## 2014-01-22 Copyright string update
+## 2014-01-23 Pretty formula output
 
 function [ rawarr, ods, rstatus] = __OCT_ods2oct__ (ods, wsh, cellrange='', spsh_opts)
 

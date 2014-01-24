@@ -39,6 +39,7 @@
 ## 2013-12-27 Use one variable for processed file type
 ##     ''     Shuffled code around to file type order
 ## 2014-01-22 Open new files from template directory in io script directory
+## 2014-01-23 Move confirm_recursive_rmdir to __OCT_spsh_close__.m
 
 function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename, xlssupport, ftype)
 
@@ -53,8 +54,6 @@ function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename
     xml = fread (fid, "char=>char").';
   else
     ## xlsx and ods are zipped
-    ## Below is needed for a silent delete of our tmpdir
-    confirm_recursive_rmdir (0);
     if (xwrite == 3)
       if (ftype == 2)
         ext = ".xlsx";

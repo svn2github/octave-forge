@@ -29,6 +29,7 @@
 ## 2014-01-19 Write support for ODS
 ## 2014-01-20 Catch zip errors; zip to proper (original) file name
 ## 2014-01-22 Zip quietly; zip into current dir, not temp dir
+## 2014-01-24 Call confirm_recursive_subdir locally
 
 function [xls] = __OCT_spsh_close__ (xls)
 
@@ -52,10 +53,6 @@ function [xls] = __OCT_spsh_close__ (xls)
       end_try_catch;
       cd (opwd);
     endif
-    ## Delete tmp file
-    if (! xls.changed)
-      rmdir (xls.workbook, "s");
-    endif
 
   elseif (strcmpi (xls.filename(end-4:end-1), ".xls"))
     ## For OOXML remove temp dir here
@@ -65,6 +62,13 @@ function [xls] = __OCT_spsh_close__ (xls)
     ## Delete temporary file
     unlink (xls.workbook);
 
+  endif
+
+  ## Delete tmp file
+  if (! xls.changed)
+    ## Below is needed for a silent delete of our tmpdir
+    confirm_recursive_rmdir (0, "local");
+    rmdir (xls.workbook, "s");
   endif
 
 endfunction

@@ -50,6 +50,7 @@
 ## 2013-12-31 More extensive texinfo help text
 ##     ''     Provide default test file name
 ## 2014-01-23 Adapted to write support for OCT
+## 2014-01-24 Fiddle with delays to allow OS to zip/unzip files to/from disk
 
 function io_ods_testscript (intf, fname="io-test.ods", intf2='')
 
@@ -73,26 +74,31 @@ function io_ods_testscript (intf, fname="io-test.ods", intf2='')
   
   ## 2. Insert empty sheet
   printf ("\n 2. Insert first empty sheet.\n");
-  odswrite (fname, {''}, 'EmptySheet', 'b4', intf2); if (isuno); sleep (dly); endif
-  
+  odswrite (fname, {''}, 'EmptySheet', 'b4', intf2); 
+  sleep (dly);
+
   ## 3. Add data to test sheet
   printf ("\n 3. Add data to test sheet.\n");
   odswrite (fname, arr1, 'Testsheet', 'c2:d3', intf2); if (isuno); sleep (dly); endif
-  odswrite (fname, arr2, 'Testsheet', 'd4:z20', intf2); if (isuno); sleep (dly); endif
+  odswrite (fname, arr2, 'Testsheet', 'd4:z20', intf2);
+  sleep (dly);
   
   ## 4. Insert another sheet
   printf ("\n 4. Add another sheet with just one number in A1.\n");
-  odswrite (fname, [1], 'JustOne', 'A1', intf2); if (isuno); sleep (dly); endif
+  odswrite (fname, [1], 'JustOne', 'A1', intf2);
+  sleep (dly);
   
   ## 5. Get sheet info & find sheet with data and data range
   printf ("\n 5. Explore sheet info.\n");
-  [~, shts] = odsfinfo (fname, intf); if (isuno); sleep (dly); endif
+  [~, shts] = odsfinfo (fname, intf);
   shnr = strmatch ('Testsheet', shts(:, 1));                      # Note case!
   crange = shts{shnr, 2};
+  sleep (dly);
 
   ## 6. Read data back
   printf ("\n 6. Read data back.\n");
-  [num, txt, raw, lims] = odsread (fname, shnr, crange, intf); if (isuno); sleep (dly); endif
+  [num, txt, raw, lims] = odsread (fname, shnr, crange, intf);
+  sleep (dly);
   
   ## First check: has anything been read at all?
   if (isempty (raw))
@@ -141,13 +147,14 @@ function io_ods_testscript (intf, fname="io-test.ods", intf2='')
       raw
     endif
   end_try_catch
+  sleep (dly);
 
   ## Check if formulas_as_text works:
   printf ("\n 8. Repeat reading, now return formulas as text\n");
   opts.formulas_as_text = 1;
-  ods = odsopen (fname, 0, intf); if (isuno); sleep (dly); endif
-  raw = ods2oct (ods, shnr, crange, opts); if (isuno); sleep (dly); endif
-  ods = odsclose (ods); if (isuno); sleep (dly); endif
+  ods = odsopen (fname, 0, intf);
+  raw = ods2oct (ods, shnr, crange, opts);
+  ods = odsclose (ods);
   clear ods;
   
   ## 9. Here come the tests, part 2. Fails on COM
@@ -171,7 +178,7 @@ function io_ods_testscript (intf, fname="io-test.ods", intf2='')
   ## 10. Clean up
   printf ("\n10. Cleaning up.....");
   delete (fname);
-  clear arr1 arr2 ods num txt raw lims opts shnr shts crange;
+  clear arr1 arr2 ods num txt raw lims opts shnr shts crange dly;
   printf (" OK\n");
   
   endfunction

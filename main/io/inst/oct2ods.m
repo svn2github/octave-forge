@@ -121,6 +121,7 @@
 ## 2012-10-24 Style fixes
 ## 2012-12-18 Improved error/warning messages
 ## 2013-12-18 Copyright string updates, style fixes
+## 2014-01-24 Call __OCT_oct2spsh__ rather than _OCT_oct2ods__
 ##
 ## Latest subfunc update: 2012-10-12
 
@@ -202,8 +203,8 @@ function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange="", spsh_opts=[])
     [ ods, rstatus ] = __JOD_oct2spsh__ (c_arr, ods, wsh, crange);
 
   elseif (strcmp (ods.xtype, "OCT"))
-    ## Write ods file tru native Octave
-    [ ods, rstatus ] = __OCT_oct2ods__ (c_arr, ods, wsh, crange, spsh_opts);
+    ## Write ods or gnumeric file tru native Octave
+    [ ods, rstatus ] = __OCT_oct2spsh__ (c_arr, ods, wsh, crange, spsh_opts);
 
   ##elseif 
     ##---- < Other interfaces here >

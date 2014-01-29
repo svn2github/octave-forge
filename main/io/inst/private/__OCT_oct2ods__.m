@@ -28,36 +28,11 @@
 ## 2014-01-24 Integrated empty left columns with empty left vals in rawarr
 ##     ''     Same for empty upper rows & empty upper data rows
 ##     ''     Fix temp file name
+## 2014-01-29 Move stuff common for all file types to caller or merge function
 
-function [ ods, status ] = __OCT_oct2ods__ (obj, ods, wsh, crange, spsh_opts=0)
+function [ ods, status ] = __OCT_oct2ods__ (obj, ods, wsh, crange, spsh_opts=0, obj_dims)
 
-  ## A. Analyze data and requested range
-  ## Get size of data to write
-  [nnr, nnc ] = size (obj);
-
-  ## Parse requested cell range
-  [~, nr, nc, tr, lc] = parse_sp_range (crange);
-
-  ## First check row size
-  if (nnr > nr)
-    ## Truncate obj
-    obj = obj(1:nr, :);
-  elseif (nnr < nr)
-    ## Truncate requested range
-    nr = nnr;
-  endif
-  ## Next, column size
-  if (nnc > nc)
-    ## Truncate obj
-    obj = obj(:, 1:nc);
-  elseif (nnc < nc)
-    ## Truncate requested range
-    nc = nnc;
-  endif
-  br = tr + nr - 1;
-  rc = lc + nc - 1;
-
-  ## B. Find out if we write to existing or new sheet
+  ## Find out if we write to existing or new sheet
   new_sh = 0;
   if (isnumeric (wsh))
     if (wsh < 1)
@@ -91,6 +66,7 @@ function [ ods, status ] = __OCT_oct2ods__ (obj, ods, wsh, crange, spsh_opts=0)
     idx_s = ods.sheets.shtidx(wsh) ;               ## First position after last sheet
     idx_e = idx_s - 1;
     rawarr = {};
+    lims = [];
   else
     idx_s = ods.sheets.shtidx(wsh);
     idx_e = ods.sheets.shtidx(wsh+1) - 1;
@@ -98,51 +74,9 @@ function [ ods, status ] = __OCT_oct2ods__ (obj, ods, wsh, crange, spsh_opts=0)
     [rawarr, ods]  = __OCT_ods2oct__ (ods, wsh, "", struct ("formulas_as_text", 1));
     lims = ods.limits;
   endif
-
-  ## C . If required, adapt current data array size to disjoint new data
-  if (! isempty (rawarr))
-    ## Merge new & current data. Assess where to augment/overwrite current data
-    [onr, onc] = size (rawarr);
-    if (tr < lims(2, 1))
-      ## New data requested above current data. Add rows above current data
-      rawarr = [ cell(lims(2, 1) - tr, onc) ; rawarr];
-      lims(2, 1) = tr;
-    endif
-    if (br > lims(2, 2))
-      ## New data requested below current data. Add rows below current data
-      rawarr = [rawarr ; cell(br - lims(2, 2), onc)];
-      lims (2, 2) = br;
-    endif
-    ## Update number of rawarr rows
-    onr = size (rawarr, 1);
-    if (lc < lims(1, 1))
-      ## New data requested to left of curremnt data; prepend columns
-      rawarr = [cell(onr, lims(1, 1) - lc), rawarr];
-      lims(1, 1) = lc;
-    endif
-    if (rc > lims(1, 2))
-      ## New data to right of current data; append columns
-      rawarr = [rawarr, cell(onr, rc - lims(1, 2))];
-      lims(1, 2) = rc;
-    endif
-    ## Update number of columns
-    onc = size (rawarr, 2);
-
-    ## Copy new data into place
-    objtr = tr - lims(2, 1) + 1;
-    objbr = br - lims(2, 1) + 1;
-    objlc = lc - lims(1, 1) + 1;
-    objrc = rc - lims(1, 1) + 1;
-    rawarr(objtr:objbr, objlc:objrc) = obj; 
-
-  else
-    ## New sheet
-    lims = [lc, rc; tr, br];
-    onc = nc;
-    onr = nr;
-    rawarr = obj;
-  endif
-
+  
+  ## Merge old and new data. Provisionally allow empty new data to wipe old data
+  [rawarr, lims, onr, onc] = __OCT_merge_data__ (rawarr, lims, obj, obj_dims);
 
   ## D. Get default table/row/column styles
   ##    Open file content.xml
@@ -176,6 +110,7 @@ function [ ods, status ] = __OCT_oct2ods__ (obj, ods, wsh, crange, spsh_opts=0)
   if (fid < 0)
     error ("oct2ods: unable to write to file %s", tmpfil);
   endif
+
   ## Write data to sheet (actually table:table section in content.xml)
   status  = __OCT__oct2ods_sh__ (fid, rawarr, wsh, lims, onc, onr, ...
             ods.sheets.sh_names{wsh}, styles);

@@ -22,19 +22,50 @@
 ## Author: Philip Nienhuis <prnienhuiS at users dot sf dot net>
 ## Created: 2014-01-24
 
-function [ ods, rstatus ] = __OCT_oct2spsh__ (c_arr, ods, wsh, crange, spsh_opts)
+function [ ods, rstatus ] = __OCT_oct2spsh__ (obj, ods, wsh, crange, spsh_opts)
 
+  ## Analyze data and requested range. Get size of data to write
+  [nnr, nnc ] = size (obj);
+
+  ## Parse requested cell range
+  [~, nr, nc, tr, lc] = parse_sp_range (crange);
+
+  ## First check row size
+  if (nnr > nr)
+    ## Truncate obj
+    obj = obj(1:nr, :);
+  elseif (nnr < nr)
+    ## Truncate requested range
+    nr = nnr;
+  endif
+  ## Next, column size
+  if (nnc > nc)
+    ## Truncate obj
+    obj = obj(:, 1:nc);
+  elseif (nnc < nc)
+    ## Truncate requested range
+    nc = nnc;
+  endif
+
+  obj_dims.tr = tr;
+  obj_dims.br = tr + nr - 1;
+  obj_dims.nr = nr;
+  obj_dims.lc = lc;
+  obj_dims.rc = lc + nc - 1;
+  obj_dims.nc = nc;
+
+  ## Invoke file type-dependent functions
   if (strcmpi (ods.app, "ods"))
     ## Write to .ods
-    [ ods, rstatus ] = __OCT_oct2ods__  (c_arr, ods, wsh, crange, spsh_opts);
+    [ ods, rstatus ] = __OCT_oct2ods__  (obj, ods, wsh, crange, spsh_opts, obj_dims);
 
   elseif (strcmpi (ods.app, "xlsx"))
     ## Write to .xlsx
-    [ ods, rstatus ] = __OCT_oct2xlsx__ (c_arr, ods, wsh, crange, spsh_opts);
+    [ ods, rstatus ] = __OCT_oct2xlsx__ (obj, ods, wsh, crange, spsh_opts, obj_dims);
 
   elseif (strcmpi (ods.app, "gnumeric"))
     ## Write to .gnumeric
-    [ ods, rstatus ] = __OCT_oct2gnm__  (c_arr, ods, wsh, crange, spsh_opts);
+    [ ods, rstatus ] = __OCT_oct2gnm__  (obj, ods, wsh, crange, spsh_opts, obj_dims);
 
   else
     error ("writing to file type %s not supported by OCT", xls.app);

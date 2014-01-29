@@ -40,6 +40,7 @@
 ##     ''     Shuffled code around to file type order
 ## 2014-01-22 Open new files from template directory in io script directory
 ## 2014-01-23 Move confirm_recursive_rmdir to __OCT_spsh_close__.m
+## 2014-01-29 Support for xlsx and gnumeric
 
 function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename, xlssupport, ftype)
 
@@ -47,24 +48,28 @@ function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename
   ## create current work folder
   tmpdir = tmpnam;
 
+  ## Get template if a new file is created
+  if (xwrite == 3)
+    if (ftype == 2)
+      ext = ".xlsx";
+    elseif (ftype == 3)
+      ext = ".ods";
+    elseif (ftype == 5)
+      ext = ".gnumeric";
+    endif
+    ## New file, get it from template
+    templ = strrep (which ("odsopen"), "odsopen.m", ["templates" filesep "template" ext]);
+  else
+    templ = filename;
+  endif
+
   if (ftype == 5)
     ## Gnumeric xml files are gzipped
-    system (sprintf ("gzip -d -c -S=gnumeric %s > %s", filename, tmpdir));
+    system (sprintf ("gzip -d -c -S=gnumeric %s > %s", templ, tmpdir));
     fid = fopen (tmpdir, 'r');
     xml = fread (fid, "char=>char").';
   else
     ## xlsx and ods are zipped
-    if (xwrite == 3)
-      if (ftype == 2)
-        ext = ".xlsx";
-      elseif (ftype == 3)
-        ext = ".ods";
-      endif
-      ## New file, get it from template
-      templ = strrep (which ("odsopen"), "odsopen.m", ["templates" filesep "template" ext]);
-    else
-      templ = filename;
-    endif
     try
       unpack (templ, tmpdir, "unzip");
     catch

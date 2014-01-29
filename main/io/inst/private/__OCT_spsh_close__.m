@@ -30,45 +30,46 @@
 ## 2014-01-20 Catch zip errors; zip to proper (original) file name
 ## 2014-01-22 Zip quietly; zip into current dir, not temp dir
 ## 2014-01-24 Call confirm_recursive_subdir locally
+## 2014-01-28 Zip both .ods & xlsx, gzip .gnumeric
+##     ''     Reorganize code a bit
 
 function [xls] = __OCT_spsh_close__ (xls)
 
-  ## Below order is vital - shortest extension first as you can have file 'a.<ext>'
-  ## that'll crash if we have 't.ods' but first try the 'gnumeric' extension
-  if (strcmpi (xls.filename(end-3:end), ".ods"))
+  ## Check extension and full path to file
+  [pth, fname, ext] = fileparts (xls.filename);
+  opwd = pwd;
+  if (isempty (pth))
+    filename = [ opwd filesep xls.filename ];
+  endif
+
+  ## .ods and.xlsx are both zipped
+  if (strcmpi (ext, ".ods") || strcmpi (ext, ".xlsx"))
     if (xls.changed && xls.changed < 3)
-      [pth, fname, ext] = fileparts (xls.filename);
-      opwd = pwd;
-      if (isempty (pth))
-        filename = [ opwd filesep xls.filename ];
-      endif
       ## Go to temp dir where ods file has been unzipped
       cd (xls.workbook);
-      ## Zip tmp directory into .ods and copy it over original file
+      ## Zip tmp directory into .ods or .xlsx and copy it over original file
       try
         system (sprintf ("zip -q -r %s *.* .", filename));
         xls.changed = 0;
       catch
         printf ("odsclose: could not zip ods contents in %s to %s", xls.workbook, filename);
       end_try_catch;
-      cd (opwd);
     endif
 
-  elseif (strcmpi (xls.filename(end-4:end-1), ".xls"))
-    ## For OOXML remove temp dir here
-    rmdir (xls.workbook, "s");
-
   elseif (strcmpi (xls.filename(end-8:end), ".gnumeric"))
+    ## gnumeric files are gzipped
     ## Delete temporary file
     unlink (xls.workbook);
 
   endif
 
-  ## Delete tmp file
+  ## Delete tmp file and return to work dir
   if (! xls.changed)
     ## Below is needed for a silent delete of our tmpdir
     confirm_recursive_rmdir (0, "local");
     rmdir (xls.workbook, "s");
   endif
+  cd (opwd);
+
 
 endfunction

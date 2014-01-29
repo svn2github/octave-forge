@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012,2013,2014 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -86,11 +86,11 @@
 ##
 ## @end deftypefn
 
-## Author: Philip Nienhuis
+## Author: Philip Nienhuis <prnienhuis at users sf net>
 ## Created: 2009-12-01
 ## Updates: 
-## 2010-01-03 (OOXML support)
-## 2010-03-14 Updated help text section on java memory usage
+## 2010-01-03 (OOXML support / POI)
+## 2010-03-14 Updated help text section on Java memory usage
 ## 2010-07-27 Added formula writing support (based on patch by Benjamin Lindner)
 ## 2010-08-01 Added check on input array size vs. spreadsheet capacity
 ##     ''     Changed argument topleft into range (now compatible with ML); the
@@ -116,8 +116,7 @@
 ## 2012-10-24 Style fixes
 ## 2012-12-18 Improved error/warning messages
 ## 2012-12-29 Style fixes
-##
-## Latest subfunc update: 2012-10-12
+## 2014-01-29 Allow OCT write support for OOXML & ODS & gnumeric
 
 function [ xls, rstatus ] = oct2xls (obj, xls, wsh=1, crange="", spsh_opts=[])
 
@@ -194,12 +193,14 @@ function [ xls, rstatus ] = oct2xls (obj, xls, wsh=1, crange="", spsh_opts=[])
     ## Invoke Java and JExcelAPI
     [xls, rstatus] = __JXL_oct2spsh__ (obj, xls, wsh, crange, spsh_opts);
   elseif (strcmpi (xls.xtype, "OXS"))
-    ## Invoke Java and OpenXLS     ##### Not complete, saving file doesn't work yet!
-    ## printf ("Sorry, writing with OpenXLS not reliable => not supported yet\n");
+    ## Invoke Java and OpenXLS
     [xls, rstatus] = __OXS_oct2spsh__ (obj, xls, wsh, crange, spsh_opts);
   elseif (strcmpi (xls.xtype, "UNO"))
     ## Invoke Java and UNO bridge (OpenOffice.org)
     [xls, rstatus] = __UNO_oct2spsh__ (obj, xls, wsh, crange, spsh_opts);
+  elseif (strcmpi (xls.xtype, "OCT"))
+    ## Invoke native Octave code (only ods/xlsx/gnumeric)
+    [xls, rstatus] = __OCT_oct2spsh__ (obj, xls, wsh, crange, spsh_opts);
 ##elseif (strcmpi (xls.xtype, "<whatever>"))
     ##<Other Excel interfaces>
   else

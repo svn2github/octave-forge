@@ -1,4 +1,4 @@
-## Copyright (C) 2010,2011,2012,2013 Philip Nienhuis
+## Copyright (C) 2010,2011,2012,2013,2014 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -47,6 +47,7 @@
 ## 2012-10-24 Style fixes
 ## 2013-01-20 Adapted to ML-compatible Java calls
 ## 2013-12-01 Style fixes, copyright string updates
+## 2014-01-29 Style fixes, copyright string updates
 
 function [ ods, rstatus ] = __OTK_oct2ods__ (c_arr, ods, wsh, crange, spsh_opts)
 
@@ -114,7 +115,7 @@ function [ ods, rstatus ] = __OTK_oct2ods__ (c_arr, ods, wsh, crange, spsh_opts)
     c_arr = c_arr(1:nrows, 1:ncols);
   endif
   
-## Parse data array, setup typarr and throw out NaNs  to speed up writing;
+  ## Parse data array, setup typarr and throw out NaNs  to speed up writing;
   typearr = spsh_prstype (c_arr, nrows, ncols, ctype, spsh_opts, 0);
   if (! spsh_opts.formulas_as_text)
     ## Find formulas (designated by a string starting with "=" and ending in ")")

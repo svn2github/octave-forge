@@ -15,13 +15,8 @@ Input check
  @inputParser/createCopy
  @inputParser/inputParser
  @inputParser/parse
-Parallel Computing
- pararrayfun
- parcellfun
 Various Functions
  adresamp2
- fload
- fsave
  majle
  mark_for_deletion
  packfields
@@ -32,4 +27,3 @@ Various Functions
  unresamp2
  unvech
  ztvals
- __exit__

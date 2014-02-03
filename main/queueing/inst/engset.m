@@ -34,7 +34,7 @@
 ##
 ## @tex
 ## $$
-## P_b(A, m, n) = {\displaystyle{A^m {{n}\choose{m}}}} \over {\displaystyle{\sum_{k=0}^m {A^k {{n}\choose{k}}}}}
+## P_b(A, m, n) = {{\displaystyle{A^m {n \choose m}}} \over {\displaystyle{\sum_{k=0}^m A^k {n \choose k}}}}
 ## $$
 ## @end tex
 ##

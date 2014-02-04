@@ -20,10 +20,20 @@
 
 DEFUN_DLD (unpackfields, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} unpackfields (struct, fld1, fld2, @dots{})\n\
-Inserts the named fields of a struct as variables into the current scope.\n\
-@var{struct} can be a scalar structure or user class.\n\
-This is equivalent to the code:\n\
+@deftypefn {Loadable Function} {} unpackfields (@var{s_name}, @var{fld1}, @var{fld2}, @dots{})\n\
+Create variables from fields of a struct.\n\
+\n\
+Inserts the named fields @var{fld1}, @var{fld2}, @dots{}, from the struct\n\
+named @var{s_name}, into the current scope.  Noe that @var{s_name} is the\n\
+name of the struct in the current scope, not the struct itself.\n\
+\n\
+@example\n\
+@group\n\
+unpackfields (\"struct\", \"var1\", \"var2\")\n\
+@end group\n\
+@end example\n\
+\n\
+is equivalent to the code:\n\
 @example\n\
 @group\n\
   var1 = struct.var1;\n\
@@ -32,7 +42,8 @@ This is equivalent to the code:\n\
 @end group\n\
 @end example\n\
 but more efficient and more concise.\n\
-@seealso{packfields, struct}\n\
+\n\
+@seealso{getfield, getfields, packfields, struct}\n\
 @end deftypefn")
 {
   int nargin = args.length ();
@@ -78,7 +89,7 @@ but more efficient and more concise.\n\
                     {
                       octave_scalar_map::const_iterator iter = map.seek (fld_names(i));
                       if (iter != map.end ())
-                        symbol_table::varref (fld_names(i)) = map.contents (iter);
+                        symbol_table::assign (fld_names(i), map.contents (iter));
                       else
                         {
                           error ("unpackfields: field %s does not exist", fld_names(i).c_str ());
@@ -103,7 +114,7 @@ but more efficient and more concise.\n\
                     break;
 
                   if (val.is_defined ())
-                    symbol_table::varref (fld_names (i)) = val;
+                    symbol_table::assign (fld_names(i), val);
                 }
             }
         }
@@ -113,3 +124,12 @@ but more efficient and more concise.\n\
 
   return octave_value_list ();
 }
+
+/*
+%!test
+%! s.foo = "hello";
+%! s.bar = 42;
+%! unpackfields ("s", "foo", "bar");
+%! assert (foo, "hello");
+%! assert (bar, 42);
+*/

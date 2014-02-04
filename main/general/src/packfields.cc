@@ -20,19 +20,24 @@
 
 DEFUN_DLD (packfields, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} packfields (struct, var1, var2, @dots{})\n\
-Inserts the named variables @var{var1}, @var{var2}, @dots{} as fields into @var{struct}.\n\
-@var{struct} can be a scalar structure or user class.\n\
+@deftypefn {Loadable Function} {} packfields (@var{s_name}, @var{var1}, @var{var2}, @dots{})\n\
+Create struct from variables.\n\
+\n\
+Inserts the named variables @var{var1}, @var{var2}, @dots{} as fields into\n\
+the struct named @var{s_name}.  If it does not exist, a struct with that name\n\
+is created.\n\
+\n\
 This is equivalent to the code:\n\
 @example\n\
 @group\n\
-  struct.var1 = var1;\n\
-  struct.var2 = var2;\n\
+  s_name.var1 = var1;\n\
+  s_name.var2 = var2;\n\
           :          \n\
 @end group\n\
 @end example\n\
 but more efficient and more concise.\n\
-@seealso{unpackfields, struct}\n\
+\n\
+@seealso{setfield, setfields, struct, unpackfields}\n\
 @end deftypefn")
 {
   int nargin = args.length ();
@@ -41,9 +46,7 @@ but more efficient and more concise.\n\
     {
       std::string struct_name = args (0).string_value ();
       string_vector fld_names(nargin-1);
-      //octave_value_list fld_vals(nargin-1);
-      // FIXME: workaround for 3.2.4.
-      octave_value_list fld_vals (nargin-1, octave_value ());
+      octave_value_list fld_vals(nargin-1);
 
       if (! error_state && ! valid_identifier (struct_name))
         error ("packfields: invalid variable name: %s", struct_name.c_str ());
@@ -120,3 +123,11 @@ but more efficient and more concise.\n\
 
   return octave_value_list ();
 }
+
+/*
+%!test
+%! foo = "hello";
+%! bar = 42;
+%! packfields ("s", "foo", "bar");
+%! assert (s, struct ("foo", "hello", "bar", 42));
+*/

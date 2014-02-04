@@ -14,9 +14,9 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {d =} dict (@var{keys}, @var{values})
-## @deftypefnx{Function File} {d =} dict ()
-## @deftypefnx{Function File} {d =} dict (@var{str})
+## @deftypefn  {Function File} {} dict ()
+## @deftypefnx {Function File} {} dict (@var{keys}, @var{values})
+## @deftypefnx {Function File} {} dict (@var{str})
 ## Creates a dictionary object with given keys and values.
 ##
 ## The class @code{dict} has been deprecated in favour of using Octave
@@ -30,7 +30,7 @@
 ## s.("7")
 ##   @result{} "value 7"
 ## s.("  ")
-## @result {} just spaces
+## @result{} just spaces
 ##   @result{} "just spaces"
 ## @end group
 ## @end example

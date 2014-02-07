@@ -5,6 +5,6 @@ Author: various authors
 Maintainer: Octave-Forge community <maintainers@octave.org>
 Title: General
 Description: General tools for Octave.
-Depends: octave (>= 3.4.3)
+Depends: octave (>= 3.8.0)
 License: GPLv3+, modified BSD, public domain
 Url: http://octave.sf.net

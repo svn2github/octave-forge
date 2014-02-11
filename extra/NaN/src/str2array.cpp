@@ -34,7 +34,7 @@
 //
 // Output:
 //    $Id: STR2ARRAY.cpp 7142 2010-03-30 18:48:06Z schloegl $
-//    Copyright (C) 2010,2011 Alois Schloegl <alois.schloegl@gmail.com>
+//    Copyright (C) 2010,2011,2014 Alois Schloegl <alois.schloegl@gmail.com>
 //    This function is part of the NaN-toolbox
 //    http://pub.ist.ac.at/~schloegl/matlab/NaN/
 //
@@ -249,15 +249,27 @@ void mexFunction(
 
 	/* identify separators */
 	u = (uint8_t*) mxCalloc(1,slen+1);
+	int flag_newline;
 	for (k = 0; k < slen; ) {
 		if (strchr(cdelim,s[k]) != NULL) {
-			u[k] = 1;      // column delimiter
-			while (s[++k]==' ');    // ignore extra space characters
+			if (flag_newline) {
+				// ignore field delimiters after newline
+				s[k]==' ';
+				k++;
+			}
+			else {
+				u[k] = 1;      // column delimiter
+				while (s[++k]==' ');    // ignore extra space characters
+			}
 		}	
-		else if (strchr(rdelim,s[k]) != NULL)
+		else if (strchr(rdelim,s[k]) != NULL) {
 			u[k++] = 2;    // row delimiter
-		else 
+			flag_newline = 1; 
+		}
+		else {
 			k++; 	       // ordinary character 
+			flag_newline = 0; 
+		}
 	}
 
 	/* count dimensions and set delimiter elements to 0 */

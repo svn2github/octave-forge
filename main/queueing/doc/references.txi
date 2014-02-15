@@ -2,21 +2,20 @@
 
 @c Copyright (C) 2012 Moreno Marzolla
 @c
-@c This file is part of the queueing toolbox, a Queueing Networks
-@c analysis package for GNU Octave.
+@c This file is part of the queueing package.
 @c
-@c The queueing toolbox is free software; you can redistribute it
+@c The queueing package is free software; you can redistribute it
 @c and/or modify it under the terms of the GNU General Public License
 @c as published by the Free Software Foundation; either version 3 of
 @c the License, or (at your option) any later version.
 @c
-@c The queueing toolbox is distributed in the hope that it will be
+@c The queueing package is distributed in the hope that it will be
 @c useful, but WITHOUT ANY WARRANTY; without even the implied warranty
 @c of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 @c GNU General Public License for more details.
 @c
 @c You should have received a copy of the GNU General Public License
-@c along with the queueing toolbox; see the file COPYING.  If not, see
+@c along with the queueing package; see the file COPYING.  If not, see
 @c <http://www.gnu.org/licenses/>.
 
 @node References

@@ -1,38 +1,37 @@
 @c -*- texinfo -*-
 
-@c Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013 Moreno Marzolla
+@c Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013, 2014 Moreno Marzolla
 @c
-@c This file is part of the queueing toolbox, a Queueing Networks
-@c analysis package for GNU Octave.
+@c This file is part of the queueing package.
 @c
-@c The queueing toolbox is free software; you can redistribute it
+@c The queueing package is free software; you can redistribute it
 @c and/or modify it under the terms of the GNU General Public License
 @c as published by the Free Software Foundation; either version 3 of
 @c the License, or (at your option) any later version.
 @c
-@c The queueing toolbox is distributed in the hope that it will be
+@c The queueing package is distributed in the hope that it will be
 @c useful, but WITHOUT ANY WARRANTY; without even the implied warranty
 @c of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 @c GNU General Public License for more details.
 @c
 @c You should have received a copy of the GNU General Public License
-@c along with the queueing toolbox; see the file COPYING.  If not, see
+@c along with the queueing package; see the file COPYING.  If not, see
 @c <http://www.gnu.org/licenses/>.
 
 @node Summary
 @chapter Summary
 
 @menu
-* About the Queueing Toolbox::          What is the Queueing Toolbox
+* About the Queueing Package::          What is the Queueing package
 * Contributing Guidelines::             How to contribute
 * Acknowledgements::
 @end menu
 
-@node About the Queueing Toolbox
-@section About the Queueing Toolbox
+@node About the Queueing Package
+@section About the Queueing Package
 
-This document describes the @code{queueing} toolbox for GNU Octave
-(@code{queueing} in short). The @code{queueing} toolbox, previously
+This document describes the @code{queueing} package for GNU Octave
+(@code{queueing} in short). The @code{queueing} package, previously
 known as @code{qnetworks}, is a collection of functions written in GNU
 Octave for analyzing queueing networks and Markov
 chains. Specifically, @code{queueing} contains functions for analyzing
@@ -86,13 +85,13 @@ Functions for Markov chain analysis are also provided:
 
 @end itemize
 
-The @code{queueing} toolbox is distributed under the terms of the GNU
+The @code{queueing} package is distributed under the terms of the GNU
 General Public License (GPL), version 3 or later
 (@pxref{Copying}). You are encouraged to share this software with
 others, and make this package more useful by contributing additional
 functions and reporting problems. @xref{Contributing Guidelines}.
 
-If you use the @code{queueing} toolbox in a technical paper, please
+If you use the @code{queueing} package in a technical paper, please
 cite it as:
 
 @quotation

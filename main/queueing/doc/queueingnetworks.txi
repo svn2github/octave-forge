@@ -1,22 +1,21 @@
 @c -*- texinfo -*-
 
-@c Copyright (C) 2008, 2009, 2010, 2011, 2012 Moreno Marzolla
+@c Copyright (C) 2008, 2009, 2010, 2011, 2012, 2014 Moreno Marzolla
 @c
-@c This file is part of the queueing toolbox, a Queueing Networks
-@c analysis package for GNU Octave.
+@c This file is part of the queueing package.
 @c
-@c The queueing toolbox is free software; you can redistribute it
+@c The queueing package is free software; you can redistribute it
 @c and/or modify it under the terms of the GNU General Public License
 @c as published by the Free Software Foundation; either version 3 of
 @c the License, or (at your option) any later version.
 @c
-@c The queueing toolbox is distributed in the hope that it will be
+@c The queueing package is distributed in the hope that it will be
 @c useful, but WITHOUT ANY WARRANTY; without even the implied warranty
 @c of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 @c GNU General Public License for more details.
 @c
 @c You should have received a copy of the GNU General Public License
-@c along with the queueing toolbox; see the file COPYING.  If not, see
+@c along with the queueing package; see the file COPYING.  If not, see
 @c <http://www.gnu.org/licenses/>.
 
 @node Queueing Networks
@@ -1264,7 +1263,7 @@ functions described in this section, and can be accessed with the
 
 @subsection Closed, Single Class Network
 
-We now give a simple example on how the queueing toolbox can be used
+We now give a simple example on how the queueing package can be used
 to analyze a closed network. Let us consider again the network shown
 in @ref{fig:qn_closed_single}. We denote with @math{S_k} the average
 service time at center @math{k}, @math{k=1, 2, 3}. We use @math{S_1 =

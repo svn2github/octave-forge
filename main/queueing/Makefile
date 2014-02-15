@@ -6,7 +6,6 @@ DISTNAME=$(PROGNAME)-$(VERSIONNUM)
 SUBDIRS=inst doc test devel
 DISTFILES=COPYING NEWS DESCRIPTION
 DISTSUBDIRS=inst inst/private doc
-OCTAVE_DIST=~/src/octave-3.6.4/run-octave
 
 .PHONY: clean check
 
@@ -55,7 +54,7 @@ $(DISTNAME).tar.gz:
 	uuencode $(DISTNAME).tar.gz < $(DISTNAME).tar.gz > $(DISTNAME).tar.gz.uue
 
 $(PROGNAME)-html.tar.gz:
-	$(OCTAVE_DIST) -qf --eval "pkg install -local $(DISTNAME).tar.gz; pkg load queueing; pkg load generate_html; generate_package_html ('queueing', 'queueing-html', 'octave-forge'); pkg uninstall $(PROGNAME)"
+	octave -qf --eval "pkg install -local $(DISTNAME).tar.gz; pkg load queueing; pkg load generate_html; generate_package_html ('queueing', 'queueing-html', 'octave-forge'); pkg uninstall $(PROGNAME)"
 	tar cfz $(PROGNAME)-html.tar.gz $(PROGNAME)-html
 	uuencode $(PROGNAME)-html.tar.gz < $(PROGNAME)-html.tar.gz > $(PROGNAME)-html.tar.gz.uue
 

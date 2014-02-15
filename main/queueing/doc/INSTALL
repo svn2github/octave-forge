@@ -1,5 +1,5 @@
 This file documents the installation procedure of the Octave `queueing'
-toolbox.
+package.
 
    `queueing' is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License, version 3 or
@@ -34,7 +34,7 @@ from Octave-Forge
           octave:1> pkg install -forge queueing
 
      The command above will automaticall download and install the latest
-     version of the queueing toolbox from Octave Forge, and install it
+     version of the queueing package from Octave Forge, and install it
      on your machine.
 
      If you do not have root access, you can do a local install using:

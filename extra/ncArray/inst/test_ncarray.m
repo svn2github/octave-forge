@@ -1,6 +1,11 @@
 % Test ncBaseArray, ncCatArray and ncArray.
 function test_ncarray()
 
+% for octave prior to 3.8.0
+if isempty(which('isequaln'))
+  isequaln = @(x,y) isequalwithequalnans(x,y);
+end
+
 varname = 'SST';
 
 tmpdir = tempname;

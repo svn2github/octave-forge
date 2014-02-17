@@ -22,9 +22,6 @@ NetCDF
  ncvar
  netcdf
  ncisrecord
- ncread
- ncwrite
- ncinfo
 Examples
  example_netcdf
  example_opendap

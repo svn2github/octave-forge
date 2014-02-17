@@ -1,6 +1,13 @@
 Summary of important user-visible changes for releases of the octcdf package
 
 ===============================================================================
+octcdf-1.1.7   Release Date: 2014-02-17   Release Manager: Alexander Barth
+===============================================================================
+
+ ** Remove ncinfo, ncread and ncwrite which are now fully implemented in the 
+    package netcdf.
+
+===============================================================================
 octcdf-1.1.6   Release Date: 2013-04-30   Release Manager: Alexander Barth
 ===============================================================================
 

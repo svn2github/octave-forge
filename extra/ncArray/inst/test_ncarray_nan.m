@@ -1,6 +1,11 @@
 % Test ncBaseArray, ncCatArray and ncArray.
 function test_ncarray()
 
+% for octave prior to 3.8.0
+if isempty(which('isequaln'))
+  isequaln = @(x,y) isequalwithequalnans(x,y);
+end
+
 varname = 'SST';
 
 tmpdir = tempname;
@@ -19,11 +24,11 @@ end
 data = ncCatArray(3,files,varname);
 reddata = nanmean(data,3);
 reddataref = nanmean(dataref,3);
-assert(isequalwithequalnans(reddata, reddataref))
+assert(isequaln(reddata, reddataref))
 
 reddata = nansum(data,3);
 reddataref = nansum(dataref,3);
-assert(isequalwithequalnans(reddata, reddataref))
+assert(isequaln(reddata, reddataref))
 
 reddata = nanvar(data,[],3);
 reddataref = nanvar(dataref,[],3);

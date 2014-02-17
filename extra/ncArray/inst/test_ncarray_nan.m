@@ -1,5 +1,5 @@
 % Test ncBaseArray, ncCatArray and ncArray.
-function test_ncarray()
+function test_ncarray_nan()
 
 % for octave prior to 3.8.0
 if isempty(which('isequaln'))

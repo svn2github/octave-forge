@@ -1,11 +1,11 @@
 Name: ncArray
 Version: 1.0.2
-Date: 2013-11-25
+Date: 2014-02-17
 Author: Alexander Barth <barth.alexander@gmail.com>
 Maintainer: Alexander Barth <barth.alexander@gmail.com>
 Title: ncArray
 Description: Access a single or a collection of NetCDF files as a multi-dimensional array
 Categories: IO
-Depends: octave (>= 3.4.0), octcdf (>= 1.1.5)
+Depends: octave (>= 3.4.0), netcdf (>= 1.0.2)
 License: GPLv2+
 Url: http://octave.sf.net, http://modb.oce.ulg.ac.be/mediawiki/index.php/ncArray

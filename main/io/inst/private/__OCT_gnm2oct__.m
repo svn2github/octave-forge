@@ -1,4 +1,4 @@
-## Copyright (C) 2013 Philip Nienhuis
+## Copyright (C) 2013,2014 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@
 ##     ''     Get ValueType using getxmlattv, not regexp
 ##     ''     Process Boolean type
 ## 2013-11-15 Replace slow xml node parsing by regexp a la Markus Bergholz
+## 2014-02-20 Add ValueFormat tag to regexp pattern
 
 function [ rawarr, xls, rstatus] = __OCT_gnm2oct__ (xls, wsh, cellrange='', spsh_opts)
 
@@ -99,7 +100,7 @@ function [ rawarr, xls, rstatus] = __OCT_gnm2oct__ (xls, wsh, cellrange='', spsh
   cells = getxmlnode (xml, "gnm:Cells");
 
   ## Pattern gets all required tokens in one fell swoop
-  pattrn = '<gnm:Cell Row="(\d*?)" Col="(\d*?)" (?:ValueType="(\d*?)"|ExprID="(\d*?)")>(.*?)</gnm:Cell>';
+  pattrn = '<gnm:Cell Row="(\d*?)" Col="(\d*?)" (?:ValueType="(\d*?)"|ExprID="(\d*?)")(?: ValueFormat="\w+")>(.*?)</gnm:Cell>';
   allvals = cell2mat (regexp (cells, pattrn, "tokens"));
 
   ## Reshape into 4 x ... cell array

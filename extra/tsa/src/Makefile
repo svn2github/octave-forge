@@ -58,18 +58,18 @@ mex4o octave: $(PROGS)
 
 ### Matlab configuration - search for a matlab directory if not defined above
 ifndef MATLABDIR
-  ifneq ('',$(shell ls -1 /usr/local/MATLAB))
+  ifneq (,$(shell ls -1 /usr/local/ |grep MATLAB))
     # use oldest, typically mex-files a compatible with newer Matlab versions 
-    MATLABDIR=$(shell ls -dt1 /usr/local/MATLAB/R* |tail -1)
+    MATLABDIR=$(shell ls -1t /usr/local/MATLAB/  |grep "^R*" |head -1)
     # alternatively, use latest matlab version
     #MATLABDIR=$(shell ls -dt1 /usr/local/MATLAB/R* |head -1)
   endif
 endif
 
 ### if the MATLABDIR has been found or defined 
-ifneq ('',MATLABDIR)
-  ifneq ('',$(lshell ls -1 $(MATLABDIR)))
-    MEX_EXT = $(shell $(MATLABDIR)/bin/mexext)
+ifneq (,MATLABDIR)
+  ifneq (,$(shell ls -1 $(MATLABDIR)/bin/mexext))
+    MEX_EXT=$(shell $(MATLABDIR)/bin/mexext)
     mex4m matlab: $(patsubst %.mex, %.$(MEX_EXT), $(PROGS))
   endif
 endif

@@ -50,7 +50,7 @@ RM      = rm
 MEX_OPTION  += -lgomp CC\#$(CXX) CXX\#$(CXX) CFLAGS\#"$(CFLAGS)" CXXFLAGS\#"$(CFLAGS)"
 MATMEX      = $(MATLABDIR)/bin/mex $(MEX_OPTION)
 
-PROGS = covm_mex.mex sumskipnan_mex.mex kalman_maar.mex
+PROGS = covm_mex.mex sumskipnan_mex.mex #kalman_maar.mex
 
 ### per default only the mex-files for octave are built
 mex4o octave: $(PROGS)

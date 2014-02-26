@@ -50,7 +50,7 @@ mex4o octave: $(PROGS)
 ifndef MATLABDIR
   ifneq (,$(shell ls -1 /usr/local/ |grep MATLAB))
     # use oldest, typically mex-files a compatible with newer Matlab versions 
-    MATLABDIR=$(shell ls -1t /usr/local/MATLAB/  |grep "^R*" |head -1)
+    MATLABDIR=/usr/local/MATLAB/$(shell ls -1t /usr/local/MATLAB/  |grep "^R*" |head -1)
     # alternatively, use latest matlab version
     #MATLABDIR=$(shell ls -dt1 /usr/local/MATLAB/R* |head -1)
   endif
@@ -81,9 +81,9 @@ clean:
 	mkoctfile$(OCTAVE_VERSION) "$<"
 
 %.mex: %.cpp
-	$(OCTMEX) "$<" -lgomp         ## Octave
+	$(OCTMEX) "$<" -lgomp
 %.$(MEX_EXT): %.cpp
-	$(MATMEX) "$<" -lgomp      ## Matlab
+	$(MATMEX) "$<" -lgomp
 
 svmtrain_mex.mex svmpredict_mex.mex: svmtrain_mex.cpp svm.h svm.cpp svm_model_matlab.c svmpredict_mex.cpp
 	$(CXX) $(CFLAGS) -c svm.cpp

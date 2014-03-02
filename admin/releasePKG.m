@@ -33,6 +33,9 @@
 %% .octaverc variable or using @code{setenv()}). If that variable is empty, the
 %% property must be provided the first time the function is called. After that
 %% it creates the environment variable (but only for the current octave session)
+%%
+%% @item revsys
+%% Revision control system. It can be @asis{"svn"} or @asis{"hg"}(default).
 %% @end table
 %% @end deftypefn
 
@@ -44,19 +47,21 @@ function [pkgtar htmltar] = releasePKG (pkgname, varargin)
     parser = inputParser ();
     parser = addParamValue (parser,'repopath', OFPATH , @ischar);
     parser = addParamValue (parser,'outpath', pwd (), @ischar);
+    parser = addParamValue (parser,'revsys', "hg", @ischar);
 
     parser = parse(parser,varargin{:});
   else
     opt = {varargin{1:2:end}};
     val = {varargin{2:2:end}};
-    parser.Results.repopath = OFPATH;
+    parser.Results.repopath = tilde_expand (OFPATH);
     parser.Results.outpath = pwd ();
+    parser.Results.revsys = "hg";
 
     if !isempty (opt)
       [tf indx] = ismember (fieldnames(parser.Results), opt);
-      
-      opt{indx(tf)} = opt{indx(tf)};
-      val{indx(tf)} = val{indx(tf)};
+
+      opt(indx(tf)) = opt(indx(tf));
+      val(indx(tf)) = val(indx(tf));
       for i=1:numel(opt)
         parser.Results.(opt{i}) = val{i};
       end
@@ -67,19 +72,33 @@ function [pkgtar htmltar] = releasePKG (pkgname, varargin)
   end
 
   % Export from repo
-  outpath = checkpath(parser.Results.outpath);
+  outpath = tilde_expand (checkpath (parser.Results.outpath));
 
-  exported = sprintf ([outpath "%s"], pkgname);
+  pkgname_tmp = [pkgname "_tmp"];
+  exported    = fullfile (pwd (), pkgname_tmp);
 
   % Repo path
-  svn_repo = checkpath(parser.Results.repopath);
-  disp(['Exporting from ' svn_repo]);
+  repo_path = tilde_expand (checkpath (parser.Results.repopath));
+  disp(['Exporting from ' repo_path]);
 
-  export_call = ["svn export " svn_repo filesep() pkgname " " exported " --force"];
-  failed = system (export_call);
+  % Revision control system
+  revsys = parser.Results.revsys;
+  
+  if strcmp (revsys,"svn")
+    export_call = ["svn export " fullfile(repo_path,pkgname) " " exported " --force"];
+    failed      = system (export_call);
+  else
+    cdir        = pwd ();
+    cd (fullfile (repo_path,pkgname));
+    export_call = ["hg archive " exported ];
+    failed      = system (export_call);
+    cd (cdir);
+    clear cdir
+  endif
+  
   if failed
     error ("Can not export.\n");
-  elseif isempty (OFPATH) || !strcmpi(svn_repo, OFPATH)
+  elseif isempty (OFPATH) || !strcmpi(repo_path, OFPATH)
     setenv('OFPATH',parser.Results.repopath);
     printf (["\nEnvironment variable OFPATH set to %s\n" ...
               'add setenv("OFPATH","%s");' ...
@@ -96,7 +115,7 @@ function [pkgtar htmltar] = releasePKG (pkgname, varargin)
 
   % Run bootstrap if found
   if has_dir ("src", exported)
-    ndir = [exported filesep() "src"];
+    ndir = fullfile (exported,"src");
     if has_file ("bootstrap", ndir)
       odir = pwd ();
       cd (ndir);
@@ -115,33 +134,38 @@ function [pkgtar htmltar] = releasePKG (pkgname, varargin)
     endif
   endif
   
-  % Remove devel, deprecated and .svnignore
-  erase_dir = {"devel","deprecated",".svnignore"};
-  for idir = 1:numel(erase_dir)
-    if has_dir (erase_dir{idir}, exported)
-      [success, msg] = rmdir ([exported filesep() erase_dir{idir}], "s");
+  % Remove devel, deprecated, .*ignore an others
+  to_erase = {"devel","deprecated",".svnignore",".hgignore",".hg_archival.txt"};
+  for idir = 1:numel(to_erase)
+
+    if has_dir (to_erase{idir}, exported)
+      [success, msg] = rmdir (fullfile (exported, to_erase{idir}), "s");
       if !success
         error (msg);
       endif
+    elseif has_file (to_erase{idir}, exported)
+      delete (fullfile (exported, to_erase{idir}));
     endif
   endfor
   
   % Get package version
-  desc_file  = textread ([exported filesep() "DESCRIPTION"],"%s");
+  desc_file  = textread (fullfile (exported,"DESCRIPTION"),"%s");
   [tf ind]   = ismember ("Version:",desc_file);
   pkgversion = desc_file{ind+1};
 
   % Compress package
   pkgtar = sprintf ("%s-%s.tar", pkgname, pkgversion);
-  tar (pkgtar, pkgname);
-  gzip (pkgtar);
-  unix (sprintf ('rm -v %s',pkgtar)); % remove the .tar file
-  pkgtar = sprintf ("%s.gz", pkgtar);
-
+  tar (pkgtar, pkgname_tmp);
+  gzip (pkgtar, outpath);
+  #delete (pkgtar);
+  pkgtar = fullfile (outpath, sprintf ("%s.gz", pkgtar));
 
   printf ("Tared to %s\n", pkgtar);
   fflush (stdout);
 
+  % Remove exported package
+  rmdir (exported, "s");
+  
   do_doc = input ("\nCreate documentation for Octave-Forge? [y|Yes|Y] / [n|No|N] ","s");
   do_doc = strcmpi (do_doc(1),'y');
 

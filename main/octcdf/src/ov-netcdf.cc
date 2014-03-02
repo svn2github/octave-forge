@@ -634,8 +634,7 @@ octave_value ov_nc_get_att(int ncid, int varid,const std::string name) {
 
 	default: 
       {
-        error("unkown netcdf type: %d",xtypep);
-
+        error("unknown netcdf type: %d",xtypep);
       }
     }       
 
@@ -1060,7 +1059,7 @@ std::string nctype2ncname(nc_type type) {
       break;
     }
     default: {
-      return "unkown type";
+      return "unknown type";
       break;
     }
   }

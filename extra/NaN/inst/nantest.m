@@ -62,7 +62,10 @@ if exist('normcdf','file')==2,
         end;
 end;
 
-if exist('norminv','file')==2,
+if ~exist('erfinv','file'),
+       fprintf(1,'ERFINV is not available\n');
+
+elseif exist('norminv','file')==2,
         p = [-inf,-.2,0,.2,.5,1,2,inf,nan];
         q(3) = sum(~isnan(norminv(p,2,0)))<4;
         if q(3),
@@ -200,9 +203,9 @@ if all([])==0,
 	fprintf(1,'WARNING: ALL([]) returns 0 instead of 1\n');
 end;
 	
-%%%%% SORT - this was once a problem in Octave Version < 2.1.36 %%%%
+%%%%% SORT - this was once a problem in Octave Version < 2.1.36, and still is in FreeMat 4.0 %%%%
 if ~all(isnan(sort([3,4,NaN,3,4,NaN]))==[0,0,0,0,1,1]), 
-        warning('Warning: SORT does not handle NaN.');
+        warning('Warning: SORT does not properly handle NaN.');
 end;
 
 %%%%% commutativity of 0*NaN	%%% This test adresses a problem in Octave

@@ -1,8 +1,8 @@
-2014-XX-YY Moreno Marzolla <moreno.marzolla@unibo.it>
+2014-03-08 Moreno Marzolla <moreno.marzolla@unibo.it>
 
 	* Version 1.2.3 released
 	* qsmm1 now accepts lambda=0
-	* qnom accepts classes with zero arrival rate
+	* qnom accepts job classes with zero arrival rate
 	* erlangb added
 	* erlangc added
 	* engset added

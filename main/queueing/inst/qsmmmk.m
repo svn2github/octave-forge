@@ -31,30 +31,26 @@
 ## is @math{K-m}. This function generates and
 ## solves the underlying CTMC.
 ##
-## @iftex
+## @tex
 ##
 ## The steady-state probability @math{\pi_k} that there are @math{k}
 ## jobs in the system, @math{0 @leq{} k @leq{} K} can be expressed as:
 ##
-## @tex
 ## $$
 ## \pi_k = \cases{ \displaystyle{{\rho^k \over k!} \pi_0} & if $0 \leq k \leq m$;\cr
 ##                 \displaystyle{{\rho^m \over m!} \left( \rho \over m \right)^{k-m} \pi_0} & if $m < k \leq K$\cr}
 ## $$
-## @end tex
 ##
 ## where @math{\rho = \lambda/\mu} is the offered load. The probability
 ## @math{\pi_0} that the system is empty can be computed by considering
 ## that all probabilities must sum to one: @math{\sum_{k=0}^K \pi_k = 1},
 ## which gives:
 ##
-## @tex
 ## $$
 ## \pi_0 = \left[ \sum_{k=0}^m {\rho^k \over k!} + {\rho^m \over m!} \sum_{k=m+1}^K \left( {\rho \over m}\right)^{k-m} \right]^{-1}
 ## $$
-## @end tex
 ##
-## @end iftex
+## @end tex
 ##
 ## @strong{INPUTS}
 ##

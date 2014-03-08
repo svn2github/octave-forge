@@ -27,29 +27,25 @@
 ## with @math{m} identical servers connected to a single FCFS
 ## queue.
 ##
-## @iftex
+## @tex
 ## The steady-state probability @math{\pi_k} that there are @math{k}
 ## jobs in the system, @math{k \geq 0}, can be computed as:
 ##
-## @tex
 ## $$
 ## \pi_k = \cases{ \displaystyle{\pi_0 { ( m\rho )^k \over k!}} & $0 \leq k \leq m$;\cr
 ##                 \displaystyle{\pi_0 { \rho^k m^m \over m!}} & $k>m$.\cr
 ## }
 ## $$
-## @end tex
 ##
 ## where @math{\rho = \lambda/(m\mu)} is the individual server utilization.
 ## The steady-state probability @math{\pi_0} that there are no jobs in the
 ## system can be computed as:
 ##
-## @tex
 ## $$
 ## \pi_0 = \left[ \sum_{k=0}^{m-1} { (m\rho)^k \over k! } + { (m\rho)^m \over m!} {1 \over 1-\rho} \right]^{-1}
 ## $$
-## @end tex
 ##
-## @end iftex
+## @end tex
 ##
 ## @strong{INPUTS}
 ##

@@ -27,17 +27,16 @@
 ## requests in the system is @math{K}, and the maximum queue length is
 ## @math{K-1}.
 ##
-## @iftex
+## @tex
 ## The steady-state probability @math{\pi_k} that there are @math{k}
 ## jobs in the system, @math{0 @leq{} k @leq{} K}, can be computed as:
 ##
-## @tex
 ## $$
 ## \pi_k = {(1-a)a^k \over 1-a^{K+1}}
 ## $$
-## @end tex
+##
 ## where @math{a = \lambda/\mu}.
-## @end iftex
+## @end tex
 ##
 ## @strong{INPUTS}
 ##

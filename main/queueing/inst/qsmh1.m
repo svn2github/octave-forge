@@ -26,11 +26,9 @@
 ## throughput for a @math{M/H_m/1} system. In this system, the customer
 ## service times have hyper-exponential distribution:
 ##
-## @iftex
 ## @tex
 ## $$ B(x) = \sum_{j=1}^m \alpha_j(1-e^{-\mu_j x}),\quad x>0 $$
 ## @end tex
-## @end iftex
 ##
 ## @ifnottex
 ## @example

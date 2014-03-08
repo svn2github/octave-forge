@@ -23,19 +23,17 @@
 ##
 ## Compute utilization, response time, average number of requests and throughput for a @math{M/M/1} queue.
 ##
-## @iftex
+## @tex
 ## The steady-state probability @math{\pi_k} that there are @math{k}
 ## jobs in the system, @math{k \geq 0}, can be computed as:
 ##
-## @tex
 ## $$
 ## \pi_k = (1-\rho)\rho^k
 ## $$
-## @end tex
 ##
 ## where @math{\rho = \lambda/\mu} is the server utilization.
 ##
-## @end iftex
+## @end tex
 ##
 ## @strong{INPUTS}
 ##

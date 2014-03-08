@@ -21,37 +21,32 @@
 ##
 ## @cindex Erlang-C formula
 ##
-## Compute the steady-state probability that an open queueing system
-## with @math{m} identical servers, infinite wating space, arrival rate
-## @math{\lambda}, individual service rate @math{\mu} and offered load
-## @math{A = \lambda / \mu} are busy. This probability is also called
-## Erlang-C formula @math{E_C(A, m)}.
-## 
-## @iftex
-##
-## @math{E_C(A, m)} is defined as:
+## Compute the steady-state probability @math{E_C(A, m)} that an open
+## queueing system with @math{m} identical servers, infinite wating
+## space, arrival rate @math{\lambda}, individual service rate
+## @math{\mu} and offered load @math{A = \lambda / \mu} has all the
+## servers busy.
 ##
 ## @tex
+## @math{E_C(A, m)} is defined as:
+##
 ## $$
 ## E_C(A, m) = \displaystyle{ {A^m \over m!} {1 \over 1-\rho} \left( \sum_{k=0}^{m-1} {A^k \over k!} + {A^m \over m!} {1 \over 1 - \rho} \right) ^{-1}}
 ## $$
-## @end tex
 ##
 ## where @math{\rho = A / m = \lambda / (m \mu)}.
-##
-## @end iftex
+## @end tex
 ##
 ## @strong{INPUTS}
 ##
 ## @table @var
 ##
-## @item A
-## Offered load, defined as @math{A = \lambda / \mu} where
+## @item A Offered load. @math{A = \lambda / \mu} where
 ## @math{\lambda} is the mean arrival rate and @math{\mu} the mean
 ## service rate of each individual server (real, @math{0 < A < m}).
 ##
-## @item m
-## Number of identical servers (integer, @math{m @geq{} 1}). Default @math{m = 1}
+## @item m Number of identical servers (integer, @math{m @geq{} 1}).
+## Default @math{m = 1}
 ##
 ## @end table
 ##
@@ -59,8 +54,7 @@
 ##
 ## @table @var
 ##
-## @item B
-## The value @math{E_C(A, m)}
+## @item B The value @math{E_C(A, m)}
 ##
 ## @end table
 ##

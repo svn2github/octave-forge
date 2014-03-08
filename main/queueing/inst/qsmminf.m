@@ -27,16 +27,14 @@
 ##
 ## @cindex @math{M/M/}inf system
 ##
-## @iftex
+## @tex
 ## The steady-state probability @math{\pi_k} that there are @math{k}
 ## requests in the system, @math{k @geq{} 0}, can be computed as:
 ##
-## @tex
 ## $$
 ## \pi_k = {1 \over k!} \left( \lambda \over \mu \right)^k e^{-\lambda / \mu}
 ## $$
-## @end tex 
-## @end iftex
+## @end tex
 ##
 ## @strong{INPUTS}
 ##

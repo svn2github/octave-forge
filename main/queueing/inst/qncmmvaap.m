@@ -34,11 +34,9 @@
 ##
 ## This implementation uses Bard and Schweitzer approximation. It is based
 ## on the assumption that
-## @iftex
 ## @tex
 ## $$Q_i({\bf N}-{\bf 1}_c) \approx {n-1 \over n} Q_i({\bf N})$$
 ## @end tex
-## @end iftex
 ## @ifnottex
 ## the queue length at service center @math{k} with population
 ## set @math{{\bf N}-{\bf 1}_c} is approximately equal to the queue length 

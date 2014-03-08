@@ -33,7 +33,6 @@
 ##
 ## Matrix @math{\bf P} is therefore defined as:
 ##
-## @iftex
 ## @tex
 ## $$ \pmatrix{ (1-\lambda_1) & \lambda_1 & & & & \cr
 ##              \mu_1 & (1 - \mu_1 - \lambda_2) & \lambda_2 & & \cr
@@ -45,9 +44,6 @@
 ##              & & & & \mu_{N-1} & (1-\mu_{N-1}) }
 ## $$
 ## @end tex
-## @noindent where @math{\lambda_i} and @math{\mu_i} are the birth and
-## death probabilities, respectively.
-## @end iftex
 ## @ifnottex
 ## @example
 ## @group
@@ -64,6 +60,9 @@
 ## @end group
 ## @end example
 ## @end ifnottex
+##
+## @noindent where @math{\lambda_i} and @math{\mu_i} are the birth and
+## death probabilities, respectively.
 ##
 ## @seealso{ctmcbd}
 ##

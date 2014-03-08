@@ -26,17 +26,13 @@
 ## arrival rate @math{\lambda}, individual service rate @math{\mu}
 ## and offered load @math{A = \lambda / \mu} has all servers busy.
 ## 
-## @iftex
-##
+## @tex
 ## @math{E_B(A, m)} is defined as:
 ##
-## @tex
 ## $$
 ## E_B(A, m) = \displaystyle{{A^m \over m!} \left( \sum_{k=0}^m {A^k \over k!} \right) ^{-1}}
 ## $$
 ## @end tex
-##
-## @end iftex
 ##
 ## @strong{INPUTS}
 ##

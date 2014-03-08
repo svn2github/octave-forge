@@ -32,7 +32,6 @@
 ##
 ## Matrix @math{\bf Q} is therefore defined as:
 ##
-## @iftex
 ## @tex
 ## $$ \pmatrix{ -\lambda_1 & \lambda_1 & & & & \cr
 ##              \mu_1 & -(\mu_1 + \lambda_2) & \lambda_2 & & \cr
@@ -44,10 +43,8 @@
 ##              & & & & \mu_{N-1} & -\mu_{N-1} }
 ## $$
 ## @end tex
-## @noindent where @math{\lambda_i} and @math{\mu_i} are the birth and
-## death rates, respectively.
-## @end iftex
 ## @ifnottex
+##
 ## @example
 ## @group
 ## /                                                          \
@@ -63,6 +60,9 @@
 ## @end group
 ## @end example
 ## @end ifnottex
+##
+## @noindent where @math{\lambda_i} and @math{\mu_i} are the birth and
+## death rates, respectively.
 ##
 ## @seealso{dtmcbd}
 ##

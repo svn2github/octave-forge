@@ -28,18 +28,15 @@
 ## request service is exponentially distributed with mean @math{1 /
 ## \lambda}), and offered load @math{A = \lambda / \mu}.
 ## 
-## @iftex
-##
+## @tex
 ## @math{P_b(A, m, n)} is defined for @math{n > m} as:
 ##
-## @tex
 ## $$
 ## P_b(A, m, n) = {{\displaystyle{A^m {n \choose m}}} \over {\displaystyle{\sum_{k=0}^m A^k {n \choose k}}}}
 ## $$
-## @end tex
 ##
 ## and is 0 if @math{n @leq{} m}.
-## @end iftex
+## @end tex
 ##
 ## @strong{INPUTS}
 ##

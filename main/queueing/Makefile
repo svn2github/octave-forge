@@ -54,7 +54,7 @@ $(DISTNAME).tar.gz:
 	uuencode $(DISTNAME).tar.gz < $(DISTNAME).tar.gz > $(DISTNAME).tar.gz.uue
 
 $(PROGNAME)-html.tar.gz:
-	/home/moreno/src/octave-3.8.1/run-octave -qf --eval "pkg install -local $(DISTNAME).tar.gz; pkg load queueing; pkg load generate_html;  generate_package_html ('queueing', 'queueing-html', 'octave-forge'); pkg uninstall $(PROGNAME)"
+	octave -qf --eval "pkg install -local $(DISTNAME).tar.gz; pkg load queueing; pkg load generate_html;  generate_package_html ('queueing', 'queueing-html', 'octave-forge'); pkg uninstall $(PROGNAME)"
 	tar cfz $(PROGNAME)-html.tar.gz $(PROGNAME)-html
 	uuencode $(PROGNAME)-html.tar.gz < $(PROGNAME)-html.tar.gz > $(PROGNAME)-html.tar.gz.uue
 

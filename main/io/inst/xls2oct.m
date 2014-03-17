@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012,2013,2014 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -112,7 +112,7 @@
 ##
 ## @end deftypefn
 
-## Author: Philip Nienhuis
+## Author: Philip Nienhuis <prnienhuis at users.sf.net>
 ## Created: 2010-10-16
 ## Updates: 
 ## 2009-01-03 (added OOXML support & cleaned up code. Excel 
@@ -141,6 +141,7 @@
 ## 2013-10-02 Delete ODS section
 ## 2013-11-02 Added rstatus return arg for __OCT_xlsx2oct__.m
 ## 2013-11-08 Added spsh_opts arg for __OCT_xls2oct__.m
+## 2014-02-08 Style fixes
 ##
 ## Latest subfunc update: 2012-10-12
 
@@ -150,7 +151,7 @@ function [ rawarr, xls, rstatus ] = xls2oct (xls, wsh=1, datrange="", spsh_opts=
   if (~isstruct (xls))
     error ("File ptr struct expected for arg @ 1"); 
   endif
-  test1 = ~isfield (xls, "xtype");
+  test1 = ! isfield (xls, "xtype");
   test1 = test1 || ~isfield (xls, "workbook");
   test1 = test1 || isempty (xls.workbook);
   test1 = test1 || isempty (xls.app);

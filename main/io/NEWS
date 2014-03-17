@@ -1,6 +1,19 @@
 Summary of important user-visible changes for releases of the io package
 
 ===============================================================================
+io-2.1.0   Release Date: TBA Release Manager: Philip Nienhuis
+===============================================================================
+
+(unstable version)
+
+*** Bug fixes:
+    - __OCT_gnm2oct__.m (gnumeric reading): Properly handling tags
+
+*** New features:
+    - Write support w/o Java or ActiveX, just native Octave, for ODS
+      (LibreOffice native format) and OOXML (Excel 2007+ .xlsx)
+
+===============================================================================
 io-2.0.2   Release Date: 2014-01-09 Release Manager: Philip Nienhuis
 ===============================================================================
 

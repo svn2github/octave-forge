@@ -1,4 +1,4 @@
-## Copyright (C) 2013 Philip Nienhuis
+## Copyright (C) 2013,2014 Philip Nienhuis
 ## Copyright (C) 2013 Markus Bergholz (.xlsx & archive unzip stuff)
 ## 
 ## This program is free software; you can redistribute it and/or modify
@@ -41,6 +41,9 @@
 ## 2014-01-22 Open new files from template directory in io script directory
 ## 2014-01-23 Move confirm_recursive_rmdir to __OCT_spsh_close__.m
 ## 2014-01-29 Support for xlsx and gnumeric
+## 2014-02-08 Fix wrong function name in error msg (couldn't be unzipped)
+## 2014-03-17 Simplify sheet names discovery
+##     ''     Ignore SheetId (nowhere used)
 
 function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename, xlssupport, ftype)
 
@@ -89,7 +92,7 @@ function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename
     fid = fopen (sprintf ('%s/xl/workbook.xml', tmpdir));
     if (fid < 0)
       ## File open error
-      warning ("xls2oct: file %s couldn't be unzipped", filename);
+      warning ("xls2open: file %s couldn't be unzipped", filename);
       xls = [];
       return
     else
@@ -106,8 +109,9 @@ function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename
       fclose (fid);
 
       ## Get sheet names and indices
-      xls.sheets.sh_names = cell2mat (regexp (xml, '<sheet name="(.*?)"(?: r:id="\w+")? sheetId="\d+"', "tokens"));
-      xls.sheets.rid = str2double (cell2mat (regexp (xml, '<sheet name=".*?" sheetId="(\d+)"', "tokens")));
+      sheets = getxmlnode (xml, "sheets", [], 1);
+      xls.sheets.sh_names = cell2mat (regexp (sheets, '<sheet name="(.*?)"', "tokens"));
+##    xls.sheets.rid = str2double (cell2mat (regexp (sheets, ' r:id="rId(\d+)"', "tokens")));
 
     endif
 

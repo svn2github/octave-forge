@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis
+## Copyright (C) 2009,2010,2011,2012,2013,2014 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -140,6 +140,7 @@
 ## 2014-01-01 Add .csv to supported file extensions
 ##     ''     Add warning that UNO will write ODS f. unsupported file extensions
 ##     ''     Copyright string update
+## 2014-02-02 Allow write support for OCT interface
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
@@ -260,10 +261,10 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
     if (ftype == 5)
       error ("There's only read support for gnumeric files");
     endif
-    ## Catch attempts to write xlsx if only OCT interface is supported
-    if (xlsintf_cnt == 1 && xlsinterfaces.OCT)
-      error ("Only the OCT interface is present | requested, but that has only read support");
-    endif
+%    ## Catch attempts to write xlsx if only OCT interface is supported
+%    if (xlsintf_cnt == 1 && xlsinterfaces.OCT)
+%      error ("Only the OCT interface is present | requested, but that has only read support");
+%    endif
     fmode = 'r+b';
     if (! has_suffix)
       ## Add .xls suffix to filename (all Excel versions can write this)

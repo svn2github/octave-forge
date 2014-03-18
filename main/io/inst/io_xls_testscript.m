@@ -1,4 +1,4 @@
-## Copyright (C) 2012,2013 Philip Nienhuis
+## Copyright (C) 2012,2013,2014 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -60,20 +60,21 @@ function io_xls_testscript (intf, fname="io-test.xls", intf2=[])
 
   isuno = false;
   dly = 0.25;
-  if (strcmpi (intf, 'oct'))
-  ## FIXME commented out/replaced until UNO & OXS OOXML write support is fixed
-##  if (isempty (intf2))
-    if (isempty (intf2) || ! strcmpi (intf2, "com"))
-      intf2 = 'poi';
-    endif
-    printf ("OCT interface has no write support enabled - writing is done with %s.\n", intf2);
-  endif
+%  if (strcmpi (intf, 'oct'))
+%  ## FIXME commented out/replaced until UNO & OXS OOXML write support is fixed
+%##  if (isempty (intf2))
+%    if (isempty (intf2) || ! strcmpi (intf2, "com"))
+%      intf2 = 'poi';
+%    endif
+%    printf ("OCT interface has no write support enabled - writing is done with %s.\n", intf2);
+%  endif
   ## If no intf2 is supplied, write with intf1
   if (isempty (intf2))
     intf2 = intf;
   endif
   ## Allow the OS some delay to accomodate for file operations (zipping etc.)
-  if (strcmpi (intf, "uno") || strcmpi (intf2, "uno"));
+  if (strcmpi (intf, "uno") || strcmpi (intf2, "uno") ||
+      strcmpi (intf, "oct") || strcmpi (intf2, "oct"));
     isuno = true;
   endif
 
@@ -99,6 +100,10 @@ function io_xls_testscript (intf, fname="io-test.xls", intf2=[])
   xlswrite (fname, arr2, 'Testsheet', 'd4:z20', intf2);
   if (isuno)
     sleep (dly);
+    if (strcmpi (intf, "oct") || strcmpi (intf2, "oct"))
+      ## Some more delay to give zip a breath
+      sleep (dly); sleep (dly);
+    endif
   endif
   
   ## 4. Insert another sheet
@@ -123,7 +128,7 @@ function io_xls_testscript (intf, fname="io-test.xls", intf2=[])
   if (strcmpi (crange, "A1:A1"))
     crange = ''
   endif
-  
+
   ## 6. Read data back
   printf ("\n 6. Read data back.\n");
   [num, txt, raw, lims] = xlsread (fname, shnr, crange, intf);

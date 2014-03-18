@@ -113,6 +113,7 @@
 ## 2012-04-21 Improve xls/xlsx suffix check
 ## 2013-12-07 Updated copyright string
 ##     ''     Check on empty file ptr struct after calling xlsopen
+## 2014-03-18 Convey full crange to oct2xls, not just topleft
 
 function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
 
@@ -167,6 +168,9 @@ function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
     nc = min (ncols, nc);
     warning ("xlswrite - array truncated to %d by %d to fit in range %s", ...
              nrows, ncols, crange);
+    ## Adapt crange
+    crange = [ calccelladdress(trow, lcol) ":" ...
+               calccelladdress(trow+nrows-1, lcol+ncols-1) ];
   endif
 
   unwind_protect          ## Needed to be sure Excel can be closed i.c.o. errors
@@ -175,7 +179,7 @@ function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
     if (! isempty (xls))
       xls_ok = 1;
 
-      [xls, rstatus] = oct2xls (arr(1:nr, 1:nc), xls, wsh, topleft);
+      [xls, rstatus] = oct2xls (arr(1:nr, 1:nc), xls, wsh, crange);
     endif
 
   unwind_protect_cleanup

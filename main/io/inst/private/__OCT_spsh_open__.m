@@ -44,6 +44,7 @@
 ## 2014-02-08 Fix wrong function name in error msg (couldn't be unzipped)
 ## 2014-03-17 Simplify sheet names discovery
 ##     ''     Ignore SheetId (nowhere used)
+## 2014-03-18 Reinstate SheetId (was used somewhere after all)
 
 function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename, xlssupport, ftype)
 
@@ -111,7 +112,8 @@ function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename
       ## Get sheet names and indices
       sheets = getxmlnode (xml, "sheets", [], 1);
       xls.sheets.sh_names = cell2mat (regexp (sheets, '<sheet name="(.*?)"', "tokens"));
-##    xls.sheets.rid = str2double (cell2mat (regexp (sheets, ' r:id="rId(\d+)"', "tokens")));
+      xls.sheets.rid = str2double (cell2mat (regexp (sheets, ' r:id="rId(\d+)"', "tokens")));
+      xls.sheets.sheetid = str2double (cell2mat (regexp (sheets, ' sheetId="(\d+)"', "tokens")));
 
     endif
 

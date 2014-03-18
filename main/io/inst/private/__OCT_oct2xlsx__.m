@@ -69,7 +69,7 @@
 ## Version 0.1
 ## 2013/11/08		- Initial Release
 
-function [xls, rstatus] = __OCT_oct2xlsx__ (matrix, xls, wsh=1, crange="", spsh_opts, obj_dims)
+function [xls, rstatus] = __OCT_oct2xlsx__ (arrdat, xls, wsh=1, crange="", spsh_opts, obj_dims)
 
   ## Analyze worksheet parameter & determine if new sheet is required
   new_sh = 0;
@@ -126,12 +126,12 @@ function [xls, rstatus] = __OCT_oct2xlsx__ (matrix, xls, wsh=1, crange="", spsh_
   endif
   
   ## Merge old and new data. Provisionally allow empty new data to wipe old data
-  [rawarr, lims, onr, onc] = __OCT_merge_data__ (rawarr, lims, matrix, obj_dims, spsh_opts);
+  [rawarr, lims, onr, onc] = __OCT_merge_data__ (rawarr, lims, arrdat, obj_dims, spsh_opts);
 
 ## FIXME - contains stuff that won't work with existing sheets
 ##         (though I like the idea PRN)
 %## something cool, that matlab doesn't support
-%# xlswrite('myfile.xlsx',matrix,{'1','Sheetname'})
+%# xlswrite('myfile.xlsx',arrdat,{'1','Sheetname'})
 %if (iscell (wsh))
 %  # check size
 %  if (1 ~= rows (wsh) || 2 ~= columns (wsh))
@@ -333,8 +333,7 @@ function [xls, rstatus] = __OCT_oct2xlsx__ (matrix, xls, wsh=1, crange="", spsh_
 endfunction
 
 
-
-function [ xls, rstatus ] = __OCT_oct2xlsx_sh__ (xls, wsh_number, matrix, lims, onc, onr, spsh_opts)
+function [ xls, rstatus ] = __OCT_oct2xlsx_sh__ (xls, wsh_number, arrdat, lims, onc, onr, spsh_opts)
 
   ## Open sheet file (new or old), will be overwritten
   fid = fopen ([xls.workbook filesep "xl" filesep "worksheets" filesep ...
@@ -376,21 +375,23 @@ function [ xls, rstatus ] = __OCT_oct2xlsx_sh__ (xls, wsh_number, matrix, lims, 
   ## Write second block of xml until start of sheetData
   fprintf (fid, "%s", [xml(ie1+1:is2-1) "<sheetData>"]);
 
-  ## Explore data types in matrix
-  typearr = spsh_prstype (matrix, onr, onc, [1:5], spsh_opts);
+  ## Explore data types in arrdat
+  typearr = spsh_prstype (arrdat, onr, onc, [1:5], spsh_opts);
 
   if (all (typearr(:) == 1))        ## Numeric
-#   write matrix to sheet%%WSH%%.xml
-#  __OOXML_turbowrite__(sprintf("%s/xl/worksheets/sheet%d.xml",tmpdir,wsh_number), matrix);
-    for r=1:rows(matrix)
-      fprintf (fid, '<row r="%d" spans="%d:%d" x14ac:dyDescent="0.25">', r , ...
-              1+offset. row, columns(matrix)+offset.row);
-      for c = 1:columns(matrix)
-        if 0 == isnan (matrix(r,c))
-          fprintf(fid, sprintf('<c r="%s%d"><v>%f</v></c>', __OCT_cc__(c+offset.col), r, matrix(r,c)));
+#   write arrdat to sheet%%WSH%%.xml
+#  __OOXML_turbowrite__(sprintf("%s/xl/worksheets/sheet%d.xml",tmpdir,wsh_number), arrdat);
+    for r=1:rows (arrdat)
+      fprintf (fid, '<row r="%d" spans="%d:%d" x14ac:dyDescent="0.25">', ...
+               r+lims(2, 1)-1, ...
+               lims(1, 1), lims(1, 2));
+      for c = 1:columns (arrdat)
+        if (0 == isnan (arrdat{r, c}))
+          fprintf (fid, sprintf ('<c r="%s%d"><v>%f</v></c>', ... 
+                   __OCT_cc__ (c+lims(1, 1)-1), r+lims(2, 1)-1, arrdat{r, c}));
         endif
       endfor
-      fprintf(f, '</row>');
+      fprintf (fid, '</row>');
     endfor
 
   else
@@ -407,8 +408,13 @@ function [ xls, rstatus ] = __OCT_oct2xlsx_sh__ (xls, wsh_number, matrix, lims, 
           shstr = fread (sid, "char=>char").';
           fclose (sid);
           ## Extract string values. May be much more than present in current sheet
-          strings = cell2mat (regexp (shstr, '<si><t(?:>(.+?)</t>|(.*)/>)</si>', "tokens"));
+          strings = cell2mat (regexp (shstr, '<si><t(?:>(.*?)</t>|(.+?)/>)</si>', "tokens"));
+          ## Watch out for a rare corner case: just one empty string... (avoid [])
+          if (isempty (strings))
+            strings = {""};
+          endif
           uniq_str_cnt = str2double (getxmlattv (shstr, "uniqueCount"));
+          ##uniq_str_cnt = numel (unique (strings));
           ## Make shstr a mueric value
           shstr = 1;
         else
@@ -422,10 +428,10 @@ function [ xls, rstatus ] = __OCT_oct2xlsx_sh__ (xls, wsh_number, matrix, lims, 
       end_try_catch
     endif
     ## Process data row by row
-    for ii=1:rows (matrix)
+    for ii=1:rows (arrdat)
       ## Row node opening tag
       fprintf (fid, '<row r="%d" spans="%d:%d">', ii+lims(2, 1)-1, lims(1, 1), lims(1, 2));
-      for jj=1:columns (matrix)
+      for jj=1:columns (arrdat)
         ## Init required attributes. Note leading space
         addr = sprintf (' r="%s"', calccelladdress (ii+lims(2, 1)-1, jj+lims(1, 1)-1));
         ## Init optional atttributes
@@ -433,10 +439,10 @@ function [ xls, rstatus ] = __OCT_oct2xlsx_sh__ (xls, wsh_number, matrix, lims, 
         switch typearr(ii, jj)
           case 1                    ## Numeric
             ## t tag ("type") is omitted for numeric data
-            val = ["<v>" strtrim(sprintf ("%25.10f", matrix{ii, jj})) "</v>"];
+            val = ["<v>" strtrim(sprintf ("%25.10f", arrdat{ii, jj})) "</v>"];
           case 2                    ## Boolean
             ttag = ' t="b"';
-            if (matrix{ii, jj})
+            if (arrdat{ii, jj})
               val = ["<v>1</v>"];
             else
               val = ["<v>0</v>"];
@@ -445,10 +451,10 @@ function [ xls, rstatus ] = __OCT_oct2xlsx_sh__ (xls, wsh_number, matrix, lims, 
             ttag = ' t="s"';
             ## FIXME s value provisionally set to 0
 %%          stag = ' s="0"';
-            sptr = strmatch (matrix{ii, jj}, strings, "exact");
+            sptr = strmatch (arrdat{ii, jj}, strings, "exact");
             if (isempty (sptr))
               ## Add new string
-              strings = [strings matrix{ii, jj}];
+              strings = [strings arrdat{ii, jj}];
               ++uniq_str_cnt;
               ## New pointer into sharedStrings (0-based)
               sptr = uniq_str_cnt;
@@ -457,7 +463,7 @@ function [ xls, rstatus ] = __OCT_oct2xlsx_sh__ (xls, wsh_number, matrix, lims, 
             val = sprintf ("<v>%d</v>", sptr - 1);
             ++str_cnt;
           case 4                    ## Formula
-            form = sprintf ("<f>%s</f>", matrix{ii, jj}(2:end));
+            form = sprintf ("<f>%s</f>", arrdat{ii, jj}(2:end));
             #val = "<v>?</v>";
             val = " ";
           otherwise                 ## (includes "case 5"
@@ -473,7 +479,7 @@ function [ xls, rstatus ] = __OCT_oct2xlsx_sh__ (xls, wsh_number, matrix, lims, 
           fprintf (fid, "</c>");
         endif
       endfor
-      fprintf(fid, '</row>');
+      fprintf (fid, '</row>');
     endfor
   endif
 

@@ -1,5 +1,5 @@
-## Copyright (C) 2013 Markus Bergholz
-## Parts Copyright (C) 2013 Philip Nienhuis
+## Copyright (C) 2013,2014 Markus Bergholz
+## Parts Copyright (C) 2013,2014 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -48,6 +48,7 @@
 ##     ''     Fix regexpr for strings ( <v>\d? => <v>\d+ )
 ##     ''     Add isfinite() check before attempt to process fixed strings
 ## 2013-12-19 (MB) Replace call to __col_str_to_number with __OCT_cc__
+## 2014-03-18 (PRN) Fix regexp for reading strings from sharedStrings.xml
 
 function [ raw, xls, rstatus ] = __OCT_xlsx2oct__ (xls, wsh, crange='', spsh_opts)
 
@@ -69,7 +70,7 @@ function [ raw, xls, rstatus ] = __OCT_xlsx2oct__ (xls, wsh, crange='', spsh_opt
       if (isempty (id))
         error ("xls2oct: cannot find sheet '%s' in file %s", wsh, xls.filename);
       else
-        wsh = xls.sheets.rid(id);
+        wsh = xls.sheets.sheetid(id);
       endif
     # endif
   elseif (wsh > numel (xls.sheets.sh_names))
@@ -93,6 +94,8 @@ function [ raw, xls, rstatus ] = __OCT_xlsx2oct__ (xls, wsh, crange='', spsh_opt
       ## No sharedStrings.xml; implies no "fixed" strings (computed strings can still be there)
       strings = "";
     end_try_catch
+  else
+    error ("Couldn't open worksheet xml file sheet%d.xml\n", wsh);
   endif
   rstatus = 0;
 
@@ -160,7 +163,9 @@ function [ raw, xls, rstatus ] = __OCT_xlsx2oct__ (xls, wsh, crange='', spsh_opt
       endif
     endif
     ## Turn strings into numbers
-    val = num2cell (str2double (val)); 
+    if (! isempty (val))
+      val = num2cell (str2double (val));
+    endif
 
     ## 2. String / text formulas (cached results are in this sheet; fixed strings in <sharedStrings.xml>)
     ## Formulas
@@ -223,7 +228,7 @@ function [ raw, xls, rstatus ] = __OCT_xlsx2oct__ (xls, wsh, crange='', spsh_opt
     ## 3. Strings
     if (! isempty (strings))
       ## Extract string values. May be much more than present in current sheet
-      ctext = cell2mat (regexp (strings, '<si><t(?:>(.+?)</t>|(.*)/>)</si>', "tokens"));
+      ctext = cell2mat (regexp (strings, '<si><t(?:>(.*?)</t>|(.*)/>)</si>', "tokens"));
       ## Pointers into sharedStrings.xml. "Hard" (fixed) strings have 't="s"' attribute
       ## For reasons known only to M$ those pointers are zero-based, so:
       vals = str2double (cell2mat (regexp (rawdata, '<c r="\w+"(?: s="\d")? t="s"><v>(\d+)</v>', "tokens"))) + 1;

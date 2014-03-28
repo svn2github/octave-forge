@@ -45,6 +45,9 @@ function M = unvech (v, scale = 1)
 
   N      = length (v);
   dim    = (sqrt ( 1 + 8*N ) - 1)/2;
+  if fix(dim) != dim
+    error ("Octave:invalid-input-arg", "the length of the vector cannot form a square matrix.\n");
+  endif
   [r, c] = ind2sub_tril (dim, 1:N);   # replace with core ind2sub after octave 3.6
   M      = accumarray ([r; c].', v);
   M     += scale * tril (M, -1).';

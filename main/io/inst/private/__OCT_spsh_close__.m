@@ -32,6 +32,8 @@
 ## 2014-01-24 Call confirm_recursive_subdir locally
 ## 2014-01-28 Zip both .ods & xlsx, gzip .gnumeric
 ##     ''     Reorganize code a bit
+## 2014-04-06 Fix filename arg in error msg
+##     ''     cd out of tmp dir before removing it
 
 function [xls] = __OCT_spsh_close__ (xls)
 
@@ -40,6 +42,8 @@ function [xls] = __OCT_spsh_close__ (xls)
   opwd = pwd;
   if (isempty (pth))
     filename = [ opwd filesep xls.filename ];
+  else
+    filename = xls.filename;
   endif
 
   ## .ods and.xlsx are both zipped
@@ -52,7 +56,7 @@ function [xls] = __OCT_spsh_close__ (xls)
         system (sprintf ("zip -q -r %s *.* .", filename));
         xls.changed = 0;
       catch
-        printf ("odsclose: could not zip ods contents in %s to %s", xls.workbook, filename);
+        printf ("odsclose: could not zip ods contents in %s to %s\n", xls.workbook, filename);
       end_try_catch;
     endif
 
@@ -64,12 +68,12 @@ function [xls] = __OCT_spsh_close__ (xls)
   endif
 
   ## Delete tmp file and return to work dir
+  cd (opwd);
   if (! xls.changed)
     ## Below is needed for a silent delete of our tmpdir
     confirm_recursive_rmdir (0, "local");
     rmdir (xls.workbook, "s");
   endif
-  cd (opwd);
 
 
 endfunction

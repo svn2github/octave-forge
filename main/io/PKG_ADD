@@ -30,10 +30,10 @@ if (octave_config_info ("features").JAVA)
                "/opt", ...
                "/usr/lib"};
   while (isempty (ooopath) && ii < numel (bnam))
-    ooopath = glob ([ bnam{++ii} filesep "LibreOffice*"]);
+    ooopath = glob ([ bnam{++ii} filesep "[Ll]ibre[Oo]ffice*"]);
   endwhile
   while (isempty (ooopath) && ii < numel (bnam))
-    ooopath = glob ([ bnam{++ii} filesep "OpenOffice.org*"]);
+    ooopath = glob ([ bnam{++ii} filesep "[Oo]pen[Oo]ffice.org*"]);
   endwhile
   while (isempty (ooopath) && ii < numel (bnam))
     ooopath = glob ([ bnam{++ii} filesep "ooo*"]);
@@ -48,7 +48,7 @@ if (octave_config_info ("features").JAVA)
   try
     if (! isempty (userdir))
       if (strcmpi (userdir, "no") || strcmpi (userdir, "false") || strcmpi (userdir, "0"))
-        ## Do not load Java class libs .jar files). First clean up
+        ## Do not load Java class libs .jar files). First clean up, then return
         clear libdir spr_status userdir homedir ;
         return
       endif
@@ -66,8 +66,8 @@ if (octave_config_info ("features").JAVA)
     endif
     ## Try <HOME>/java
     spr_status = chk_spreadsheet_support ([ homedir filesep "java" ], 0, ooopath);
-    ## Only then search for system-supplied jars
-    spr_status = chk_spreadsheet_support ([ libdir filesep "java" ], 0, ooopath);
+    ## Only then search for system-supplied jars. ooopath has been searched
+    spr_status = chk_spreadsheet_support ([ libdir filesep "java" ], 0);
   catch
     warning ("(Automatic loading of spreadsheet I/O Java classlibs failed)\n");
   end_try_catch

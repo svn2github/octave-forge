@@ -22,6 +22,7 @@
 ## 2012-10-24 Style fixes
 ## 2013-09-23 Check getFirstCellNum method return value for empty rows
 ## 2013-12-06 Style fixes
+## 2014-04-06 Fix getFirstCellNum return value when checking rightmost cells
 
 function [ trow, brow, lcol, rcol ] = __POI_getusedrange__ (xls, ii)
 
@@ -41,7 +42,7 @@ function [ trow, brow, lcol, rcol ] = __POI_getusedrange__ (xls, ii)
     if (! isempty (irow))
       scol = irow.getFirstCellNum;
       ## If getFirstCellNum < 0, row is empty
-      if (scol >= 1)
+      if (scol >= 0)
         lcol = min (lcol, scol);
         ecol = irow.getLastCellNum - 1;
         rcol = max (rcol, ecol);

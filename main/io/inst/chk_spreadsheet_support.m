@@ -168,6 +168,7 @@
 ## 2014-01-08 Keep track of loaded jars; allow unloading them; return them as output arg
 ##     ''     Return checked interfaces; update texinfo header
 ## 2014-01-17 Tame messages about COM/ActiveX if dbug = 0
+## 2014-04-06 Skip unojarpath search for UNO entries 4 and up; code style fixes
 
 function  [ retval, sinterfaces, loaded_jars ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo)
 
@@ -603,13 +604,16 @@ function  [ retval, sinterfaces, loaded_jars ]  = chk_spreadsheet_support (path_
           file = dir ([ unojarpath filesep entries0{2} "*" ]);
         else
           ## Rest of jars in ./ure/share/java or ./ure/java
-          unojardir = get_dir_ (uredir, "share");
-          if (isempty (unojardir))
-            tmp = uredir;
-          else
-            tmp = unojardir;
+          if (ii == 3)
+            ## Find unojarpath; the rest of the entries should live here too
+            unojardir = get_dir_ (uredir, "share");
+            if (isempty (unojardir))
+              tmp = uredir;
+            else
+              tmp = unojardir;
+            endif
+            unojarpath = get_dir_ (tmp, "java");
           endif
-          unojarpath = get_dir_ (tmp, "java");
           file = dir ([unojarpath filesep entries0{ii} "*"]);
         endif
         ## Path found, now try to add jar
@@ -640,7 +644,9 @@ function  [ retval, sinterfaces, loaded_jars ]  = chk_spreadsheet_support (path_
         endif
       endif
     endfor
+    ## Check if all entries have been found
     if (! targt)
+      ## Yep
       retval = retval + 128;
       sinterfaces = [sinterfaces, "UNO"];
     endif
@@ -667,7 +673,7 @@ function  [ retval, sinterfaces, loaded_jars ]  = chk_spreadsheet_support (path_
 
   if (! jars_complete && nargin > 0 && ! isempty (path_to_jars))
     ## Add missing jars to javaclasspath. Assume they're all in the same place
-    ## FIXME: add checks for prope odfdom && OpenXLS jar versions
+    ## FIXME: add checks for proper odfdom && OpenXLS jar versions
     if (dbug)
       printf ("Trying to add missing java class libs to javaclasspath...\n");
     endif
@@ -744,7 +750,9 @@ function [ ret_dir ] = get_dir_ (base_dir, req_dir)
     ii = 1;
     while (! ret_dir_list(idx(ii)).isdir)
       ii = ii + 1;
-      if (ii > numel (idx)); return; endif
+      if (ii > numel (idx))
+        return; 
+      endif
     endwhile
     ## If we get here, a dir with proper name has been found. Construct path
     ret_dir = [ base_dir filesep  ret_dir_list(idx(ii)).name ];

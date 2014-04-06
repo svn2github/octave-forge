@@ -8,7 +8,12 @@ io-2.1.x   Release Date: TBA Release Manager: Philip Nienhuis
 
 *** Bug fixes:
     - __OCT_gnm2oct__.m (gnumeric reading): Properly handling tags
+    (2.1.1:)
     - Restored UNO interface option in ods2oct.m
+    - (xlswrite) when truncating an array (sheet capacity, too small a range),
+      convey truncated range rather than topleft cell
+     (2.1.2:)
+    - PKG_ADD: fix case-sensitivity when searching Libre/OpenOffice
 
 *** New features:
     - Write support w/o Java or ActiveX, just native Octave, for ODS 1.2

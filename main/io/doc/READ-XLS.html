@@ -4,16 +4,16 @@
 <META NAME="Generator" CONTENT="Microsoft Word 97">
 <META NAME="CREATED" CONTENT="20091211;17230700">
 <META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
-<META NAME="CHANGED" CONTENT="20120226;18083900">
+<META NAME="CHANGED" CONTENT="20140408;18083900">
 </HEAD>
 <BODY LINK="#0000ff" VLINK="#800080">
 
 <P><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN"></P>
-<FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><P ALIGN="CENTER">README for Excel spreadsheet file r/w access scripts for octave (&gt; 3.7.2)<BR>
+<FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><P ALIGN="CENTER">README for Excel spreadsheet file r/w access scripts for octave (&gt; 3.8.x)<BR>
 <BR>
-Copyright (C) 2009 - 2013 Philip Nienhuis &lt;prnienhuis at users.sf.net&gt;<BR>
+Copyright (C) 2009 - 2014 Philip Nienhuis &lt;prnienhuis at users.sf.net&gt;<BR>
 <BR>
-This version December 30, 2012</P>
+This version April 8, 2014</P>
 </FONT></FONT><B><U><FONT FACE="Arial, sans-serif" SIZE=4><FONT FACE="Arial, sans-serif" SIZE=4><P ALIGN="CENTER">EXCEL .XLS SUPPORT FILES</P>
 </B></U></FONT></FONT><FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><DL>
 <DT><BR>
@@ -54,8 +54,14 @@ This file.</FONT></FONT> </DT><BR>
 <P ALIGN="CENTER"><BR>
 </FONT></FONT><B><U><FONT FACE="Arial, sans-serif" SIZE=4><FONT FACE="Arial, sans-serif" SIZE=4>REQUIRED SUPPORT SOFTWARE</P>
 </B></U></FONT></FONT><FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><DL>
-<DT><BR>
-<U><B>For the Excel/COM interface:</B></U></DT>
+<BR>
+
+<DT><FONT FACE="Arial, sans-serif" SIZE=2><U><B>For the native Octave interface (OCT)</B></U></DT><br>
+<P>(currently read/write support for OOXML (Excel 2007+) and ODS 1.2 (LibreOffice/OpenOffice.org Calc), read support for Gnumeric)<br>
+<b>NO</b> external support software is required!
+</FONT></P>
+
+<DT><U><B>For the Excel/COM interface:</B></U></DT>
 </DL>
 
 <UL>
@@ -115,7 +121,9 @@ This file.</FONT></FONT> </DT><BR>
 </UL>
 
 <FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><DL>
-<DT>These class libs must be referenced with full pathnames in your javaclasspath.<br>On MinGW they had best be put in /&lt;libdir&gt;/java (where &lt;libdir&gt; on MinGW is usually /lib); on Linux system supplied Java class libs usually reside in /usr/share/java. Alternatively, you can put them in your HOME directory in a subdirectory java (mind case!) - on *nix that would be ~./java, on Windows %USERPROFILE%/java (same level as My Documents). The PKG_ADD routine, that gets run each time the io package is loaded, expects the class libs there; if they are elsewhere, add them in ./share/octave/&lt;version&gt;/m/startup/octaverc using appropriate javaaddpath statements or a chk_spreadsheet_support() call.<br>
+<DT>These class libs must be referenced with full pathnames in your javaclasspath.<br>
+When the io package gets loaded, a utility function (PKG_ADD) tries to automatically find the Java class libs and adds the ones it found to the javaclasspath; When the io package gets unloaded, these same class libs will be removed from the javaclasspath.<br><br>
+On MinGW the required Java class libs had best be put in /&lt;libdir&gt;/java (where &lt;libdir&gt; on MinGW is usually /lib); on Linux system supplied Java class libs usually reside in /usr/share/java. Alternatively, you can put them in your HOME directory in a subdirectory java (mind case!) - on *nix that would be ~./java, on Windows %USERPROFILE%/java (same level as My Documents). The PKG_ADD routine, that gets run each time the io package is loaded, expects the class libs there; if they are elsewhere, add them in ./share/octave/&lt;version&gt;/m/startup/octaverc using appropriate javaaddpath statements or a chk_spreadsheet_support() call.<br>
   In addition, you can specify a subdirectory using the environment variable OCTAVE_IO_JAVALIBS.<br>
   Once a particular Java class lib has been added to the javaclasspath, it won't be searched anymore nor reloaded from the next search location. The search order is:
   <OL>
@@ -123,13 +131,10 @@ This file.</FONT></FONT> </DT><BR>
   <LI>&lt;HOME_DIR&gt;/java</LI>
   <LI>/usr/share/java (*nix) or /lib/java (MinGW)</LI>
   </OL>
-  If you do not want PKG_ADD to load the Java class libs, specify a value of "no", "false" or "0" for the OCTAVE_IO_JAVALIBS envioronment variable before starting Octave.</DT></DL>
+  If you do not want PKG_ADD to load the Java class libs, specify a value of "no", "false" or "0" for the OCTAVE_IO_JAVALIBS environment variable before starting Octave.</DT></DL>
 <DL><DT>UNO specific  (invoking OpenOffice.org (or clones) behind the scenes):<BR>
 NOTE: EXPERIMENTAL!!  A working OpenOffice.org installation. The utility function chk_spreadsheet_support can be used to add the needed entries to the javaclasspath.<BR></DT>
 </DL>
-
-<P><FONT FACE="Arial, sans-serif" SIZE=2><U><B>For the native Octave interface</B></U> <br>
-(currently only read support for OOXML, ODS 1.2 and Gnumeric), no external support software is required.</FONT></P>
 
 <P ALIGN="CENTER"><BR>
 </FONT></FONT><B><U><FONT FACE="Arial, sans-serif" SIZE=4><FONT FACE="Arial, sans-serif" SIZE=4>USAGE</P>
@@ -240,20 +245,21 @@ Another -obvious- limitation is that COM Excel access only works on Windows syst
 <b>Apache POI</b> (Java-based and platform-independent too) is based on the OpenOffice.org I/O Excel r/w routines. It is a more versatile than JExcelAPI, while it doesn't support BIFF5 it does support BIFF8 (Excel 97 – 2003) and OOXML (Excel 2007).</DT>
 <DT>It is slower than native JXL let alone Excel &amp; COM but it features active formula evaluation, although at the moment (end of 2013, v. 3.9) still not *all* Excel functions have been implemented (a daunting task for the POI devs, as it is hard to keep up with MS here). I've made the relevant subfunction (xls2jpoi2oct) fall back to cached formula results (and yield a suitable warning) for non-implemented Excel functions while reading Excel files. <BR>
 <BR>
-<b>OpenXLS</b> (an open source version of Extentech's commercial Java-xls product) is still a bit experimental. It seems to work faster than JExcelAPI, but it has other issues - i.e., processing of OOXML files is still unreliable.<BR>
+<b>OpenXLS</b> (an open source version of Extentech's commercial Java-xls product) is still a bit experimental. It seems to work faster than JExcelAPI, but it has other issues - i.e., processing of OOXML files is still unreliable. In addition OpenXLS scatters Extentech.tmp files here and there. For .xls (BIFF8) it works OK.<BR>
 <BR>
 <b>UNO</b> (invoking OpenOffice.org (OOo) or LibreOffice (LO) or clones behind the scenes, a la ActiveX) is experimental. It works FAST (i.e., once OOo itself is loaded and initialized which can take some time) and can process much larger spreadsheets than the other Java-based interfaces because the data are not entered in the JVM but in OOo's memory.<BR>
 A big stumbling block is that odsclose() on a UNO xls struct will kill ALL OpenOffice.org invocations, also those that were not related to Octave! This is due to UNO-Java limitations.<BR>
 The underlying issue is that when Octave starts an OpenOffice.org invocation, OpenOffice.org must be closed for Octave to be able to exit; otherwise Octave will wait for OOo to shut down before it can terminate itself. So Octave must kill OOo to be able to terminate.<br>
 A way out hasn't been found yet.<br><br>
 All in all, of the three Java options I'd prefer Apache POI rather than OpenXLS or JexcelAPI. But the latter is indispensable for BIFF5 formats. Once UNO is stable it is to be preferred as it can read ALL file formats supported by OOo (viz. wk1, ods, xlsx, sxc, ...). If you need to process really large spreadsheets, UNO is by far the fastest option (behind COM on Windows systems), but for smaller spreadsheets you'll find that the other interfaces are more efficient.<DT><br>
-<DT>The OCT interface (native Octave calls) is by far the fastest for OOXML, the only Octave option for gnumeric, but for ODS it is still slower than COM/ActiveX or UNO. OCT write support is under construction and already working but not yet very mature.</DT>
+<DT>The <b>OCT</b> interface (native Octave calls) is by far the fastest for OOXML, the only Octave option for gnumeric, but for ODS it is still slower than COM/ActiveX or UNO. Experimental OCT write support is available for OOXML and ODS 1.2 but not extensively tested yet.</DT>
 <DT><br>Some notes on the choice for Java:</DT>
 </DL>
 <OL>
 
 <LI>It saves a LOT of development time to use ready-baked Java classes rather than developing your own routines and thus effectively reinvent the wheel.</LI>
 <LI>A BIG advantage is that a Java-based solution is platform-independent (&quot;portable&quot;).</LI>
+<LI>The Java classes offer much more options than just reading and writing. Formatting, recalculation options, hiding/merging cell ranges, etc.</LI>
 <LI>But Java is known to be not very conservative with resources, especially not when processing XML-based formats.</LI></OL>
 
 <DL>
@@ -343,6 +349,6 @@ Some other options for development (who?):</DT>
 
 <P>Enjoy!</FONT></FONT> </P>
 <FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><DL>
-<DD ALIGN="CENTER">Philip Nienhuis, December 30, 2013</DD>
+<DD ALIGN="CENTER">Philip Nienhuis, April 8, 2014</DD>
 </DL></FONT></FONT></BODY>
 </HTML>

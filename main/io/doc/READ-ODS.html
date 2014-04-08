@@ -6,7 +6,7 @@
     	<meta name="AUTHOR" content="Philip Nienhuis">
     	<meta name="CREATED" content="20091229;22213000">
     	<meta name="CHANGEDBY" content="Philip Nienhuis">
-    	<meta name="CHANGED" content="20120226;18275600">
+    	<meta name="CHANGED" content="20140408;18275600">
     	<meta name="Info 1" content="">
     	<meta name="CHANGEDBY" content="Philip Nienhuis"></head>
     
@@ -15,10 +15,10 @@
 	<b>ODS support for Octave</b></font></font></u>
 </p>
 <p align="center"><font face="Arial, sans-serif"><font size="2">
-	Copyright © 2009 - 2013 Philip Nienhuis &lt;prnienhuis at users.sf.net&gt;</font></font>
+	Copyright © 2009 - 2014 Philip Nienhuis &lt;prnienhuis at users.sf.net&gt;</font></font>
 </p>
 	<p align="center"><font face="Arial, sans-serif"><font size="2">
-	This version December 30, 2013</font></font>
+	This version April 8, 2014</font></font>
 </p>
     <p><font face="Arial, sans-serif"><font size="2">
 	<i>(ODS = Open Document Format spreadsheet data format, used by e.g., OpenOffice.org.)</i></font></font>
@@ -64,44 +64,40 @@
 </dl>
     <p align="center"><font face="Arial, sans-serif"><font size="4"><u><b>REQUIRED
     SUPPORT SOFTWARE</b></u></font></font></p><dl>
-    <p><font face="Arial, sans-serif"><font size="2">(Apart from io package >= 1.3.5 :)</font></font></p>
+<DT><FONT FACE="Arial, sans-serif" SIZE=2><U><B>For the native Octave interface (OCT)</B></U></DT><br>
+<P>(currently <u><b>read/write</b></u> support for <b>ODS 1.2</b> (LibreOffice/OpenOffice.org Calc) and <b>OOXML</b> (Excel 2007+), <u><b>read</b></u> support for <b>Gnumeric</b>)<br>
+<b>NO</b> external support software is required!
+</FONT></P>
     	</dl>
-    	<li><p align="left">
-    	<font face="Arial, sans-serif"><font size="2">For just read support: <B>Octave > 3.7.2</B> will do just fine; for write support Octave requires Java support to be compiled in, a Java JRE > 1.6.0, and one or more of the following:</font></font></p></li>
-    	<li>
+<p align="left">
+<font face="Arial, sans-serif"><font size="2"><B>Octave >= 3.8.0</B> will do just fine but maybe a bit slow. If you want faster I/O, Java support need to be compiled in, a Java JRE > 1.6.0 must be installed, and one or more of the following is required:</font></font></p>
 		<p align="left"><font face="Arial, sans-serif"><font size="2">
-		<b>odfdom.jar</b> currently the preferred option)<br>
-    (<u>only</u> versions <b>0.7.5</b>,
+		<li><b>odfdom.jar</b> (for the <b>OTK</b> interface, currently the preferred option)<br>
+    <ul>(<u>only</u> versions <b>0.7.5</b>,
     	<b>0.8.6</b>, <b>0.8.7</b> and <b>0.8.8</b> (the latter from incubator v. 0.5, see download URL below) work OK!) &amp; <b>xercesImpl.jar</b> (watch out here too! only version 2.9.1 (2007-sep-14) works OK with odfdom). Get them here:
 	</font></font></p>
-	</li>
-  <ul>
+
   <li>
   <p align="left"><a href="http://odftoolkit.org/projects/odfdom/pages/Home"><font face="Arial, sans-serif"><font size="2">http://odftoolkit.org/projects/odfdom/pages/Home</font></font></a></p>
-  </li><li>
-  <p align="left" lang="zxx"><font color="#000080"><font face="Arial, sans-serif"><font size="2"><a href="http://incubator.apache.org/odftoolkit/downloads.html"><font face="Arial, sans-serif"><font size="2">http://incubator.apache.org/odftoolkit/downloads.html</font></font></a> (preferred)</font></font></font></p>
+  </li><li><p align="left" lang="zxx"><font color="#000080"><font face="Arial, sans-serif"><font size="2"><a href="http://incubator.apache.org/odftoolkit/downloads.html"><font face="Arial, sans-serif"><font size="2">http://incubator.apache.org/odftoolkit/downloads.html</font></font></a> (preferred)</font></font></font></p>
   </li><li><p align="left"><a href="http://www.google.com/search?ie=UTF-8&oe=utf-8&q=xerces-2.9.1+download"><font face="Arial, sans-serif"><font size="2">Google for xerces-2.9.1 download</a></p>
+  </li></ul>
   </li>
-  </ul>
-</ul>
-    <dl><dt><p>
+  <dl><dt><p>
 	<br><font face="Arial, sans-serif"><font size="2">and/or</font></font>
 </p></dt></dl>
-    <ul>
-    	<li>
-	<p align="left"><font face="Arial, sans-serif"><font size="2"><b>jopendocument</b></font></font><font face="Arial, sans-serif"><font size="2">&lt;version&gt;</font></font><font face="Arial, sans-serif"><font size="2"><b>.jar</b></font></font><font face="Arial, sans-serif"><font size="2">.
-    	Get it from <a href="http://www.jopendocument.org/">http://www.jopendocument.org</a></font></font></p><p align="left">
-    	<font face="Arial, sans-serif"><font size="2">(jOpenDocument 1.3 (final) is the most recent one and recommended for Octave)</font></font>
+<li><p align="left"><font face="Arial, sans-serif"><font size="2"><b>jopendocument</b></font></font><font face="Arial, sans-serif"><font size="2">&lt;version&gt;</font></font><font face="Arial, sans-serif"><font size="2"><b>.jar</b> (for the <b>JOD</b> interface)</font></font><font face="Arial, sans-serif"><font size="2"><br>
+<ul>Get it from <a href="http://www.jopendocument.org/">http://www.jopendocument.org</a></font></font></p><p align="left">
+    	<font face="Arial, sans-serif"><font size="2">(jOpenDocument 1.3 (final) is the most recent one and recommended for Octave)</font></font></ul>
 	</p>
 	</li>
-</ul>
 <dl><dt><p>
 	<br><font face="Arial, sans-serif"><font size="2">and/or</font></font>
 </p></dt></dl>
-<ul>
 	<li>
-	<p align="left"><font face="Arial, sans-serif"><font size="2"><b>OpenOffice.org</b> (or clones like <b>LibreOffice</b>, <b>Go-Office</b>, ...)</font></font></font></font><font face="Arial, sans-serif"><font size="2">.
-	Get it from <a href="http://www.openoffice.org/">http://www.openoffice.org</a>. The relevant Java class libs are <b>unoil.jar</b>, 
+	<p align="left"><font face="Arial, sans-serif"><font size="2"><b>OpenOffice.org</b> (or clones like <b>LibreOffice</b>, <b>Go-Office</b>, ...) (for the <b>UNO</b> interface)</font></font></font></font><font face="Arial, sans-serif"><font size="2"><br>
+	
+<ul>Get it from <a href="http://www.openoffice.org/">http://www.openoffice.org</a>. The relevant Java class libs are <b>unoil.jar</b>, 
 	<b>unoloader.jar</b>, <b>jurt.jar</b>, <b>juh.jar</b> and <b>ridl.jar</b> (which are scattered around the OOo installation directory), while also the <b>&lt;OOo&gt;/program/</b> 
 	directory needs to be in the classpath.</font></font></p>
 	<p align="left">
@@ -109,7 +105,8 @@
 	</li>
 </ul>
 	<dl><dt>
-	<p><font face="Arial, sans-serif"><font size="2">These class libs must be referenced with full pathnames in your javaclasspath.<br>
+	<p><font face="Arial, sans-serif"><font size="2">Whatever Java option, these class libs must be referenced with full pathnames in your javaclasspath.<br>
+When the io package gets loaded, a utility function (PKG_ADD) tries to automatically find the Java class libs and adds the ones it found to the javaclasspath; When the io package gets unloaded, these same class libs will be removed from the javaclasspath.<br><br>
   Except for the UNO (OOo) classes, on MinGW the jar files had best be put in /&lt;libdir&gt;/java where &lt;libdir&gt; on MinGW it is usually /lib; on Linux system supplied Java class libs usually reside in /usr/share/java. Alternatively, you can put them in your HOME directory in a subdirectory java (mind case!) - on *nix that would be ~./java, on Windows %USERPROFILE%/java (same level as My Documents). The PKG_ADD routine, that gets run each time the io package is loaded, expects the class libs there; if they are elsewhere, add them in ./share/octave/&lt;version&gt;/m/startup/octaverc using appropriate javaaddpath statements or a chk_spreadsheet_support() call.<br>
   In addition, you can specify a subdirectory using the environment variable OCTAVE_IO_JAVALIBS.<br>
   Once a particular Java class lib has been added to the javaclasspath, it won't be searched anymore nor reloaded from the next search location. The search order is:
@@ -118,7 +115,7 @@
   <LI>&lt;HOME_DIR&gt;/java</LI>
   <LI>/usr/share/java (*nix) or /lib/java (MinGW)</LI>
   </OL>
-  If you do not want PKG_ADD to load the Java class libs, specify a value of "no", "false" or "0" for the OCTAVE_IO_JAVALIBS envioronment variable before starting Octave.</font></font>
+  If you do not want PKG_ADD to load the Java class libs, specify a value of "no", "false" or "0" for the OCTAVE_IO_JAVALIBS environment variable before starting Octave.</font></font>
     	</p></dt><dt><p><br>
     </p></dt></dl>
     <p align="center"><font face="Arial, sans-serif"><font size="4"><u><b>USAGE</b></u></font></font></p>
@@ -372,10 +369,7 @@
 </p></dt>
 <dt><p><font face="Arial, sans-serif"><font size="2">The <b>OCT (native Octave)</b>
     	interface is also promising as it is completely under control of Octave (-Forge) developers.
-      Currently it only offers (relatively slow) read support (for ODS, OOXML and gnumeric), but an immense
-      advantage is that for reading ODS no other external software is required.<br>
-      Write support is underway but may be appearing only in 2015, depending on time
-      and resources of the io package developers.</font></font></p></dt>
+      Currently it only offers (relatively slow) read and -experimental- write support for ODS and OOXML and read support for gnumeric. An immense advantage is that no other external software is required. Write support has not extensively tested yet, however.</font></font></p></dt>
 
 </dl>
 	
@@ -478,12 +472,11 @@
     	r/w stuff, adding new interfaces should be easy and straightforward.
     	Add relevant stanzas for your new interface <b><i>INTF</i></b> in <b>odsopen</b>, <b>odsclose</b>, <b>odsfinfo</b>, <b>oct2ods</b>, <b>ods2oct</b>, <b>getusedrange</b> and add new subfunctions (for the real work) in subdir ./private; you'll need a total of six interface-dependent private functions (see the various examples for each interface in subdir ./private).</font></font></p><p><font face="Arial, sans-serif"><font size="2">Suggestions for
     	future development:</font></font></p>
-    	<ul><li><font face="Arial, sans-serif"><font size="2">Reliable and easy ODS
-    	write support (maybe when jOpenDocument is more mature)</font></font></li></ul><ul><li><p align="left">
+    	<ul><li><p align="left">
     	<font face="Arial, sans-serif"><font size="2">Speeding up (ODS is 10 X
     	slower than e.g. OOXML !!!). jOpenDocument is much faster but still
     	immature.<br>
-	<b>UNO</b> *is* MUCH faster than jOpenDocument but starting up OpenOffice.org
+	For large spreadsheets, <b>UNO</b> *is* MUCH faster than jOpenDocument but starting up OpenOffice.org
 	for the first time can take tens of seconds...<br>
   Note that UNO is still experimental. The issue is that odsclose() will simply
   kill ALL other OpenOffice.org invocations, also those that were not opened
@@ -499,7 +492,7 @@
     	<font face="Arial, sans-serif"><font size="2">Adding styles (borders,
     	cell lay-out, font, etc.)</font></font></p></li></ul>
     	<font face="Arial, sans-serif"><font size="2">Some notes on the
-    	choice for Java:</font></font>
+    	choice for Java (becoming less relevant as the OCT interface gets more mature):</font></font>
     <ol>
     	<li>
     	<font face="Arial, sans-serif"><font size="2">It saves a LOT of
@@ -508,6 +501,7 @@
     	wheel.</font></font></li><li>
     	<font face="Arial, sans-serif"><font size="2">A BIG advantage is that
     	a Java-based solution is platform-independent (“portable”).</font></font></li><li>
+    	<font face="Arial, sans-serif"><font size="2">The Java classes offer much more options than just reading and writing. Formatting, recalculation options, hiding/merging cell ranges, etc.</font></font></li><li>
     	<font face="Arial, sans-serif"><font size="2">But Java is known to be
     	not very conservative with resources, especially not when processing
     	XML-based formats.</font></font></li></ol>
@@ -553,8 +547,7 @@
     	7158)</font></font></li><li>
     	<font face="Arial, sans-serif"><font size="2">oct2ods.m (revision
     	7159)</font></font></li></ul>
-    	<p><font face="Arial, sans-serif"><font size="2">Enjoy!</font></font></p><p align="center"><font face="Arial, sans-serif"><font size="2">Philip
-    	Nienhuis, December 30, 2013</font></font></p><dl><dd><p align="center">
+    	<p><font face="Arial, sans-serif"><font size="2">Enjoy!</font></font></p><p align="center"><font face="Arial, sans-serif"><font size="2">Philip Nienhuis, April 8, 2014</font></font></p><dl><dd><p align="center">
     	<br>
     </p></dd></dl>
     </body></html>

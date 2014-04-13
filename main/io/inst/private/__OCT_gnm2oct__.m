@@ -96,7 +96,7 @@ function [ rawarr, xls, rstatus] = __OCT_gnm2oct__ (xls, wsh, cellrange='', spsh
     lastrow  = min (lastrow, firstrow + nr - 1);
     rightcol = min (rightcol, leftcol + nc - 1);
   endif
-keyboard
+
   ## Get cell nodes
   cells = getxmlnode (xml, "gnm:Cells");
 

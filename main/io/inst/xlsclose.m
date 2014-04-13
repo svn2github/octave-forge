@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012,2013,2014 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -56,7 +56,7 @@
 ##
 ## @end deftypefn
 
-## Author: Philip Nienhuis
+## Author: Philip Nienhuis <prnienhuis at users.sf.net>
 ## Created: 2009-11-29
 ## Updates: 
 ## 2010-01-03 (checked OOXML support)
@@ -82,6 +82,7 @@
 ## 2013-10-01 Warn for empty struct input
 ## 2013-12-29 Style fixes
 ## 2014-01-01 Style fixes
+## 2014-04-13 Updated copyright strings
 
 function [ xls ] = xlsclose (xls, varargs)
 

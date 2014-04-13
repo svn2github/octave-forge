@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis
+## Copyright (C) 2009,2010,2011,2012,2013,2014 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -74,6 +74,7 @@
 ##      ''    Warning message for empty file ptr structs
 ## 2013-10-02 Texinfo header adapted
 ## 2013-12-01 Style fixes
+## 2014-04-13 Updated copyright strings
 
 function [ ods ] = odsclose (ods, varargs)
 

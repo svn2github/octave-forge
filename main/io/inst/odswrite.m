@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis <pr.nienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012,2013,2014 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -59,15 +59,16 @@
 ## The optional last argument @var{reqintf} can be used to override 
 ## the automatic selection by odswrite of one interface out of the
 ## supported ones: Java/ODFtooolkit ('OTK'), Java/jOpenDocument ('JOD'),
-## or Java/OpenOffice.org ('UNO').
+## Java/OpenOffice.org ('UNO'), or native Octave ('OCT').
 ##
 ## odswrite is a mere wrapper for various scripts which find out what
-## ODS interface to use (ODF toolkit or jOpenDocument) plus code to mimic
-## the other brand's syntax. For each call to odswrite such an interface
-## must be started and possibly an ODS file loaded. When writing to multiple
-## ranges and/or worksheets in the same ODS file, a speed bonus can be
-## obtained by invoking those scripts (odsopen / octods / .... / odsclose)
-## directly.
+## ODS interface to use (ODF toolkit, jOpenDocument, Open/LibreOffice or
+## native Octave) plus code to mimic the other brand's xlswrite syntax
+## (and quirks).
+## For each call to odswrite such an interface must be started and
+## possibly an ODS file loaded. When writing to multiple ranges and/or
+## worksheets in the same ODS file, a speed bonus can be obtained by
+## invoking those scripts (odsopen / octods / .... / odsclose) directly.
 ##
 ## Example:
 ##
@@ -82,7 +83,7 @@
 ##
 ## @end deftypefn
 
-## Author: Philip Nienhuis
+## Author: Philip Nienhuis <pr.nienhuis at users.sf.net>
 ## Created: 2009-12-14
 ## Updates:
 ## 2010-01-14 Finalized write support tru ODS toolkit
@@ -98,6 +99,7 @@
 ## 2012-10-24 Style fixes
 ## 2013-12-18 Copyright string updates, style fixes
 ## 2014-01-01 Drop file extension check
+## 2014-04-13 Updated copyright strings & texinfo header
 
 function [ rstatus ] = odswrite (filename, data, wsh=1, crange="", reqintf=[])
 

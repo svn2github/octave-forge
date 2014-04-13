@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis
+## Copyright (C) 2009,2010,2011,2012,2013,2014 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -40,7 +40,7 @@
 ## @var{wsh} can be a number or string (max. 31 chars).
 ## In case of a not yet existing Excel file, the first worksheet will be
 ## used & named according to @var{wsh} - the extra worksheets that Excel
-## normally creates by default are deleted.
+## usually creates by default are deleted (COM) or simply not created.
 ## In case of existing files, some checks are made for existing worksheet
 ## names or numbers, or whether @var{wsh} refers to an existing sheet with
 ## a type other than worksheet (e.g., chart).
@@ -65,9 +65,11 @@
 ## The optional last argument @var{reqintf} can be used to override 
 ## the automatic selection by xlswrite of one interface out of the
 ## supported ones: 'com' (ActiveX/Excel), 'poi' (Java/Apache POI), 'jxl'
-## (Java/JExcelAPI), or 'uno' (Java/OpenOffice.org). 'oxs' (Java/OpenXLS)
-## is implemented but disabled for writing as it is too buggy. For
-## writing to OOXML files (.xlsx) a value of 'com', 'poi' or 'uno' must
+## (Java/JExcelAPI), 'uno' (Java/OpenOffice.org), or 'OCT' (native Octave
+## w/o any external support software). 'oxs' (Java/OpenXLS) has been
+## implemented but disabled for writing OOXML as it is too buggy; for
+## BIFF8 (Excel '97 .xls) it works reliably. For writing to OOXML files
+## (.xlsx) a value of 'com', 'poi', 'uno', or 'oct' must
 ## be specified for @var{reqintf}. The value of @var{reqintf} is
 ## case-insensitive. Multiple interfaces can be selected if entered as
 ## a cell array of strings.
@@ -114,6 +116,7 @@
 ## 2013-12-07 Updated copyright string
 ##     ''     Check on empty file ptr struct after calling xlsopen
 ## 2014-03-18 Convey full crange to oct2xls, not just topleft
+## 2014-04-13 Update texinfo header
 
 function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
 

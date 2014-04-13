@@ -25,22 +25,20 @@
 ## Calling xlsopen without specifying a return argument is fairly useless!
 ##
 ## xlsopen works with interfaces, which are links to external software.
-## For reading from OOXML (Excel 2007 and up), ODS 1.2 and Gnumeric no
-## additional software is required when the OCT interface is used. For all
-## other spreadsheet formats and for writing to spreadsheet files, you need
-## MS-Excel (95 - 2013), or a Java JRE plus Apache POI >= 3.5 and/or JExcelAPI
+## For I/O from OOXML (Excel 2007 and up), ODS 1.2 and Gnumeric, no
+## additional software is required when the OCT interface is used (see below).
+## For all other spreadsheet formats, you need one or more of MS-Excel
+## (95 - 2013), or a Java JRE plus Apache POI >= 3.5 and/or JExcelAPI
 ## and/or OpenXLS and/or OpenOffice.org (or clones) installed on your computer
 ## + proper javaclasspath set. These interfaces are referred to as COM, POI,
 ## JXL, OXS, and UNO, resp., and are preferred in that order by default
-## (depending on their presence). The OCT interface has the lowest priority.
-## For OOXML read/write support, in addition to Apache POI support you also
-## need the following jars in your javaclasspath: poi-ooxml-schemas-3.5.jar,
-## xbean.jar and dom4j-1.6.1.jar (or later versions). Later OpenOffice.org
-## versions (UNO interface) have support for OOXML as well.
-## Excel'95 spreadsheets can only be read by JExcelAPI and OpenOffice.org.
-## For just reading OOXML (.xlsx or .xlsm), no Java or add-on packages are 
-## required; but currently you loose a bit of the flexibility of the other
-## interfaces.
+## (depending on their presence). Currently the OCT interface has the lowest
+## priority as it is still experimental.
+## For OOXML read/write support in principle no additional SW is needed.
+## However, the COM, POI and UNO interfaces may provide better OOXML write
+## performance and/or more flexibility.
+## Excel'95 spreadsheets (BIFF5) can only be read using the COM (Excel-ActiveX),
+## JXL (JExcelAPI), and UNO (Open-/LibreOffice) interfaces.
 ##
 ## @var{filename} should be a valid .xls or xlsx Excel file name (including
 ## extension). But if you use the COM interface you can specify any extension
@@ -49,9 +47,9 @@
 ## allowed. If @var{filename} does not contain any directory path, the file
 ## is saved in the current directory.
 ##
-## If @var{readwrite} is set to 0 (default value) or omitted, the Excel file
-## is opened for reading. If @var{readwrite} is set to True or 1, an Excel
-## file is opened (or created) for reading & writing.
+## If @var{readwrite} is set to 0 (default value) or omitted, the spreadsheet
+## file is opened for reading. If @var{readwrite} is set to true or 1, a
+## spreadsheet file is opened (or created) for reading & writing.
 ##
 ## Optional input argument @var{reqintf} can be used to override the Excel
 ## interface that otherwise is automatically selected by xlsopen. Currently
@@ -141,6 +139,7 @@
 ##     ''     Add warning that UNO will write ODS f. unsupported file extensions
 ##     ''     Copyright string update
 ## 2014-02-02 Allow write support for OCT interface
+## 2014-04-13 Updated texinfo header
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 

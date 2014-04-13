@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012,2013 by Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012,2013,2014 by Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -34,6 +34,7 @@
 ## (.xls or .xlsx) must be included in the file name; when using the
 ## COM interface all file formats can be read that are supported by the
 ## locally installed MS-Excel version (e.g., wk1, csv, dbf, etc.).
+## The same holds for UNO (OpenOffice.orgor LibreOffice).
 ##
 ## @var{range} is expected to be a regular spreadsheet range format,
 ## or "" (empty string, indicating all data in a worksheet).
@@ -72,20 +73,23 @@
 ## For reading from OOXML files a value of 'com', 'poi', 'uno', or 'oct'
 ## must be specified for @var{reqintf} (see help for xlsopen); for
 ## Excel'95 files use 'com', or if Excel is not installed use 'jxl',
-## 'basic' or 'uno' (POI can't read Excel 95 but will try to fall back
-## to JXL). As @var{reqintf} can also be a cell array of strings, one
+## 'basic' or 'uno'. POI can't read Excel'95 but will try to fall back
+## to JXL. As @var{reqintf} can also be a cell array of strings, one
 ## can select or exclude one or more interfaces.
+## In addition the OCT interface offers .gnumeric read support.
 ##
 ## Erroneous data and empty cells are set to NaN in @var{numarr} and
 ## turn up empty in @var{txtarr} and @var{rawarr}. Date/time values in
 ## Excel are returned as numerical values in @var{numarr}. Note that
 ## Excel and Octave have different date base values (1/1/1900 & 
-## 1/1/0000, resp.). Spreadsheet date values lying before 1/1/1900 are
-## returned as strings, formatted as they appear in the spreadsheet.
+## 1/1/0000, resp.). When using the COM interface, spreadsheet date
+## values lying before 1/1/1900 are returned as strings, formatted as
+## they appear in the spreadsheet.
 ## @var{numarr} and @var{txtarr} are trimmed from empty outer rows
 ## and columns. Be aware that Excel does the same for @var{rawarr}, 
 ## so any returned array may turn out to be smaller than requested in
-## @var{range}.
+## @var{range}. Use the fourth return argument @var{LIMS} for info on the
+## cell ranges your date came from.
 ##
 ## When reading from merged cells, all array elements NOT corresponding 
 ## to the leftmost or upper Excel cell will be treated as if the
@@ -127,7 +131,7 @@
 ##
 ## @end deftypefn
 
-## Author: Philip Nienhuis
+## Author: Philip Nienhuis <prnienhuis at users.sf.net>
 ## Created: 2009-10-16
 ## Updates: 
 ## 2009-12-29 bug fixes
@@ -152,6 +156,7 @@
 ## 2013-09-30 Header adapted to native OCT interface f xlsx
 ## 2013-12-20 Style fixes
 ## 2013-12-27 In case of .csv fall back to csvread for lazy Matlab users
+## 2014-04-13 Updated copyright strings & texinfo header
 
 function [ numarr, txtarr, rawarr, lims ] = xlsread (fn, wsh, datrange, reqintf=[])
 

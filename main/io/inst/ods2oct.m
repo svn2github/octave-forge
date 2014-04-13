@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis
+## Copyright (C) 2009,2010,2011,2012,2013,2014 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -20,7 +20,8 @@
 ## @deftypefnx {Function File} [ @var{rawarr}, @var{ods}, @var{rstatus} ] = ods2oct (@var{ods}, @var{wsh}, @var{range}, @var{options})
 ##
 ## Read data contained within cell range @var{range} from worksheet @var{wsh}
-## in an OpenOffice_org Calc spreadsheet file pointed to in struct @var{ods}.
+## in an OpenOffice_org Calc or Gnumeric spreadsheet file pointed to
+## in struct @var{ods}.
 ##
 ## @var{ods} is supposed to have been created earlier by odsopen in the
 ## same octave session.
@@ -30,7 +31,7 @@
 ## Note that in case of a numerical @var{wsh} this number refers to the
 ## position in the worksheet stack, counted from the left in a Calc
 ## window. The default is numerical 1, i.e. the leftmost worksheet
-## in the ODS file.
+## in the ODS or gnumeric file.
 ##
 ## @var{range} is expected to be a regular spreadsheet range format,
 ## or "" (empty string, indicating all data in a worksheet).
@@ -74,14 +75,14 @@
 ## requested data have been read successfully, 0 otherwise.
 ##
 ## Erroneous data and empty cells turn up empty in @var{rawarr}.
-## Date/time values in OpenOffice.org are returned as numerical values
-## with base 1-1-0000 (same as octave). But beware that Excel spreadsheets
-## rewritten by OpenOffice.org into .ods format may have numerical date
-## cells with base 01-01-1900 (same as MS-Excel).
+## Date/time values in OpenOffice.org or Gnumeric are returned as numerical
+## values with base 1-1-0000 (same as octave). But beware that Excel
+## spreadsheets rewritten by OpenOffice.org into .ods format may have
+## numerical date cells with epoch (base) 01-01-1900 (same as MS-Excel).
 ##
 ## When reading from merged cells, all array elements NOT corresponding 
-## to the leftmost or upper OpenOffice.org cell will be treated as if the
-## "corresponding" cells are empty.
+## to the leftmost or upper OpenOffice.org Calc or Gnumeric cell will be
+## treated as if the "corresponding" cells are empty.
 ##
 ## Examples:
 ##
@@ -130,6 +131,7 @@
 ## 2013-10-02 Some adaptations for gnumeric
 ## 2013-12-01 Style fixes
 ## 2013-12-27 More style fixes
+## 2014-04-13 Copyright string updated
 ##
 ## Latest subfunc update: 2012-10-12
 

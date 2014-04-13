@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis
+## Copyright (C) 2009,2010,2011,2012,2013,2014 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -23,13 +23,14 @@
 ## in OpenOffice_org Calc spreadsheet file @var{filename}. Reading
 ## Gnumeric xml files is also supported.
 ##
-## A native Octave interface (OCT) is available for reading data.
-## For ODS the supported Java-based interfaces offer more flexibility
-## and better speed, plus write support. For these you need a Java JRE or JDK
+## A native Octave interface (OCT) is available, but presently still
+## experimental. For ODS only the supported Java-based interfaces offer
+## more flexibility and better speed. For those you need a Java JRE or JDK
 ## and one or both of jopendocument-<version>.jar or preferrably: (odfdom.jar
 ## (versions 0.7.5 or 0.8.6-0.8.8) & xercesImpl.jar v. 2.9.1) in your
 ## javaclasspath. There is also experimental support invoking
 ## OpenOffice.org/LibreOffice or clones through a Java/UNO bridge.
+## The OCT interface also offers .gnumeric read support.
 ##
 ## Return argument @var{numarr} contains the numeric data, optional
 ## return arguments @var{txtarr} and @var{rawarr} contain text strings
@@ -65,8 +66,8 @@
 ## the automatic selection by odsread of one interface out of the
 ## supported ones: Java/ODFtoolkit ('OTK'), Java/jOpenDocument 
 ## ('JOD'), Java/UNO bridge ('UNO'), or native Octave (OCT; only for
-## reading). Octave selects one of these, preferrably in the order above,
-## based on presence of support software and the file at hand.
+## reading). Octave selects one of these, preferrably in the order
+## above, based on presence of support software and the file at hand.
 ##
 ## Erroneous data and empty cells are set to NaN in @var{numarr} and
 ## turn up empty in @var{txtarr} and @var{rawarr}. Date/time values
@@ -138,6 +139,7 @@
 ## 2013-11-04 Better error message about unsupported file types
 ##     ''     Add .sxc to supported file types
 ## 2013-12-01 Updated texinfo header
+## 2014-04-13 Updated copyright strings and texinfo header
 
 function [ numarr, txtarr, rawarr, lim ] = odsread (filename, wsh=1, datrange=[], reqintf=[])
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2013,2014 Philip Nienhuis
+## Copyright (C) 2013 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@
 ##     ''     Process Boolean type
 ## 2013-11-15 Replace slow xml node parsing by regexp a la Markus Bergholz
 ## 2014-02-20 Add ValueFormat tag to regexp pattern
+## 2014-04-13 Fix regexp patterns
 
 function [ rawarr, xls, rstatus] = __OCT_gnm2oct__ (xls, wsh, cellrange='', spsh_opts)
 
@@ -95,16 +96,35 @@ function [ rawarr, xls, rstatus] = __OCT_gnm2oct__ (xls, wsh, cellrange='', spsh
     lastrow  = min (lastrow, firstrow + nr - 1);
     rightcol = min (rightcol, leftcol + nc - 1);
   endif
-
+keyboard
   ## Get cell nodes
   cells = getxmlnode (xml, "gnm:Cells");
 
-  ## Pattern gets all required tokens in one fell swoop
-  pattrn = '<gnm:Cell Row="(\d*?)" Col="(\d*?)" (?:ValueType="(\d*?)"|ExprID="(\d*?)")(?: ValueFormat="\w+")>(.*?)</gnm:Cell>';
+  ## Pattern gets most required tokens in one fell swoop
+  pattrn = '<gnm:Cell Row="(\d*?)" Col="(\d*?)"(?: (?:ValueType|ExprID)="(\d*?)")(?: ValueFormat="\w+")?>(.*?)</gnm:Cell>';
   allvals = cell2mat (regexp (cells, pattrn, "tokens"));
 
-  ## Reshape into 4 x ... cell array
-  allvals = reshape (allvals, 4,  numel (allvals) / 4);
+  if (! isempty (allvals))
+    ## Reshape into 4 x ... cell array
+    allvals = reshape (allvals, 4,  numel (allvals) / 4);
+  else
+    allvals= cell(4, 0);
+  endif
+
+  ## For those cells w/o ValueType | ExprId tags
+  pattrn = '<gnm:Cell Row="(\d*?)" Col="(\d*?)">(.*?)</gnm:Cell>';
+  smevals = cell2mat (regexp (cells, pattrn, "tokens"));
+  ## Reshape these into 3 X ... cell array, expand to 4 X ...
+  if (! isempty (smevals))
+    smevals = reshape (smevals, 3,  numel (smevals) / 3);
+    smevals(4, :) = smevals(3, :);
+    smevals(3, :) = 0;
+  else
+    smevals= cell(4, 0);
+  endif
+
+  ## Try to concatenate both
+  allvals = [ allvals smevals ];
 
   ## Convert 0-based rw/column indices to 1-based numeric
   allvals(1:2, :) = num2cell (str2double (allvals(1:2, :)) + 1);

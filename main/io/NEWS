@@ -1,24 +1,56 @@
 Summary of important user-visible changes for releases of the io package
 
 ===============================================================================
+io-2.2.0   Release Date: 2014-04-13 Release Manager: Philip Nienhuis
+===============================================================================
+
+*** New features:
+    - Experimental write support w/o Java or ActiveX, just native Octave, for
+       ODS 1.2 (LibreOffice native format) and OOXML (Excel 2007+ .xlsx)
+    - (write support for gnumeric pending)
+
+An updated overview of which interface can be used for what types of files
+(extensions):
+~ = dependent on Excel/LO/OOo version);  + = read/write;  R = only reading )
+                                 Interface
+File extension       COM POI POI/OOXML JXL OXS UNO OTK JOD OCT
+--------------------------------------------------------------
+.xls (Excel95)        R                 R       R 
+.xls (Excel97-2003)   +   +      +      +   +   +
+.xlsx                 ~          +         (+)  R           +
+.xlsb, .xlsm          ~                     ?   R
+.wk1                  +                         R
+.wks                  +                         R
+.dbf                  +                         +
+.ods                  ~                         +   +   +   +
+.sxc                                            +       +
+.fods                                           +
+.uos                                            +
+.dif                                            +
+.csv                  +                         R
+.gnumeric                                                   R
+--------------------------------------------------------------
+
+*** Docs (html) & texinfo help texts updated
+
+*** Bug fixes:
+    - (gnumeric reading): Properly handle ValueFormat tags
+                          Fix older formats w/o Value* tags
+    - Restored UNO interface option in ods2oct.m
+    - (xlswrite) when truncating an array (sheet capacity, too small a range),
+      convey truncated range rather than topleft cell
+    - PKG_ADD: Fix case-sensitivity when searching for Libre/OpenOffice loc.
+               Do not automatically load Java class libs on *nix
+    - OCT: delete tmp dirs after closing spreadsheet files
+    - POI: return complete cell range for a.o., xlsfinfo
+
+===============================================================================
 io-2.1.x   Release Date: TBA Release Manager: Philip Nienhuis
 ===============================================================================
 
 (unstable version)
+For changes see 2.2.0 (above)
 
-*** Bug fixes:
-    - __OCT_gnm2oct__.m (gnumeric reading): Properly handling tags
-    (2.1.1:)
-    - Restored UNO interface option in ods2oct.m
-    - (xlswrite) when truncating an array (sheet capacity, too small a range),
-      convey truncated range rather than topleft cell
-     (2.1.2:)
-    - PKG_ADD: fix case-sensitivity when searching Libre/OpenOffice
-
-*** New features:
-    - Write support w/o Java or ActiveX, just native Octave, for ODS 1.2
-      (LibreOffice native format) and OOXML (Excel 2007+ .xlsx)
-    - (write support for gnumeric pending)
 
 ===============================================================================
 io-2.0.2   Release Date: 2014-01-09 Release Manager: Philip Nienhuis

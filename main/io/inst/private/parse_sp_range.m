@@ -21,51 +21,54 @@
 ## Created: 2009-06-20
 ## Latest update 2010-01-13
 ## 2013-12-06 Updated copyright strings; style fixes
+## 2014-04-13 Invoke binary __char2num__ for col->colnr conversion
 
 function [topleft, nrows, ncols, toprow, lcol] = parse_sp_range (range_org)
 
-  range = deblank (upper (range_org));
+  crange = strrep (deblank (upper (range_org)), " ", "");
   range_error = 0; 
   nrows = 0; 
   ncols = 0;
 
   # Basic checks
-  if (index (range, ':') == 0)
-    if (isempty (range))
+  if (index (crange, ':') == 0)
+    if (isempty (crange))
       range_error = 0;
       leftcol = 'A';
       rightcol = 'A';
     else
       # Only upperleft cell given, just complete range to 1x1
       # (needed for some routines)
-      range = [range ":" range];
+      crange = [crange ":" crange];
     endif
   endif
 
   # Split up both sides of the range
-  [topleft, lowerright] = strtok (range, ':');
+  [topleft, lowerright] = strtok (crange, ':');
 
   # Get toprow and clean up left column
   [st, en] = regexp (topleft, '\d+');
   toprow = str2double (topleft(st:en));
-  leftcol = deblank (topleft(1:st-1));
-  [st, en1] = regexp (leftcol, '\s+');
-  if (isempty (en1)) 
-    en1 = 0 ; 
-  endif
-  [st, en2] = regexp (leftcol,'\D+');
-  leftcol = leftcol(en1+1:en2);
+  lcol = __char2num__ (topleft(1:st-1));
+%  leftcol = deblank (topleft(1:st-1));
+%  [st, en1] = regexp (leftcol, '\s+');
+%  if (isempty (en1)) 
+%    en1 = 0 ; 
+%  endif
+%  [st, en2] = regexp (leftcol,'\D+');
+%  leftcol = leftcol(en1+1:en2);
 
   # Get bottom row and clean up right column
   [st, en] = regexp (lowerright, '\d+');
   bottomrow = str2double (lowerright(st:en));
-  rightcol = deblank (lowerright(2:st-1));
-  [st, en1] = regexp (rightcol, '\s+');
-  if (isempty (en1)) 
-    en1 = 0; 
-  endif
-  [st, en2] = regexp (rightcol, '\D+');
-  rightcol = rightcol(en1+1:en2);
+  rcol = __char2num__ (lowerright (2:st-1));
+%  rightcol = deblank (lowerright(2:st-1));
+%  [st, en1] = regexp (rightcol, '\s+');
+%  if (isempty (en1)) 
+%    en1 = 0; 
+%  endif
+%  [st, en2] = regexp (rightcol, '\D+');
+%  rightcol = rightcol(en1+1:en2);
 
   # Check nr. of rows
   nrows = bottomrow - toprow + 1; 
@@ -74,19 +77,19 @@ function [topleft, nrows, ncols, toprow, lcol] = parse_sp_range (range_org)
   endif
 
   if (range_error == 0) 
-    # Get left column nr.
-    [st, en] = regexp (leftcol, '\D+');
-    lcol = (leftcol(st:st) - 'A' + 1);
-    while (++st <= en)
-      lcol = lcol * 26 + (leftcol(st:st) - 'A' + 1);
-    endwhile
-
-    # Get right column nr.
-    [st, en] = regexp (rightcol, '\D+');
-    rcol = (rightcol(st:st) - 'A' + 1);
-    while (++st <= en)
-      rcol = rcol * 26 + (rightcol(st:st) - 'A' + 1);
-    endwhile
+%    # Get left column nr.
+%    [st, en] = regexp (leftcol, '\D+');
+%    lcol = (leftcol(st:st) - 'A' + 1);
+%    while (++st <= en)
+%      lcol = lcol * 26 + (leftcol(st:st) - 'A' + 1);
+%    endwhile
+%
+%    # Get right column nr.
+%    [st, en] = regexp (rightcol, '\D+');
+%    rcol = (rightcol(st:st) - 'A' + 1);
+%    while (++st <= en)
+%      rcol = rcol * 26 + (rightcol(st:st) - 'A' + 1);
+%    endwhile
 
     # Check
     ncols = rcol - lcol + 1;
@@ -105,18 +108,18 @@ endfunction
 
 ## FIXME -- reinstate these tests one there if a way is found to test private
 ##          functions directly
-##%!test
-##%! [a b c d e] = parse_sp_range ('A1:B2');
-##%! assert ([a b c d e], ['A1', 2, 2, 1, 1]);
-
-##%!test
-##%! [a b c d e] = parse_sp_range ('A1:AB200');
-##%! assert ([a b c d e], ['A1', 200, 28, 1, 1]);
-
-##%!test
-##%! [a b c d e] = parse_sp_range ('cd230:iY65536');
-##%! assert ([a b c d e], ['CD230', 65307, 178, 230, 82]);
-
-##%!test
-##%! [a b c d e] = parse_sp_range ('BvV12798 : xFd1054786');
-##%! assert ([b c d e], [1041989, 14439, 12798, 1946]);
+#%!test
+#%! [a b c d e] = parse_sp_range ('A1:B2');
+#%! assert ([a b c d e], ['A1', 2, 2, 1, 1]);
+#%
+#%!test
+#%! [a b c d e] = parse_sp_range ('A1:AB200');
+#%! assert ([a b c d e], ['A1', 200, 28, 1, 1]);
+#%
+#%!test
+#%! [a b c d e] = parse_sp_range ('cd230:iY65536');
+#%! assert ([a b c d e], ['CD230', 65307, 178, 230, 82]);
+#%
+#%!test
+#%! [a b c d e] = parse_sp_range ('BvV12798 : xFd1054786');
+#%! assert ([b c d e], [1041989, 14439, 12798, 1946]);

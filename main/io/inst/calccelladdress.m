@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011 Philip Nienhuis <pr.nienhuis@users.sf.net>
+## Copyright (C) 2009,2010,2011,2012,2013,2014 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -31,6 +31,7 @@
 ## 2011-12-17 Bugfix for wrong column address if column equals multiple of 26
 ## 2011-12-18 Added tests for multiple-of-26 cases
 ## 2012-10-24 Style fixes
+## 2014-04-13 Use by __num2char__ for colstr->col conversion
 
 function [ celladdress ] = calccelladdress (row, column)
 
@@ -43,14 +44,14 @@ function [ celladdress ] = calccelladdress (row, column)
     error ('Specified row out of range (1..1048576)'); 
   endif
 
-	str = '';
-	while (column > 0.01)
-		rmd = floor ((column - 1) / 26);
-		str = [ char(column - rmd * 26 + 'A' - 1) str ];
-		column = rmd;
-	endwhile
+%	str = '';
+%	while (column > 0.01)
+%		rmd = floor ((column - 1) / 26);
+%		str = [ char(column - rmd * 26 + 'A' - 1) str ];
+%		column = rmd;
+%	endwhile
 
-	celladdress = sprintf ("%s%d", str, row);
+	celladdress = sprintf ("%s%d", __num2char__ (column), row);
 
 endfunction
 

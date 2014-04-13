@@ -1,4 +1,4 @@
-all: csvexplode.oct csv2cell.oct csvconcat.oct cell2csv.oct xmlread.oct
+all: csvexplode.oct csv2cell.oct csvconcat.oct cell2csv.oct xmlread.oct __num2char__.mex __char2num__.mex
 
 ## Compiling these function does produces warnings but seems there is no one
 ## to fix them so we do not enable Wall. Just for reference, here they are
@@ -38,8 +38,14 @@ xmlread.o: xmlread.cc xmltree_read.h xmltree.h
 xmlread.oct: xmlread.o xmltree_read.o xmltree.o
 	$(MKOCTFILE) $^
 
+__num2char__.mex: __num2char__.c
+	$(MKOCTFILE) --mex $^
+
+__char2num__.mex: __char2num__.c
+	$(MKOCTFILE) --mex $^
+  
 %.oct: %.cc
 	$(MKOCTFILE) $<
 
 clean:
-	rm -f *.o octave-core core *.oct *~
+	rm -f *.o octave-core core *.oct *.mex *~

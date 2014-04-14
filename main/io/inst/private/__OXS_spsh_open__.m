@@ -1,4 +1,4 @@
-## Copyright (C) 2012,2013 Philip Nienhuis
+## Copyright (C) 2012,2013,2014 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -23,12 +23,13 @@
 ## 2013-12-06 Updated copyright string; style fixes
 ## 2013-12-28 Fix creating new files
 ##      ''    Implemented OOXML support for OpenXLS v.10
-## 2012-12-29 Fixed file open support, no more lingering file locks 
+## 2012-12-29 Fixed file open support, no more lingering file locks
+## 2014-04-14 Updated texinfo header and adapted message (no OOXML support)
 
 function [ xls, xlssupport, lastintf ] = __OXS_spsh_open__ (xls, xwrite, filename, xlssupport, ftype)
 
     if (ftype != 1 && ftype != 2)
-      error ("OXS can only read from .xls (Excel'97-2003) or .xlsx (Excel 2007+) files")
+      error ("The OXS interface only supports .xls (Excel'97-2003) files")
     endif
     try
       if (xwrite > 2)

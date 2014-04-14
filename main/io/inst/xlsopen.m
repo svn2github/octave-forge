@@ -260,10 +260,6 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
     if (ftype == 5)
       error ("There's only read support for gnumeric files");
     endif
-%    ## Catch attempts to write xlsx if only OCT interface is supported
-%    if (xlsintf_cnt == 1 && xlsinterfaces.OCT)
-%      error ("Only the OCT interface is present | requested, but that has only read support");
-%    endif
     fmode = 'r+b';
     if (! has_suffix)
       ## Add .xls suffix to filename (all Excel versions can write this)

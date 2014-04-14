@@ -68,8 +68,8 @@
 ## The optional last argument @var{reqintf} can be used to override 
 ## the automatic interface selection by xlsread out of the supported
 ## ones: COM/Excel, Java/Apache POI, Java/JExcelAPI, Java/OpenXLS, 
-## Java/UNO (OpenOffice.org), or native Octave (only reading .xlsx)
-## (in that -built in- order of preference).
+## Java/UNO (OpenOffice.org), or native Octave (in that -built in-
+## order of preference).
 ## For reading from OOXML files a value of 'com', 'poi', 'uno', or 'oct'
 ## must be specified for @var{reqintf} (see help for xlsopen); for
 ## Excel'95 files use 'com', or if Excel is not installed use 'jxl',

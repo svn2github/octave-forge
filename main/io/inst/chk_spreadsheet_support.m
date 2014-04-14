@@ -98,18 +98,18 @@
 ## RETVAL will be set to the sum of values for found interfaces:
 ## @example
 ##     0 = OCT (Native Octave)
-##         (only read support for .xlsx, .ods and .gnumeric)
-##    ---------- XLS (Excel) interfaces: ----------
+##         (read/write support for .xlsx and .ods, read support for .gnumeric)
+##   ----------- XLS (Excel) interfaces: ----------
 ##     1 = COM (ActiveX / Excel) (any file format supported by MS-Excel)
 ##     2 = POI (Java / Apache POI) (Excel 97-2003 = BIFF8)
 ##     4 = POI+OOXML (Java / Apache POI) (Excel 2007-2010 = OOXML)
 ##     8 = JXL (Java / JExcelAPI) (Excel 95-read and Excel-97-2003-r/w)
 ##    16 = OXS (Java / OpenXLS) (Excel 97-2003)
-##    --- ODS (OpenOffice.org Calc) interfaces ----
+##   ---- ODS (OpenOffice.org Calc) interfaces ----
 ##    32 = OTK (Java/ ODF Toolkit) (ODS 1.2)
 ##    64 = JOD (Java / jOpenDocument) (.sxc (old OOo)-read, ODS 1.2)
-##    ----------------- XLS & ODS: ----------------
-##     0 = OOXML / ODS / gumeric read support (built-in)
+##   ------------------ XLS & ODS: ----------------
+##     0 = OOXML / ODS read/write-, gnumeric read support (built-in)
 ##   128 = UNO (Java/UNO bridge - OpenOffice.org) (any format supported by OOo)
 ## @end example
 ##
@@ -169,6 +169,7 @@
 ##     ''     Return checked interfaces; update texinfo header
 ## 2014-01-17 Tame messages about COM/ActiveX if dbug = 0
 ## 2014-04-06 Skip unojarpath search for UNO entries 4 and up; code style fixes
+## 2014-04-14 Updated texinfo header & OCT r/w support messages
 
 function  [ retval, sinterfaces, loaded_jars ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo)
 
@@ -244,10 +245,10 @@ function  [ retval, sinterfaces, loaded_jars ]  = chk_spreadsheet_support (path_
       if (! isempty (winpkgind))
         winpkg = pkglist{winpkgind};
         if (winpkg.loaded && dbug)
-          printf ("MS-Excel couldn't be started (maybe because of 64-bit MS-Office?)\n");
+          printf ("MS-Excel couldn't be started although OF windows is loaded...\n");
         endif
       elseif (dbug)
-        printf ("(windows package is required for COM/ActiveX support)\n");
+        printf ("(OF windows package is required for COM/ActiveX support)\n");
       endif
       printf ("\n");
     end_try_catch
@@ -271,7 +272,7 @@ function  [ retval, sinterfaces, loaded_jars ]  = chk_spreadsheet_support (path_
     if (jtst)
       printf ("Apparently no Java JRE installed.\n");
       if (! retval)
-        printf ("Only read support for ODS 1.2 (.ods), OOXML (.xlsx) and .gnumeric present\n");
+        printf ("Only ODS 1.2 (.ods) & OOXML (.xlsx) r/w support & .gnumeric read support present\n");
       endif
       return;
     else
@@ -304,14 +305,14 @@ function  [ retval, sinterfaces, loaded_jars ]  = chk_spreadsheet_support (path_
         if (! octave_config_info.features.JAVA)
           if (dbug)
             printf ("none.\n");
-            printf ("     (Octave was built without core Java support)\n");
+            printf ("     (Octave was built without Java support)\n");
           endif
         endif
       elseif (isfield (octave_config_info, "UGLY_DEFS"))
         if (isempty (regexp (octave_config_info.UGLY_DEFS, "HAVE_JAVE=1", "match")))
           if (dbug)
             printf ("none.\n");
-            printf ("     (Octave was built without enabled core Java support)\n");
+            printf ("     (Octave was built without Java support)\n");
           endif
         endif
       endif
@@ -351,7 +352,7 @@ function  [ retval, sinterfaces, loaded_jars ]  = chk_spreadsheet_support (path_
     if (dbug)
       printf ("No Java support found.\n");
       if (! retval)
-        printf ("Only read support for ODS 1.2 (.ods), OOXML (.xlsx) and .gnumeric\n");
+        printf ("Only ODS 1.2 (.ods) & OOXML (.xlsx) r/w support & .gnumeric read support present\n");
       endif
     endif
     return
@@ -532,7 +533,7 @@ function  [ retval, sinterfaces, loaded_jars ]  = chk_spreadsheet_support (path_
       return;
     endif
     if (dbug && ! isempty (strfind (path_to_ooo, '\')))
-      printf ("\n(Hmmm... forward slashes are preferred over backward slashes in path)\n");
+      printf ("\n(forward slashes are preferred over backward slashes in path)\n");
     endif
     ## Add missing jars to javaclasspath. First combine all entries
     targt = sum (missing0);

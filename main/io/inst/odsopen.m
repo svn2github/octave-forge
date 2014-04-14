@@ -24,9 +24,9 @@
 ## Calling odsopen without specifying a return argument is fairly useless!
 ##
 ## Octave links to external software for read/write support of spreadsheets;
-## these links are "interfaces". For just reading ODS 1.2 and Gnumeric XML
-## no external SW is required, yet this "interface" is called 'OCT'.
-## To make this function work at all for write support, you need a Java JRE
+## these links are "interfaces". For I/O from/to ODS 1.2 and reading Gnumeric
+## XML, in principle no external SW is required, this "interface" is called
+## 'OCT'. For more flexibility and better performance, you need a Java JRE
 ## or JDK plus one or more of (ODFtoolkit (version 0.7.5 or 0.8.6 - 0.8.8) &
 ## xercesImpl v.2.9.1), jOpenDocument, or OpenOffice.org (or clones) installed
 ## on your computer + proper javaclasspath set. These interfaces are referred
@@ -136,6 +136,7 @@
 ## 2014-01-01 Add warning that UNO will write ODS f. unsupported file extensions
 ##     ''     Copyright string update
 ## 2014-01-23 OCT ods write support for .ods
+## 2014-04-14 Update texinfo header
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
@@ -213,7 +214,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
     ## .ods write support is supported
     if (odsintf_cnt == 1 && odsinterfaces.OCT && ! strcmpi (ext, ".ods"))
       ## Check if OCT is only interface and writing is requested
-      error ("OCT interface doesn't support writing files");
+      error ("OCT interface doesn't support writing gnumeric files (yet)");
     endif
     rw = 1;
   endif

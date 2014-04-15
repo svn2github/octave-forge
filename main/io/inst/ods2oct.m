@@ -46,7 +46,7 @@
 ## @item "formulas_as_text"
 ## If set to TRUE or 1, spreadsheet formulas (if at all present)
 ## are read as formula strings rather than the evaluated formula
-## result values. This only works for the OTK and UNO interfaces.
+## result values. This only works for the OTK, UNO and OCT interfaces.
 ## The default value is 0 (FALSE).
 ##
 ## @item 'strip_array'
@@ -132,6 +132,7 @@
 ## 2013-12-01 Style fixes
 ## 2013-12-27 More style fixes
 ## 2014-04-13 Copyright string updated
+## 2014-04-15 More updates to texinfo header
 ##
 ## Latest subfunc update: 2012-10-12
 

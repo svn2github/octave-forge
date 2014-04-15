@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis <pr.nienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012,2013,2014 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -48,9 +48,11 @@
 ## info and/or different treatment of empty but formatted cells, each
 ## interfaces may give different results).
 ##
-## For use on OOXML spreadsheets one needs full POI and/or UNO support (see
-## xlsopen) and 'poi' or 'uno' needs to be specified for @var{reqintf}. For
-## Excel 95 file use 'jxl' or 'uno'.
+## For OOXML spreadsheets no external SW is required but full POI and/or
+## UNO support (see xlsopen) may work better or faster; to use those specify
+## 'poi' or 'uno' for @var{reqintf}. For Excel 95 files use 'com' (windows
+## only), 'jxl' or 'uno'. Gnumeric files can be explored with the built-in
+## OCT interface (no need to specify @var{reqintf} then).
 ##
 ## Examples:
 ##
@@ -69,7 +71,7 @@
 ##
 ## @end deftypefn
 
-## Author: Philip Nienhuis <prnienhuis@users.sourceforge.net>
+## Author: Philip Nienhuis <prnienhuis at users.sourceforge.net>
 ## Created: 2009-10-27
 ## Updates:
 ## 2009-01-01 Echo sheet names to screen, request interface type)
@@ -91,6 +93,8 @@
 ## 2013-10-01 OCT interface added for gnumeric
 ## 2013-12-01 Style fixes & support for more file types than just Excel
 ## 2013-12-29 Style fixes
+## 2014-04-15 Updates to texinfo header
+
 
 function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 

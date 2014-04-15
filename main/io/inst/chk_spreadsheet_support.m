@@ -91,10 +91,10 @@
 ## @end table
 ##
 ## Output:
-## @var{retval} = 0: only spreadsheet read support for OOXML,
-## ODS 1.2 and gnumeric present through OCT interface, or
+## @var{retval} = 0: only spreadsheet support for OOXML & ODS 1.2
+## and read support for gnumeric present through OCT interface, or
 ## @var{retval} <> 0: At least one read/write spreadsheet I/O
-## interface found.
+## interface found based on external software.
 ## RETVAL will be set to the sum of values for found interfaces:
 ## @example
 ##     0 = OCT (Native Octave)
@@ -170,6 +170,7 @@
 ## 2014-01-17 Tame messages about COM/ActiveX if dbug = 0
 ## 2014-04-06 Skip unojarpath search for UNO entries 4 and up; code style fixes
 ## 2014-04-14 Updated texinfo header & OCT r/w support messages
+## 2014-04-15 More updates to texinfo header
 
 function  [ retval, sinterfaces, loaded_jars ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo)
 

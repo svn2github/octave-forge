@@ -35,25 +35,25 @@
 ## The relevant Java class libs for spreadsheet I/O had best be added to the
 ## javaclasspath by utility function chk_spreadsheet_support().
 ##
-## @var{filename} must be a valid .ods OpenOffice.org file name including
-## .ods suffix. If @var{filename} does not contain any directory path,
-## the file is saved in the current directory.
-## For UNO bridge, filenames need to be in the form "file:///<path_to_file>/filename";
+## @var{filename} must be a valid .ods OpenOffice.org Calc, or Gnumeric, file
+## name including .ods or .gnumeric suffix. If @var{filename} does not contain
+## any directory path, the file is saved in the current directory. For UNO
+## bridge, filenames need to be in the form "file:///<path_to_file>/filename";
 ## a URL will also work. If a plain file name is given (absolute or relative),
-## odsopen() will transform it into proper form.
+## odsopen() will try to transform it into proper form.
 ##
 ## @var{readwrite} must be set to true or numerical 1 if writing to spreadsheet
 ## is desired immediately after calling odsopen(). It merely serves proper
 ## handling of file errors (e.g., "file not found" or "new file created").
 ##
 ## Optional input argument @var{reqintf} can be used to override the ODS
-## interface automatically selected by odsopen. Currently implemented interfaces
-## are 'OTK' (Java/ODF Toolkit), 'JOD' (Java/jOpenDocument), 'UNO'
-## (Java/OpenOffice.org UNO bridge), and 'OCT' (native Octave, only reading).
-## In most situations this parameter is unneeded as odsopen automatically
-## selects the most useful interface present ("default interface").
-## Depending on file type, odsopen.m can invoke other detected interfaces than
-## the default one.
+## interface automatically selected by odsopen. Currently implemented
+## interfaces are 'OTK' (Java/ODF Toolkit), 'JOD' (Java/jOpenDocument), 'UNO'
+## (Java/OpenOffice.org UNO bridge), and 'OCT' (native Octave, for Gnumeric
+## only reading). In most situations this parameter is unneeded as odsopen
+## automatically selects the most useful interface present ("default
+## interface"). Depending on file type, odsopen.m can invoke other detected
+## interfaces than the default one.
 ##
 ## Beware:
 ## The UNO interface is still experimental. While in itself reliable, it may
@@ -137,6 +137,7 @@
 ##     ''     Copyright string update
 ## 2014-01-23 OCT ods write support for .ods
 ## 2014-04-14 Update texinfo header
+## 2014-04-15 More updates to texinfo header
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 

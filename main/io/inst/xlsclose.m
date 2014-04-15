@@ -37,10 +37,10 @@
 ## an other file than opened with xlsopen(); unfortunately this doesn't work
 ## with JXL (JExcelAPI) interface.
 ##
-## You need MS-Excel (95 - 2010), and/or the Java package => 1.2.8 plus Apache
-## POI > 3.5 and/or JExcelAPI and/or OpenXLS and/or OpenOffice.org or clones
-## installed on your computer + proper javaclasspath set, to make this
-## function work at all.
+## For other file formats than OOXML and ODS, you need MS-Excel (95 - 2010),
+## and/or the Java package => 1.2.8 plus Apache POI > 3.5 and/or JExcelAPI
+## and/or OpenXLS and/or OpenOffice.org or clones installed on your computer
+## + proper javaclasspath set, to make this function work at all.
 ##
 ## @var{xls} must be a valid pointer struct made by xlsopen() in the same
 ## octave session.

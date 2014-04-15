@@ -42,8 +42,8 @@
 ## the filename extension (.ods).
 ##
 ## @var{wsh} is either numerical or text, in the latter case it is 
-## case-sensitive and it should conform to OpenOffice.org Calc sheet
-## name requirements.
+## case-sensitive and it should conform to OpenOffice.org Calc or
+## Gnumeric sheet name requirements.
 ## Note that in case of a numerical @var{wsh} this number refers to the
 ## position in the worksheet stack, counted from the left in a Calc
 ## window. The default is numerical 1, i.e. the leftmost worksheet
@@ -65,9 +65,9 @@
 ## The optional last argument @var{reqintf} can be used to override 
 ## the automatic selection by odsread of one interface out of the
 ## supported ones: Java/ODFtoolkit ('OTK'), Java/jOpenDocument 
-## ('JOD'), Java/UNO bridge ('UNO'), or native Octave (OCT; only for
-## reading). Octave selects one of these, preferrably in the order
-## above, based on presence of support software and the file at hand.
+## ('JOD'), Java/UNO bridge ('UNO'), or native Octave (OCT). Octave
+## selects one of these, preferrably in the order above, based on
+## presence of support software and the file at hand.
 ##
 ## Erroneous data and empty cells are set to NaN in @var{numarr} and
 ## turn up empty in @var{txtarr} and @var{rawarr}. Date/time values
@@ -78,7 +78,8 @@
 ## .ods format by OpenOffice.org Calc may have different date base
 ## values.
 ## As there's no gnumeric formula evaluator and gnumeric doesn't store
-## cached formula results, formulas are returned as text strings.
+## cached formula results, formulas are returned as text strings when
+## reading from Gnumeric files.
 ##
 ## @var{numarr} and @var{txtarr} are trimmed from empty outer rows
 ## and columns, so any returned array may turn out to be smaller than
@@ -140,6 +141,7 @@
 ##     ''     Add .sxc to supported file types
 ## 2013-12-01 Updated texinfo header
 ## 2014-04-13 Updated copyright strings and texinfo header
+## 2014-04-15 More updates to texinfo header
 
 function [ numarr, txtarr, rawarr, lim ] = odsread (filename, wsh=1, datrange=[], reqintf=[])
 

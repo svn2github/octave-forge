@@ -70,8 +70,8 @@
 ## ones: COM/Excel, Java/Apache POI, Java/JExcelAPI, Java/OpenXLS, 
 ## Java/UNO (OpenOffice.org), or native Octave (in that -built in-
 ## order of preference).
-## For reading from OOXML files a value of 'com', 'poi', 'uno', or 'oct'
-## must be specified for @var{reqintf} (see help for xlsopen); for
+## For I/O to/from OOXML files a value of 'com', 'poi', 'uno', or 'oct'
+## must be specified for @var{reqintf} (see help for xlsopen). For
 ## Excel'95 files use 'com', or if Excel is not installed use 'jxl',
 ## 'basic' or 'uno'. POI can't read Excel'95 but will try to fall back
 ## to JXL. As @var{reqintf} can also be a cell array of strings, one
@@ -157,6 +157,7 @@
 ## 2013-12-20 Style fixes
 ## 2013-12-27 In case of .csv fall back to csvread for lazy Matlab users
 ## 2014-04-13 Updated copyright strings & texinfo header
+## 2014-04-15 More updates to texinfo header
 
 function [ numarr, txtarr, rawarr, lims ] = xlsread (fn, wsh, datrange, reqintf=[])
 

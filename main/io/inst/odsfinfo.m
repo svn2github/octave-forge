@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis
+## Copyright (C) 2009,2010,2011,2012,2013,2014 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -16,16 +16,16 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} [@var{filetype}] = odsfinfo (@var{filename} [, @var{reqintf}])
 ## @deftypefnx {Function File} [@var{filetype}, @var{sh_names}] = odsfinfo (@var{filename} [, @var{reqintf}])
-## Query an OpenOffice_org spreadsheet file @var{filename} (with ods
-## suffix) for some info about its contents.
+## Query an OpenOffice_org or Gnumeric spreadsheet file @var{filename}
+## (with ods or gnumeric suffix) for some info about its contents.
 ##
-## If @var{filename} is a recognizable OpenOffice.org spreadsheet file,
-## @var{filetype} returns the string "OpenOffice.org Calc spreadsheet",
-## or @'' (empty string) otherwise.
+## If @var{filename} is a recognizable OpenOffice.org or Gnumeric spreadsheet
+## file, @var{filetype} returns the string "OpenOffice.org Calc spreadsheet"
+## (or "Gnumeric spreadsheet"), or @'' (empty string) otherwise.
 ## 
-## If @var{filename} is a recognizable OpenOffice.org Calc spreadsheet
-## file, optional argument @var{sh_names} contains a list (cell array)
-## of sheet names contained in @var{filename}, in the order (from left
+## If @var{filename} is a recognizable OpenOffice.org Calc or Gnumeric
+## spreadsheet file, optional argument @var{sh_names} contains a list (cell
+## array) of sheet names contained in @var{filename}, in the order (from left
 ## to right) in which they occur in the sheet stack.
 ##
 ## If you omit return arguments @var{filetype} and @var{sh_names} altogether,
@@ -38,7 +38,7 @@
 ## used data ranges.
 ##
 ## By specifying a value of 'jod', 'otk', 'uno' or 'oct' for @var{reqintf} the
-## automatic selection of the java interface is bypassed and the specified
+## automatic selection of the Java interface is bypassed and the specified
 ## interface will be used (if at all present).
 ##
 ## Examples:

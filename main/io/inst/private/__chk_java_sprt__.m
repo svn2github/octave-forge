@@ -23,6 +23,7 @@
 ##     ''     dbug info argument added (for chk_spreadsheet_support)
 ##     ''     java_invoke -> javaMethod
 ## 2014-01-08 Tiny style fix
+## 2014-04-26 Cleaned up message
 
 function [ tmp1, jcp ] = __chk_java_sprt__ (dbug=0)
 
@@ -40,7 +41,7 @@ function [ tmp1, jcp ] = __chk_java_sprt__ (dbug=0)
     endif
     ## If we get here, at least Java works. 
     if (dbug > 1)
-      printf ("Java seems to work OK.\n");
+      printf ("  Java seems to work OK.\n");
     endif
     ## Now check for proper version (>= 1.6)
     jver = ...

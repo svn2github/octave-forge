@@ -49,6 +49,7 @@
 ##     ''     Add isfinite() check before attempt to process fixed strings
 ## 2013-12-19 (MB) Replace call to __col_str_to_number with __OCT_cc__
 ## 2014-03-18 (PRN) Fix regexp for reading strings from sharedStrings.xml
+## 2014-04-26 Replace __OCT_cc__ by binary __char2num__
 
 function [ raw, xls, rstatus ] = __OCT_xlsx2oct__ (xls, wsh, crange='', spsh_opts)
 
@@ -275,7 +276,7 @@ function [ raw, xls, rstatus ] = __OCT_xlsx2oct__ (xls, wsh, crange='', spsh_opt
     if (0 < numel (idx.all))
       idx.num = str2double (cell2mat (regexp (idx.all, '(\d+|\d+\d+|\d+\d+\d+|\d+\d+\d+\d+|\d+\d+\d+\d+\+d|\d+\d+\d+\d+\d+\d+)?', "match"))')';
       idx.alph = cell2mat (regexp (idx.all, '([A-Za-z]+|[A-Za-z]+[A-Za-z]+|[A-Za-z]+[A-Za-z]+[A-Za-z]+)?', "match"));
-      idx.alph = double (cell2mat (cellfun (@__OCT_cc__, vi.alph, "UniformOutput", 0)));
+      idx.alph = double (cell2mat (cellfun (@__char2num__, vi.alph, "UniformOutput", 0)));
     else
       ## To prevent warnings or errors while calculating corresponding NaN matrix
       idx.num = [];
@@ -283,7 +284,7 @@ function [ raw, xls, rstatus ] = __OCT_xlsx2oct__ (xls, wsh, crange='', spsh_opt
     end
     ## Transform column character to column number
     ## A -> 1; C -> 3, AB -> 28 ...
-    vi.col = double (cell2mat (cellfun (@__OCT_cc__, vi.alph, "UniformOutput", 0)));
+    vi.col = double (cell2mat (cellfun (@__char2num__, vi.alph, "UniformOutput", 0)));
 
     ## Find data rectangle limits
     idx.mincol = min ([idx.alph vi.col]);

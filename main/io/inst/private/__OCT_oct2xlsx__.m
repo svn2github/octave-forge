@@ -68,6 +68,7 @@
 ## 2013/11/16		- relationshiptypes validation fix
 ## Version 0.1
 ## 2013/11/08		- Initial Release
+## 2014-04-26   - Replace __OCT_cc__ by binary __num2char__
 
 function [xls, rstatus] = __OCT_oct2xlsx__ (arrdat, xls, wsh=1, crange="", spsh_opts, obj_dims)
 
@@ -388,7 +389,7 @@ function [ xls, rstatus ] = __OCT_oct2xlsx_sh__ (xls, wsh_number, arrdat, lims, 
       for c = 1:columns (arrdat)
         if (0 == isnan (arrdat{r, c}))
           fprintf (fid, sprintf ('<c r="%s%d"><v>%f</v></c>', ... 
-                   __OCT_cc__ (c+lims(1, 1)-1), r+lims(2, 1)-1, arrdat{r, c}));
+                   __num2char__ (c+lims(1, 1)-1), r+lims(2, 1)-1, arrdat{r, c}));
         endif
       endfor
       fprintf (fid, '</row>');

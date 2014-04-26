@@ -11,6 +11,7 @@ Bug fix release:
       interfaces (bug #42192)
     - Invoke __char2num__/__num2char__ rather than __OCT_cc__ for spreadsheet
       cell address translation in OCT interface funcs as well
+    - Fix wrong file handle refs. when updating app.xml in OOXML files
 
 ===============================================================================
 io-2.2.0   Release Date: 2014-04-13 Release Manager: Philip Nienhuis

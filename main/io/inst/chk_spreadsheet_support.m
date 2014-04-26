@@ -222,13 +222,13 @@ function  [ retval, sinterfaces, loaded_jars ]  = chk_spreadsheet_support (path_
   ## Order  = vital
 
   ## Just mention OCT interface
-  if(dbug)
+  if (dbug > 1)
     printf ("(OCT interface... OK, included in io package)\n\n");
   endif
 
   ## Check if MS-Excel COM ActiveX server runs. Only needed on Windows systems
   if (ispc)
-    if (dbug)
+    if (dbug >= 1)
       printf ("Checking Excel/ActiveX/COM... ");
     endif
     try
@@ -238,14 +238,14 @@ function  [ retval, sinterfaces, loaded_jars ]  = chk_spreadsheet_support (path_
       ## Close Excel to avoid zombie Excel invocation
       app.Quit();
       delete(app);
-      if (dbug)
+      if (dbug >= 1)
         printf ("OK.\n\n");
       endif
       retval = retval + 1;
       sinterfaces = [ sinterfaces, "COM" ];
     catch
       ## COM not supported
-      if (dbug)
+      if (dbug >= 1)
         printf ("not working.\n");
       endif
       ## Check if Windows package is installed and loaded
@@ -256,7 +256,7 @@ function  [ retval, sinterfaces, loaded_jars ]  = chk_spreadsheet_support (path_
         if (winpkg.loaded && dbug)
           printf ("MS-Excel couldn't be started although OF windows is loaded...\n");
         endif
-      elseif (dbug)
+      elseif (dbug >= 1)
         printf ("(OF windows package is required for COM/ActiveX support)\n");
       endif
       printf ("\n");
@@ -269,7 +269,7 @@ function  [ retval, sinterfaces, loaded_jars ]  = chk_spreadsheet_support (path_
   endif
   if (! octave_config_info.features.JAVA)
     ## Nothing to do here anymore
-    if (abs (dbug) >=1)
+    if (abs (dbug) > 1)
       printf ("none.\nThis Octave has no built-in Java support. Skipping Java checks\n");
       if (! retval)
         printf ("Only ODS 1.2 (.ods) & OOXML (.xlsx) r/w support & .gnumeric read support present\n");

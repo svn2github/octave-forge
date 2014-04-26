@@ -36,6 +36,7 @@
 ## 2013-12-20 Updated texinfo header & copyright strings
 ##     ''     Added OCT interface tests conditional of writing interfaces
 ## 2013-12-31 Extended texinfo help text
+## 2014-04-25 Write support for OCT
 
 function [] = test_spsh (numb = [])
 
@@ -100,11 +101,8 @@ function [] = test_spsh (numb = [])
     ## Allow the OS some time for cleaning up
     sleep (0.25);
   endfor
-  ## Test OCT interface if possible. Intf2 = last used in above for loop
-  if (! isempty (intf2))
-    printf ("\nInterface \"OCT\"....\n");
-    io_xls_testscript ("OCT", 'io-test.xlsx', intf2);
-   endif
+  ## Test OCT interface if possible
+  io_xls_testscript ("OCT", 'io-test.xlsx');
 
   ## Next, all (OOo/LO) ods interfaces
   intf2 = '';
@@ -129,11 +127,8 @@ function [] = test_spsh (numb = [])
     ## Allow the OS some time for cleaning up
     sleep (0.25);
   endfor
-  ## Test OCT interface if possible. Intf2 = last used in above for loop
-  if (! isempty (intf2))
-    printf ("\nInterface \"OCT\"....\n");
-    io_ods_testscript ("OCT", 'io-test.ods', intf2);
-   endif
+  ## Test OCT interface if possible
+  io_ods_testscript ("OCT", 'io-test.ods');
 
   printf ("End of test_spsh\n");
 

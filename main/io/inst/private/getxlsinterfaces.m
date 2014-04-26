@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis
+## Copyright (C) 2009,2010,2011,2012,2013,2014 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -75,14 +75,20 @@
 ## 2013-12-27 Slight updates to texinfo header
 ## 2013-12-28 Added check for OpenXLS version 10
 ## 2013-12-29 Added gwt-servlet-deps.jar to OpenXLS dependencies
+## 2014-04-24 Skip all Java checks if Octave was built w/o Java support
 
 function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 
   ## tmp1 = [] (not initialized), 0 (No Java detected), or 1 (Working Java found)
   persistent tmp1 = []; 
   persistent tmp2 = []; 
+  persistent has_java = [];                           ## Built-in Java support
   persistent jcp;                                     ## Java class path
   persistent uno_1st_time = 0;
+
+  if (isempty (has_java))
+    has_java = octave_config_info.features.JAVA;
+  endif
 
   if  (isempty (xlsinterfaces.COM) && isempty (xlsinterfaces.POI) ...
     && isempty (xlsinterfaces.JXL) && isempty (xlsinterfaces.OXS) ...
@@ -93,11 +99,11 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
   elseif (isempty (xlsinterfaces.COM) || isempty (xlsinterfaces.POI) ... 
        || isempty (xlsinterfaces.JXL) || isempty (xlsinterfaces.OXS) ...
        || isempty (xlsinterfaces.UNO))
-    ## Can't be first call. Here one of the Java interfaces is requested
+    ## Can't be first call. Here one of the Java interfaces may be requested
     if (! tmp1)
       ## Check Java support again
       tmp1 = [];
-    else
+    elseif (has_java)
       ## Renew jcp (javaclasspath) as it may have been updated since last call
       jcp = javaclasspath ("-all");                   ## For java pkg >= 1.2.8
       if (isempty (jcp))
@@ -138,112 +144,124 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
     end_try_catch
   endif
 
-  if (isempty (tmp1))
-  ## Check Java support
-    [tmp1, jcp] = __chk_java_sprt__ ();
-    if (! tmp1)
-      ## No Java support found
-      tmp1 = 0;
-      if (isempty (xlsinterfaces.POI) || isempty (xlsinterfaces.JXL)...
-        || isempty (xlsinterfaces.OXS) || isempty (xlsinterfaces.UNO))
-        ## Some or all Java-based interface(s) explicitly requested but no Java support
-        warning ...
-          (" No Java support found (no Java JRE? no Java pkg installed AND loaded?)");
+  if (has_java)
+    if (isempty (tmp1))
+    ## Check Java support
+      [tmp1, jcp] = __chk_java_sprt__ ();
+      if (! tmp1)
+        ## No Java support found
+        tmp1 = 0;
+        if (isempty (xlsinterfaces.POI) || isempty (xlsinterfaces.JXL)...
+          || isempty (xlsinterfaces.OXS) || isempty (xlsinterfaces.UNO))
+          ## Some or all Java-based interface(s) explicitly requested but no Java support
+          warning ...
+            (" No Java support found (no Java JRE? no Java pkg installed AND loaded?)");
+        endif
+        ## Set Java-based interfaces to 0 anyway as there's no Java support
+        xlsinterfaces.POI = 0;
+        xlsinterfaces.JXL = 0;
+        xlsinterfaces.OXS = 0;
+        xlsinterfaces.UNO = 0;
+        printf ("\n");
+        ## No more need to try any Java interface
+        return
       endif
-      ## Set Java interfaces to 0 anyway as there's no Java support
+    endif
+
+    ## Try Java & Apache POI
+    if (isempty (xlsinterfaces.POI))
       xlsinterfaces.POI = 0;
+      ## Check basic .xls (BIFF8) support
+      entries = {{"apache-poi.", "poi-3"}, {"apache-poi-ooxml.", "poi-ooxml-3"}};
+      ## Only under *nix we might use brute force: e.g., strfind (classname, classpath);
+      ## under Windows we need the following more subtle, platform-independent approach:
+      if (chk_jar_entries (jcp, entries) >= numel (entries))
+        xlsinterfaces.POI = 1;
+        printf ("POI");
+      endif
+      ## Check OOXML support
+      entries = {{"xbean", "xmlbean"}, {"apache-poi-ooxml-schemas", ...
+                  "poi-ooxml-schemas"}, "dom4j"};
+      if (chk_jar_entries (jcp, entries) >= numel (entries))
+        printf (" (& OOXML)");
+      endif
+      if (xlsinterfaces.POI)
+        if (deflt)
+          printf ("; ");
+        else
+          printf ("*; ");
+          deflt = 1; 
+        endif
+      endif
+    endif
+
+    ## Try Java & JExcelAPI
+    if (isempty (xlsinterfaces.JXL))
       xlsinterfaces.JXL = 0;
-      xlsinterfaces.OXS = 0;
-      xlsinterfaces.UNO = 0;
-      printf ("\n");
-      ## No more need to try any Java interface
-      return
-    endif
-  endif
-
-  ## Try Java & Apache POI
-  if (isempty (xlsinterfaces.POI))
-    xlsinterfaces.POI = 0;
-    ## Check basic .xls (BIFF8) support
-    entries = {{"apache-poi.", "poi-3"}, {"apache-poi-ooxml.", "poi-ooxml-3"}};
-    ## Only under *nix we might use brute force: e.g., strfind (classname, classpath);
-    ## under Windows we need the following more subtle, platform-independent approach:
-    if (chk_jar_entries (jcp, entries) >= numel (entries))
-      xlsinterfaces.POI = 1;
-      printf ("POI");
-    endif
-    ## Check OOXML support
-    entries = {{"xbean", "xmlbean"}, {"apache-poi-ooxml-schemas", "poi-ooxml-schemas"}, "dom4j"};
-    if (chk_jar_entries (jcp, entries) >= numel (entries))
-      printf (" (& OOXML)");
-    endif
-    if (xlsinterfaces.POI)
-      if (deflt)
-        printf ("; ");
-      else
-        printf ("*; ");
-        deflt = 1; 
-      endif
-    endif
-  endif
-
-  ## Try Java & JExcelAPI
-  if (isempty (xlsinterfaces.JXL))
-    xlsinterfaces.JXL = 0;
-    entries = {"jxl"};
-    if (chk_jar_entries (jcp, entries) >= numel (entries))
-      xlsinterfaces.JXL = 1;
-      printf ("JXL");
-      if (deflt)
-        printf ("; "); 
-      else
-        printf ("*; "); 
-        deflt = 1; 
-      endif
-    endif
-  endif
-
-  ## Try Java & OpenXLS
-  if (isempty (xlsinterfaces.OXS))
-    xlsinterfaces.OXS = 0;
-    entries = {"openxls", "gwt-servlet-deps"};
-    if (chk_jar_entries (jcp, entries) >= numel (entries))
-      ## OK, jar in the javaclasspath. Check version (should be >= 10
-      try
-        ## ...a method that is first introduced in OpenXLS v.10
-        javaMethod ("getVersion", "com.extentech.ExtenXLS.GetInfo");
-        ## If we get here, we do have v. 10
-        xlsinterfaces.OXS = 1;
-        printf ("OXS");
+      entries = {"jxl"};
+      if (chk_jar_entries (jcp, entries) >= numel (entries))
+        xlsinterfaces.JXL = 1;
+        printf ("JXL");
         if (deflt)
           printf ("; "); 
-        else 
+        else
           printf ("*; "); 
           deflt = 1; 
         endif
-      catch
-        ## Wrong OpenXLS.jar version (probably <= 6.08). V. 10 is required now
-        warning ("OpenXLS.jar version is outdated; please upgrade to v.10");
-      end_try_catch
-    endif
-  endif
-
-  ## Try Java & UNO
-  if (isempty (xlsinterfaces.UNO))
-    xlsinterfaces.UNO = 0;
-    ## entries0(1) = not a jar but a directory (<00o_install_dir/program/>)
-    entries = {"program", "unoil", "jurt", "juh", "unoloader", "ridl"};
-    if (chk_jar_entries (jcp, entries) >= numel (entries))
-      xlsinterfaces.UNO = 1;
-      printf ("UNO");
-      if (deflt);
-        printf ("; "); 
-      else
-        printf ("*; ");
-        deflt = 1; 
-        uno_1st_time = min (++uno_1st_time, 2);
       endif
     endif
+
+    ## Try Java & OpenXLS
+    if (isempty (xlsinterfaces.OXS))
+      xlsinterfaces.OXS = 0;
+      entries = {"openxls", "gwt-servlet-deps"};
+      if (chk_jar_entries (jcp, entries) >= numel (entries))
+        ## OK, jar in the javaclasspath. Check version (should be >= 10
+        try
+          ## ...a method that is first introduced in OpenXLS v.10
+          javaMethod ("getVersion", "com.extentech.ExtenXLS.GetInfo");
+          ## If we get here, we do have v. 10
+          xlsinterfaces.OXS = 1;
+          printf ("OXS");
+          if (deflt)
+            printf ("; "); 
+          else 
+            printf ("*; "); 
+            deflt = 1; 
+          endif
+        catch
+          ## Wrong OpenXLS.jar version (probably <= 6.08). V. 10 is required now
+          warning ("OpenXLS.jar version is outdated; please upgrade to v.10");
+        end_try_catch
+      endif
+    endif
+
+    ## Try Java & UNO
+    if (isempty (xlsinterfaces.UNO))
+      xlsinterfaces.UNO = 0;
+      ## entries0(1) = not a jar but a directory (<00o_install_dir/program/>)
+      entries = {"program", "unoil", "jurt", "juh", "unoloader", "ridl"};
+      if (chk_jar_entries (jcp, entries) >= numel (entries))
+        xlsinterfaces.UNO = 1;
+        printf ("UNO");
+        if (deflt);
+          printf ("; "); 
+        else
+          printf ("*; ");
+          deflt = 1; 
+          uno_1st_time = min (++uno_1st_time, 2);
+        endif
+      endif
+    endif
+
+  else
+    ## Set Java-based interfaces to 0 anyway as there's no Java support
+    xlsinterfaces.POI = 0;
+    xlsinterfaces.JXL = 0;
+    xlsinterfaces.OXS = 0;
+    xlsinterfaces.UNO = 0;
+
+  ## End of has_java block
   endif
 
   ## Native Octave
@@ -259,7 +277,8 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
     endif
   endif
 
-  ## ---- Other interfaces here, similar to the ones above
+  ## ---- Other interfaces here, similar to the ones above.
+  ##      Java interfaces should be in the has-java if-block
 
   if (deflt)
     printf ("(* = default interface)\n"); 

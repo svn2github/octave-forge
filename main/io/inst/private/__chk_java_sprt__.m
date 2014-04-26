@@ -1,4 +1,4 @@
-## Copyright (C) 2013 Philip Nienhuis
+## Copyright (C) 2013,2014 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -28,9 +28,16 @@ function [ tmp1, jcp ] = __chk_java_sprt__ (dbug=0)
 
   jcp = {};
   tmp1 = 0;
+  if (! octave_config_info.features.JAVA)
+    ## No Java support built in => any further checks are moot
+    return
+  endif
+
   try
-    jcp = javaclasspath ("-all");          # For java pkg >= 1.2.8
-    if (isempty (jcp)), jcp = javaclasspath; endif  # For java pkg <  1.2.8
+    jcp = javaclasspath ("-all");         # For java pkg >= 1.2.8
+    if (isempty (jcp))                    #   & Octave   >= 3.7.2
+      jcp = javaclasspath;                # For java pkg <  1.2.8 
+    endif
     ## If we get here, at least Java works. 
     if (dbug > 1)
       printf ("Java seems to work OK.\n");

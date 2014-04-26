@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis
+## Copyright (C) 2009,2010,2011,2012,2013,2014 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -75,13 +75,19 @@
 ## 2013-09-29 Treat OCT as any other interface
 ## 2013-12-06 Updated copyright strings; style fixes
 ## 2013-12-20 java_invoke -> javaMethod
+## 2014-04-24 Skip all Java checks if Octave was built w/o Java support
 
 function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 
   ## tmp1 = [] (not initialized), 0 (No Java detected), or 1 (Working Java found)
   persistent tmp1 = []; 
-  persistent jcp;  # Java class path
+  persistent jcp={};                                  ## Java class path
+  persistent has_java = [];                           ## Built-in Java support
   persistent uno_1st_time = 0;
+
+  if (isempty (has_java))
+    has_java = octave_config_info.features.JAVA;
+  endif
 
   if (isempty (odsinterfaces.OTK) && isempty (odsinterfaces.JOD) ...
                                   && isempty (odsinterfaces.UNO))
@@ -94,121 +100,133 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
     if (tmp1)
       # Check Java support again
       tmp1 = [];
-    else
+    elseif (has_java)
       ## Renew jcp (javaclasspath) as it may have been updated since last call
       jcp = javaclasspath ("-all");                   ## For java pkg >= 1.2.8
-      if (isempty (jcp)); jcp = javaclasspath; endif  ## For java pkg <  1.2.8
+      if (isempty (jcp))                              ##   & Octave   >= 3.7.2
+        jcp = javaclasspath;
+      endif                                           ## For java pkg <  1.2.8
       if (isunix && ! iscell (jcp));
         jcp = strsplit (char (jcp), pathsep ()); 
       endif
-      endif
+    endif
   endif
   deflt = 0;
 
-  if (isempty (tmp1))
-  ## Check Java support
-    [tmp1, jcp] = __chk_java_sprt__ ();
-    if (! tmp1)
-      ## No Java support found
-      if (isempty (odsinterfaces.OTK) || isempty (odsinterfaces.JOD) ...
-                                      || isempty (odsinterfaces.UNO))
-        ## Some or all Java-based interface explicitly requested; but no Java support
-        warning ...
-          (" No Java support found (no Java JRE? no Java pkg installed AND loaded?)");
-      endif
-      ## Set Java interfaces to 0 anyway as there's no Java support
-      odsinterfaces.OTK = 0;
-      odsinterfaces.JOD = 0;
-      odsinterfaces.UNO = 0;
-      printf ("\n");
-      ## No more need to try any Java interface
-      return;
-    endif
-  endif
-
-  ## Try Java & ODF toolkit
-  if (isempty (odsinterfaces.OTK))
-    odsinterfaces.OTK = 0;
-    entries = {"odfdom", "xercesImpl"};
-    ## Only under *nix we might use brute force: e.g., strfind(classpath, classname);
-    ## under Windows we need the following more subtle, platform-independent approach:
-    if (chk_jar_entries (jcp, entries) >= numel (entries))    
-      ## Apparently all requested classes present.
-      ## Only now we can check for proper odfdom version (only 0.7.5 & 0.8.6-0.8.8 work OK).
-      ## The odfdom team deemed it necessary to change the version call so we need this:
-      odfvsn = " ";
-      try
-        ## New in 0.8.6
-        odfvsn = ...
-          javaMethod ("getOdfdomVersion", "org.odftoolkit.odfdom.JarManifest");
-      catch
-        odfvsn = ...
-          javaMethod ("getApplicationVersion", "org.odftoolkit.odfdom.Version");
-      end_try_catch
-      ## For odfdom-incubator (= 0.8.8+), strip extra info
-      odfvsn = regexp (odfvsn, '\d\.\d\.\d', "match"){1};
-      if  (! (strcmp (odfvsn, "0.7.5") || strcmp (odfvsn, "0.8.6") ...
-         || strcmp (odfvsn, "0.8.7") || strfind (odfvsn, "0.8.8")))
-        warning ("\nodfdom version %s is not supported - use v. 0.8.6, 0.8.7 or 0.8.8\n", odfvsn);
-      else
-        if (strcmp (odfvsn, "0.7.5"))
-          warning (["odfdom v. 0.7.5 support won't be maintained " ...
-                    "- please upgrade to 0.8.8"]); 
+  if (has_java)
+    if (isempty (tmp1))
+    ## Check Java support
+      [tmp1, jcp] = __chk_java_sprt__ ();
+      if (! tmp1)
+        ## No Java support found
+        if (isempty (odsinterfaces.OTK) || isempty (odsinterfaces.JOD) ...
+                                        || isempty (odsinterfaces.UNO))
+          ## Some or all Java-based interface explicitly requested; but no Java support
+          warning ...
+            (" No Java support found (no Java JRE or JDK?)\n");
         endif
-        odsinterfaces.OTK = 1;
-        printf ("OTK");
+        ## Set Java-based interfaces to 0 anyway as there's no Java support
+        odsinterfaces.OTK = 0;
+        odsinterfaces.JOD = 0;
+        odsinterfaces.UNO = 0;
+        printf ("\n");
+        ## No more need to try any Java interface
+        return;
+      endif
+    endif
+
+    ## Try Java & ODF toolkit
+    if (isempty (odsinterfaces.OTK))
+      odsinterfaces.OTK = 0;
+      entries = {"odfdom", "xercesImpl"};
+      ## Only under *nix we might use brute force: e.g., strfind(classpath, classname);
+      ## under Windows we need the following more subtle, platform-independent approach:
+      if (chk_jar_entries (jcp, entries) >= numel (entries))    
+        ## Apparently all requested classes present.
+        ## Only now we can check for proper odfdom version (only 0.7.5 & 0.8.6-0.8.8 work OK).
+        ## The odfdom team deemed it necessary to change the version call so we need this:
+        odfvsn = " ";
+        try
+          ## New in 0.8.6
+          odfvsn = ...
+            javaMethod ("getOdfdomVersion", "org.odftoolkit.odfdom.JarManifest");
+        catch
+          odfvsn = ...
+            javaMethod ("getApplicationVersion", "org.odftoolkit.odfdom.Version");
+        end_try_catch
+        ## For odfdom-incubator (= 0.8.8+), strip extra info
+        odfvsn = regexp (odfvsn, '\d\.\d\.\d', "match"){1};
+        if  (! (strcmp (odfvsn, "0.7.5") || strcmp (odfvsn, "0.8.6") ...
+           || strcmp (odfvsn, "0.8.7") || strfind (odfvsn, "0.8.8")))
+          warning ("\nodfdom version %s is not supported - use v. 0.8.6, 0.8.7 or 0.8.8\n", odfvsn);
+        else
+          if (strcmp (odfvsn, "0.7.5"))
+            warning (["odfdom v. 0.7.5 support won't be maintained " ...
+                      "- please upgrade to 0.8.8"]); 
+          endif
+          odsinterfaces.OTK = 1;
+          printf ("OTK");
+          if (deflt)
+            printf ("; ");
+          else 
+            printf ("*; ");
+            deflt = 1;
+          endif
+        endif
+        odsinterfaces.odfvsn = odfvsn;
+      else
+        warning ("\nNot all required classes (.jar) in classpath for OTK");
+      endif
+    endif
+
+    ## Try Java & jOpenDocument
+    if (isempty (odsinterfaces.JOD))
+      odsinterfaces.JOD = 0;
+      entries = {"jOpenDocument"};
+      if (chk_jar_entries (jcp, entries) >= numel (entries))
+        odsinterfaces.JOD = 1;
+        printf ("JOD");
         if (deflt)
           printf ("; ");
-        else 
+        else
           printf ("*; ");
           deflt = 1;
         endif
+      else
+        warning ("\nNot all required classes (.jar) in classpath for JOD");
       endif
-      odsinterfaces.odfvsn = odfvsn;
-    else
-      warning ("\nNot all required classes (.jar) in classpath for OTK");
     endif
-  endif
 
-  ## Try Java & jOpenDocument
-  if (isempty (odsinterfaces.JOD))
+    ## Try Java & UNO
+    if (isempty (odsinterfaces.UNO))
+      odsinterfaces.UNO = 0;
+      ## entries(1) = not a jar but a directory (<OOo_install_dir/program/>)
+      entries = {"program", "unoil", "jurt", "juh", "unoloader", "ridl"};
+      if (chk_jar_entries (jcp, entries) >= numel (entries))
+        odsinterfaces.UNO = 1;
+        printf ("UNO");
+        if (deflt)
+          printf ("; ");
+        else
+          printf ("*; "); 
+          deflt = 1; 
+          uno_1st_time = min (++uno_1st_time, 2); 
+        endif
+      else
+        warning ("\nOne or more UNO classes (.jar) missing in javaclasspath");
+      endif
+    endif
+
+  else
+    ## Set Java-based interfaces to 0 anyway as there's no Java support
+    odsinterfaces.OTK = 0;
     odsinterfaces.JOD = 0;
-    entries = {"jOpenDocument"};
-    if (chk_jar_entries (jcp, entries) >= numel (entries))
-      odsinterfaces.JOD = 1;
-      printf ("JOD");
-      if (deflt)
-        printf ("; ");
-      else
-        printf ("*; ");
-        deflt = 1;
-      endif
-    else
-      warning ("\nNot all required classes (.jar) in classpath for JOD");
-    endif
-  endif
-
-  ## Try Java & UNO
-  if (isempty (odsinterfaces.UNO))
     odsinterfaces.UNO = 0;
-    ## entries(1) = not a jar but a directory (<OOo_install_dir/program/>)
-    entries = {"program", "unoil", "jurt", "juh", "unoloader", "ridl"};
-    if (chk_jar_entries (jcp, entries) >= numel (entries))
-      odsinterfaces.UNO = 1;
-      printf ("UNO");
-      if (deflt)
-        printf ("; ");
-      else
-        printf ("*; "); 
-        deflt = 1; 
-        uno_1st_time = min (++uno_1st_time, 2); 
-      endif
-    else
-      warning ("\nOne or more UNO classes (.jar) missing in javaclasspath");
-    endif
+
+  ## End of has_java block
   endif
 
-  ## Native Octave
+  ## Native Octave (OCT)
   if (isempty (odsinterfaces.OCT))
     ## Nothing to check, always supported
     odsinterfaces.OCT = 1;

@@ -171,12 +171,14 @@
 ## 2014-04-06 Skip unojarpath search for UNO entries 4 and up; code style fixes
 ## 2014-04-14 Updated texinfo header & OCT r/w support messages
 ## 2014-04-15 More updates to texinfo header
+## 2014-04-26 Check for built-in Java support before trying to handle Java stuff
 
 function  [ retval, sinterfaces, loaded_jars ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo)
 
   ## Keep track of which Java class libs were loaded
-  persistent loaded_jars;
-  persistent sinterfaces;
+  persistent loaded_jars;                   ## Java .jar class libs added to
+                                            ## javaclasspath by this func
+  persistent sinterfaces;                   ## Interfaces found to be supported
 
   sinterfaces = {"OCT"};
   jcp = []; 
@@ -256,11 +258,24 @@ function  [ retval, sinterfaces, loaded_jars ]  = chk_spreadsheet_support (path_
   endif
 
   ## Check Java
+  if (dbug > 1)
+    printf ("  1. Checking Octave's Java support... ");
+  endif
+  if (! octave_config_info.features.JAVA)
+    ## Nothing to do here anymore
+    if (abs (dbug) >=1)
+      printf ("none.\nThis Octave has no built-in Java support. Skipping Java checks\n");
+    endif
+    return
+  elseif (dbug > 1)
+    printf ("OK.\n");
+  endif
+
   if (dbug)
-    printf ("Checking Java support...\n");
+    printf ("2. Checking Java dependencies...\n");
   endif
   if (dbug > 1)
-    printf ("  1. Checking Java JRE presence.... ");
+    printf ("  Checking Java JRE presence.... ");
   endif
   ## Try if Java is installed at all
   if (ispc)
@@ -273,7 +288,7 @@ function  [ retval, sinterfaces, loaded_jars ]  = chk_spreadsheet_support (path_
     if (jtst)
       printf ("Apparently no Java JRE installed.\n");
       if (! retval)
-        printf ("Only ODS 1.2 (.ods) & OOXML (.xlsx) r/w support & .gnumeric read support present\n");
+        printf ("\nOnly ODS 1.2 (.ods) & OOXML (.xlsx) r/w support & .gnumeric read support present\n");
       endif
       return;
     else
@@ -281,45 +296,9 @@ function  [ retval, sinterfaces, loaded_jars ]  = chk_spreadsheet_support (path_
         printf ("OK, found one.\n");
       endif
     endif
-    if (dbug > 1)
-      printf ("  2. Checking Octave Java support... ");
-    endif
   endif
-  ## Check core Java support (newer Octave)
   try
-    ## The following stanza is meant for older Octave w/o built-in Java
-    if (compare_versions (OCTAVE_VERSION, "3.7.2", "<"))
-      ## Check Java package
-      [~, b] = pkg ("describe", "java");
-      if (strcmpi (b{:}, "Not loaded"))
-        if (dbug > 1)
-          printf ('Java package found but not loaded. First do: "pkg load java"\n');
-        endif
-      elseif strcmpi (b{:}, "Not installed")
-        if (dbug > 1)
-          printf ("Java package is not installed.\n");
-        endif
-      endif
-    else
-      ## Check for proper look of UGLY_DEFS/features (only needed for 3.7.2+ version)
-      if (isfield (octave_config_info, "features"))
-        if (! octave_config_info.features.JAVA)
-          if (dbug)
-            printf ("none.\n");
-            printf ("     (Octave was built without Java support)\n");
-          endif
-        endif
-      elseif (isfield (octave_config_info, "UGLY_DEFS"))
-        if (isempty (regexp (octave_config_info.UGLY_DEFS, "HAVE_JAVE=1", "match")))
-          if (dbug)
-            printf ("none.\n");
-            printf ("     (Octave was built without Java support)\n");
-          endif
-        endif
-      endif
-    endif
-
-    ## OK sufficient info to give it a try
+    ## OK sufficient info to investigate further
     [tmp1, jcp] = __chk_java_sprt__ (dbug);
 
     if (tmp1)

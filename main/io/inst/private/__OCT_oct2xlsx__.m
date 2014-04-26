@@ -69,6 +69,7 @@
 ## Version 0.1
 ## 2013/11/08		- Initial Release
 ## 2014-04-26   - Replace __OCT_cc__ by binary __num2char__
+##     ''       - Fix wrong file handle refs when rewriting app.xml
 
 function [xls, rstatus] = __OCT_oct2xlsx__ (arrdat, xls, wsh=1, crange="", spsh_opts, obj_dims)
 
@@ -76,7 +77,7 @@ function [xls, rstatus] = __OCT_oct2xlsx__ (arrdat, xls, wsh=1, crange="", spsh_
   new_sh = 0;
   if (ischar (wsh))
     if (31 < length (wsh))
-      error ("Worksheet name longer than 31 characters is not supported by Excel");
+      error ("Worksheet name longer than 31 characters is not supported by Excel\n");
     endif
     wsh_number = strmatch (wsh, xls.sheets.sh_names);
     if (isempty (wsh_number))
@@ -101,7 +102,7 @@ function [xls, rstatus] = __OCT_oct2xlsx__ (arrdat, xls, wsh=1, crange="", spsh_
         wsh_string = strrep (wsh_string, "Sheet", "Sheet_");
       endwhile
       if (length (string) > 31)
-        error ("oct2xls: cannot add worksheet with a unique name");
+        error ("oct2xls: cannot add worksheet with a unique name\n");
       endif
       ## The sheet index number can't leave a gap in the stack, so:
       wsh_number = numel (xls.sheets.sh_names) + 1;
@@ -244,7 +245,7 @@ function [xls, rstatus] = __OCT_oct2xlsx__ (arrdat, xls, wsh=1, crange="", spsh_
 
     ## <docProps/app.xml>
     aid = fopen ([xls.workbook filesep "docProps" filesep "app.xml"], "r+");
-    axml = fread (wid, Inf, "char=>char").';
+    axml = fread (aid, Inf, "char=>char").';
     fclose (aid);
     wshnode = sprintf ('<vt:lpstr>%s</vt:lpstr>', wsh_string);
     if (xls.changed == 3)
@@ -266,12 +267,12 @@ function [xls, rstatus] = __OCT_oct2xlsx__ (arrdat, xls, wsh=1, crange="", spsh_
       vt2 = strrep (vt2, "</vt:lpstr></vt:vector>", ["</vt:lpstr>" wshnode "</vt:vector>"]);
       vt = [vt1 vt2];
     endif
-    ## Re(/over-)write workbook.xml; start at sheets node
+    ## Re(/over-)write apps.xml
     aid = fopen ([xls.workbook filesep "docProps" filesep "app.xml"], "w+");
-    fprintf (wid, "%s", axml(1:is-1));
-    fprintf (wid, "%s", vt);
-    fprintf (wid, "%s", axml(ie+1:end));
-    fclose (wid);
+    fprintf (aid, "%s", axml(1:is-1));
+    fprintf (aid, "%s", vt);
+    fprintf (aid, "%s", axml(ie+1:end));
+    fclose (aid);
   endif
 
   ## If needed update sharedStrings entries xml descriptor files

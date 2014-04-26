@@ -83,11 +83,12 @@
 ## 2013-12-29 Style fixes
 ## 2014-01-01 Style fixes
 ## 2014-04-13 Updated copyright strings
+## 2014-04-26 Fix error messages (no more traceback)
 
 function [ xls ] = xlsclose (xls, varargs)
 
   if (isempty (xls))
-    warning ("xlsclose: file pointer struct was already closed");
+    warning ("xlsclose: file pointer struct was already closed\n");
     return
   endif
 
@@ -103,13 +104,13 @@ function [ xls ] = xlsclose (xls, varargs)
       elseif (! isempty (strfind (tolower (varargin{ii}), ".")))
         ## Apparently a file name. First some checks....
         if (xls.changed == 0 || xls.changed > 2)
-          warning ("xlsclose: file %s wasn't changed, new filename ignored.", xls.filename);
+          warning ("xlsclose: file %s wasn't changed, new filename ignored.\n", xls.filename);
         elseif (strcmp (xls.xtype, "JXL"))
-          error ("xlsclose: JXL doesn't support changing filename, new filename ignored.");
+          error ("xlsclose: JXL doesn't support changing filename, new filename ignored.\n");
         elseif (! ((strcmp (xls.xtype, "COM") || strcmp (xls.xtype, "UNO")) ... 
                 && isempty (strfind ( lower (filename), ".xls"))))
           # Excel/ActiveX && OOo (UNO bridge) will write any valid filetype; POI/JXL/OXS need .xls[x]
-          error ("xlsclose: .xls or .xlsx suffix lacking in filename %s", filename);
+          error ("xlsclose: .xls or .xlsx suffix lacking in filename %s\n", filename);
         else
           ## For multi-user environments, uncomment below AND relevant stanza in xlsopen
           ## In case of COM, be sure to first close the open workbook
@@ -148,7 +149,7 @@ function [ xls ] = xlsclose (xls, varargs)
   endif
 
   if (xls.changed && xls.changed < 3)
-    warning (sprintf ("xlsclose: file %s could not be saved. Read-only or in use elsewhere?", ...
+    warning (sprintf ("xlsclose: file %s could not be saved. Read-only or in use elsewhere?\n", ...
                       xls.filename));
     if (force)
       xls = [];

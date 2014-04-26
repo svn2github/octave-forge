@@ -75,18 +75,19 @@
 ## 2013-10-02 Texinfo header adapted
 ## 2013-12-01 Style fixes
 ## 2014-04-13 Updated copyright strings
+## 2014-04-26 Fix error messages (no more traceback)
 
 function [ ods ] = odsclose (ods, varargs)
 
   ## If needed warn that dangling spreadsheet pointers may be left
   if (nargout < 1)
-    warning ("odsclose.m: return argument missing - ods invocation not reset.");
+    warning ("odsclose.m: return argument missing - ods invocation not reset.\n");
   endif
 
   force = 0;
 
   if (isempty (ods))
-    warning ("odsclose: file pointer struct is empty; was it already closed?")';
+    warning ("odsclose: file pointer struct is empty; was it already closed?\n")';
     return
   endif
 
@@ -99,11 +100,11 @@ function [ ods ] = odsclose (ods, varargs)
       elseif (! isempty (strfind (tolower (varargin{ii}), ".")))
         ## Apparently a file name. First some checks....
         if (ods.changed == 0 || ods.changed > 2)
-          warning ("odsclose.m: file %s wasn't changed, new filename ignored.", ods.filename);
+          warning ("odsclose.m: file %s wasn't changed, new filename ignored.\n", ods.filename);
         elseif (! strcmp (xls.xtype, "UNO") && ...
                 isempty (strfind ( lower (filename), ".ods")))
           ## UNO will write any file type, all other interfaces only .ods
-            error ("odsclose.m: .ods suffix lacking in filename %s", filename);
+            error ("odsclose.m: .ods suffix lacking in filename %s\n", filename);
         else
           ## Preprocessing / -checking ready. 
           ## Assign filename arg to file ptr struct
@@ -132,13 +133,13 @@ function [ ods ] = odsclose (ods, varargs)
   ##elseif ---- < Other interfaces here >
 
   else
-    error (sprintf ("ods2close: unknown OpenOffice.org .ods interface - %s.",...
+    error (sprintf ("ods2close: unknown OpenOffice.org .ods interface - %s.\n",...
                     ods.xtype));
 
   endif
 
   if (ods.changed && ods.changed < 3)
-    error (sprintf ("odsclose.m: could not save file %s - read-only or in use elsewhere?",...
+    error (sprintf ("odsclose.m: could not save file %s - read-only or in use elsewhere?\n",...
                     ods.filename));
     if (force)
       ods = [];

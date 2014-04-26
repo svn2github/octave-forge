@@ -60,6 +60,7 @@
 ##     ''     Name changed to rfseach
 ## 2013-12-14 Texinfo header adaptations (recursion noted)
 ## 2014-01-03 Check for empty subdir before exploring it (L.95)
+## 2014-04-26 Fix error messages (no more traceback)
 
 function [ fpath ] = rfsearch (dname, fname, mxdpth=1, depth=0)
 
@@ -67,9 +68,9 @@ function [ fpath ] = rfsearch (dname, fname, mxdpth=1, depth=0)
   if (nargin < 2)
     print_usage ()
   elseif ((! ischar (dname)) || (! ischar (fname)))
-    error ("rsearchfile: character arguments expected for DNAME and FNAME");
+    error ("rsearchfile: character arguments expected for DNAME and FNAME\n");
   elseif (! isnumeric (mxdpth))
-    error ("Numeric value >= 0 expected for MAXDEPTH");
+    error ("Numeric value >= 0 expected for MAXDEPTH\n");
   elseif (mxdpth < 0)
     warning ("rsearchfile: negative value for MAXDEPTH (%d) set to 0\n", mxdpth);
     mxdpth = 0;

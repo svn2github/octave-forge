@@ -37,6 +37,7 @@
 ## 2013-10-20 Fix typos in input validation error messages
 ##     ''     Better input validation
 ## 2013-11-04 More robust <single node/> detection
+## 2014-04-26 Fix error messages (no more traceback)
 
 function [ node, spos, epos ] = getxmlnode (xml, tag, is=1, contnt=0)
 
@@ -49,11 +50,11 @@ function [ node, spos, epos ] = getxmlnode (xml, tag, is=1, contnt=0)
 
   ## Input validation
   if (! ischar (xml) || ! ischar (tag))
-    error ("getxmlnode: text strings expected for first two args");
+    error ("getxmlnode: text strings expected for first two args\n");
   elseif (nargin==3 && (! islogical (is) && ! isnumeric (is)))
-    error ("getxmlnode: logical or numerical value expected for arg #3");
+    error ("getxmlnode: logical or numerical value expected for arg #3\n");
   elseif (nargin==4 && (! islogical (contnt) && ! isnumeric (contnt)))
-    error ("getxmlnode: logical or numerical value expected for arg #3");
+    error ("getxmlnode: logical or numerical value expected for arg #3\n");
   endif
 
   is = max (is, 1);

@@ -140,6 +140,7 @@
 ##     ''     Copyright string update
 ## 2014-02-02 Allow write support for OCT interface
 ## 2014-04-13 Updated texinfo header
+## 2014-04-26 Fix error messages (no more traceback)
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
@@ -258,7 +259,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
   if (xwrite)
     ## Catch attempts to write gnumeric
     if (ftype == 5)
-      error ("There's only read support for gnumeric files");
+      error ("xlsopen: there's only read support for gnumeric files\n");
     endif
     fmode = 'r+b';
     if (! has_suffix)
@@ -337,7 +338,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
   if ((! xlssupport) && xlsinterfaces.UNO && (ftype != 5))
     ## Warn for LO / OOo stubbornness
     if (ftype == 0 || ftype == 5 || ftype == 6)
-      warning ("UNO interface will write ODS format for unsupported file extensions")
+      warning ("UNO interface will write ODS format for unsupported file extensions\n")
     endif
     [ xls, xlssupport, lastintf ] = __UNO_spsh_open__ (xls, xwrite, filename, xlssupport);
   endif
@@ -359,11 +360,11 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
       if (ftype != 6)
         ## This message is appended after message from getxlsinterfaces()
         printf ("None.\n");
-        warning ("xlsopen.m: no support for spreadsheet I/O");
+        warning ("xlsopen.m: no support for spreadsheet I/O\n");
       endif
     else
       ## No match between filte type & interface found
-      warning ("xlsopen.m: file type not supported by %s %s %s %s %s %s", reqinterface{:});
+      warning ("xlsopen.m: file type not supported by %s %s %s %s %s %s\n", reqinterface{:});
     endif
     xls = [];
     ## Reset found interfaces for re-testing in the next call. Add interfaces if needed.

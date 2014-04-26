@@ -142,11 +142,12 @@
 ## 2013-12-01 Updated texinfo header
 ## 2014-04-13 Updated copyright strings and texinfo header
 ## 2014-04-15 More updates to texinfo header
+## 2014-04-26 Fix error messages (no more traceback)
 
 function [ numarr, txtarr, rawarr, lim ] = odsread (filename, wsh=1, datrange=[], reqintf=[])
 
   if (! ischar (filename))
-    error ("filename (text string) expected for argument #1, not a %s", class (filename));
+    error ("odsread: filename (text string) expected for argument #1, not a %s\n", class (filename));
   endif
   if (nargin < 1 || ! (strcmpi (".ods", filename(end-3:end)) || ...
                        strcmpi (".sxc", filename(end-3:end)) || ...
@@ -163,7 +164,7 @@ function [ numarr, txtarr, rawarr, lim ] = odsread (filename, wsh=1, datrange=[]
     if (rstatus)
       [numarr, txtarr, lim] = parsecell (rawarr, ods.limits);
     else
-      warning (sprintf ("No data read from %s.", filename));
+      warning (sprintf ("No data read from %s.\n", filename));
       numarr = [];
     endif
   

@@ -172,6 +172,7 @@
 ## 2014-04-14 Updated texinfo header & OCT r/w support messages
 ## 2014-04-15 More updates to texinfo header
 ## 2014-04-26 Check for built-in Java support before trying to handle Java stuff
+##     ''     Cleaned up various messages
 
 function  [ retval, sinterfaces, loaded_jars ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo)
 
@@ -220,6 +221,11 @@ function  [ retval, sinterfaces, loaded_jars ]  = chk_spreadsheet_support (path_
   interfaces = {"COM", "POI", "POI+OOXML", "JXL", "OXS", "OTK", "JOD", "UNO", "OCT"}; 
   ## Order  = vital
 
+  ## Just mention OCT interface
+  if(dbug)
+    printf ("(OCT interface... OK, included in io package)\n\n");
+  endif
+
   ## Check if MS-Excel COM ActiveX server runs. Only needed on Windows systems
   if (ispc)
     if (dbug)
@@ -259,19 +265,22 @@ function  [ retval, sinterfaces, loaded_jars ]  = chk_spreadsheet_support (path_
 
   ## Check Java
   if (dbug > 1)
-    printf ("  1. Checking Octave's Java support... ");
+    printf ("1. Checking Octave's Java support... ");
   endif
   if (! octave_config_info.features.JAVA)
     ## Nothing to do here anymore
     if (abs (dbug) >=1)
       printf ("none.\nThis Octave has no built-in Java support. Skipping Java checks\n");
+      if (! retval)
+        printf ("Only ODS 1.2 (.ods) & OOXML (.xlsx) r/w support & .gnumeric read support present\n");
+      endif
     endif
     return
   elseif (dbug > 1)
     printf ("OK.\n");
   endif
 
-  if (dbug)
+  if (dbug > 1)
     printf ("2. Checking Java dependencies...\n");
   endif
   if (dbug > 1)
@@ -315,13 +324,10 @@ function  [ retval, sinterfaces, loaded_jars ]  = chk_spreadsheet_support (path_
         if (jmem < 400)
           printf ("should better be at least 400 MB!\n");
           printf ('    Hint: adapt setting -Xmx in file "java.opts" (supposed to be here:)\n');
-          printf ("    %s\n", [matlabroot filesep "share" filesep "octave" filesep "packages" filesep "java-<version>" filesep "java.opts"]);
+          printf ("    %s\n", [matlabroot filesep "share" filesep "octave" filesep "packages" filesep "java-<version>" filesep "java.opts\n"]);
         else
           printf ("sufficient.\n");
         endif
-      endif
-      if (dbug)
-        printf ("Java support OK\n");
       endif
     endif
   catch
@@ -329,7 +335,7 @@ function  [ retval, sinterfaces, loaded_jars ]  = chk_spreadsheet_support (path_
   end_try_catch
   if (! tmp1)
     ## We can return as for below code Java is required.
-    if (dbug)
+    if (dbug > 1)
       printf ("No Java support found.\n");
       if (! retval)
         printf ("Only ODS 1.2 (.ods) & OOXML (.xlsx) r/w support & .gnumeric read support present\n");
@@ -339,7 +345,7 @@ function  [ retval, sinterfaces, loaded_jars ]  = chk_spreadsheet_support (path_
   endif
 
   if (dbug)
-    printf ("\nChecking javaclasspath for .jar class libraries needed for spreadsheet I/O...:\n");
+    printf ("Checking javaclasspath for .jar class libraries needed for spreadsheet I/O...:\n");
   endif
 
   ## Try Java & Apache POI. First Check basic .xls (BIFF8) support
@@ -425,7 +431,7 @@ function  [ retval, sinterfaces, loaded_jars ]  = chk_spreadsheet_support (path_
       endif
     catch
       ## Wrong OpenXLS.jar version (probably <= 6.08). V. 10 is required now
-      warning ("OpenXLS.jar version is outdated; please upgrade to v.10");
+      warning ("OpenXLS.jar version is outdated; please upgrade to v.10\n");
     end_try_catch
   endif
 

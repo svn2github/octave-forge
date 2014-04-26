@@ -94,7 +94,7 @@
 ## 2013-12-01 Style fixes & support for more file types than just Excel
 ## 2013-12-29 Style fixes
 ## 2014-04-15 Updates to texinfo header
-
+## 2014-04-26 Fix error messages (no more traceback)
 
 function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 
@@ -143,7 +143,7 @@ function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 ##elseif   <Other Excel interfaces below>
 
   else
-    error (sprintf ("xlsfinfo: unknown Excel .xls interface - %s.", xls.xtype));
+    error (sprintf ("xlsfinfo: unknown Excel .xls interface - %s.\n", xls.xtype));
 
   endif
 

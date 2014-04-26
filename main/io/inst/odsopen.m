@@ -138,6 +138,7 @@
 ## 2014-01-23 OCT ods write support for .ods
 ## 2014-04-14 Update texinfo header
 ## 2014-04-15 More updates to texinfo header
+## 2014-04-26 Fix error messages (no more traceback)
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
@@ -215,7 +216,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
     ## .ods write support is supported
     if (odsintf_cnt == 1 && odsinterfaces.OCT && ! strcmpi (ext, ".ods"))
       ## Check if OCT is only interface and writing is requested
-      error ("OCT interface doesn't support writing gnumeric files (yet)");
+      error ("odsopen: OCT interface has no support for writing gnumeric files (yet)\n");
     endif
     rw = 1;
   endif
@@ -293,7 +294,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
   if (odsinterfaces.UNO && ! odssupport && ftype < 5)
     ## Warn for LO / OOo stubbornness
     if (ftype == 0 || ftype == 5 || ftype == 6)
-      warning ("UNO interface will write ODS format for unsupported file extensions")
+      warning ("UNO interface will write ODS format for unsupported file extensions\n")
     endif
     [ ods, odssupport, lastintf ] = ...
               __UNO_spsh_open__ (ods, rw, filename, odssupport);
@@ -311,7 +312,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
   if (! odssupport)
     ## Below message follows after getodsinterfaces
     printf ("None.\n");
-    warning ("odsopen.m: no support for OpenOffice.org .ods I/O"); 
+    warning ("odsopen.m: no support for OpenOffice.org .ods I/O\n"); 
     ods = [];
     chkintf = [];
   else

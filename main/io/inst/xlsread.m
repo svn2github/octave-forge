@@ -158,17 +158,18 @@
 ## 2013-12-27 In case of .csv fall back to csvread for lazy Matlab users
 ## 2014-04-13 Updated copyright strings & texinfo header
 ## 2014-04-15 More updates to texinfo header
+## 2014-04-26 Fixed error messages (no traceback)
 
 function [ numarr, txtarr, rawarr, lims ] = xlsread (fn, wsh, datrange, reqintf=[])
 
 	rstatus = 0;
 
 	if (nargin < 1) 
-		error ("xlsread: no input arguments specified") 
+		error ("xlsread: no input arguments specified\n") 
 		numarr = []; txtarr={}; rawarr = {};
 		return
   elseif (! ischar (fn))
-    error ("filename (text string) expected for argument #1, not a %s", class (fn));
+    error ("filename (text string) expected for argument #1, not a %s\n", class (fn));
 	elseif (nargin == 1)
 		wsh = 1;
 		datrange = ""; 

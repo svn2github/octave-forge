@@ -100,6 +100,7 @@
 ## 2013-12-18 Copyright string updates, style fixes
 ## 2014-01-01 Drop file extension check
 ## 2014-04-13 Updated copyright strings & texinfo header
+## 2014-04-26 Fix error messages (no more traceback)
 
 function [ rstatus ] = odswrite (filename, data, wsh=1, crange="", reqintf=[])
 
@@ -116,7 +117,7 @@ function [ rstatus ] = odswrite (filename, data, wsh=1, crange="", reqintf=[])
     ## If rstatus was not OK, reset change indicator in ods pointer
     if (! rstatus)
       ods.changed = rstatus;
-      warning ("odswrite: data transfer errors, file not rewritten");
+      warning ("odswrite: data transfer errors, file not rewritten\n");
     endif
 
     ods = odsclose (ods);

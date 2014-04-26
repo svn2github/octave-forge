@@ -117,6 +117,7 @@
 ##     ''     Check on empty file ptr struct after calling xlsopen
 ## 2014-03-18 Convey full crange to oct2xls, not just topleft
 ## 2014-04-13 Update texinfo header
+## 2014-04-26 Fixed error message (no traceback)
 
 function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
 
@@ -126,7 +127,7 @@ function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
   if (nargin < 2)
     usage ("Insufficient arguments - see 'help xlswrite'");
   elseif (! ischar (filename))
-    error ("First argument must be a filename (incl. suffix)");
+    error ("xlswrite: first argument must be a filename (incl. suffix)\n");
   elseif (nargin == 2)
     ## Assume first worksheet and full worksheet starting at A1
     wsh = 1;

@@ -1,4 +1,4 @@
-## Copyright (C) 2013 Philip Nienhuis
+## Copyright (C) 2013,2014 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -40,8 +40,8 @@
 
 function [] = test_spsh (numb = [])
 
-  persistent xls_intf = {'com', 'poi', 'oox', 'jxl', 'oxs', ' - ', ' - ', 'uno'};
-  persistent ods_intf = {' - ', ' - ', ' - ', ' - ', ' - ', 'otk', 'jod', 'uno'};
+  persistent xls_intf = {"com", "poi", "oox", "jxl", "oxs", " - ", " - ", "uno"};
+  persistent ods_intf = {" - ", " - ", " - ", " - ", " - ", "otk", "jod", "uno"};
 
   ## Get available interfaces
   avail_intf = uint16 (chk_spreadsheet_support ());
@@ -70,27 +70,27 @@ function [] = test_spsh (numb = [])
   ##endif
 
   ## First all Excel xls/xlsx interfaces
-  intf2 = '';
+  intf2 = "";
   for ii = 1:numel (xls_intf)
     intfpatt = bitset (uint16 (0), ii, 1);## uint16 so more intfs can be added
     intfchk = bitand (intfpatt, avail_intf);
     intf = [];
-    fname = 'io-test.xls';
+    fname = "io-test.xls";
     switch intfchk
       case 1                            ## COM (ActiveX / hidden MS-Excel)
-        intf = intf2 = 'com';
+        intf = intf2 = "com";
       case 2                            ## POI (Apache POI)
-        intf = 'poi';
+        intf = "poi";
         tst_oct = 1;
       case 4                            ## POI/OOXML (Apache POI)
-        intf = intf2 = 'poi';
-        fname = 'io-test.xlsx';
+        intf = intf2 = "poi";
+        fname = "io-test.xlsx";
       case 8                            ## JXL (JExcelAPI)
-        intf = 'jxl';
+        intf = "jxl";
       case 16                           ## OXS (OpenXLS/ Extentech)
-        intf = 'oxs';
+        intf = "oxs";
       case 128                          ## UNO (LibreOffice Java-UNO bridge)
-        intf = intf2 = 'uno';
+        intf = intf2 = "uno";
       otherwise
     endswitch
     ## If present, test selected interfaces
@@ -102,33 +102,33 @@ function [] = test_spsh (numb = [])
     sleep (0.25);
   endfor
   ## Test OCT interface if possible
-  io_xls_testscript ("OCT", 'io-test.xlsx');
+  io_xls_testscript ("OCT", "io-test.xlsx");
 
   ## Next, all (OOo/LO) ods interfaces
-  intf2 = '';
+  intf2 = "";
   for ii = 1:numel (ods_intf)
     intfpatt = bitset (uint16 (0), ii, 1);## uint16 so more intfs can be added
     intfchk = bitand (intfpatt, avail_intf);
     intf = [];
     switch intfchk
       case 32                           ## OTK (ODF Toolkit)
-        intf = intf2 = 'otk'
+        intf = intf2 = "otk";
       case 64                           ## JOD (jOpenDocument)
-        intf = intf2 = 'jod';
+        intf = intf2 = "jod";
       case 128                          ## UNO (LibreOffice Java-UNO bridge)
-        intf = intf2 = 'uno';
+        intf = intf2 = "uno";
       otherwise
     endswitch
     ## If present, test selected interfaces
     if (! isempty (intf))
       printf ("\nInterface \"%s\" found.\n", upper (intf));
-      io_ods_testscript (intf, 'io-test.ods');
+      io_ods_testscript (intf, "io-test.ods");
     endif
     ## Allow the OS some time for cleaning up
     sleep (0.25);
   endfor
   ## Test OCT interface if possible
-  io_ods_testscript ("OCT", 'io-test.ods');
+  io_ods_testscript ("OCT", "io-test.ods");
 
   printf ("End of test_spsh\n");
 

@@ -31,6 +31,7 @@
 ##
 ## @var{ftype} is set to 0 (zero) for any other file type.
 ## @var{ftype} is set to empty for file names without extension.
+## In those cases filtnam is set to empty
 ##
 ## @end deftypefn
 
@@ -83,6 +84,8 @@ function [ftype, filtnam] = __get_ftype__ (fname)
 
   if (ftype > 0)
     filtnam = filtnams{ftype};
+  else
+    filtnam = '';
   endif
 
 endfunction

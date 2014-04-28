@@ -40,6 +40,10 @@ function [ xls, xlssupport, lastintf ] = __UNO_spsh_open__ (xls, xwrite, filenam
       ##       until it is fixed we'll fall back on canonicalize_file_name() there
       if (ispc)
         fname = canonicalize_file_name (strsplit (filename, filesep){end});
+        if (isempty (fname))
+          ## File doesn't exist yet? try make_absolute_filename()
+          fname = make_absolute_filename (strsplit (filename, filesep){end});
+        endif
       else
         fname = make_absolute_filename (strsplit (filename, filesep){end});
       endif

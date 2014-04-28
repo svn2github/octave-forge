@@ -43,6 +43,10 @@ function [ xls ] = __UNO_spsh_close__ (xls, force)
         ## Transform into URL form
         if (ispc)
           fname = canonicalize_file_name (strsplit (nfilename, filesep){end});
+          if (isempty (fname))
+            ## File doesn't exist yet? try make_absolute_filename()
+            fname = make_absolute_filename (strsplit (filename, filesep){end});
+          endif
         else
           fname = make_absolute_filename (strsplit (nfilename, filesep){end});
         endif

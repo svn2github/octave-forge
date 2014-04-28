@@ -82,6 +82,8 @@
 ## 2013-09-09 Native Octave interface ("OCT") for reading
 ## 2013-09-23 Header updated to OCT interface
 ## 2013-12-01 Output arg #2 adapted to file type tru switch stmt
+## 2014-04-27 Fix switch (period before extension)
+##     ''     Style fixes
 
 function [ filetype, sh_names ] = odsfinfo (filename, reqintf=[])
 
@@ -98,7 +100,7 @@ function [ filetype, sh_names ] = odsfinfo (filename, reqintf=[])
   ## spreadsheet. Find out what format
   [~, ~, ext] = fileparts (ods.filename); 
   switch ext
-    case {"ods", "sxc"}
+    case {".ods", "ods", ".sxc", "sxc"}
       filetype = "OpenOffice.org Calc Document";
     case "gnumeric"
       filetype = "Gnumeric spreadsheet";

@@ -141,6 +141,7 @@
 ## 2014-02-02 Allow write support for OCT interface
 ## 2014-04-13 Updated texinfo header
 ## 2014-04-26 Fix error messages (no more traceback)
+## 2014-04-30 Allow gnumeric write support (remove catch)
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
@@ -257,10 +258,10 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
   
   ## Adapt file open mode for readwrite argument
   if (xwrite)
-    ## Catch attempts to write gnumeric
-    if (ftype == 5)
-      error ("xlsopen: there's only read support for gnumeric files\n");
-    endif
+%    ## Catch attempts to write gnumeric
+%    if (ftype == 5)
+%      error ("xlsopen: there's only read support for gnumeric files\n");
+%    endif
     fmode = 'r+b';
     if (! has_suffix)
       ## Add .xls suffix to filename (all Excel versions can write this)

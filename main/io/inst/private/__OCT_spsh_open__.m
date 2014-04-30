@@ -45,6 +45,7 @@
 ## 2014-03-17 Simplify sheet names discovery
 ##     ''     Ignore SheetId (nowhere used)
 ## 2014-03-18 Reinstate SheetId (was used somewhere after all)
+## 2014-04-30 Close file handle for gnumeric files
 
 function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename, xlssupport, ftype)
 
@@ -61,7 +62,7 @@ function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename
     elseif (ftype == 5)
       ext = ".gnumeric";
     endif
-    ## New file, get it from template
+    ## New file, get it from template. Use odsopen.m to find it
     templ = strrep (which ("odsopen"), "odsopen.m", ["templates" filesep "template" ext]);
   else
     templ = filename;
@@ -72,6 +73,8 @@ function [ xls, xlssupport, lastintf] = __OCT_spsh_open__ (xls, xwrite, filename
     system (sprintf ("gzip -d -c -S=gnumeric %s > %s", templ, tmpdir));
     fid = fopen (tmpdir, 'r');
     xml = fread (fid, "char=>char").';
+    ## Close file handle, don't delete file
+    fclose (fid);
   else
     ## xlsx and ods are zipped
     try

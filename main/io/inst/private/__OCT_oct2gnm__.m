@@ -23,7 +23,7 @@
 ## Author: Philip Nienhuis <prnienhuis at users . sf .net>
 ## Created: 2014-04-20
 
-function [xls, status] = __OCT_oct2gnm__ (arr, xls, wsh, crange, spsh_opts=0)
+function [xls, status] = __OCT_oct2gnm__ (obj, xls, wsh, crange, spsh_opts=0, obj_dims)
 
   ## A. Find out if we write to existing or new sheet
   new_sh = 0;
@@ -47,31 +47,35 @@ function [xls, status] = __OCT_oct2gnm__ (arr, xls, wsh, crange, spsh_opts=0)
     endif
     wsh = idx;
   endif
-  ## Check if we made a new file from template
-  if (strcmpi (xls.sheets.sh_names{1}, " ") && numel (xls.sheets.sh_names) == 2 && new_sh)
-    xls.sheets.sh_names(1) = [];
-    new_sh = 0;
-    wsh--;
-    xls.changed = 2;
-  endif
 
-  ## B. Update sheet info in file pointer struct
-  if (new_sh)
+  ## Check if we made a new file from template, add a new sheet, or add data to a sheet
+  if (strcmpi (xls.sheets.sh_names{1}, " ") && numel (xls.sheets.sh_names) == 2 && new_sh)
+    ## Completely new file. Clean up and copy a few things
+    xls.sheets.sh_names(1) = [];
+    wsh--;
+    idx_s = xls.sheets.shtidx(wsh);
+    idx_e = xls.sheets.shtidx(wsh+1) - 1;
+    xls.changed = 2;
+    lims = [obj_dims.lc, obj_dims.rc; obj_dims.tr, obj_dims.br];
+    rawarr = obj;
+  elseif (new_sh)
+    ## New sheet. Provisionally update sheet info in file pointer struct
     wsh = numel (xls.sheets.sh_names);
     idx_s = xls.sheets.shtidx(wsh) ;               ## First position after last sheet
     idx_e = idx_s - 1;
-    raw = {};
-    lims = [];
+    xls.changed = 1;
+    lims = [obj_dims.lc, obj_dims.rc; obj_dims.tr, obj_dims.br];
+    rawarr = obj;
   else
+    ## Just write new data into an existing sheet
     idx_s = xls.sheets.shtidx(wsh);
     idx_e = xls.sheets.shtidx(wsh+1) - 1;
-    ## Get all data in sheet and row/column limits
-    [raw, xls]  = __OCT_gnm2oct__ (xls, wsh, "", struct ("formulas_as_text", 1));
+    ## Get all current data in sheet and current row/column limits
+    [rawarr, xls]  = __OCT_gnm2oct__ (xls, wsh, "", struct ("formulas_as_text", 1));
     lims = xls.limits;
+    ## C. Merge old and new data. Provisionally allow empty new data to wipe old data
+    [rawarr, lims] = __OCT_merge_data__ (rawarr, lims, obj, obj_dims);
   endif
-  
-  ## C. Merge old and new data. Provisionally allow empty new data to wipe old data
-  [arr, lims, onr, onc] = __OCT_merge_data__ (raw, lims, obj, obj_dims);
   
 #==============================================================================
 
@@ -84,27 +88,35 @@ function [xls, status] = __OCT_oct2gnm__ (arr, xls, wsh, crange, spsh_opts=0)
   endif
 
   ## Write data to sheet
-  status  = __OCT__oct2gnm_sh__ (fid, rawarr, wsh, lims, onc, onr);
+  status  = __OCT__oct2gnm_sh__ (fid, rawarr, xls.sheets.sh_names{wsh}, lims);
 
   ## E. Merge new/updated sheet into gnumeric file
   ## Read first chunk  until sht_idx<xx>
-  fidc = fopen (xls.workbook), "r+");
-  ## Go to start of requested sheet
-# fseek (fidc, 0, 'bof');
+  fidc = fopen (xls.workbook, "r+");
 
   ## Read and concatenate just adapted/created sheet/table:table
   gnm_xml = fread (fidc, idx_s - 1, "char=>char")';
 
   ## F. Optionally update SheetName Index node
-  if new_sh)
-    [shtidxnode, ss, ee] = getxmlnode (gnm_xml, "gnm:SheetNameIndex");
-    sh_node = sprintf('><gnm:SheetName gnm:Cols="1024" gnm:Rows="65536">%s</gnm:SheetName>',
-                       xls.sheets.sh_names{wsh});
-    ## Add close tag to ease up next strrep
-    sh_node = [ sh_node "</gnm:SheetNameIndex>" ];
-    shtidxnode = strrep (shtidxnode, "></gnm:SheetNameIndex>", sh_node);
-    ## Replace SheetNameIndex node
-    gnm_xml = [gnm_xml(1:ss-1) shtidxnode gnm_xml(ee+1:end) ];
+  if (new_sh)
+    if (wsh == 1)
+      ## New file,existing sheet. Find then (only) gnm:SheetName node
+      [shtnmnode, ss, ee] = getxmlnode (gnm_xml, "gnm:SheetName");
+      ipos = index (shtnmnode, "> </gnm:SheetName>");
+      shtnmnode = [ shtnmnode(1:ipos) xls.sheets.sh_names{1} shtnmnode(ipos+2:end) ];
+      ## Replace SheetName node
+      gnm_xml = [ gnm_xml(1:ss-1) shtnmnode gnm_xml(ee+1:end) ];
+    else
+      ## Existing file, append new SheetName node to end of SheetName nodes list
+      [shtidxnode, ss, ee] = getxmlnode (gnm_xml, "gnm:SheetNameIndex");
+      sh_node = sprintf('><gnm:SheetName gnm:Cols="1024" gnm:Rows="65536">%s</gnm:SheetName>',
+                         xls.sheets.sh_names{wsh});
+      ## Add close tag to ease up next strrep
+      sh_node = [ sh_node "</gnm:SheetNameIndex>" ];
+      shtidxnode = strrep (shtidxnode, "</gnm:SheetNameIndex>", sh_node);
+      ## Replace SheetNameIndex node
+      gnm_xml = [ gnm_xml(1:ss-1) shtidxnode gnm_xml(ee+1:end) ];
+    endif
   endif
 
   ## Rewind tmp sheet and read it behind gnm_xml
@@ -124,7 +136,7 @@ function [xls, status] = __OCT_oct2gnm__ (arr, xls, wsh, crange, spsh_opts=0)
   fprintf (fidc, "%s", gnm_xml);
   fclose (fidc);
 
-  ## G. Update sheet pointers in ods file pointer
+  ## G. Update sheet pointers in ods/xls file pointer
   if (new_sh)
     xls.sheets.shtidx(wsh+1) = idx_s + lsheet;
     xls.changed = 2;
@@ -137,18 +149,18 @@ function [xls, status] = __OCT_oct2gnm__ (arr, xls, wsh, crange, spsh_opts=0)
 endfunction
 
 
-function [ status ] = __OCT__oct2gnm_sh__ (fid, raw, wsh, lims, onc, onr)
+function [ status ] = __OCT__oct2gnm_sh__ (fid, raw, wsh, lims)
 
   ## Write out the lot to requested sheet
 
   ## 1. Sheet open tags
-  tag = 'gnm:Sheet DisplayFormulas="0" HideZero="0" HideGrid="0"';
+  tag = '<gnm:Sheet DisplayFormulas="0" HideZero="0" HideGrid="0"';
   tag = [ tag ' HideColHeader="0" HideRowHeader="0" DisplayOutlines="1"' ];
   tag = [ tag ' OutlineSymbolsBelow="1" OutlineSymbolsRight="1"' ];
   tag = [ tag ' Visibility="GNM_SHEET_VISIBILITY_VISIBLE" GridColor="0:0:0">' ];
   fprintf (fid, "%s", tag);
 
-  fprintf (fid, "<gnm:Name>Sheet%d</gnm:Name>", wsh);
+  fprintf (fid, "<gnm:Name>%s</gnm:Name>", wsh);
 
   fprintf (fid, "<gnm:MaxCol>%d</gnm:MaxCol><gnm:MaxRow>%d</gnm:MaxRow>", ...
            lims(1, 2) - 1, lims(2, 2) - 1);
@@ -163,30 +175,33 @@ function [ status ] = __OCT__oct2gnm_sh__ (fid, raw, wsh, lims, onc, onr)
     for jj=1:size (raw, 2)
       # lims(##, ##):lims(##, ##)
       ## Column # in gnumeric = 0-based
-      irow = lims(1, 2) - 2 + ii;
-      if (islogical (raw{ii, jj}))
+      icol = lims(2, 1) - 2 + jj;
+      if (isempty (raw{ii, jj}))
+        ## Do nothing
+
+      elseif (islogical (raw{ii, jj}))
         ## BOOLEAN. Convert to acceptable format for gnumeric
-        val = FALSE;
+        val = "FALSE";
         if (raw{ii, jj})
-          val = TRUE;
+          val = "TRUE";
         endif
-        fprintf (fid, '<gnm:Cell Row="%d" Col="%d" ValueType="20"></gnm:Cell>', ...
+        fprintf (fid, '<gnm:Cell Row="%d" Col="%d" ValueType="20">%s</gnm:Cell>', ...
                  irow, icol, val)
 
       elseif (isnumeric (raw{ii, jj}))
-        ## Any numric value; gnumeric only has FLOAT type
+        ## Any numeric value; gnumeric only has FLOAT type
         fprintf (fid, '<gnm:Cell Row="%d" Col="%d" ValueType="40">%f</gnm:Cell>', ...
                  irow, icol, raw{ii, jj});
 
       elseif (ischar (raw{ii, jj}))
         ## STRING
-        fprintf (fid, '<gnm:Cell Row="%d" Col="%d" ValueType="20">%s</gnm:Cell>', ...
+        fprintf (fid, '<gnm:Cell Row="%d" Col="%d" ValueType="60">%s</gnm:Cell>', ...
                  irow, icol, raw{ii, jj});
 
       else
         ## Do nothing, just skip
 
-      endswitch
+      endif
     endfor
   endfor
 

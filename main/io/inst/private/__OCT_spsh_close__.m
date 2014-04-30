@@ -1,4 +1,4 @@
-## Copyright (C) 2013 Philip Nienhuis
+## Copyright (C) 2013,2014 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@
 ##     ''     Reorganize code a bit
 ## 2014-04-06 Fix filename arg in error msg
 ##     ''     cd out of tmp dir before removing it
+## 2014-04-30 Gnumeric write support
 
 function [xls] = __OCT_spsh_close__ (xls)
 
@@ -56,14 +57,27 @@ function [xls] = __OCT_spsh_close__ (xls)
         system (sprintf ("zip -q -r %s *.* .", filename));
         xls.changed = 0;
       catch
-        printf ("odsclose: could not zip ods contents in %s to %s\n", xls.workbook, filename);
+        printf ("odsclose: could not zip ods contents in %s to %s\n", ...
+                xls.workbook, filename);
       end_try_catch;
     endif
 
   elseif (strcmpi (xls.filename(end-8:end), ".gnumeric"))
     ## gnumeric files are gzipped
-    ## Delete temporary file
-    unlink (xls.workbook);
+    try
+      status = system (sprintf ("gzip -c -S=gnumeric %s > %s", ...
+               xls.workbook, filename));
+      if (! status)
+        ## Delete temporary file
+        unlink (xls.workbook);
+      endif
+    catch
+      status = 1;
+    end_try_catch
+    if (status)
+      printf ("odsclose: could not gzip gnumeric contents in %s to %s\n", ...
+              xls.workbook, filename);
+    endif
 
   endif
 
@@ -74,6 +88,5 @@ function [xls] = __OCT_spsh_close__ (xls)
     confirm_recursive_rmdir (0, "local");
     rmdir (xls.workbook, "s");
   endif
-
 
 endfunction

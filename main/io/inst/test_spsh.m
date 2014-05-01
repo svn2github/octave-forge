@@ -37,6 +37,7 @@
 ##     ''     Added OCT interface tests conditional of writing interfaces
 ## 2013-12-31 Extended texinfo help text
 ## 2014-04-25 Write support for OCT
+## 2014-01-05 Add tests for gnumeric
 
 function [] = test_spsh (numb = [])
 
@@ -129,6 +130,9 @@ function [] = test_spsh (numb = [])
   endfor
   ## Test OCT interface if possible
   io_ods_testscript ("OCT", "io-test.ods");
+
+  ## Test OCT interface for gnumeric
+  io_ods_testscript ("OCT", "io-test.gnumeric");
 
   printf ("End of test_spsh\n");
 

@@ -22,6 +22,9 @@
 
 ## Author: Philip Nienhuis <prnienhuis at users . sf .net>
 ## Created: 2014-04-20
+## Updates:
+## 2014-04-30 First working version
+## 2014-01-05 Fix mixing up rows and colums in range to write
 
 function [xls, status] = __OCT_oct2gnm__ (obj, xls, wsh, crange, spsh_opts=0, obj_dims)
 
@@ -56,7 +59,7 @@ function [xls, status] = __OCT_oct2gnm__ (obj, xls, wsh, crange, spsh_opts=0, ob
     idx_s = xls.sheets.shtidx(wsh);
     idx_e = xls.sheets.shtidx(wsh+1) - 1;
     xls.changed = 2;
-    lims = [obj_dims.lc, obj_dims.rc; obj_dims.tr, obj_dims.br];
+    lims = [obj_dims.tr, obj_dims.br; obj_dims.lc, obj_dims.rc];
     rawarr = obj;
   elseif (new_sh)
     ## New sheet. Provisionally update sheet info in file pointer struct
@@ -64,7 +67,7 @@ function [xls, status] = __OCT_oct2gnm__ (obj, xls, wsh, crange, spsh_opts=0, ob
     idx_s = xls.sheets.shtidx(wsh) ;               ## First position after last sheet
     idx_e = idx_s - 1;
     xls.changed = 1;
-    lims = [obj_dims.lc, obj_dims.rc; obj_dims.tr, obj_dims.br];
+    lims = [obj_dims.tr, obj_dims.br; obj_dims.lc, obj_dims.rc];
     rawarr = obj;
   else
     ## Just write new data into an existing sheet
@@ -76,17 +79,15 @@ function [xls, status] = __OCT_oct2gnm__ (obj, xls, wsh, crange, spsh_opts=0, ob
     ## C. Merge old and new data. Provisionally allow empty new data to wipe old data
     [rawarr, lims] = __OCT_merge_data__ (rawarr, lims, obj, obj_dims);
   endif
-  
-#==============================================================================
 
-  ## D. Create a temporary file to hold the new sheet xml
+  ## C. Create a temporary file to hold the new sheet xml
   ## Open sheet file (new or old)
   tmpfil = tmpnam;
   fid = fopen (tmpfil, "w+");
   if (fid < 0)
     error ("oct2ods/xls: unable to write to tmp file %s\n", tmpfil);
   endif
-
+  
   ## Write data to sheet
   status  = __OCT__oct2gnm_sh__ (fid, rawarr, xls.sheets.sh_names{wsh}, lims);
 
@@ -132,7 +133,8 @@ function [xls, status] = __OCT_oct2gnm__ (obj, xls, wsh, crange, spsh_opts=0, ob
   fseek (fidc, idx_e, 'bof');
   gnm_xml = [ gnm_xml  fread(fidc, Inf, "char=>char")' ];
   ## Write updated gnumeric file back to disk.
-  fseek (fidc, 0, 'bof');
+  fclose (fidc);
+  fidc = fopen (xls.workbook, "w+"); 
   fprintf (fidc, "%s", gnm_xml);
   fclose (fidc);
 

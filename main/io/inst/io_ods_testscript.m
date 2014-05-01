@@ -1,4 +1,4 @@
-## Copyright (C) 2012,2013 Philip Nienhuis <pr.nienhuis at users.sf.net>
+## Copyright (C) 2012,2013,2014 Philip Nienhuis <pr.nienhuis at users.sf.net>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -51,6 +51,7 @@
 ##     ''     Provide default test file name
 ## 2014-01-23 Adapted to write support for OCT
 ## 2014-01-24 Fiddle with delays to allow OS to zip/unzip files to/from disk
+## 2014-01-05 Update copyright string
 
 function io_ods_testscript (intf, fname="io-test.ods", intf2='')
 
@@ -140,7 +141,9 @@ function io_ods_testscript (intf, fname="io-test.ods", intf2='')
     assert (islogical (raw{5, 2}), true);                ## Fails on JOD
     printf ("recovered.\n");
   catch
-    if (isnumeric (raw{5, 2}))
+    if (size (raw, 1) < 5 || size (raw, 2) < 2)
+      printf ("Too little data read, boolean value not in expected data limits.\n");
+    elseif (isnumeric (raw{5, 2}))
       printf ("recovered as numeric '1' rather than logical TRUE\n");
     else
       printf ("Hmmm.... error, see 'raw'\n");

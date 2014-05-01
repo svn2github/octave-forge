@@ -24,7 +24,7 @@
 ## Calling odsopen without specifying a return argument is fairly useless!
 ##
 ## Octave links to external software for read/write support of spreadsheets;
-## these links are "interfaces". For I/O from/to ODS 1.2 and reading Gnumeric
+## these links are "interfaces". For I/O from/to ODS 1.2 and Gnumeric
 ## XML, in principle no external SW is required, this "interface" is called
 ## 'OCT'. For more flexibility and better performance, you need a Java JRE
 ## or JDK plus one or more of (ODFtoolkit (version 0.7.5 or 0.8.6 - 0.8.8) &
@@ -49,8 +49,8 @@
 ## Optional input argument @var{reqintf} can be used to override the ODS
 ## interface automatically selected by odsopen. Currently implemented
 ## interfaces are 'OTK' (Java/ODF Toolkit), 'JOD' (Java/jOpenDocument), 'UNO'
-## (Java/OpenOffice.org UNO bridge), and 'OCT' (native Octave, for Gnumeric
-## only reading). In most situations this parameter is unneeded as odsopen
+## (Java/OpenOffice.org UNO bridge), and 'OCT' (native Octave, for Gnumeric.
+## In most situations this parameter is unneeded as odsopen
 ## automatically selects the most useful interface present ("default
 ## interface"). Depending on file type, odsopen.m can invoke other detected
 ## interfaces than the default one.

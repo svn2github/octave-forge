@@ -19,7 +19,8 @@
 ## @deftypefnx {Function File} @var{rstatus} = xlswrite (@var{filename}, @var{arr}, @var{wsh}, @var{range})
 ## @deftypefnx {Function File} @var{rstatus} = xlswrite (@var{filename}, @var{arr}, @var{wsh}, @var{range}, @var{reqintf})
 ## Add data in 1D/2D array @var{arr} to worksheet @var{wsh} in Excel
-## spreadsheet file @var{filename} in cell range @var{range}.
+## spreadsheet file @var{filename} in cell range @var{range}. Gnumeric
+## files can also be written.
 ##
 ## @var{rstatus} returns 1 if write succeeded, 0 otherwise.
 ##
@@ -72,7 +73,8 @@
 ## (.xlsx) a value of 'com', 'poi', 'uno', or 'oct' must
 ## be specified for @var{reqintf}. The value of @var{reqintf} is
 ## case-insensitive. Multiple interfaces can be selected if entered as
-## a cell array of strings.
+## a cell array of strings. Writing gnumeric files can only be done
+## with the OCT interface, selected automatically for those files.
 ##
 ## xlswrite is a mere wrapper for various scripts which find out what
 ## Excel interface to use (COM, POI, etc) plus code to mimic the other

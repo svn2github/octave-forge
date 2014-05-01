@@ -25,7 +25,7 @@
 ## Calling xlsopen without specifying a return argument is fairly useless!
 ##
 ## xlsopen works with interfaces, which are links to external software.
-## For I/O from OOXML (Excel 2007 and up), ODS 1.2 and Gnumeric, no
+## For I/O from/to OOXML (Excel 2007 and up), ODS 1.2 and Gnumeric, no
 ## additional software is required when the OCT interface is used (see below).
 ## For all other spreadsheet formats, you need one or more of MS-Excel
 ## (95 - 2013), or a Java JRE plus Apache POI >= 3.5 and/or JExcelAPI

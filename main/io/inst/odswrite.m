@@ -19,7 +19,8 @@
 ## @deftypefnx {Function File} @var{rstatus} = odswrite (@var{filename}, @var{arr}, @var{wsh}, @var{range})
 ## @deftypefnx {Function File} @var{rstatus} = odswrite (@var{filename}, @var{arr}, @var{wsh}, @var{range}, @var{reqintf})
 ## Add data in 1D/2D array @var{arr} into sheet @var{wsh} in
-## OpenOffice_org Calc spreadsheet file @var{filename} in cell range @var{range}.
+## OpenOffice_org Calc spreadsheet file @var{filename} in cell range
+## @var{range}. Gnumeric files can also be written.
 ##
 ## @var{rstatus} returns 1 if write succeeded, 0 otherwise.
 ##
@@ -59,7 +60,9 @@
 ## The optional last argument @var{reqintf} can be used to override 
 ## the automatic selection by odswrite of one interface out of the
 ## supported ones: Java/ODFtooolkit ('OTK'), Java/jOpenDocument ('JOD'),
-## Java/OpenOffice.org ('UNO'), or native Octave ('OCT').
+## Java/OpenOffice.org ('UNO'), or native Octave ('OCT'). For writing
+## gnumeric, the OCT interface is automatically selected and need not
+## be specified.
 ##
 ## odswrite is a mere wrapper for various scripts which find out what
 ## ODS interface to use (ODF toolkit, jOpenDocument, Open/LibreOffice or

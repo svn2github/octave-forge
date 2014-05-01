@@ -21,7 +21,8 @@
 ## @deftypefnx {Function File} [@var{numarr}, @var{txtarr}, @var{rawarr}, @var{limits}] = xlsread (@var{filename}, @var{wsh}, @var{range}, @var{reqintf})
 ##
 ## Read data contained in range @var{range} from worksheet @var{wsh}
-## in Excel spreadsheet file @var{filename}.
+## in Excel spreadsheet file @var{filename}. Gnumeric files can also
+## be read.
 ## Return argument @var{numarr} contains the numeric data, optional
 ## return arguments @var{txtarr} and @var{rawarr} contain text strings
 ## and the raw spreadsheet cell data, respectively. Return argument

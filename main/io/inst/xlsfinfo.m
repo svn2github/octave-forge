@@ -95,6 +95,7 @@
 ## 2013-12-29 Style fixes
 ## 2014-04-15 Updates to texinfo header
 ## 2014-04-26 Fix error messages (no more traceback)
+## 2014-05-01 Also check for leading period in file extension
 
 function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 
@@ -112,11 +113,11 @@ function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
   ## spreadsheet. Find out what format
   [~, ~, ext] = fileparts (xls.filename); 
   switch ext
-    case {"xls", "xlsx", "xlsm", "xlsb"}
+    case {"xls", "xlsx", "xlsm", ".xlsb", ".xls", ".xlsx", ".xlsm", ".xlsb"}
       filetype = "Microsoft Excel Spreadsheet";
-    case "ods"
+    case {"ods", ".ods"}
       filetype = "OpenOffice.org Calc spreadsheet";
-    case "gnumeric"
+    case {"gnumeric", ".gnumeric"}
       filetype = "Gnumeric spreadsheet";
     otherwise
   endswitch

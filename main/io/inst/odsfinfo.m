@@ -102,7 +102,7 @@ function [ filetype, sh_names ] = odsfinfo (filename, reqintf=[])
   switch ext
     case {".ods", "ods", ".sxc", "sxc"}
       filetype = "OpenOffice.org Calc Document";
-    case "gnumeric"
+    case {"gnumeric", ".gnumeric"}
       filetype = "Gnumeric spreadsheet";
     otherwise
   endswitch

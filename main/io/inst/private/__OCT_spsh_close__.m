@@ -71,6 +71,7 @@ function [xls] = __OCT_spsh_close__ (xls)
         ## Delete temporary file
         unlink (xls.workbook);
       endif
+      xls.changed = 0;
     catch
       status = 1;
     end_try_catch

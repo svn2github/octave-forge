@@ -139,6 +139,7 @@
 ## 2014-04-14 Update texinfo header
 ## 2014-04-15 More updates to texinfo header
 ## 2014-04-26 Fix error messages (no more traceback)
+## 2014-05-01 Write support for gnumeric
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
@@ -214,14 +215,10 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
   if (rw)
     [~, ~, ext] = fileparts (filename);
     ## .ods write support is supported
-    if (odsintf_cnt == 1 && odsinterfaces.OCT && ! strcmpi (ext, ".ods"))
-      ## Check if OCT is only interface and writing is requested
-      error ("odsopen: OCT interface has no support for writing gnumeric files (yet)\n");
-    endif
     rw = 1;
   endif
 
-  ## Check if ODS file exists. Set open mode based on rw argument
+  ## Check if file exists. Set open mode based on rw argument
   if (rw)
     fmode = "r+b";
   else

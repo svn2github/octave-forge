@@ -3,6 +3,8 @@ ncArray
   ncArray  
   ncCatArray
   nccoord
+  nctimeunits
+  ncreadtime
   cached_decompress
   @ncArray/coord
   @ncArray/ncArray

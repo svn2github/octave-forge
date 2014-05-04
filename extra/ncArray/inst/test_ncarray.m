@@ -359,6 +359,11 @@ for i = 1:3
 end
 rmdir(tmpdir);
 
+
+[t0,f] = nctimeunits('days since 1770-01-01 00:00:00');
+assert(t0,datenum(1770,01,01));
+assert(f,1);
+
 disp('All tests passed.')
 
 

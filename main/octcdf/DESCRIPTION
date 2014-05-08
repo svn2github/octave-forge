@@ -4,7 +4,7 @@ Date: 2014-02-17
 Author: Alexander Barth <barth.alexander@gmail.com>
 Maintainer: Alexander Barth <barth.alexander@gmail.com>
 Title: octcdf
-Description: A NetCDF interface for octave
+Description: A NetCDF interface for octave. This interface is depreciated. Please use the netcdf package instead (possibly in combination with ncarray).
 Depends: octave (>= 3.4.0)
 BuildRequires: netcdf-devel
 License: GPLv2+

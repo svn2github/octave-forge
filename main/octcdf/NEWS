@@ -1,6 +1,13 @@
 Summary of important user-visible changes for releases of the octcdf package
 
 ===============================================================================
+octcdf-1.1.8   Release Date: 2014-xx-xx   Release Manager: Alexander Barth
+===============================================================================
+
+ ** Add depreciation info. Please use the netcdf package instead (possibly in
+    combination with ncarray).
+
+===============================================================================
 octcdf-1.1.7   Release Date: 2014-02-17   Release Manager: Alexander Barth
 ===============================================================================
 

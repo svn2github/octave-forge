@@ -33,8 +33,8 @@ else
 end
 
 
-% should also split at ";"
-p = strsplit(self.query_string,'&');
+% split at & and ;
+p = strsplit(self.query_string,{'&',';'});
 
 for i=1:length(p)
   pp = strsplit(p{i},'=');

@@ -23,6 +23,7 @@
 ## 2012-10-24 Style fixes
 ## 2013-12-01 Copyright string updates
 ## 2014-01-23 Copyright update, return "Empty" for range of empty sheets
+## 2014-05-11 Replace calls to deprecated java_get by __java_get__
 
 function [sh_names] = __OTK_spsh_info__ (ods)
 
@@ -34,7 +35,7 @@ function [sh_names] = __OTK_spsh_info__ (ods)
   endif
 
   ## Create an instance of type NODESET for use in subsequent statement
-  NODESET = java_get ("javax.xml.xpath.XPathConstants", "NODESET");
+  NODESET = __java_get__ ("javax.xml.xpath.XPathConstants", "NODESET");
   ## Parse sheets ("tables") from ODS file
   sheets = xpath.evaluate ("//table:table", ods.workbook, NODESET);
   nr_of_sheets = sheets.getLength(); 

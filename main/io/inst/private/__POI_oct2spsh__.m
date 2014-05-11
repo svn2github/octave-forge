@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis
+## Copyright (C) 2009,2010,2011,2012,2013,2014 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -61,6 +61,7 @@
 ## 2012-10-24 Style fixes
 ## 2013-12-06 Updated copyright strings; style fixes
 ## 2013-12-07 Fixed .xls extension check; style fixes
+## 2014-05-11 Replace calls to deprecated java_get by __java_get__
 
 function [ xls, rstatus ] = __POI_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
 
@@ -72,11 +73,11 @@ function [ xls, rstatus ] = __POI_oct2spsh__ (obj, xls, wsh, crange, spsh_opts)
   persistent ctype;
   if (isempty (ctype))
     ## Get cell types. Beware as they start at 0 not 1
-    ctype(1) = java_get ("org.apache.poi.ss.usermodel.Cell", "CELL_TYPE_NUMERIC");  ## 0
-    ctype(2) = java_get ("org.apache.poi.ss.usermodel.Cell", "CELL_TYPE_BOOLEAN");  ## 4
-    ctype(3) = java_get ("org.apache.poi.ss.usermodel.Cell", "CELL_TYPE_STRING");   ## 1
-    ctype(4) = java_get ("org.apache.poi.ss.usermodel.Cell", "CELL_TYPE_FORMULA");  ## 2
-    ctype(5) = java_get ("org.apache.poi.ss.usermodel.Cell", "CELL_TYPE_BLANK");    ## 3
+    ctype(1) = __java_get__ ("org.apache.poi.ss.usermodel.Cell", "CELL_TYPE_NUMERIC");  ## 0
+    ctype(2) = __java_get__ ("org.apache.poi.ss.usermodel.Cell", "CELL_TYPE_BOOLEAN");  ## 4
+    ctype(3) = __java_get__ ("org.apache.poi.ss.usermodel.Cell", "CELL_TYPE_STRING");   ## 1
+    ctype(4) = __java_get__ ("org.apache.poi.ss.usermodel.Cell", "CELL_TYPE_FORMULA");  ## 2
+    ctype(5) = __java_get__ ("org.apache.poi.ss.usermodel.Cell", "CELL_TYPE_BLANK");    ## 3
   endif
   ## scratch vars
   rstatus = 0; f_errs = 0;

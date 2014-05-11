@@ -1,4 +1,4 @@
-## Copyright (C) 2010,2011,2012,2013 Philip Nienhuis
+## Copyright (C) 2010,2011,2012,2013,2014 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -22,10 +22,11 @@
 ## 2012-10-12 Renamed & moved into ./private
 ## 2012-10-24 Style fixes
 ## 2013-12-01 Style fixes, copyright string updates
+## 2014-05-11 Replace calls to deprecated java_get by __java_get__
 
 function [ trow, brow, lcol, rcol ] = __JXL_getusedrange__ (xls, wsh)
 
-  persistent emptycell = (java_get ("jxl.CellType", "EMPTY")).toString ();
+  persistent emptycell = (__java_get__ ("jxl.CellType", "EMPTY")).toString ();
 
   sh = xls.workbook.getSheet (wsh - 1);      ## JXL sheet count 0-based
 

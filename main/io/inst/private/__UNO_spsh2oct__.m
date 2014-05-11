@@ -1,4 +1,4 @@
-## Copyright (C) 2011,2012,2013 Philip Nienhuis
+## Copyright (C) 2011,2012,2013,2014 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -25,6 +25,7 @@
 ## 2012-12-21 Search for exact match when searching sheet names
 ## 2013-01-20 Adapted to ML-compatible Java calls
 ## 2013-12-06 Updated copyright strings; style fixes
+## 2014-05-11 Replace calls to deprecated java_get by __java_get__
 
 function [rawarr, xls, rstatus] = __UNO_spsh2oct__  (xls, wsh, datrange, spsh_opts)
 
@@ -55,11 +56,12 @@ function [rawarr, xls, rstatus] = __UNO_spsh2oct__  (xls, wsh, datrange, spsh_op
   unotmp = javaObject ("com.sun.star.uno.Type", "com.sun.star.sheet.XCellRangesQuery");
   xRQ = sh.queryInterface (unotmp);
   ## Get cell ranges of all rectangles containing data. Type values:
-  ##java_get ("com.sun.star.sheet.CellFlags", "VALUE")      ans =  1
-  ##java_get ("com.sun.star.sheet.CellFlags", "DATETIME")   ans =  2
-  ##java_get ("com.sun.star.sheet.CellFlags", "STRING")     ans =  4
-  ##java_get ("com.sun.star.sheet.CellFlags", "FORMULA")    ans = 16 +
-  ## Yep, boolean is lacking...                             sum = 23
+  ##__java_get__ ("com.sun.star.sheet.CellFlags", "VALUE")      ans =  1
+  ##__java_get__ ("com.sun.star.sheet.CellFlags", "DATETIME")   ans =  2
+  ##__java_get__ ("com.sun.star.sheet.CellFlags", "STRING")     ans =  4
+  ##__java_get__ ("com.sun.star.sheet.CellFlags", "FORMULA")    ans = 16 +
+  ##                                                            --------
+  ## Yep, boolean is lacking...                                 sum = 23
   Cellflgs = javaObject ("java.lang.Short", "23");
   ccells = xRQ.queryContentCells (Cellflgs);
   addrs = ccells.getRangeAddressesAsString ();

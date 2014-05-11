@@ -48,6 +48,7 @@
 ## 2013-01-20 Adapted to ML-compatible Java calls
 ## 2013-12-01 Style fixes, copyright string updates
 ## 2014-01-29 Style fixes, copyright string updates
+## 2014-05-11 Replace calls to deprecated java_get by __java_get__
 
 function [ ods, rstatus ] = __OTK_oct2ods__ (c_arr, ods, wsh, crange, spsh_opts)
 
@@ -67,7 +68,7 @@ function [ ods, rstatus ] = __OTK_oct2ods__ (c_arr, ods, wsh, crange, spsh_opts)
   officestyles = ods.app.getOrCreateDocumentStyles();
 
   ## Create an instance of type NODESET for use in subsequent statements
-  NODESET = java_get ("javax.xml.xpath.XPathConstants", "NODESET");
+  NODESET = __java_get__ ("javax.xml.xpath.XPathConstants", "NODESET");
 
   ## Parse sheets ("tables") from ODS file
   sheets = xpath.evaluate ("//table:table", odfcont, NODESET);

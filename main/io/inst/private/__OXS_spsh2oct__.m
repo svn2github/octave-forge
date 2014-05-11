@@ -1,4 +1,4 @@
-## Copyright (C) 2011,2012,2013 Philip Nienhuis
+## Copyright (C) 2011,2012,2013,2014 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -32,6 +32,8 @@
 ## 2012-10-24 Style fixes
 ## 2013-12-06 Updated copyright strings
 ## 2013-12-29 Overhauled actual worksheet reading section. Now does formulas too
+## 2014-05-11 Replace calls to deprecated java_get by __java_get__
+##     ''     Silence message when reading from sheet given by index
 
 function [ rawarr, xls, rstatus ] = __OXS_spsh2oct__ (xls, wsh, cellrange, spsh_opts)
 
@@ -39,12 +41,12 @@ function [ rawarr, xls, rstatus ] = __OXS_spsh2oct__ (xls, wsh, cellrange, spsh_
   if (isempty (ctype))
     ctype = zeros (6, 1);
     ## Get enumerated cell types. Beware as they start at 0 not 1
-    ctype( 1) = (java_get ("com.extentech.ExtenXLS.CellHandle", "TYPE_STRING"));  ## 0
-    ctype( 2) = (java_get ("com.extentech.ExtenXLS.CellHandle", "TYPE_FP"));      ## 1
-    ctype( 3) = (java_get ("com.extentech.ExtenXLS.CellHandle", "TYPE_INT"));     ## 2
-    ctype( 4) = (java_get ("com.extentech.ExtenXLS.CellHandle", "TYPE_FORMULA")); ## 3
-    ctype( 5) = (java_get ("com.extentech.ExtenXLS.CellHandle", "TYPE_BOOLEAN")); ## 4
-    ctype( 6) = (java_get ("com.extentech.ExtenXLS.CellHandle", "TYPE_DOUBLE"));  ## 5
+    ctype( 1) = (__java_get__ ("com.extentech.ExtenXLS.CellHandle", "TYPE_STRING"));  ## 0
+    ctype( 2) = (__java_get__ ("com.extentech.ExtenXLS.CellHandle", "TYPE_FP"));      ## 1
+    ctype( 3) = (__java_get__ ("com.extentech.ExtenXLS.CellHandle", "TYPE_INT"));     ## 2
+    ctype( 4) = (__java_get__ ("com.extentech.ExtenXLS.CellHandle", "TYPE_FORMULA")); ## 3
+    ctype( 5) = (__java_get__ ("com.extentech.ExtenXLS.CellHandle", "TYPE_BOOLEAN")); ## 4
+    ctype( 6) = (__java_get__ ("com.extentech.ExtenXLS.CellHandle", "TYPE_DOUBLE"));  ## 5
   endif
   
   rstatus = 0; 
@@ -59,7 +61,6 @@ function [ rawarr, xls, rstatus ] = __OXS_spsh2oct__ (xls, wsh, cellrange, spsh_
           wsh, nr_of_sheets, xls.filename)); 
     endif
     sh = wb.getWorkSheet (wsh - 1);               ## OXS sheet count 0-based
-    printf ("(Reading from worksheet %s)\n", sh.getSheetName ());
   else
     try
       sh = wb.getWorkSheet (wsh);

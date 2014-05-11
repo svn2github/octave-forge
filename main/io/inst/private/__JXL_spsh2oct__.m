@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis
+## Copyright (C) 2009,2010,2011,2012,2013,2014 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -52,6 +52,7 @@
 ## 2012-10-12 Renamed & moved into ./private
 ## 2012-10-24 Style fixes
 ## 2013-12-01 Style fixes, copyright string updates
+## 2014-05-11 Replace calls to deprecated java_get by __java_get__
 
 function [ rawarr, xls, rstatus ] = __JXL_spsh2oct__ (xls, wsh, cellrange, spsh_opts)
 
@@ -59,17 +60,17 @@ function [ rawarr, xls, rstatus ] = __JXL_spsh2oct__ (xls, wsh, cellrange, spsh_
   if (isempty (ctype))
     ctype = cell (11, 1);
     ## Get enumerated cell types. Beware as they start at 0 not 1
-    ctype( 1) = (java_get ("jxl.CellType", "BOOLEAN")).toString ();
-    ctype( 2) = (java_get ("jxl.CellType", "BOOLEAN_FORMULA")).toString ();
-    ctype( 3) = (java_get ("jxl.CellType", "DATE")).toString ();
-    ctype( 4) = (java_get ("jxl.CellType", "DATE_FORMULA")).toString ();
-    ctype( 5) = (java_get ("jxl.CellType", "EMPTY")).toString ();
-    ctype( 6) = (java_get ("jxl.CellType", "ERROR")).toString ();
-    ctype( 7) = (java_get ("jxl.CellType", "FORMULA_ERROR")).toString ();
-    ctype( 8) = (java_get ("jxl.CellType", "NUMBER")).toString ();
-    ctype( 9) = (java_get ("jxl.CellType", "LABEL")).toString ();
-    ctype(10) = (java_get ("jxl.CellType", "NUMBER_FORMULA")).toString ();
-    ctype(11) = (java_get ("jxl.CellType", "STRING_FORMULA")).toString ();
+    ctype( 1) = (__java_get__ ("jxl.CellType", "BOOLEAN")).toString ();
+    ctype( 2) = (__java_get__ ("jxl.CellType", "BOOLEAN_FORMULA")).toString ();
+    ctype( 3) = (__java_get__ ("jxl.CellType", "DATE")).toString ();
+    ctype( 4) = (__java_get__ ("jxl.CellType", "DATE_FORMULA")).toString ();
+    ctype( 5) = (__java_get__ ("jxl.CellType", "EMPTY")).toString ();
+    ctype( 6) = (__java_get__ ("jxl.CellType", "ERROR")).toString ();
+    ctype( 7) = (__java_get__ ("jxl.CellType", "FORMULA_ERROR")).toString ();
+    ctype( 8) = (__java_get__ ("jxl.CellType", "NUMBER")).toString ();
+    ctype( 9) = (__java_get__ ("jxl.CellType", "LABEL")).toString ();
+    ctype(10) = (__java_get__ ("jxl.CellType", "NUMBER_FORMULA")).toString ();
+    ctype(11) = (__java_get__ ("jxl.CellType", "STRING_FORMULA")).toString ();
     months = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};
   endif
   

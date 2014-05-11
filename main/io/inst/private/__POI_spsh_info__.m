@@ -1,4 +1,4 @@
-## Copyright (C) 2012,2013 Philip Nienhuis
+## Copyright (C) 2012,2013,2014 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -22,10 +22,11 @@
 ## 2012-10-12 Moved into ./private
 ## 2012-10-24 Style fixes
 ## 2013-12-06 Updated copyright strings
+## 2014-05-11 Replace calls to deprecated java_get by __java_get__
 
 function [sh_names] = __POI_spsh_info__ (xls)
 
-  persistent cblnk; cblnk = java_get ("org.apache.poi.ss.usermodel.Cell", "CELL_TYPE_BLANK");
+  persistent cblnk; cblnk = __java_get__ ("org.apache.poi.ss.usermodel.Cell", "CELL_TYPE_BLANK");
   sh_cnt = xls.workbook.getNumberOfSheets();
   sh_names = cell (sh_cnt, 2); nsrows = zeros (sh_cnt, 1);
   for ii=1:sh_cnt

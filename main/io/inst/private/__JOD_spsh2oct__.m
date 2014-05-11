@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011,2012,2013 Philip Nienhuis
+## Copyright (C) 2009,2010,2011,2012,2013,2014 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -34,6 +34,7 @@
 ## 2012-10-12 Renamed & moved into ./private
 ## 2012-10-24 Style fixes
 ## 2013-12-01 Style fixes, copyright string updates
+## 2014-05-11 Replace calls to deprecated java_get by __java_get__
 
 function [ rawarr, ods] = __JOD_spsh2oct__ (ods, wsh, crange)
 
@@ -47,13 +48,13 @@ function [ rawarr, ods] = __JOD_spsh2oct__ (ods, wsh, crange)
     ## 1.2b3+ has public getValueType ()
     persistent ctype;
     if (isempty (ctype))
-      BOOLEAN    = char (java_get ("org.jopendocument.dom.ODValueType", "BOOLEAN"));
-      CURRENCY   = char (java_get ("org.jopendocument.dom.ODValueType", "CURRENCY"));
-      DATE       = char (java_get ("org.jopendocument.dom.ODValueType", "DATE"));
-      FLOAT      = char (java_get ("org.jopendocument.dom.ODValueType", "FLOAT"));
-      PERCENTAGE = char (java_get ("org.jopendocument.dom.ODValueType", "PERCENTAGE"));
-      STRING     = char (java_get ("org.jopendocument.dom.ODValueType", "STRING"));
-      TIME       = char (java_get ("org.jopendocument.dom.ODValueType", "TIME"));
+      BOOLEAN    = char (__java_get__ ("org.jopendocument.dom.ODValueType", "BOOLEAN"));
+      CURRENCY   = char (__java_get__ ("org.jopendocument.dom.ODValueType", "CURRENCY"));
+      DATE       = char (__java_get__ ("org.jopendocument.dom.ODValueType", "DATE"));
+      FLOAT      = char (__java_get__ ("org.jopendocument.dom.ODValueType", "FLOAT"));
+      PERCENTAGE = char (__java_get__ ("org.jopendocument.dom.ODValueType", "PERCENTAGE"));
+      STRING     = char (__java_get__ ("org.jopendocument.dom.ODValueType", "STRING"));
+      TIME       = char (__java_get__ ("org.jopendocument.dom.ODValueType", "TIME"));
     endif
 ##  else
 ##    ## 1.2b2 has not

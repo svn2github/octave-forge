@@ -1,4 +1,4 @@
-## Copyright (C) 2010,2011,2012,2013 Philip Nienhuis 
+## Copyright (C) 2010,2011,2012,2013,2014 Philip Nienhuis 
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -32,6 +32,7 @@
 ## 2012-10-24 Style fixes
 ## 2013-12-01 Style fixes, copyright string updates
 ## 2013-12-27 Style fixes
+## 2014-05-11 Replace calls to deprecated java_get by __java_get__
 
 function [ trow, lrow, lcol, rcol ] = __OTK_getusedrange__ (ods, ii)
 
@@ -49,7 +50,7 @@ function [ trow, lrow, lcol, rcol ] = __OTK_getusedrange__ (ods, ii)
   endif
   
   ## Create an instance of type NODESET for use in subsequent statement
-  NODESET = java_get ("javax.xml.xpath.XPathConstants", "NODESET");
+  NODESET = __java_get__ ("javax.xml.xpath.XPathConstants", "NODESET");
   ## Get table-rows in sheet no. wsh. Sheet count = 1-based (!)
   str = sprintf ("//table:table[%d]/table:table-row", ii);
   sh = xpath.evaluate (str, odfcont, NODESET);

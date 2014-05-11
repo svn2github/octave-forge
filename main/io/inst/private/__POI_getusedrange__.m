@@ -1,4 +1,4 @@
-## Copyright (C) 2010,2011,2012,2013 Philip Nienhuis
+## Copyright (C) 2010,2011,2012,2013,2014 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -23,11 +23,12 @@
 ## 2013-09-23 Check getFirstCellNum method return value for empty rows
 ## 2013-12-06 Style fixes
 ## 2014-04-06 Fix getFirstCellNum return value when checking rightmost cells
+## 2014-05-11 Replace calls to deprecated java_get by __java_get__
 
 function [ trow, brow, lcol, rcol ] = __POI_getusedrange__ (xls, ii)
 
   persistent cblnk; 
-  cblnk = java_get ("org.apache.poi.ss.usermodel.Cell", "CELL_TYPE_BLANK");
+  cblnk = __java_get__ ("org.apache.poi.ss.usermodel.Cell", "CELL_TYPE_BLANK");
 
   sh = xls.workbook.getSheetAt (ii-1);          ## Java POI starts counting at 0 
 

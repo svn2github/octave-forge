@@ -1,4 +1,4 @@
-## Copyright (C) 2010,2011,2012,2013 Philip Nienhuis
+## Copyright (C) 2010,2011,2012,2013,2014 Philip Nienhuis
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -28,6 +28,7 @@
 ## 2013-09-11 rstatus return arg added (nowhere used, but all other routines have it)
 ##     ''     Returned formulas cleaned up
 ## 2013-12-01 Style fixes, copyright string updates
+## 2014-05-11 Test for unintended empty cells before applying Java methods
 
 function [ rawarr, ods, rstatus ] = __OTK_spsh2oct__ (ods, wsh, crange, spsh_opts)
 
@@ -96,77 +97,80 @@ function [ rawarr, ods, rstatus ] = __OTK_spsh2oct__ (ods, wsh, crange, spsh_opt
     for jj=lcol:ncols+lcol-1;
       ocell = row.getCellByIndex (jj-1);
       if (! isempty (ocell))
-        otype = deblank (tolower (ocell.getValueType ()));
-         if (spsh_opts.formulas_as_text)
-          if (! isempty (ocell.getFormula ()))
-            otype = "formula";
+        cv = ocell.getValueType ();
+        if (! isempty (cv))
+          otype = deblank (tolower (cv));
+           if (spsh_opts.formulas_as_text)
+            if (! isempty (ocell.getFormula ()))
+              otype = "formula";
+            endif
           endif
+  ##        ## Provisions for catching jOpenDocument 1.2b bug where text cells
+  ##        ## haven't been assigned an <office:value-type='string'> attribute
+  ##        if (! isempty (ocell))
+  ##          if (findstr ("<text:", char (ocell.getOdfElement ())))
+  ##            otype = "string"; 
+  ##          endif
+  ##        endif
+          ## At last, read the data
+          switch otype
+            case  {"float", "currency", "percentage"}
+              rawarr(ii-trow+1, jj-lcol+1) = ocell.getDoubleValue ();
+            case "date"
+              ## Dive into TableTable API
+              tvalue = ocell.getOdfElement ().getOfficeDateValueAttribute ();
+              ## Dates are returned as octave datenums, i.e. 0-0-0000 based
+              yr = str2num (tvalue(1:4));
+              mo = str2num (tvalue(6:7));
+              dy = str2num (tvalue(9:10));
+              if (index (tvalue, "T"))
+                hh = str2num (tvalue(12:13));
+                mm = str2num (tvalue(15:16));
+                ss = str2num (tvalue(18:19));
+                rawarr(ii-trow+1, jj-lcol+1) = datenum (yr, mo, dy, hh, mm, ss);
+              else
+                rawarr(ii-trow+1, jj-lcol+1) = datenum (yr, mo, dy);
+              endif
+            case "time"
+              ## Dive into TableTable API
+              tvalue = ocell.getOdfElement ().getOfficeTimeValueAttribute ();
+              if (index (tvalue, "PT"))
+                hh = str2num (tvalue(3:4));
+                mm = str2num (tvalue(6:7));
+                ss = str2num (tvalue(9:10));
+                rawarr(ii-trow+1, jj-lcol+1) = datenum (0, 0, 0, hh, mm, ss);
+              endif
+            case "boolean"
+              rawarr(ii-trow+1, jj-lcol+1) = ocell.getBooleanValue ();
+            case "string"
+              rawarr(ii-trow+1, jj-lcol+1) = ocell.getStringValue ();
+  ##          ## Code left in for in case odfdom 0.8.6+ has similar bug
+  ##          ## as 0.7.5
+  ##          cvalue = tcell.getOfficeStringValueAttribute ();
+  ##          if (isempty (cvalue))     ## Happens with e.g., hyperlinks
+  ##            tmp = char (tcell);
+  ##            ## Hack string value from between <text:p|r> </text:p|r> tags
+  ##            ist = findstr (tmp, "<text:");
+  ##            if (ist)
+  ##              ist = ist (length (ist));
+  ##              ist = ist + 8;
+  ##              ien = index (tmp(ist:end), "</text") + ist - 2;
+  ##              tmp (ist:ien);
+  ##              cvalue = tmp(ist:ien);
+  ##            endif
+  ##          endif
+  ##          rawarr(ii-trow+1, jj-lcol+1)= cvalue;
+            case "formula"
+              form = ocell.getFormula ();
+              ## Pimp ranges in formulas
+              form = regexprep (form(4:end), '\[\.(\w+)\]', '$1');
+              form = regexprep (form, '\[\.(\w+):', '$1:');
+              form = regexprep (form, ':\.(\w+)\]', ':$1');
+              rawarr(ii-trow+1, jj-lcol+1) = form;
+            otherwise
+              ## Nothing.
+          endswitch
         endif
-##        ## Provisions for catching jOpenDocument 1.2b bug where text cells
-##        ## haven't been assigned an <office:value-type='string'> attribute
-##        if (! isempty (ocell))
-##          if (findstr ("<text:", char (ocell.getOdfElement ())))
-##            otype = "string"; 
-##          endif
-##        endif
-        ## At last, read the data
-        switch otype
-          case  {"float", "currency", "percentage"}
-            rawarr(ii-trow+1, jj-lcol+1) = ocell.getDoubleValue ();
-          case "date"
-            ## Dive into TableTable API
-            tvalue = ocell.getOdfElement ().getOfficeDateValueAttribute ();
-            ## Dates are returned as octave datenums, i.e. 0-0-0000 based
-            yr = str2num (tvalue(1:4));
-            mo = str2num (tvalue(6:7));
-            dy = str2num (tvalue(9:10));
-            if (index (tvalue, "T"))
-              hh = str2num (tvalue(12:13));
-              mm = str2num (tvalue(15:16));
-              ss = str2num (tvalue(18:19));
-              rawarr(ii-trow+1, jj-lcol+1) = datenum (yr, mo, dy, hh, mm, ss);
-            else
-              rawarr(ii-trow+1, jj-lcol+1) = datenum (yr, mo, dy);
-            endif
-          case "time"
-            ## Dive into TableTable API
-            tvalue = ocell.getOdfElement ().getOfficeTimeValueAttribute ();
-            if (index (tvalue, "PT"))
-              hh = str2num (tvalue(3:4));
-              mm = str2num (tvalue(6:7));
-              ss = str2num (tvalue(9:10));
-              rawarr(ii-trow+1, jj-lcol+1) = datenum (0, 0, 0, hh, mm, ss);
-            endif
-          case "boolean"
-            rawarr(ii-trow+1, jj-lcol+1) = ocell.getBooleanValue ();
-          case "string"
-            rawarr(ii-trow+1, jj-lcol+1) = ocell.getStringValue ();
-##          ## Code left in for in case odfdom 0.8.6+ has similar bug
-##          ## as 0.7.5
-##          cvalue = tcell.getOfficeStringValueAttribute ();
-##          if (isempty (cvalue))     ## Happens with e.g., hyperlinks
-##            tmp = char (tcell);
-##            ## Hack string value from between <text:p|r> </text:p|r> tags
-##            ist = findstr (tmp, "<text:");
-##            if (ist)
-##              ist = ist (length (ist));
-##              ist = ist + 8;
-##              ien = index (tmp(ist:end), "</text") + ist - 2;
-##              tmp (ist:ien);
-##              cvalue = tmp(ist:ien);
-##            endif
-##          endif
-##          rawarr(ii-trow+1, jj-lcol+1)= cvalue;
-          case "formula"
-            form = ocell.getFormula ();
-            ## Pimp ranges in formulas
-            form = regexprep (form(4:end), '\[\.(\w+)\]', '$1');
-            form = regexprep (form, '\[\.(\w+):', '$1:');
-            form = regexprep (form, ':\.(\w+)\]', ':$1');
-            rawarr(ii-trow+1, jj-lcol+1) = form;
-          otherwise
-            ## Nothing.
-        endswitch
       endif
     endfor
   endfor

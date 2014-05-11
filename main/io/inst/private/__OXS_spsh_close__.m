@@ -24,6 +24,7 @@
 ## 2013-12-06 Updated copyright string
 ## 2013-12-28 Style fixes
 ##     ''     Moved wb close statement down to always unlock file
+## 2014-05-11 Silence when saving new file
 
 function [ xls ] = __OXS_spsh_close__ (xls)
 
@@ -34,9 +35,9 @@ function [ xls ] = __OXS_spsh_close__ (xls)
         fname = xls.filename;
       endif
       try
-        if (xls.changed == 2)
-          printf ("Saving file %s...\n", fname);
-        endif
+##      if (xls.changed == 2)
+##        printf ("Saving file %s...\n", fname);
+##      endif
         xlsout = javaObject ("java.io.FileOutputStream", fname);
         xls.workbook.write (xlsout);
         xlsout.close ();

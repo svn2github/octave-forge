@@ -40,6 +40,7 @@ File extension       COM POI POI/OOXML JXL OXS UNO OTK JOD OCT
     - odsfinfo.m, xlsfinfo.m: also check for leading period in file extension
       switch statement
     - Replace java_get (deprecated in Octave > 4.1.0) by __java_get__
+    - Catch rare Java exception in OTK interface under Octave-4.1.0+
 
 ===============================================================================
 io-2.2.1   Release Date: 2014-04-26 Release Manager: Philip Nienhuis

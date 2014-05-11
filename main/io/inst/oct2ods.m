@@ -19,8 +19,8 @@
 ## @deftypefnx {Function File} [ @var{ods}, @var{rstatus} ] = oct2ods (@var{arr}, @var{ods}, @var{wsh}, @var{range})
 ## @deftypefnx {Function File} [ @var{ods}, @var{rstatus} ] = oct2ods (@var{arr}, @var{ods}, @var{wsh}, @var{range}, @var{options})
 ##
-## Transfer data to an OpenOffice_org Calc spreadsheet previously opened
-## by odsopen().
+## Transfer data to an OpenOffice_org Calc (or gnumeric) spreadsheet
+## previously opened by odsopen().
 ##
 ## Data in 1D/2D array @var{arr} are transferred into a cell range
 ## @var{range} in sheet @var{wsh}. @var{ods} must have been made earlier

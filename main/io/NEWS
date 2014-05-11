@@ -1,7 +1,7 @@
 Summary of important user-visible changes for releases of the io package
 
 ===============================================================================
-io-2.2.2   Release Date: 2014-TBA Release Manager: Philip Nienhuis
+io-2.2.2   Release Date: 2014-05-12 Release Manager: Philip Nienhuis
 ===============================================================================
 
 *** New features:
@@ -15,8 +15,8 @@ File extension       COM POI POI/OOXML JXL OXS UNO OTK JOD OCT
 --------------------------------------------------------------
 .xls (Excel95)        R                 R       R 
 .xls (Excel97-2003)   +   +      +      +   +   +
-.xlsx                 ~          +         (+)  R           +
-.xlsb, .xlsm          ~                     ?   R
+.xlsx (Excel2007+)    ~          +         (+)  R           +
+.xlsb, .xlsm          ~                     ?   R           R?
 .wk1                  +                         R
 .wks                  +                         R
 .dbf                  +                         +
@@ -29,6 +29,8 @@ File extension       COM POI POI/OOXML JXL OXS UNO OTK JOD OCT
 .gnumeric                                                   +
 --------------------------------------------------------------
 (~ = dependent on Excel/LO/OOo version);  + = read/write;  R = only reading )
+(+) unfortunately OOXML support in the OpenXLS Java library itself is too
+    buggy, so OOXML support for OXS has been disabled (but it is implemented)
 
 *** Docs (html) & texinfo help texts updated
 
@@ -37,6 +39,7 @@ File extension       COM POI POI/OOXML JXL OXS UNO OTK JOD OCT
       Octave-3.9.0+
     - odsfinfo.m, xlsfinfo.m: also check for leading period in file extension
       switch statement
+    - Replace java_get (deprecated in Octave > 4.1.0) by __java_get__
 
 ===============================================================================
 io-2.2.1   Release Date: 2014-04-26 Release Manager: Philip Nienhuis

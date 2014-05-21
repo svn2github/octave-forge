@@ -316,14 +316,14 @@ function [xls, rstatus] = __OCT_oct2xlsx__ (arrdat, xls, wsh=1, crange="", spsh_
   cxml = fread (cid, Inf, "char=>char").';
   fclose (cid);
   cxml = regexprep (cxml, 'dBy>(\w+)</cp:lastM', 'dBy>GNU Octave</cp:lastM');
-  modtime = datevec (now);
+  modtime = int32 (datevec (now));
   modtime = sprintf ("%4d-%2d-%2dT%2d:%2d:%2dZ", modtime(1), modtime(2), modtime(3), ...
                                                  modtime(4), modtime(5), modtime(6));
   modtime = strrep (modtime, " ", "0");
   [modf, ia, ib] = getxmlnode (cxml, "dcterms:created", [], 1);
-  cxml(ia:ib) = strrep (cxml(ia:ib), modf, modtime);
+  cxml = [cxml(1:ia-1) strrep(cxml(ia:ib), modf, modtime) cxml(ib+1:end)];
   [modf, ia, ib] = getxmlnode (cxml, "dcterms:modified", [], 1);
-  cxml(ia:ib) = strrep (cxml(ia:ib), modf, modtime);
+  cxml = [cxml(1:ia-1) strrep(cxml(ia:ib), modf, modtime) cxml(ib+1:end)];
   cid = fopen ([xls.workbook filesep "docProps" filesep "core.xml"], "w+");
   fprintf (cid, "%s", cxml);
   fclose (cid);

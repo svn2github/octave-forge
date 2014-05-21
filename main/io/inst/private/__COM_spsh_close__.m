@@ -1,4 +1,4 @@
-## Copyright (C) 2012,2013 Philip Nienhuis
+## Copyright (C) 2012,2013,2014 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -20,6 +20,8 @@
 ## Created: 2012-10-12
 ## Updates
 ## 2013-12-01 Style fixes, copyright string update
+## 2014-05-20 Catch changed behavior of canonicalize_file_name in 3.9.0+,
+##            replace by make_absolute_filename
 
 function [ xls ] = __COM_spsh_close__ (xls)
 
@@ -49,16 +51,17 @@ function [ xls ] = __COM_spsh_close__ (xls)
         else
           fname = xls.filename;
         endif
+        fname = make_absolute_filename (strsplit (fname, filesep){end});
         if (xls.changed == 2)
           ## Probably a newly created, or renamed, Excel file
 ##         printf ("Saving file %s ...\n", fname);
-          xls.workbook.SaveAs (canonicalize_file_name (fname));
+          xls.workbook.SaveAs (fname);
         elseif (xls.changed == 1)
           ## Just updated existing Excel file
           xls.workbook.Save ();
         endif
         xls.changed = 0;
-        xls.workbook.Close (canonicalize_file_name (fname));
+        xls.workbook.Close (fname);
       endif
       xls.app.Quit ();
       delete (xls.workbook);  ## This statement actually closes the workbook

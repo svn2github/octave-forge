@@ -1,4 +1,4 @@
-## Copyright (C) 2012,2013 Philip Nienhuis
+## Copyright (C) 2012,2013,2014 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -22,21 +22,24 @@
 ## 2010-11-01 Added <COM>.Application.DisplayAlerts=0 in COM section to avoid Excel pop-ups
 ## 2012-10-24 Style fixes
 ## 2012-12-01 Copyright string updates
+## 2014-05-20 Catch changed behavior of canonicalize_file_name in 3.9.0+
+##            replace by make_absolute_filename
 
 function [ xls, xlssupport, lastintf ] = __COM_spsh_open__ (xls, xwrite, filename, xlssupport)
 
     app = actxserver ("Excel.Application");
     try      ## Because Excel itself can still crash on file formats etc.
       app.Application.DisplayAlerts = 0;
+      filename = make_absolute_filename (strsplit (filename, filesep){end});
       if (xwrite < 2)
         ## Open workbook
-        wb = app.Workbooks.Open (canonicalize_file_name (filename));
+        wb = app.Workbooks.Open (filename);
       elseif (xwrite > 2)
         ## Create a new workbook
         wb = app.Workbooks.Add ();
         ## Uncommenting the below statement can be useful in multi-user environments.
         ## Be sure to uncomment correspondig stanza in xlsclose to avoid zombie Excels
-        ## wb.SaveAs (canonicalize_file_name (filename))
+        ## wb.SaveAs (make_absolute_filename (strsplit (filename, filesep){end}));
       endif
       xls.app = app;
       xls.xtype = "COM";

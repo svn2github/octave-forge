@@ -1,6 +1,15 @@
 Summary of important user-visible changes for releases of the io package
 
 ===============================================================================
+io-2.2.3   Release Date: 2014-TBA Release Manager: Philip Nienhuis
+===============================================================================
+
+*** Bug fixes:
+    - replace canonicalize_file_name calls by make_absolute_filename to avoid
+      ActiveX/COM errors (due to changed canonicalize_file_name in 3.9.0+)
+    - More robust strrep code in OCT/xlsx write code (modifying access time)
+
+===============================================================================
 io-2.2.2   Release Date: 2014-05-12 Release Manager: Philip Nienhuis
 ===============================================================================
 

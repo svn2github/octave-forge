@@ -18,11 +18,18 @@
 
 function degby2q = secs1d_bandgap_narrowing_model (n_a, n_d)
 
-  degbn = 6.92e-3   ; %[eV] 
-  N0    = 1.3e23    ; %[m^-3]
-  
-  deg0  = -4.795e-3 ; %[eV]
+  %% OldSlotboom
+  degbn = 9e-3      ; %[eV] 
+  N0    = 1e23      ; %[m^-3]
+  deg0  = -1.595e-2 ; %[eV]
   C     = 0.5       ; %[-]
+
+  %% %% Slotboom
+  %% degbn = 6.92e-3   ; %[eV] 
+  %% N0    = 1.3e23    ; %[m^-3]
+  %% deg0  = -4.795e-3 ; %[eV]
+  %% C     = 0.5       ; %[-]
+
   logNbyN0 = log ((n_a + n_d) / N0);
   degby2q = (deg0 + degbn * (logNbyN0 + sqrt (logNbyN0.^2 + C))) / (2.0);
 

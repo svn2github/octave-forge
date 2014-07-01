@@ -1,4 +1,5 @@
 %% Copyright (C) 2004-2012  Carlo de Falco
+%% Copyright (C) 2014  Carlo de Falco, Davide Cagnoni
 %%
 %% This file is part of 
 %% SECS1D - A 1-D Drift--Diffusion Semiconductor Device Simulator
@@ -29,7 +30,8 @@
 %% T0       = temperature
 %% Vth 	    = thermal voltage
 
-function constants = secs1d_physical_constants_fun ();
+function constants = secs1d_physical_constants_fun (T0);
+
   
   constants.Kb       = 1.3806503e-23;
   constants.q        = 1.602176462e-19;
@@ -37,7 +39,13 @@ function constants = secs1d_physical_constants_fun ();
   constants.hplanck  = 6.626e-34;
   constants.hbar     = constants.hplanck/ (2*pi);
   constants.mn0      = 9.11e-31;
-  constants.T0       = 300;
+  if (nargin == 1)
+    constants.T0     = T0;
+  else
+    constants.T0     = 300;
+  endif
+
   constants.Vth      = constants.Kb * constants.T0 / constants.q;
 
 endfunction
+

@@ -29,7 +29,7 @@ function u = secs1d_mobility_model_noscale ...
              2: numel(device.x); 
              1:(numel(device.x) - 1)];
   end
-  t = 300 * ones (size (n));                %[K]
+  t = constants.T0 * ones (size (n));       %[K]
   t_300 = 300;                              %[K]
   t_elem = sum(t(meshelems(1:end-1, :)),1)(:) / (rows (meshelems) - 1);
     
@@ -111,35 +111,42 @@ function mu = mobility_model_philips_n (n, p, n_a, n_d, t)
   c_d     = 0.21;               %[-]
   c_a     = 0.5;                %[-]
   pp_min  = 0.324612837783984;  %[-]
+  k_1 = 3.97e17;                %[m^-2]
+  k_2 = 1.36e26;                %[m^-3]
 
-
-  n_d_star = n_d .* (1.0 + 1.0 ./(c_d + (n_d_ref ./ n_d).^2));
-  n_a_star = n_a .* (1.0 + 1.0 ./(c_a + (n_a_ref ./ n_a).^2));
-
+  n_d_star = n_d .* (1.0 + ...
+                     1.0 ./ (c_d + (n_d_ref ./ n_d) .^ 2));
+  n_a_star = n_a .* (1.0 + ...
+                     1.0 ./ (c_a + (n_a_ref ./ n_a) .^ 2));
   n_sc = n_d_star + n_a_star + p;
 
-  k_1 = 3.97e17;                 %[m^-2]
-  k_2 = 1.36e26;                 %[m^-3]
-  pp = (t / t_300).^2  ./ ...
-       (f_cw ./ (k_1 * n_sc.^(-2.0/3.0)) + 
-	(n+p) * (f_bh/(k_2*m_n_star)));
+  pp = (t / t_300) .^ 2  ./ ...
+       (f_cw ./ (k_1 * n_sc .^ (-2.0 / 3.0)) + 
+        (n + p) * (f_bh / (k_2 * m_n_star)));
 
-  f = (0.7643 * pp.^(0.6478) + 2.2999 + 6.5502 * (m_n_star / m_p_star)) ./ ...
-      (pp.^(0.6478) + 2.3670 - 0.8552 * (m_n_star / m_p_star));
+  f = (0.7643 * pp .^ (0.6478) + 2.2999 + ...
+       6.5502 * (m_n_star / m_p_star)) ./ ...
+      (pp .^ (0.6478) + 2.3670 - ...
+       0.8552 * (m_n_star / m_p_star));
 
   pbool = (pp < pp_min);
   ppp   = (pbool * pp_min) + (1 - pbool) .* pp;
     
   g   = 1.0 - ... 
-      a_g ./ ((b_g+ppp.*(t/(m_n_star*t_300)).^alpha_g).^beta_g) + ...
-      c_g ./ ((ppp./(t/(m_n_star*t_300)).^alpha_prime_g).^gamma_g);
+      a_g ./ ((b_g + ppp .* (t / (m_n_star * t_300)) .^ alpha_g) .^ ...
+              beta_g) + ...
+      c_g ./ ((ppp ./ (t / (m_n_star * t_300)) .^ alpha_prime_g) .^ ...
+              gamma_g);
 
   n_sc_eff = n_d_star + g .* n_a_star + p ./ f;
 
-  mu_c = ((mu_max * mu_min) / (mu_max - mu_min)) .* sqrt (t_300 ./ t);
-  mu_n = (mu_max^2 / (mu_max - mu_min)) .* (t / t_300) .^ (3.0 *(alpha - 0.5));
-  mu_daeh = mu_n .* (n_sc ./ n_sc_eff) .* (n_ref ./ n_sc) .^ ...
-      alpha  + mu_c .* ((n + p) ./ n_sc_eff);
+  mu_c = ((mu_max * mu_min) / (mu_max - mu_min)) .* ...
+         sqrt (t_300 ./ t);
+  mu_n = (mu_max ^ 2 / (mu_max - mu_min)) .* ...
+         (t / t_300) .^ (3.0 * (alpha - 0.5));
+  mu_daeh = mu_n .* (n_sc ./ n_sc_eff) .* ...
+            (n_ref ./ n_sc) .^ alpha + ...
+            mu_c .* ((n + p) ./ n_sc_eff);
 
   mu_l = mu_max .* (t / t_300) .^ (-theta);
   mu = 1.0 ./ (1.0 ./ mu_l + 1.0 ./ mu_daeh);
@@ -189,36 +196,41 @@ function mu = mobility_model_philips_p (n, p, n_a, n_d, t)
   c_d     = 0.21;               %[-]
   c_a     = 0.5;                %[-]
   pp_min  = 0.28914605;         %[-]
+  k_1     = 3.97e17;            %[m^-2]
+  k_2     = 1.36e26;            %[m^-3]
 
-
-  n_d_star = n_d .* (1.0 + 1.0 ./ (c_d + (n_d_ref ./ n_d).^ 2));
-  n_a_star = n_a .* (1.0 + 1.0 ./ (c_a + (n_a_ref ./ n_a).^ 2));
-
+  n_d_star = n_d .* (1.0 + ...
+                     1.0 ./ (c_d + (n_d_ref ./ n_d).^ 2));
+  n_a_star = n_a .* (1.0 + ...
+                     1.0 ./ (c_a + (n_a_ref ./ n_a).^ 2));
   n_sc = n_d_star + n_a_star + n;
+  pp = (t / t_300).^2  ./ ...
+       (f_cw ./ (k_1 * n_sc .^ (-2.0/3.0)) + ...
+        (n + p) * (f_bh / (k_2 * m_p_star)));
 
-  k_1 = 3.97e17;                 %[m^-2]
-  k_2 = 1.36e26;                 %[m^-3]
-
-  pp = (t / t_300).^2  ./ (f_cw ./ (k_1 * n_sc .^ (-2.0/3.0)) +
-			   (n + p) * (f_bh / (k_2 * m_p_star)));
-
-  f = (0.7643 * pp .^ (0.6478) + 2.2999 + 6.5502 * (m_p_star / m_n_star)) ./ ...
-      (pp .^ (0.6478) + 2.3670 - 0.8552 * (m_p_star / m_n_star));
+  f = (0.7643 * pp .^ (0.6478) + 2.2999 + ...
+       6.5502 * (m_p_star / m_n_star)) ./ ...
+      (pp .^ (0.6478) + 2.3670 - ...
+       0.8552 * (m_p_star / m_n_star));
 
   pbool = (pp < pp_min);
   ppp   = (pbool * pp_min) + (1 - pbool) .* pp;
     
   g   = 1.0 - ...
-      a_g ./ ((b_g+ppp.*(t/(m_p_star*t_300)).^alpha_g).^beta_g) + ...
-      c_g ./ ((ppp./(t/(m_p_star*t_300)).^alpha_prime_g).^gamma_g);
+      a_g ./ ((b_g + ppp .* (t / (m_p_star * t_300)) .^ alpha_g) .^ ...
+              beta_g) + ...
+      c_g ./ ((ppp ./ (t / (m_p_star * t_300)) .^ alpha_prime_g) .^ ...
+              gamma_g);
 
   n_sc_eff = n_a_star + g .* n_d_star + n ./ f ;
 
-  mu_c = ((mu_max * mu_min) / (mu_max - mu_min)) .* sqrt (t_300 ./ t);
-  mu_p = (mu_max ^ 2 / (mu_max - mu_min)) .*(t / t_300) .^ (3.0 * (alpha - 0.5));
-  mu_daeh = mu_p .* (n_sc ./ n_sc_eff) .* (n_ref ./ n_sc) .^ ...
-      alpha  + mu_c .* ((n + p) ./ n_sc_eff);
-
+  mu_c = ((mu_max * mu_min) / (mu_max - mu_min)) .* ...
+         sqrt (t_300 ./ t);
+  mu_p = (mu_max ^ 2 / (mu_max - mu_min)) .* ...
+         (t / t_300) .^ (3.0 * (alpha - 0.5));
+  mu_daeh = mu_p .* (n_sc ./ n_sc_eff) .* ...
+            (n_ref ./ n_sc) .^ alpha  + ...
+            mu_c .* ((n + p) ./ n_sc_eff);
   mu_l = mu_max .* (t / t_300) .^ (-theta);
   mu = 1.0 ./ (1.0 ./ mu_l + 1.0 ./ mu_daeh);
 

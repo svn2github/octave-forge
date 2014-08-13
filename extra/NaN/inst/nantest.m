@@ -62,7 +62,7 @@ if exist('normcdf','file')==2,
         end;
 end;
 
-if ~exist('erfinv','file'),
+if ~any(exist('erfinv')==[2,3,5])
        fprintf(1,'ERFINV is not available\n');
 
 elseif exist('norminv','file')==2,

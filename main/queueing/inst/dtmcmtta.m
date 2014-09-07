@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Moreno Marzolla
+## Copyright (C) 2012, 2014 Moreno Marzolla
 ##
 ## This file is part of the queueing toolbox.
 ##
@@ -28,8 +28,8 @@
 ## @cindex Markov chain, discrete time
 ##
 ## Compute the expected number of steps before absorption for a
-## DTMC with @math{N \times N} transition probability matrix @var{P};
-## compute also the fundamental matrix @var{N} for @var{P}.
+## DTMC with state space @math{@{1, 2, @dots{} N@}} 
+## and transition probability matrix @var{P}.
 ##
 ## @strong{INPUTS}
 ##
@@ -37,6 +37,9 @@
 ##
 ## @item P
 ## @math{N \times N} transition probability matrix.
+##
+## @item p0
+## Initial state occupancy probabilities.
 ##
 ## @end table
 ##

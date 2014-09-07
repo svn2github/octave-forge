@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Moreno Marzolla
+## Copyright (C) 2012, 2014 Moreno Marzolla
 ##
 ## This file is part of the queueing toolbox.
 ##
@@ -17,15 +17,15 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {@var{L} =} dtmctaexps (@var{P}, @var{n}, @var{p0})
-## @deftypefnx {Function File} {@var{L} =} dtmctaexps (@var{P}, @var{p0})
+## @deftypefn {Function File} {@var{M} =} dtmctaexps (@var{P}, @var{n}, @var{p0})
+## @deftypefnx {Function File} {@var{M} =} dtmctaexps (@var{P}, @var{p0})
 ##
 ## @cindex time-alveraged sojourn time, DTMC
 ## @cindex discrete time Markov chain
 ## @cindex Markov chain, discrete time
 ## @cindex DTMC
 ##
-## Compute the @emph{time-averaged sojourn time} @code{@var{M}(i)},
+## Compute the @emph{time-averaged sojourn times} @code{@var{M}(i)},
 ## defined as the fraction of time steps @math{@{0, 1, @dots{}, n@}} (or
 ## until absorption) spent in state @math{i}, assuming that the state
 ## occupancy probabilities at time 0 are @var{p0}.
@@ -52,6 +52,7 @@
 ## @table @var
 ##
 ## @item M
+## Vector of length @math{N}. 
 ## If this function is called with three arguments, @code{@var{M}(i)} is
 ## the expected fraction of steps @math{@{0, 1, @dots{}, n@}} spent in
 ## state @math{i}, assuming that the state occupancy probabilities at

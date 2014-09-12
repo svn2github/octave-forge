@@ -66,6 +66,9 @@ elseif (nargin==2)
 		%------ case:  mean(x,opt)
                 opt=DIM;
                 DIM=[]; 
+        elseif (DIM>length(size(x)))
+		y=x; 
+		return; 	
         else
 		%------ case:  mean(x,DIM)
                 opt='a';
@@ -82,6 +85,9 @@ elseif (nargin == 3),
                 opt=DIM;
                 DIM=tmp;
                 W = []; 
+        elseif (DIM>length(size(x)))
+		y=x; 
+		return; 	
         else 
         	%------ case:  mean(x,DIM,opt)
         	W = [];

@@ -23,7 +23,7 @@ function [i,m,s] = zscore(i,OPT, DIM, W)
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
-%    the Free Software Foundation; either version 2 of the License, or
+%    the Free Software Foundation; either version 3 of the License, or
 %    (at your option) any later version.
 %
 %    This program is distributed in the hope that it will be useful,
@@ -36,7 +36,7 @@ function [i,m,s] = zscore(i,OPT, DIM, W)
 
 
 %	$Id$
-%	Copyright (C) 2000-2003,2009 by Alois Schloegl <alois.schloegl@gmail.com>	
+%	Copyright (C) 2000-2003,2009,2014 by Alois Schloegl <alois.schloegl@ist.ac.at>	
 %       This function is part of the NaN-toolbox
 %       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
@@ -51,6 +51,9 @@ if nargin<3
 end
 if nargin<4
         W = []; 
+end
+if ~isempty(OPT) && ~any(OPT==[0,1])
+	error('OPT must be 0, 1 or empty.')
 end
 if isempty(DIM), 
         DIM=min(find(size(i)>1));

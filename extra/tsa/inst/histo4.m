@@ -28,7 +28,7 @@ function [R, tix] = histo4(Y, W)
 
 
 %	$Id$
-%	Copyright (C) 1996-2005,2008,2009,2011 by Alois Schloegl <alois.schloegl@gmail.com>	
+%	Copyright (C) 1996-2005,2008,2009,2011,2014 by Alois Schloegl <alois.schloegl@ist.ac.at>	
 %    	This is part of the TSA-toolbox 
 %	http://pub.ist.ac.at/~schloegl/matlab/tsa/
 %
@@ -54,6 +54,13 @@ end;
 if ~isempty(W) && (yr ~= numel(W)),
 	error('number of rows of Y does not match number of elements in W');
 end; 
+R.datatype = 'HISTOGRAM';
+if isempty(Y)
+	R.N = 0; 
+	R.X = zeros(size(Y));
+	R.H = [];
+	return
+end
 
 %%%%% identify all possible X's and generate overall Histogram %%%%%
 [Y, idx] = sortrows(Y);
@@ -63,7 +70,6 @@ ix = any( (~isnan(d) & (d~=0) ) | diff(isnan(Y),[],1), 2);
 
 tmp = [find(ix); yr];
 R.X = Y(tmp,:);
-R.datatype = 'HISTOGRAM';
 if isempty(W)
 	R.H = [tmp(1); diff(tmp)];
 	R.N = yr;
@@ -94,4 +100,8 @@ if nargout>1,
         R.compressionratio = (prod(size(R.X)) + yr/cc) / (yr*yc);
         R.tix = tix;
 end;
+
+%!assert(getfield(histo4([]),'N'), 0)
+%!assert(getfield(histo4(1),'N'), 1)
+%!assert(getfield(histo4([1;1]),'H'), 2)
 

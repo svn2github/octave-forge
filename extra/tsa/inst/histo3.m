@@ -35,7 +35,7 @@ function [R, tix] = histo3(Y, W)
 
 
 %	$Id$
-%	Copyright (C) 1996-2002,2008,2011 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 1996-2002,2008,2011,2014 by Alois Schloegl <alois.schloegl@ist.ac.at>	
 %       This is part of the TSA-toolbox. See also 
 %       http://pub.ist.ac.at/~schloegl/matlab/tsa/
 %       http://octave.sourceforge.net/
@@ -72,8 +72,13 @@ ix  = diff(sY, [], 1) > 0;
 tmp = [find(ix); sum(~isnan(sY))];
 
 R.datatype = 'HISTOGRAM';
-R.X = sY(tmp);
 R.N = sum(~isnan(Y), 1);
+if all(R.N==0)
+       R.X=[];
+       R.H=[];
+       return; 
+end;
+R.X = sY(tmp);
 
 % generate inverse index
 if nargout>1,
@@ -150,4 +155,7 @@ elseif yc>1,
 	R.H = H;
 end;
 
+%!assert(getfield(histo3([]),'N'), 0)
+%!assert(getfield(histo3(1),'N'), 1)
+%!assert(getfield(histo3([1;1]),'H'), 2)
 

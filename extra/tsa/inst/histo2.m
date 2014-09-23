@@ -26,7 +26,7 @@ function R = histo2(Y, W)
 %  C.E. Shannon and W. Weaver "The mathematical theory of communication" University of Illinois Press, Urbana 1949 (reprint 1963).
 
 %	$Id$
-%	Copyright (C) 1996-2002,2008,2011 by Alois Schloegl <alois.schloegl@gmail.com>	
+%	Copyright (C) 1996-2002,2008,2011,2014 by Alois Schloegl <alois.schloegl@ist.ac.at>	
 %    	This is part of the TSA-toolbox 
 %	http://pub.ist.ac.at/~schloegl/matlab/tsa/
 %
@@ -55,6 +55,11 @@ end;
 
 %%%%% identify all possible X's and generate overall Histogram %%%%%
 N  = sum(~isnan(Y), 1);
+if all(N==0)
+	H=[];
+	X=[];
+end;
+
 NN = N; 
 if isempty(W)
 	sY  = sort(Y,1);
@@ -94,4 +99,8 @@ R.datatype = 'HISTOGRAM';
 R.H = H;
 R.X = X;
 R.N = NN;
+
+%!assert(getfield(histo2([]),'N'), 0)
+%!assert(getfield(histo2(1),'N'), 1)
+%!assert(getfield(histo2([1;1]),'H'), 2)
 

@@ -90,7 +90,7 @@ function [pkgtar htmltar] = releasePKG (pkgname, varargin)
   else
     cdir        = pwd ();
     cd (fullfile (repo_path,pkgname));
-    export_call = ["hg archive " exported ];
+    export_call = sprintf ('hg archive %s', exported)
     failed      = system (export_call);
     cd (cdir);
     clear cdir
@@ -98,14 +98,16 @@ function [pkgtar htmltar] = releasePKG (pkgname, varargin)
   
   if failed
     error ("Can not export.\n");
-  elseif isempty (OFPATH) || !strcmpi(repo_path, OFPATH)
+  endif
+  
+  if isempty (OFPATH) || !strcmpi(repo_path, OFPATH)
     setenv('OFPATH',parser.Results.repopath);
     printf (["\nEnvironment variable OFPATH set to %s\n" ...
               'add setenv("OFPATH","%s");' ...
               'to your .octaverc to make it permanent.' "\n\n"], ...
                            parser.Results.repopath, parser.Results.repopath);
     fflush (stdout);
-  end
+  endif
 
   printf("Exported to %s\n", exported);
   fflush(stdout);
@@ -113,6 +115,26 @@ function [pkgtar htmltar] = releasePKG (pkgname, varargin)
   %%% Directory setup and cleanup
   confirm_recursive_rmdir (0, "local");
 
+  % Make sure proper structure of archived/exported package
+  find_call = sprintf ("find %s -name inst", exported);
+  [~, tmp] = system (find_call);
+  tmp = strsplit (tmp, filesep());
+
+  if !strcmp (tmp{end-1},pkgname_tmp)
+    tmp = fullfile (filesep(),tmp{2:end-1});
+    exported_tmp = tmpnam ();
+    mv_call = sprintf ("mv -f -T %s %s", tmp, exported_tmp);
+    system (mv_call);
+    
+    if !rmdir (exported, "s")
+      error ("Couldn't erase folder");
+    endif
+    mv_call = sprintf ("mv %s %s", exported_tmp,exported);
+    system (mv_call);
+    rmdir (exported_tmp,"s");
+    clear exported_tmp
+  endif
+  
   % Run bootstrap if found
   if has_dir ("src", exported)
     ndir = fullfile (exported,"src");

@@ -14,8 +14,7 @@ function [d] = mahal(X,Y)
 %
 % References: 
 
-%	$Id: train_sc.m 2140 2009-07-02 12:03:55Z schloegl $
-%	Copyright (C) 2009 by Alois Schloegl <alois.schloegl@gmail.com>
+%	Copyright (C) 2009,2014 by Alois Schloegl <alois.schloegl@ist.ac.at>
 %       This function is part of the NaN-toolbox
 %       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
@@ -40,9 +39,16 @@ if sx(2)~=sy(2),
 	error('number of columns of X and Y do not fit');
 end;	
 
-IR = inv(covm(Y,'E'));
-IR(1,1) = IR(1,1)-1;
 
-D = [ones(size(X,1),1),X];
-d = sum((D*IR).*D,2);
+% compute mean of Y and remove it
+[Y,m] = center(Y,1); 
+
+% compute inverse covariance matrix
+[CC,MM] = covm(Y,'M');
+IR= inv(CC./max(0,MM-1));
+
+% remove mean of Y
+X = X-m(ones(size(X,1),1),:);
+d = sum((X*IR).*X,2)
+
 

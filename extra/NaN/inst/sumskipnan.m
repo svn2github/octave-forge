@@ -105,9 +105,7 @@ if  (isempty(W) && (~(isa(x,'float') || isa(x,'double')))) || ~flag_implicit_ski
 	return; 
 end; 	
 
-if (length(size(x))<DIM)
-	error('SUMSKIPNAN: DIM argument larger than number of dimensions of x');
-elseif ~isempty(W) && (size(x,DIM)~=numel(W))
+if ~isempty(W) && (size(x,DIM)~=numel(W))
 	error('SUMSKIPNAN: size of weight vector does not match size(x,DIM)');
 end; 
 

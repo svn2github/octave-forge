@@ -62,7 +62,7 @@ if exist('normcdf','file')==2,
         end;
 end;
 
-if ~any(exist('erfinv')==[2,3,5])
+if ~(any(exist('erfinv') == [2,5]))
        fprintf(1,'ERFINV is not available\n');
 
 elseif exist('norminv','file')==2,
@@ -227,8 +227,16 @@ end;
 %(roots([2e-37,-2,2])-[1e37;1])
 %%%%% check nan/nan   %% this test addresses a problem in Matlab 5.3, 6.1 & 6.5
 p    = 4;
-tmp1 = repmat(nan,p)/repmat(nan,p);
-tmp2 = repmat(nan,p)\repmat(nan,p);
+try
+       tmp1 = repmat(nan,p)/repmat(nan,p);
+catch   % exception error in Octave 3.8.2 of debian wheezy
+       tmp1 = repmat(nan, 4);
+end;
+try
+       tmp2 = repmat(nan,p)\repmat(nan,p);
+catch   % exception error in Octave 3.8.2 of debian wheezy
+       tmp2 = repmat(nan, 4); 
+end
 tmp3 = repmat(0,p)/repmat(0,p);
 tmp4 = repmat(0,p)\repmat(0,p);
 tmp5 = repmat(0,p)*repmat(inf,p);

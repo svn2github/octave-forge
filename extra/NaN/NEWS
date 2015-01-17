@@ -1,0 +1,11 @@
+
+2015-01-17: Release of NaN 2.7.0
+
+Fix compatibility issues with core functions in Matlab and Octave
+- zscore: order of input output argument
+- mahal gives now same result than matlab
+- sumskipnan allows DIM argument larger than ndims
+- a few minor issues
+
+For changes of previous releases see: 
+  http://pub.ist.ac.at/~schloegl/matlab/NaN/CHANGELOG

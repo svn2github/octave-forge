@@ -18,8 +18,8 @@
 MEX_OPTION += -largeArrayDims
 
 # Mingw crosscompiler: available at http://www.nongnu.org/mingw-cross-env/
-CROSS   = $(HOME)/src/mxe/usr/bin/i686-pc-mingw32
-CROSS64 = $(HOME)/src/mce-w64/usr/bin/x86_64-static-mingw32
+CROSS   = $(HOME)/src/mxe.github.schloegl/usr/bin/i686-w64-mingw32.static
+CROSS64 = $(HOME)/src/mxe.github.schloegl/usr/bin/x86_64-w64-mingw32.static
 # include directory for Win32-Matlab include
 W32MAT_INC = -I$(HOME)/bin/win32/Matlab/R2010b/extern/include/
 W64MAT_INC = -I$(HOME)/bin/win64/Matlab/R2010b/extern/include/

@@ -66,7 +66,6 @@ end;
 
 %%%%% identify all possible X's and generate overall Histogram %%%%%
 [sY, idx] = sort(Y(:),1);
-[tmp,idx1] = sort(idx);        % generate inverse index
 
 ix  = diff(sY, [], 1) > 0;
 tmp = [find(ix); sum(~isnan(sY))];
@@ -83,6 +82,7 @@ R.X = sY(tmp);
 % generate inverse index
 if nargout>1,
         tix = cumsum([1; ix]);	% rank 
+        [tmp,idx1] = sort(idx);        % generate inverse index
         tix = reshape(tix(idx1), yr, yc);		% inverse sort rank
         cc  = 1;
         tmp = sum(ix) + 1;

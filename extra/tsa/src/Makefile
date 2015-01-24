@@ -18,8 +18,8 @@
 MEX_OPTION += -largeArrayDims
 
 # Mingw crosscompiler: available at http://www.nongnu.org/mingw-cross-env/
-CROSS   = $(HOME)/src/mxe.github.schloegl/usr/bin/i686-w64-mingw32.static
-CROSS64 = $(HOME)/src/mxe.github.schloegl/usr/bin/x86_64-w64-mingw32.static
+CROSS   = $(HOME)/src/mxe/usr/bin/i686-w64-mingw32.static
+CROSS64 = $(HOME)/src/mxe/usr/bin/x86_64-w64-mingw32.static
 # include directory for Win32-Matlab include
 W32MAT_INC = -I$(HOME)/bin/win32/Matlab/R2010b/extern/include/
 W64MAT_INC = -I$(HOME)/bin/win64/Matlab/R2010b/extern/include/
@@ -47,7 +47,7 @@ CFLAGS 	= -fopenmp -Wall -Wextra -Wconversion -O2 -fPIC
 OCTMEX	= mkoctfile$(OCTAVE_VERSION) --mex
 RM      = rm
 
-MEX_OPTION  += -lgomp CC\#$(CXX) CXX\#$(CXX) CFLAGS\#"$(CFLAGS)" CXXFLAGS\#"$(CFLAGS)"
+MEX_OPTION  += CC\#$(CXX) CXX\#$(CXX) CFLAGS\#"$(CFLAGS)" CXXFLAGS\#"$(CFLAGS)"
 MATMEX      = $(MATLABDIR)/bin/mex $(MEX_OPTION)
 
 PROGS = covm_mex.mex sumskipnan_mex.mex #kalman_maar.mex
@@ -91,9 +91,9 @@ clean:
 	mkoctfile$(OCTAVE_VERSION) "$<"
 
 %.mex: %.cpp
-	$(OCTMEX) "$<"  -lgomp -llapack -lblas
+	$(OCTMEX) "$<" -llapack -lblas
 %.$(MEX_EXT): %.cpp
-	$(MATMEX) "$<"  -lgomp -llapack -lblas
+	$(MATMEX) "$<" -llapack -lblas
 
 
 #########################################################

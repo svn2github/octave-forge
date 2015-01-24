@@ -18,8 +18,8 @@
 MEX_OPTION += -largeArrayDims
 
 # Mingw crosscompiler: available at http://www.nongnu.org/mingw-cross-env/
-CROSS   = $(HOME)/src/mingw-cross-env/usr/bin/i686-pc-mingw32-
-CROSS64 = $(HOME)/src/mce-w64/usr/bin/x86_64-w64-mingw32-
+CROSS   = $(HOME)/src/mxe/usr/bin/i686-w64-mingw32.static-
+CROSS64 = $(HOME)/src/mxe/usr/bin/x86_64-w64-mingw32.static-
 # include directory for Win32-Matlab include
 W32MAT_INC = $(HOME)/bin/win32/Matlab/R2010b/extern/include/
 W64MAT_INC = $(HOME)/bin/win64/Matlab/R2010b/extern/include/
@@ -37,7 +37,7 @@ CFLAGS 	= -fopenmp -Wall -Wextra -Wconversion -O2 -fPIC
 OCTMEX	= mkoctfile$(OCTAVE_VERSION) --mex
 RM      = rm
 
-MEX_OPTION  += -lgomp CC\#$(CXX) CXX\#$(CXX) CFLAGS\#"$(CFLAGS) " CXXFLAGS\#"$(CFLAGS) "
+MEX_OPTION  += CC\#$(CXX) CXX\#$(CXX) CFLAGS\#"$(CFLAGS) " CXXFLAGS\#"$(CFLAGS) "
 MATMEX      = $(MATLABDIR)/bin/mex $(MEX_OPTION)
 
 PROGS = histo_mex.mex covm_mex.mex kth_element.mex sumskipnan_mex.mex str2array.mex train.mex svmtrain_mex.mex svmpredict_mex.mex xptopen.mex 
@@ -81,9 +81,9 @@ clean:
 	mkoctfile$(OCTAVE_VERSION) "$<"
 
 %.mex: %.cpp
-	$(OCTMEX) "$<" -lgomp
+	$(OCTMEX) "$<"
 %.$(MEX_EXT): %.cpp
-	$(MATMEX) "$<" -lgomp
+	$(MATMEX) "$<"
 
 svmtrain_mex.mex svmpredict_mex.mex: svmtrain_mex.cpp svm.h svm.cpp svm_model_matlab.c svmpredict_mex.cpp
 	$(CXX) $(CFLAGS) -c svm.cpp

@@ -37,6 +37,11 @@ CFLAGS 	= -fopenmp -Wall -Wextra -Wconversion -O2 -fPIC
 OCTMEX	= mkoctfile$(OCTAVE_VERSION) --mex
 RM      = rm
 
+ifneq (Darwin,$(shell uname)) 
+CFLAGS      += -fopenmp 
+MEX_OPTION  += -lgomp 
+endif 
+ 
 MEX_OPTION  += CC\#$(CXX) CXX\#$(CXX) CFLAGS\#"$(CFLAGS) " CXXFLAGS\#"$(CFLAGS) "
 MATMEX      = $(MATLABDIR)/bin/mex $(MEX_OPTION)
 

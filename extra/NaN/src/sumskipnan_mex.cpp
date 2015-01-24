@@ -52,14 +52,14 @@
 #include <stdint.h>
 #include "mex.h"
 
-inline int __sumskipnan2w__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W);
-inline int __sumskipnan3w__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN, double *W);
-inline int __sumskipnan2wr__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W);
-inline int __sumskipnan3wr__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN, double *W);
-inline int __sumskipnan2we__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W);
-inline int __sumskipnan3we__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN, double *W);
-inline int __sumskipnan2wer__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W);
-inline int __sumskipnan3wer__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN, double *W);
+inline void __sumskipnan2w__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W);
+inline void __sumskipnan3w__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN, double *W);
+inline void __sumskipnan2wr__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W);
+inline void __sumskipnan3wr__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN, double *W);
+inline void __sumskipnan2we__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W);
+inline void __sumskipnan3we__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN, double *W);
+inline void __sumskipnan2wer__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W);
+inline void __sumskipnan3wer__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN, double *W);
 
 //#define NO_FLAG
 
@@ -474,7 +474,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 }
 
 #define stride 1 
-inline int __sumskipnan2w__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W)
+inline void __sumskipnan2w__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W)
 {
 	long double sum=0; 
 	char   flag=0; 
@@ -529,7 +529,7 @@ inline int __sumskipnan2w__(double *data, size_t Ni, double *s, double *No, char
 }
 
 
-inline int __sumskipnan3w__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN, double *W)
+inline void __sumskipnan3w__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN, double *W)
 {
 	long double sum=0; 
 	long double msq=0; 
@@ -584,7 +584,7 @@ inline int __sumskipnan3w__(double *data, size_t Ni, double *s, double *s2, doub
 	*s2 = msq; 
 }
 
-inline int __sumskipnan2wr__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W)
+inline void __sumskipnan2wr__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W)
 {
 	double sum=0; 
 	char   flag=0; 
@@ -639,7 +639,7 @@ inline int __sumskipnan2wr__(double *data, size_t Ni, double *s, double *No, cha
 }
 
 
-inline int __sumskipnan3wr__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN, double *W)
+inline void __sumskipnan3wr__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN, double *W)
 {
 	double sum=0; 
 	double msq=0; 
@@ -706,7 +706,7 @@ inline int __sumskipnan3wr__(double *data, size_t Ni, double *s, double *s2, dou
         ACM Computing Surveys, Vol 23, No 1, March 1991. 
  ****************************************/
 
-inline int __sumskipnan2we__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W)
+inline void __sumskipnan2we__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W)
 {
 	long double sum=0; 
 	char   flag=0; 
@@ -778,7 +778,7 @@ inline int __sumskipnan2we__(double *data, size_t Ni, double *s, double *No, cha
 }
 
 
-inline int __sumskipnan3we__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN, double *W)
+inline void __sumskipnan3we__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN, double *W)
 {
 	long double sum=0; 
 	long double msq=0; 
@@ -860,7 +860,7 @@ inline int __sumskipnan3we__(double *data, size_t Ni, double *s, double *s2, dou
 	*s2 = msq; 
 }
 
-inline int __sumskipnan2wer__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W)
+inline void __sumskipnan2wer__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W)
 {
 	double sum=0; 
 	char   flag=0; 
@@ -932,7 +932,7 @@ inline int __sumskipnan2wer__(double *data, size_t Ni, double *s, double *No, ch
 }
 
 
-inline int __sumskipnan3wer__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN, double *W)
+inline void __sumskipnan3wer__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN, double *W)
 {
 	double sum=0; 
 	double msq=0; 

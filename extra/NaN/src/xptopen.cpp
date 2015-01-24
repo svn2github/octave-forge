@@ -384,7 +384,10 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 					type         = bswap_32(type);
 					FlagHasLabel = bswap_32(FlagHasLabel);
 				}
-				if (rec_type != 2) ;//error('invalid SPSS file');
+
+				if (rec_type != 2) 
+					;//error('invalid SPSS file');
+
 				c2 += fread(VarNames+9*ns,1,8,fid);
 				VarNames[9*ns+8] = 0;
 				ListOfVarNames[ns] = VarNames+9*ns;

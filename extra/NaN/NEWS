@@ -1,4 +1,10 @@
 
+2015-01-24: Release of NaN 2.7.1
+
+- support for MacOSX added
+  (tested on Homebrew Octave)
+
+
 2015-01-17: Release of NaN 2.7.0
 
 Fix compatibility issues with core functions in Matlab and Octave

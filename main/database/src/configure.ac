@@ -26,5 +26,17 @@ AC_CHECK_LIB([pq], [PQconnectdb])
 # Checks for library functions.
 AC_FUNC_ERROR_AT_LINE
 
+# Check for PostgreSQL version. (Octave is 'abused' here for string
+# and version handling, only because I'm more familiar with it than
+# with other tools. Should not interfer with cross-compiling as long
+# as you have any Octave installed locally.)
+AC_MSG_CHECKING([whether PostgreSQL version is >= 8.3])
+if $OCTAVE -q --eval ["[~, vs] = system ('$PG_CONFIG --version'); if (compare_versions (regexp (vs, '(\\d+\\.\\d+\\.\\d+)', 'tokens'){1}{:}, '8.3', '>=')) exit (1); else exit (0); endif"]; then
+   AC_MSG_RESULT(no)
+  AC_MSG_ERROR([package \"database\" does not work with PostgreSQL version < 8.3], 1);
+else
+   AC_MSG_RESULT(yes)
+fi
+
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT

@@ -1,3 +1,6 @@
+ ** Incompatible versions of postgresql (< 8.3) are rejected at
+    configure time.
+
 database 2.3.1
 --------------
 

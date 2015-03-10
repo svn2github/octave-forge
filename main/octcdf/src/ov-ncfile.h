@@ -105,8 +105,9 @@ public:
 private:
   ncfile_t* nf;
 
-
+#ifdef DEFINE_OCTAVE_ALLOCATOR
   DECLARE_OCTAVE_ALLOCATOR 
+#endif
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 

@@ -249,8 +249,9 @@ void octave_ncatt::rename(string new_name) {
   set_name(new_name);
 }
 
-
+#ifdef DEFINE_OCTAVE_ALLOCATOR
 DEFINE_OCTAVE_ALLOCATOR(octave_ncatt);
+#endif
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_ncatt, "ncatt", "ncatt");
 
 

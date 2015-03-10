@@ -478,8 +478,10 @@ void octave_ncfile::print(std::ostream & os, bool pr_as_read_syntax = false) con
 
 
 
+#ifdef DEFINE_OCTAVE_ALLOCATOR
+DEFINE_OCTAVE_ALLOCATOR(octave_ncfile)
+#endif
 
-DEFINE_OCTAVE_ALLOCATOR(octave_ncfile);
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_ncfile, "ncfile", "ncfile");
 
 

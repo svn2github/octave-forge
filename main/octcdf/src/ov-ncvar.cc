@@ -530,7 +530,9 @@ void octave_ncvar::rename(string new_name) {
   set_varname(new_name);
 }
 
+#ifdef DEFINE_OCTAVE_ALLOCATOR
 DEFINE_OCTAVE_ALLOCATOR(octave_ncvar);
+#endif
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_ncvar, "ncvar", "ncvar");
 
 // end octave_ncvar

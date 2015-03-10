@@ -1,3 +1,8 @@
+Summary of important user-visible changes for ncarray 1.0.4:
+------------------------------------------------------------
+
+ ** Avoid obsolete strmatch function
+
 Summary of important user-visible changes for ncarray 1.0.3:
 ------------------------------------------------------------
 

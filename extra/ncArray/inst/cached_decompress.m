@@ -1,6 +1,6 @@
 % Decompress a file using a cache.
 %
-% [fname,success]=cached_decompress(filename)
+% [fname,success] = cached_decompress(filename)
 %
 % Input:
 %  filename: name of the file which is possibly compressed
@@ -14,14 +14,20 @@
 % CACHED_DECOMPRESS_LOG_FID (default 1): file id for log message
 % CACHED_DECOMPRESS_MAX_SIZE (default 1e10): maximum size of cache in bytes.
 
-% Alexander Barth, 2012-06-13
-%
-function [fname]=cached_decompress(url)
-
+function fname = cached_decompress(url)
 
 global CACHED_DECOMPRESS_DIR
 global CACHED_DECOMPRESS_LOG_FID
 global CACHED_DECOMPRESS_MAX_SIZE
+
+
+if beginswith(url,'http:') || ...
+        ~(endswith(url,'.gz') || endswith(url,'.bz2') || endswith(url,'.xz'))
+  % opendap url or not compressed file
+  fname = url;
+  return
+end
+
 
 cache_dir = CACHED_DECOMPRESS_DIR;
 
@@ -32,13 +38,6 @@ if isempty(cache_dir)
     fprintf('creating directory %s for temporary files.\n',cache_dir);
 end
 
-if beginswith(url,'http:') || ...
-        ~(endswith(url,'.gz') || endswith(url,'.bz2') || endswith(url,'.xz'))
-  % opendap url or not compressed file
-  fname = url;
-  return
-end
-
 %if exist(cache_dir,'dir') ~= 7
 %  error(['cache directory for compressed files does not exist. '...
 %         'Please create the directory %s or change le value of the '...
@@ -47,10 +46,10 @@ end
     
 % where to print logs? default to screen
 
-fid=CACHED_DECOMPRESS_LOG_FID;
+fid = CACHED_DECOMPRESS_LOG_FID;
 
 if (isempty(fid))
-    fid=1;
+    fid = 1;
 end
 
 % form filename for cache
@@ -141,7 +140,7 @@ end
 end
 
 
-% Copyright (C) 2012-2013 Alexander Barth <barth.alexander@gmail.com>
+% Copyright (C) 2012-2013, 2015 Alexander Barth <barth.alexander@gmail.com>
 %
 % This program is free software; you can redistribute it and/or modify
 % it under the terms of the GNU General Public License as published by

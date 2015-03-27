@@ -60,7 +60,7 @@ else
 end; 
 
 if (FLAG==1)
-        y = sqrt(y)./n;	% normalize with N
+        y = sqrt(y./n);	% normalize with N
 else
 	% default method
         y = sqrt(y./max(n-1,0));	% normalize with N-1

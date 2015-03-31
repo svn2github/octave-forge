@@ -1,3 +1,11 @@
+2015-03-31: Release of NaN 2.7.2
+
+- bug fix in nanstd.m 
+- cross-compiler issues in histo_mex
+- fix Makefile for use with Matlab
+- address compatibility issue on debian/jessie
+- minor issues (some compiler warnings are addressed)
+
 
 2015-01-24: Release of NaN 2.7.1
 

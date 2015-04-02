@@ -2,7 +2,7 @@ function [A] = lpc(Y,P,mode);
 % LPC Linear prediction coefficients 
 % The Burg-method is used to estimate the prediction coefficients
 %
-% A = lpc(Y [,P]) finds the coefficients  A=[ 1 A(2) ... A(N+1) ],
+% A = lpc(X [,P]) finds the coefficients  A=[ 1 A(2) ... A(N+1) ],
 %     	of an Pth order forward linear predictor
 %     
 % 	 Xp(n) = -A(2)*X(n-1) - A(3)*X(n-2) - ... - A(N+1)*X(n-P)

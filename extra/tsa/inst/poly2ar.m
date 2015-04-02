@@ -13,7 +13,7 @@ function [A] = poly2ar(A);
 % see also ACOVF ACORF DURLEV RC2AR AR2POLY
 
 %       $Id$
-%       Copyright (C) 1998-2002,2008 by Alois Schloegl <a.schloegl@ieee.org>
+%       Copyright (C) 1998-2002,2008 by Alois Schloegl <alois.schloegl@gmail.com>
 %
 %    This program is free software: you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

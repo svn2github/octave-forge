@@ -16,7 +16,7 @@ function b=hup(C)
 %  Ch. Langraf and G. Schneider "Elemente der Regeltechnik", Springer Verlag, 1970.
 
 %	$Id$
-%	Copyright (c) 1995-1998,2008 by Alois Schloegl <a.schloegl@ieee.org>
+%	Copyright (c) 1995-1998,2008 by Alois Schloegl <alois.schloegl@gmail.com>
 %
 %    This program is free software: you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

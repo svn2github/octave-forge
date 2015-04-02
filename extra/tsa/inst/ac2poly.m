@@ -6,7 +6,7 @@ function [A,E] = ac2poly(acf);
 % 
 
 %       $Id$
-%       Copyright (C) 1998-2002,2008 by Alois Schloegl <a.schloegl@ieee.org>
+%       Copyright (C) 1998-2002,2008 by Alois Schloegl <alois.schloegl@gmail.com>
 %
 %    This program is free software: you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

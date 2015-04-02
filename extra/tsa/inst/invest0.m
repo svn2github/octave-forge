@@ -23,7 +23,7 @@ function [AutoCov,AutoCorr,MX,E,NC]=invest0(Y,Pmax,Mode);
 %  W.S. Wei "Time Series Analysis" Addison Wesley, 1990.
 
 %	$Id$
-%	Copyright (C) 1998-2003,2008,2010 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 1998-2003,2008,2010 by Alois Schloegl <alois.schloegl@gmail.com>	
 %       This is part of the TSA-toolbox. See also 
 %       http://biosig-consulting.com/matlab/tsa/
 %

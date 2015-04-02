@@ -29,7 +29,7 @@ function  [w,A,B,R,P,F,ip] = ar_spa(ARP,nhz,E);
 % [3] G. Florian and G. Pfurtscheller (1994) Autoregressive model based spectral analysis with application to EEG. IIG - Report Series, University of Technolgy Graz, Austria.
 
 % 	$Id$
-%	Copyright (C) 1996-2003 by Alois Schloegl <a.schloegl@ieee.org>
+%	Copyright (C) 1996-2003 by Alois Schloegl <alois.schloegl@gmail.com>
 %	This is part of the TSA-toolbox see also: 
 % 	   http://pub.ist.ac.at/~schloegl/matlab/tsa/
 %	   http://octave.sf.net/

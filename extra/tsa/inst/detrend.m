@@ -33,10 +33,10 @@ function [X,T]=detrend(t,X,p)
 
 % Copyright (C) 1995, 1996 Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
 %       $Id$
-%       Copyright (C) 2001,2007 by Alois Schloegl <a.schloegl@ieee.org>	
+%       Copyright (C) 2001,2007 by Alois Schloegl <alois.schloegl@gmail.com>	
 %       This function is part of the TSA-toolbox
 %       http://pub.ist.ac.at/~schloegl/matlab/tsa/
-%	Copyright (C) 1997, 1998, 2008 by Alois Schloegl <a.schloegl@ieee.org>
+%	Copyright (C) 1997, 1998, 2008 by Alois Schloegl <alois.schloegl@gmail.com>
 %
 %    This program is free software: you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

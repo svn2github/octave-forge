@@ -40,7 +40,7 @@ function [AutoCov,AutoCorr,ARPMX,E,C,s]=invest1(Y,Pmax,D);
 % optRC2        max reflection coefficient larger than std-error
 
 %	$Id$
-%	Copyright (C) 1998-2002,2008,2010 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 1998-2002,2008,2010 by Alois Schloegl <alois.schloegl@gmail.com>	
 %       This is part of the TSA-toolbox. See also 
 %       http://biosig-consulting.com/matlab/tsa/
 %

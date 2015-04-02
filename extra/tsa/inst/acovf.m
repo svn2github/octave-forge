@@ -24,7 +24,7 @@ function [ACF,NN] = acovf(Z,KMAX,Mode,Mode2);
 %  J.S. Bendat and A.G.Persol "Random Data: Analysis and Measurement procedures", Wiley, 1986.
 
 %	$Id$
-%	Copyright (C) 1998-2003,2008,2010 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 1998-2003,2008,2010 by Alois Schloegl <alois.schloegl@gmail.com>	
 %       This is part of the TSA-toolbox. See also 
 %       http://biosig-consulting.com/matlab/tsa/
 %

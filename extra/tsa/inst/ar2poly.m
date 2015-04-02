@@ -19,7 +19,7 @@ function [A] = ar2poly(A);
 %  W.S. Wei "Time Series Analysis" Addison Wesley, 1990.
 
 %       $Id$
-%       Copyright (C) 1998-2002,2008 by Alois Schloegl <a.schloegl@ieee.org>
+%       Copyright (C) 1998-2002,2008 by Alois Schloegl <alois.schloegl@gmail.com>
 %
 %    This program is free software: you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

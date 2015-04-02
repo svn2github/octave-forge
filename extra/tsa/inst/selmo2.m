@@ -12,7 +12,7 @@ function X = selmo2(y,Pmax);
 % see also: SELMO, MVAR, 
 
 %	$Id$
-%	Copyright (C) 2007 by Alois Schloegl <a.schloegl@ieee.org>		
+%	Copyright (C) 2007 by Alois Schloegl <alois.schloegl@gmail.com>		
 %       This is part of the TSA-toolbox. See also 
 %       http://pub.ist.ac.at/~schloegl/matlab/tsa/
 %       http://octave.sourceforge.net/

@@ -12,7 +12,7 @@ function [BISPEC,BIACF,ACF] = bispec(Z,N);
 % M.B. Priestley, "Non-linear and Non-stationary Time series Analysis", Academic Press, London, 1988.
 
 %	$Id$
-%	Copyright (C) 1997-2003,2008 by Alois Schloegl <a.schloegl@ieee.org>
+%	Copyright (C) 1997-2003,2008 by Alois Schloegl <alois.schloegl@gmail.com>
 %
 %    This program is free software: you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

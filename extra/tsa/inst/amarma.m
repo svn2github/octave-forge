@@ -59,7 +59,7 @@ function [z,e,REV,ESU,V,Z,SPUR] = amarma(y, Mode, MOP, UC, z0, Z0, V0, W);
 %     http://pub.ist.ac.at/~schloegl/publications/
 
 %	$Id$
-%       Copyright (C) 1998-2002,2005,2006,2007,2008 by  Alois Schloegl <a.schloegl@ieee.org>
+%       Copyright (C) 1998-2002,2005,2006,2007,2008 by  Alois Schloegl <alois.schloegl@gmail.com>
 %
 %    This program is free software: you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

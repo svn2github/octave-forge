@@ -31,7 +31,7 @@ function [A] = lpc(Y,P,mode);
 %  W.S. Wei "Time Series Analysis" Addison Wesley, 1990.
 
 %	$Id$
-%	Copyright (C) 1996-2002,2008 by Alois Schloegl <a.schloegl@ieee.org>
+%	Copyright (C) 1996-2002,2008 by Alois Schloegl <alois.schloegl@gmail.com>
 %       This is part of the TSA-toolbox. See also 
 %       http://pub.ist.ac.at/~schloegl/matlab/tsa/
 %

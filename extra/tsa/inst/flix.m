@@ -16,7 +16,7 @@ function Y=flix(D,x)
 % see also: HIST2RES, Y2RES, PLOTCDF, INTERP1
 
 %	$Id$
-%	Copyright (C) by 2001-2005,2008 Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) by 2001-2005,2008 Alois Schloegl <alois.schloegl@gmail.com>	
 %	This is part of the TSA-toolbox see also: 
 % 	   http://www.dpmi.tu-graz.ac.at/schloegl/matlab/tsa/
 %	   http://octave.sf.net/

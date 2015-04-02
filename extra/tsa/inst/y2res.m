@@ -19,7 +19,7 @@ function [R]=y2res(Y)
 % 
 
 %	$Id$
-%	Copyright (C) 1996-2005,2008 by Alois Schloegl <a.schloegl@ieee.org>
+%	Copyright (C) 1996-2005,2008 by Alois Schloegl <alois.schloegl@gmail.com>
 %    	This is part of the TSA-toolbox 
 %       http://octave.sourceforge.net/
 %	http://pub.ist.ac.at/~schloegl/matlab/tsa/

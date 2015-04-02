@@ -2,7 +2,7 @@ function [H,X]=histo(Y,Mode)
 % HISTO calculates histogram for each column
 % [H,X] = HISTO(Y,Mode)
 % 	   
-%   Mode 
+%   Mode
 %	'rows' : frequency of each row
 %	'1x'   : single bin-values 
 %	'nx'   : separate bin-values for each column
@@ -20,7 +20,7 @@ function [H,X]=histo(Y,Mode)
 %  C.E. Shannon and W. Weaver "The mathematical theory of communication" University of Illinois Press, Urbana 1949 (reprint 1963).
 
 %	$Id$
-%	Copyright (C) 1996-2002,2008 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 1996-2002,2008 by Alois Schloegl <alois.schloegl@gmail.com>	
 %    	This is part of the TSA-toolbox 
 %	http://pub.ist.ac.at/~schloegl/matlab/tsa/
 %
@@ -44,24 +44,24 @@ Mode=lower(Mode);
 
 if strcmp(Mode,'rows')
         R = histo4(Y);
-        
+
 elseif strcmp(Mode,'column')
         R = histo4(Y');
         R.X = R.X';
-        
+
 elseif strcmp(Mode,'1x')
         R = histo3(Y);
-        
+
 elseif strcmp(Mode,'nx')
         R = histo2(Y);
-        
+
 end;
 
 H = R.H;
 X = R.X;
 if nargout == 0,
         if any(size(X)==1),
-                if exist('OCTAVE_VERSION')<5,
+                if exist('OCTAVE_VERSION') < 5,
                         bar(R.X,R.H,'stacked');
                 else
                         bar(R.X,R.H);   
@@ -71,3 +71,8 @@ if nargout == 0,
 		%bar3(R.X,R.H);
         end;
 end;
+
+
+%!assert(issorted(getfield(histo_mex([5;NaN;3;NaN;-1;inf;-inf;4]),'X')))
+%!assert(sum(getfield(histo_mex([5;NaN;3;NaN;NaN;-1;inf;-inf;4]),'H'))==9)
+

@@ -27,7 +27,7 @@ function [MX,res,arg3,acf] = rc2ar(rc);
 %  W.S. Wei "Time Series Analysis" Addison Wesley, 1990.
 
 %	$Id$
-%	Copyright (c) 1996-2002,2007,2008 by Alois Schloegl <a.schloegl@ieee.org>
+%	Copyright (c) 1996-2002,2007,2008 by Alois Schloegl <alois.schloegl@gmail.com>
 %       This function is part of the TSA-toolbox
 %       http://pub.ist.ac.at/~schloegl/matlab/tsa/
 %

@@ -3,7 +3,7 @@
 % WWW: http://pub.ist.ac.at/~schloegl/matlab/tsa/
 %
 %	$Id$
-%	Copyright (C) 1996-2003,2008 by Alois Schloegl <a.schloegl@ieee.org>
+%	Copyright (C) 1996-2003,2008 by Alois Schloegl <alois.schloegl@gmail.com>
 %
 %  Time Series Analysis - a toolbox for the use with Matlab
 %   aar		adaptive autoregressive estimator 

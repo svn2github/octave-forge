@@ -8,7 +8,7 @@ function [BIACF,ACF,M1] = biacovf(Z,N);
 % Output:	ACF   covariance function (joint cumulant 2nd order)
 
 %       $Id$
-%	Copyright (C) 1997, 1998, 2008 by Alois Schloegl <a.schloegl@ieee.org>
+%	Copyright (C) 1997, 1998, 2008 by Alois Schloegl <alois.schloegl@gmail.com>
 %
 %    This program is free software: you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

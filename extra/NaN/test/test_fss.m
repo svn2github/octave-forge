@@ -39,7 +39,7 @@ classifier= {'REG','MDA','MD2','QDA','QDA2','LD2','LD3','LD4','LD5','LD6','NBC',
 
 %% compute cross-validated result; 
 for k=1:N
-        [R{k},CC1{k}]=xval(data(:,ix(1:k)),C);
+        [R1{k},CC1{k}]=xval(data(:,ix(1:k)),C);
 end; 
 for k=1:length(classifier),
 	fprintf(1,'%i:\t%s\n',k,classifier{k});

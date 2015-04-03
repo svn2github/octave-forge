@@ -27,7 +27,7 @@ SW = meas(51:end,2);
 group = species(51:end);
 h1 = gscatter(SL,SW,group,'rb','v^',[],'off');
 set(h1,'LineWidth',2)
-legend('Fisher versicolor','Fisher virginica','Location','NW')
+legend('Fisher versicolor','Fisher virginica','Location','northwest')
        
 [X,Y] = meshgrid(linspace(4.5,8),linspace(2,4));
 X = X(:); Y = Y(:);

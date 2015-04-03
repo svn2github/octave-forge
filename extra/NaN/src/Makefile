@@ -86,20 +86,20 @@ clean:
 
 %.mex: %.cpp
 	$(OCTMEX) "$<"
-%.$(MEX_EXT): %.cpp
-	$(MATMEX) "$<"
 
-svmtrain_mex.mex svmpredict_mex.mex: svmtrain_mex.cpp svm.h svm.cpp svm_model_matlab.c svmpredict_mex.cpp
-	$(CXX) $(CFLAGS) -c svm.cpp
-	#$(CC)  $(CFLAGS) $(INCOCTAVE) -c svm_model_matlab.c
-	env CC=$(CXX) $(OCTMEX) svmtrain_mex.cpp svm.o svm_model_matlab.c
-	env CC=$(CXX) $(OCTMEX) svmpredict_mex.cpp svm.o svm_model_matlab.c
+svm%_mex.mex: svm%_mex.cpp svm.o svm_model_octave.o
+	env CC=$(CXX) $(OCTMEX) "$<" svm.o svm_model_octave.o
+svm%_mex.$(MEX_EXT): svm%_mex.cpp svm.o svm_model_matlab.o
+	$(MATMEX) "$<" svm.o svm_model_matlab.o
 
-svmtrain_mex.$(MEX_EXT) svmpredict_mex.$(MEX_EXT):     svmtrain_mex.cpp svm.h svm.cpp svm_model_matlab.c svmpredict_mex.cpp
-	$(CXX) $(CFLAGS) -I $(MATLABDIR)/extern/include -c svm.cpp
-	$(CC) $(CFLAGS) -I $(MATLABDIR)/extern/include -c svm_model_matlab.c
-	$(MATMEX) svmtrain_mex.cpp svm.o svm_model_matlab.o
-	$(MATMEX) svmpredict_mex.cpp svm.o svm_model_matlab.o
+%.$(MEX_EXT): %.cpp  svm.o svm_model_matlab.o
+	$(MATMEX) "$<" # svm.o svm_model_matlab.o
+
+svm_model_octave.o: svm_model_matlab.c 
+	$(CC)  $(CFLAGS) $(shell $(OCTMEX) -p INCFLAGS) -o svm_model_octave.o -c svm_model_matlab.c 
+
+svm_model_matlab.o: svm_model_matlab.c 
+	$(CC) $(CFLAGS) -I $(MATLABDIR)/extern/include -c svm_model_matlab.c 
 
 train.$(MEX_EXT) predict.$(MEX_EXT): train.c linear.h tron.o linear.o linear_model_matlab.c
 	$(CC) $(CFLAGS) -I $(MATLABDIR)/extern/include -c linear_model_matlab.c
@@ -108,7 +108,9 @@ train.$(MEX_EXT) predict.$(MEX_EXT): train.c linear.h tron.o linear.o linear_mod
 
 train.mex predict.mex: train.c linear.h tron.o linear.o linear_model_matlab.c
 	env CC=$(CXX) $(OCTMEX) -lblas train.c tron.o linear.o linear_model_matlab.c
-	#env CC=$(CXX) $(OCTMEX) -lblas predict.c tron.o linear.o linear_model_matlab.o
+
+svm.o: svm.cpp svm.h
+	$(CC) $(CFLAGS) -c svm.cpp
 
 linear.o: linear.cpp linear.h
 	$(CXX) $(CFLAGS) -c linear.cpp

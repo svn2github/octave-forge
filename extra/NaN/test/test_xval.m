@@ -25,7 +25,7 @@ clear
 N=100;  % number of samples 
 M=10;   % number of features 
 classifier= {'SVM:LIB','REG','MDA','MD2','QDA','QDA2','LD2','LD3','LD4','LD5','LD6','NBC','aNBC','WienerHopf','LDA/GSVD','MDA/GSVD', 'LDA/sparse','MDA/sparse', 'PLA', 'LMS','LDA/DELETION','MDA/DELETION','NBC/DELETION','RDA/DELETION','REG/DELETION','RDA','GDBC','SVM','RBF','PSVM','SVM11','SVM:LIN4','SVM:LIN0','SVM:LIN1','SVM:LIN2','SVM:LIN3','WINNOW'};
-classifier= {'SVM:RBF'};
+%classifier= {'SVM:RBF'};
 
 x = randn(N,M);         % data
 c = ([1:N]'>(N/2))+1;   % classlabel 

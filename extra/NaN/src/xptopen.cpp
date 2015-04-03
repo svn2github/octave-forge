@@ -50,8 +50,8 @@ SPSS file format
 // http://cvs.savannah.gnu.org/pspp/doc/data-file-format.texi?root=pspp&content-type=text%2Fplain
 */
 
-#define TEST_CONVERSION 2  // 0: ieee754, 1: SAS converter (big endian bug), 2: experimental
-#define DEBUG 0
+#define TEST_CONVERSION 0  // 0: ieee754, 1: SAS converter (big endian bug), 2: experimental
+#define DEBUG 1
 
 #include <ctype.h>
 #include <math.h>
@@ -236,20 +236,6 @@ double xpt2d(uint64_t x);
 uint64_t d2xpt(double x);
 double tm_time2gdf_time(struct tm *t);
 
-/*
-	compare first n characters of two strings, ignore case
- */
-int strncmpi(const char* str1, const char* str2, size_t n)
-{
-	unsigned int k=0;
-	int r=0;
-	while (!r && str1[k] && str2[k] && (k<n)) {
-		r = tolower(str1[k]) - tolower(str2[k]);
-		k++;
-	}
-	return(r);
-}
-
 void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const mxArray *PInputs[])
 {
 	const char L1[] = "HEADER RECORD*******LIBRARY HEADER RECORD!!!!!!!000000000000000000000000000000  ";
@@ -316,7 +302,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 
 	fid = fopen(fn,Mode);
 	if (fid < 0) {
-	        mexWarnMsgTxt("Warning XPTOPEN: suppor for SPSS file format is very experimantal ( do not use it for production use)\n");
+	        mexErrMsgTxt("Can not open file!\n");
 		}
 
 	if (Mode[0]=='r' || Mode[0]=='a' ) {
@@ -632,11 +618,11 @@ if present.
 			int status = 0;
 			while (line) {
 
-				if (!strncmpi(line,"@relation",9)) {
+				if (!strncasecmp(line,"@relation",9)) {
 					status = 1;
 				}
 
-				else if (status == 1 && !strncmpi(line,"@attribute",10)) {
+				else if (status == 1 && !strncasecmp(line,"@attribute",10)) {
 					if (ns<=NS) {
 						ns = max(16, ns*2);
 						ListOfVarNames = (const char**)realloc(ListOfVarNames,ns*sizeof(char*));
@@ -653,22 +639,22 @@ if present.
 					p2 = line+k;
 
 					ListOfVarNames[NS] = p1;
-					if      (!strncmpi(p2,"numeric",7)) {
+					if      (!strncasecmp(p2,"numeric",7)) {
 						vartyp[NS] = 1;
 					}
-					else if (!strncmpi(p2,"integer",7)) {
+					else if (!strncasecmp(p2,"integer",7)) {
 						vartyp[NS] = 2;
 					}
-					else if (!strncmpi(p2,"real",4)) {
+					else if (!strncasecmp(p2,"real",4)) {
 						vartyp[NS] = 3;
 					}
-					else if (!strncmpi(p2,"string",6)) {
+					else if (!strncasecmp(p2,"string",6)) {
 						vartyp[NS] = 4;
 					}
-					else if (!strncmpi(p2,"{",1)) {
+					else if (!strncasecmp(p2,"{",1)) {
 						vartyp[NS] = 5;
 					}
-					else if (!strncmpi(p2,"date",4)) {
+					else if (!strncasecmp(p2,"date",4)) {
 						vartyp[NS] = 6;
 						datestr = (char**)realloc(datestr,(NS+1)*sizeof(char*));
 						p2+=4;
@@ -680,7 +666,7 @@ if present.
 							p2[1]=0;
 						}
 					}
-					else if (!strncmpi(p2,"relational",10)) {
+					else if (!strncasecmp(p2,"relational",10)) {
 						vartyp[NS] = 7;
 					}
 					else vartyp[NS] = 99;
@@ -688,7 +674,7 @@ if present.
 					NS++;
 				}
 
-				else if (status == 1 && !strncmpi(line,"@data",5)) {
+				else if (status == 1 && !strncasecmp(line,"@data",5)) {
 					status = 2;
 					char *p = line;
 					while (*p) p++;  // goto end of current line

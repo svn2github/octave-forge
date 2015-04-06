@@ -81,18 +81,13 @@ clean:
 #########################################################
 #	Octave, MATLAB on Linux 
 #########################################################
-%.oct: %.cc
-	mkoctfile$(OCTAVE_VERSION) "$<"
-
-%.mex: %.cpp
-	$(OCTMEX) "$<"
-
-ifeq (,$(shell /sbin/ldconfig -p | grep libsvm))
+ifeq (,$(wildcard /usr/include/libsvm/svm.h))
+## package libsvm-dev is not installed
 svm%_mex.mex: svm%_mex.cpp svm.o svm_model_octave.o
 	env CC=$(CXX) $(OCTMEX) "$<" svm.o svm_model_octave.o
 svm%_mex.$(MEX_EXT): svm%_mex.cpp svm.o svm_model_matlab.o
 	$(MATMEX) "$<" svm.o svm_model_matlab.o
-%.$(MEX_EXT): %.cpp  svm.o svm_model_matlab.o
+%.$(MEX_EXT): %.cpp svm.o svm_model_matlab.o
 	$(MATMEX) "$<" svm.o svm_model_matlab.o
 
 svm_model_octave.o: svm_model_matlab.c 
@@ -104,9 +99,10 @@ svm.o: svm.cpp
 	$(CC) $(CFLAGS) -c svm.cpp
 
 else
-svm%_mex.mex: svm%_mex.cpp #svm.o svm_model_octave.o
+## package libsvm-dev is installed
+svm%_mex.mex: svm%_mex.cpp
 	env CC=$(CXX) $(OCTMEX) "$<" -lsvm
-svm%_mex.$(MEX_EXT): svm%_mex.cpp svm.o svm_model_matlab.o
+svm%_mex.$(MEX_EXT): svm%_mex.cpp
 	$(MATMEX) "$<" -lsvm
 %.$(MEX_EXT): %.cpp  
 	$(MATMEX) "$<" -lsvm
@@ -114,7 +110,8 @@ svm%_mex.$(MEX_EXT): svm%_mex.cpp svm.o svm_model_matlab.o
 endif
 
 
-ifeq (,$(shell /sbin/ldconfig -p | grep liblinear))
+ifeq (,$(wildcard /usr/include/linear.h))
+## liblinear-dev is not available
 train.$(MEX_EXT) predict.$(MEX_EXT): train.c tron.o linear.o linear_model_matlab.c
 	$(CC) $(CFLAGS) -I $(MATLABDIR)/extern/include -c linear_model_matlab.c
 	$(MATMEX)  -lblas train.c tron.o linear.o linear_model_matlab.o 
@@ -128,6 +125,7 @@ tron.o: tron.cpp tron.h
 	$(CXX) $(CFLAGS) -c tron.cpp
 
 else
+## package liblinear-dev is installed
 train.$(MEX_EXT) predict.$(MEX_EXT): train.c
 	$(CC) $(CFLAGS) -I $(MATLABDIR)/extern/include -c linear_model_matlab.c
 	$(MATMEX)  -lblas -llinear train.c
@@ -136,6 +134,11 @@ train.mex predict.mex: train.c
 
 endif
 
+%.oct: %.cc
+	mkoctfile$(OCTAVE_VERSION) "$<"
+
+%.mex: %.cpp
+	$(OCTMEX) "$<"
 
 #########################################################
 #	MATLAB/WIN32

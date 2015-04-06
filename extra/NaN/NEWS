@@ -1,3 +1,9 @@
+2015-04-06
+- use libsvm and liblinear of target system, instead of outdated copy
+- fix multi-threaded build (make -j) 
+- improve some tests
+
+
 2015-03-31: Release of NaN 2.7.2
 
 - bug fix in nanstd.m 

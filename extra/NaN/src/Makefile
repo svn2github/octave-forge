@@ -87,36 +87,54 @@ clean:
 %.mex: %.cpp
 	$(OCTMEX) "$<"
 
+ifeq (,$(shell /sbin/ldconfig -p | grep libsvm))
 svm%_mex.mex: svm%_mex.cpp svm.o svm_model_octave.o
 	env CC=$(CXX) $(OCTMEX) "$<" svm.o svm_model_octave.o
 svm%_mex.$(MEX_EXT): svm%_mex.cpp svm.o svm_model_matlab.o
 	$(MATMEX) "$<" svm.o svm_model_matlab.o
-
 %.$(MEX_EXT): %.cpp  svm.o svm_model_matlab.o
-	$(MATMEX) "$<" # svm.o svm_model_matlab.o
+	$(MATMEX) "$<" svm.o svm_model_matlab.o
 
 svm_model_octave.o: svm_model_matlab.c 
 	$(CC)  $(CFLAGS) $(shell $(OCTMEX) -p INCFLAGS) -o svm_model_octave.o -c svm_model_matlab.c 
-
 svm_model_matlab.o: svm_model_matlab.c 
 	$(CC) $(CFLAGS) -I $(MATLABDIR)/extern/include -c svm_model_matlab.c 
+svm.o: svm.cpp
+	echo "It's recommended to install the package libsvm-dev."
+	$(CC) $(CFLAGS) -c svm.cpp
 
-train.$(MEX_EXT) predict.$(MEX_EXT): train.c linear.h tron.o linear.o linear_model_matlab.c
+else
+svm%_mex.mex: svm%_mex.cpp #svm.o svm_model_octave.o
+	env CC=$(CXX) $(OCTMEX) "$<" -lsvm
+svm%_mex.$(MEX_EXT): svm%_mex.cpp svm.o svm_model_matlab.o
+	$(MATMEX) "$<" -lsvm
+%.$(MEX_EXT): %.cpp  
+	$(MATMEX) "$<" -lsvm
+
+endif
+
+
+ifeq (,$(shell /sbin/ldconfig -p | grep liblinear))
+train.$(MEX_EXT) predict.$(MEX_EXT): train.c tron.o linear.o linear_model_matlab.c
 	$(CC) $(CFLAGS) -I $(MATLABDIR)/extern/include -c linear_model_matlab.c
 	$(MATMEX)  -lblas train.c tron.o linear.o linear_model_matlab.o 
 	#$(MATMEX) -lblas predict.c tron.o linear.o linear_model_matlab.o
-
-train.mex predict.mex: train.c linear.h tron.o linear.o linear_model_matlab.c
+train.mex predict.mex: train.c tron.o linear.o linear_model_matlab.c
 	env CC=$(CXX) $(OCTMEX) -lblas train.c tron.o linear.o linear_model_matlab.c
-
-svm.o: svm.cpp svm.h
-	$(CC) $(CFLAGS) -c svm.cpp
-
-linear.o: linear.cpp linear.h
+linear.o: linear.cpp
+	echo "It's recommended to install the package liblinear-dev"
 	$(CXX) $(CFLAGS) -c linear.cpp
-
 tron.o: tron.cpp tron.h
 	$(CXX) $(CFLAGS) -c tron.cpp
+
+else
+train.$(MEX_EXT) predict.$(MEX_EXT): train.c
+	$(CC) $(CFLAGS) -I $(MATLABDIR)/extern/include -c linear_model_matlab.c
+	$(MATMEX)  -lblas -llinear train.c
+train.mex predict.mex: train.c
+	env CC=$(CXX) $(OCTMEX) -lblas -llinear  train.c
+
+endif
 
 
 #########################################################

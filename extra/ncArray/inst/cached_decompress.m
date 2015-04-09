@@ -21,7 +21,7 @@ global CACHED_DECOMPRESS_LOG_FID
 global CACHED_DECOMPRESS_MAX_SIZE
 
 
-if beginswith(url,'http:') || ...
+if startswith(url,'http:') || ...
         ~(endswith(url,'.gz') || endswith(url,'.bz2') || endswith(url,'.xz'))
   % opendap url or not compressed file
   fname = url;
@@ -63,15 +63,25 @@ fname = fullfile(cache_dir,fname);
 
 if exist(fname,'file') ~= 2
     if endswith(url,'.gz')
-        syscmd('gunzip --stdout "%s" > "%s"',url,fname);
+      cmd = 'gunzip --stdout -';
     elseif endswith(url,'.bz2')
-        syscmd('bunzip2 --stdout "%s" > "%s"',url,fname);
+      cmd = 'bunzip2 --stdout -';
+    elseif endswith(url,'.xz')
+      cmd = 'unxz --stdout -';
     else
-        syscmd('unxz --stdout "%s" > "%s"',url,fname);
+      cmd = 'cat';
     end    
+
+    if startswith(url,'ftp://')
+      syscmd('curl --silent "%s" | %s > "%s"',url,cmd,fname);
+    else
+      syscmd('%s < "%s" > "%s"',cmd,url,fname);
+    end
 else
 %    fprintf(fid,'retrieve from cache %s\n',url);
 end
+
+
 
 % check cache size
 
@@ -106,23 +116,23 @@ if (cashe_size > max_cache_size)
 end
 end
 
-function t = beginswith(s,pre)
 
-if length(pre) <= length(s)
-    t = strcmp(s(1:length(pre)),pre);
-else
+function t = startswith(s,ext)
+
+  if length(ext) <= length(s)
+    t = strcmp(s(1:length(ext)),ext);
+  else
     t = 0;
+  end
 end
-end
-
 
 function t = endswith(s,ext)
 
-if length(ext) <= length(s)
+  if length(ext) <= length(s)
     t = strcmp(s(end-length(ext)+1:end),ext);
-else
+  else
     t = 0;
-end
+  end
 end
 
 

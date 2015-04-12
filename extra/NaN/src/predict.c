@@ -1,12 +1,11 @@
 /*
 
-$Id$
-Copyright (c) 2007-2009 The LIBLINEAR Project.
-Copyright (c) 2010 Alois Schloegl <alois.schloegl@gmail.com>
+Copyright (c) 2007-2011 The LIBLINEAR Project.
+Copyright (c) 2010,2015 Alois Schloegl <alois.schloegl@ist.ac.at>
 This function is part of the NaN-toolbox
 http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
-This code was extracted from liblinear-1.51 in Jan 2010 and 
+This code was extracted from liblinear-1.8 in Apr 2015 and 
 modified for the use with Octave 
 
 This program is free software; you can redistribute it and/or modify
@@ -25,304 +24,220 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <stdio.h>
+#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 #include "linear.h"
 
-#include "mex.h"
-#include "linear_model_matlab.h"
+struct feature_node *x;
+int max_nr_attr = 64;
 
-#ifdef tmwtypes_h
-  #if (MX_API_VER<=0x07020000)
-    typedef int mwSize;
-  #endif 
-#endif 
+struct model* model_;
+int flag_predict_probability=0;
 
-#define CMD_LEN 2048
-
-#define Malloc(type,n) (type *)malloc((n)*sizeof(type))
-
-int col_format_flag;
-
-void read_sparse_instance(const mxArray *prhs, int index, struct feature_node *x, int feature_number, double bias)
+void exit_input_error(int line_num)
 {
-	int i, j, low, high;
-	mwIndex *ir, *jc;
-	double *samples;
-
-	ir = mxGetIr(prhs);
-	jc = mxGetJc(prhs);
-	samples = mxGetPr(prhs);
-
-	// each column is one instance
-	j = 0;
-	low = (int) jc[index], high = (int) jc[index+1];
-	for(i=low; i<high && (int) (ir[i])<feature_number; i++)
-	{
-		x[j].index = (int) ir[i]+1;
-		x[j].value = samples[i];
-		j++;
-	}
-	if(bias>=0)
-	{
-		x[j].index = feature_number+1;
-		x[j].value = bias;
-		j++;
-	}
-	x[j].index = -1;
+	fprintf(stderr,"Wrong input format at line %d\n", line_num);
+	exit(1);
 }
 
-static void fake_answer(mxArray *plhs[])
+static char *line = NULL;
+static int max_line_len;
+
+static char* readline(FILE *input)
 {
-	plhs[0] = mxCreateDoubleMatrix(0, 0, mxREAL);
-	plhs[1] = mxCreateDoubleMatrix(0, 0, mxREAL);
-	plhs[2] = mxCreateDoubleMatrix(0, 0, mxREAL);
+	int len;
+	
+	if(fgets(line,max_line_len,input) == NULL)
+		return NULL;
+
+	while(strrchr(line,'\n') == NULL)
+	{
+		max_line_len *= 2;
+		line = (char *) realloc(line,max_line_len);
+		len = (int) strlen(line);
+		if(fgets(line+len,max_line_len-len,input) == NULL)
+			break;
+	}
+	return line;
 }
 
-void do_predict(mxArray *plhs[], const mxArray *prhs[], struct model *model_, const int predict_probability_flag)
+void do_predict(FILE *input, FILE *output, struct model* model_)
 {
-	int label_vector_row_num, label_vector_col_num;
-	int feature_number, testing_instance_number;
-	int instance_index;
-	double *ptr_instance, *ptr_label, *ptr_predict_label;
-	double *ptr_prob_estimates, *ptr_dec_values, *ptr;
-	struct feature_node *x;
-	mxArray *pplhs[1]; // instance sparse matrix in row format
-
 	int correct = 0;
 	int total = 0;
 
 	int nr_class=get_nr_class(model_);
-	int nr_w;
 	double *prob_estimates=NULL;
-
-	if(nr_class==2 && model_->param.solver_type!=MCSVM_CS)
-		nr_w=1;
+	int j, n;
+	int nr_feature=get_nr_feature(model_);
+	if(model_->bias>=0)
+		n=nr_feature+1;
 	else
-		nr_w=nr_class;
+		n=nr_feature;
 
-	// prhs[1] = testing instance matrix
-	feature_number = get_nr_feature(model_);
-	testing_instance_number = (int) mxGetM(prhs[1]);
-	if(col_format_flag)
+	if(flag_predict_probability)
 	{
-		feature_number = (int) mxGetM(prhs[1]);
-		testing_instance_number = (int) mxGetN(prhs[1]);
-	}
+		int *labels;
 
-	label_vector_row_num = (int) mxGetM(prhs[0]);
-	label_vector_col_num = (int) mxGetN(prhs[0]);
-
-	if(label_vector_row_num!=testing_instance_number)
-	{
-		mexPrintf("Length of label vector does not match # of instances.\n");
-		fake_answer(plhs);
-		return;
-	}
-	if(label_vector_col_num!=1)
-	{
-		mexPrintf("label (1st argument) should be a vector (# of column is 1).\n");
-		fake_answer(plhs);
-		return;
-	}
-
-	ptr_instance = mxGetPr(prhs[1]);
-	ptr_label    = mxGetPr(prhs[0]);
-
-	// transpose instance matrix
-	if(mxIsSparse(prhs[1]))
-	{
-		if(col_format_flag)
+		if(!check_probability_model(model_))
 		{
-			pplhs[0] = (mxArray *)prhs[1];
+			fprintf(stderr, "probability output is only supported for logistic regression\n");
+			exit(1);
 		}
-		else
+
+		labels=(int *) malloc(nr_class*sizeof(int));
+		get_labels(model_,labels);
+		prob_estimates = (double *) malloc(nr_class*sizeof(double));
+		fprintf(output,"labels");		
+		for(j=0;j<nr_class;j++)
+			fprintf(output," %d",labels[j]);
+		fprintf(output,"\n");
+		free(labels);
+	}
+
+	max_line_len = 1024;
+	line = (char *)malloc(max_line_len*sizeof(char));
+	while(readline(input) != NULL)
+	{
+		int i = 0;
+		int target_label, predict_label;
+		char *idx, *val, *label, *endptr;
+		int inst_max_index = 0; // strtol gives 0 if wrong format
+
+		label = strtok(line," \t\n");
+		if(label == NULL) // empty line
+			exit_input_error(total+1);
+
+		target_label = (int) strtol(label,&endptr,10);
+		if(endptr == label || *endptr != '\0')
+			exit_input_error(total+1);
+
+		while(1)
 		{
-			mxArray *pprhs[1];
-			pprhs[0] = mxDuplicateArray(prhs[1]);
-			if(mexCallMATLAB(1, pplhs, 1, pprhs, "transpose"))
+			if(i>=max_nr_attr-2)	// need one more for index = -1
 			{
-				mexPrintf("Error: cannot transpose testing instance matrix\n");
-				fake_answer(plhs);
-				return;
+				max_nr_attr *= 2;
+				x = (struct feature_node *) realloc(x,max_nr_attr*sizeof(struct feature_node));
 			}
+
+			idx = strtok(NULL,":");
+			val = strtok(NULL," \t");
+
+			if(val == NULL)
+				break;
+			errno = 0;
+			x[i].index = (int) strtol(idx,&endptr,10);
+			if(endptr == idx || errno != 0 || *endptr != '\0' || x[i].index <= inst_max_index)
+				exit_input_error(total+1);
+			else
+				inst_max_index = x[i].index;
+
+			errno = 0;
+			x[i].value = strtod(val,&endptr);
+			if(endptr == val || errno != 0 || (*endptr != '\0' && !isspace(*endptr)))
+				exit_input_error(total+1);
+
+			// feature indices larger than those in training are not used
+			if(x[i].index <= nr_feature)
+				++i;
 		}
-	}
-	else
-		mexPrintf("Testing_instance_matrix must be sparse\n");
 
-
-	prob_estimates = Malloc(double, nr_class);
-
-	plhs[0] = mxCreateDoubleMatrix(testing_instance_number, 1, mxREAL);
-	if(predict_probability_flag)
-		plhs[2] = mxCreateDoubleMatrix(testing_instance_number, nr_class, mxREAL);
-	else
-		plhs[2] = mxCreateDoubleMatrix(testing_instance_number, nr_w, mxREAL);
-
-	ptr_predict_label = mxGetPr(plhs[0]);
-	ptr_prob_estimates = mxGetPr(plhs[2]);
-	ptr_dec_values = mxGetPr(plhs[2]);
-	x = Malloc(struct feature_node, feature_number+2);
-	for(instance_index=0;instance_index<testing_instance_number;instance_index++)
-	{
-		int i;
-		double target,v;
-
-		target = ptr_label[instance_index];
-
-		// prhs[1] and prhs[1]^T are sparse
-		read_sparse_instance(pplhs[0], instance_index, x, feature_number, model_->bias);
-
-		if(predict_probability_flag)
+		if(model_->bias>=0)
 		{
-			v = predict_probability(model_, x, prob_estimates);
-			ptr_predict_label[instance_index] = v;
-			for(i=0;i<nr_class;i++)
-				ptr_prob_estimates[instance_index + i * testing_instance_number] = prob_estimates[i];
+			x[i].index = n;
+			x[i].value = model_->bias;
+			i++;
+		}
+		x[i].index = -1;
+
+		if(flag_predict_probability)
+		{
+			int j;
+			predict_label = predict_probability(model_,x,prob_estimates);
+			fprintf(output,"%d",predict_label);
+			for(j=0;j<model_->nr_class;j++)
+				fprintf(output," %g",prob_estimates[j]);
+			fprintf(output,"\n");
 		}
 		else
 		{
-			double *dec_values = Malloc(double, nr_class);
-			v = predict(model_, x);
-			ptr_predict_label[instance_index] = v;
-
-			predict_values(model_, x, dec_values);
-			for(i=0;i<nr_w;i++)
-				ptr_dec_values[instance_index + i * testing_instance_number] = dec_values[i];
-			free(dec_values);
+			predict_label = predict(model_,x);
+			fprintf(output,"%d\n",predict_label);
 		}
 
-		if(v == target)
+		if(predict_label == target_label)
 			++correct;
 		++total;
 	}
-	mexPrintf("Accuracy = %g%% (%d/%d)\n", (double) correct/total*100,correct,total);
-
-	// return accuracy, mean squared error, squared correlation coefficient
-	plhs[1] = mxCreateDoubleMatrix(1, 1, mxREAL);
-	ptr = mxGetPr(plhs[1]);
-	ptr[0] = (double) correct/total*100;
-
-	free(x);
-	if(prob_estimates != NULL)
+	printf("Accuracy = %g%% (%d/%d)\n",(double) correct/total*100,correct,total);
+	if(flag_predict_probability)
 		free(prob_estimates);
 }
 
 void exit_with_help()
 {
-	mexPrintf(
-			"Usage: [predicted_label, accuracy, decision_values/prob_estimates] = predict(testing_label_vector, testing_instance_matrix, model, 'liblinear_options','col')\n"
-			"liblinear_options:\n"
-			"-b probability_estimates: whether to predict probability estimates, 0 or 1 (default 0)\n"
-			"col:\n"
-			"	if 'col' is setted testing_instance_matrix is parsed in column format, otherwise is in row format"
-			);
+	printf(
+	"Usage: predict [options] test_file model_file output_file\n"
+	"options:\n"
+	"-b probability_estimates: whether to output probability estimates, 0 or 1 (default 0)\n"
+	);
+	exit(1);
 }
 
-void mexFunction( int nlhs, mxArray *plhs[],
-		int nrhs, const mxArray *prhs[] )
+int main(int argc, char **argv)
 {
-	int prob_estimate_flag = 0;
-	struct model *model_;
-	char cmd[CMD_LEN];
-	col_format_flag = 0;
+	FILE *input, *output;
+	int i;
 
-	if(nrhs > 5 || nrhs < 3)
+	// parse options
+	for(i=1;i<argc;i++)
 	{
+		if(argv[i][0] != '-') break;
+		++i;
+		switch(argv[i-1][1])
+		{
+			case 'b':
+				flag_predict_probability = atoi(argv[i]);
+				break;
+
+			default:
+				fprintf(stderr,"unknown option: -%c\n", argv[i-1][1]);
+				exit_with_help();
+				break;
+		}
+	}
+	if(i>=argc)
 		exit_with_help();
-		fake_answer(plhs);
-		return;
-	}
-	if(nrhs == 5)
+
+	input = fopen(argv[i],"r");
+	if(input == NULL)
 	{
-		mxGetString(prhs[4], cmd, mxGetN(prhs[4])+1);
-		if(strcmp(cmd, "col") == 0)
-		{			
-			col_format_flag = 1;
-		}
+		fprintf(stderr,"can't open input file %s\n",argv[i]);
+		exit(1);
 	}
 
-	if(!mxIsDouble(prhs[0]) || !mxIsDouble(prhs[1])) {
-		mexPrintf("Error: label vector and instance matrix must be double\n");
-		fake_answer(plhs);
-		return;
-	}
-
-	if(mxIsStruct(prhs[2]))
+	output = fopen(argv[i+2],"w");
+	if(output == NULL)
 	{
-		const char *error_msg;
-
-		// parse options
-		if(nrhs>=4)
-		{
-			int i, argc = 1;
-			char *argv[CMD_LEN/2];
-
-			// put options in argv[]
-			mxGetString(prhs[3], cmd,  mxGetN(prhs[3]) + 1);
-			if((argv[argc] = strtok(cmd, " ")) != NULL)
-				while((argv[++argc] = strtok(NULL, " ")) != NULL)
-					;
-
-			for(i=1;i<argc;i++)
-			{
-				if(argv[i][0] != '-') break;
-				if(++i>=argc)
-				{
-					exit_with_help();
-					fake_answer(plhs);
-					return;
-				}
-				switch(argv[i-1][1])
-				{
-					case 'b':
-						prob_estimate_flag = atoi(argv[i]);
-						break;
-					default:
-						mexPrintf("unknown option\n");
-						exit_with_help();
-						fake_answer(plhs);
-						return;
-				}
-			}
-		}
-
-		model_ = Malloc(struct model, 1);
-		error_msg = matlab_matrix_to_model(model_, prhs[2]);
-		if(error_msg)
-		{
-			mexPrintf("Error: can't read model: %s\n", error_msg);
-			destroy_model(model_);
-			fake_answer(plhs);
-			return;
-		}
-
-		if(prob_estimate_flag)
-		{
-			if(model_->param.solver_type!=L2R_LR)
-			{
-				mexPrintf("probability output is only supported for logistic regression\n");
-				prob_estimate_flag=0;
-			}
-		}
-
-		if(mxIsSparse(prhs[1]))
-			do_predict(plhs, prhs, model_, prob_estimate_flag);
-		else
-		{
-			mexPrintf("Testing_instance_matrix must be sparse\n");
-			fake_answer(plhs);
-		}
-
-		// destroy model_
-		destroy_model(model_);
+		fprintf(stderr,"can't open output file %s\n",argv[i+2]);
+		exit(1);
 	}
-	else
+
+	if((model_=load_model(argv[i+1]))==0)
 	{
-		mexPrintf("model file should be a struct array\n");
-		fake_answer(plhs);
+		fprintf(stderr,"can't open model file %s\n",argv[i+1]);
+		exit(1);
 	}
 
-	return;
+	x = (struct feature_node *) malloc(max_nr_attr*sizeof(struct feature_node));
+	do_predict(input, output, model_);
+	free_and_destroy_model(&model_);
+	free(line);
+	free(x);
+	fclose(input);
+	fclose(output);
+	return 0;
 }
+

@@ -1,10 +1,12 @@
 /*
-This code was extracted from libsvm-mat-2.9-1 in Jan 2010 
-Copyright (C) 2010 Alois Schloegl <alois.schloegl@gmail.com>
+
+This code was extracted from libsvm-3.12 in Apr 2015 and 
+modified for the use with Octave 
+Copyright (c) 2010,2011,2015 Alois Schloegl <alois.schloegl@ist.ac.at>
 This function is part of the NaN-toolbox
 http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
-Copyright (c) 2000-2009 Chih-Chung Chang and Chih-Jen Lin
+Copyright (c) 2000-2012 Chih-Chung Chang and Chih-Jen Lin
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -42,7 +44,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _LIBSVM_H
 #define _LIBSVM_H
 
-#define LIBSVM_VERSION 290 
+#define LIBSVM_VERSION 312
 
 #ifdef __cplusplus
 extern "C" {
@@ -87,6 +89,9 @@ struct svm_parameter
 	int probability; /* do probability estimates */
 };
 
+//
+// svm_model
+// 
 struct svm_model
 {
 	struct svm_parameter param;	/* parameter */
@@ -119,17 +124,18 @@ int svm_get_nr_class(const struct svm_model *model);
 void svm_get_labels(const struct svm_model *model, int *label);
 double svm_get_svr_probability(const struct svm_model *model);
 
-void svm_predict_values(const struct svm_model *model, const struct svm_node *x, double* dec_values);
+double svm_predict_values(const struct svm_model *model, const struct svm_node *x, double* dec_values);
 double svm_predict(const struct svm_model *model, const struct svm_node *x);
 double svm_predict_probability(const struct svm_model *model, const struct svm_node *x, double* prob_estimates);
 
-void svm_destroy_model(struct svm_model *model);
+void svm_free_model_content(struct svm_model *model_ptr);
+void svm_free_and_destroy_model(struct svm_model **model_ptr_ptr);
 void svm_destroy_param(struct svm_parameter *param);
 
 const char *svm_check_parameter(const struct svm_problem *prob, const struct svm_parameter *param);
 int svm_check_probability_model(const struct svm_model *model);
 
-extern void (*svm_print_string) (const char *);
+void svm_set_print_string_function(void (*print_func)(const char *));
 
 #ifdef __cplusplus
 }

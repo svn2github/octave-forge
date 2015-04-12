@@ -1,12 +1,12 @@
 /*
 
 $Id$
-Copyright (c) 2000-2009 Chih-Chung Chang and Chih-Jen Lin
-Copyright (c) 2010,2011 Alois Schloegl <alois.schloegl@gmail.com>
+Copyright (c) 2000-2012 Chih-Chung Chang and Chih-Jen Lin
+Copyright (c) 2010,2011,2015 Alois Schloegl <alois.schloegl@ist.ac.at>
 This function is part of the NaN-toolbox
 http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
-This code was extracted from libsvm-mat-2.9-1 in Jan 2010 and 
+This code was extracted from libsvm-3.12 in Apr 2015 and 
 modified for the use with Octave 
 
 This program is free software; you can redistribute it and/or modify
@@ -164,7 +164,8 @@ void predict(mxArray *plhs[], const mxArray *prhs[], struct svm_model *model, co
 		// decision values are in plhs[2]
 		if(svm_type == ONE_CLASS ||
 		   svm_type == EPSILON_SVR ||
-		   svm_type == NU_SVR)
+		   svm_type == NU_SVR ||
+		   nr_class == 1) // if only one class in training data, decision values are still returned.
 			plhs[2] = mxCreateDoubleMatrix(testing_instance_number, 1, mxREAL);
 		else
 			plhs[2] = mxCreateDoubleMatrix(testing_instance_number, nr_class*(nr_class-1)/2, mxREAL);
@@ -208,25 +209,26 @@ void predict(mxArray *plhs[], const mxArray *prhs[], struct svm_model *model, co
 		}
 		else
 		{
-			predict_label = svm_predict(model,x);
-			ptr_predict_label[instance_index] = predict_label;
-
 			if(svm_type == ONE_CLASS ||
 			   svm_type == EPSILON_SVR ||
 			   svm_type == NU_SVR)
 			{
 				double res;
-				svm_predict_values(model, x, &res);
+				predict_label = svm_predict_values(model, x, &res);
 				ptr_dec_values[instance_index] = res;
 			}
 			else
 			{
 				double *dec_values = (double *) malloc(sizeof(double) * nr_class*(nr_class-1)/2);
-				svm_predict_values(model, x, dec_values);
-				for(i=0;i<(nr_class*(nr_class-1))/2;i++)
-					ptr_dec_values[instance_index + i * testing_instance_number] = dec_values[i];
+				predict_label = svm_predict_values(model, x, dec_values);
+				if(nr_class == 1) 
+					ptr_dec_values[instance_index] = 1;
+				else
+					for(i=0;i<(nr_class*(nr_class-1))/2;i++)
+						ptr_dec_values[instance_index + i * testing_instance_number] = dec_values[i];
 				free(dec_values);
 			}
+			ptr_predict_label[instance_index] = predict_label;
 		}
 
 		if(predict_label == target_label)
@@ -239,9 +241,7 @@ void predict(mxArray *plhs[], const mxArray *prhs[], struct svm_model *model, co
 		sumpt += predict_label*target_label;
 		++total;
 	}
-	if (1)
-		;	// avoid output to command line
-	else if(svm_type==NU_SVR || svm_type==EPSILON_SVR)
+	if(svm_type==NU_SVR || svm_type==EPSILON_SVR)
 	{
 		mexPrintf("Mean squared error = %g (regression)\n",error/total);
 		mexPrintf("Squared correlation coefficient = %g (regression)\n",
@@ -269,7 +269,7 @@ void predict(mxArray *plhs[], const mxArray *prhs[], struct svm_model *model, co
 void exit_with_help()
 {
 	mexPrintf(
-		"Usage: [predicted_label, accuracy, decision_values/prob_estimates] = svmpredict(testing_label_vector, testing_instance_matrix, model, 'libsvm_options')\n"
+		"Usage: [predicted_label, accuracy, decision_values/prob_estimates] = svmpredict_mex(testing_label_vector, testing_instance_matrix, model, 'libsvm_options')\n"
 		"Parameters:\n"
 		"  model: SVM model structure from svmtrain.\n"
 		"  libsvm_options:\n"
@@ -353,19 +353,19 @@ void mexFunction( int nlhs, mxArray *plhs[],
 			{
 				mexPrintf("Model does not support probabiliy estimates\n");
 				fake_answer(plhs);
-				svm_destroy_model(model);
+				svm_free_and_destroy_model(&model);
 				return;
 			}
 		}
 		else
 		{
 			if(svm_check_probability_model(model)!=0)
-				printf("Model supports probability estimates, but disabled in predicton.\n");
+				mexPrintf("Model supports probability estimates, but disabled in predicton.\n");
 		}
 
 		predict(plhs, prhs, model, prob_estimate_flag);
 		// destroy model
-		svm_destroy_model(model);
+		svm_free_and_destroy_model(&model);
 	}
 	else
 	{

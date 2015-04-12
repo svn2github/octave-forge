@@ -1,12 +1,12 @@
 /*
 
 $Id$
-Copyright (c) 2000-2009 Chih-Chung Chang and Chih-Jen Lin
-Copyright (c) 2010 Alois Schloegl <alois.schloegl@gmail.com>
+Copyright (c) 2000-2012 Chih-Chung Chang and Chih-Jen Lin
+Copyright (c) 2010,2015 Alois Schloegl <alois.schloegl@ist.ac.at>
 This function is part of the NaN-toolbox
 http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
-This code was extracted from libsvm-mat-2.9-1 in Jan 2010 and 
+This code was extracted from libsvm-3.12 in Apr 2015 and 
 modified for the use with Octave 
 
 This program is free software; you can redistribute it and/or modify
@@ -45,6 +45,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #define Malloc(type,n) (type *)malloc((n)*sizeof(type))
 
 void print_null(const char *s) {}
+void print_string_matlab(const char *s) {mexPrintf(s);}
 
 void exit_with_help()
 {
@@ -87,7 +88,6 @@ struct svm_node *x_space;
 int cross_validation;
 int nr_fold;
 
-void (*svm_default_print_string) (const char *) = NULL;
 
 double do_cross_validation()
 {
@@ -138,6 +138,7 @@ int parse_command_line(int nrhs, const mxArray *prhs[], char *model_file_name)
 	int i, argc = 1;
 	char cmd[CMD_LEN];
 	char *argv[CMD_LEN/2];
+	void (*print_func)(const char *) = print_string_matlab;	// default printing to matlab display
 
 	// default values
 	param.svm_type = C_SVC;
@@ -156,12 +157,6 @@ int parse_command_line(int nrhs, const mxArray *prhs[], char *model_file_name)
 	param.weight_label = NULL;
 	param.weight = NULL;
 	cross_validation = 0;
-	// svmtrain loaded only once under matlab
-	if (svm_default_print_string == NULL)
-		svm_default_print_string = svm_print_string;
-	else
-		svm_print_string = svm_default_print_string;
-
 
 	if(nrhs <= 1)
 		return 1;
@@ -221,7 +216,7 @@ int parse_command_line(int nrhs, const mxArray *prhs[], char *model_file_name)
 				param.probability = atoi(argv[i]);
 				break;
 			case 'q':
-				svm_print_string = &print_null;
+				print_func = &print_null;
 				i--;
 				break;
 			case 'v':
@@ -245,6 +240,9 @@ int parse_command_line(int nrhs, const mxArray *prhs[], char *model_file_name)
 				return 1;
 		}
 	}
+
+	svm_set_print_string_function(print_func);
+
 	return 0;
 }
 
@@ -415,7 +413,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
 	srand(1);
 
 	// Transform the input Matrix to libsvm format
-	if(nrhs > 0 && nrhs < 4)
+	if(nrhs > 1 && nrhs < 4)
 	{
 		int err;
 
@@ -488,7 +486,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
 			error_msg = model_to_matlab_structure(plhs, nr_feat, model);
 			if(error_msg)
 				mexPrintf("Error: can't convert libsvm model to matrix structure: %s\n", error_msg);
-			svm_destroy_model(model);
+			svm_free_and_destroy_model(&model);
 		}
 		svm_destroy_param(&param);
 		free(prob.y);

@@ -372,7 +372,7 @@ struct svm_model *matlab_matrix_to_model(const mxArray *matlab_struct, const cha
 		pprhs[0] = rhs[id];
 		if(mexCallMATLAB(1, pplhs, 1, pprhs, "transpose")) 
 		{
-			svm_free_and_destroy_model(model);
+			svm_free_and_destroy_model(&model);
 			*msg = "cannot transpose SV matrix";
 			return NULL;
 		}

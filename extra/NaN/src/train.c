@@ -1,11 +1,12 @@
 /*
 
-Copyright (c) 2007-2011 The LIBLINEAR Project.
-Copyright (c) 2010,2015 Alois Schloegl <alois.schloegl@ist.ac.at>
+$Id$
+Copyright (c) 2007-2009 The LIBLINEAR Project.
+Copyright (c) 2010 Alois Schloegl <alois.schloegl@gmail.com>
 This function is part of the NaN-toolbox
 http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
-This code was extracted from liblinear-1.8 in Apr 2015 and 
+This code was extracted from liblinear-1.51 in Jan 2010 and 
 modified for the use with Octave 
 
 This program is free software; you can redistribute it and/or modify
@@ -35,6 +36,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 #ifdef tmwtypes_h
   #if (MX_API_VER<=0x07020000)
+    typedef int mwSize;
     typedef int mwIndex;
   #endif 
 #endif 
@@ -43,33 +45,32 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #define Malloc(type,n) (type *)malloc((n)*sizeof(type))
 #define INF HUGE_VAL
 
-void print_null(const char *s) {}
-void print_string_matlab(const char *s) {mexPrintf(s);}
+void print_null(const char *s){}
+
+void (*liblinear_default_print_string) (const char *);
 
 void exit_with_help()
 {
 	mexPrintf(
-	"Usage: model = train(training_label_vector, training_instance_matrix, 'liblinear_options', 'col');\n"
+	"Usage: model = train(weight_vector, training_label_vector, training_instance_matrix, 'liblinear_options', 'col');\n"
 	"liblinear_options:\n"
 	"-s type : set type of solver (default 1)\n"
-	"	0 -- L2-regularized logistic regression (primal)\n"
+	"	0 -- L2-regularized logistic regression\n"
 	"	1 -- L2-regularized L2-loss support vector classification (dual)\n"	
 	"	2 -- L2-regularized L2-loss support vector classification (primal)\n"
 	"	3 -- L2-regularized L1-loss support vector classification (dual)\n"
 	"	4 -- multi-class support vector classification by Crammer and Singer\n"
 	"	5 -- L1-regularized L2-loss support vector classification\n"
 	"	6 -- L1-regularized logistic regression\n"
-	"	7 -- L2-regularized logistic regression (dual)\n"
 	"-c cost : set the parameter C (default 1)\n"
 	"-e epsilon : set tolerance of termination criterion\n"
 	"	-s 0 and 2\n" 
 	"		|f'(w)|_2 <= eps*min(pos,neg)/l*|f'(w0)|_2,\n" 
-	"		where f is the primal function and pos/neg are # of\n" 
-	"		positive/negative data (default 0.01)\n"
-	"	-s 1, 3, 4 and 7\n"
+	"		where f is the primal function, (default 0.01)\n"
+	"	-s 1, 3, and 4\n"
 	"		Dual maximal violation <= eps; similar to libsvm (default 0.1)\n"
 	"	-s 5 and 6\n"
-	"		|f'(w)|_1 <= eps*min(pos,neg)/l*|f'(w0)|_1,\n"
+	"		|f'(w)|_inf <= eps*min(pos,neg)/l*|f'(w0)|_inf,\n"
 	"		where f is the primal function (default 0.01)\n"
 	"-B bias : if bias >= 0, instance x becomes [x; bias]; if < 0, no bias term added (default -1)\n"
 	"-wi weight: weights adjust the parameter C of different classes (see README for details)\n"
@@ -109,13 +110,12 @@ double do_cross_validation()
 	return retval;
 }
 
-// nrhs should be 3
+// nrhs should be 4
 int parse_command_line(int nrhs, const mxArray *prhs[], char *model_file_name)
 {
 	int i, argc = 1;
 	char cmd[CMD_LEN];
 	char *argv[CMD_LEN/2];
-	void (*print_func)(const char *) = print_string_matlab;	// default printing to matlab display
 
 	// default values
 	param.solver_type = L2R_L2LOSS_SVC_DUAL;
@@ -128,21 +128,26 @@ int parse_command_line(int nrhs, const mxArray *prhs[], char *model_file_name)
 	col_format_flag = 0;
 	bias = -1;
 
+	// train loaded only once under matlab
+	if(liblinear_default_print_string == NULL)
+		liblinear_default_print_string = liblinear_print_string;
+	else
+		liblinear_print_string = liblinear_default_print_string;
 
-	if(nrhs <= 1)
+	if(nrhs <= 2)
 		return 1;
 
-	if(nrhs == 4)
+	if(nrhs == 5)
 	{
-		mxGetString(prhs[3], cmd, mxGetN(prhs[3])+1);
+		mxGetString(prhs[4], cmd, mxGetN(prhs[4])+1);
 		if(strcmp(cmd, "col") == 0)
 			col_format_flag = 1;
 	}
 
 	// put options in argv[]
-	if(nrhs > 2)
+	if(nrhs > 3)
 	{
-		mxGetString(prhs[2], cmd,  mxGetN(prhs[2]) + 1);
+		mxGetString(prhs[3], cmd,  mxGetN(prhs[3]) + 1);
 		if((argv[argc] = strtok(cmd, " ")) != NULL)
 			while((argv[++argc] = strtok(NULL, " ")) != NULL)
 				;
@@ -186,7 +191,7 @@ int parse_command_line(int nrhs, const mxArray *prhs[], char *model_file_name)
 				param.weight[param.nr_weight-1] = atof(argv[i]);
 				break;
 			case 'q':
-				print_func = &print_null;
+				liblinear_print_string = &print_null;
 				i--;
 				break;
 			default:
@@ -195,13 +200,11 @@ int parse_command_line(int nrhs, const mxArray *prhs[], char *model_file_name)
 		}
 	}
 
-	set_print_string_function(print_func);
-
 	if(param.eps == INF)
 	{
 		if(param.solver_type == L2R_LR || param.solver_type == L2R_L2LOSS_SVC)
 			param.eps = 0.01;
-		else if(param.solver_type == L2R_L2LOSS_SVC_DUAL || param.solver_type == L2R_L1LOSS_SVC_DUAL || param.solver_type == MCSVM_CS || param.solver_type == L2R_LR_DUAL)
+		else if(param.solver_type == L2R_L2LOSS_SVC_DUAL || param.solver_type == L2R_L1LOSS_SVC_DUAL || param.solver_type == MCSVM_CS)
 			param.eps = 0.1;
 		else if(param.solver_type == L1R_L2LOSS_SVC || param.solver_type == L1R_LR)
 			param.eps = 0.01;
@@ -214,16 +217,17 @@ static void fake_answer(mxArray *plhs[])
 	plhs[0] = mxCreateDoubleMatrix(0, 0, mxREAL);
 }
 
-int read_problem_sparse(const mxArray *label_vec, const mxArray *instance_mat)
+int read_problem_sparse(const mxArray *weight_vec, const mxArray *label_vec, const mxArray *instance_mat)
 {
 	int i, j, k, low, high;
 	mwIndex *ir, *jc;
-	int elements, max_index, num_samples, label_vector_row_num;
-	double *samples, *labels;
+	int elements, max_index, num_samples, label_vector_row_num, weight_vector_row_num;
+	double *samples, *labels, *weights;
 	mxArray *instance_mat_col; // instance sparse matrix in column format
 
 	prob.x = NULL;
 	prob.y = NULL;
+	prob.W = NULL;
 	x_space = NULL;
 
 	if(col_format_flag)
@@ -244,8 +248,16 @@ int read_problem_sparse(const mxArray *label_vec, const mxArray *instance_mat)
 
 	// the number of instance
 	prob.l = (int) mxGetN(instance_mat_col);
+	weight_vector_row_num = (int) mxGetM(weight_vec);
 	label_vector_row_num = (int) mxGetM(label_vec);
 
+	if(weight_vector_row_num == 0) 
+		;//mexPrintf("Warning: treat each instance with weight 1.0\n");
+	else if(weight_vector_row_num!=prob.l)
+	{
+		mexPrintf("Length of weight vector does not match # of instances.\n");
+		return -1;
+	}
 	if(label_vector_row_num!=prob.l)
 	{
 		mexPrintf("Length of label vector does not match # of instances.\n");
@@ -253,6 +265,7 @@ int read_problem_sparse(const mxArray *label_vec, const mxArray *instance_mat)
 	}
 	
 	// each column is one instance
+	weights = mxGetPr(weight_vec);
 	labels = mxGetPr(label_vec);
 	samples = mxGetPr(instance_mat_col);
 	ir = mxGetIr(instance_mat_col);
@@ -264,6 +277,7 @@ int read_problem_sparse(const mxArray *label_vec, const mxArray *instance_mat)
 	max_index = (int) mxGetM(instance_mat_col);
 
 	prob.y = Malloc(int, prob.l);
+	prob.W = Malloc(double,prob.l);
 	prob.x = Malloc(struct feature_node*, prob.l);
 	x_space = Malloc(struct feature_node, elements);
 
@@ -274,6 +288,9 @@ int read_problem_sparse(const mxArray *label_vec, const mxArray *instance_mat)
 	{
 		prob.x[i] = &x_space[j];
 		prob.y[i] = (int) labels[i];
+		prob.W[i] = 1;
+		if(weight_vector_row_num > 0)
+			prob.W[i] *= (double) weights[i];
 		low = (int) jc[i], high = (int) jc[i+1];
 		for(k=low;k<high;k++)
 		{
@@ -309,12 +326,12 @@ void mexFunction( int nlhs, mxArray *plhs[],
 	srand(1);
 
 	// Transform the input Matrix to libsvm format
-	if(nrhs > 1 && nrhs < 5)
+	if(nrhs > 2 && nrhs < 6)
 	{
 		int err=0;
 
-		if(!mxIsDouble(prhs[0]) || !mxIsDouble(prhs[1])) {
-			mexPrintf("Error: label vector and instance matrix must be double\n");
+		if(!mxIsDouble(prhs[0]) || !mxIsDouble(prhs[1]) || !mxIsDouble(prhs[2])) {
+			mexPrintf("Error: weight vector, label vector and instance matrix must be double\n");
 			fake_answer(plhs);
 			return;
 		}
@@ -327,8 +344,8 @@ void mexFunction( int nlhs, mxArray *plhs[],
 			return;
 		}
 
-		if(mxIsSparse(prhs[1]))
-			err = read_problem_sparse(prhs[0], prhs[1]);
+		if(mxIsSparse(prhs[2]))
+			err = read_problem_sparse(prhs[0], prhs[1], prhs[2]);
 		else
 		{
 			mexPrintf("Training_instance_matrix must be sparse\n");
@@ -338,7 +355,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
 		}
 
 		// train's original code
-		error_msg = check_parameter(&prob, &param);
+		error_msg = check_parameter(&param);
 
 		if(err || error_msg)
 		{
@@ -367,11 +384,12 @@ void mexFunction( int nlhs, mxArray *plhs[],
 			error_msg = model_to_matlab_structure(plhs, model_);
 			if(error_msg)
 				mexPrintf("Error: can't convert libsvm model to matrix structure: %s\n", error_msg);
-			free_and_destroy_model(&model_);
+			destroy_model(model_);
 		}
 		destroy_param(&param);
 		free(prob.y);
 		free(prob.x);
+		free(prob.W);
 		free(x_space);
 	}
 	else

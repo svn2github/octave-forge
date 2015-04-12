@@ -1,11 +1,12 @@
 /*
 
-Copyright (c) 2007-2011 The LIBLINEAR Project.
-Copyright (c) 2010,2015 Alois Schloegl <alois.schloegl@ist.ac.at>
+$Id$
+Copyright (c) 2007-2009 The LIBLINEAR Project.
+Copyright (c) 2010 Alois Schloegl <alois.schloegl@gmail.com>
 This function is part of the NaN-toolbox
 http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
-This code was extracted from liblinear-1.8 in Apr 2015 and 
+This code was extracted from liblinear-1.51 in Jan 2010 and 
 modified for the use with Octave 
 
 This program is free software; you can redistribute it and/or modify
@@ -42,9 +43,10 @@ struct problem
 	int *y;
 	struct feature_node **x;
 	double bias;            /* < 0 if no bias term */  
+	double *W;              /* instance weight */
 };
 
-enum { L2R_LR, L2R_L2LOSS_SVC_DUAL, L2R_L2LOSS_SVC, L2R_L1LOSS_SVC_DUAL, MCSVM_CS, L1R_L2LOSS_SVC, L1R_LR, L2R_LR_DUAL }; /* solver_type */
+enum { L2R_LR, L2R_L2LOSS_SVC_DUAL, L2R_L2LOSS_SVC, L2R_L1LOSS_SVC_DUAL, MCSVM_CS, L1R_L2LOSS_SVC, L1R_LR }; /* solver_type */
 
 struct parameter
 {
@@ -82,13 +84,10 @@ int get_nr_feature(const struct model *model_);
 int get_nr_class(const struct model *model_);
 void get_labels(const struct model *model_, int* label);
 
-void free_model_content(struct model *model_ptr);
-void free_and_destroy_model(struct model **model_ptr_ptr);
+void destroy_model(struct model *model_);
 void destroy_param(struct parameter *param);
-
-const char *check_parameter(const struct problem *prob, const struct parameter *param);
-int check_probability_model(const struct model *model);
-void set_print_string_function(void (*print_func) (const char*));
+const char *check_parameter(const struct parameter *param);
+extern void (*liblinear_print_string) (const char *);
 
 #ifdef __cplusplus
 }

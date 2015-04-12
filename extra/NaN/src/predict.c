@@ -1,11 +1,12 @@
 /*
 
-Copyright (c) 2007-2011 The LIBLINEAR Project.
-Copyright (c) 2010,2015 Alois Schloegl <alois.schloegl@ist.ac.at>
+$Id$
+Copyright (c) 2007-2009 The LIBLINEAR Project.
+Copyright (c) 2010 Alois Schloegl <alois.schloegl@gmail.com>
 This function is part of the NaN-toolbox
 http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
-This code was extracted from liblinear-1.8 in Apr 2015 and 
+This code was extracted from liblinear-1.51 in Jan 2010 and 
 modified for the use with Octave 
 
 This program is free software; you can redistribute it and/or modify
@@ -36,7 +37,6 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
     typedef int mwSize;
   #endif 
 #endif 
-
 
 #define CMD_LEN 2048
 
@@ -293,14 +293,14 @@ void mexFunction( int nlhs, mxArray *plhs[],
 		if(error_msg)
 		{
 			mexPrintf("Error: can't read model: %s\n", error_msg);
-			free_and_destroy_model(&model_);
+			destroy_model(model_);
 			fake_answer(plhs);
 			return;
 		}
 
 		if(prob_estimate_flag)
 		{
-			if(!check_probability_model(model_))
+			if(model_->param.solver_type!=L2R_LR)
 			{
 				mexPrintf("probability output is only supported for logistic regression\n");
 				prob_estimate_flag=0;
@@ -316,7 +316,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
 		}
 
 		// destroy model_
-		free_and_destroy_model(&model_);
+		destroy_model(model_);
 	}
 	else
 	{

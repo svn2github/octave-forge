@@ -1,5 +1,6 @@
-2015-04-06
-- use libsvm and liblinear of target system, instead of outdated copy
+2015-04-12
+
+- upgrade to libsvm-3.12
 - fix multi-threaded build (make -j) 
 - improve some tests
 

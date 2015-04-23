@@ -109,7 +109,7 @@ int compare(const void *a, const void *b) {
 			float f1,f2;
 			f1 = ((float*)Sort.Table)[ix1];
 			f2 = ((float*)Sort.Table)[ix2];
-			z = __isnanf(f1) - __isnanf(f2);
+			z = isnan(f1) - isnan(f2);
 			if (z) break;
 			
 			if (f1<f2) z = -1; 
@@ -121,7 +121,7 @@ int compare(const void *a, const void *b) {
 			double f1,f2;
 			f1 = ((double*)Sort.Table)[ix1];
 			f2 = ((double*)Sort.Table)[ix2];
-			z = __isnan(f1) - __isnan(f2);
+			z = isnan(f1) - isnan(f2);
 			if (z) break;
 			
 			if (f1<f2) z = -1; 

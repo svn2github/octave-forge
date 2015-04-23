@@ -1,3 +1,8 @@
+2015-04-23: Release of NaN v2.7.5
+
+- fix compiler issue with __isnan
+- do not display diagnostic messages
+
 2015-04-12
 
 - upgrade to libsvm-3.12

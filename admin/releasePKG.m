@@ -45,11 +45,11 @@ function [pkgtar htmltar] = releasePKG (pkgname, varargin)
 
   if use_inputP
     parser = inputParser ();
-    parser = addParamValue (parser,'repopath', OFPATH , @ischar);
-    parser = addParamValue (parser,'outpath', pwd (), @ischar);
-    parser = addParamValue (parser,'revsys', "hg", @ischar);
+    parser.addParamValue ('repopath', OFPATH , @ischar);
+    parser.addParamValue ('outpath', pwd (), @ischar);
+    parser.addParamValue ('revsys', "hg", @ischar);
 
-    parser = parse(parser,varargin{:});
+    parser.parse(varargin{:});
   else
     opt = {varargin{1:2:end}};
     val = {varargin{2:2:end}};

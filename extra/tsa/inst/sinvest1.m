@@ -211,14 +211,14 @@ while 1,
                 ylabel('imag(z)');
                 
                 MATLAB_VERSION = version;
-                if MATLAB_VERSION(1)=='4'
-                        ax = gca;
-                        tmp = get(ax,'Aspect');
-                        set(ax,'Aspect',[tmp(1),1]);
-                elseif MATLAB_VERSION(1)=='5'
+                if exist ("OCTAVE_VERSION", "builtin") || MATLAB_VERSION(1)=='5'
                         ax = gca;
                         tmp = get(ax,'DataAspectRatio');
                         set(ax,'PlotBoxAspectRatio',tmp);
+                elseif MATLAB_VERSION(1)=='4'
+                        ax = gca;
+                        tmp = get(ax,'Aspect');
+                        set(ax,'Aspect',[tmp(1),1]);
                 end;
         elseif K==11
                 plot([Y(:) filter([1 -ARPMX(:,oo/2*(oo-1)+(1:oo))],1,Y(:))-max(Y)+min(Y)]);

@@ -26,7 +26,7 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 DEFUN_DLD (pq_conninfo, args, ,
            "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{val} =} pq_conninfo (@var{connection}, @var{label})\n\
-Retrieves connection information for postgresql connection @var{connection}, specified by the string @var{label}, and returns the value of this information in @var{val}. The type of @var{val} depends on the requested information. Currently, the only recognized @var{label} is @code{'integer_datetimes'}; @var{val} is @code{true} if 8-byte date and time values are stored as integer in the server, and @code{false} if they are stored as @code{double} (which is depricated).\n\
+Retrieves connection information for postgresql connection @var{connection}, specified by the string @var{label}, and returns the value of this information in @var{val}. The type of @var{val} depends on the requested information. Currently, the only recognized @var{label} is @code{'integer_datetimes'}; @var{val} is @code{true} if 8-byte date and time values are stored as integer in the server, and @code{false} if they are stored as @code{double} (which is deprecated).\n\
 @end deftypefn")
 {
   std::string fname ("pq_conninfo");

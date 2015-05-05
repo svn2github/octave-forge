@@ -32,7 +32,7 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 #define COUT_RESIZE_STEP 1000 // resize result only after this number of rows
 
-command::command (octave_pq_connection &connection, std::string &cmd,
+command::command (octave_pq_connection_rep &connection, std::string &cmd,
                   Cell &rtypes,std::string &who)
   : res (NULL), all_fetched (0), valid (1), conn (connection),
     rettypes (rtypes), caller (who)
@@ -56,7 +56,7 @@ command::command (octave_pq_connection &connection, std::string &cmd,
     }
 }
 
-command::command (octave_pq_connection &connection, std::string &cmd,
+command::command (octave_pq_connection_rep &connection, std::string &cmd,
                   Cell &params, Cell &ptypes, Cell &rtypes, std::string &who)
   : res (NULL), all_fetched (1), valid (1), conn (connection),
     rettypes (rtypes), caller (who)

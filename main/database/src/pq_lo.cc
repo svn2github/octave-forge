@@ -37,7 +37,7 @@ class pipe_to_lo
 {
 public:
 
-  pipe_to_lo (octave_pq_connection &, const char *, bool, std::string &);
+  pipe_to_lo (octave_pq_connection_rep &, const char *, bool, std::string &);
 
   ~pipe_to_lo (void);
 
@@ -49,7 +49,7 @@ public:
 
 private:
 
-  octave_pq_connection &oct_pq_conn;
+  octave_pq_connection_rep &oct_pq_conn;
 
   PGconn *conn;
 
@@ -64,7 +64,7 @@ private:
   bool commit;
 };
 
-pipe_to_lo::pipe_to_lo (octave_pq_connection &a_oct_pq_conn,
+pipe_to_lo::pipe_to_lo (octave_pq_connection_rep &a_oct_pq_conn,
                         const char *cmd, bool acommit, std::string &amsg)
   : msg (amsg), oct_pq_conn (a_oct_pq_conn),
     conn (a_oct_pq_conn.octave_pq_get_conn ()), oid (0), fp (NULL),
@@ -185,7 +185,7 @@ class lo_to_pipe
 {
 public:
 
-  lo_to_pipe (octave_pq_connection &, Oid, const char *, bool, std::string &);
+  lo_to_pipe (octave_pq_connection_rep &, Oid, const char *, bool, std::string &);
 
   ~lo_to_pipe (void);
 
@@ -195,7 +195,7 @@ public:
 
 private:
 
-  octave_pq_connection &oct_pq_conn;
+  octave_pq_connection_rep &oct_pq_conn;
 
   PGconn *conn;
 
@@ -210,7 +210,7 @@ private:
   bool commit;
 };
 
-lo_to_pipe::lo_to_pipe (octave_pq_connection &a_oct_pq_conn, Oid aoid,
+lo_to_pipe::lo_to_pipe (octave_pq_connection_rep &a_oct_pq_conn, Oid aoid,
                         const char *cmd, bool acommit, std::string &amsg) :
   msg (amsg), oct_pq_conn (a_oct_pq_conn),
   conn (a_oct_pq_conn.octave_pq_get_conn ()), oid (aoid), fp (NULL),
@@ -362,11 +362,12 @@ Imports the file in @var{path} on the client side as a large object into the dat
       from_pipe = true;
     }
 
-  octave_base_value& rep = const_cast<octave_base_value&> (args(0).get_rep ());
+  const octave_base_value& rep = (args(0).get_rep ());
 
-  octave_pq_connection &oct_pq_conn = dynamic_cast<octave_pq_connection&> (rep);
+  const octave_pq_connection &oct_pq_conn =
+    dynamic_cast<const octave_pq_connection&> (rep);
 
-  PGconn *conn = oct_pq_conn.octave_pq_get_conn ();
+  PGconn *conn = oct_pq_conn.get_rep ()->octave_pq_get_conn ();
 
   if (! conn)
     {
@@ -402,7 +403,7 @@ Imports the file in @var{path} on the client side as a large object into the dat
       Cell params;
       Cell ptypes (1, 0);
       Cell rtypes;
-      command c (oct_pq_conn, cmd, params, ptypes, rtypes, fname);
+      command c (*(oct_pq_conn.get_rep ()), cmd, params, ptypes, rtypes, fname);
 
       if (c.good ())
         c.process_single_result ();
@@ -421,7 +422,7 @@ Imports the file in @var{path} on the client side as a large object into the dat
 
   if (from_pipe)
     {
-      pipe_to_lo tp (oct_pq_conn, path.c_str (), make_tblock, msg);
+      pipe_to_lo tp (*(oct_pq_conn.get_rep ()), path.c_str (), make_tblock, msg);
 
       make_tblock = false; // commit handled by destructor of pipe_to_lo
 
@@ -445,7 +446,7 @@ Imports the file in @var{path} on the client side as a large object into the dat
       Cell params;
       Cell ptypes (1, 0);
       Cell rtypes;
-      command c (oct_pq_conn, cmd, params, ptypes, rtypes, fname);
+      command c (*(oct_pq_conn.get_rep ()), cmd, params, ptypes, rtypes, fname);
 
       if (c.good ())
         c.process_single_result ();
@@ -523,11 +524,12 @@ Exports the large object of Oid @var{oid} in the database associated with @var{c
       return retval;
     }
 
-  octave_base_value& rep = const_cast<octave_base_value&> (args(0).get_rep ());
+  const octave_base_value& rep = (args(0).get_rep ());
 
-  octave_pq_connection &oct_pq_conn = dynamic_cast<octave_pq_connection&> (rep);
+  const octave_pq_connection &oct_pq_conn =
+    dynamic_cast<const octave_pq_connection&> (rep);
 
-  PGconn *conn = oct_pq_conn.octave_pq_get_conn ();
+  PGconn *conn = oct_pq_conn.get_rep ()->octave_pq_get_conn ();
 
   if (! conn)
     {
@@ -563,7 +565,7 @@ Exports the large object of Oid @var{oid} in the database associated with @var{c
       Cell params;
       Cell ptypes (1, 0);
       Cell rtypes;
-      command c (oct_pq_conn, cmd, params, ptypes, rtypes, fname);
+      command c (*(oct_pq_conn.get_rep ()), cmd, params, ptypes, rtypes, fname);
 
       if (c.good ())
         c.process_single_result ();
@@ -580,7 +582,7 @@ Exports the large object of Oid @var{oid} in the database associated with @var{c
 
   if (to_pipe)
     {
-      lo_to_pipe tp (oct_pq_conn, oid, path.c_str (), make_tblock, msg);
+      lo_to_pipe tp (*(oct_pq_conn.get_rep ()), oid, path.c_str (), make_tblock, msg);
 
       make_tblock = false; // commit handled by destructor of lo_to_pipe
 
@@ -602,7 +604,7 @@ Exports the large object of Oid @var{oid} in the database associated with @var{c
       Cell params;
       Cell ptypes (1, 0);
       Cell rtypes;
-      command c (oct_pq_conn, cmd, params, ptypes, rtypes, fname);
+      command c (*(oct_pq_conn.get_rep ()), cmd, params, ptypes, rtypes, fname);
 
       if (c.good ())
         c.process_single_result ();
@@ -649,11 +651,12 @@ Removes the large object of Oid @var{oid} from the database associated with @var
       return retval;
     }
 
-  octave_base_value& rep = const_cast<octave_base_value&> (args(0).get_rep ());
+  const octave_base_value& rep = (args(0).get_rep ());
 
-  octave_pq_connection &oct_pq_conn = dynamic_cast<octave_pq_connection&> (rep);
+  const octave_pq_connection &oct_pq_conn =
+    dynamic_cast<const octave_pq_connection&> (rep);
 
-  PGconn *conn = oct_pq_conn.octave_pq_get_conn ();
+  PGconn *conn = oct_pq_conn.get_rep ()->octave_pq_get_conn ();
 
   if (! conn)
     {
@@ -689,7 +692,7 @@ Removes the large object of Oid @var{oid} from the database associated with @var
       Cell params;
       Cell ptypes (1, 0);
       Cell rtypes;
-      command c (oct_pq_conn, cmd, params, ptypes, rtypes, fname);
+      command c (*(oct_pq_conn.get_rep ()), cmd, params, ptypes, rtypes, fname);
 
       if (c.good ())
         c.process_single_result ();
@@ -718,7 +721,7 @@ Removes the large object of Oid @var{oid} from the database associated with @var
       Cell params;
       Cell ptypes (1, 0);
       Cell rtypes;
-      command c (oct_pq_conn, cmd, params, ptypes, rtypes, fname);
+      command c (*(oct_pq_conn.get_rep ()), cmd, params, ptypes, rtypes, fname);
 
       if (c.good ())
         c.process_single_result ();

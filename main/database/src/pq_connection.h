@@ -28,13 +28,13 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 #include "converters.h"
 
 class
-octave_pq_connection : public octave_base_value
+octave_pq_connection_rep
 {
 public:
 
-  octave_pq_connection (std::string);
+  octave_pq_connection_rep (std::string &);
 
-  ~octave_pq_connection (void);
+  ~octave_pq_connection_rep (void);
 
   void octave_pq_close (void);
 
@@ -48,33 +48,7 @@ public:
 
   const bool &get_integer_datetimes (void) const { return integer_datetimes; }
 
-
-  // Octave internal stuff
-
-  bool is_constant (void) const { return true; }
-
-  bool is_defined (void) const { return true; }
-
-  bool is_true (void) const { return conn != 0; }
-
-  void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const
-  {
-    indent (os);
-    os << "<PGconn object>";
-    newline (os);
-  }
-
-  void print (std::ostream& os, bool pr_as_read_syntax = false) const
-  {
-    print_raw (os);
-  }
-
-  bool print_as_scalar (void) const { return true; }
-
 private:
-
-  // needed by Octave for register_type()
-  octave_pq_connection (void) : conn (NULL) { }
 
   PGconn *conn;
 
@@ -98,6 +72,54 @@ private:
 
   // server configuration
   bool integer_datetimes;
+};
+
+class
+octave_pq_connection : public octave_base_value
+{
+public:
+
+  octave_pq_connection (std::string &arg)
+    : rep (new octave_pq_connection_rep (arg))
+  {
+    static bool type_registered = false;
+
+    if (! type_registered) register_type ();
+  }
+
+  ~octave_pq_connection (void) { delete rep; }
+
+  octave_pq_connection_rep *get_rep (void) const { return rep; }
+
+
+  // Octave internal stuff
+
+  bool is_constant (void) const { return true; }
+
+  bool is_defined (void) const { return true; }
+
+  bool is_true (void) const { return rep->octave_pq_get_conn () != 0; }
+
+  void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const
+  {
+    indent (os);
+    os << "<PGconn object>";
+    newline (os);
+  }
+
+  void print (std::ostream& os, bool pr_as_read_syntax = false) const
+  {
+    print_raw (os);
+  }
+
+  bool print_as_scalar (void) const { return true; }
+
+private:
+
+  // needed by Octave for register_type()
+  octave_pq_connection (void) : rep (NULL) { }
+
+  octave_pq_connection_rep *rep;
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

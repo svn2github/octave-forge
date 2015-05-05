@@ -52,8 +52,8 @@ Text.\n\
   octave_value retval (new octave_pq_connection (opt_string));
 
   // We spare checking
-  // bool(octave_pq_connection::octave_pq_get_conn()), since in case
-  // of false there was an error thrown, so destruction of the
+  // bool(octave_pq_connection_rep::octave_pq_get_conn()), since in
+  // case of false there was an error thrown, so destruction of the
   // octave_pq_connection object will be caused by Octaves reference
   // counting scheme.
   return retval;

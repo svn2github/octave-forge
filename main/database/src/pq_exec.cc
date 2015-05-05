@@ -67,13 +67,14 @@ Sends the string @var{command}, which should contain one or more SQL commands, o
       return retval;
     }
 
-  octave_base_value& rep = const_cast<octave_base_value&> (args(0).get_rep ());
+  const octave_base_value& rep = (args(0).get_rep ());
 
-  octave_pq_connection &oct_pq_conn = dynamic_cast<octave_pq_connection&> (rep);
+  const octave_pq_connection &oct_pq_conn =
+    dynamic_cast<const octave_pq_connection&> (rep);
 
   Cell rettypes; // not implemented here
 
-  command c (oct_pq_conn, cmd, rettypes, fname);
+  command c (*(oct_pq_conn.get_rep ()), cmd, rettypes, fname);
 
   if (c.good ())
     {
@@ -128,15 +129,16 @@ undifined internal function, meant to be called by @code{pq_exec_params}")
       return retval;
     }
 
-  octave_base_value& rep = const_cast<octave_base_value&> (args(0).get_rep ());
+  const octave_base_value& rep = (args(0).get_rep ());
 
-  octave_pq_connection &oct_pq_conn = dynamic_cast<octave_pq_connection&> (rep);
+  const octave_pq_connection &oct_pq_conn =
+    dynamic_cast<const octave_pq_connection&> (rep);
 
 
   /*
   printf ("oid map:\n");
-  for (oct_pq_conv_map_t::iterator it = oct_pq_conn.conv_map.begin ();
-       it != oct_pq_conn.conv_map.end (); it++)
+  for (oct_pq_conv_map_t::iterator it = oct_pq_conn.get_rep ()->conv_map.begin ();
+       it != oct_pq_conn.get_rep ()->conv_map.end (); it++)
     {
       printf ("key: %u; ", it->first);
       print_conv (it->second);
@@ -144,8 +146,8 @@ undifined internal function, meant to be called by @code{pq_exec_params}")
   printf ("\n");
 
   printf ("name map:\n");
-  for (oct_pq_name_conv_map_t::iterator it = oct_pq_conn.name_conv_map.begin ();
-       it != oct_pq_conn.name_conv_map.end (); it++)
+  for (oct_pq_name_conv_map_t::iterator it = oct_pq_conn.get_rep ()->name_conv_map.begin ();
+       it != oct_pq_conn.get_rep ()->name_conv_map.end (); it++)
     {
       printf ("key: %s; ", it->first);
       print_conv (it->second);
@@ -334,7 +336,7 @@ undifined internal function, meant to be called by @code{pq_exec_params}")
 
   Cell rtypes;
 
-  command c (oct_pq_conn, cmd, params, ptypes, rtypes, fname);
+  command c (*(oct_pq_conn.get_rep ()), cmd, params, ptypes, rtypes, fname);
 
   if (c.good ())
     retval = c.process_single_result

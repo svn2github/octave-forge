@@ -40,11 +40,12 @@ Closes connection @var{connection} to a postgresql server.\n\
       return octave_value_list ();
     }
 
-  octave_base_value& rep = const_cast<octave_base_value&> (args(0).get_rep ());
+  const octave_base_value& rep = (args(0).get_rep ());
 
-  octave_pq_connection &oct_pq_conn = dynamic_cast<octave_pq_connection&> (rep);
+  const octave_pq_connection &oct_pq_conn =
+    dynamic_cast<const octave_pq_connection&> (rep);
 
-  oct_pq_conn.octave_pq_close ();
+  oct_pq_conn.get_rep ()->octave_pq_close ();
 
   return octave_value_list ();
 }

@@ -58,11 +58,12 @@ Retrieves connection information for postgresql connection @var{connection}, spe
       return retval;
     }
 
-  octave_base_value& rep = const_cast<octave_base_value&> (args(0).get_rep ());
+  const octave_base_value& rep = (args(0).get_rep ());
 
-  octave_pq_connection &oct_pq_conn = dynamic_cast<octave_pq_connection&> (rep);
+  const octave_pq_connection &oct_pq_conn =
+    dynamic_cast<const octave_pq_connection&> (rep);
 
-  PGconn *conn = oct_pq_conn.octave_pq_get_conn ();
+  PGconn *conn = oct_pq_conn.get_rep ()->octave_pq_get_conn ();
 
   if (! conn)
     {
@@ -71,5 +72,5 @@ Retrieves connection information for postgresql connection @var{connection}, spe
       return retval;
     }
 
-  return octave_value (oct_pq_conn.get_integer_datetimes ());
+  return octave_value (oct_pq_conn.get_rep ()->get_integer_datetimes ());
 }

@@ -45,12 +45,12 @@ typedef struct
 }
   oct_mo_count_state;
 
-class octave_pq_connection;
+class octave_pq_connection_rep;
 
-typedef int (*oct_pq_to_octave_fp_t) (const octave_pq_connection &,
+typedef int (*oct_pq_to_octave_fp_t) (const octave_pq_connection_rep &,
                                       const char *, octave_value &, int);
 
-typedef int (*oct_pq_from_octave_fp_t) (const octave_pq_connection &,
+typedef int (*oct_pq_from_octave_fp_t) (const octave_pq_connection_rep &,
                                         const octave_value &,
                                         oct_pq_dynvec_t &);
 
@@ -140,56 +140,56 @@ extern oct_pq_conv_ptrs_t conv_ptrs;
 
 // these prototypes are needed because pointers to these functions are
 // stored in the converter structures of each found enum type
-int to_octave_str_text (const octave_pq_connection &conn,
+int to_octave_str_text (const octave_pq_connection_rep &conn,
                         const char *c, octave_value &ov, int nb);
-int to_octave_bin_text (const octave_pq_connection &conn,
+int to_octave_bin_text (const octave_pq_connection_rep &conn,
                         const char *c, octave_value &ov, int nb);
-int from_octave_str_text (const octave_pq_connection &conn,
+int from_octave_str_text (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val);
-int from_octave_bin_text (const octave_pq_connection &conn,
+int from_octave_bin_text (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val);
 
-oct_pq_conv_t *pgtype_from_octtype (const octave_pq_connection &conn,
+oct_pq_conv_t *pgtype_from_octtype (const octave_pq_connection_rep &conn,
                                     const octave_value &);
 
-oct_pq_conv_t *pgtype_from_spec (const octave_pq_connection &, std::string &,
+oct_pq_conv_t *pgtype_from_spec (const octave_pq_connection_rep &, std::string &,
                                  pq_oct_type_t &);
 
-oct_pq_conv_t *pgtype_from_spec (const octave_pq_connection &, Oid,
+oct_pq_conv_t *pgtype_from_spec (const octave_pq_connection_rep &, Oid,
                                  pq_oct_type_t &);
 
-oct_pq_conv_t *pgtype_from_spec (const octave_pq_connection &, Oid,
+oct_pq_conv_t *pgtype_from_spec (const octave_pq_connection_rep &, Oid,
                                  oct_pq_conv_t *&, pq_oct_type_t &);
 
 octave_idx_type count_row_major_order (dim_vector &, oct_mo_count_state &,
                                        bool);
 
-int from_octave_bin_array (const octave_pq_connection &conn,
+int from_octave_bin_array (const octave_pq_connection_rep &conn,
                            const octave_value &oct_arr, oct_pq_dynvec_t &val,
                            oct_pq_conv_t *);
 
-int from_octave_bin_composite (const octave_pq_connection &conn,
+int from_octave_bin_composite (const octave_pq_connection_rep &conn,
                                const octave_value &oct_comp,
                                oct_pq_dynvec_t &val, oct_pq_conv_t *);
 
-int from_octave_str_array (const octave_pq_connection &conn,
+int from_octave_str_array (const octave_pq_connection_rep &conn,
                            const octave_value &oct_arr, oct_pq_dynvec_t &val,
                            octave_value &type);
 
-int from_octave_str_composite (const octave_pq_connection &conn,
+int from_octave_str_composite (const octave_pq_connection_rep &conn,
                                const octave_value &oct_comp,
                                oct_pq_dynvec_t &val, octave_value &type);
 
-int to_octave_bin_array (const octave_pq_connection &conn,
+int to_octave_bin_array (const octave_pq_connection_rep &conn,
                          const char *, octave_value &, int, oct_pq_conv_t *);
 
-int to_octave_bin_composite (const octave_pq_connection &conn, const char *,
+int to_octave_bin_composite (const octave_pq_connection_rep &conn, const char *,
                              octave_value &, int, oct_pq_conv_t *);
 
-int to_octave_str_array (const octave_pq_connection &conn,
+int to_octave_str_array (const octave_pq_connection_rep &conn,
                          const char *, octave_value &, int, oct_pq_conv_t *);
 
-int to_octave_str_composite (const octave_pq_connection &conn, const char *,
+int to_octave_str_composite (const octave_pq_connection_rep &conn, const char *,
                              octave_value &, int, oct_pq_conv_t *);
 
 // append bytes of value 'val' of type 'type' to dynamic char vector 'dv'

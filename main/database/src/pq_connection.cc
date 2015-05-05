@@ -46,13 +46,9 @@ static bool map_string_cmp (const std::string &s1, const std::string &s2)
     return false;
 }
 
-octave_pq_connection::octave_pq_connection (std::string arg)
+octave_pq_connection_rep::octave_pq_connection_rep (std::string &arg)
 : conv_map (), name_conv_map (&map_str_cmp), conn (NULL), postgres (0)
 {
-  static bool type_registered = false;
-
-  if (! type_registered) register_type ();
-
   BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
   conn = PQconnectdb (arg.c_str ());
   END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
@@ -110,7 +106,7 @@ octave_pq_connection::octave_pq_connection (std::string arg)
     }
 }
 
-octave_pq_connection::~octave_pq_connection (void)
+octave_pq_connection_rep::~octave_pq_connection_rep (void)
 {
   if (conn)
     {
@@ -122,7 +118,7 @@ octave_pq_connection::~octave_pq_connection (void)
     }
 }
 
-void octave_pq_connection::octave_pq_close (void)
+void octave_pq_connection_rep::octave_pq_close (void)
 {
   if (conn)
     {
@@ -140,7 +136,7 @@ void octave_pq_connection::octave_pq_close (void)
     error ("PGconn object not open");
 }
 
-void octave_pq_connection::octave_pq_delete_non_constant_types (void)
+void octave_pq_connection_rep::octave_pq_delete_non_constant_types (void)
 {
   // In the first map, allocated types are usually referenced twice
   // (by oid and aoid). Yet we need no refcount as long as we go
@@ -181,7 +177,7 @@ void octave_pq_connection::octave_pq_delete_non_constant_types (void)
     name_conv_map.erase (*it);
 }
 
-int octave_pq_connection::octave_pq_get_postgres_oid (void)
+int octave_pq_connection_rep::octave_pq_get_postgres_oid (void)
 {
   Cell p, pt, rt (1, 1);
 
@@ -209,7 +205,7 @@ int octave_pq_connection::octave_pq_get_postgres_oid (void)
   return 0;
 }
 
-int octave_pq_connection::octave_pq_fill_base_types (void)
+int octave_pq_connection_rep::octave_pq_fill_base_types (void)
 {
   // assert postgres oid had been determined
   if (! postgres.int_value ()) return 1;
@@ -285,7 +281,7 @@ int octave_pq_connection::octave_pq_fill_base_types (void)
   return 0;
 }
 
-int octave_pq_connection::octave_pq_get_composite_types (void)
+int octave_pq_connection_rep::octave_pq_get_composite_types (void)
 {
   Cell p, pt, rt;
 
@@ -434,7 +430,7 @@ int octave_pq_connection::octave_pq_get_composite_types (void)
   return 0;
 }
 
-int octave_pq_connection::octave_pq_get_enum_types (void)
+int octave_pq_connection_rep::octave_pq_get_enum_types (void)
 {
   Cell p, pt, rt;
 
@@ -521,7 +517,7 @@ int octave_pq_connection::octave_pq_get_enum_types (void)
   return 0;
 }
 
-int octave_pq_connection::octave_pq_refresh_types (void)
+int octave_pq_connection_rep::octave_pq_refresh_types (void)
 {
   octave_pq_delete_non_constant_types ();
 

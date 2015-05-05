@@ -33,7 +33,7 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
    return NULL;                                                         \
  }
 
-oct_pq_conv_t *pgtype_from_spec (const octave_pq_connection &conn,
+oct_pq_conv_t *pgtype_from_spec (const octave_pq_connection_rep &conn,
                                  std::string &name,
                                  pq_oct_type_t &oct_type)
 {
@@ -82,7 +82,7 @@ oct_pq_conv_t *pgtype_from_spec (const octave_pq_connection &conn,
   return conv;
 }
 
-oct_pq_conv_t *pgtype_from_spec (const octave_pq_connection &conn, Oid oid,
+oct_pq_conv_t *pgtype_from_spec (const octave_pq_connection_rep &conn, Oid oid,
                                  pq_oct_type_t &oct_type)
 {
   // printf ("pgtype_from_spec(%u): ", oid);
@@ -111,7 +111,7 @@ oct_pq_conv_t *pgtype_from_spec (const octave_pq_connection &conn, Oid oid,
   return conv;
 }
 
-oct_pq_conv_t *pgtype_from_spec (const octave_pq_connection &conn, Oid oid,
+oct_pq_conv_t *pgtype_from_spec (const octave_pq_connection_rep &conn, Oid oid,
                                  oct_pq_conv_t *&c_conv,
                                  pq_oct_type_t &oct_type)
 {
@@ -130,7 +130,7 @@ oct_pq_conv_t *pgtype_from_spec (const octave_pq_connection &conn, Oid oid,
   return c_conv;
 }
 
-oct_pq_conv_t *pgtype_from_octtype (const octave_pq_connection &conn,
+oct_pq_conv_t *pgtype_from_octtype (const octave_pq_connection_rep &conn,
                                     const octave_value &param)
 {
   // printf ("pgtype_from_octtype: ");
@@ -269,7 +269,7 @@ octave_idx_type count_row_major_order (dim_vector &dv,
     }
 }
 
-int from_octave_bin_array (const octave_pq_connection &conn,
+int from_octave_bin_array (const octave_pq_connection_rep &conn,
                            const octave_value &oct_arr,
                            oct_pq_dynvec_t &val, oct_pq_conv_t *conv)
 {
@@ -377,7 +377,7 @@ int from_octave_bin_array (const octave_pq_connection &conn,
   return 0;
 }
 
-int from_octave_bin_composite (const octave_pq_connection &conn,
+int from_octave_bin_composite (const octave_pq_connection_rep &conn,
                                const octave_value &oct_comp,
                                oct_pq_dynvec_t &val,
                                oct_pq_conv_t *conv)
@@ -453,7 +453,7 @@ int from_octave_bin_composite (const octave_pq_connection &conn,
   return 0;
 }
 
-int from_octave_str_array (const octave_pq_connection &conn,
+int from_octave_str_array (const octave_pq_connection_rep &conn,
                            const octave_value &oct_arr,
                            oct_pq_dynvec_t &val, octave_value &type)
 {
@@ -464,7 +464,7 @@ int from_octave_str_array (const octave_pq_connection &conn,
   return 0;
 }
 
-int from_octave_str_composite (const octave_pq_connection &conn,
+int from_octave_str_composite (const octave_pq_connection_rep &conn,
                                const octave_value &oct_comp,
                                oct_pq_dynvec_t &val,
                                octave_value &type)
@@ -476,7 +476,7 @@ int from_octave_str_composite (const octave_pq_connection &conn,
   return 0;
 }
 
-int to_octave_bin_array (const octave_pq_connection &conn,
+int to_octave_bin_array (const octave_pq_connection_rep &conn,
                          const char *v, octave_value &ov, int nb,
                          oct_pq_conv_t *conv)
 {
@@ -561,7 +561,7 @@ int to_octave_bin_array (const octave_pq_connection &conn,
   return 0;
 }
 
-int to_octave_bin_composite (const octave_pq_connection &conn,
+int to_octave_bin_composite (const octave_pq_connection_rep &conn,
                              const char *v, octave_value &ov, int nb,
                              oct_pq_conv_t *conv)
 {
@@ -629,7 +629,7 @@ int to_octave_bin_composite (const octave_pq_connection &conn,
 }
 
 
-int to_octave_str_array (const octave_pq_connection &conn,
+int to_octave_str_array (const octave_pq_connection_rep &conn,
                          const char *v, octave_value &ov, int nb,
                          oct_pq_conv_t *conv)
 {
@@ -640,7 +640,7 @@ int to_octave_str_array (const octave_pq_connection &conn,
   return 0;
 }
 
-int to_octave_str_composite (const octave_pq_connection &conn,
+int to_octave_str_composite (const octave_pq_connection_rep &conn,
                              const char *v, octave_value &ov, int nb,
                              oct_pq_conv_t *conv)
 {

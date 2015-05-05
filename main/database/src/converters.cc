@@ -54,7 +54,7 @@ void print_conv (oct_pq_conv_t *c)
 
 /* type bool */
 
-int to_octave_str_bool (const octave_pq_connection &conn,
+int to_octave_str_bool (const octave_pq_connection_rep &conn,
                         const char *c, octave_value &ov, int nb)
 {
   bool tp = (*c == 't' ? true : false);
@@ -64,7 +64,7 @@ int to_octave_str_bool (const octave_pq_connection &conn,
   return 0;
 }
 
-int to_octave_bin_bool (const octave_pq_connection &conn,
+int to_octave_bin_bool (const octave_pq_connection_rep &conn,
                         const char *c, octave_value &ov, int nb)
 {
   ov = octave_value (bool (*c));
@@ -72,7 +72,7 @@ int to_octave_bin_bool (const octave_pq_connection &conn,
   return 0;
 }
 
-int from_octave_str_bool (const octave_pq_connection &conn,
+int from_octave_str_bool (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val)
 {
   bool b = ov.bool_value ();
@@ -89,7 +89,7 @@ int from_octave_str_bool (const octave_pq_connection &conn,
   return 0;
 }
 
-int from_octave_bin_bool (const octave_pq_connection &conn,
+int from_octave_bin_bool (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val)
 {
   bool b = ov.bool_value ();
@@ -122,13 +122,13 @@ oct_pq_conv_t conv_bool = {0, // 16
 
 /* type oid */
 
-int to_octave_str_oid (const octave_pq_connection &conn,
+int to_octave_str_oid (const octave_pq_connection_rep &conn,
                        const char *c, octave_value &ov, int nb)
 {
   return 1;
 }
 
-int to_octave_bin_oid (const octave_pq_connection &conn,
+int to_octave_bin_oid (const octave_pq_connection_rep &conn,
                        const char *c, octave_value &ov, int nb)
 {
   ov = octave_value (octave_uint32 (be32toh (*((uint32_t *) c))));
@@ -136,13 +136,13 @@ int to_octave_bin_oid (const octave_pq_connection &conn,
   return 0;
 }
 
-int from_octave_str_oid (const octave_pq_connection &conn,
+int from_octave_str_oid (const octave_pq_connection_rep &conn,
                          const octave_value &ov, oct_pq_dynvec_t &val)
 {
   return 1;
 }
 
-int from_octave_bin_oid (const octave_pq_connection &conn,
+int from_octave_bin_oid (const octave_pq_connection_rep &conn,
                          const octave_value &ov, oct_pq_dynvec_t &val)
 {
   uint32_t oid = ov.uint_value ();
@@ -175,7 +175,7 @@ oct_pq_conv_t conv_oid = {0, // 26
 
 /* type float8 */
 
-int to_octave_str_float8 (const octave_pq_connection &conn,
+int to_octave_str_float8 (const octave_pq_connection_rep &conn,
                           const char *c, octave_value &ov, int nb)
 {
   // not implemented
@@ -183,7 +183,7 @@ int to_octave_str_float8 (const octave_pq_connection &conn,
   return 1;
 }
 
-int to_octave_bin_float8 (const octave_pq_connection &conn,
+int to_octave_bin_float8 (const octave_pq_connection_rep &conn,
                           const char *c, octave_value &ov, int nb)
 {
   union
@@ -200,7 +200,7 @@ int to_octave_bin_float8 (const octave_pq_connection &conn,
   return 0;
 }
 
-int from_octave_str_float8 (const octave_pq_connection &conn,
+int from_octave_str_float8 (const octave_pq_connection_rep &conn,
                             const octave_value &ov, oct_pq_dynvec_t &val)
 {
   // not implemented
@@ -208,7 +208,7 @@ int from_octave_str_float8 (const octave_pq_connection &conn,
   return 1;
 }
 
-int from_octave_bin_float8 (const octave_pq_connection &conn,
+int from_octave_bin_float8 (const octave_pq_connection_rep &conn,
                             const octave_value &ov, oct_pq_dynvec_t &val)
 {
   union
@@ -248,7 +248,7 @@ oct_pq_conv_t conv_float8 = {0, // 701
 
 /* type float4 */
 
-int to_octave_str_float4 (const octave_pq_connection &conn,
+int to_octave_str_float4 (const octave_pq_connection_rep &conn,
                           const char *c, octave_value &ov, int nb)
 {
   // not implemented
@@ -256,7 +256,7 @@ int to_octave_str_float4 (const octave_pq_connection &conn,
   return 1;
 }
 
-int to_octave_bin_float4 (const octave_pq_connection &conn,
+int to_octave_bin_float4 (const octave_pq_connection_rep &conn,
                           const char *c, octave_value &ov, int nb)
 {
   union
@@ -273,7 +273,7 @@ int to_octave_bin_float4 (const octave_pq_connection &conn,
   return 0;
 }
 
-int from_octave_str_float4 (const octave_pq_connection &conn,
+int from_octave_str_float4 (const octave_pq_connection_rep &conn,
                             const octave_value &ov, oct_pq_dynvec_t &val)
 {
   // not implemented
@@ -281,7 +281,7 @@ int from_octave_str_float4 (const octave_pq_connection &conn,
   return 1;
 }
 
-int from_octave_bin_float4 (const octave_pq_connection &conn,
+int from_octave_bin_float4 (const octave_pq_connection_rep &conn,
                             const octave_value &ov, oct_pq_dynvec_t &val)
 {
   union
@@ -321,13 +321,13 @@ oct_pq_conv_t conv_float4 = {0,
 
 /* type bytea */
 
-int to_octave_str_bytea (const octave_pq_connection &conn,
+int to_octave_str_bytea (const octave_pq_connection_rep &conn,
                          const char *c, octave_value &ov, int nb)
 {
   return 1;
 }
 
-int to_octave_bin_bytea (const octave_pq_connection &conn,
+int to_octave_bin_bytea (const octave_pq_connection_rep &conn,
                          const char *c, octave_value &ov, int nb)
 {
   uint8NDArray m (dim_vector (nb, 1));
@@ -341,13 +341,13 @@ int to_octave_bin_bytea (const octave_pq_connection &conn,
   return 0;
 }
 
-int from_octave_str_bytea (const octave_pq_connection &conn,
+int from_octave_str_bytea (const octave_pq_connection_rep &conn,
                            const octave_value &ov, oct_pq_dynvec_t &val)
 {
   return 1;
 }
 
-int from_octave_bin_bytea (const octave_pq_connection &conn,
+int from_octave_bin_bytea (const octave_pq_connection_rep &conn,
                            const octave_value &ov, oct_pq_dynvec_t &val)
 {
   uint8NDArray b = ov.uint8_array_value ();
@@ -383,13 +383,13 @@ oct_pq_conv_t conv_bytea = {0,
 
 /* type text */
 
-int to_octave_str_text (const octave_pq_connection &conn,
+int to_octave_str_text (const octave_pq_connection_rep &conn,
                         const char *c, octave_value &ov, int nb)
 {
   return 1;
 }
 
-int to_octave_bin_text (const octave_pq_connection &conn,
+int to_octave_bin_text (const octave_pq_connection_rep &conn,
                         const char *c, octave_value &ov, int nb)
 {
   std::string s (c, nb);
@@ -399,13 +399,13 @@ int to_octave_bin_text (const octave_pq_connection &conn,
   return 0;
 }
 
-int from_octave_str_text (const octave_pq_connection &conn,
+int from_octave_str_text (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val)
 {
   return 1;
 }
 
-int from_octave_bin_text (const octave_pq_connection &conn,
+int from_octave_bin_text (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val)
 {
   std::string s = ov.string_value ();
@@ -492,13 +492,13 @@ oct_pq_conv_t conv_name = {0,
 
 /* type int2 */
 
-int to_octave_str_int2 (const octave_pq_connection &conn,
+int to_octave_str_int2 (const octave_pq_connection_rep &conn,
                         const char *c, octave_value &ov, int nb)
 {
   return 1;
 }
 
-int to_octave_bin_int2 (const octave_pq_connection &conn,
+int to_octave_bin_int2 (const octave_pq_connection_rep &conn,
                         const char *c, octave_value &ov, int nb)
 {
   ov = octave_value (octave_int16 (int16_t (be16toh (*((int16_t *) c)))));
@@ -506,13 +506,13 @@ int to_octave_bin_int2 (const octave_pq_connection &conn,
   return 0;
 }
 
-int from_octave_str_int2 (const octave_pq_connection &conn,
+int from_octave_str_int2 (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val)
 {
   return 1;
 }
 
-int from_octave_bin_int2 (const octave_pq_connection &conn,
+int from_octave_bin_int2 (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val)
 {
   int16_t i2 = ov.int_value ();
@@ -546,13 +546,13 @@ oct_pq_conv_t conv_int2 = {0, // 26
 
 /* type int4 */
 
-int to_octave_str_int4 (const octave_pq_connection &conn,
+int to_octave_str_int4 (const octave_pq_connection_rep &conn,
                         const char *c, octave_value &ov, int nb)
 {
   return 1;
 }
 
-int to_octave_bin_int4 (const octave_pq_connection &conn,
+int to_octave_bin_int4 (const octave_pq_connection_rep &conn,
                         const char *c, octave_value &ov, int nb)
 {
   ov = octave_value (octave_int32 (int32_t (be32toh (*((int32_t *) c)))));
@@ -560,13 +560,13 @@ int to_octave_bin_int4 (const octave_pq_connection &conn,
   return 0;
 }
 
-int from_octave_str_int4 (const octave_pq_connection &conn,
+int from_octave_str_int4 (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val)
 {
   return 1;
 }
 
-int from_octave_bin_int4 (const octave_pq_connection &conn,
+int from_octave_bin_int4 (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val)
 {
   int32_t i4 = ov.int_value ();
@@ -600,13 +600,13 @@ oct_pq_conv_t conv_int4 = {0,
 
 /* type int8 */
 
-int to_octave_str_int8 (const octave_pq_connection &conn,
+int to_octave_str_int8 (const octave_pq_connection_rep &conn,
                         const char *c, octave_value &ov, int nb)
 {
   return 1;
 }
 
-int to_octave_bin_int8 (const octave_pq_connection &conn,
+int to_octave_bin_int8 (const octave_pq_connection_rep &conn,
                         const char *c, octave_value &ov, int nb)
 {
   ov = octave_value (octave_int64 (int64_t (be64toh (*((int64_t *) c)))));
@@ -614,13 +614,13 @@ int to_octave_bin_int8 (const octave_pq_connection &conn,
   return 0;
 }
 
-int from_octave_str_int8 (const octave_pq_connection &conn,
+int from_octave_str_int8 (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val)
 {
   return 1;
 }
 
-int from_octave_bin_int8 (const octave_pq_connection &conn,
+int from_octave_bin_int8 (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val)
 {
   int64_t i8 = ov.int64_scalar_value ();
@@ -752,13 +752,13 @@ static inline int time_8byte_from_octave (const octave_value &ov,
 
 /* type timestamp */
 
-int to_octave_str_timestamp (const octave_pq_connection &conn,
+int to_octave_str_timestamp (const octave_pq_connection_rep &conn,
                              const char *c, octave_value &ov, int nb)
 {
   return 1;
 }
 
-int to_octave_bin_timestamp (const octave_pq_connection &conn,
+int to_octave_bin_timestamp (const octave_pq_connection_rep &conn,
                              const char *c, octave_value &ov, int nb)
 {
   ov = time_8byte_to_octave (c, conn.get_integer_datetimes ());
@@ -766,13 +766,13 @@ int to_octave_bin_timestamp (const octave_pq_connection &conn,
   return 0;
 }
 
-int from_octave_str_timestamp (const octave_pq_connection &conn,
+int from_octave_str_timestamp (const octave_pq_connection_rep &conn,
                                const octave_value &ov, oct_pq_dynvec_t &val)
 {
   return 1;
 }
 
-int from_octave_bin_timestamp (const octave_pq_connection &conn,
+int from_octave_bin_timestamp (const octave_pq_connection_rep &conn,
                                const octave_value &ov, oct_pq_dynvec_t &val)
 {
   return (time_8byte_from_octave (ov, val, conn.get_integer_datetimes ()));
@@ -812,13 +812,13 @@ oct_pq_conv_t conv_timestamptz = {0,
 
 /* type interval */
 
-int to_octave_str_interval (const octave_pq_connection &conn,
+int to_octave_str_interval (const octave_pq_connection_rep &conn,
                             const char *c, octave_value &ov, int nb)
 {
   return 1;
 }
 
-int to_octave_bin_interval (const octave_pq_connection &conn,
+int to_octave_bin_interval (const octave_pq_connection_rep &conn,
                             const char *c, octave_value &ov, int nb)
 {
   Cell tp (dim_vector (3, 1));
@@ -838,13 +838,13 @@ int to_octave_bin_interval (const octave_pq_connection &conn,
   return 0;
 }
 
-int from_octave_str_interval (const octave_pq_connection &conn,
+int from_octave_str_interval (const octave_pq_connection_rep &conn,
                               const octave_value &ov, oct_pq_dynvec_t &val)
 {
   return 1;
 }
 
-int from_octave_bin_interval (const octave_pq_connection &conn,
+int from_octave_bin_interval (const octave_pq_connection_rep &conn,
                               const octave_value &ov, oct_pq_dynvec_t &val)
 {
   Cell iv = ov.cell_value ();
@@ -890,13 +890,13 @@ oct_pq_conv_t conv_interval = {0,
 
 /* type time */
 
-int to_octave_str_time (const octave_pq_connection &conn,
+int to_octave_str_time (const octave_pq_connection_rep &conn,
                         const char *c, octave_value &ov, int nb)
 {
   return 1;
 }
 
-int to_octave_bin_time (const octave_pq_connection &conn,
+int to_octave_bin_time (const octave_pq_connection_rep &conn,
                         const char *c, octave_value &ov, int nb)
 {
   ov = time_8byte_to_octave (c, conn.get_integer_datetimes ());
@@ -904,13 +904,13 @@ int to_octave_bin_time (const octave_pq_connection &conn,
   return 0;
 }
 
-int from_octave_str_time (const octave_pq_connection &conn,
+int from_octave_str_time (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val)
 {
   return 1;
 }
 
-int from_octave_bin_time (const octave_pq_connection &conn,
+int from_octave_bin_time (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val)
 {
   return (time_8byte_from_octave (ov, val, conn.get_integer_datetimes ()));
@@ -933,13 +933,13 @@ oct_pq_conv_t conv_time = {0,
 
 /* type timetz */
 
-int to_octave_str_timetz (const octave_pq_connection &conn,
+int to_octave_str_timetz (const octave_pq_connection_rep &conn,
                           const char *c, octave_value &ov, int nb)
 {
   return 1;
 }
 
-int to_octave_bin_timetz (const octave_pq_connection &conn,
+int to_octave_bin_timetz (const octave_pq_connection_rep &conn,
                           const char *c, octave_value &ov, int nb)
 {
   Cell tp (dim_vector (2, 1));
@@ -955,13 +955,13 @@ int to_octave_bin_timetz (const octave_pq_connection &conn,
   return 0;
 }
 
-int from_octave_str_timetz (const octave_pq_connection &conn,
+int from_octave_str_timetz (const octave_pq_connection_rep &conn,
                             const octave_value &ov, oct_pq_dynvec_t &val)
 {
   return 1;
 }
 
-int from_octave_bin_timetz (const octave_pq_connection &conn,
+int from_octave_bin_timetz (const octave_pq_connection_rep &conn,
                             const octave_value &ov, oct_pq_dynvec_t &val)
 {
   Cell iv = ov.cell_value ();
@@ -1004,13 +1004,13 @@ oct_pq_conv_t conv_timetz = {0,
 
 /* type date */
 
-int to_octave_str_date (const octave_pq_connection &conn,
+int to_octave_str_date (const octave_pq_connection_rep &conn,
                         const char *c, octave_value &ov, int nb)
 {
   return 1;
 }
 
-int to_octave_bin_date (const octave_pq_connection &conn,
+int to_octave_bin_date (const octave_pq_connection_rep &conn,
                         const char *c, octave_value &ov, int nb)
 {
   ov = octave_value (octave_int32 (int32_t (be32toh (*((int32_t *) c)))));
@@ -1018,13 +1018,13 @@ int to_octave_bin_date (const octave_pq_connection &conn,
   return 0;
 }
 
-int from_octave_str_date (const octave_pq_connection &conn,
+int from_octave_str_date (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val)
 {
   return 1;
 }
 
-int from_octave_bin_date (const octave_pq_connection &conn,
+int from_octave_bin_date (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val)
 {
   int32_t i4 = ov.int_value ();
@@ -1057,13 +1057,13 @@ oct_pq_conv_t conv_date = {0,
 
 /* type point */
 
-int to_octave_str_point (const octave_pq_connection &conn,
+int to_octave_str_point (const octave_pq_connection_rep &conn,
                          const char *c, octave_value &ov, int nb)
 {
   return 1;
 }
 
-int to_octave_bin_point (const octave_pq_connection &conn,
+int to_octave_bin_point (const octave_pq_connection_rep &conn,
                          const char *c, octave_value &ov, int nb)
 {
   ColumnVector m (2);
@@ -1087,13 +1087,13 @@ int to_octave_bin_point (const octave_pq_connection &conn,
   return 0;
 }
 
-int from_octave_str_point (const octave_pq_connection &conn,
+int from_octave_str_point (const octave_pq_connection_rep &conn,
                            const octave_value &ov, oct_pq_dynvec_t &val)
 {
   return 1;
 }
 
-int from_octave_bin_point (const octave_pq_connection &conn,
+int from_octave_bin_point (const octave_pq_connection_rep &conn,
                            const octave_value &ov, oct_pq_dynvec_t &val)
 {
   NDArray m = ov.array_value ();
@@ -1138,13 +1138,13 @@ oct_pq_conv_t conv_point = {0,
 
 /* type lseg */
 
-int to_octave_str_lseg (const octave_pq_connection &conn,
+int to_octave_str_lseg (const octave_pq_connection_rep &conn,
                         const char *c, octave_value &ov, int nb)
 {
   return 1;
 }
 
-int to_octave_bin_lseg (const octave_pq_connection &conn,
+int to_octave_bin_lseg (const octave_pq_connection_rep &conn,
                         const char *c, octave_value &ov, int nb)
 {
   Matrix m (2, 2);
@@ -1168,13 +1168,13 @@ int to_octave_bin_lseg (const octave_pq_connection &conn,
   return 0;
 }
 
-int from_octave_str_lseg (const octave_pq_connection &conn,
+int from_octave_str_lseg (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val)
 {
   return 1;
 }
 
-int from_octave_bin_lseg (const octave_pq_connection &conn,
+int from_octave_bin_lseg (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val)
 {
   NDArray m = ov.array_value ();
@@ -1253,13 +1253,13 @@ oct_pq_conv_t conv_box = {0,
 
 /* type circle */
 
-int to_octave_str_circle (const octave_pq_connection &conn,
+int to_octave_str_circle (const octave_pq_connection_rep &conn,
                           const char *c, octave_value &ov, int nb)
 {
   return 1;
 }
 
-int to_octave_bin_circle (const octave_pq_connection &conn,
+int to_octave_bin_circle (const octave_pq_connection_rep &conn,
                           const char *c, octave_value &ov, int nb)
 {
   ColumnVector m (3);
@@ -1283,13 +1283,13 @@ int to_octave_bin_circle (const octave_pq_connection &conn,
   return 0;
 }
 
-int from_octave_str_circle (const octave_pq_connection &conn,
+int from_octave_str_circle (const octave_pq_connection_rep &conn,
                             const octave_value &ov, oct_pq_dynvec_t &val)
 {
   return 1;
 }
 
-int from_octave_bin_circle (const octave_pq_connection &conn,
+int from_octave_bin_circle (const octave_pq_connection_rep &conn,
                             const octave_value &ov, oct_pq_dynvec_t &val)
 {
   NDArray m = ov.array_value ();
@@ -1334,13 +1334,13 @@ oct_pq_conv_t conv_circle = {0,
 
 /* type polygon */
 
-int to_octave_str_polygon (const octave_pq_connection &conn,
+int to_octave_str_polygon (const octave_pq_connection_rep &conn,
                            const char *c, octave_value &ov, int nb)
 {
   return 1;
 }
 
-int to_octave_bin_polygon (const octave_pq_connection &conn,
+int to_octave_bin_polygon (const octave_pq_connection_rep &conn,
                            const char *c, octave_value &ov, int nb)
 {
   int32_t np = int32_t (be32toh (*((int32_t *) c)));
@@ -1368,13 +1368,13 @@ int to_octave_bin_polygon (const octave_pq_connection &conn,
   return 0;
 }
 
-int from_octave_str_polygon (const octave_pq_connection &conn,
+int from_octave_str_polygon (const octave_pq_connection_rep &conn,
                              const octave_value &ov, oct_pq_dynvec_t &val)
 {
   return 1;
 }
 
-int from_octave_bin_polygon (const octave_pq_connection &conn,
+int from_octave_bin_polygon (const octave_pq_connection_rep &conn,
                              const octave_value &ov, oct_pq_dynvec_t &val)
 {
   octave_idx_type nel;
@@ -1425,13 +1425,13 @@ oct_pq_conv_t conv_polygon = {0,
 
 /* type path */
 
-int to_octave_str_path (const octave_pq_connection &conn,
+int to_octave_str_path (const octave_pq_connection_rep &conn,
                         const char *c, octave_value &ov, int nb)
 {
   return 1;
 }
 
-int to_octave_bin_path (const octave_pq_connection &conn,
+int to_octave_bin_path (const octave_pq_connection_rep &conn,
                         const char *c, octave_value &ov, int nb)
 {
   bool closed = bool (*(c++));
@@ -1465,13 +1465,13 @@ int to_octave_bin_path (const octave_pq_connection &conn,
   return 0;
 }
 
-int from_octave_str_path (const octave_pq_connection &conn,
+int from_octave_str_path (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val)
 {
   return 1;
 }
 
-int from_octave_bin_path (const octave_pq_connection &conn,
+int from_octave_bin_path (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val)
 {
   octave_scalar_map tp = ov.scalar_map_value ();
@@ -1539,7 +1539,7 @@ oct_pq_conv_t conv_path = {0,
 // will not be called, but because a converter exists there won't be a
 // "no converter found" error thrown.
 
-int to_octave_str_unknown (const octave_pq_connection &conn,
+int to_octave_str_unknown (const octave_pq_connection_rep &conn,
                            const char *c, octave_value &ov, int nb)
 {
   error ("can not convert postgresql type 'unknown'");
@@ -1547,7 +1547,7 @@ int to_octave_str_unknown (const octave_pq_connection &conn,
   return 1;
 }
 
-int to_octave_bin_unknown (const octave_pq_connection &conn,
+int to_octave_bin_unknown (const octave_pq_connection_rep &conn,
                            const char *c, octave_value &ov, int nb)
 {
   error ("can not convert postgresql type 'unknown'");
@@ -1555,7 +1555,7 @@ int to_octave_bin_unknown (const octave_pq_connection &conn,
   return 1;
 }
 
-int from_octave_str_unknown (const octave_pq_connection &conn,
+int from_octave_str_unknown (const octave_pq_connection_rep &conn,
                              const octave_value &ov, oct_pq_dynvec_t &val)
 {
   error ("can not convert postgresql type 'unknown'");
@@ -1563,7 +1563,7 @@ int from_octave_str_unknown (const octave_pq_connection &conn,
   return 1;
 }
 
-int from_octave_bin_unknown (const octave_pq_connection &conn,
+int from_octave_bin_unknown (const octave_pq_connection_rep &conn,
                              const octave_value &ov, oct_pq_dynvec_t &val)
 {
   error ("can not convert postgresql type 'unknown'");
@@ -1724,13 +1724,13 @@ int from_octave_bin_cidr_inet (const octave_value &ov, oct_pq_dynvec_t &val,
 
 /* type cidr */
 
-int to_octave_str_cidr (const octave_pq_connection &conn,
+int to_octave_str_cidr (const octave_pq_connection_rep &conn,
                         const char *c, octave_value &ov, int nb)
 {
   return 1;
 }
 
-int to_octave_bin_cidr (const octave_pq_connection &conn,
+int to_octave_bin_cidr (const octave_pq_connection_rep &conn,
                         const char *c, octave_value &ov, int nb)
 {
   bool cidr = false;
@@ -1748,13 +1748,13 @@ int to_octave_bin_cidr (const octave_pq_connection &conn,
   return 0;
 }
 
-int from_octave_str_cidr (const octave_pq_connection &conn,
+int from_octave_str_cidr (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val)
 {
   return 1;
 }
 
-int from_octave_bin_cidr (const octave_pq_connection &conn,
+int from_octave_bin_cidr (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val)
 {
   return from_octave_bin_cidr_inet (ov, val, true);
@@ -1777,13 +1777,13 @@ oct_pq_conv_t conv_cidr = {0,
 
 /* type inet */
 
-int to_octave_str_inet (const octave_pq_connection &conn,
+int to_octave_str_inet (const octave_pq_connection_rep &conn,
                         const char *c, octave_value &ov, int nb)
 {
   return 1;
 }
 
-int to_octave_bin_inet (const octave_pq_connection &conn,
+int to_octave_bin_inet (const octave_pq_connection_rep &conn,
                         const char *c, octave_value &ov, int nb)
 {
   bool cidr = false;
@@ -1801,13 +1801,13 @@ int to_octave_bin_inet (const octave_pq_connection &conn,
   return 0;
 }
 
-int from_octave_str_inet (const octave_pq_connection &conn,
+int from_octave_str_inet (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val)
 {
   return 1;
 }
 
-int from_octave_bin_inet (const octave_pq_connection &conn,
+int from_octave_bin_inet (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val)
 {
   return from_octave_bin_cidr_inet (ov, val, false);
@@ -1830,13 +1830,13 @@ oct_pq_conv_t conv_inet = {0,
 
 /* type macaddr */
 
-int to_octave_str_macaddr (const octave_pq_connection &conn,
+int to_octave_str_macaddr (const octave_pq_connection_rep &conn,
                            const char *c, octave_value &ov, int nb)
 {
   return 1;
 }
 
-int to_octave_bin_macaddr (const octave_pq_connection &conn,
+int to_octave_bin_macaddr (const octave_pq_connection_rep &conn,
                            const char *c, octave_value &ov, int nb)
 {
   uint8NDArray a (dim_vector (6, 1));
@@ -1849,13 +1849,13 @@ int to_octave_bin_macaddr (const octave_pq_connection &conn,
   return 0;
 }
 
-int from_octave_str_macaddr (const octave_pq_connection &conn,
+int from_octave_str_macaddr (const octave_pq_connection_rep &conn,
                              const octave_value &ov, oct_pq_dynvec_t &val)
 {
   return 1;
 }
 
-int from_octave_bin_macaddr (const octave_pq_connection &conn,
+int from_octave_bin_macaddr (const octave_pq_connection_rep &conn,
                              const octave_value &ov, oct_pq_dynvec_t &val)
 {
   uint8NDArray a = ov.uint8_array_value ();
@@ -1895,13 +1895,13 @@ oct_pq_conv_t conv_macaddr = {0,
 
 /* type bit */
 
-int to_octave_str_bit (const octave_pq_connection &conn,
+int to_octave_str_bit (const octave_pq_connection_rep &conn,
                        const char *c, octave_value &ov, int nb)
 {
   return 1;
 }
 
-int to_octave_bin_bit (const octave_pq_connection &conn,
+int to_octave_bin_bit (const octave_pq_connection_rep &conn,
                        const char *c, octave_value &ov, int nb)
 {
   int32_t nbits = int32_t (be32toh (*((int32_t *) c)));
@@ -1924,13 +1924,13 @@ int to_octave_bin_bit (const octave_pq_connection &conn,
   return 0;
 }
 
-int from_octave_str_bit (const octave_pq_connection &conn,
+int from_octave_str_bit (const octave_pq_connection_rep &conn,
                          const octave_value &ov, oct_pq_dynvec_t &val)
 {
   return 1;
 }
 
-int from_octave_bin_bit (const octave_pq_connection &conn,
+int from_octave_bin_bit (const octave_pq_connection_rep &conn,
                          const octave_value &ov, oct_pq_dynvec_t &val)
 {
   octave_scalar_map tp = ov.scalar_map_value ();
@@ -2000,13 +2000,13 @@ oct_pq_conv_t conv_varbit = {0,
 
 /* type uuid */
 
-int to_octave_str_uuid (const octave_pq_connection &conn,
+int to_octave_str_uuid (const octave_pq_connection_rep &conn,
                         const char *c, octave_value &ov, int nb)
 {
   return 1;
 }
 
-int to_octave_bin_uuid (const octave_pq_connection &conn,
+int to_octave_bin_uuid (const octave_pq_connection_rep &conn,
                         const char *c, octave_value &ov, int nb)
 {
   uint8NDArray m (dim_vector (16, 1));
@@ -2020,13 +2020,13 @@ int to_octave_bin_uuid (const octave_pq_connection &conn,
   return 0;
 }
 
-int from_octave_str_uuid (const octave_pq_connection &conn,
+int from_octave_str_uuid (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val)
 {
   return 1;
 }
 
-int from_octave_bin_uuid (const octave_pq_connection &conn,
+int from_octave_bin_uuid (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val)
 {
   uint8NDArray b = ov.uint8_array_value ();
@@ -2066,13 +2066,13 @@ oct_pq_conv_t conv_uuid = {0,
 
 /* type xml */
 
-int to_octave_str_xml (const octave_pq_connection &conn,
+int to_octave_str_xml (const octave_pq_connection_rep &conn,
                        const char *c, octave_value &ov, int nb)
 {
   return 1;
 }
 
-int to_octave_bin_xml (const octave_pq_connection &conn,
+int to_octave_bin_xml (const octave_pq_connection_rep &conn,
                        const char *c, octave_value &ov, int nb)
 {
   std::string s (c, nb);
@@ -2082,13 +2082,13 @@ int to_octave_bin_xml (const octave_pq_connection &conn,
   return 0;
 }
 
-int from_octave_str_xml (const octave_pq_connection &conn,
+int from_octave_str_xml (const octave_pq_connection_rep &conn,
                          const octave_value &ov, oct_pq_dynvec_t &val)
 {
   return 1;
 }
 
-int from_octave_bin_xml (const octave_pq_connection &conn,
+int from_octave_bin_xml (const octave_pq_connection_rep &conn,
                          const octave_value &ov, oct_pq_dynvec_t &val)
 {
   std::string s = ov.string_value ();
@@ -2124,13 +2124,13 @@ oct_pq_conv_t conv_xml = {0,
 
 /* type record */
 
-int to_octave_str_record (const octave_pq_connection &conn,
+int to_octave_str_record (const octave_pq_connection_rep &conn,
                           const char *c, octave_value &ov, int nb)
 {
   return 1;
 }
 
-int to_octave_bin_record (const octave_pq_connection &conn,
+int to_octave_bin_record (const octave_pq_connection_rep &conn,
                           const char *v, octave_value &ov, int nb)
 {
   const char *p = v;
@@ -2195,13 +2195,13 @@ int to_octave_bin_record (const octave_pq_connection &conn,
   return 0;
 }
 
-int from_octave_str_record (const octave_pq_connection &conn,
+int from_octave_str_record (const octave_pq_connection_rep &conn,
                             const octave_value &ov, oct_pq_dynvec_t &val)
 {
   return 1;
 }
 
-int from_octave_bin_record (const octave_pq_connection &conn,
+int from_octave_bin_record (const octave_pq_connection_rep &conn,
                             const octave_value &ov, oct_pq_dynvec_t &val)
 {
   error ("Type 'record' can't be sent to postgresql.");

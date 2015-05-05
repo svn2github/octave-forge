@@ -32,10 +32,10 @@ command
 {
 public:
 
-  command (octave_pq_connection &connection, std::string &cmd, Cell &rtypes,
+  command (octave_pq_connection_rep &connection, std::string &cmd, Cell &rtypes,
            std::string &who);
 
-  command (octave_pq_connection &connection, std::string &cmd, Cell &params,
+  command (octave_pq_connection_rep &connection, std::string &cmd, Cell &params,
            Cell &ptypes, Cell &rtypes, std::string &who);
 
   ~command (void)
@@ -50,11 +50,11 @@ public:
   }
 
   typedef int (*to_octave_array_fp_t)
-    (const octave_pq_connection &, const char *, octave_value &,
+    (const octave_pq_connection_rep &, const char *, octave_value &,
      int, oct_pq_conv_t *);
 
   typedef int (*to_octave_composite_fp_t)
-    (const octave_pq_connection &, const char *, octave_value &,
+    (const octave_pq_connection_rep &, const char *, octave_value &,
      int, oct_pq_conv_t *);
 
   int all_results_fetched (void)
@@ -116,7 +116,7 @@ private:
   int all_fetched;
   int valid;
   ExecStatusType state;
-  octave_pq_connection &conn;
+  octave_pq_connection_rep &conn;
   PGconn *cptr;
   Cell &rettypes;
   std::string &caller;

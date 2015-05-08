@@ -23,6 +23,7 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 
 // PKG_ADD: autoload ("__pq_connect__", "pq_interface.oct");
+// PKG_DEL: autoload ("__pq_connect__", "pq_interface.oct", "remove");
 
 DEFUN_DLD (__pq_connect__, args, ,
            "-*- texinfo -*-\n\

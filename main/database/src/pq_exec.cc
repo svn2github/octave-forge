@@ -25,7 +25,9 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 #include "command.h"
 
 // PKG_disabled_ADD: autoload ("pq_exec", "pq_interface.oct");
+// PKG_disabled_DEL: autoload ("pq_exec", "pq_interface.oct", "remove");
 // PKG_ADD: autoload ("__pq_exec_params__", "pq_interface.oct");
+// PKG_DEL: autoload ("__pq_exec_params__", "pq_interface.oct", "remove");
 
 
 #if 0

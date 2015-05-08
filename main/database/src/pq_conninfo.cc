@@ -22,6 +22,7 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 #include "pq_connection.h"
 
 // PKG_ADD: autoload ("pq_conninfo", "pq_interface.oct");
+// PKG_DEL: autoload ("pq_conninfo", "pq_interface.oct", "remove");
 
 DEFUN_DLD (pq_conninfo, args, ,
            "-*- texinfo -*-\n\

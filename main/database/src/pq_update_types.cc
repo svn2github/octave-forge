@@ -22,6 +22,7 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 #include "command.h"
 
 // PKG_ADD: autoload ("pq_update_types", "pq_interface.oct");
+// PKG_DEL: autoload ("pq_update_types", "pq_interface.oct", "remove");
 
 DEFUN_DLD (pq_update_types, args, ,
            "-*- texinfo -*-\n\

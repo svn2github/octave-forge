@@ -21,6 +21,7 @@
 #include <signal.h>
 
 // PKG_ADD: autoload ("__pq_internal_exit__", "pq_interface.oct");
+// PKG_DEL: autoload ("__pq_internal_exit__", "pq_interface.oct", "remove");
 
 // This function duplicates __exit__.cc to avoid the dependency on the
 // package main/general.

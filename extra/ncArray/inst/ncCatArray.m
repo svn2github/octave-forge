@@ -127,8 +127,10 @@ end
 for i=1:length(coord)
 
     %test if value is already defined, if yes do nothing
-    if ~isempty(coord(i).val) 
-       continue
+    if isfield(coord(i),'val')
+      if ~isempty(coord(i).val) 
+        continue
+      end
     end
 
     % the number of the dimension might be different
@@ -143,13 +145,13 @@ for i=1:length(coord)
       coord(i).val = ncBaseArray(filenames{1},coord(i).name,'vinfo',vinfo);
     else    
       % coordinates do also depend on the dimension over which we concatenate
-      i,coord(i).name,dimc,dims{dim}
+      %i,coord(i).name,dimc,dims{dim}
       coord(i).val = arr(dimc,filenames,coord(i).name,finfos);
     end
     
-    if dim > length(coord(i).dims)
-        coord(i).dims{dim} = catdimname;
-    end
+    %if dim > length(coord(i).dims)
+    %    coord(i).dims{dim} = catdimname;
+    %end
 end
 
 data = ncArray(var,dims,coord);

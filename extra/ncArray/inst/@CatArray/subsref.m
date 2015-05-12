@@ -2,17 +2,20 @@ function B = subsref(self,idx)
 
 % handle case with a single subscript
 % for example CA(234)
-
 if strcmp(idx.type,'()') && length(idx.subs) == 1
     % indices of elements in B
     ind = idx.subs{1};
-    
+
+    if strcmp(ind,':')
+        ind = [1:numel(self)]';
+    end
+
     % output array
     B = zeros(size(ind));
     B(:) = NaN;
     
     if self.overlap 
-        % transform index to subscript
+        % transform linear index ind to subscript subs
         subs = cell(1,self.nd);
         [subs{:}] = ind2sub(size(self),ind);
         
@@ -26,22 +29,7 @@ if strcmp(idx.type,'()') && length(idx.subs) == 1
         
         for i=1:length(ind)
             idxe.subs = mat2cell(subs(i,:),1,ones(1,self.nd));
-            %B(i) = subsref_canonical(self,idxe);
-            
-            [idx_global,idx_local,sz] = idx_global_local_(self,idxe);
-            tmp = zeros(sz);
-            tmp(:) = NaN;
-            
-            
-            for j=1:self.na
-                % get subset from j-th array
-                subset = subsref(self.arrays{j},idx_local{j});
-                
-                % set subset in global array B
-                tmp = subsasgn(tmp,idx_global{j},subset);
-            end
-            B(i) = tmp;
-            
+            B(i) = subsref_canonical(self,idxe);
         end
     else
         % assume all arrays does not overlap

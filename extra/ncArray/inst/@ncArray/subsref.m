@@ -33,7 +33,6 @@ if length(idx) == 2 && strcmp(idx(2).type,'.') && strcmp(idx(2).subs,'coord')
         j = sort(j);
         idx_c.type = '()';
         idx_c.subs = idx(1).subs(j);
-        
         varargout{i} = subsref(self.coord(i).val,idx_c);
     end       
 else

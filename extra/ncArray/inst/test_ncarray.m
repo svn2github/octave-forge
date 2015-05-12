@@ -232,6 +232,7 @@ SST_ref = cat(3,...
     ncread(files{3},'SST'));
 
 
+
 assert(isequaln(CA2(:,:,:),SST_ref))
 
 assert(isequaln(CA2(:,:,1),SST_ref(:,:,1)))
@@ -243,6 +244,13 @@ assert(isequaln(CA2(50,100,1:3),SST_ref(50,100,1:3)))
 assert(isequaln(CA2(3:5:50,3:5:100,1:2:3),SST_ref(3:5:50,3:5:100,1:2:3)))
 assert(isequaln(CA2(3:5:50,3:5:end,1:2:3),SST_ref(3:5:50,3:5:end,1:2:3)))
 assert(isequaln(CA2(3:5:50,3:5:end,:),SST_ref(3:5:50,3:5:end,:)))
+
+% access with linear index
+assert(isequaln(CA2(:),SST_ref(:)))
+assert(isequaln(CA2(1:10),SST_ref(1:10)))
+assert(isequaln(CA2(1:2:10),SST_ref(1:2:10)))
+
+
 ind = floor(numel(SST_ref) * rand(100,1))+1;
 assert(isequaln(CA2(ind),SST_ref(ind)))
 

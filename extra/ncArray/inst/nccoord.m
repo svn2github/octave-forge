@@ -12,6 +12,9 @@
 % coord is an empty structure if no coordinate information have been
 % found.
 
+% TODO: use a predictable order for coord:
+% lon, lat, depth, time, ensemble,...
+
 % Author: Alexander Barth (barth.alexander@gmail.com)
 
 function [dims,coord] = nccoord(filename,varname)

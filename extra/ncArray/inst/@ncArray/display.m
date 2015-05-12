@@ -10,8 +10,13 @@ fprintf('Coordinates:\n')
 
 for i = 1:length(c)
   tmp = sprintf('%dx',size(c(i).val));
-  fprintf('  Name: "%s" standard name: "%s" size %s\n',...
-          c(i).name,c(i).standard_name,tmp(1:end-1));
+  stdname = c(i).standard_name;
+  if isempty(stdname)
+     stdname = '<unset>';
+  end
+
+  fprintf('  Name: %15s; standard name: %25s; size %10s\n',...
+          c(i).name,stdname,tmp(1:end-1));
 end
 
 

@@ -120,12 +120,22 @@ if (dim > length(dims)) && ~isempty(coord)
     dims{dim} = catdimname;
     coord(dim).dims = {catdimname};
     coord(dim).val = range;
+    coord(dim).name = catdimname;
 end
 
 
 for i=1:length(coord)
+
+    %test if value is already defined, if yes do nothing
+    if ~isempty(coord(i).val) 
+       continue
+    end
+
     % the number of the dimension might be different
     % find in coord(i).dims the index of the dimension called  dims{dim}
+    % for example we concatenate over time, then two situations can arrise
+    % the coordinate variable lon can dependent on time (dimc is not empty)
+    % or it does not depdent on time (dimc is empty)
     dimc = find(strcmp(coord(i).dims,dims{dim}));
     
     if isempty(dimc)      
@@ -133,6 +143,7 @@ for i=1:length(coord)
       coord(i).val = ncBaseArray(filenames{1},coord(i).name,'vinfo',vinfo);
     else    
       % coordinates do also depend on the dimension over which we concatenate
+      i,coord(i).name,dimc,dims{dim}
       coord(i).val = arr(dimc,filenames,coord(i).name,finfos);
     end
     

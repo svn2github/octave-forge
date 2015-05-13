@@ -37,14 +37,19 @@ else
             if length(tmp) == 1
                 start(i) = tmp;
             else
+                % check if indexes are at regular intervals
                 test = tmp(1):tmp(2)-tmp(1):tmp(end);
-                
+                if size(tmp,2) == 1
+                   % tmp is a row vector, make test also a row vector
+                   test = test';
+                end
+
                 if all(tmp == test)
                     start(i) = tmp(1);
                     stride(i) = tmp(2)-tmp(1);
                     count(i) = (tmp(end)-tmp(1))/stride(i) +1;
                 else
-                    error('indeces');
+                    error('indeces not at regular intervals');
                 end
             end
         end

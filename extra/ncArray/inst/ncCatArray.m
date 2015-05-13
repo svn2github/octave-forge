@@ -80,6 +80,11 @@ elseif ischar(pattern)
                 'http://www.mathworks.com/matlabcentral/fileexchange/19550']);
         end
     end
+    
+    if isempty(filenames)
+        error('ncArray:nomatch','no file found matching %s',pattern);
+    end
+    
 elseif isa(pattern, 'function_handle')
     filenames = cell(1,length(range));
     

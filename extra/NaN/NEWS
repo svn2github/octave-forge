@@ -1,3 +1,7 @@
+2015-06-01: Release of NaN v.2.7.6
+
+- improve accuracy of normcdf (bug #38170) 
+
 2015-04-23: Release of NaN v2.7.5
 
 - fix compiler issue with __isnan

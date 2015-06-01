@@ -40,7 +40,7 @@ end;
 % allocate output memory and check size of arguments
 z = (x-m)./s;	  % if this line causes an error, input arguments do not fit. 
 
-p = (1 + erf(z/sqrt(2)))/2;
+p = erfc(z/-sqrt(2))/2;
 
 z = (s==0);
 p((x<m) & z) = 0;

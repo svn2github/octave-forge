@@ -49,12 +49,7 @@ MOLIBS = $(OCTCDF_LIBS)
 #
 MOFLAGS := $(MOFLAGS) -DHAVE_OCTAVE_INT
 
-ifeq ($(HAVE_NETCDF),yes)
 all: $(TARGETS)
-else
-all:
-	@echo "*** netcdf libraries or headers missing"; false
-endif
 
 mfiles: $(MFILES)
 

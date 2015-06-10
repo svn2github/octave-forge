@@ -1,6 +1,12 @@
 Summary of important user-visible changes for releases of the octcdf package
 
 ===============================================================================
+octcdf-1.1.9   Release Date: 2015-06-10   Release Manager: Alexander Barth
+===============================================================================
+
+ ** Apply patch from John Donoghue to allow cross-compilation (bug #44837)
+
+===============================================================================
 octcdf-1.1.8   Release Date: 2015-03-10   Release Manager: Alexander Barth
 ===============================================================================
 

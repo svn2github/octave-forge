@@ -50,6 +50,11 @@ dnl Check for mkoctfile
 AC_CHECK_PROG(MKOCTFILE,mkoctfile,mkoctfile)
 test -z "$MKOCTFILE" &&	AC_MSG_WARN([no mkoctfile found on path])
 
+AC_CHECK_PROG(OCTAVE_CONFIG,octave-config,octave-config)
+test -z "$OCTAVE_CONFIG" && AC_MSG_WARN([no octave-config found on path])
+
+
+
 AC_SUBST(ver)
 AC_SUBST(subver)
 AC_SUBST(mpath)
@@ -252,6 +257,13 @@ AC_MSG_RESULT($$2)
 AC_SUBST($2)
 ])
 
+AC_DEFUN(OCTAVE_CONFIG_EVAL,
+[AC_MSG_CHECKING([for $1 in octave-config])
+$2=`$OCTAVE_CONFIG -p $1`
+AC_MSG_RESULT($$2)
+AC_SUBST($2)
+])
+
 dnl Check status of an octave variable
 dnl
 dnl OCTAVE_CHECK_EXIST(variable,action_if_true,action_if_false)
@@ -269,13 +281,13 @@ fi
 
 dnl should check that $(OCTAVE) --version matches $(MKOCTFILE) --version
 AC_CHECK_PROG(OCTAVE,octave,octave)
-OCTAVE_EVAL(OCTAVE_VERSION,OCTAVE_VERSION)
+OCTAVE_CONFIG_EVAL(VERSION,OCTAVE_VERSION)
 
 dnl grab canonical host type so we can write system specific install stuff
-OCTAVE_EVAL(octave_config_info('canonical_host_type'),canonical_host_type)
+OCTAVE_CONFIG_EVAL(CANONICAL_HOST_TYPE,canonical_host_type)
 
 dnl grab SHLEXT from octave config
-OCTAVE_EVAL(octave_config_info('SHLEXT'),SHLEXT)
+OCTAVE_CONFIG_EVAL(SHLEXT,SHLEXT)
 
 AC_PROG_LN_S
 
@@ -308,53 +320,18 @@ case "$canonical_host_type" in
     ;;
 esac
 
-dnl first checking for nc-config, then nc-dap 
-
-AC_MSG_CHECKING([for nc-config])
-
-if nc-config --version > /dev/null 2>&1; then
-      AC_MSG_RESULT([yes])
-      OCTCDF_LIBS="$OCTCDF_LIBS `nc-config --libs`"
-      OCTCDF_CFLAGS="$OCTCDF_CFLAGS `nc-config --cflags`"
-      HAVE_NETCDF=yes
-else
-      AC_MSG_RESULT([no])          
-      AC_MSG_CHECKING([for nc-dap])
-
-      if ncdap-config --version > /dev/null 2>&1; then
-            AC_MSG_RESULT([yes])
-            OCTCDF_LIBS="$OCTCDF_LIBS `ncdap-config --libs`"
-            OCTCDF_CFLAGS="$OCTCDF_CFLAGS `ncdap-config --cflags`"
-
-            HAVE_NETCDF=yes
-      else
-            AC_MSG_RESULT([no])          
-
-            dnl if no opendap, checking if the NetCDF library exists. 
-	    dnl AC_CHECK_LIB takes the value of LDFLAGS into account
-
-            AC_CHECK_LIB(netcdf,nc_open, HAVE_NETCDF=yes, HAVE_NETCDF=no,)
-
-            if test $HAVE_NETCDF = yes ; then
-              OCTCDF_LIBS="$OCTCDF_LIBS -lnetcdf"
-
-              dnl we have the libraries, no we have also the headers?
-	      dnl AC_CHECK_HEADER takes the value of CPPFLAGS into account
-
-              AC_CHECK_HEADER(netcdf.h, HAVE_NETCDF=yes, HAVE_NETCDF=no)
-            fi
-      fi
+dnl checking for nc-config
+AC_CHECK_TOOL(NC_CONFIG, nc-config, nc-config)
+if test -z "$NC_CONFIG"; then
+AC_MSG_ERROR([nc-config not found], 1);
 fi
 
-AC_SUBST(HAVE_NETCDF)
+OCTCDF_LIBS="$OCTCDF_LIBS `$NC_CONFIG --libs`"
+OCTCDF_CFLAGS="$OCTCDF_CFLAGS `$NC_CONFIG --cflags`"
+
 AC_SUBST(OCTCDF_LIBS)
 AC_SUBST(OCTCDF_CFLAGS)
 
-if test $HAVE_NETCDF = yes ; then
-    OCTCDFSTATUS=yes
-else
-    OCTCDFSTATUS=no
-fi
 
 CONFIGURE_OUTPUTS="Makeconf"
 STATUS_MSG="
@@ -373,8 +350,8 @@ shell commands will install into the following directories:
    headers:   $includedir
 
 octave-forge is configured with
-   octave:      $OCTAVE (version $OCTAVE_VERSION)
-   mkoctfile:	$MKOCTFILE for Octave $subver
-   octcdf toolbox: $OCTCDFSTATUS
+   octave:         $OCTAVE (version $OCTAVE_VERSION)
+   mkoctfile:	   $MKOCTFILE for Octave $subver
+   octave-config:  $OCTAVE_CONFIG for Octave $subver
    netCDF compiler flags: $OCTCDF_CFLAGS
    netCDF libraries: $OCTCDF_LIBS"

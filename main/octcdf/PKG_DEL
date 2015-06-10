@@ -1,0 +1,10 @@
+
+funnames = {"ncclose","ncredef","ncenddef","ncsync","ncvar","ncatt",...
+         "ncdim","ncname","ncdatatype","ncautonan","ncautoscale","ncisrecord"};
+
+for i = 1:length(funnames)
+    try
+        autoload (funnames{i}, fullfile (fileparts (mfilename ("fullpath")), "netcdf.oct"),'remove');
+    catch
+    end 
+end

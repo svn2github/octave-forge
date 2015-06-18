@@ -98,10 +98,10 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	        mexErrMsgTxt("SUMSKIPNAN.MEX has 1 to 3 output arguments.");
 
 	// get 1st argument
-	if(mxIsDouble(PInputs[0]) && !mxIsComplex(PInputs[0]))
+	if(mxIsDouble(PInputs[0]) && !mxIsComplex(PInputs[0]) && !mxIsSparse(PInputs[0]) )
 		LInput  = mxGetPr(PInputs[0]);
 	else 	
-		mexErrMsgTxt("First argument must be REAL/DOUBLE.");
+		mexErrMsgTxt("First argument must be and not sparse REAL/DOUBLE.");
 
     	// get 2nd argument
     	if  (PInputCount > 1) {

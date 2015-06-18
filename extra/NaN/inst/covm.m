@@ -143,6 +143,12 @@ if mexFLAG2 && mexFLAG && ~isempty(W),
                 end;
 	end;
 
+	if issparse(X) || issparse(Y), 
+		fprintf(2,'sumskipnan: sparse matrix converted to full matrix\n');
+		X=full(X); 
+		Y=full(Y); 
+	end;
+
 	[CC,NN] = covm_mex(real(X), real(Y), FLAG_NANS_OCCURED, W);
 	%% complex matrices 
 	if ~isreal(X) && ~isreal(Y)

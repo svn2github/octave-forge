@@ -83,10 +83,10 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 
 
 	// get 1st argument
-	if(mxIsDouble(PInputs[0]) && !mxIsComplex(PInputs[0]))
+	if(mxIsDouble(PInputs[0]) && !mxIsComplex(PInputs[0]) && !mxIsSparse(PInputs[0]) )
 		X0  = mxGetPr(PInputs[0]);
 	else 	
-		mexErrMsgTxt("First argument must be REAL/DOUBLE.");
+		mexErrMsgTxt("First argument must be non-sparse REAL/DOUBLE.");
 	rX = mxGetM(PInputs[0]);		
 	cX = mxGetN(PInputs[0]);		
 		

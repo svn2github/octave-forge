@@ -119,6 +119,10 @@ x = double(x);
 try
 	
 	%% using sumskipnan_mex.mex
+	if issparse(x), 
+		fprintf(2,'sumskipnan: sparse matrix converted to full matrix\n');
+		x = full(x); 
+	end;
 
 	%% !!! hack: FLAG_NANS_OCCURED is an output argument, reserve memory !!!
 	if isempty(FLAG_NANS_OCCURED),

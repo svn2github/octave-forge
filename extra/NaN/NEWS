@@ -1,3 +1,7 @@
+
+- check for sparse input matrices and
+  convert to full if needed
+
 2015-06-01: Release of NaN v.2.7.6
 
 - improve accuracy of normcdf (bug #38170) 

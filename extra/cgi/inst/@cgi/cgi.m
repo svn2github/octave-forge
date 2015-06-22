@@ -25,11 +25,35 @@ elseif strcmp(self.request_method,'POST')
   % POST request
   content_type = getenv('CONTENT_TYPE');
   content_length = str2double(getenv('CONTENT_LENGTH'));
-  assert(content_type,'application/x-www-form-urlencoded');
-  self.query_string = fscanf(stdin,'%c',content_length);
+
+  if strcmp(content_type,'application/x-www-form-urlencoded')
+    self.query_string = fscanf(stdin,'%c',content_length);
+
+  % elseif strcmp(content_type,'multipart/form-data')
+  %   % Content-Type: multipart/form-data; boundary=AaB03x
+  %   line = fgetl(stdin)
+
+  %   [header_type,header_value,attrib] = parseline(line);
+  %   assert(header_type,'Content-Type');
+  %   assert(header_value,'multipart/form-data')
+
+  %   line = fgetl(stdin)
+  %   line = fgetl(stdin)
+  %   line = fgetl(stdin)
+  %   [header_type,header_value,attrib] = parseline(line)
+  %   line = fgetl(stdin)
+  %   line = fgetl(stdin)
+  %   self.params{end+1} = attrib.name;
+  %   self.vals{end+1} = line;
+
+  %   self.query_string = '';
+    
+  else     
+    error('unsupported content_type %s',content_type);
+  end
   %fprintf(stderr,'query_string "%s" "%s" "%d"',self.query_string,content_type,content_length);
 else
-  error('unsupported requested method',self.request_method);
+  error('unsupported requested method %s',self.request_method);
 end
 
 
@@ -38,10 +62,13 @@ p = strsplit(self.query_string,{'&',';'});
 
 for i=1:length(p)
   pp = strsplit(p{i},'=');
-  
-  self.params{end+1} = unquote(pp{1});
-  self.vals{end+1} = unquote(pp{2});
+
+  if length(pp) == 2
+    self.params{end+1} = unquote(pp{1});
+    self.vals{end+1} = unquote(pp{2});
+  end
 end
+
 
 retval = class(self,'cgi');
 

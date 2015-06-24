@@ -1,4 +1,9 @@
 
+2015-06-24: Release of NaN-tb v2.8.0
+
+- fix Makefile for Octave4 on windows
+  (fixes #45363 and #44859)
+
 - check for sparse input matrices and
   convert to full if needed
 

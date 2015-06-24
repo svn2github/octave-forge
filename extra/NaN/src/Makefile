@@ -30,12 +30,16 @@ GNUMEX64 = $(HOME)/bin/win64/gnumex
 # http://sourceforge.net/mailarchive/forum.php?thread_name=AANLkTinZvxgC9ezp2P3UCX_a7TAUYuVsp2U40MQUV6qr%40mail.gmail.com&forum_name=gnumex-users
 # Instead of building "mex shortpath.c" and "mex uigetpath.c", I used empty m-functions within argout=argin; 
 ####################################################
-
+MKOCTFILE ?= mkoctfile$(OCTAVE_VERSION)
 CC      = gcc
 CXX     = g++
-CFLAGS 	= -fopenmp -Wall -Wextra -Wconversion -O2 -fPIC 
-OCTMEX	= mkoctfile$(OCTAVE_VERSION) --mex
+CFLAGS 	= -fopenmp -Wall -Wextra -Wconversion -O2
+OCTMEX	= $(MKOCTFILE) --mex
 RM      = rm
+
+ifneq ($(OS),Windows_NT)
+CFLAGS      += -fPIC
+endif
 
 ifneq (Darwin,$(shell uname)) 
 CFLAGS      += -fopenmp 
@@ -89,7 +93,7 @@ svm%_mex.$(MEX_EXT): svm%_mex.cpp svm.o svm_model_matlab.o
 	$(MATMEX) "$<"
 
 svm_model_octave.o: svm_model_matlab.c 
-	$(CC)  $(CFLAGS) $(shell $(OCTMEX) -p INCFLAGS) -o "$@" -c "$<"
+	env CC=$(CC) $(MKOCTFILE) -o "$@" -c "$<"
 svm_model_matlab.o: svm_model_matlab.c 
 	$(CC) $(CFLAGS) -I $(MATLABDIR)/extern/include -o "$@" -c "$<"  
 svm.o: svm.cpp

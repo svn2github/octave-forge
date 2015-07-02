@@ -227,16 +227,20 @@ end;
 %(roots([2e-37,-2,2])-[1e37;1])
 %%%%% check nan/nan   %% this test addresses a problem in Matlab 5.3, 6.1 & 6.5
 p    = 4;
+tmp1 = repmat(nan, 4);
+tmp2 = repmat(nan, 4);
+if ~ispc
 try
        tmp1 = repmat(nan,p)/repmat(nan,p);
 catch   % exception error in Octave 3.8.2 of debian wheezy
-       tmp1 = repmat(nan, 4);
+	fprintf(2,'repmat(nan,4)/repmat(nan,4) fails with an exception\n');	
 end;
 try
        tmp2 = repmat(nan,p)\repmat(nan,p);
 catch   % exception error in Octave 3.8.2 of debian wheezy
-       tmp2 = repmat(nan, 4); 
+	fprintf(2,'repmat(nan,4)\repmat(nan,4) fails with an exception\n');
 end
+end;
 tmp3 = repmat(0,p)/repmat(0,p);
 tmp4 = repmat(0,p)\repmat(0,p);
 tmp5 = repmat(0,p)*repmat(inf,p);
@@ -278,16 +282,16 @@ tmp  = [tmp1;tmp2;tmp3;tmp4;tmp5;tmp6;tmp7;tmp8];
 
 
 %%%%% QUANTILE TEST 
-d = [1 1 2 2 4 4 10 700]; 
+d = [1 1 2 2 4 4 10 700]'; 
 q = [-1,0,.05,.1,.25,.49,.5,.51,.75,.8, .999999,1,2];
 r = [ NaN, 1, 1, 1, 1.5, 2, 3, 4, 7, 10, 700, 700, NaN]; 
-if any( quantile(d, q) -  r>0)
+if any( quantile(d, q)' -  r>0)
 	fprintf(1,'Quantile(1): failed\n');
 else
 	fprintf(1,'Quantile(1): OK\n'); 
 end; 
 if exist('histo3','file')
-	H = histo3(d');
+	H = histo3(d);
 else
 	H.X = [1;2;4;10;700];
 	H.H = [2;2;2;1;1];

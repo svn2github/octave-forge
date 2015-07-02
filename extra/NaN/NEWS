@@ -1,4 +1,6 @@
 
+- fix nantest to avoid crashing octave 4.0.0 on windows
+
 2015-06-24: Release of NaN-tb v2.8.0
 
 - fix Makefile for Octave4 on windows

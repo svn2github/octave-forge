@@ -229,16 +229,19 @@ end;
 p    = 4;
 tmp1 = repmat(nan, 4);
 tmp2 = repmat(nan, 4);
-if ~ispc
+if ispc
+        % Octave 4.0.0 on Windows crashes, therefore the test is disabled
+	warning('mrdivide (repmat(nan,4), repmat(nan,4)) and mldivide (repmat(nan,4), repmat(nan,4)) not tested because it might crash Octave on Windows.\n');	
+else        
 try
-       tmp1 = repmat(nan,p)/repmat(nan,p);
-catch   % exception error in Octave 3.8.2 of debian wheezy
-	fprintf(2,'repmat(nan,4)/repmat(nan,4) fails with an exception\n');	
+	tmp1 = repmat(nan,p) / repmat(nan,p);
+catch   % exception error in Octave 3.8.2 and later of debian wheezy
+	fprintf(2,'mrdivide (repmat(nan,4), repmat(nan,4)) fails with an exception\n');	
 end;
 try
-       tmp2 = repmat(nan,p)\repmat(nan,p);
-catch   % exception error in Octave 3.8.2 of debian wheezy
-	fprintf(2,'repmat(nan,4)\repmat(nan,4) fails with an exception\n');
+	tmp2 = repmat(nan,p) \ repmat(nan,p);
+catch   % exception error in Octave 3.8.2 and later of debian wheezy
+	fprintf(2,'mldivide (repmat(nan,4), repmat(nan,4)) fails with an exception\n');
 end
 end;
 tmp3 = repmat(0,p)/repmat(0,p);

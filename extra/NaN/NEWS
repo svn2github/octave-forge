@@ -1,3 +1,4 @@
+2015-07-06: Release of NaN-tb v2.8.1
 
 - fix nantest to avoid crashing octave 4.0.0 on windows
 
@@ -7,7 +8,7 @@
   (fixes #45363 and #44859)
 
 - check for sparse input matrices and
-  convert to full if needed
+  convert to full when needed
 
 2015-06-01: Release of NaN v.2.7.6
 

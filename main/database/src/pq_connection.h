@@ -116,6 +116,16 @@ public:
   {
     print_raw (os);
   }
+  // Octave changeset bcd71a2531d3 (Jan 31st 2014) made
+  // octave_base_value::print() non-const, after that this virtual
+  // function is not re-defined by the above print() function.  Having
+  // both const and non-const print() here seems to work both with
+  // Octave < and >= bcd71a2531d3 (print() is only called over the
+  // parent class virtual function).
+  void print (std::ostream& os, bool pr_as_read_syntax = false)
+  {
+    print_raw (os);
+  }
 
   bool print_as_scalar (void) const { return true; }
 

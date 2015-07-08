@@ -7,7 +7,7 @@
 
 function t = ncreadtime(filename,varname)
 
-t = ncread(filename,varname);
+t = double(ncread(filename,varname));
 units = ncreadatt(filename,varname,'units');
 
 [t0,f] = nctimeunits(units);

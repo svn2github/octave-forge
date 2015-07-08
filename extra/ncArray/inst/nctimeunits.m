@@ -18,7 +18,7 @@ year_in_days =  365.242198781;
 l = strfind(u,'since');
 
 if length(l) ~= 1
-    error(['time units sould expect one "since": "' u '"']);
+  error(['time units sould expect one "since": "' u '"']);
 end
 
 period = strtrim(lower(u(1:l-1)));
@@ -27,39 +27,43 @@ reference_date = strtrim(u(l+6:end));
 if strcmp(period,'millisec') || strcmp(period,'msec')
   f = 1/(24*60*60*1000);
 elseif strcmp(period,'second') || strcmp(period,'seconds') ...
-   || strcmp(period,'s') || strcmp(period,'sec')
+      || strcmp(period,'s') || strcmp(period,'sec')
   f = 1/(24*60*60);
 elseif strcmp(period,'minute') || strcmp(period,'minutes') ...
-       || strcmp(period,'min')
+      || strcmp(period,'min')
   f = 1/(24*60);
 elseif strcmp(period,'hour') || strcmp(period,'hours') ...
-       || strcmp(period,'hr')
+      || strcmp(period,'hr')
   f = 1/24;
 elseif strcmp(period,'day') || strcmp(period,'days')
   f = 1;
 elseif strcmp(period,'week') || strcmp(period,'weeks')
   f = 1/(24*60*60*7);
 elseif strcmp(period,'year') || strcmp(period,'years') ...
-       strcmp(period,'yr')
+      strcmp(period,'yr')
   f = year_in_days;
 elseif strcmp(period,'month') || strcmp(period,'months') ...
-       strcmp(period,'mon')
+      strcmp(period,'mon')
   f = year_in_days/12;
 else
   error(['unknown units "' period '"']);
 end
-  
 
-try
-  t0 = datenum(reference_date,'yyyy-mm-dd HH:MM:SS');
-catch
+
+if strcmp(reference_date,'1900-01-01 00:00:0.0')
+  t0 = datenum(1900,1,1);
+else
   try
-    t0 = datenum(reference_date,'yyyy-mm-ddTHH:MM:SS');
-  catch    
+    t0 = datenum(reference_date,'yyyy-mm-dd HH:MM:SS');
+  catch
     try
-      t0 = datenum(reference_date,'yyyy-mm-dd');
-    catch
-      error(['date format is not recogized ' reference_date])
+      t0 = datenum(reference_date,'yyyy-mm-ddTHH:MM:SS');
+    catch    
+      try
+        t0 = datenum(reference_date,'yyyy-mm-dd');
+      catch
+        error(['date format is not recogized ' reference_date])
+      end
     end
   end
 end

@@ -2,6 +2,7 @@
 % Load a subset of a variable based on range of coordiante variables.
 % The names of the coordinates (coord_name1, coord_name2,...) coorespond to the standard_name attribute.
 % Only 1-dimensional coordinates are currently supported.
+% Time units are converted to "datenum".
 %
 %
 % Example
@@ -16,6 +17,13 @@ for i = 1:length(c)
   % per default take all data along a dimension
   c(i).index = ':';
   c(i).sub = c(i).v;
+
+  % convert time units
+  if ~isempty(strfind(c(i).units,'since'))     
+    [t0,f] = nctimeunits(c(i).units);    
+    c(i).v = f*double(c(i).v) + t0;
+  end
+
 end
 
 % loop over all constraints
@@ -38,7 +46,11 @@ for i = 1:2:length(varargin)
   if numel(range) == 1
     dist = abs(c(j).v - range);
     [mindist,i] = min(dist);
+
+    %i
     %mindist
+    %c(j).v(i)
+    %datevec(c(j).v(i))
   else    
     i = find(range(1) < c(j).v & c(j).v < range(end)); 
     i = min(i):max(i);
@@ -49,6 +61,7 @@ for i = 1:2:length(varargin)
 end
 
 idx = substruct('()',{c.index});
+%idx
 data = subsref (self,idx);
 
 varargout = {data,c.sub};

@@ -84,7 +84,12 @@ public:
   {
     static bool type_registered = false;
 
-    if (! type_registered) register_type ();
+    if (! type_registered)
+      {
+        register_type ();
+
+        type_registered = true;
+      }
   }
 
   ~octave_pq_connection (void) { delete rep; }

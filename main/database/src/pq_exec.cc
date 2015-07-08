@@ -131,7 +131,7 @@ undifined internal function, meant to be called by @code{pq_exec_params}")
       return retval;
     }
 
-  const octave_base_value& rep = (args(0).get_rep ());
+  const octave_base_value &rep = args(0).get_rep ();
 
   const octave_pq_connection &oct_pq_conn =
     dynamic_cast<const octave_pq_connection&> (rep);

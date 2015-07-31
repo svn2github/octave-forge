@@ -83,23 +83,23 @@ function [pkgtar htmltar] = releasePKG (pkgname, varargin)
 
   % Revision control system
   revsys = parser.Results.revsys;
-  
+
   if strcmp (revsys,"svn")
     export_call = ["svn export " fullfile(repo_path,pkgname) " " exported " --force"];
     failed      = system (export_call);
   else
     cdir        = pwd ();
     cd (fullfile (repo_path,pkgname));
-    export_call = sprintf ('hg archive %s', exported)
+    export_call = sprintf ('hg archive --exclude ".hg*" %s', exported)
     failed      = system (export_call);
     cd (cdir);
     clear cdir
   endif
-  
+
   if failed
     error ("Can not export.\n");
   endif
-  
+
   if isempty (OFPATH) || !strcmpi(repo_path, OFPATH)
     setenv('OFPATH',parser.Results.repopath);
     printf (["\nEnvironment variable OFPATH set to %s\n" ...
@@ -125,7 +125,7 @@ function [pkgtar htmltar] = releasePKG (pkgname, varargin)
     exported_tmp = tmpnam ();
     mv_call = sprintf ("mv -f -T %s %s", tmp, exported_tmp);
     system (mv_call);
-    
+
     if !rmdir (exported, "s")
       error ("Couldn't erase folder");
     endif
@@ -134,20 +134,20 @@ function [pkgtar htmltar] = releasePKG (pkgname, varargin)
     rmdir (exported_tmp,"s");
     clear exported_tmp
   endif
-  
+
   % Run bootstrap if found
   if has_dir ("src", exported)
     ndir = fullfile (exported,"src");
     if has_file ("bootstrap", ndir)
       odir = pwd ();
       cd (ndir);
-      
+
       failed = system ("./bootstrap");
       if failed
         cd (odir);
         error ("Could run bootstrap.\n");
       end
-      
+
       [success, msg] = rmdir ("autom4te.cache", "s");
       if !success
         error (msg);
@@ -155,7 +155,7 @@ function [pkgtar htmltar] = releasePKG (pkgname, varargin)
       cd (odir);
     endif
   endif
-  
+
   % Remove devel, deprecated, .*ignore an others
   to_erase = {"devel","deprecated",".svnignore",".hgignore",".hg_archival.txt"};
   for idir = 1:numel(to_erase)
@@ -169,7 +169,7 @@ function [pkgtar htmltar] = releasePKG (pkgname, varargin)
       delete (fullfile (exported, to_erase{idir}));
     endif
   endfor
-  
+
   % Get package version
   desc_file  = textread (fullfile (exported,"DESCRIPTION"),"%s");
   [tf ind]   = ismember ("Version:",desc_file);
@@ -187,7 +187,7 @@ function [pkgtar htmltar] = releasePKG (pkgname, varargin)
 
   % Remove exported package
   rmdir (exported, "s");
-  
+
   do_doc = input ("\nCreate documentation for Octave-Forge? [y|Yes|Y] / [n|No|N] ","s");
   do_doc = strcmpi (do_doc(1),'y');
 
@@ -258,16 +258,15 @@ function tf = checkrepopath (str)
 endfunction
 
 function tf = has_dir (ddir, exported)
-  
+
   s  = dir (exported);
   tf = any (cellfun (@(x) strcmpi (x,ddir), {s([s.isdir]).name}));
-  
+
 endfunction
 
 function tf = has_file (dfile, ddir)
-  
+
   s  = dir (ddir);
   tf = any (cellfun (@(x) strcmpi (x,dfile), {s(![s.isdir]).name}));
-  
-endfunction
 
+endfunction

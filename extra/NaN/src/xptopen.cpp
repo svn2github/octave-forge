@@ -301,7 +301,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	}
 
 	fid = fopen(fn,Mode);
-	if (fid < 0) {
+	if (fid == NULL) {
 	        mexErrMsgTxt("Can not open file!\n");
 		}
 
@@ -372,7 +372,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 				}
 
 				if (rec_type != 2) 
-					;//error('invalid SPSS file');
+					mexErrMsgTxt("invalid SPSS file\n");
 
 				c2 += fread(VarNames+9*ns,1,8,fid);
 				VarNames[9*ns+8] = 0;
@@ -469,8 +469,8 @@ if present.
 			char typ; int32_t len;
 			char flagSWAP = (((__BYTE_ORDER == __BIG_ENDIAN) && LittleEndian) || ((__BYTE_ORDER == __LITTLE_ENDIAN) && !LittleEndian));
 			do {
-				fread(&typ,1,1,fid);
-				fread(&len,4,1,fid);
+				if (!fread(&typ,1,1,fid)) break;
+				if (!fread(&len,4,1,fid)) break;
 				if (flagSWAP) bswap_32(len);
 				fseek(fid,len,SEEK_CUR);
 			} while (len);
@@ -724,7 +724,7 @@ if present.
 						else if (vartyp[ns] == 6) {
 							size_t kk[6],n=0, N=strlen(datestr[ns]);
 							char T0[6][5];
-							char ix = 0;
+							int ix = 0;
 							struct tm t;
 
 							for (n=0; n < N; n++) {
@@ -1092,7 +1092,7 @@ uint64_t d2xpt(double x) {
 	mexPrintf("d2xpt(%f)\n",x);
 #endif
 	// see http://old.nabble.com/Re%3A-IBM-integer-and-double-formats-p20428979.html
-	m = *(uint64_t*) &x;
+	memcpy(&m, &x, 8);
 	*(((char*)&m) + 6) &= 0x0f; //
 	if (e) *(((char*)&m) + 6) |= 0x10; // reconstruct implicit leading '1' for normalized numbers
 	m <<= (3-(-e & 3));

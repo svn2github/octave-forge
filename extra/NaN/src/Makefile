@@ -1,5 +1,5 @@
 ####################################################
-# Copyright 2010, 2011,2012 Alois Schloegl 
+# Copyright 2010,2011,2012,2015 Alois Schloegl 
 # This is part of the NaN-toolbox - a statistics and machine learning toolbox for data with and without missing values. 
 # http://pub.ist.ac.at/~schloegl/matlab/NaN/
 ####################################################
@@ -33,9 +33,15 @@ GNUMEX64 = $(HOME)/bin/win64/gnumex
 MKOCTFILE ?= mkoctfile$(OCTAVE_VERSION)
 CC      = gcc
 CXX     = g++
-CFLAGS 	= -fopenmp -Wall -Wextra -Wconversion -O2
+CFLAGS += -fopenmp -Wall -Wextra -Wconversion -O2
 OCTMEX	= $(MKOCTFILE) --mex
 RM      = rm
+
+# Hardening: https://wiki.debian.org/HardeningWalkthrough#Handwritten_Makefiles 
+#CFLAGS = `dpkg-buildflags --get CFLAGS`
+#CFLAGS += `dpkg-buildflags --get CPPFLAGS`
+#CFLAGS += `dpkg-buildflags --get LDFLAGS`
+CFLAGS += -fstack-protector-strong -Wformat -Werror=format-security -D_FORTIFY_SOURCE=2 -Wl,-z,relro
 
 ifneq ($(OS),Windows_NT)
 CFLAGS      += -fPIC

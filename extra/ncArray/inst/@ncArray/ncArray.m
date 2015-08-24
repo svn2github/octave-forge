@@ -38,7 +38,7 @@
 % Web: http://modb.oce.ulg.ac.be/mediawiki/index.php/ncArray
 
 % hidded constructor signature:
-% data = ncArray(filename,varname)
+% data = ncArray(var,dims,coord);
 % is used to create data with coordinate values by ncCatArray
 
 function retval = ncArray(varargin)

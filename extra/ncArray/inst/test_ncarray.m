@@ -12,13 +12,34 @@ tmpdir = tempname;
 mkdir(tmpdir);
 
 tmpfname = tempname(tmpdir);
+refdata = {};
+
 for i = 1:3  
   files{i} = fullfile(tmpdir,sprintf('file%d.nc',i));
-  ncarray_example_file(files{i},randn(220,144));
+  refdata{i} = randn(220,144);                                      
+  ncarray_example_file(files{i},refdata{i});
 end
 
 
 filename = files{1};
+
+
+%%% test DerivedArray
+
+% reading convertion with 1 argument
+
+SST = ncArray(files{1},varname);
+Temp_in_K = DerivedArray(@(t) t + 273.15,{SST});
+ref = refdata{1} + 273.15;
+assert(isequaln(Temp_in_K(:,:,:),ref))
+
+% reading convertion with 2 arguments
+
+SST1 = ncArray(files{1},varname);
+SST2 = ncArray(files{2},varname);
+temp_trend = DerivedArray(@(t1,t2) t2 - t1,{SST1,SST2});
+ref = refdata{2} - refdata{1};
+assert(isequaln(temp_trend(:,:,:),ref))
 
 
 % test ncread/ncwrite
@@ -358,6 +379,8 @@ SST_ref = ncread(files{2},'SST');
 assert(isequaln(SST_test,SST_ref))
 
 assert(strcmp(CA2.('units'),'degC'));
+
+
 
 test_ncarray_nan
 

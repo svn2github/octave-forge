@@ -37,11 +37,9 @@ CFLAGS += -fopenmp -Wall -Wextra -Wconversion -O2
 OCTMEX	= $(MKOCTFILE) --mex
 RM      = rm
 
-# Hardening: https://wiki.debian.org/HardeningWalkthrough#Handwritten_Makefiles 
-#CFLAGS = `dpkg-buildflags --get CFLAGS`
-#CFLAGS += `dpkg-buildflags --get CPPFLAGS`
-#CFLAGS += `dpkg-buildflags --get LDFLAGS`
-CFLAGS += -fstack-protector-strong -Wformat -Werror=format-security -D_FORTIFY_SOURCE=2 -Wl,-z,relro
+# Support Debian Hardening flags
+# https://wiki.debian.org/HardeningWalkthrough#Handling_dpkg-buildflags_in_your_upstream_build_system
+CFLAGS += $(CPPFLAGS)
 
 ifneq ($(OS),Windows_NT)
 CFLAGS      += -fPIC

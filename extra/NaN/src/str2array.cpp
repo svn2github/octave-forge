@@ -132,9 +132,9 @@ int str2val(char *s, double *r, double *i)
 
 
 void mexFunction(
-    mwSize          nlhs,           /* number of expected outputs */
+    int              nlhs,        /* number of expected outputs */
     mxArray       *plhs[],        /* array of pointers to output arguments */
-    mwSize          nrhs,           /* number of inputs */
+    int              nrhs,        /* number of inputs */
     const mxArray *prhs[]         /* array of pointers to input arguments */
 )
 

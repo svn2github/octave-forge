@@ -90,12 +90,12 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
     	double  	x;
     	double*		W = NULL;		// weight vector 
 
-    	mwSize		DIM = 0; 
-    	mwSize		D1, D2, D3; 	// NN; 	//  	
-    	mwSize    	ND, ND2;	// number of dimensions: input, output
-    	mwSize		ix0, ix1, ix2;	// index to input and output
-    	mwSize    	j, l;		// running indices 
-    	mwSize 		*SZ2;		// size of output 	    
+    	size_t		DIM = 0; 
+    	size_t		D1, D2, D3; 	// NN; 	//  	
+    	size_t    	ND, ND2;	// number of dimensions: input, output
+    	size_t		ix0, ix1, ix2;	// index to input and output
+    	size_t    	j, l;		// running indices 
+    	mwIndex		*SZ2;		// size of output 	    
 	char	 	flag_isNaN = 0;
 
 	// check for proper number of input and output arguments

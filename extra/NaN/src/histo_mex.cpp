@@ -46,6 +46,12 @@
 #include <string.h>
 #include "mex.h"
 
+/* 
+   math.h has isnan() defined for all sizes of floating point numbers, 
+   but c++ assumes isnan(double), causing possible conversions for float and long double
+*/
+#define ISNAN(a) (a!=a)
+
 
 #ifdef tmwtypes_h
   #if (MX_API_VER<=0x07020000)
@@ -109,7 +115,7 @@ int compare(const void *a, const void *b) {
 			float f1,f2;
 			f1 = ((float*)Sort.Table)[ix1];
 			f2 = ((float*)Sort.Table)[ix2];
-			z = isnan(f1) - isnan(f2);
+			z = ISNAN(f1) - ISNAN(f2);
 			if (z) break;
 			
 			if (f1<f2) z = -1; 
@@ -121,7 +127,7 @@ int compare(const void *a, const void *b) {
 			double f1,f2;
 			f1 = ((double*)Sort.Table)[ix1];
 			f2 = ((double*)Sort.Table)[ix2];
-			z = isnan(f1) - isnan(f2);
+			z = ISNAN(f1) - ISNAN(f2);
 			if (z) break;
 			
 			if (f1<f2) z = -1; 
@@ -178,7 +184,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
     	const mwSize	*SZ;	    
 	char 		flag_rows = 0; 
 	char 		done = 0; 
-    	mwSize    	j, k, l;	// running indices 
+    	size_t    	j, k, l;	// running indices 
 	const mxArray	*W = NULL; 
     	double 		*w = NULL; 
 

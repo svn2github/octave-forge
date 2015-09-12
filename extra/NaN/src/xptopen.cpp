@@ -933,7 +933,7 @@ if present.
 		H2 = (char*) realloc(H2,HeadLen2);
 		memset(H2,0,HeadLen2);
 
-		mwIndex M = 0;
+		size_t M = 0;
 		mxArray **F = (mxArray**) mxMalloc(NS*sizeof(mxArray*));
 		char **Fstr = (char**) malloc(NS*sizeof(char*));
 		size_t *MAXLEN = (size_t*) malloc(NS*sizeof(size_t*));
@@ -954,7 +954,7 @@ if present.
 			}
 			else if (mxIsCell(F[k])) {
 				size_t maxlen = 0;
-				for (mwIndex m = 0; m<M; m++) {
+				for (size_t m = 0; m<M; m++) {
 					mxArray *f = mxGetCell(F[k],m);
 					if (mxIsChar(f) || mxIsEmpty(f)) {
 						size_t len = mxGetNumberOfElements(f);
@@ -978,7 +978,7 @@ if present.
 		count += fwrite(H2, 1, HeadLen2, fid);
 		/* write OBS header line */
 		count += fwrite(LO, 1, strlen(LO), fid);
-		for (mwIndex m = 0; m < M; m++) {
+		for (size_t m = 0; m < M; m++) {
 			for (uint16_t k = 0; k < NS; k++) {
 
 				if (*(int16_t*)(H2+k*sz2) == b_endian_u16(1)) {

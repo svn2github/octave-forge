@@ -59,20 +59,26 @@
   #endif 
 #endif 
 
+/* 
+   math.h has isnan() defined for all sizes of floating point numbers, 
+   but c++ assumes isnan(double), causing possible conversions for float and long double
+*/
+#define ISNAN(a) (a!=a)
+
 
 #define SWAP(a,b) {temp = a; a=b; b=temp;} 
  
 static void findFirstK(double *array, size_t left, size_t right, size_t k)
 {
         while (right > left) {
-                mwIndex pivotIndex = (left + right) / 2;
+                size_t pivotIndex = (left + right) / 2;
 
 		/* partition */
 	        double temp;
 	        double pivotValue = array[pivotIndex];
         	SWAP(array[pivotIndex], array[right]);
         	pivotIndex = left;
-	        for (mwIndex i = left; i <= right - 1; ++i ) {
+	        for (size_t i = left; i <= right - 1; ++i ) {
         	        // if (array[i] <= pivotValue || isnan(pivotValue)) // needed if data contains NaN's 
         	        if (array[i] <= pivotValue) 
         	        {
@@ -93,8 +99,8 @@ static void findFirstK(double *array, size_t left, size_t right, size_t k)
 
 void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const mxArray *PInputs[]) 
 {
-    	mwIndex k, n;	// running indices 
-    	mwSize  szK, szX;
+    	size_t k, n;	// running indices 
+    	size_t szK, szX;
     	double 	*T,*X,*Y,*K; 
     	char flag = 0; // default value 
 
@@ -112,7 +118,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	}  
 	else if (PInputCount == 3) {
 		// check value of flag
-		mwSize N = mxGetNumberOfElements(PInputs[2]); 
+		size_t N = mxGetNumberOfElements(PInputs[2]); 
 		if (N>1)
 		        mexErrMsgTxt("KTH_ELEMENT: flag argument must be scalar\n");
 		else if (N==1) {
@@ -180,7 +186,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		else  {
 			/* do not copy NaN's */
 			for (k=0,n=0; k < szX; k++) {
-				if (!isnan(X[k])) T[n++]=X[k]; 
+				if (!ISNAN(X[k])) T[n++]=X[k]; 
 			}
 			szX = n; 
 		}	

@@ -122,7 +122,8 @@ int str2val(char *s, double *r, double *i)
 			return(2); 
 		}
 	}
-	else if (*endptr && !isspace(*endptr)) {
+	else //if (*endptr && !isspace(*endptr)) 
+	{
 		// conversion failed 
 		return(0); 
 	}
@@ -131,9 +132,9 @@ int str2val(char *s, double *r, double *i)
 
 
 void mexFunction(
-    int           nlhs,           /* number of expected outputs */
+    mwSize          nlhs,           /* number of expected outputs */
     mxArray       *plhs[],        /* array of pointers to output arguments */
-    int           nrhs,           /* number of inputs */
+    mwSize          nrhs,           /* number of inputs */
     const mxArray *prhs[]         /* array of pointers to input arguments */
 )
 
@@ -200,7 +201,7 @@ void mexFunction(
 			}
 			else {
 				int typ = str2val(s, o+k, &ival);
-				if ((nlhs>2) && (typ==0)) mxSetCell(plhs[2], k, mxCreateString(s));
+				if ((nlhs>2) && (typ==0)) mxSetCell(plhs[2], (mwSize)k, mxCreateString(s));
 				if ((nlhs>1) && (typ> 0)) v[k] = 0;
 				if (typ==2) {
 					if (mxGetPi(plhs[0])==NULL) {

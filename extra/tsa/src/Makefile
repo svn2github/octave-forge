@@ -42,7 +42,7 @@ W64_LIBS += $(LDLIBS_W64)libblas.a
 CC  	= gcc
 CXX 	= g++
 CFLAGS 	= -Wall -Wextra -Wconversion -O2 -fPIC 
-OCTMEX	= mkoctfile$(OCTAVE_VERSION) --mex
+OCTMEX	= mkoctfile$(OCTAVE_VERSION) --mex -lgomp
 RM      = rm
 
 ifneq (Darwin,$(shell uname))

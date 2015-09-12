@@ -190,10 +190,10 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	POutput[0] = mxCreateDoubleMatrix(mxGetM(PInputs[1]),mxGetN(PInputs[1]),mxREAL);
 	Y = (double*) mxGetData(POutput[0]);
 	for (k=0; k < szK; k++) {
-		n = K[k]-1;       // convert to zero-based indexing 
-		if (n >= szX || n < 0)
+		if (K[k] > szX || K[k] < 1)
 			Y[k] = 0.0/0.0;	// NaN: result undefined
 		else {
+        		n = (size_t)(K[k]-1);       // convert to zero-based indexing, round towards 0 
         		findFirstK(T, 0, szX-1, n);
         		Y[k] = T[n];
 		}	

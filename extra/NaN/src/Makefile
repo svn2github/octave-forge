@@ -34,7 +34,7 @@ MKOCTFILE ?= mkoctfile$(OCTAVE_VERSION)
 CC      = gcc
 CXX     = g++
 CFLAGS += -fopenmp -Wall -Wextra -Wconversion -O2
-OCTMEX	= $(MKOCTFILE) --mex
+OCTMEX	= $(MKOCTFILE) --mex -lgomp
 RM      = rm
 
 # Support Debian Hardening flags

@@ -362,9 +362,9 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			cc += z*W[k];
 			nn += W[k];
 		}	
-		CC[i] = cc; 
+		CC[i] = (typeof(*CC))cc; 
 		if (NN != NULL) 
-			NN[i] = nn; 
+			NN[i] = (typeof(*NN))nn; 
 	    }
 	    else /* no weights, all weights are 1 */
             #pragma omp for schedule(dynamic) nowait
@@ -386,9 +386,9 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			cc += z;
 			nn++;
 		}	
-		CC[i] = cc; 
+		CC[i] = (typeof(*CC))cc; 
 		if (NN != NULL) 
-			NN[i] = (double)nn; 
+			NN[i] = (typeof(*NN))nn; 
 	    }
 	else // if (X0==Y0) && (cX==cY)
 		/******** X==Y, output is symetric *******/	
@@ -416,11 +416,11 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			nn += W[k];
 		}	
 		size_t j = jj + ii*cX;
-		CC[i] = cc; 
-		CC[j] = cc; 
+		CC[i] = (typeof(*CC))cc; 
+		CC[j] = (typeof(*CC))cc; 
 		if (NN != NULL) {
-			NN[i] = nn; 
-			NN[j] = nn; 
+			NN[i] = (typeof(*NN))nn; 
+			NN[j] = (typeof(*NN))nn; 
 		}	
 	    }
 	    else /* no weights, all weights are 1 */
@@ -447,11 +447,11 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			nn++;
 		}	
 		size_t j = jj + ii*cX;
-		CC[i] = cc; 
-		CC[j] = cc; 
+		CC[i] = (typeof(*CC))cc; 
+		CC[j] = (typeof(*CC))cc; 
 		if (NN != NULL) {
-			NN[i] = (double)nn; 
-			NN[j] = (double)nn; 
+			NN[i] = (typeof(*NN))nn; 
+			NN[j] = (typeof(*NN))nn; 
 		}	
 	    }
 
@@ -500,9 +500,9 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			rn= (t-nn)-y;
 			nn= t; 
 		}	
-		CC[i] = cc; 
+		CC[i] = (typeof(*CC))cc; 
 		if (NN != NULL) 
-			NN[i] = nn; 
+			NN[i] = (typeof(*NN))nn; 
 	    }
 	    else /* no weights, all weights are 1 */
             #pragma omp for schedule(dynamic) nowait
@@ -531,9 +531,9 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 
 			nn++;
 		}	
-		CC[i] = cc; 
+		CC[i] = (typeof(*CC))cc; 
 		if (NN != NULL) 
-			NN[i] = (double)nn; 
+			NN[i] = (typeof(*NN))nn; 
 	    }
 	else // if (X0==Y0) && (cX==cY)
 		/******** X==Y, output is symetric *******/	
@@ -573,11 +573,11 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			nn= t; 
 		}	
 		size_t j = jj + ii*cX;
-		CC[i] = cc; 
-		CC[j] = cc; 
+		CC[i] = (typeof(*CC))cc; 
+		CC[j] = (typeof(*CC))cc; 
 		if (NN != NULL) {
-			NN[i] = nn; 
-			NN[j] = nn; 
+			NN[i] = (typeof(*NN))nn; 
+			NN[j] = (typeof(*NN))nn; 
 		}	
 	    }
 	    else /* no weights, all weights are 1 */
@@ -611,11 +611,11 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			nn++;
 		}	
 		size_t j = jj + ii*cX;
-		CC[i] = cc; 
-		CC[j] = cc; 
+		CC[i] = (typeof(*CC))cc; 
+		CC[j] = (typeof(*CC))cc; 
 		if (NN != NULL) {
-			NN[i] = (double)nn; 
-			NN[j] = (double)nn; 
+			NN[i] = (typeof(*NN))nn; 
+			NN[j] = (typeof(*NN))nn; 
 		}	
 	    }
     }

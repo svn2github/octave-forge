@@ -161,6 +161,8 @@ int compare(const void *a, const void *b) {
 			else if (f1>f2) z = 1; 
 			break;
 			}
+		default:
+			mexErrMsgTxt("unsupported input type");	
 		}
 		i++;	
 		ix1 += Sort.Stride;
@@ -234,8 +236,6 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		mexErrMsgTxt("Error HISTO.MEX: input must be vector or matrix (no more than two dimensions)");
 
 	size_t n  = SZ[0];
-	size_t sz = 1;
-	char flag = 0; 
 	
 	const char *fnames[] = {"datatype","X","H"};
 	mxArray	*HIS = mxCreateStructMatrix(1, 1, 3, fnames);
@@ -335,7 +335,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			int8_t *x;
 			x = (int8_t*)mxGetData(X);
 			for (k=0; k<0x0100; k++)
-				x[k]=k-128;
+				x[k]=(int8_t)(k-128);
 
 			x = (int8_t*)mxGetData(PInputs[0]);
 			double *h = (double*)mxGetData(H);
@@ -353,7 +353,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			mxSetField(HIS,0,"X",X);
 
 			uint8_t *x = (uint8_t*)mxGetData(X);
-			for (k=0; k<0x0100; k++) x[k]=k;
+			for (k=0; k<0x0100; k++) x[k]=(uint8_t)k;
 
 			x = (uint8_t*)mxGetData(PInputs[0]);
 			double *h = (double*)mxGetData(H);
@@ -373,7 +373,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			double *h = (double*)mxGetData(H);
 			int16_t *x = (int16_t*)mxGetData(X);
 			for (k=0; k<0x10000; k++)
-				x[k]=k-0x8000;
+				x[k]=(int16_t)(k-0x8000);
 
 			x = (int16_t*)mxGetData(PInputs[0]);
 			for (k=0; k<SZ[0]*SZ[1]; k++)
@@ -392,7 +392,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			double *h = (double*)mxGetData(H);
 			int16_t *x = (int16_t*)mxGetData(X);
 			for (k=0; k<0x10000; k++)
-				x[k]=k-0x8000;
+				x[k]=(uint16_t)(k-0x8000);
 
 			uint16_t *x16 = (uint16_t*)mxGetData(PInputs[0]);
 			for (k=0; k<SZ[0]*SZ[1]; k++)
@@ -410,12 +410,13 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			mxSetField(HIS,0,"H",H);
 			mxSetField(HIS,0,"X",X);
 
+			/*
 			double *h = (double*)mxGetData(H);
 			int16_t *x = (int16_t*)mxGetData(X);
 
 			for (n=0; n<SZ[1]; n++) {
 			}	
-
+			*/
 			}
 		} // end switch 	
 	}

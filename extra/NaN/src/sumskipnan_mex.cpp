@@ -327,7 +327,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 
                         /* copy to output */
                		for (j=0; j<D1; j++) {
-				LOutputSum[ix0+j] = LongOutputSum[ix0+j]; 
+				LOutputSum[ix0+j] = (typeof(*LOutputSum))LongOutputSum[ix0+j]; 
 			}
                	}		
 	}
@@ -371,8 +371,8 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 
                                 /* copy to output */
 	               	for (j=0; j<D1; j++) {
-				LOutputSum[ix0+j]   = LongOutputSum[ix0+j]; 
-				LOutputCount[ix0+j] = LongOutputCount[ix0+j]; 
+				LOutputSum[ix0+j]   = (typeof(*LOutputSum))LongOutputSum[ix0+j]; 
+				LOutputCount[ix0+j] = (typeof(*LOutputCount))LongOutputCount[ix0+j]; 
 	       		}	// 	end else 
                	}		
 	}
@@ -390,7 +390,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 					long double x = *LInput;
         				if (!isnan(x)) {
 						LongOutputCount[ix2] += W[j]; 
-						double t = W[j]*x;
+						long double t = W[j]*x;
 						LongOutputSum[ix2]   += t; 
 						LongOutputSum2[ix2]  += x*t; 
 					}
@@ -419,9 +419,9 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 
                        /* copy to output */
 	        	for (j=0; j<D1; j++) {
-				LOutputSum[ix0+j]   = LongOutputSum[ix0+j]; 
-				LOutputCount[ix0+j] = LongOutputCount[ix0+j]; 
-				LOutputSum2[ix0+j]  = LongOutputSum2[ix0+j]; 
+				LOutputSum[ix0+j]   = (typeof(*LOutputSum))LongOutputSum[ix0+j]; 
+				LOutputCount[ix0+j] = (typeof(*LOutputCount))LongOutputCount[ix0+j]; 
+				LOutputSum2[ix0+j]  = (typeof(*LOutputSum2))LongOutputSum2[ix0+j]; 
 			}
                	}		
 	}
@@ -500,7 +500,7 @@ inline void __sumskipnan2w__(double *data, size_t Ni, double *s, double *No, cha
 			W++;
 		}
 		while (data < end);
-	        *No = count;
+	        *No = (typeof(*No))count;
 	} else {
 		// w/o weight vector 
 		size_t countI = 0;
@@ -518,13 +518,13 @@ inline void __sumskipnan2w__(double *data, size_t Ni, double *s, double *No, cha
 			data++;	// stride=1
 		}
 		while (data < end);
-	        *No = (double)countI;
+	        *No = (typeof(*No))countI;
 	}	
 	
 #ifndef NO_FLAG
 	if (flag && (flag_anyISNAN != NULL)) *flag_anyISNAN = 1; 
 #endif
-	*s  = sum;
+	*s  = (typeof(*s))sum;
 
 }
 
@@ -556,7 +556,7 @@ inline void __sumskipnan3w__(double *data, size_t Ni, double *s, double *s2, dou
 			W++;
 		}
 		while (data < end);
-	        *No = count;
+	        *No = (typeof(*No))count;
 	} else {	
 		// w/o weight vector 
 		size_t countI = 0;
@@ -574,14 +574,14 @@ inline void __sumskipnan3w__(double *data, size_t Ni, double *s, double *s2, dou
 			data++;	// stride=1
 		}
 		while (data < end);
-	        *No = (double)countI;
+	        *No = (typeof(*No))countI;
 	}
 	
 #ifndef NO_FLAG
 	if (flag && (flag_anyISNAN != NULL)) *flag_anyISNAN = 1; 
 #endif
-	*s  = sum;
-	*s2 = msq; 
+	*s  = (typeof(*s))sum;
+	*s2 = (typeof(*s2))msq; 
 }
 
 inline void __sumskipnan2wr__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W)
@@ -610,7 +610,7 @@ inline void __sumskipnan2wr__(double *data, size_t Ni, double *s, double *No, ch
 			W++;
 		}
 		while (data < end);
-	        *No = count;
+	        *No = (typeof(*No))count;
 	} else {
 		// w/o weight vector 
 		size_t countI = 0;
@@ -628,13 +628,13 @@ inline void __sumskipnan2wr__(double *data, size_t Ni, double *s, double *No, ch
 			data++;	// stride=1
 		}
 		while (data < end);
-	        *No = (double)countI;
+	        *No = (typeof(*No))countI;
 	}	
 	
 #ifndef NO_FLAG
 	if (flag && (flag_anyISNAN != NULL)) *flag_anyISNAN = 1; 
 #endif
-	*s  = sum;
+	*s  = (typeof(*s))sum;
 
 }
 
@@ -684,14 +684,14 @@ inline void __sumskipnan3wr__(double *data, size_t Ni, double *s, double *s2, do
 			data++;	// stride=1
 		}
 		while (data < end);
-	        *No = (double)countI;
+	        *No = (typeof(*No))countI;
 	}
 	
 #ifndef NO_FLAG
 	if (flag && (flag_anyISNAN != NULL)) *flag_anyISNAN = 1; 
 #endif
-	*s  = sum;
-	*s2 = msq; 
+	*s  = (typeof(*s))sum;
+	*s2 = (typeof(*s2))msq; 
 }
 
 
@@ -743,7 +743,7 @@ inline void __sumskipnan2we__(double *data, size_t Ni, double *s, double *No, ch
 			W++;
 		}
 		while (data < end);
-	        *No = count;
+	        *No = (typeof(*No))count;
 	} else {
 		// w/o weight vector 
 		size_t countI = 0;
@@ -767,13 +767,13 @@ inline void __sumskipnan2we__(double *data, size_t Ni, double *s, double *No, ch
 			data++;	// stride=1
 		}
 		while (data < end);
-	        *No = (double)countI;
+	        *No = (typeof(*No))countI;
 	}	
 	
 #ifndef NO_FLAG
 	if (flag && (flag_anyISNAN != NULL)) *flag_anyISNAN = 1; 
 #endif
-	*s  = sum;
+	*s  = (typeof(*s))sum;
 
 }
 
@@ -821,7 +821,7 @@ inline void __sumskipnan3we__(double *data, size_t Ni, double *s, double *s2, do
 			W++;
 		}
 		while (data < end);
-	        *No = count;
+	        *No = (typeof(*No))count;
 	} else {	
 		// w/o weight vector 
 		size_t countI = 0;
@@ -850,14 +850,14 @@ inline void __sumskipnan3we__(double *data, size_t Ni, double *s, double *s2, do
 			data++;	// stride=1
 		}
 		while (data < end);
-	        *No = (double)countI;
+	        *No = (typeof(*No))countI;
 	}
 	
 #ifndef NO_FLAG
 	if (flag && (flag_anyISNAN != NULL)) *flag_anyISNAN = 1; 
 #endif
-	*s  = sum;
-	*s2 = msq; 
+	*s  = (typeof(*s))sum;
+	*s2 = (typeof(*s))msq; 
 }
 
 inline void __sumskipnan2wer__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W)
@@ -897,7 +897,7 @@ inline void __sumskipnan2wer__(double *data, size_t Ni, double *s, double *No, c
 			W++;
 		}
 		while (data < end);
-	        *No = count;
+	        *No = (typeof(*No))count;
 	} else {
 		// w/o weight vector 
 		size_t countI = 0;
@@ -921,13 +921,13 @@ inline void __sumskipnan2wer__(double *data, size_t Ni, double *s, double *No, c
 			data++;	// stride=1
 		}
 		while (data < end);
-	        *No = (double)countI;
+	        *No = (typeof(*No))countI;
 	}	
 	
 #ifndef NO_FLAG
 	if (flag && (flag_anyISNAN != NULL)) *flag_anyISNAN = 1; 
 #endif
-	*s  = sum;
+	*s  = (typeof(*s))sum;
 
 }
 
@@ -975,7 +975,7 @@ inline void __sumskipnan3wer__(double *data, size_t Ni, double *s, double *s2, d
 			W++;
 		}
 		while (data < end);
-	        *No = count;
+	        *No = (typeof(*No))count;
 	} else {	
 		// w/o weight vector 
 		size_t countI = 0;
@@ -1004,13 +1004,13 @@ inline void __sumskipnan3wer__(double *data, size_t Ni, double *s, double *s2, d
 			data++;	// stride=1
 		}
 		while (data < end);
-	        *No = (double)countI;
+	        *No = (typeof(*No))countI;
 	}
 	
 #ifndef NO_FLAG
 	if (flag && (flag_anyISNAN != NULL)) *flag_anyISNAN = 1; 
 #endif
-	*s  = sum;
-	*s2 = msq; 
+	*s  = (typeof(*s))sum;
+	*s2 = (typeof(*s))msq; 
 }
 

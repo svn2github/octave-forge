@@ -1,8 +1,11 @@
-2015-09-12: Release of NaN-tb v2.8.2
+2015-09-12: Release of NaN-tb v2.8.3
 
+- ready for gcc/g++ v5 
+- honor environment variables CC and CXX
 - fix installer issue on OpenSuse
 - support debian hardening flags
-- address serveral compiler warning
+- internal improvents (in type and macro usage)
+- address a number of compiler warnings
 - bug fixes 
 
 2015-07-06: Release of NaN-tb v2.8.1

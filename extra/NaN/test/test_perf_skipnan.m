@@ -1,7 +1,6 @@
 
 %% TEST_PERF_NANTB
 
-%	$Id$
 % 	Copyright (C) 2009,2010 by Alois Schloegl <alois.schloegl@gmail.com>
 %       This function is part of the NaN-toolbox
 %       http://pub.ist.ac.at/~schloegl/matlab/NaN/
@@ -33,7 +32,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Generate Test data
-y = randn(1e7,32);
+y = randn(4e5,32);
 
 flag=0; 
 N = 10; 	% repeat the tests 10 times

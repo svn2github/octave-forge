@@ -510,7 +510,7 @@ if present.
 				switch (typlist[k]) {
 				case 0xfb:
 					R[k] = mxCreateDoubleMatrix(M, 1, mxREAL);
-					for (size_t m = 0; m < M; m++) {
+					for (typeof(M) m = 0; m < M; m++) {
 						int8_t d = *(int8_t*)(data+bi[k]+m*bi[NS]);
 						((double*)mxGetData(R[k]))[m] = (d>100) ? NaN : d;
 					}
@@ -521,7 +521,7 @@ if present.
 						int16_t d = (int16_t) bswap_16(*(uint16_t*)(data+bi[k]+m*bi[NS]));
 						((double*)mxGetData(R[k]))[m] = (d>32740) ? NaN : d;
 					}
-					else for (size_t m = 0; m < M; m++) {
+					else for (typeof(M) m = 0; m < M; m++) {
 						int16_t d = *(int16_t*)(data+bi[k]+m*bi[NS]);
 						((double*)mxGetData(R[k]))[m] = (d>32740) ? NaN : d;
 					}
@@ -532,7 +532,7 @@ if present.
 						int32_t d = (int32_t)bswap_32(*(uint32_t*)(data+bi[k]+m*bi[NS]));
 						((double*)mxGetData(R[k]))[m] = (d>2147483620) ? NaN : d;
 					}
-					else for (size_t m = 0; m < M; m++) {
+					else for (typeof(M) m = 0; m < M; m++) {
 						int32_t d = *(int32_t*)(data+bi[k]+m*bi[NS]);
 						((double*)mxGetData(R[k]))[m] = (d>2147483620) ? NaN : d;
 					}
@@ -548,17 +548,17 @@ if present.
 					break;
 				case 0xff:
 					R[k] = mxCreateDoubleMatrix(M, 1, mxREAL);
-					if (flagSWAP) for (size_t m = 0; m < M; m++) {
+					if (flagSWAP) for (typeof(M) m = 0; m < M; m++) {
 						((uint64_t*)mxGetData(R[k]))[m] = bswap_64(*(uint64_t*)(data+bi[k]+m*bi[NS]));
 					}
-					else for (size_t m = 0; m < M; m++) {
+					else for (typeof(M) m = 0; m < M; m++) {
 						((uint64_t*)mxGetData(R[k]))[m] = *(uint64_t*)(data+bi[k]+m*bi[NS]);
 					}
 					break;
 				default:
 					R[k] =	mxCreateCellMatrix(M, 1);
 					size_t sz = typlist[k];
-					for (size_t m = 0; m < M; m++) {
+					for (typeof(M) m = 0; m < M; m++) {
 						memcpy(f, data+bi[k]+m*bi[NS], sz);
 						f[sz] = 0;
 						mxSetCell(R[k], m, mxCreateString(f));

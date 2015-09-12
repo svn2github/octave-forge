@@ -1,3 +1,10 @@
+2015-09-12: Release of NaN-tb v2.8.2
+
+- fix installer issue on OpenSuse
+- support debian hardening flags
+- address serveral compiler warning
+- bug fixes 
+
 2015-07-06: Release of NaN-tb v2.8.1
 
 - fix nantest to avoid crashing octave 4.0.0 on windows

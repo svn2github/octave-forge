@@ -31,8 +31,8 @@ GNUMEX64 = $(HOME)/bin/win64/gnumex
 # Instead of building "mex shortpath.c" and "mex uigetpath.c", I used empty m-functions within argout=argin; 
 ####################################################
 MKOCTFILE ?= mkoctfile$(OCTAVE_VERSION)
-CC      = gcc
-CXX     = g++
+CC      ?= gcc
+CXX     ?= g++
 CFLAGS += -fopenmp -Wall -Wextra -Wconversion -O2
 OCTMEX	= $(MKOCTFILE) --mex -lgomp
 RM      = rm
@@ -99,12 +99,12 @@ svm%_mex.$(MEX_EXT): svm%_mex.cpp svm.o svm_model_matlab.o
 svm_model_octave.o: svm_model_matlab.c 
 	env CC=$(CC) $(MKOCTFILE) -o "$@" -c "$<"
 svm_model_matlab.o: svm_model_matlab.c 
-	$(CC) $(CFLAGS) -I $(MATLABDIR)/extern/include -o "$@" -c "$<"  
+	$(CXX) $(CFLAGS) -I $(MATLABDIR)/extern/include -o "$@" -c "$<"  
 svm.o: svm.cpp
 	$(CC) $(CFLAGS) -c svm.cpp
 
 train.$(MEX_EXT) predict.$(MEX_EXT): train.c tron.o linear.o linear_model_matlab.c
-	$(CC) $(CFLAGS) -I $(MATLABDIR)/extern/include -c linear_model_matlab.c
+	$(CXX) $(CFLAGS) -I $(MATLABDIR)/extern/include -c linear_model_matlab.c
 	$(MATMEX)  -lblas train.c tron.o linear.o linear_model_matlab.o 
 	#$(MATMEX) -lblas predict.c tron.o linear.o linear_model_matlab.o
 train.mex predict.mex: train.c tron.o linear.o linear_model_matlab.c

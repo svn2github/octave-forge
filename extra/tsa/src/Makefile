@@ -39,8 +39,8 @@ W64_LIBS  = $(LDLIBS_W64)liblapack.a
 W32_LIBS += $(LDLIBS_W32)libblas.a
 W64_LIBS += $(LDLIBS_W64)libblas.a
 
-CC  	= gcc
-CXX 	= g++
+CC  	?= gcc
+CXX 	?= g++
 CFLAGS 	= -Wall -Wextra -Wconversion -O2 -fPIC 
 OCTMEX	= mkoctfile$(OCTAVE_VERSION) --mex -lgomp
 RM      = rm

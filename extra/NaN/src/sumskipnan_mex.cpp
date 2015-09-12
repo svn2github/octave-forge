@@ -52,6 +52,13 @@
 #include <stdint.h>
 #include "mex.h"
 
+/* 
+   math.h has isnan() defined for all sizes of floating point numbers, 
+   but c++ assumes isnan(double), causing possible conversions for float and long double
+*/
+#define ISNAN(a) (a!=a)
+
+
 inline void __sumskipnan2w__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W);
 inline void __sumskipnan3w__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN, double *W);
 inline void __sumskipnan2wr__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W);
@@ -301,7 +308,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 				// Inner LOOP: along dimensions < DIM
 				if (W) do {
 					long double x = *LInput;
-        				if (!isnan(x)) {
+        				if (!ISNAN(x)) {
 						LongOutputSum[ix2]   += W[j]*x; 
 					}
 #ifndef NO_FLAG
@@ -313,7 +320,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 				} while (ix2 != (l+1)*D1);
 				else do {
 					long double x = *LInput;
-        				if (!isnan(x)) {
+        				if (!ISNAN(x)) {
 						LongOutputSum[ix2]   += x; 
 					}
 #ifndef NO_FLAG
@@ -343,7 +350,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 				// Inner LOOP: along dimensions < DIM
 				if (W) do {
 					long double x = *LInput;
-        				if (!isnan(x)) {
+        				if (!ISNAN(x)) {
 						LongOutputCount[ix2] += W[j]; 
 						LongOutputSum[ix2]   += W[j]*x; 
 					}
@@ -356,7 +363,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 				} while (ix2 != (l+1)*D1);
 				else do {
 					long double x = *LInput;
-        				if (!isnan(x)) {
+        				if (!ISNAN(x)) {
 						LongOutputCount[ix2] += 1.0; 
 						LongOutputSum[ix2]   += x; 
 					}
@@ -388,7 +395,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 				// Inner LOOP: along dimensions < DIM
 				if (W) do {
 					long double x = *LInput;
-        				if (!isnan(x)) {
+        				if (!ISNAN(x)) {
 						LongOutputCount[ix2] += W[j]; 
 						long double t = W[j]*x;
 						LongOutputSum[ix2]   += t; 
@@ -403,7 +410,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 				} while (ix2 != (l+1)*D1);
 				else do {
 					long double x = *LInput;
-        				if (!isnan(x)) {
+        				if (!ISNAN(x)) {
 						LongOutputCount[ix2] += 1.0; 
 						LongOutputSum[ix2]   += x; 
 						LongOutputSum2[ix2]  += x*x; 
@@ -486,7 +493,7 @@ inline void __sumskipnan2w__(double *data, size_t Ni, double *s, double *No, cha
 		long double count = 0.0;
 		do {
 			long double x = *data;
-        		if (!isnan(x))
+        		if (!ISNAN(x))
 			{
 				count += *W; 
 				sum   += *W*x;
@@ -506,7 +513,7 @@ inline void __sumskipnan2w__(double *data, size_t Ni, double *s, double *No, cha
 		size_t countI = 0;
 		do {
 			long double x = *data;
-        		if (!isnan(x))
+        		if (!ISNAN(x))
 			{
 				countI++; 
 				sum += x; 
@@ -542,7 +549,7 @@ inline void __sumskipnan3w__(double *data, size_t Ni, double *s, double *s2, dou
 		long double count = 0.0;
 		do {
 			long double x = *data;
-        		if (!isnan(x)) {
+        		if (!ISNAN(x)) {
 				count += *W;
 				long double t = *W*x; 
 				sum += t; 
@@ -562,7 +569,7 @@ inline void __sumskipnan3w__(double *data, size_t Ni, double *s, double *s2, dou
 		size_t countI = 0;
 		do {
 			long double x = *data;
-        		if (!isnan(x)) {
+        		if (!ISNAN(x)) {
 				countI++; 
 				sum += x; 
 				msq += x*x; 
@@ -596,7 +603,7 @@ inline void __sumskipnan2wr__(double *data, size_t Ni, double *s, double *No, ch
 		double count = 0.0;
 		do {
 			double x = *data;
-        		if (!isnan(x))
+        		if (!ISNAN(x))
 			{
 				count += *W; 
 				sum   += *W*x;
@@ -616,7 +623,7 @@ inline void __sumskipnan2wr__(double *data, size_t Ni, double *s, double *No, ch
 		size_t countI = 0;
 		do {
 			double x = *data;
-        		if (!isnan(x))
+        		if (!ISNAN(x))
 			{
 				countI++; 
 				sum += x; 
@@ -652,7 +659,7 @@ inline void __sumskipnan3wr__(double *data, size_t Ni, double *s, double *s2, do
 		double count = 0.0;
 		do {
 			double x = *data;
-        		if (!isnan(x)) {
+        		if (!ISNAN(x)) {
 				count += *W;
 				double t = *W*x; 
 				sum += t; 
@@ -672,7 +679,7 @@ inline void __sumskipnan3wr__(double *data, size_t Ni, double *s, double *s2, do
 		size_t countI = 0;
 		do {
 			double x = *data;
-        		if (!isnan(x)) {
+        		if (!ISNAN(x)) {
 				countI++; 
 				sum += x; 
 				msq += x*x; 
@@ -720,7 +727,7 @@ inline void __sumskipnan2we__(double *data, size_t Ni, double *s, double *No, ch
 		do {
 			long double x = *data;
 		        long double t,y; 
-        		if (!isnan(x))
+        		if (!ISNAN(x))
 			{
 				//count += *W; [1]
         			y = *W-rn;
@@ -751,7 +758,7 @@ inline void __sumskipnan2we__(double *data, size_t Ni, double *s, double *No, ch
 		do {
 			long double x = *data;
 		        long double t,y; 
-        		if (!isnan(x))
+        		if (!ISNAN(x))
 			{
 				countI++; 
 				// sum += x; [1]  
@@ -793,7 +800,7 @@ inline void __sumskipnan3we__(double *data, size_t Ni, double *s, double *s2, do
 		do {
 			long double x = *data;
 		        long double t,y; 
-        		if (!isnan(x)) {
+        		if (!ISNAN(x)) {
 				//count += *W; [1]
         			y = *W-rn;
         			t = count+y;
@@ -829,7 +836,7 @@ inline void __sumskipnan3we__(double *data, size_t Ni, double *s, double *s2, do
 		do {
 			long double x = *data;
 		        long double t,y; 
-        		if (!isnan(x)) {
+        		if (!ISNAN(x)) {
 				countI++; 
 				//sum   += x; [1]
         			y = x-rc;
@@ -874,7 +881,7 @@ inline void __sumskipnan2wer__(double *data, size_t Ni, double *s, double *No, c
 		do {
 			double x = *data;
 		        double t,y; 
-        		if (!isnan(x))
+        		if (!ISNAN(x))
 			{
 				//count += *W; [1]
         			y = *W-rn;
@@ -905,7 +912,7 @@ inline void __sumskipnan2wer__(double *data, size_t Ni, double *s, double *No, c
 		do {
 			double x = *data;
 		        double t,y; 
-        		if (!isnan(x))
+        		if (!ISNAN(x))
 			{
 				countI++; 
 				// sum += x; [1]  
@@ -947,7 +954,7 @@ inline void __sumskipnan3wer__(double *data, size_t Ni, double *s, double *s2, d
 		do {
 			double x = *data;
 		        double t,y; 
-        		if (!isnan(x)) {
+        		if (!ISNAN(x)) {
 				//count += *W; [1]
         			y = *W-rn;
         			t = count+y;
@@ -983,7 +990,7 @@ inline void __sumskipnan3wer__(double *data, size_t Ni, double *s, double *s2, d
 		do {
 			double x = *data;
 		        double t,y; 
-        		if (!isnan(x)) {
+        		if (!ISNAN(x)) {
 				countI++; 
 				//sum   += x; [1]
         			y = x-rc;

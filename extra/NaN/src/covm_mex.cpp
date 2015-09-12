@@ -29,7 +29,7 @@
 //
 // Output:
 // - CC = X' * sparse(diag(W)) * Y 	while NaN's are skipped
-// - NN = real(~isnan(X)')*sparse(diag(W))*real(~isnan(Y))   count of valid (non-NaN) elements
+// - NN = real(~ISNAN(X)')*sparse(diag(W))*real(~ISNAN(Y))   count of valid (non-NaN) elements
 //        computed more efficiently 
 //
 //    $Id$
@@ -48,6 +48,11 @@
 
 /*#define NO_FLAG*/
 
+/* 
+   math.h has isnan() defined for all sizes of floating point numbers, 
+   but c++ assumes isnan(double), causing possible conversions for float and long double 
+ */
+#define ISNAN(a) (a!=a)
 
 void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const mxArray *PInputs[]) 
 {
@@ -163,7 +168,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		w = W[k];
 		for (i=0; i<cX; i++) {
 			double x = X0[k+i*rX];
-			if (isnan(x)) {
+			if (ISNAN(x)) {
 #ifndef NO_FLAG
 				flag_isNaN = 1;
 #endif 
@@ -171,7 +176,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			}
 			for (j=0; j<cY; j++) {
 				double y = Y0[k+j*rY];
-				if (isnan(y)) {
+				if (ISNAN(y)) {
 #ifndef NO_FLAG
 					flag_isNaN = 1;
 #endif 
@@ -185,7 +190,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		}
 		else for (i=0; i<cX; i++) {
 			double x = X0[k+i*rX];
-			if (isnan(x)) {
+			if (ISNAN(x)) {
 #ifndef NO_FLAG
 				flag_isNaN = 1;
 #endif 
@@ -193,7 +198,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			}
 			for (j=0; j<cY; j++) {
 				double y = Y0[k+j*rY];
-				if (isnan(y)) {
+				if (ISNAN(y)) {
 #ifndef NO_FLAG
 					flag_isNaN = 1;
 #endif 
@@ -230,7 +235,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		size_t k; 
 		for (k=0; k<rX; k++) {
 			double z = X[k]*Y[k];
-			if (isnan(z)) {
+			if (ISNAN(z)) {
 #ifndef NO_FLAG
 				flag_isNaN = 1;
 #endif 
@@ -254,7 +259,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		size_t k; 
 		for (k=0; k<rX; k++) {
 			double z = X[k]*Y[k];
-			if (isnan(z)) {
+			if (ISNAN(z)) {
 #ifndef NO_FLAG
 				flag_isNaN = 1;
 #endif 
@@ -283,7 +288,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		size_t k; 
 		for (k=0; k<rX; k++) {
 			double z = X[k]*Y[k];
-			if (isnan(z)) {
+			if (ISNAN(z)) {
 #ifndef NO_FLAG
 				flag_isNaN = 1;
 #endif 
@@ -314,7 +319,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		size_t k; 
 		for (k=0; k<rX; k++) {
 			double z = X[k]*Y[k];
-			if (isnan(z)) {
+			if (ISNAN(z)) {
 #ifndef NO_FLAG
 				flag_isNaN = 1;
 #endif 
@@ -353,7 +358,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		size_t k; 
 		for (k=0; k<rX; k++) {
 			long double z = ((long double)X[k])*Y[k];
-			if (isnan(z)) {
+			if (ISNAN(z)) {
 #ifndef NO_FLAG
 				flag_isNaN = 1;
 #endif 
@@ -377,7 +382,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		size_t k; 
 		for (k=0; k<rX; k++) {
 			long double z = ((long double)X[k])*Y[k];
-			if (isnan(z)) {
+			if (ISNAN(z)) {
 #ifndef NO_FLAG
 				flag_isNaN = 1;
 #endif 
@@ -406,7 +411,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		size_t k; 
 		for (k=0; k<rX; k++) {
 			long double z = ((long double)X[k])*Y[k];
-			if (isnan(z)) {
+			if (ISNAN(z)) {
 #ifndef NO_FLAG
 				flag_isNaN = 1;
 #endif 
@@ -437,7 +442,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		size_t k; 
 		for (k=0; k<rX; k++) {
 			long double z = ((long double)X[k])*Y[k];
-			if (isnan(z)) {
+			if (ISNAN(z)) {
 #ifndef NO_FLAG
 				flag_isNaN = 1;
 #endif 
@@ -482,7 +487,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		for (k=0; k<rX; k++) {
 		        long double t,y; 
 			long double z = ((long double)X[k])*Y[k];
-			if (isnan(z)) {
+			if (ISNAN(z)) {
 #ifndef NO_FLAG
 				flag_isNaN = 1;
 #endif 
@@ -517,7 +522,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		for (k=0; k<rX; k++) {
 		        long double t,y; 
 			long double z = ((long double)X[k])*Y[k];
-			if (isnan(z)) {
+			if (ISNAN(z)) {
 #ifndef NO_FLAG
 				flag_isNaN = 1;
 #endif 
@@ -554,7 +559,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		for (k=0; k<rX; k++) {
 		        long double t,y; 
 			long double z = ((long double)X[k])*Y[k];
-			if (isnan(z)) {
+			if (ISNAN(z)) {
 #ifndef NO_FLAG
 				flag_isNaN = 1;
 #endif 
@@ -596,7 +601,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		for (k=0; k<rX; k++) {
 		        long double t,y; 
 			long double z = ((long double)X[k])*Y[k];
-			if (isnan(z)) {
+			if (ISNAN(z)) {
 #ifndef NO_FLAG
 				flag_isNaN = 1;
 #endif 
@@ -645,7 +650,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		for (k=0; k<rX; k++) {
 		        double t,y; 
 			double z = X[k]*Y[k];
-			if (isnan(z)) {
+			if (ISNAN(z)) {
 #ifndef NO_FLAG
 				flag_isNaN = 1;
 #endif 
@@ -680,7 +685,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		for (k=0; k<rX; k++) {
 		        double t,y; 
 			double z = X[k]*Y[k];
-			if (isnan(z)) {
+			if (ISNAN(z)) {
 #ifndef NO_FLAG
 				flag_isNaN = 1;
 #endif 
@@ -717,7 +722,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		for (k=0; k<rX; k++) {
 		        double t,y; 
 			double z = X[k]*Y[k];
-			if (isnan(z)) {
+			if (ISNAN(z)) {
 #ifndef NO_FLAG
 				flag_isNaN = 1;
 #endif 
@@ -759,7 +764,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		for (k=0; k<rX; k++) {
 		        double t,y; 
 			double z = X[k]*Y[k];
-			if (isnan(z)) {
+			if (ISNAN(z)) {
 #ifndef NO_FLAG
 				flag_isNaN = 1;
 #endif 

@@ -830,7 +830,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
     		case mxSTRUCT_CLASS:
 #endif
     		default: 
-    			mexPrintf("Type of 3rd input argument cannot be used to return status of NaN occurence.");
+    			mexPrintf("Type of 3rd input argument cannot be used to return status of NaN occurrence.");
 		}
 	}
 #endif

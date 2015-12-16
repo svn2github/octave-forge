@@ -15,8 +15,7 @@ function Q=trimmean(Y,p,DIM)
 % [1] http://www.fifi.org/doc/gnumeric-doc/html/C/gnumeric-trimmean.html
 
 
-%	$Id$
-%	Copyright (C) 2009,2010,2011 by Alois Schloegl <alois.schloegl@gmail.com>	
+%	Copyright (C) 2009,2010,2011 by Alois Schloegl <alois.schloegl@ist.ac.at>
 %       This function is part of the NaN-toolbox
 %       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
@@ -64,7 +63,7 @@ else
 			for m=1:D2,
 				n  = floor(N*p(m)/2);
 			        f  = sum(t(1+n:N-n))/(N-2*n);
-				Q(xo + m*D1) = f;
+				Q(xo + 1 + (m-1)*D1) = f;
 			end; 
 		end;
 	end;

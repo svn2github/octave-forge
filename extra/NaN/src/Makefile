@@ -48,9 +48,9 @@ endif
 ifneq (Darwin,$(shell uname)) 
 CFLAGS      += -fopenmp 
 MEX_OPTION  += -lgomp 
+MEX_OPTION  += CC\#$(CXX) CXX\#$(CXX) CFLAGS\#"$(CFLAGS) " CXXFLAGS\#"$(CFLAGS) "
 endif 
  
-MEX_OPTION  += CC\#$(CXX) CXX\#$(CXX) CFLAGS\#"$(CFLAGS) " CXXFLAGS\#"$(CFLAGS) "
 MATMEX      = $(MATLABDIR)/bin/mex $(MEX_OPTION)
 
 PROGS = histo_mex.mex covm_mex.mex kth_element.mex sumskipnan_mex.mex str2array.mex train.mex svmtrain_mex.mex svmpredict_mex.mex xptopen.mex 

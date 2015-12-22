@@ -54,6 +54,10 @@
  */
 #define ISNAN(a) (a!=a)
 
+#ifndef typeof
+#define typeof __typeof__
+#endif
+
 void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const mxArray *PInputs[]) 
 {
     	double 		*X0=NULL, *Y0=NULL, *W=NULL;

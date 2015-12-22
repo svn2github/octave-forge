@@ -63,6 +63,10 @@ SPSS file format
 #include <time.h>
 #include "mex.h"
 
+#ifndef typeof
+#define typeof __typeof__
+#endif
+
 #ifdef tmwtypes_h
   #if (MX_API_VER<=0x07020000)
     typedef int mwSize;

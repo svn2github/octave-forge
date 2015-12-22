@@ -58,6 +58,9 @@
 */
 #define ISNAN(a) (a!=a)
 
+#ifndef typeof
+#define typeof __typeof__
+#endif
 
 inline void __sumskipnan2w__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W);
 inline void __sumskipnan3w__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN, double *W);

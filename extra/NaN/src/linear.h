@@ -63,7 +63,7 @@ struct parameter
 struct model
 {
 	struct parameter param;
-	int nr_class;		/* number of classes */
+	unsigned nr_class;		/* number of classes */
 	int nr_feature;
 	double *w;
 	int *label;		/* label of each class */

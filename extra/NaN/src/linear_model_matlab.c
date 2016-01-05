@@ -56,12 +56,12 @@ extern "C" {
 
 const char *model_to_matlab_structure(mxArray *plhs[], struct model *model_)
 {
-	int i;
-	int nr_w;
+	size_t i;
+	size_t nr_w;
 	double *ptr;
 	mxArray *return_model, **rhs;
 	int out_id = 0;
-	int n, w_size;
+	size_t n, w_size;
 
 	rhs = (mxArray **)mxMalloc(sizeof(mxArray *)*NUM_OF_RETURN_FIELD);
 
@@ -135,11 +135,11 @@ const char *model_to_matlab_structure(mxArray *plhs[], struct model *model_)
 
 const char *matlab_matrix_to_model(struct model *model_, const mxArray *matlab_struct)
 {
-	int i, num_of_fields;
-	int nr_w;
+	size_t i, num_of_fields;
+	size_t nr_w;
 	double *ptr;
 	int id = 0;
-	int n, w_size;
+	size_t n, w_size;
 	mxArray **rhs;
 
 	num_of_fields = mxGetNumberOfFields(matlab_struct);

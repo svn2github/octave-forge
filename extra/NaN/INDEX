@@ -9,5 +9,5 @@ A statistics and machine learning toolbox for data with and w/o missing values
  var mean sem spearman trimean tpdf tcdf tinv zscore
  flag_implicit_significance xcovf train_sc test_sc
  xval classify train_lda_sparse decovm gscatter mahal
- cdfplot hist2res fss cat2bin ttest ttest2 xptopen 
+ cdfplot hist2res fss cat2bin ttest ttest2 xptopen.m 
  bland_altman cumsumskipnan range

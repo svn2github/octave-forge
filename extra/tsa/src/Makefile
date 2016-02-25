@@ -53,7 +53,7 @@ endif
 MEX_OPTION  += CC\#$(CXX) CXX\#$(CXX) CFLAGS\#"$(CFLAGS)" CXXFLAGS\#"$(CFLAGS)"
 MATMEX      = $(MATLABDIR)/bin/mex $(MEX_OPTION)
 
-PROGS = covm_mex.mex sumskipnan_mex.mex #kalman_maar.mex
+PROGS       = covm_mex.mex sumskipnan_mex.mex histo_mex.mex
 
 ### per default only the mex-files for octave are built
 mex4o octave: $(PROGS)

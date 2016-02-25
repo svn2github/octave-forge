@@ -45,6 +45,10 @@ CFLAGS 	= -Wall -Wextra -Wconversion -O2 -fPIC
 OCTMEX	= mkoctfile$(OCTAVE_VERSION) --mex -lgomp
 RM      = rm
 
+# Support Debian Hardening flags
+# https://wiki.debian.org/HardeningWalkthrough#Handling_dpkg-buildflags_in_your_upstream_build_system
+CFLAGS += $(CPPFLAGS)
+
 ifneq (Darwin,$(shell uname))
 CFLAGS      += -fopenmp
 MEX_OPTION  += -lgomp
@@ -53,7 +57,7 @@ endif
 MEX_OPTION  += CC\#$(CXX) CXX\#$(CXX) CFLAGS\#"$(CFLAGS)" CXXFLAGS\#"$(CFLAGS)"
 MATMEX      = $(MATLABDIR)/bin/mex $(MEX_OPTION)
 
-PROGS       = covm_mex.mex sumskipnan_mex.mex histo_mex.mex
+PROGS       = covm_mex.mex sumskipnan_mex.mex histo_mex.mex #kalman_maar.mex
 
 ### per default only the mex-files for octave are built
 mex4o octave: $(PROGS)

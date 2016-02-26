@@ -1,3 +1,8 @@
+2015-02-26: Release of NaN-tb v3.0.1
+
+- fixes version number 
+  two digit version number like 3.0 cannot be used in Octave-forge
+
 2015-09-12: Release of NaN-tb v2.8.3
 
 - ready for gcc/g++ v5 

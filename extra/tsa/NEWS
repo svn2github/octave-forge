@@ -1,4 +1,10 @@
 
+2015-02-26: Release of TSA 4.4.1
+
+- fixes version number 
+  two digit version number like 4.4 does not work in Octave-forge
+
+
 2016-02-25: Release of TSA 4.3.4
 
 - include histo_mex (fixes bug 	http://savannah.gnu.org/bugs/?45977)

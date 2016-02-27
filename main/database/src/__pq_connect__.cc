@@ -20,6 +20,7 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 #include <octave/oct.h>
 
 #include "pq_connection.h"
+#include "error-helpers.h"
 
 
 // PKG_ADD: autoload ("__pq_connect__", "pq_interface.oct");
@@ -34,6 +35,8 @@ Text.\n\
 {
   std::string fname ("__pq_connect__");
 
+  octave_value retval;
+
   if (args.length () != 1)
     {
       print_usage ();
@@ -41,21 +44,16 @@ Text.\n\
       return octave_value_list ();
     }
 
-  std::string opt_string = args(0).string_value ();
+  std::string opt_string;
+  CHECK_ERROR (opt_string = args(0).string_value (), retval,
+               "%s: argument not a string", fname.c_str ());
 
-  if (error_state)
-    {
-      error ("%s: argument not a string", fname.c_str ());
+  octave_pq_connection *oct_pq_conn = new octave_pq_connection (opt_string);
 
-      return octave_value_list ();
-    }
+  if (! oct_pq_conn->get_rep ()->octave_pq_get_conn ())
+    error ("%s failed", fname.c_str ());
+  else
+    retval = oct_pq_conn;
 
-  octave_value retval (new octave_pq_connection (opt_string));
-
-  // We spare checking
-  // bool(octave_pq_connection_rep::octave_pq_get_conn()), since in
-  // case of false there was an error thrown, so destruction of the
-  // octave_pq_connection object will be caused by Octaves reference
-  // counting scheme.
   return retval;
 }

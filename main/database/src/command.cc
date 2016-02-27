@@ -27,6 +27,7 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 #include "command.h"
 #include "converters.h"
+#include "error-helpers.h"
 
 #define COPY_HEADER_SIZE 19
 
@@ -40,14 +41,14 @@ command::command (octave_pq_connection_rep &connection, std::string &cmd,
   if (! (cptr = conn.octave_pq_get_conn ()))
     {
       valid = 0;
-      error ("%s: connection not open", caller.c_str ());
+      c_verror ("%s: connection not open", caller.c_str ());
     }
 
   if (! PQsendQuery (cptr, cmd.c_str ()))
     {
       valid = 0;
-      error ("%s: could not dispatch command: %s", caller.c_str (),
-             PQerrorMessage (cptr));
+      c_verror ("%s: could not dispatch command: %s", caller.c_str (),
+                PQerrorMessage (cptr));
     }
   else
     {
@@ -64,10 +65,10 @@ command::command (octave_pq_connection_rep &connection, std::string &cmd,
   if (! (cptr = conn.octave_pq_get_conn ()))
     {
       valid = 0;
-      error ("%s: connection not open", caller.c_str ());
+      c_verror ("%s: connection not open", caller.c_str ());
     }
 
-  int npars = params.length ();
+  int npars = params.numel ();
 
   char *vals [npars];
   std::vector<oct_pq_dynvec_t> valsvec;
@@ -106,12 +107,14 @@ command::command (octave_pq_connection_rep &connection, std::string &cmd,
             }
           else
             {
-              std::string s = ptypes(i).string_value ();
-              if (error_state)
+              bool err;
+              std::string s;
+              SET_ERR (s = ptypes(i).string_value (), err);
+              if (err)
                 {
-                  error ("%s: parameter type specification no string",
-                         caller.c_str ());
                   valid = 0;
+                  c_verror ("%s: parameter type specification no string",
+                            caller.c_str ());
                   break;
                 }
 
@@ -146,10 +149,10 @@ command::command (octave_pq_connection_rep &connection, std::string &cmd,
 
             default:
               // should not get here
-              error ("%s: internal error, undefined type identifier",
-                     caller.c_str ());
-
               valid = 0;
+              c_verror ("%s: internal error, undefined type identifier",
+                        caller.c_str ());
+
             }
 
           if (! valid) break;
@@ -241,12 +244,12 @@ octave_value command::process_single_result (const std::string &infile,
         {
         case PGRES_BAD_RESPONSE:
           valid = 0;
-          error ("%s: server response not understood", caller.c_str ());
+          c_verror ("%s: server response not understood", caller.c_str ());
           break;
         case PGRES_FATAL_ERROR:
           valid = 0;
-          error ("%s: fatal error: %s", caller.c_str (),
-                 PQresultErrorMessage (res));
+          c_verror ("%s: fatal error: %s", caller.c_str (),
+                    PQresultErrorMessage (res));
           break;
         case PGRES_COMMAND_OK:
           retval = command_ok_handler ();
@@ -264,7 +267,7 @@ octave_value command::process_single_result (const std::string &infile,
           break;
         default:
           valid = 0;
-          error ("internal error, unexpected server response");
+          c_verror ("internal error, unexpected server response");
         }
 
       if (res) // could have been changed by a handler
@@ -294,13 +297,14 @@ octave_value command::tuples_ok_handler (void)
   octave_map types (dim_vector (1, nf));
 
   bool rtypes_given;
-  int l = rettypes.length ();
+  int l = rettypes.numel ();
   if (l > 0)
     {
       if (l != nf)
         {
-          error ("%s: wrong number of given returned types", caller.c_str ());
           valid = 0;
+          c_verror ("%s: wrong number of given returned types",
+                    caller.c_str ());
           return octave_value_list ();
         }
       rtypes_given = true;
@@ -324,25 +328,27 @@ octave_value command::tuples_ok_handler (void)
 
       if (rtypes_given) // for internal reading of system tables
         {
-          std::string type = rettypes(j).string_value ();
-          if (error_state)
-            error ("%s: could not convert given type to string",
-                   caller.c_str ());
-          else
-            conv = pgtype_from_spec (conn, type, oct_type);
-
-          if (error_state)
+          std::string type;
+          bool err;
+          SET_ERR (type = rettypes(j).string_value (), err);
+          if (err)
+            {
+              valid = 0;
+              c_verror ("%s: could not convert given type to string",
+                        caller.c_str ());
+              break;
+            }
+          else if (! (conv = pgtype_from_spec (conn, type, oct_type)))
             {
               valid = 0;
               break;
             }
         }
-      else
-        if (! (conv = pgtype_from_spec (conn, PQftype (res, j), oct_type)))
-          {
-            valid = 0;
-            break;
-          }
+      else if (! (conv = pgtype_from_spec (conn, PQftype (res, j), oct_type)))
+        {
+          valid = 0;
+          break;
+        }
 
       if (f)
         {
@@ -413,8 +419,8 @@ octave_value command::tuples_ok_handler (void)
 
                 default:
                   // should not get here
-                  error ("%s: internal error, undefined type identifier",
-                         caller.c_str ());
+                  c_verror ("%s: internal error, undefined type identifier",
+                            caller.c_str ());
 
                   valid = 0;
                 }
@@ -430,7 +436,7 @@ octave_value command::tuples_ok_handler (void)
         break;
     }
 
-  if (error_state)
+  if (! valid)
     return octave_value_list ();
   else
     {
@@ -456,18 +462,13 @@ octave_value command::copy_out_handler (const std::string &outfile)
     {
       // store unchecked output in file
 
-      if (outfile.empty ())
-        {
-          error ("no output file given");
-
-          valid = 0;
-
-          return retval;
-        }
-
       std::ofstream ostr (outfile.c_str (), std::ios_base::out);
       if (ostr.fail ())
-        error ("could not open output file %s", outfile.c_str ());
+        {
+          valid = 0;
+          c_verror ("could not open output file %s", outfile.c_str ());
+          return retval;
+        }
 
       char *data;
       int nb;
@@ -477,16 +478,19 @@ octave_value command::copy_out_handler (const std::string &outfile)
             {
               ostr.write (data, nb);
               if (ostr.bad ())
-                error ("write to file failed");
+                c_verror ("write to file failed");
             }
           PQfreemem (data);
         }
 
-      if (! error_state)
+      if (! ostr.bad ())
         ostr.close ();
 
       if (nb == -2)
-        error ("server error in copy-out: %s", PQerrorMessage (cptr));
+        {
+          valid = 0;
+          c_verror ("server error in copy-out: %s", PQerrorMessage (cptr));
+        }
       else
         {
           PQclear (res);
@@ -494,17 +498,24 @@ octave_value command::copy_out_handler (const std::string &outfile)
           if ((res = PQgetResult (cptr)))
             {
               if ((state = PQresultStatus (res)) == PGRES_FATAL_ERROR)
-                error ("server error in copy-out: %s", PQerrorMessage (cptr));
+                {
+                  valid = 0;
+                  c_verror ("server error in copy-out: %s",
+                            PQerrorMessage (cptr));
+                }
             }
           else
-            error ("unexpectedly got no result information");
+            {
+              valid = 0;
+              c_verror ("unexpectedly got no result information");
+            }
         }
     }
   else
-    error ("no output file given");
-
-  if (error_state)
-    valid = 0;
+    {
+      valid = 0;
+      c_verror ("no output file given");
+    }
 
   return octave_value (std::string ("copy out"));
 }
@@ -527,9 +538,9 @@ octave_value command::copy_in_handler (const std::string &infile,
 
       if (infile.empty ())
         {
-          error ("no input file given");
-
           valid = 0;
+
+          c_verror ("no input file given");
 
           return retval;
         }
@@ -537,11 +548,11 @@ octave_value command::copy_in_handler (const std::string &infile,
       std::ifstream istr (infile.c_str (), std::ios_base::in);
       if (istr.fail ())
         {
-          error ("could not open input file %s", infile.c_str ());
+          c_verror ("could not open input file %s", infile.c_str ());
 
           PQputCopyEnd (cptr, "could not open input file");
 
-          error ("server error: %s", PQerrorMessage (cptr));
+          c_verror ("server error: %s", PQerrorMessage (cptr));
 
           valid = 0;
 
@@ -554,7 +565,9 @@ octave_value command::copy_in_handler (const std::string &infile,
 
           if (istr.bad ())
             {
-              error ("could not read file %s", infile.c_str ());
+              valid = 0;
+
+              c_verror ("could not read file %s", infile.c_str ());
 
               break;
             }
@@ -565,7 +578,9 @@ octave_value command::copy_in_handler (const std::string &infile,
               if ((nb = istr.gcount ()) > 0)
                 if (PQputCopyData (cptr, buff, nb) == -1)
                   {
-                    error ("%s", PQerrorMessage (cptr));
+                    valid = 0;
+                    
+                    c_verror ("%s", PQerrorMessage (cptr));
 
                     break;
                   }
@@ -575,16 +590,19 @@ octave_value command::copy_in_handler (const std::string &infile,
 
       istr.close ();
 
-      if (error_state)
+      if (! valid)
         {
           PQputCopyEnd (cptr, "copy-in interrupted");
 
-          error ("%s", PQerrorMessage (cptr));
+          c_verror ("%s", PQerrorMessage (cptr));
         }
       else
         {
           if (PQputCopyEnd (cptr, NULL) == -1)
-            error ("%s", PQerrorMessage (cptr));
+            {
+              valid = 0;
+              c_verror ("%s", PQerrorMessage (cptr));
+            }
           else
             {
               PQclear (res);
@@ -592,10 +610,17 @@ octave_value command::copy_in_handler (const std::string &infile,
               if ((res = PQgetResult (cptr)))
                 {
                   if ((state = PQresultStatus (res)) == PGRES_FATAL_ERROR)
-                    error ("server error in copy-in: %s", PQerrorMessage (cptr));
+                    {
+                      valid = 0;
+                      c_verror ("server error in copy-in: %s",
+                                PQerrorMessage (cptr));
+                    }
                 }
               else
-                error ("unexpectedly got no result information");
+                {
+                  valid = 0;
+                  c_verror ("unexpectedly got no result information");
+                }
             }
         }
     }
@@ -610,15 +635,19 @@ octave_value command::copy_in_handler (const std::string &infile,
       octave_idx_type nf = PQnfields (res);
       if (c != nf + oids)
         {
-          error ("variable for copy-in has %i columns, but should have %i",
-                 c, nf + oids);
+          valid = 0;
+
+          c_verror ("variable for copy-in has %i columns, but should have %i",
+                    c, nf + oids);
 
           PQputCopyEnd
             (cptr, "variable for copy-in has wrong number of columns");
         }
       else if (! PQbinaryTuples (res))
         {
-          error ("copy-in from variable must use binary mode");
+          valid = 0;
+
+          c_verror ("copy-in from variable must use binary mode");
 
           PQputCopyEnd (cptr, "copy-in from variable must use binary mode");
         }
@@ -627,7 +656,9 @@ octave_value command::copy_in_handler (const std::string &infile,
           for (octave_idx_type j = 0; j < nf; j++)
             if (! PQfformat (res, j))
               {
-                error ("copy-in from variable must use binary mode in all columns");
+                valid = 0;
+
+                c_verror ("copy-in from variable must use binary mode in all columns");
 
                 PQputCopyEnd (cptr, "copy-in from variable must use binary mode in all columns");
 
@@ -635,11 +666,9 @@ octave_value command::copy_in_handler (const std::string &infile,
               }
         }
 
-      if (error_state)
+      if (! valid)
         {
-          error ("server error: %s", PQerrorMessage (cptr));
-
-          valid = 0;
+          c_verror ("server error: %s", PQerrorMessage (cptr));
 
           return retval;
         }
@@ -658,7 +687,9 @@ octave_value command::copy_in_handler (const std::string &infile,
         {
           PQputCopyEnd (cptr, "could not send header");
 
-          error ("server error: %s", PQerrorMessage (cptr));
+          valid = 0;
+
+          c_verror ("server error: %s", PQerrorMessage (cptr));
         }
       else
         {
@@ -671,11 +702,13 @@ octave_value command::copy_in_handler (const std::string &infile,
               int16_t fc = htobe16 (int16_t (nf));
               if (PQputCopyData (cptr, (char *) &fc, 2) == -1)
                 {
-                  error ("%s", PQerrorMessage (cptr));
+                  c_verror ("%s", PQerrorMessage (cptr));
 
                   PQputCopyEnd (cptr, "error sending field count");
 
-                  error ("server error: %s", PQerrorMessage (cptr));
+                  c_verror ("server error: %s", PQerrorMessage (cptr));
+
+                  valid = 0;
 
                   break;
                 }
@@ -689,7 +722,9 @@ octave_value command::copy_in_handler (const std::string &infile,
                       int32_t t = htobe32 (int32_t (-1));
                       if (PQputCopyData (cptr, (char *) &t, 4) == -1)
                         {
-                          error ("could not send NULL in copy-in");
+                          valid = 0;
+
+                          c_verror ("could not send NULL in copy-in");
 
                           break;
                         }
@@ -701,8 +736,14 @@ octave_value command::copy_in_handler (const std::string &infile,
                           if ((j == 0) && oids)
                             {
                               std::string t ("oid");
-                              convs[0] = pgtype_from_spec (conn, t,
-                                                           oct_types[0]);
+                              if (! (convs[0] =
+                                     pgtype_from_spec (conn, t, oct_types[0])))
+                                {
+                                  valid = 0;
+
+                                  c_verror ("could not get converter for oid in copy-in");
+                                  break;
+                                }
                             }
                           else
                             {
@@ -714,18 +755,25 @@ octave_value command::copy_in_handler (const std::string &infile,
                                          pgtype_from_octtype (conn,
                                                               data(i, j))))
                                     {
-                                      error ("could not determine type in column %i for copy-in",
-                                             j);
+                                      valid = 0;
+
+                                      c_verror ("could not determine type in column %i for copy-in",
+                                                j);
 
                                       break;
                                     }
                                 }
                               else
                                 {
-                                  std::string s = cin_types(j).string_value ();
-                                  if (error_state)
+                                  bool err;
+                                  std::string s;
+                                  SET_ERR (s = cin_types(j).string_value (),
+                                           err);
+                                  if (err)
                                     {
-                                      error ("column type specification no string");
+                                      valid = 0;
+
+                                      c_verror ("column type specification no string");
 
                                       break;
                                     }
@@ -734,7 +782,9 @@ octave_value command::copy_in_handler (const std::string &infile,
                                          pgtype_from_spec (conn, s,
                                                            oct_types[j])))
                                     {
-                                      error ("invalid column type specification");
+                                      valid = 0;
+
+                                      c_verror ("invalid column type specification");
 
                                       break;
                                     }
@@ -766,49 +816,64 @@ octave_value command::copy_in_handler (const std::string &infile,
 
                         default:
                           // should not get here
-                          error ("internal error, undefined type identifier");
+                          c_verror ("internal error, undefined type identifier");
+                          conversion_failed = true;
                         }
 
                       if (conversion_failed)
-                        error ("could not convert data(%i, %i) for copy-in",
-                               i, j);
+                        {
+                          valid = 0;
+                          error ("could not convert data(%i, %i) for copy-in",
+                                 i, j);
+                        }
                       else
                         {
                           uint32_t t = htobe32 (uint32_t (val.size ()));
                           if (PQputCopyData (cptr, (char *) &t, 4) == -1)
-                            error ("could not send data length in copy-in");
+                            {
+                              valid = 0;
+                              c_verror ("could not send data length in copy-in");
+                            }
                           else if (PQputCopyData (cptr, &(val.front ()),
                                                   val.size ()) == -1)
-                            error ("could not send copy-in data");
+                            {
+                              valid = 0;
+                              c_verror ("could not send copy-in data");
+                            }
                         }
 
-                      if (error_state) break;
+                      if (! valid) break;
                     }
                 } // columns of argument data
 
-              if (error_state)
+              if (! valid)
                 {
                   PQputCopyEnd (cptr, "error sending copy-in data");
 
-                  error ("server error: %s", PQerrorMessage (cptr));
+                  c_verror ("server error: %s", PQerrorMessage (cptr));
 
                   break;
                 }
             } // rows of argument data
         }
 
-      if (! error_state)
+      if (valid)
         if (PQputCopyData (cptr, trailer, 2) == -1)
           {
+            valid = 0;
+
             PQputCopyEnd (cptr, "could not send trailer");
 
-            error ("%s", PQerrorMessage (cptr));
+            c_verror ("%s", PQerrorMessage (cptr));
           }
 
-      if (! error_state)
+      if (valid)
         {
           if (PQputCopyEnd (cptr, NULL) == -1)
-            error ("%s", PQerrorMessage (cptr));
+            {
+              valid = 0;
+              c_verror ("%s", PQerrorMessage (cptr));
+            }
           else
             {
               PQclear (res);
@@ -816,17 +881,20 @@ octave_value command::copy_in_handler (const std::string &infile,
               if ((res = PQgetResult (cptr)))
                 {
                   if ((state = PQresultStatus (res)) == PGRES_FATAL_ERROR)
-                    error ("server error in copy-in: %s",
-                           PQerrorMessage (cptr));
+                    {
+                      valid = 0;
+                      c_verror ("server error in copy-in: %s",
+                                PQerrorMessage (cptr));
+                    }
                 }
               else
-                error ("unexpectedly got no result information");
+                {
+                  valid = 0;
+                  c_verror ("unexpectedly got no result information");
+                }
             }
         }
     } // copy from variable
-
-  if (error_state)
-    valid = 0;
 
   return octave_value (std::string ("copy in"));
 }

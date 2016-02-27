@@ -23,6 +23,7 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 #include <octave/Cell.h>
 
 #include "command.h"
+#include "error-helpers.h"
 
 // PKG_disabled_ADD: autoload ("pq_exec", "pq_interface.oct");
 // PKG_disabled_DEL: autoload ("pq_exec", "pq_interface.oct", "remove");
@@ -122,14 +123,10 @@ undifined internal function, meant to be called by @code{pq_exec_params}")
       return retval;
     }
 
-  std::string cmd (args(1).string_value ());
-
-  if (error_state)
-    {
-      error ("%s: second argument can not be converted to a string", fname.c_str ());
-
-      return retval;
-    }
+  std::string cmd;
+  CHECK_ERROR (cmd = args(1).string_value (), retval,
+               "%s: second argument can not be converted to a string",
+               fname.c_str ());
 
   const octave_base_value &rep = args(0).get_rep ();
 
@@ -162,14 +159,20 @@ undifined internal function, meant to be called by @code{pq_exec_params}")
 
   octave_scalar_map settings;
 
+  bool err;
+
   if (nargs == 3)
     {
       if (args(2).is_cell ())
-        params = args(2).cell_value ();
+        {
+          SET_ERR (params = args(2).cell_value (), err);
+        }
       else
-        settings = args(2).scalar_map_value ();
+        {
+          SET_ERR (settings = args(2).scalar_map_value (), err);
+        }
 
-      if (error_state)
+      if (err)
         {
           error ("%s: third argument neither cell-array nor scalar structure",
                  fname.c_str ());
@@ -179,24 +182,14 @@ undifined internal function, meant to be called by @code{pq_exec_params}")
     }
   else if (nargs == 4)
     {
-      params = args(2).cell_value ();
-      if (error_state)
-        {
-          error ("%s: could not convert third argument to cell-array",
-                 fname.c_str ());
-
-          return retval;
-        }
-      settings = args(3).scalar_map_value ();
-      if (error_state)
-        {
-          error ("%s: could not convert fourth argument to scalar structure");
-
-          return retval;
-        }
+      CHECK_ERROR (params = args(2).cell_value (), retval,
+                   "%s: could not convert third argument to cell-array",
+                   fname.c_str ());
+      CHECK_ERROR (settings = args(3).scalar_map_value (), retval,
+                   "%s: could not convert fourth argument to scalar structure");
     }
 
-  int nparams = params.length ();
+  int nparams = params.numel ();
 
   dim_vector pdims = params.dims ();
 
@@ -218,97 +211,72 @@ undifined internal function, meant to be called by @code{pq_exec_params}")
   f_args(1) = octave_value ("param_types");
   f_args(2) = octave_value (Cell (1, nparams));
 
-  f_ret = feval ("getdbopts", f_args, 1);
-  Cell ptypes = f_ret(0).cell_value ();
-  if (error_state)
-    {
-      error ("%s: could not convert param_types to cell",
-             fname.c_str ());
-
-      return retval;
-    }
+  CHECK_ERROR (f_ret = feval ("getdbopts", f_args, 1), retval,
+               "%s: error calling getdbopts",
+               fname.c_str ());
+  Cell ptypes;
+  CHECK_ERROR (ptypes = f_ret(0).cell_value (), retval,
+               "%s: could not convert param_types to cell", fname.c_str ());
 
   f_args(1) = octave_value ("copy_in_path");
   f_args(2) = octave_value ("");
 
-  f_ret = feval ("getdbopts", f_args, 1);
-  std::string cin_path = f_ret(0).string_value ();
-  if (error_state)
-    {
-      error ("%s: could not convert copy_in_path to string",
-             fname.c_str ());
-
-      return retval;
-    }
+  CHECK_ERROR (f_ret = feval ("getdbopts", f_args, 1), retval,
+               "%s: error calling getdbopts", fname.c_str ());
+  std::string cin_path;
+  CHECK_ERROR (cin_path = f_ret(0).string_value (), retval,
+               "%s: could not convert copy_in_path to string", fname.c_str ());
 
   f_args(1) = octave_value ("copy_out_path");
   f_args(2) = octave_value ("");
 
-  f_ret = feval ("getdbopts", f_args, 1);
-  std::string cout_path = f_ret(0).string_value ();
-  if (error_state)
-    {
-      error ("%s: could not convert copy_out_path to string",
-             fname.c_str ());
-
-      return retval;
-    }
+  CHECK_ERROR (f_ret = feval ("getdbopts", f_args, 1), retval,
+               "%s: error calling getdbopts", fname.c_str ());
+  std::string cout_path;
+  CHECK_ERROR (cout_path = f_ret(0).string_value (), retval,
+               "%s: could not convert copy_out_path to string", fname.c_str ());
 
   f_args(1) = octave_value ("copy_in_data");
   f_args(2) = octave_value (Cell ());
 
-  f_ret = feval ("getdbopts", f_args, 1);
-  Cell cin_data = f_ret(0).cell_value ();
-  if (error_state)
-    {
-      error ("%s: could not convert copy_in_data to cell",
-             fname.c_str ());
-
-      return retval;
-    }
+  CHECK_ERROR (f_ret = feval ("getdbopts", f_args, 1), retval,
+               "%s: error calling getdbopts", fname.c_str ());
+  Cell cin_data;
+  CHECK_ERROR (cin_data = f_ret(0).cell_value (), retval,
+               "%s: could not convert copy_in_data to cell", fname.c_str ());
 
   f_args(1) = octave_value ("copy_in_with_oids");
   f_args(2) = octave_value (false);
 
-  f_ret = feval ("getdbopts", f_args, 1);
-  bool cin_with_oids = f_ret(0).bool_value ();
-  if (error_state)
-    {
-      error ("%s: could not convert copy_in_with_oids to bool",
-             fname.c_str ());
-
-      return retval;
-    }
+  CHECK_ERROR (f_ret = feval ("getdbopts", f_args, 1), retval,
+               "%s: error calling getdbopts", fname.c_str ());
+  bool cin_with_oids;
+  CHECK_ERROR (cin_with_oids = f_ret(0).bool_value (), retval,
+               "%s: could not convert copy_in_with_oids to bool",
+               fname.c_str ());
 
   f_args(1) = octave_value ("copy_in_types");
   f_args(2) = octave_value (Cell ());
 
-  f_ret = feval ("getdbopts", f_args, 1);
-  Cell cin_types = f_ret(0).cell_value ();
-  if (error_state)
-    {
-      error ("%s: could not convert copy_in_types to cell",
-             fname.c_str ());
-
-      return retval;
-    }
+  CHECK_ERROR (f_ret = feval ("getdbopts", f_args, 1), retval,
+               "%s: error calling getdbopts", fname.c_str ());
+  Cell cin_types;
+  CHECK_ERROR (cin_types = f_ret(0).cell_value (), retval,
+               "%s: could not convert copy_in_types to cell", fname.c_str ());
 
   f_args(1) = octave_value ("copy_in_from_variable");
   f_args(2) = octave_value (false);
 
-  f_ret = feval ("getdbopts", f_args, 1);
-  bool cin_from_variable = f_ret(0).bool_value ();
-  if (error_state)
-    {
-      error ("%s: could not convert copy_in_from_variable to bool",
-             fname.c_str ());
-
-      return retval;
-    }
+  CHECK_ERROR (f_ret = feval ("getdbopts", f_args, 1), retval,
+               "%s: error calling getdbopts", fname.c_str ());
+  bool cin_from_variable;
+  CHECK_ERROR (cin_from_variable = f_ret(0).bool_value (), retval,
+               "%s: could not convert copy_in_from_variable to bool",
+               fname.c_str ());
 
   // check option settings
 
-  if (ptypes.length () != nparams)
+  if (ptypes.numel () != nparams)
     {
       error ("%s: if given, cell-array of parameter types must have same length as cell-array of parameters",
              fname.c_str ());
@@ -344,6 +312,9 @@ undifined internal function, meant to be called by @code{pq_exec_params}")
     retval = c.process_single_result
       (cin_path, cout_path, cin_data, cin_types, cin_with_oids,
        cin_from_variable);
+
+  if (! c.good ())
+    error ("%s: error processing result", fname.c_str ());
 
   return retval;
 }

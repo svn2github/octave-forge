@@ -26,6 +26,7 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 #include <octave/Cell.h>
 
 #include "pq_connection.h"
+#include "error-helpers.h"
 
 class
 command
@@ -87,14 +88,14 @@ private:
       if (! res)
         {
           valid = 0;
-          error ("%s: could not execute command: %s", caller.c_str (),
-                 PQerrorMessage (cptr));
+          c_verror ("%s: could not execute command: %s", caller.c_str (),
+                    PQerrorMessage (cptr));
 
         }
       else if ((state = PQresultStatus (res)) == PGRES_EMPTY_QUERY)
         {
           valid = 0;
-          error ("%s: empty command", caller.c_str ());
+          c_verror ("%s: empty command", caller.c_str ());
         }
     }
 

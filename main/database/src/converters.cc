@@ -33,6 +33,7 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 #include "converters.h"
 #include "pq_connection.h"
+#include "error-helpers.h"
 
 // remember to adjust OCT_PQ_NUM_CONVERTERS in converters.h
 
@@ -75,11 +76,12 @@ int to_octave_bin_bool (const octave_pq_connection_rep &conn,
 int from_octave_str_bool (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val)
 {
-  bool b = ov.bool_value ();
+  bool b, err;
+  SET_ERR (b = ov.bool_value (), err);
 
-  if (error_state)
+  if (err)
     {
-      error ("can not convert octave_value to bool value");
+      c_verror ("can not convert octave_value to bool value");
       return 1;
     }
 
@@ -92,11 +94,12 @@ int from_octave_str_bool (const octave_pq_connection_rep &conn,
 int from_octave_bin_bool (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val)
 {
-  bool b = ov.bool_value ();
+  bool b, err;
+  SET_ERR (b = ov.bool_value (), err);
 
-  if (error_state)
+  if (err)
     {
-      error ("can not convert octave_value to bool value");
+      c_verror ("can not convert octave_value to bool value");
       return 1;
     }
 
@@ -145,11 +148,13 @@ int from_octave_str_oid (const octave_pq_connection_rep &conn,
 int from_octave_bin_oid (const octave_pq_connection_rep &conn,
                          const octave_value &ov, oct_pq_dynvec_t &val)
 {
-  uint32_t oid = ov.uint_value ();
+  uint32_t oid;
+  bool err;
+  SET_ERR (oid = ov.uint_value (), err);
 
-  if (error_state)
+  if (err)
     {
-      error ("can not convert octave_value to oid value");
+      c_verror ("can not convert octave_value to oid value");
       return 1;
     }
 
@@ -218,11 +223,12 @@ int from_octave_bin_float8 (const octave_pq_connection_rep &conn,
   }
   swap;
 
-  swap.d = ov.double_value ();
+  bool err;
+  SET_ERR (swap.d = ov.double_value (), err);
 
-  if (error_state)
+  if (err)
     {
-      error ("can not convert octave_value to float8 value");
+      c_verror ("can not convert octave_value to float8 value");
       return 1;
     }
 
@@ -291,11 +297,12 @@ int from_octave_bin_float4 (const octave_pq_connection_rep &conn,
   }
   swap;
 
-  swap.f = ov.float_value ();
+  bool err;
+  SET_ERR (swap.f = ov.float_value (), err);
 
-  if (error_state)
+  if (err)
     {
-      error ("can not convert octave_value to float4 value");
+      c_verror ("can not convert octave_value to float4 value");
       return 1;
     }
 
@@ -350,11 +357,13 @@ int from_octave_str_bytea (const octave_pq_connection_rep &conn,
 int from_octave_bin_bytea (const octave_pq_connection_rep &conn,
                            const octave_value &ov, oct_pq_dynvec_t &val)
 {
-  uint8NDArray b = ov.uint8_array_value ();
+  uint8NDArray b;
+  bool err;
+  SET_ERR (b = ov.uint8_array_value (), err);
 
-  if (error_state)
+  if (err)
     {
-      error ("can not convert octave_value to bytea representation");
+      c_verror ("can not convert octave_value to bytea representation");
       return 1;
     }
 
@@ -408,11 +417,13 @@ int from_octave_str_text (const octave_pq_connection_rep &conn,
 int from_octave_bin_text (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val)
 {
-  std::string s = ov.string_value ();
+  std::string s;
+  bool err;
+  SET_ERR (s = ov.string_value (), err);
 
-  if (error_state)
+  if (err)
     {
-      error ("can not convert octave_value to string");
+      c_verror ("can not convert octave_value to string");
       return 1;
     }
 
@@ -515,11 +526,13 @@ int from_octave_str_int2 (const octave_pq_connection_rep &conn,
 int from_octave_bin_int2 (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val)
 {
-  int16_t i2 = ov.int_value ();
+  int16_t i2;
+  bool err;
+  SET_ERR (i2 = ov.int_value (), err);
 
-  if (error_state)
+  if (err)
     {
-      error ("can not convert octave_value to int2 value");
+      c_verror ("can not convert octave_value to int2 value");
       return 1;
     }
 
@@ -569,11 +582,13 @@ int from_octave_str_int4 (const octave_pq_connection_rep &conn,
 int from_octave_bin_int4 (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val)
 {
-  int32_t i4 = ov.int_value ();
+  int32_t i4;
+  bool err;
+  SET_ERR (i4 = ov.int_value (), err);
 
-  if (error_state)
+  if (err)
     {
-      error ("can not convert octave_value to int4 value");
+      c_verror ("can not convert octave_value to int4 value");
       return 1;
     }
 
@@ -623,11 +638,13 @@ int from_octave_str_int8 (const octave_pq_connection_rep &conn,
 int from_octave_bin_int8 (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val)
 {
-  int64_t i8 = ov.int64_scalar_value ();
+  int64_t i8;
+  bool err;
+  SET_ERR (i8 = ov.int64_scalar_value (), err);
 
-  if (error_state)
+  if (err)
     {
-      error ("can not convert octave_value to int8 value");
+      c_verror ("can not convert octave_value to int8 value");
       return 1;
     }
 
@@ -702,15 +719,17 @@ static inline int time_8byte_from_octave (const octave_value &ov,
       // don't convert automatically because of possible overflow
       if (ov.is_float_type ())
         {
-          error ("floating point octave_value provided for 8-byte time value, but postgresql is configured for int64");
+          c_verror ("floating point octave_value provided for 8-byte time value, but postgresql is configured for int64");
           return 1;
         }
 
-      int64_t i8 = ov.int64_scalar_value ();
+      int64_t i8;
+      bool err;
+      SET_ERR (i8 = ov.int64_scalar_value (), err);
 
-      if (error_state)
+      if (err)
         {
-          error ("can not convert octave_value to int64 time value");
+          c_verror ("can not convert octave_value to int64 time value");
           return 1;
         }
 
@@ -723,7 +742,7 @@ static inline int time_8byte_from_octave (const octave_value &ov,
       // don't convert automatically because of possible loss of accuracy
       if (ov.is_integer_type ())
         {
-          error ("integer type octave_value provided for 8-byte time value, but postgresql is configured for double");
+          c_verror ("integer type octave_value provided for 8-byte time value, but postgresql is configured for double");
           return 1;
         }
 
@@ -734,11 +753,12 @@ static inline int time_8byte_from_octave (const octave_value &ov,
       }
       swap;
 
-      swap.d = ov.double_value ();
+      bool err;
+      SET_ERR (swap.d = ov.double_value (), err);
 
-      if (error_state)
+      if (err)
         {
-          error ("can not convert octave_value to double time value");
+          c_verror ("can not convert octave_value to double time value");
           return 1;
         }
 
@@ -847,10 +867,12 @@ int from_octave_str_interval (const octave_pq_connection_rep &conn,
 int from_octave_bin_interval (const octave_pq_connection_rep &conn,
                               const octave_value &ov, oct_pq_dynvec_t &val)
 {
-  Cell iv = ov.cell_value ();
-  if (error_state || iv.numel () != 3)
+  Cell iv;
+  bool err;
+  SET_ERR (iv = ov.cell_value (), err);
+  if (err || iv.numel () != 3)
     {
-      error ("interval: can not convert octave_value to cell with 3 elements");
+      c_verror ("interval: can not convert octave_value to cell with 3 elements");
       return 1;
     }
 
@@ -859,11 +881,13 @@ int from_octave_bin_interval (const octave_pq_connection_rep &conn,
 
   for (int id = 1; id < 3; id++)
     {
-      int32_t i4 = iv(id).int_value ();
+      int32_t i4;
+      bool err;
+      SET_ERR (i4 = iv(id).int_value (), err);
 
-      if (error_state)
+      if (err)
         {
-          error ("interval: can not convert octave_value to int4 value");
+          c_verror ("interval: can not convert octave_value to int4 value");
           return 1;
         }
 
@@ -964,21 +988,24 @@ int from_octave_str_timetz (const octave_pq_connection_rep &conn,
 int from_octave_bin_timetz (const octave_pq_connection_rep &conn,
                             const octave_value &ov, oct_pq_dynvec_t &val)
 {
-  Cell iv = ov.cell_value ();
-  if (error_state || iv.numel () != 2)
+  Cell iv;
+  bool err;
+  SET_ERR (iv = ov.cell_value (), err);
+  if (err || iv.numel () != 2)
     {
-      error ("timetz: can not convert octave_value to cell with 2 elements");
+      c_verror ("timetz: can not convert octave_value to cell with 2 elements");
       return 1;
     }
 
   if (time_8byte_from_octave (iv(0), val, conn.get_integer_datetimes ()))
     return 1;
 
-  int32_t i4 = iv(1).int_value ();
+  int32_t i4;
+  SET_ERR (i4 = iv(1).int_value (), err);
 
-  if (error_state)
+  if (err)
     {
-      error ("timetz: can not convert octave_value to int4 value");
+      c_verror ("timetz: can not convert octave_value to int4 value");
       return 1;
     }
 
@@ -1027,11 +1054,13 @@ int from_octave_str_date (const octave_pq_connection_rep &conn,
 int from_octave_bin_date (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val)
 {
-  int32_t i4 = ov.int_value ();
+  int32_t i4;
+  bool err;
+  SET_ERR (i4 = ov.int_value (), err);
 
-  if (error_state)
+  if (err)
     {
-      error ("date: can not convert octave_value to int4 value");
+      c_verror ("date: can not convert octave_value to int4 value");
       return 1;
     }
 
@@ -1096,11 +1125,13 @@ int from_octave_str_point (const octave_pq_connection_rep &conn,
 int from_octave_bin_point (const octave_pq_connection_rep &conn,
                            const octave_value &ov, oct_pq_dynvec_t &val)
 {
-  NDArray m = ov.array_value ();
+  NDArray m;
+  bool err;
+  SET_ERR (m = ov.array_value (), err);
 
-  if (error_state || m.numel () != 2)
+  if (err || m.numel () != 2)
     {
-      error ("can not convert octave_value to point representation");
+      c_verror ("can not convert octave_value to point representation");
       return 1;
     }
 
@@ -1177,11 +1208,13 @@ int from_octave_str_lseg (const octave_pq_connection_rep &conn,
 int from_octave_bin_lseg (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val)
 {
-  NDArray m = ov.array_value ();
+  NDArray m;
+  bool err;
+  SET_ERR (m = ov.array_value (), err);
 
-  if (error_state || m.numel () != 4)
+  if (err || m.numel () != 4)
     {
-      error ("can not convert octave_value to 4 doubles");
+      c_verror ("can not convert octave_value to 4 doubles");
       return 1;
     }
 
@@ -1292,11 +1325,13 @@ int from_octave_str_circle (const octave_pq_connection_rep &conn,
 int from_octave_bin_circle (const octave_pq_connection_rep &conn,
                             const octave_value &ov, oct_pq_dynvec_t &val)
 {
-  NDArray m = ov.array_value ();
+  NDArray m;
+  bool err;
+  SET_ERR (m = ov.array_value (), err);
 
-  if (error_state || m.numel () != 3)
+  if (err || m.numel () != 3)
     {
-      error ("can not convert octave_value to circle representation");
+      c_verror ("can not convert octave_value to circle representation");
       return 1;
     }
 
@@ -1379,11 +1414,13 @@ int from_octave_bin_polygon (const octave_pq_connection_rep &conn,
 {
   octave_idx_type nel;
 
-  NDArray m = ov.array_value ();
+  NDArray m;
+  bool err;
+  SET_ERR (m = ov.array_value (), err);
 
-  if (error_state || (nel = m.numel ()) % 2)
+  if (err || (nel = m.numel ()) % 2)
     {
-      error ("can not convert octave_value to polygon representation");
+      c_verror ("can not convert octave_value to polygon representation");
       return 1;
     }
 
@@ -1474,22 +1511,29 @@ int from_octave_str_path (const octave_pq_connection_rep &conn,
 int from_octave_bin_path (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val)
 {
-  octave_scalar_map tp = ov.scalar_map_value ();
-  if (error_state || ! tp.isfield ("closed") || ! tp.isfield ("path"))
+  octave_scalar_map tp;
+  bool err;
+  SET_ERR (tp = ov.scalar_map_value (), err);
+  if (err || ! tp.isfield ("closed") || ! tp.isfield ("path"))
     {
-      error ("can not convert octave_value to path representation");
+      c_verror ("can not convert octave_value to path representation");
       return 1;
     }
 
   octave_idx_type nel;
 
-  char closed = char (tp.contents ("closed").bool_value ());
+  char closed;
+  SET_ERR (closed = char (tp.contents ("closed").bool_value ()), err);
 
-  NDArray m = tp.contents ("path").array_value ();
-
-  if (error_state || (nel = m.numel ()) % 2)
+  NDArray m;
+  if (! err)
     {
-      error ("can not convert octave_value to path representation");
+      SET_ERR (m = tp.contents ("path").array_value (), err);
+    }
+
+  if (err || (nel = m.numel ()) % 2)
+    {
+      c_verror ("can not convert octave_value to path representation");
       return 1;
     }
 
@@ -1542,7 +1586,7 @@ oct_pq_conv_t conv_path = {0,
 int to_octave_str_unknown (const octave_pq_connection_rep &conn,
                            const char *c, octave_value &ov, int nb)
 {
-  error ("can not convert postgresql type 'unknown'");
+  c_verror ("can not convert postgresql type 'unknown'");
 
   return 1;
 }
@@ -1550,7 +1594,7 @@ int to_octave_str_unknown (const octave_pq_connection_rep &conn,
 int to_octave_bin_unknown (const octave_pq_connection_rep &conn,
                            const char *c, octave_value &ov, int nb)
 {
-  error ("can not convert postgresql type 'unknown'");
+  c_verror ("can not convert postgresql type 'unknown'");
 
   return 1;
 }
@@ -1558,7 +1602,7 @@ int to_octave_bin_unknown (const octave_pq_connection_rep &conn,
 int from_octave_str_unknown (const octave_pq_connection_rep &conn,
                              const octave_value &ov, oct_pq_dynvec_t &val)
 {
-  error ("can not convert postgresql type 'unknown'");
+  c_verror ("can not convert postgresql type 'unknown'");
 
   return 1;
 }
@@ -1566,7 +1610,7 @@ int from_octave_str_unknown (const octave_pq_connection_rep &conn,
 int from_octave_bin_unknown (const octave_pq_connection_rep &conn,
                              const octave_value &ov, oct_pq_dynvec_t &val)
 {
-  error ("can not convert postgresql type 'unknown'");
+  c_verror ("can not convert postgresql type 'unknown'");
 
   return 1;
 }
@@ -1608,7 +1652,7 @@ int to_octave_bin_cidr_inet (const char *c, octave_value &ov, bool &cidr)
 
       if (nb > 4)
         {
-          error ("internal error: received too many bytes for AF_INET type");
+          c_verror ("internal error: received too many bytes for AF_INET type");
 
           return 1;
         }
@@ -1633,7 +1677,7 @@ int to_octave_bin_cidr_inet (const char *c, octave_value &ov, bool &cidr)
 
       if (nb > 16)
         {
-          error ("internal error: received too many bytes for AF_INET6 type");
+          c_verror ("internal error: received too many bytes for AF_INET6 type");
 
           return 1;
         }
@@ -1665,13 +1709,16 @@ int from_octave_bin_cidr_inet (const octave_value &ov, oct_pq_dynvec_t &val,
 
   uint8_t n_mbits;
 
+  bool err;
+
   if (nl == 4 || nl == 5)
     {
-      uint8NDArray a = ov.uint8_array_value ();
+      uint8NDArray a;
+      SET_ERR (a = ov.uint8_array_value (), err);
 
-      if (error_state)
+      if (err)
         {
-          error ("can not convert octave_value to network type representation");
+          c_verror ("can not convert octave_value to network type representation");
           return 1;
         }
 
@@ -1689,11 +1736,12 @@ int from_octave_bin_cidr_inet (const octave_value &ov, oct_pq_dynvec_t &val,
     }
   else if (nl == 8 || nl == 9)
     {
-      uint16NDArray a = ov.uint16_array_value ();
+      uint16NDArray a;
+      SET_ERR (a = ov.uint16_array_value (), err);
 
-      if (error_state)
+      if (err)
         {
-          error ("can not convert octave_value to network type representation");
+          c_verror ("can not convert octave_value to network type representation");
           return 1;
         }
 
@@ -1713,7 +1761,7 @@ int from_octave_bin_cidr_inet (const octave_value &ov, oct_pq_dynvec_t &val,
     }
   else
     {
-      error ("invalid network type representation");
+      c_verror ("invalid network type representation");
       return 1;
     }
 
@@ -1740,7 +1788,7 @@ int to_octave_bin_cidr (const octave_pq_connection_rep &conn,
 
   if (! cidr)
     {
-      error ("internal error: unexpected flag in cidr type");
+      c_verror ("internal error: unexpected flag in cidr type");
 
       return 1;
     }
@@ -1793,7 +1841,7 @@ int to_octave_bin_inet (const octave_pq_connection_rep &conn,
 
   if (cidr)
     {
-      error ("internal error: unexpected flag in inet type");
+      c_verror ("internal error: unexpected flag in inet type");
 
       return 1;
     }
@@ -1858,17 +1906,19 @@ int from_octave_str_macaddr (const octave_pq_connection_rep &conn,
 int from_octave_bin_macaddr (const octave_pq_connection_rep &conn,
                              const octave_value &ov, oct_pq_dynvec_t &val)
 {
-  uint8NDArray a = ov.uint8_array_value ();
+  uint8NDArray a;
+  bool err;
+  SET_ERR (a = ov.uint8_array_value (), err);
 
-  if (error_state)
+  if (err)
     {
-      error ("can not convert octave_value to macaddr representation");
+      c_verror ("can not convert octave_value to macaddr representation");
       return 1;
     }
 
   if (a.numel () != 6)
     {
-      error ("macaddr representation must have 6 elements");
+      c_verror ("macaddr representation must have 6 elements");
       return 1;
     }
 
@@ -1933,20 +1983,27 @@ int from_octave_str_bit (const octave_pq_connection_rep &conn,
 int from_octave_bin_bit (const octave_pq_connection_rep &conn,
                          const octave_value &ov, oct_pq_dynvec_t &val)
 {
-  octave_scalar_map tp = ov.scalar_map_value ();
-  if (error_state || ! tp.isfield ("bitlen") || ! tp.isfield ("bits"))
+  octave_scalar_map tp;
+  bool err;
+  SET_ERR (tp = ov.scalar_map_value (), err);
+  if (err || ! tp.isfield ("bitlen") || ! tp.isfield ("bits"))
     {
-      error ("can not convert octave_value to bitstring representation");
+      c_verror ("can not convert octave_value to bitstring representation");
       return 1;
     }
 
-  int32_t nbits = tp.contents ("bitlen").int_value ();
+  int32_t nbits;
+  SET_ERR (nbits = tp.contents ("bitlen").int_value (), err);
 
-  uint8NDArray a = tp.contents ("bits").uint8_array_value ();
-
-  if (error_state || nbits < 0)
+  uint8NDArray a;
+  if (! err)
     {
-      error ("can not convert octave_value to bitstring representation");
+      SET_ERR (a = tp.contents ("bits").uint8_array_value (), err);
+    }
+
+  if (err || nbits < 0)
+    {
+      c_verror ("can not convert octave_value to bitstring representation");
       return 1;
     }
 
@@ -1954,7 +2011,7 @@ int from_octave_bin_bit (const octave_pq_connection_rep &conn,
 
   if (a.numel () != nbytes)
     {
-      error ("wrong number of elements in bitstring representation");
+      c_verror ("wrong number of elements in bitstring representation");
       return 1;
     }
 
@@ -2029,17 +2086,19 @@ int from_octave_str_uuid (const octave_pq_connection_rep &conn,
 int from_octave_bin_uuid (const octave_pq_connection_rep &conn,
                           const octave_value &ov, oct_pq_dynvec_t &val)
 {
-  uint8NDArray b = ov.uint8_array_value ();
+  uint8NDArray b;
+  bool err;
+  SET_ERR (b = ov.uint8_array_value (), err);
 
-  if (error_state)
+  if (err)
     {
-      error ("can not convert octave_value to uuid representation");
+      c_verror ("can not convert octave_value to uuid representation");
       return 1;
     }
 
   if (b.numel () != 16)
     {
-      error ("uuid representation must have 16 elements");
+      c_verror ("uuid representation must have 16 elements");
       return 1;
     }
 
@@ -2091,11 +2150,13 @@ int from_octave_str_xml (const octave_pq_connection_rep &conn,
 int from_octave_bin_xml (const octave_pq_connection_rep &conn,
                          const octave_value &ov, oct_pq_dynvec_t &val)
 {
-  std::string s = ov.string_value ();
+  std::string s;
+  bool err;
+  SET_ERR (s = ov.string_value (), err);
 
-  if (error_state)
+  if (err)
     {
-      error ("can not convert octave_value to string");
+      c_verror ("can not convert octave_value to string");
       return 1;
     }
 
@@ -2180,7 +2241,7 @@ int to_octave_bin_record (const octave_pq_connection_rep &conn,
 
             default:
               // should not get here
-              error ("'record' converter: internal error, undefined type identifier");
+              c_verror ("'record' converter: internal error, undefined type identifier");
               return 1;
             }
 
@@ -2204,7 +2265,7 @@ int from_octave_str_record (const octave_pq_connection_rep &conn,
 int from_octave_bin_record (const octave_pq_connection_rep &conn,
                             const octave_value &ov, oct_pq_dynvec_t &val)
 {
-  error ("Type 'record' can't be sent to postgresql.");
+  c_verror ("Type 'record' can't be sent to postgresql.");
 
   return 1;
 }

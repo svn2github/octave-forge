@@ -8,27 +8,29 @@ endif
 
 ifndef CXXFLAGS
 CXXFLAGS_NSA := "-g -O2 -fno-strict-aliasing"
+CXXFLAGS := "-g -O2"
 else
 CXXFLAGS_NSA := "$(CXXFLAGS) -fno-strict-aliasing"
 endif
 
 OBJECTS := __pq_connect__.o pq_close.o pq_exec.o converters.o \
            converters_arr_comp.o pq_connection.o command.o \
-           pq_update_types.o pq_lo.o pq_conninfo.o __pq_internal_exit__.o
+           pq_update_types.o pq_lo.o pq_conninfo.o __pq_internal_exit__.o \
+           error-helpers.o
 
 pq_interface.oct: $(OBJECTS)
 	@MKOCTFILE@ -o pq_interface.oct -L`@PG_CONFIG@ --libdir` -lpq $(OBJECTS) $(EXTRALIBS)
 
-converters.o: converters.cc converters.h wrap_endian.h
+converters.o: converters.cc converters.h wrap_endian.h config.h error-helpers.h
 	CXX=$(CXX) CXXFLAGS=$(CXXFLAGS_NSA) @MKOCTFILE@ -I`@PG_CONFIG@ --includedir` -c converters.cc
 
 converters_arr_comp.o: converters_arr_comp.cc converters.h wrap_endian.h \
-                       pq_connection.h command.h
+                       pq_connection.h command.h config.h error-helpers.h
 	CXX=$(CXX) CXXFLAGS=$(CXXFLAGS_NSA) @MKOCTFILE@ -I`@PG_CONFIG@ --includedir` -c converters_arr_comp.cc
 
 # be on the safe side with respect to include files
-%.o: %.cc converters.h pq_connection.h command.h
-	CXX=$(CXX) @MKOCTFILE@ -I`@PG_CONFIG@ --includedir` -c $<
+%.o: %.cc converters.h pq_connection.h command.h config.h error-helpers.h
+	CXX=$(CXX) CXXFLAGS=$(CXXFLAGS) @MKOCTFILE@ -I`@PG_CONFIG@ --includedir` -c $<
 
 .PHONY: clean
 clean: ; rm -f *.o *.oct

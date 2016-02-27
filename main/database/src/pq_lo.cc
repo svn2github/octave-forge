@@ -24,6 +24,7 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 #include <stdio.h>
 
 #include "command.h"
+#include "error-helpers.h"
 #include <libpq/libpq-fs.h>
 
 // PKG_ADD: autoload ("pq_lo_import", "pq_interface.oct");
@@ -128,7 +129,7 @@ pipe_to_lo::pipe_to_lo (octave_pq_connection_rep &a_oct_pq_conn,
   if (nb) return;
 
   if (pclose (fp) == -1)
-    error ("error closing pipe");
+    c_verror ("error closing pipe");
 
   fp = NULL;
 
@@ -145,7 +146,7 @@ pipe_to_lo::~pipe_to_lo (void)
   if (lod != -1)
     {
       if (lo_close (conn, lod))
-        error ("%s", PQerrorMessage (conn));
+        c_verror ("%s", PQerrorMessage (conn));
 
       lod = -1;
     }
@@ -153,7 +154,7 @@ pipe_to_lo::~pipe_to_lo (void)
   if (oid && ! oid_valid)
     {
       if (lo_unlink (conn, oid) == -1)
-        error ("error unlinking new large object with oid %i", oid);
+        c_verror ("error unlinking new large object with oid %i", oid);
     }
   else
     oid = 0;
@@ -161,7 +162,7 @@ pipe_to_lo::~pipe_to_lo (void)
   if (fp)
     {
       if (pclose (fp) == -1)
-        error ("error closing pipe");
+        c_verror ("error closing pipe");
 
       fp = NULL;
     }
@@ -179,7 +180,7 @@ pipe_to_lo::~pipe_to_lo (void)
         c.process_single_result ();
 
       if (! c.good ())
-        error ("pq_lo_import: could not commit");
+        c_verror ("%s: could not commit", caller.c_str ());
     }
 }
 
@@ -269,7 +270,7 @@ lo_to_pipe::lo_to_pipe (octave_pq_connection_rep &a_oct_pq_conn, Oid aoid,
   if (pnb) return;
 
   if (pclose (fp) == -1)
-    error ("error closing pipe");
+    c_verror ("error closing pipe");
 
   fp = NULL;
 
@@ -286,7 +287,7 @@ lo_to_pipe::~lo_to_pipe (void)
   if (lod != -1)
     {
       if (lo_close (conn, lod))
-        error ("%s", PQerrorMessage (conn));
+        c_verror ("%s", PQerrorMessage (conn));
 
       lod = -1;
     }
@@ -294,7 +295,7 @@ lo_to_pipe::~lo_to_pipe (void)
   if (fp)
     {
       if (pclose (fp) == -1)
-        error ("error closing pipe");
+        c_verror ("error closing pipe");
 
       fp = NULL;
     }
@@ -312,7 +313,7 @@ lo_to_pipe::~lo_to_pipe (void)
         c.process_single_result ();
 
       if (! c.good ())
-        error ("pq_lo_export: could not commit");
+        c_verror ("%s: could not commit", caller.c_str ());
     }
 }
 
@@ -334,15 +335,10 @@ Imports the file in @var{path} on the client side as a large object into the dat
       return retval;
     }
 
-  std::string path (args(1).string_value ());
-
-  if (error_state)
-    {
-      error ("%s: second argument can not be converted to a string",
-             fname.c_str ());
-
-      return retval;
-    }
+  std::string path;
+  CHECK_ERROR (path = args(1).string_value (), retval,
+               "%s: second argument can not be converted to a string",
+               fname.c_str ());
 
   bool from_pipe = false;
   unsigned int l = path.size ();
@@ -389,16 +385,14 @@ Imports the file in @var{path} on the client side as a large object into the dat
     case PQTRANS_INERROR:
       error ("%s: can't manipulate large objects within a failed transaction block",
              fname.c_str ());
-      break;
+      return retval;
     case PQTRANS_UNKNOWN:
       error ("%s: connection is bad", fname.c_str ());
-      break;
+      return retval;
     default: // includes PQTRANS_ACTIVE
       error ("%s: unexpected connection state", fname.c_str ());
+      return retval;
     }
-
-  if (error_state)
-    return retval;
 
   if (make_tblock)
     {
@@ -459,13 +453,17 @@ Imports the file in @var{path} on the client side as a large object into the dat
     }
 
   if (import_error)
-    error ("%s: large object import failed: %s", fname.c_str (), msg.c_str ());
+    c_verror ("%s: large object import failed: %s",
+              fname.c_str (), msg.c_str ());
 
   if (commit_error)
-    error ("%s: could not commit transaction", fname.c_str ());
+    c_verror ("%s: could not commit transaction", fname.c_str ());
 
-  if (error_state)
-    return retval;
+  if (import_error || commit_error)
+    {
+      error ("%s failed", fname.c_str ());
+      return retval;
+    }
 
   retval = octave_value (octave_uint32 (oid));
 
@@ -491,15 +489,10 @@ Exports the large object of Oid @var{oid} in the database associated with @var{c
       return retval;
     }
 
-  std::string path (args(2).string_value ());
-
-  if (error_state)
-    {
-      error ("%s: third argument can not be converted to a string",
-             fname.c_str ());
-
-      return retval;
-    }
+  std::string path;
+  CHECK_ERROR (path = args(2).string_value (), retval,
+               "%s: third argument can not be converted to a string",
+               fname.c_str ());
 
   bool to_pipe = false;
   if (! path.empty () && path[0] == '|')
@@ -517,15 +510,10 @@ Exports the large object of Oid @var{oid} in the database associated with @var{c
       to_pipe = true;
     }
 
-  Oid oid = args(1).uint_value ();
-
-  if (error_state)
-    {
-      error ("%s: second argument can not be converted to an oid",
-             fname.c_str ());
-
-      return retval;
-    }
+  Oid oid;
+  CHECK_ERROR (oid = args(1).uint_value (), retval,
+               "%s: second argument can not be converted to an oid",
+               fname.c_str ());
 
   const octave_base_value& rep = (args(0).get_rep ());
 
@@ -551,16 +539,14 @@ Exports the large object of Oid @var{oid} in the database associated with @var{c
     case PQTRANS_INERROR:
       error ("%s: can't manipulate large objects within a failed transaction block",
              fname.c_str ());
-      break;
+      return retval;
     case PQTRANS_UNKNOWN:
       error ("%s: connection is bad", fname.c_str ());
-      break;
+      return retval;
     default: // includes PQTRANS_ACTIVE
       error ("%s: unexpected connection state", fname.c_str ());
+      return retval;
     }
-
-  if (error_state)
-    return retval;
 
   if (make_tblock)
     {
@@ -617,10 +603,14 @@ Exports the large object of Oid @var{oid} in the database associated with @var{c
     }
 
   if (export_error)
-    error ("%s: large object export failed: %s", fname.c_str (), msg.c_str ());
+    c_verror ("%s: large object export failed: %s",
+              fname.c_str (), msg.c_str ());
 
   if (commit_error)
-    error ("%s: could not commit transaction", fname.c_str ());
+    c_verror ("%s: could not commit transaction", fname.c_str ());
+
+  if (export_error || commit_error)
+    error ("%s failed", fname.c_str ());
 
   return retval;
 }
@@ -644,15 +634,10 @@ Removes the large object of Oid @var{oid} from the database associated with @var
       return retval;
     }
 
-  Oid oid = args(1).uint_value ();
-
-  if (error_state)
-    {
-      error ("%s: second argument can not be converted to an oid",
-             fname.c_str ());
-
-      return retval;
-    }
+  Oid oid;
+  CHECK_ERROR (oid = args(1).uint_value (), retval,
+               "%s: second argument can not be converted to an oid",
+               fname.c_str ());
 
   const octave_base_value& rep = (args(0).get_rep ());
 
@@ -678,16 +663,14 @@ Removes the large object of Oid @var{oid} from the database associated with @var
     case PQTRANS_INERROR:
       error ("%s: can't manipulate large objects within a failed transaction block",
              fname.c_str ());
-      break;
+      return retval;
     case PQTRANS_UNKNOWN:
       error ("%s: connection is bad", fname.c_str ());
-      break;
+      return retval;
     default: // includes PQTRANS_ACTIVE
       error ("%s: unexpected connection state", fname.c_str ());
+      return retval;
     }
-
-  if (error_state)
-    return retval;
 
   if (make_tblock)
     {
@@ -734,10 +717,14 @@ Removes the large object of Oid @var{oid} from the database associated with @var
     }
 
   if (unlink_error)
-    error ("%s: large object unlink failed: %s", fname.c_str (), msg.c_str ());
+    c_verror ("%s: large object unlink failed: %s",
+              fname.c_str (), msg.c_str ());
 
   if (commit_error)
-    error ("%s: could not commit transaction", fname.c_str ());
+    c_verror ("%s: could not commit transaction", fname.c_str ());
+
+  if (unlink_error || commit_error)
+    error ("%s failed", fname.c_str ());      
 
   return retval;
 }

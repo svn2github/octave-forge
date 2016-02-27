@@ -19,6 +19,7 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 #include "pq_connection.h"
 #include "command.h"
+#include "error-helpers.h"
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_pq_connection, "PGconn", "PGconn")
 
@@ -57,7 +58,7 @@ octave_pq_connection_rep::octave_pq_connection_rep (std::string &arg)
     {
       if (conn)
         {
-          error ("%s", PQerrorMessage (conn));
+          c_verror ("%s", PQerrorMessage (conn));
 
           PGconn *t_conn = conn;
 
@@ -68,7 +69,7 @@ octave_pq_connection_rep::octave_pq_connection_rep (std::string &arg)
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
         }
 
-      error ("PQ connection attempt failed");
+      c_verror ("PQ connection attempt failed");
     }
   else
     {
@@ -94,7 +95,7 @@ octave_pq_connection_rep::octave_pq_connection_rep (std::string &arg)
           PQfinish (t_conn);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
-          error ("could not read types");
+          c_verror ("could not read types");
         }
       else
         {
@@ -133,6 +134,9 @@ void octave_pq_connection_rep::octave_pq_close (void)
       octave_pq_delete_non_constant_types ();
     }
   else
+    // deliberately left the 'error' call here, since
+    // 'octave_pq_close()' is only called by 'pq_close' immediately
+    // before returning
     error ("PGconn object not open");
 }
 
@@ -189,17 +193,17 @@ int octave_pq_connection_rep::octave_pq_get_postgres_oid (void)
   command c (*this, cmd, p, pt, rt, caller);
   if (! c.good ())
     {
-      error ("could not read pg_roles");
+      c_verror ("could not read pg_roles");
       return 1;
     }
 
   octave_value res = c.process_single_result ();
-  if (error_state)
+  if (! c.good ())
     return 1;
 
-  postgres = res.scalar_map_value ().contents ("data").cell_value ()(0).
-    int_value ();
-  if (error_state)
+  bool err;
+  SET_ERR (postgres = res.scalar_map_value ().contents ("data").cell_value ()(0).int_value (), err);
+  if (err)
     return 1;
 
   return 0;
@@ -223,18 +227,21 @@ int octave_pq_connection_rep::octave_pq_fill_base_types (void)
   command c (*this, cmd, p, pt, rt, caller);
   if (! c.good ())
     {
-      error ("octave_pq_fill_base_types: could not read pg_type");
+      c_verror ("octave_pq_fill_base_types: could not read pg_type");
       return 1;
     }
 
   octave_value res = c.process_single_result ();
-  if (error_state)
+  if (! c.good ())
     return 1;
 
-  Cell tpls = res.scalar_map_value ().contents ("data").cell_value ();
-  if (error_state)
+  Cell tpls;
+  bool err;
+  SET_ERR (tpls = res.scalar_map_value ().contents ("data").cell_value (),
+           err);
+  if (err)
     {
-      error
+      c_verror
         ("octave_pq_fill_base_types: could not convert result data to cell");
       return 1;
     }
@@ -245,10 +252,14 @@ int octave_pq_connection_rep::octave_pq_fill_base_types (void)
     bt_map_t;
   bt_map_t bt_map (&map_string_cmp);
   for (int i = 0; i < tpls.rows (); i++)
-    bt_map[tpls(i, 1).string_value ()] = i;
-  if (error_state)
     {
-      error ("octave_pq_fill_base_types: could not read returned result");
+      SET_ERR (bt_map[tpls(i, 1).string_value ()] = i, err);
+      if (err)
+        break;
+    }
+  if (err)
+    {
+      c_verror ("octave_pq_fill_base_types: could not read returned result");
       return 1;
     }
 
@@ -258,13 +269,19 @@ int octave_pq_connection_rep::octave_pq_fill_base_types (void)
       if ((bt_it = bt_map.find (conv_ptrs[i]->name.c_str () + pq_bpl)) ==
           bt_map.end ())
         {
-          error ("octave_pq_fill_base_types: type %s not found in pg_type",
-                 conv_ptrs[i]->name.c_str () + pq_bpl);
+          c_verror ("octave_pq_fill_base_types: type %s not found in pg_type",
+                    conv_ptrs[i]->name.c_str () + pq_bpl);
           return 1;
         }
       // fill in oid and aoid into static records of converters
-      conv_ptrs[i]->oid = tpls(bt_it->second, 0).int_value ();
-      conv_ptrs[i]->aoid = tpls(bt_it->second, 2).int_value ();
+      SET_ERR (conv_ptrs[i]->oid = tpls(bt_it->second, 0).int_value (), err);
+      if (! err)
+        {
+          SET_ERR (conv_ptrs[i]->aoid = tpls(bt_it->second, 2).int_value (),
+                   err);
+        }
+      if (err)
+        break;
 
       // fill in map of converters over oid with oid and, if not zero,
       // also with aoid
@@ -272,9 +289,9 @@ int octave_pq_connection_rep::octave_pq_fill_base_types (void)
       if (conv_ptrs[i]->aoid != 0)
         conv_map[conv_ptrs[i]->aoid] = conv_ptrs[i];
     }
-  if (error_state)
+  if (err)
     {
-      error ("octave_pq_fill_base_types: could not read returned result");
+      c_verror ("octave_pq_fill_base_types: could not read returned result");
       return 1;
     }
 
@@ -291,41 +308,69 @@ int octave_pq_connection_rep::octave_pq_get_composite_types (void)
   command c (*this, cmd, p, pt, rt, caller);
   if (! c.good ())
     {
-      error ("octave_pq_get_composite_types: could not read pg_type");
+      c_verror ("octave_pq_get_composite_types: could not read pg_type");
       return 1;
     }
 
   octave_value res = c.process_single_result ();
-  if (error_state)
+  if (! c.good ())
     return 1;
 
-  Cell tpls = res.scalar_map_value ().contents ("data").cell_value ();
-  if (error_state)
+  Cell tpls;
+  bool err;
+  SET_ERR (tpls = res.scalar_map_value ().contents ("data").cell_value (),
+           err)
+  if (err)
     {
-      error ("octave_pq_get_composite_types: could not convert result data to cell");
+      c_verror ("octave_pq_get_composite_types: could not convert result data to cell");
       return 1;
     }
 
   for (int i = 0; i < tpls.rows (); i++)
     {
-      Oid oid = tpls(i, 0).uint_value ();
-      Oid aoid = tpls(i, 2).uint_value ();
-      std::string name = tpls(i, 1).string_value ();
-      std::string nspace = tpls(i, 3).string_value ();
-      bool visible = tpls(i, 4).bool_value ();
-      Cell r_el_oids =
-        tpls(i, 5).scalar_map_value ().contents ("data").cell_value ();
-      Cell r_el_pos =
-        tpls(i, 6).scalar_map_value ().contents ("data").cell_value ();
-      if (error_state)
+      Oid oid;
+      SET_ERR (oid = tpls(i, 0).uint_value (), err);
+      Oid aoid;
+      if (! err)
         {
-          error ("octave_pq_get_composite_types: could not read returned result");
+          SET_ERR (aoid = tpls(i, 2).uint_value (), err);
+        }
+      std::string name;
+      if (! err)
+        {
+          SET_ERR (name = tpls(i, 1).string_value (), err);
+        }
+      std::string nspace;
+      if (! err)
+        {
+          SET_ERR (nspace = tpls(i, 3).string_value (), err);
+        }
+      bool visible;
+      if (! err)
+        {
+          SET_ERR (visible = tpls(i, 4).bool_value (), err);
+        }
+      Cell r_el_oids;
+      if (! err)
+        {
+          SET_ERR (r_el_oids = tpls(i, 5).scalar_map_value ()
+                   .contents ("data").cell_value (), err);
+        }
+      Cell r_el_pos;
+      if (! err)
+        {
+          SET_ERR (r_el_pos = tpls(i, 6).scalar_map_value ()
+                   .contents ("data").cell_value (), err);
+        }
+      if (err)
+        {
+          c_verror ("octave_pq_get_composite_types: could not read returned result");
           return 1;
         }
       octave_idx_type nel = r_el_oids.numel ();
       if (nel != r_el_pos.numel ())
         {
-          error ("octave_pq_get_composite_types: internal error, inconsistent content of pg_attribute?");
+          c_verror ("octave_pq_get_composite_types: internal error, inconsistent content of pg_attribute?");
 
           return 1;
         }
@@ -335,27 +380,28 @@ int octave_pq_connection_rep::octave_pq_get_composite_types (void)
       conv_cache.resize (nel);
       for (octave_idx_type i = 0; i < nel; i++)
         {
+          octave_idx_type pos;
           // "column" number (attnum) is one-based, so subtract 1
-          octave_idx_type pos = r_el_pos(i).idx_type_value () - 1;
-          if (! error_state)
+          SET_ERR (pos = r_el_pos(i).idx_type_value () - 1, err);
+          if (! err)
             {
               if (pos >= nel)
                 {
-                  error ("octave_pq_get_composite_types: internal error (?system catalog erroneous?): column position %i greater than ncols %i for type %s, namespace %s",
+                  c_verror ("octave_pq_get_composite_types: internal error (?system catalog erroneous?): column position %i greater than ncols %i for type %s, namespace %s",
                          pos, nel, name.c_str (), nspace.c_str ());
                   return 1;
                 }
 
-              el_oids[pos] = r_el_oids(i).uint_value ();
+              SET_ERR (el_oids[pos] = r_el_oids(i).uint_value (), err);
 
               conv_cache[pos] = NULL;
             }
-        }
-      if (error_state)
-        {
-          error ("octave_pq_get_composite_types: could not fill in element oids.");
+          if (err)
+            {
+              c_verror ("octave_pq_get_composite_types: could not fill in element oids.");
 
-          return 1;
+              return 1;
+            }
         }
 
       // must be allocated and filled before creating the name map
@@ -379,7 +425,7 @@ int octave_pq_connection_rep::octave_pq_get_composite_types (void)
         *&by_name = name_conv_map[t_conv->name.c_str ()];
       if (by_oid || by_name)
         {
-          error ("octave_pq_get_composite_types: internal error, key already in typemap (by_oid: %u/%li, by name: %s/%li)",
+          c_verror ("octave_pq_get_composite_types: internal error, key already in typemap (by_oid: %u/%li, by name: %s/%li)",
                  oid, by_oid, t_conv->name.c_str (), by_name);
           if (! by_oid) conv_map.erase (oid);
           if (! by_name) name_conv_map.erase (t_conv->name.c_str ());
@@ -410,7 +456,7 @@ int octave_pq_connection_rep::octave_pq_get_composite_types (void)
           oct_pq_conv_t *&by_aoid = conv_map[aoid];
           if (by_aoid)
             {
-              error ("octave_pq_get_composite_types: internal error, aoid key %u already in typemap", aoid);
+              c_verror ("octave_pq_get_composite_types: internal error, aoid key %u already in typemap", aoid);
               conv_map.erase (oid);
               name_conv_map.erase (t_conv->name.c_str ());
               delete t_conv;
@@ -440,31 +486,51 @@ int octave_pq_connection_rep::octave_pq_get_enum_types (void)
   command c (*this, cmd, p, pt, rt, caller);
   if (! c.good ())
     {
-      error ("octave_pq_get_enum_types: could not read pg_type");
+      c_verror ("octave_pq_get_enum_types: could not read pg_type");
       return 1;
     }
  
   octave_value res = c.process_single_result ();
-  if (error_state)
+  if (! c.good ())
     return 1;
 
-  Cell tpls = res.scalar_map_value ().contents ("data").cell_value ();
-  if (error_state)
+  Cell tpls;
+  bool err;
+  SET_ERR (tpls = res.scalar_map_value ().contents ("data").cell_value (),
+           err);
+  if (err)
     {
-      error ("octave_pq_get_enum_types: could not convert result data to cell");
+      c_verror ("octave_pq_get_enum_types: could not convert result data to cell");
       return 1;
     }
 
   for (int i = 0; i < tpls.rows (); i++)
     {
-      Oid oid = tpls(i, 0).uint_value ();
-      Oid aoid = tpls(i, 2).uint_value ();
-      std::string name = tpls(i, 1).string_value ();
-      std::string nspace = tpls(i, 3).string_value ();
-      bool visible = tpls(i, 4).bool_value ();
-      if (error_state)
+      Oid oid;
+      SET_ERR (oid = tpls(i, 0).uint_value (), err);
+      Oid aoid;
+      if (! err)
         {
-          error ("octave_pq_get_enum_types: could not read returned result");
+          SET_ERR (aoid = tpls(i, 2).uint_value (), err);
+        }      
+      std::string name;
+      if (! err)
+        {
+          SET_ERR (name = tpls(i, 1).string_value (), err);
+        }
+      std::string nspace;
+      if (! err)
+        {
+          SET_ERR (nspace = tpls(i, 3).string_value (), err);
+        }
+      bool visible;
+      if (! err)
+        {
+          SET_ERR (visible = tpls(i, 4).bool_value (), err);
+        }
+      if (err)
+        {
+          c_verror ("octave_pq_get_enum_types: could not read returned result");
           return 1;
         }
 
@@ -490,7 +556,7 @@ int octave_pq_connection_rep::octave_pq_get_enum_types (void)
         *&by_name = name_conv_map[t_conv->name.c_str ()];
       if (by_oid || by_aoid || by_name)
         {
-          error ("octave_pq_get_enum_types: internal error, key already in typemap");
+          c_verror ("octave_pq_get_enum_types: internal error, key already in typemap");
           if (! by_oid) conv_map.erase (oid);
           if (! by_aoid) conv_map.erase (aoid);
           if (! by_name) name_conv_map.erase (t_conv->name.c_str ());
@@ -539,7 +605,7 @@ int octave_pq_connection_rep::octave_pq_refresh_types (void)
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
         }
 
-      error ("octave_pq_refresh_types: could not read types");
+      c_verror ("octave_pq_refresh_types: could not read types");
       return 1;
     }
   else

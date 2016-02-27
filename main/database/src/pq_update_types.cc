@@ -48,7 +48,8 @@ Updates information on existing postgresql types for @var{connection}. Use this 
   const octave_pq_connection &oct_pq_conn =
     dynamic_cast<const octave_pq_connection&> (rep);
 
-  oct_pq_conn.get_rep ()->octave_pq_refresh_types ();
+  if (oct_pq_conn.get_rep ()->octave_pq_refresh_types ())
+    error ("%s failed", fname.c_str ());
 
   return retval;
 }

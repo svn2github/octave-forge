@@ -20,6 +20,7 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 #include <octave/oct.h>
 
 #include "pq_connection.h"
+#include "error-helpers.h"
 
 // PKG_ADD: autoload ("pq_conninfo", "pq_interface.oct");
 // PKG_DEL: autoload ("pq_conninfo", "pq_interface.oct", "remove");
@@ -42,15 +43,10 @@ Retrieves connection information for postgresql connection @var{connection}, spe
       return retval;
     }
 
-  std::string label (args(1).string_value ());
-
-  if (error_state)
-    {
-      error ("%s: second argument can not be converted to a string",
-             fname.c_str ());
-
-      return retval;
-    }
+  std::string label;
+  CHECK_ERROR (label = args(1).string_value (), retval,
+               "%s: second argument can not be converted to a string",
+               fname.c_str ());
 
   if (label.compare ("integer_datetimes"))
     {

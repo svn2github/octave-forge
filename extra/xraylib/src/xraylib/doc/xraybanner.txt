@@ -1,8 +1,0 @@
-
-xraylib v2.4 revised Jan 13 2006
-
-Authors: A. Brunetti, M. Sanchez del Rio, B. Golosio,
-         A. Simionovici, A. Somogyi
-         ESRF, Grenoble, France, and Univ. di Sassari, Italy
-    
-The authors do not guarantee for the correctness of the data

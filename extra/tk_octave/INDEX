@@ -1,7 +1,0 @@
-tk-octave >> TK Octave
-TK
- tk_busy tk_busy_cancel
- tk_dialog tk_entry tk_error
- tk_init tk_input tk_cmd tk_end tk_interp
- tk_loop tk_menu tk_message tk_progress tk_progress_cancel
- tk_scale tk_yesno tk_yesnocancel

@@ -1,7 +1,0 @@
-md5="55785316d7b893a0d58d629d14dd7e53";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} exponential_inv (@var{x}, @var{lambda})
-Para cada elemento of @var{x}, calcula o quantil (o inverso da
-fun@,{c}@~ao de distribui@,{c}@~ao cumulativa) em @var{x} da distribui@,{c}@~ao exponencial com par@^ametro
-@var{lambda}.
-@end deftypefn

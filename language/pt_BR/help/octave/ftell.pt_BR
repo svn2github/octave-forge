@@ -1,7 +1,0 @@
-md5="6753ba14a552d574df54cd188b988a1a";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao Interna} {} ftell (@var{fid})
-Retorna a posi@,{c}@~ao do apontador de arquivo como o n@'umero de caracteres
-a partir do in@'icio do arquivo identificado por @var{fid}.
-@seealso{fseek, fopen, fclose}
-@end deftypefn

@@ -1,9 +1,0 @@
-md5="aec970c6dd9f13235b3ab79ed5288459";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} xlabel (@var{string})
-@deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} ylabel (@var{string})
-@deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} zlabel (@var{string})
-Especifica r@'otulos para os eixos x, y, e z para montagem de gr@'aficos.
-@seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
-bar, stairs, ylabel, title}
-@end deftypefn

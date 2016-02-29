@@ -1,8 +1,0 @@
-md5="e7f0ff6c9d88e83a397ba1ea08cfa15f";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} repmat (@var{A}, @var{m}, @var{n})
-@deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} repmat (@var{A}, [@var{m} @var{n}])
-Forma uma matriz de tamanho @var{m} por @var{n}, com uma c@'opia da matriz
-@var{A} como cada elemento.  Se @var{n} n@~ao for especificado, forma uma 
-matriz de bloco @var{m} por @var{m}.
-@end deftypefn

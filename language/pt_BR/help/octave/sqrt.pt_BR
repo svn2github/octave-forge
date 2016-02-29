@@ -1,7 +1,0 @@
-md5="9a213ce8a3eedee2dac1b4f8f29c6612";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} sqrt (@var{x})
-Calcula ra@'iz quadrada de @var{x}.  Se @var{x} for negativa, um resultado
-complexo @'e retornado.  Para calcular a ra@'iz quadrada de matriz, veja
-@ref{Linear Algebra}.
-@end deftypefn

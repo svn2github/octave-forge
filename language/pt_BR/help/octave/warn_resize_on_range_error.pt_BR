@@ -1,7 +1,0 @@
-md5="9c4d7f04015532be1630607ea9ea4ac0";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@defvr {Vari@'avel interna} warn_resize_on_range_error
-Se o valor de @code{warn_resize_on_range_error} for n@~ao nulo, mostra um
-alerta quando uma matriz tiver seu tamanho redefinido atrav@'es de uma atribui@,{c}@~ao indexada com
-indices fora das atuais fronteiras.  O valor padr@~ao @'e 0.
-@end defvr

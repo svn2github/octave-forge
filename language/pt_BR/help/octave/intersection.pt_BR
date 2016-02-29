@@ -1,5 +1,0 @@
-md5="ee3f9b3a4a621aeed929dee5a4388ac2";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {arquivo de Fun@value{cedilha}@~ao} {} intersection (@var{x}, @var{y})
-Essa fun@,{c}@~ao est@'a desatualizada.  Use intersect no lugar dela.
-@end deftypefn

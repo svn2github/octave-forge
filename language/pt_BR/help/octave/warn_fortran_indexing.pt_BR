@@ -1,7 +1,0 @@
-md5="ab5009a281626b902d219510f5a6a642";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@defvr {Vari@'avel Interna} warn_fortran_indexing
-Se o valor de @code{warn_fortran_indexing} for n@~ao nulo, um alerta @'e
-mostrado para express@~oes que selecionam elementos de uma matriz bidimensional
-usando um @'indice simples.  O valor padr@~ao @'e 0.
-@end defvr

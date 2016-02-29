@@ -1,8 +1,0 @@
-md5="5885703a7b94dad441b9ed50751ac3a1";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} dot (@var{x}, @var{y}, @var{dim})
-Calcula o produto do ponto ( produto escalar) de dois vetores. Se @var{x} e @var{y}
-forem matrizes, calcula o produto escalar ao longo da primeira 
-dimens@~ao n@~ao isolada. Se o argumento opcional @var{dim} for
-dado, calcula o produto escalar ao longo dessa dimens@~ao.
-@end deftypefn

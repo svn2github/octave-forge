@@ -1,6 +1,0 @@
-md5="3786f442d195fbff3d695800708da796";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} periodogram (@var{x})
-Para uma matriz de dados @var{x} de uma amostra de tamanho @var{n}, retorna o
-periodograma.
-@end deftypefn

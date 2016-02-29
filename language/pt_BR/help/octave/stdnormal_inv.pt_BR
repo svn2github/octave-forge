@@ -1,6 +1,0 @@
-md5="3916ed3413383536df63fed899b9d29f";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} stdnormal_inv (@var{x})
-Para cada componente de @var{x}, calcula o quantil (o
-inverso da fun@,{c}@~ao de distribui@,{c}@~ao cumulativa) em @var{x} da distribui@value{cedilha}@~ao normal padr@~ao.
-@end deftypefn

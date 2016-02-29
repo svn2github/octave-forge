@@ -1,7 +1,0 @@
-md5="824bc030a9c26d99f9293e4b9f735db6";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {[@var{poly}, @var{rvals}] =} __zp2ssg2__ (@var{rvals})
-Usada internamente em @code{zp2ss}
-Extrai 2 valores de @var{rvals} (se possível) e constrói
-um polinômio com essas r@'izes.
-@end deftypefn

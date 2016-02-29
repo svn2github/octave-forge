@@ -1,7 +1,0 @@
-md5="b801c88ca9ae2d5d31ac639435db0a32";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} poisson_inv (@var{x}, @var{lambda})
-Para cada componente de @var{x}, calcula o quantil (o inverso da
-fun@,{c}@~ao de distribui@,{c}@~ao cumulativa) em @var{x} da distribui@value{cedilha}@~ao de Poisson com par@^ametro
-@var{lambda}.
-@end deftypefn

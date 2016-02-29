@@ -1,5 +1,0 @@
-md5="0a9e4ec59c688e6ff1eda03b1bff5d9e";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} replot ()
-Atualiza a janela de xibi@,{c}@~ao de gr@'afico.
-@end deftypefn

@@ -1,5 +1,0 @@
-md5="c93dd1cf028733cd95fee530297fb4dc";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} asinh (@var{x})
-Calcula o arco-seno hiperb@'olico de cada elemento de @var{x}.
-@end deftypefn

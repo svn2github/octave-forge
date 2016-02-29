@@ -1,5 +1,0 @@
-md5="1767c34b99393084d6d0a8b2de5eda5b";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} acsc (@var{x})
-Calcula o arco-cossecante de cada elemento de @var{x}.
-@end deftypefn

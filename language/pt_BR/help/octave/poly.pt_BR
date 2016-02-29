@@ -1,9 +1,0 @@
-md5="0139fa0c393de32fb07a4838fc6c86ab";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} poly (@var{a})
-Se @var{a} for uma matriz quadrada @math{N}-por-@math{N}, @code{poly (@var{a})}
-@'e o vetor linha dos coeficientes de @code{det (z * eye (N) - a)},
-a caracter@'istica polinomial de @var{a}.  Se @var{x} for um vetor,
-@code{poly (@var{x})} @'e um vetor de coeficientes do polin@^omio
-cujas ra@'izes s@~ao elementos de @var{x}.
-@end deftypefn

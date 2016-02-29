@@ -1,5 +1,0 @@
-md5="e31c9b8c77db8288476b55f8c2a39173";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} acos (@var{x})
-Calcula o arco-cosseno de cada elemento de @var{x}.
-@end deftypefn

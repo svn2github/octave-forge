@@ -1,5 +1,0 @@
-md5="d0021c971b242edc930826a997293fcd";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} asech (@var{x})
-Calcula o arco-secante hiperb@'olico de cada elemento de @var{x}.
-@end deftypefn

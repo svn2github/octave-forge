@@ -1,7 +1,0 @@
-md5="703afabbf026619045beca4c62c4a509";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} gamma_cdf (@var{x}, @var{a}, @var{b})
-Para cada elemento de @var{x}, calcula a fun@value{cedilha}@~ao de distribui@value{cedilha}@~ao
-cumulativa (FDC) em @var{x} da distribui@value{cedilha}@~ao Gama com par@^ametros
-@var{a} e @var{b}.
-@end deftypefn

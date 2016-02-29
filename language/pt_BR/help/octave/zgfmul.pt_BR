@@ -1,7 +1,0 @@
-md5="b883f024e62bbf2b93c74ce16dc478a5";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {@var{y} =} zgfmul (@var{a}, @var{b}, @var{c}, @var{d}, @var{x})
-Calcula o produto da matriz @math{F} de incidência @var{zgep} com vetor @var{x}.
-Usada por @command{zgepbal} (em @command{zgscal}) como parte da iteração de gradiente conjugado
-generalizado.
-@end deftypefn

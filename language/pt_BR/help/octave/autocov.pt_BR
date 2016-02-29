@@ -1,8 +1,0 @@
-md5="ab984aeb3e44ae2d6a56ba0fd4927aa9";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} autocov (@var{x}, @var{h})
-Retorna as autocovari@^ancias de retardo 0 a @var{h} do vetor @var{x}.
-Se @var{h} for omitido, todas as autocovari@^ancias s@~ao calculadas.
-Se @var{x} for uma matriz, as autocovari@^ancias de cada coluna @'e
-computada.
-@end deftypefn

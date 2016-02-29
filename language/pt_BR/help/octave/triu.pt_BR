@@ -1,5 +1,0 @@
-md5="1da02620dff5125a2ef6ff1b8ea9584a";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} triu (@var{a}, @var{k})
-Veja tril.
-@end deftypefn

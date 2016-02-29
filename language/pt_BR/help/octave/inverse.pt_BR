@@ -1,5 +1,0 @@
-md5="e5ba363960bf13475a7d3187ce55a85f";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {} inverse (@var{a})
-Veja @code{inv}.
-@end deftypefn

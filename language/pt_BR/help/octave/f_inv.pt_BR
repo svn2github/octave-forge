@@ -1,7 +1,0 @@
-md5="d446471138d561a53ba8adff25870bd2";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} f_inv (@var{x}, @var{m}, @var{n})
-Para cada componente de @var{x}, calcula o quantil (o inverso da
-fun@,{c}@~ao de distribui@,{c}@~ao cumulativa) em @var{x} da distribui@,{c}@~ao F com par@^ametros @var{m} e
-@var{n}.
-@end deftypefn

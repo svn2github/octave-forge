@@ -1,8 +1,0 @@
-md5="0d303c3dc17e81b98725edb7859c970b";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} logistic_rnd (@var{r}, @var{c})
-@deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} logistic_rnd (@var{sz})
-Retorna uma matriz @var{r} por @var{c} de n@'umeros aleat@'orios da
-distribui@value{cedilha}@~ao logistica. Ou se @var{sz} for um vetor, cria uma matriz de
-tamanho @var{sz}.
-@end deftypefn

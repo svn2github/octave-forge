@@ -1,5 +1,0 @@
-md5="bd4e244fc47a34909b1718b7ec6a497c";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} cos (@var{x})
-Calcula o cosseno de cada elemento de @var{x}.
-@end deftypefn

@@ -1,6 +1,0 @@
-md5="81a5602cf0875a922d1f099ef760c7ad";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} atan2 (@var{y}, @var{x})
-Calcula atan (@var{y} / @var{x}) para os elementos correspondentes de @var{y}
-e @var{x}.  O resultado est@'a no intervalo de -pi a pi.
-@end deftypefn

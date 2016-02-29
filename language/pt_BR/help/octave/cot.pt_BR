@@ -1,5 +1,0 @@
-md5="5e3dd8f3926a3b886a6662066aba70cd";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} cot (@var{x})
-Calcula a cotangente de cada elemento de @var{x}.
-@end deftypefn

@@ -1,9 +1,0 @@
-md5="9ae3687b3898ef4271ed6ffc705fcd40";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} meansq (@var{x})
-@deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} meansq (@var{x}, @var{dim})
-Para argumentos vetoriais, retorna a m@'edia quadrada dos valores.
-Para argumentos matriz, retorna um vetor linha contendo a m@'edia quadrada
-de cada coluna. Com o argumento opcional @var{dim}, retorna m@'dia quadrada
-dos valores ao longo da dimens@~ao.
-@end deftypefn

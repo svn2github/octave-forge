@@ -1,6 +1,0 @@
-md5="3d8b2fdf0077d11e3b19775274da112a";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} log10 (@var{x})
-Calcula o logar@'itmo de base 10 para cada elemento de @var{x}.
-@seealso{log, log2, logspace, exp}
-@end deftypefn

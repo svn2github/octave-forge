@@ -1,6 +1,0 @@
-md5="d2c2c218b8de0c4ab9baf811e6d550df";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao Interna} {} isempty (@var{a})
-Retorna 1 se @var{a} for uma matriz vazia (se o n@'umero de linhas, ou
-o n@'umero de colunas, ou ambos forem zero).  De outra forma, retorna 0.
-@end deftypefn

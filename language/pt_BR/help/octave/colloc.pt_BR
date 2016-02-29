@@ -1,8 +1,0 @@
-md5="ee0c97107a0a2499a0926727c6c16262";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {[@var{r}, @var{amat}, @var{bmat}, @var{q}] =} colloc (@var{n}, "left", "right")
-Calcula a derivada e a integral de matrizes peso para a coloca@,{c}@~ao
-ortogonal usando as subrotinas dadas em J. Villadsen e
-M. L. Michelsen, @cite{Solution of Differential Equation Models by
-Polynomial Approximation}.
-@end deftypefn

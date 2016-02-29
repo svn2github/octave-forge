@@ -1,5 +1,0 @@
-md5="d0413f9d84b7192238b758eb2a63d0dc";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} sech (@var{x})
-Calcula a secante hiperb@'olica de cada elemento de @var{x}.
-@end deftypefn

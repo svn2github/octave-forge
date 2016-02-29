@@ -1,7 +1,0 @@
-md5="bc7fc4a10a9cf67f16d5a0195bd2b9ba";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} qtransvmat (@var{qib})
-Constr@'oi uma matriz de transforma@,{c}@~ao 3x3 do quaternio @var{qib} que
-@'e equivalente a uma rota@,{c}@~ao de th radianos sobre o eixo @var{vv}, onde
-@code{[@var{vv}, @var{th}] = quaternion (@var{qib})}.
-@end deftypefn

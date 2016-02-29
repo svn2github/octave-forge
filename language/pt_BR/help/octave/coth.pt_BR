@@ -1,5 +1,0 @@
-md5="46dfa3d7274976cff2ecfdad1b39300c";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} coth (@var{x})
-Calcula a cotangente hiperb@'olica de cada elemento de @var{x}.
-@end deftypefn

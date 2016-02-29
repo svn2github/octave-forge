@@ -1,7 +1,0 @@
-md5="880986ae12b636650d1c9cbf35feabed";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao Interna} {} all (@var{x}, @var{dim})
-A fun@value{cedilha}@~ao @code{all} comporta-se como a fun@value{cedilha}@~ao @code{any}, exceto
-que retorna @code{true} somente se todos os elementos de um vetor, ou todos os
-elementos ao longo da dimens@~ao @var{dim} de uma matriz, forem diferentes de zero.
-@end deftypefn

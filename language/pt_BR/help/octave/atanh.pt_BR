@@ -1,5 +1,0 @@
-md5="466fabc0fd2dd1868ba77daacf5f325b";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} atanh (@var{x})
-Calcula the arco-tangente hiperb@'olico de cada elemento de @var{x}.
-@end deftypefn

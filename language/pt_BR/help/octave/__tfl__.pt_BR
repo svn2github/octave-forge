@@ -1,6 +1,0 @@
-md5="010bb93b980f229196d5bdef9df5e0df";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} __tfl__ (@var{vec})
-usada internamente em @code{tf}.
-Remove coeficientes nulos para tomar o verdadeiro comprimento do polinômio.
-@end deftypefn

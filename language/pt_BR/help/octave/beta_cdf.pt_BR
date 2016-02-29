@@ -1,7 +1,0 @@
-md5="4a3240396cd96b1f679022822304f811";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} beta_cdf (@var{x}, @var{a}, @var{b})
-Para cada elemento de @var{x}, retorna a fun@,{c}@~ao de distribui@,{c}@~ao cumulativa em @var{x} da distribui@,{c}@~ao
-beta com par@^ametros @var{a} e @var{b}, i.e.,
-PROB (beta (@var{a}, @var{b}) <= @var{x}).
-@end deftypefn

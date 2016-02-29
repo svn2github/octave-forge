@@ -1,7 +1,0 @@
-md5="b74d1f59b3869a363dacc007d772f833";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} chisquare_cdf (@var{x}, @var{n})
-Para cada elemento de @var{x}, calcula a fun@,{c}@~ao de distribui@,{c}@~ao
-cumulativa em @var{x} da distribui@,{c}@~ao chi-quadrada com @var{n}
-graus de liberdade.
-@end deftypefn

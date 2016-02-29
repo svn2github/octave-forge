@@ -1,9 +1,0 @@
-md5="2faa67a754752607576b0f6f3e951035";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} issymmetric (@var{x}, @var{tol})
-Se @var{x} for uma matriz sim@'etrica dentro da tolerância especificada por @var{tol},
-ent@~ao retorna a dimens@~ao de @var{x}.  De outra forma, retorna 0.  Se
-@var{tol} for omitida usa tolerância igual @`a precis@~ao da m@'aquina.
-@seealso{size, rows, colunas, length, ismatrix, isscalar,
-issquare, isvector}
-@end deftypefn

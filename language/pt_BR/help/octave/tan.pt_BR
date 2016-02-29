@@ -1,5 +1,0 @@
-md5="62ab9fb7b4ed090b1e14fec21f8409af";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} tan (@var{z})
-Calcula a tangente de cada elemento de @var{x}.
-@end deftypefn

@@ -1,5 +1,0 @@
-md5="8c45c40bc6cb867368d5968e1d959176";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao Interna} {} __dump_symbol_info__ (@var{nome})
-Imprime informa@value{cedilha}@~ao a tabela de s@'imbolo para o s@'imbolo @var{nome}.
-@end deftypefn

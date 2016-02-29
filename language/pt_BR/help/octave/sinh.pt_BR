@@ -1,5 +1,0 @@
-md5="cdbdad93a322aab6b222bdadd4f9148d";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} sinh (@var{x})
-Calcula o seno hiperb@'olico de cada elemento de @var{x}.
-@end deftypefn

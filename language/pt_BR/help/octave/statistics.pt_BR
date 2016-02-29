@@ -1,9 +1,0 @@
-md5="f1ccb2e5f438948b7500b83d6fef8ff6";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} statistics (@var{x})
-Se @var{x} for uma matrizz, retorna uma matriz com o menor elemento, primeiro
-quartil, mediana, terceiro quartil, maior elemento, m@'edia, desvio padr@~ao,
-assimetria e curtose das colunas de @var{x} como suas linhas.
-
-Se @var{x} for um vetor, @'e tratado como um vetor coluna.
-@end deftypefn

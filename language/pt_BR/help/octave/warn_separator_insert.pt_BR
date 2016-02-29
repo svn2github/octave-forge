@@ -1,6 +1,0 @@
-md5="3919d7d99aac899685ba996675a197c0";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@defvr {Vari@'avel Interna} warn_separator_insert
-Mostra alerta se v@'irgulas ou ponto-e-v@'irgulas possivelmente sejam inseridos
-automaticamente em matrizes literais.
-@end defvr

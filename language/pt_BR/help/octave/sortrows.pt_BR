@@ -1,7 +1,0 @@
-md5="a3d9ce7bba974c53abe6669553a84224";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} sortrows (@var{a}, @var{c})
-Ordena as linhas da matriz @var{a} conforme a ordem das
-colunas especificada em @var{c}.  Se @var{c} for omitido, uma
-ordem lexicogr@'afica @'e usada.
-@end deftypefn

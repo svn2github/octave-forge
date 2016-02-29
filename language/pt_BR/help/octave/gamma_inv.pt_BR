@@ -1,7 +1,0 @@
-md5="f7bea3daccfbdb72e9292312f74adf68";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} gamma_inv (@var{x}, @var{a}, @var{b})
-Para cada componente de @var{x}, calcula o inverso da fun@value{cedilha}@~ao de distribu@'i@value{cedilha}@~ao
-cumulativa em @var{x} da distribui@value{cedilha}@~ao Gama com par@^ametros @var{a}
-e @var{b}. 
-@end deftypefn

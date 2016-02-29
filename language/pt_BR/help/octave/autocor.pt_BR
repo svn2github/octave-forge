@@ -1,8 +1,0 @@
-md5="af8f87fea428ee26089f0897951c88c4";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} autocor (@var{x}, @var{h})
-Retorna as autocorrela@,{c}@~oes de retardo 0 a @var{h} do vetor @var{x}.
-Se @var{h} for omitido, todas as autocorrela@,{c}@~oes s@~ao calculadas.
-Se @var{x} for uma matriz, as autocorrela@,{c}@~oes de cada coluna ser@'a
-calculada.
-@end deftypefn

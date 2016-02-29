@@ -1,8 +1,0 @@
-md5="2585eddd5d3911f248b503ea25dae4c8";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} cond (@var{a})
-Calcula o n@'umero de condi@,{c}@~ao (duas-normas) de uma matriz. @code{cond (a)} @'e
-definido como @code{norm (a) * norm (inv (a))}, e @'e calculado via uma
-decomposi@,{c}@~ao de valor singular.
-@seealso{norm, svd, rank}
-@end deftypefn

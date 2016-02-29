@@ -1,5 +1,0 @@
-md5="6368f2b10a0ff684890efdf96e43e8ea";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} atan (@var{x})
-Calcula o arco-tangente de cada elemento de @var{x}.
-@end deftypefn

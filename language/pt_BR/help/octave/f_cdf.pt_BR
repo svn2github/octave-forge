@@ -1,7 +1,0 @@
-md5="9446f721f30a7f109c95ed7dbdbd6295";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} f_cdf (@var{x}, @var{m}, @var{n})
-Para cada elemento de @var{x}, calcula a fun@,{c}@~ao de distribui@,{c}@~ao cumulativa em @var{x} da
-distribui@,{c}@~ao F com @var{m} e @var{n} graus de liberdade, i.e.,
-PROB (F (@var{m}, @var{n}) <= @var{x}). 
-@end deftypefn

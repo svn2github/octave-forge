@@ -1,7 +1,0 @@
-md5="b9d77aa8111ca25358f8c018b3bb8aab";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} ismember (@var{A}, @var{S})
-Retorna uma matriz da mesma forma que @var{A} que tem 1 se
-@code{A(i,j)} estiver em @var{S} ou 0 se n@~ao estiver.
-@seealso{unique, union, intersection, setxor, setdiff}
-@end deftypefn

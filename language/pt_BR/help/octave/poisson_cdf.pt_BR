@@ -1,7 +1,0 @@
-md5="3492652fc05c626f3b5e02ef821f28ab";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} poisson_cdf (@var{x}, @var{lambda})
-Para cada elemento de @var{x}, calcula a fun@,{c}@~ao de distribui@,{c}@~ao cumulativa
-em @var{x} da distribui@value{cedilha}@~ao de Poisson com par@^ametro
-lambda.
-@end deftypefn

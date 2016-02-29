@@ -1,8 +1,0 @@
-md5="000b86fcdf3b8ac803f84708e91dcef8";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@defvr __kluge_procbuf_delay__
-N@'umero de microsegundos para esperar no processo pai ap@'os fazer um fork().
-
-@seealso{popen, fork}
-
-@end defvr

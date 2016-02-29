@@ -1,7 +1,0 @@
-md5="f1855a29f211531a1f49a50cc22169e2";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} chisquare_inv (@var{x}, @var{n})
-Para cada elemento de @var{x}, calcula o quantil (O inverso da
-fun@,{c}@~ao de distribui@,{c}@~ao cumulativa) em @var{x} da distribui@,{c}@~ao chi-quadrada com @var{n} graus de
-liberdade.
-@end deftypefn

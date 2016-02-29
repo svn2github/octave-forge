@@ -1,9 +1,0 @@
-md5="fa441c31f1932a61bc577d29fceb0830";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} center (@var{x})
-@deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} center (@var{x}, @var{dim})
-Se @var{x} for um vetor, subtrai sua m@'edia aritm@'etica.
-Se @var{x} for uma matriz, faz o que est@'a acima para cada coluna.
-Se o argumento opcional @var{dim} for fornecido, executa a opera@,{c}@~ao
-acima ao longo dessa dimens@~ao.
-@end deftypefn

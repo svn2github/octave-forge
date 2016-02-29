@@ -1,6 +1,0 @@
-md5="1a311a7ca148881a7000a9d1ab934b27";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} real (@var{z})
-Retorna a parte real do n@'umero complexo @var{z}.
-@seealso{imag and conj}
-@end deftypefn

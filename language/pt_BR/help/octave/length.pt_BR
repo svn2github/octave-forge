@@ -1,7 +1,0 @@
-md5="9af84525d7364d7f546ea950af13977b";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao Interna} {} length (@var{a})
-Retorna o `comprimento' do objeto @var{a}.  Para objetos matriciais, o
-comprimento @'e o n@'umero de linhas ou de colunas, usa-se o que for maior (essa
-defini@,{c}@~ao particular @'e usada para compatibilidade com Matlab).
-@end deftypefn

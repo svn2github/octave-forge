@@ -1,4 +1,0 @@
-md5="763befaee68122ca16a6daa1dffba468";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} __plt2mm__ (@var{h}, @var{x}, @var{y}, @var{op@,{c}@~oes}, @var{propriedades})
-@end deftypefn

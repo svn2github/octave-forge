@@ -1,6 +1,0 @@
-md5="61c25c7c89ffe337f0062dd9883297ba";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} laplace_inv (@var{x})
-Para cada elemento de @var{x}, calcula o quantil (o inverso da
-fun@,{c}@~ao de distribui@,{c}@~ao cumulativa) em @var{x} da distribui@value{cedilha}@~ao de Laplace.
-@end deftypefn

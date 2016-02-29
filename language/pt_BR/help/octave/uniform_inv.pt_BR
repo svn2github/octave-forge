@@ -1,8 +1,0 @@
-md5="3ae15735f6f66ce14f9710f62abf4585";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} uniform_inv (@var{x}, @var{a}, @var{b})
-Para cada elemento de @var{x}, calcula o quantil (o inverso da
-fun@,{c}@~ao de distribui@,{c}@~ao cumulativa) em @var{x} da distribui@value{cedilha}@~ao uniforme sobre [@var{a}, @var{b}].
-
-Valores padr@~ao: @var{a} = 0, @var{b} = 1.
-@end deftypefn

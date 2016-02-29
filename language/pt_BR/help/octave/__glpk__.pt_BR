@@ -1,7 +1,0 @@
-md5="5b0b91a53529a5bccdc808469f1d0196";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
-
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {[@var{values}] =} __glpk__ (@var{args})
-Interface interna para a biblioteca GNU GLPK.
-Voc@^e pode usar  a fun@value{cedilha}@~ao @code{glpk} ao inv@'es dessa.
-@end deftypefn

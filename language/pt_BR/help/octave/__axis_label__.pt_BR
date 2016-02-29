@@ -1,5 +1,0 @@
-md5="c6c8197a04258a32c8e9737c30c87d9d";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} __axis_label__ (@var{chamador}, @var{texto})
-Fun@value{cedilha}@~ao de utilidade para @code{xlabel}, @code{ylabel}, e @code{zlabel}.
-@end deftypefn

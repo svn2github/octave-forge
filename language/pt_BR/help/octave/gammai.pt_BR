@@ -1,9 +1,0 @@
-md5="8dd0f96d83af42b201a154214a65961b";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} gammai (@var{a}, @var{x})
-Essa fun@value{cedilha}@~ao @'e fornecida por compatibilidade com antigas vers@~oes do
-Octave.  Novos programas podem usar @code{gammainc} em lugar de @code{gammai}.
-
-@code{gammai (@var{a}, @var{x})} @'e o mesmo que @code{gammainc
-(@var{x}, @var{a})}.
-@end deftypefn

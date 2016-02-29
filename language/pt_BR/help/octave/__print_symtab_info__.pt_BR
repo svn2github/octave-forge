@@ -1,5 +1,0 @@
-md5="1de0feed361441c02c5bcf967a3fa197";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao Interna} {} __print_symtab_info__ ()
-Imprime estat@'isticas da tabela de s@'imbolo da linha.
-@end deftypefn

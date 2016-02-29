@@ -1,5 +1,0 @@
-md5="7a0359481af0b1d967efa944d6af89f5";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {} issparse (@var{expr})
-Retorna 1 se o valor de express@~ao @var{expr} for uma matriz esparsa.
-@end deftypefn

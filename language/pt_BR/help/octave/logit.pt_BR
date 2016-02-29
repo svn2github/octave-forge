@@ -1,6 +1,0 @@
-md5="7c1dda15b94bc552baad12404f7b6874";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} logit (@var{p})
-Para cada componente de @var{p}, retorna o logit @code{log (@var{p} /
-(1-@var{p}))} de @var{p}.
-@end deftypefn

@@ -1,5 +1,0 @@
-md5="d53128bf225fbad46367ed168c5a339d";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} ylabel (@var{string})
-Veja xlabel.
-@end deftypefn

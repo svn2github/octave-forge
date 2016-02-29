@@ -1,7 +1,0 @@
-md5="96461db49df9ad0ecf398c36f4a1e662";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} logm (@var{a})
-Calcula o logar@'itmo de matriz da matriz quadrada @var{a}.  Note que
-isso est@'a atualmente implementado em termos de uma expans@~ao de autovetor e
-precisa ser melhorado para ser mais robusto.
-@end deftypefn

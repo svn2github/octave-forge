@@ -1,6 +1,0 @@
-md5="108d138bba2066010a3c48514c02bce0";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} vec (@var{x})
-Retorna o vetor obtido por empilhameneto das colunas da matriz @var{x}
-um acima do outro.
-@end deftypefn

@@ -1,6 +1,0 @@
-md5="416e221db9f8ba43cbec4090c071fad0";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao Interna} {} fun@value{cedilha}@~oes (@var{f_manuseada})
-Retorna uma estrutura contendo informa@value{cedilha}@~ao sobre a fun@value{cedilha}@~ao manuseada
-@var{f_manuseada}.
-@end deftypefn

@@ -1,7 +1,0 @@
-md5="4000897e345b88261475471cd2d74fd6";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} empirical_inv (@var{x}, @var{data})
-Para cada elemento de @var{x}, calcula o quantil (o inverso da
-fun@,{c}@~ao de distribui@,{c}@~ao cumulativa) em @var{x} da distribui@,{c}@~ao emp@'irica obtida da
-amostra @var{data} de uma @'unica vari@'avel.
-@end deftypefn

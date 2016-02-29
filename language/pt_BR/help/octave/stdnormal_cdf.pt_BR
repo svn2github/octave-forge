@@ -1,6 +1,0 @@
-md5="0c87876f31fc497913a04dce58deddcd";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} stdnormal_cdf (@var{x})
-Paa cada componente de @var{x}, calcula a fun@,{c}@~ao de distribui@,{c}@~ao cumulativa da distribui@value{cedilha}@~ao
-normal padr@~ao em @var{x}.
-@end deftypefn

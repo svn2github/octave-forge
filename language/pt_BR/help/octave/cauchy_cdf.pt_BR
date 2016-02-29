@@ -1,8 +1,0 @@
-md5="974959d1ad7262ba81f8fb4f4f2c5f93";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} cauchy_cdf (@var{x}, @var{lambda}, @var{sigma})
-Para cada elemento de @var{x}, calcula a fun@,{c}@~ao de distribui@,{c}@~ao
-cumulativa em @var{x} da distribui@,{c}@~ao de Cauchy com par@^ametro
-de localiza@,{c}@~ao @var{lambda} e par@^ametro de escala @var{sigma}.  Valores
-padr@~ao s@~ao @var{lambda} = 0, @var{sigma} = 1. 
-@end deftypefn

@@ -1,6 +1,0 @@
-md5="08e0adeb773877456947e5bf569a0ae1";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {[@var{d}, @var{rcond}] = } det (@var{a})
-Calcula o determinante sw @var{a} usando @sc{Lapack}.  Retorna um estimativa
-do n@'umero da condi@,{c}@~ao rec@'iproca se requisitado.
-@end deftypefn

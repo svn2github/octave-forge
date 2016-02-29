@@ -1,6 +1,0 @@
-md5="487d773d45603cce39df1fd35769ea62";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} logistic_cdf (@var{x})
-Para cada componente de @var{x}, calcula a fun@,{c}@~ao de distribui@,{c}@~ao cumulativa em @var{x} da
-distribui@value{cedilha}@~ao logistica.
-@end deftypefn

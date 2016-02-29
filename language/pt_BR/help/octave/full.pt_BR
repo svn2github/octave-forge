@@ -1,6 +1,0 @@
-md5="a7e73fac1125ae8dbbf1bb5bd9f62301";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {@var{FM} =} full (@var{SM})
- retorna uma matriz de armazenamento cheia partindo de uma esparsa.
-@seealso{sparse}
-@end deftypefn

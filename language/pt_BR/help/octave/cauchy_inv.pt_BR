@@ -1,8 +1,0 @@
-md5="82aa154b7abf32bcbd58f9b9d0daa1cc";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} cauchy_inv (@var{x}, @var{lambda}, @var{sigma})
-Para cada elemento de @var{x}, calcula o quantil (o inverso da
-fun@,{c}@~ao de distribui@,{c}@~ao cumulativa) em @var{x} da distribui@,{c}@~ao de Cauchy com par@^ametro de localiza@,{c}@~ao
-@var{lambda} e par@^ametro e escala @var{sigma}.  Os valores padr@~ao s@~ao
-@var{lambda} = 0, @var{sigma} = 1. 
-@end deftypefn

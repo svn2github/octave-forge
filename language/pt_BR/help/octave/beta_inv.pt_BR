@@ -1,7 +1,0 @@
-md5="8f529f2d74857e9e8ecf7fa4da6b1322";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} beta_inv (@var{x}, @var{a}, @var{b})
-Para cada componente de @var{x}, calcula o quantil (a inversa da
-fun@,{c}@~ao de distribui@,{c}@~ao cumulativa) em @var{x} da distribui@,{c}@~ao Beta com par@^ametros @var{a}
-e @var{b}.
-@end deftypefn

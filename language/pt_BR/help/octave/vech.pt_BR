@@ -1,7 +1,0 @@
-md5="50c4599bd3666181c2c9898ead3df0cd";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} vech (@var{x})
-Retorna o vetor obtido por elimina@,{c}@~ao de todos os elementos da supradiagonal da
-matriz quadrada @var{x} e empilhando o resultado uma coluna acima da
-outra.
-@end deftypefn

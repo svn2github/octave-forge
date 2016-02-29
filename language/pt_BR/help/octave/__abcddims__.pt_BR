@@ -1,8 +1,0 @@
-md5="55223b60a8f78f880d499955a6364201";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {[@var{y}, @var{my}, @var{ny}] =} __abcddims__ (@var{x})
-
-Usada internamente em @code{abcddim}.  Se @var{x} for uma matriz de tamanho zero,
-ambas as dimens@value{o_til}es recebem o valor 0 em @var{y}.
-@var{my} e @var{ny} s@~ao as dimens@value{o_til}es da linha e da coluna do resultado.
-@end deftypefn

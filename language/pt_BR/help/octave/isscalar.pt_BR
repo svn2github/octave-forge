@@ -1,7 +1,0 @@
-md5="f3b22a15a57b20b903a1fe4dfe10a4a4";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} isscalar (@var{a})
-Retorna 1 se @var{a} for um escalar.  De outra forma, retorna 0.
-@seealso{size, rows, columns, length, isscalar, ismatrix}
-@end deftypefn
-

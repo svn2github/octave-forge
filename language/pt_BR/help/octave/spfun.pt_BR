@@ -1,8 +1,0 @@
-md5="07f3a1d7753a06343b07da10cc9a5cae";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {@var{y} =} spfun (@var{f},@var{x})
-Calcula @code{f(@var{x})} para os valores n@~ao nulos de @var{x}.
-Isso resulta em uma matriz esparsa com a mesma estrutura que 
-@var{x}. A fun@value{cedilha}@~ao @var{f} pode ser passada como uma seq@"u@^encia de caracteres, uma
-fun@value{cedilha}@~ao n@~ao compilada ou uma fun@,{c}@~ao compilada.
-@end deftypefn

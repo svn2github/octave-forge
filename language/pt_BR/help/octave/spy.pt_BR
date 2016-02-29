@@ -1,5 +1,0 @@
-md5="694e54e2f4be4219ffa30a68a002e92b";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} spy (@var{x})
-Imprime o modelo de esparsidade da matriz esparsa @var{x}.
-@end deftypefn

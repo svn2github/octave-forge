@@ -1,9 +1,0 @@
-md5="d74b4f0f3bf4f37f7dd265e62591b1b9";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} normal_inv (@var{x}, @var{m}, @var{v})
-Para cada elemento de @var{x}, calcula o quantil (o inverso da
-fun@,{c}@~ao de distribui@,{c}@~ao cumulativa) em @var{x} da distribui@value{cedilha}@~ao normal com m@'edia @var{m} e
-variância @var{v}.
-
-Valores padr@~ao s@~ao @var{m} = 0, @var{v} = 1.
-@end deftypefn

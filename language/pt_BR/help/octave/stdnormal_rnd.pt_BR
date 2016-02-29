@@ -1,7 +1,0 @@
-md5="0cee0751d3b43bc78f0729d8a5ff14f4";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} stdnormal_rnd (@var{r}, @var{c})
-@deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} stdnormal_rnd (@var{sz})
-Retorna uma matriz @var{r} por @var{c} ou @code{size (@var{sz})} de 
-n@'umeros aleat@'orios da distribui@value{cedilha}@~ao normal padr@~ao.
-@end deftypefn

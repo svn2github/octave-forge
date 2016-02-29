@@ -1,7 +1,0 @@
-md5="8927c0ae0b9311387f02d247e22a7879";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Function File} {} weibull_inv (@var{x}, @var{shape}, @var{scale})
-Calcula o quantil (o inverso da fun@,{c}@~ao de distribui@,{c}@~ao cumulativa) em @var{x} da
-distribui@value{cedilha}@~ao de Weibull com par@^ametro de ajuste @var{scale} e par@^ametro
-de escala @var{shape}.
-@end deftypefn

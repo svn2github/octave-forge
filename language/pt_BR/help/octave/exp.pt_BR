@@ -1,6 +1,0 @@
-md5="aac696143ac1974cdf8f6344e5272569";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} exp (@var{x})
-Calcula a exponencial de @var{x}.  Para calcular a exponencial de matriz,
-veja @ref{Linear Algebra}.
-@end deftypefn

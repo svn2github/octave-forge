@@ -1,5 +1,0 @@
-md5="eb21e486b40e5ca7c1279a898aa0702b";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} acsch (@var{x})
-Calcula oarco-cossecante hiperb@'olico de cada elemento de @var{x}.
-@end deftypefn

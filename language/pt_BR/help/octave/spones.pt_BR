@@ -1,6 +1,0 @@
-md5="7e0b2c1ad9c4f3d751ecdc34c62619de";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {@var{y} =} spones (@var{x})
-Substitui as entradas n@~ao nulas de @var{x} com unidades. Isso cria uma
-matriz esparsas com a mesma estrutura que @var{x}.
-@end deftypefn

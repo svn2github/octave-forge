@@ -1,7 +1,0 @@
-md5="6699641e454166a56d4730a2cf317436";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} hurst (@var{x})
-Estima o par@^ametro de Hurst da amostra @var{x} via estat@'istica do
-intervalo reescalado.  Se @var{x} for uma matriz, o par@^ametro @'e estimado para
-toda coluna simples.
-@end deftypefn

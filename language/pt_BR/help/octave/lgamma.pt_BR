@@ -1,7 +1,0 @@
-md5="a44c3074f67da1dd10cb288b9263688a";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} lgamma (@var{a}, @var{x})
-@deftypefnx {Fun@value{cedilha}@~ao de Mapeamento} {} gammaln (@var{a}, @var{x})
-Retorna o logar@'itmo natural da fun@value{cedilha}@~ao gama.
-@seealso{gamma, gammai}
-@end deftypefn

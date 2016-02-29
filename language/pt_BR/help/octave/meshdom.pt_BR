@@ -1,5 +1,0 @@
-md5="048c83f03e998f735886a06b4f63ef23";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} meshdom (@var{x}, @var{y})
-Essa fun@value{cedilha}@~{a}o est@'{a} desatualizada.  Use @code{meshgrid} em seu lugar.
-@end deftypefn

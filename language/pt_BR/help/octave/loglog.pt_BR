@@ -1,9 +1,0 @@
-md5="605172337f3118290783562227e9b898";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} loglog (@var{args})
-Monta um gr@'afico bidimensional usando escalas logar@'itmas para ambos os eixos.  Veja a
-descri@value{cedilha}@~ao de @code{plot} para uma descri@value{cedilha}@~ao dos argumentos que
-@code{loglog} ir@'a aceitar.
-@seealso{plot, semilogy, loglog, polar, mesh, contour, bar, stairs,
-xlabel, ylabel, title}
-@end deftypefn

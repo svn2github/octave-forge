@@ -1,6 +1,0 @@
-md5="66a869b3daa851fafb5e7a0497721525";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao Interna} {} columns (@var{a})
-Retorna o n@'umero de colunas de @var{a}.
-@seealso{size, numel, rows, length, isscalar, isvector, e ismatrix}
-@end deftypefn

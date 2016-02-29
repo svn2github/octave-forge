@@ -1,7 +1,0 @@
-md5="d0afbb4460d7d7fd541e9fe920adcc76";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} issquare (@var{x})
-Se @var{x} for uma matriz quadrada, ent@~ao retorna a dimens@~ao de @var{x}.
-De outra forma, retorna 0.
-@seealso{size, rows, columns, length, ismatrix, isscalar, isvector}
-@end deftypefn

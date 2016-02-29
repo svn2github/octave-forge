@@ -1,6 +1,0 @@
-md5="f10e0757d326ce5d5771a6829ee941a2";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao Interna} {} rows (@var{a})
-Retorna o n@'umero de linhas de @var{a}.
-@seealso{size, numel, columns, length, isscalar, isvector, ismatrix}
-@end deftypefn

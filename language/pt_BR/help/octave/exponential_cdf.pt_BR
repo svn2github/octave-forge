@@ -1,9 +1,0 @@
-md5="fdeb9a4fc682fb70a5489f32174a4687";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} exponential_cdf (@var{x}, @var{lambda})
-Para cada elemento de @var{x}, calcula a fun@,{c}@~ao de distribui@,{c}@~ao
-cumulativa em @var{x} da distribui@,{c}@~ao exponencial com
-par@^ametro @var{lambda}.
-
-Os argumentos podem ser de tamanho comum ou escalares.
-@end deftypefn

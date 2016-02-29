@@ -1,5 +1,0 @@
-md5="efbd4ccc903de31cf4f67a3d0874e0df";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao Interna} {} ismatrix (@var{a})
-Retorna 1 se @var{a} for uma matriz.  De outra forma, retorna 0.
-@end deftypefn

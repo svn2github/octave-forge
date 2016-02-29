@@ -1,5 +1,0 @@
-md5="2cdb23a9a5302911096c26e80206aa7d";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} sec (@var{x})
-Calcula a secante de cada elemento de @var{x}.
-@end deftypefn

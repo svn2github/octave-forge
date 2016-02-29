@@ -1,5 +1,0 @@
-md5="c32c07f60627aa4d13b0e5b979dfb865";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deffn {Fun@value{cedilha}@value{a_til}o Carreg@'avel} __gnuplot_show__ op@value{cedilha}@value{o_til}es
-Mostra op@value{cedilha}@value{o_til}es de impress@~ao do gnuplot.
-@end deffn

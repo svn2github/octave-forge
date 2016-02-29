@@ -1,7 +1,0 @@
-md5="57e28155048d894574ce0d0f70c2c4c3";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} log (@var{x})
-Calcula o logar@'itmo natual para cada elemento de @var{x}.  Para calcular a
-logar@'itmo de matriz, veja @ref{Linear Algebra}.
-@seealso{log2, log10, logspace, exp}
-@end deftypefn

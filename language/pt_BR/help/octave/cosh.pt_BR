@@ -1,5 +1,0 @@
-md5="61ccd1d24a0a6f329a27b4a3e754a0bd";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} cosh (@var{x})
-Calcula o cosseno hiperb@'olico de cada elemento de @var{x}.
-@end deftypefn

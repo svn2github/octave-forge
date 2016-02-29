@@ -1,6 +1,0 @@
-md5="879a25dfa29e04ff6171a98943643931";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {[@var{d}, @var{rcond}] = } spdet (@var{a})
-Calcula o determinante da matriz esparsa @var{a} usando UMFPACK.  Retorna
-uma uma estimativa do n@'umero de condi@,{c}@~ao rec@'iproca se requisitado.
-@end deftypefn

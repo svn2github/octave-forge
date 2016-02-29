@@ -1,5 +1,0 @@
-md5="6e04d60a00185bffc4729fb81c867482";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} nonzeros (@var{s})
-Retorna um vetor de valores n@~ao nulos da matriz esparsa @var{s}.
-@end deftypefn

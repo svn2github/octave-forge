@@ -1,7 +1,0 @@
-md5="01fff56f657669751569b8e4960e14a0";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao Interna} {} fprintf (@var{fid}, @var{modelo}, @dots{})
-Essa fun@value{cedilha}@~ao @'e como @code{printf}, exceto que a sa@'ida @'e
-escrita para o fluxo @var{fid} em lugar de ser escrita para @code{stdout}.
-@seealso{printf, sprintf, fread, fscanf, fopen, fclose}
-@end deftypefn

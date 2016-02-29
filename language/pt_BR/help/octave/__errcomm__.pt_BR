@@ -1,8 +1,0 @@
-md5="cbac2bc82cb4242350c77208726b4790";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
--*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} __errcomm__ (@var{args})
-C@'odigo manuseado de argumento comum para todas as exibi@value{cedilha}@~oes de erro (errorbar, loglogerr,
-semilogyerr, semilogxerr).
-@seealso{errorbar, semilogxerr, semilogyerr, loglogerr, __pltopt__}
-@end deftypefn
-

@@ -1,5 +1,0 @@
-pdb >> Protein Database
-Protein Database
- read_pdb plotpdb 
- write_pdb
- strtoz creadpdb

@@ -1,5 +1,0 @@
-#!/bin/bash
-## Octave-Forge: msh package bootstrap script
-
-set -e
-autoconf

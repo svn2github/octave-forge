@@ -1,7 +1,0 @@
-generate_latex >> Generate LaTeX documents from help texts
-Single function functions
- latex_help_text
-Package functions
- generate_package_latex
- get_latex_options
-
